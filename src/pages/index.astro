@@ -1,0 +1,42 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "~/layouts/BaseLayout.astro";
+
+const [banks, cards, programs, deals, guides] = await Promise.all([
+  getCollection("banks"),
+  getCollection("cards"),
+  getCollection("programs"),
+  getCollection("deals"),
+  getCollection("guides"),
+]);
+
+const counts = [
+  { label: "Banks", value: banks.length },
+  { label: "Cards", value: cards.length },
+  { label: "Programs", value: programs.length },
+  { label: "Deals", value: deals.length },
+  { label: "Guides", value: guides.length },
+];
+---
+
+<BaseLayout title="dubaipoints.ae — UAE points & miles">
+  <section class="space-y-6">
+    <h1 class="text-4xl font-semibold tracking-tight text-slate-900">
+      UAE points &amp; miles, without the fluff.
+    </h1>
+    <p class="max-w-2xl text-lg text-slate-700">
+      Credit card analysis, loyalty programme reviews, and live deals — all priced
+      in AED, all checked against UAE eligibility rules. Coming soon.
+    </p>
+    <dl class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-5">
+      {
+        counts.map((c) => (
+          <div class="rounded-lg border border-slate-200 bg-white p-4">
+            <dt class="text-xs uppercase tracking-wide text-slate-500">{c.label}</dt>
+            <dd class="mt-1 text-2xl font-semibold text-slate-900">{c.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+</BaseLayout>

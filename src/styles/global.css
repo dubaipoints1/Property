@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #f0f7ff;
+  --color-brand-100: #dceafd;
+  --color-brand-500: #1e6bd6;
+  --color-brand-600: #1856b3;
+  --color-brand-900: #0a2647;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+}
+
+html {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  @apply bg-white text-slate-900;
+}
+
+a {
+  @apply text-brand-600 underline-offset-2 hover:underline;
+}

@@ -1,0 +1,45 @@
+---
+import "~/styles/global.css";
+import Header from "~/components/Header.astro";
+import Footer from "~/components/Footer.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "UAE points and miles — credit card analysis, loyalty programs, and deals.",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href={canonical} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {
+      import.meta.env.PROD && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "REPLACE_WITH_CLOUDFLARE_WEB_ANALYTICS_TOKEN"}'
+        />
+      )
+    }
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <Header />
+    <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
