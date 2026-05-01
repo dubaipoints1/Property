@@ -6,11 +6,13 @@ import Footer from "~/components/Footer.astro";
 interface Props {
   title: string;
   description?: string;
+  fullWidth?: boolean;
 }
 
 const {
   title,
   description = "UAE points and miles — credit card analysis, loyalty programs, and deals.",
+  fullWidth = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -35,11 +37,17 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
       )
     }
   </head>
-  <body class="flex min-h-screen flex-col">
+  <body style="display:flex;min-height:100vh;flex-direction:column;">
     <Header />
-    <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
-      <slot />
-    </main>
+    {fullWidth ? (
+      <main style="flex:1;">
+        <slot />
+      </main>
+    ) : (
+      <main style="flex:1;margin:0 auto;width:100%;max-width:80rem;padding:2.5rem 1rem;">
+        <slot />
+      </main>
+    )}
     <Footer />
   </body>
 </html>
