@@ -1,42 +1,821 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-
-const [banks, cards, programs, deals, guides] = await Promise.all([
-  getCollection("banks"),
-  getCollection("cards"),
-  getCollection("programs"),
-  getCollection("deals"),
-  getCollection("guides"),
-]);
-
-const counts = [
-  { label: "Banks", value: banks.length },
-  { label: "Cards", value: cards.length },
-  { label: "Programs", value: programs.length },
-  { label: "Deals", value: deals.length },
-  { label: "Guides", value: guides.length },
-];
 ---
 
-<BaseLayout title="dubaipoints.ae — UAE points & miles">
-  <section class="space-y-6">
-    <h1 class="text-4xl font-semibold tracking-tight text-slate-900">
-      UAE points &amp; miles, without the fluff.
-    </h1>
-    <p class="max-w-2xl text-lg text-slate-700">
-      Credit card analysis, loyalty programme reviews, and live deals — all priced
-      in AED, all checked against UAE eligibility rules. Coming soon.
-    </p>
-    <dl class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-5">
-      {
-        counts.map((c) => (
-          <div class="rounded-lg border border-slate-200 bg-white p-4">
-            <dt class="text-xs uppercase tracking-wide text-slate-500">{c.label}</dt>
-            <dd class="mt-1 text-2xl font-semibold text-slate-900">{c.value}</dd>
-          </div>
-        ))
-      }
-    </dl>
+<BaseLayout
+  title="DubaiPoints — UAE Miles, Deals & Banking Hacks"
+  description="Independent guides to UAE credit cards, salary-transfer bonuses, miles redemptions and staycation deals — written by residents, for residents."
+  fullWidth={true}
+>
+
+<style>
+/* ── HERO ── */
+.hero { max-width: 1180px; margin: 0 auto; padding: 64px 32px 56px; }
+.hero-headline { text-align: center; max-width: 880px; margin: 0 auto 48px; }
+.hero-headline .eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 18px;
+}
+.hero-headline h1 {
+  font-family: 'Fraunces', serif; font-weight: 400;
+  font-size: 64px; line-height: 1.02; letter-spacing: -1.8px;
+  color: var(--ink); text-wrap: balance;
+}
+.hero-headline h1 em { font-style: italic; color: var(--gold); font-weight: 500; }
+.hero-headline .sub {
+  margin-top: 22px;
+  font-family: 'Fraunces', serif; font-weight: 400;
+  font-size: 24px; line-height: 1.35; color: var(--ink-soft);
+  letter-spacing: -0.3px; max-width: 680px;
+  margin-left: auto; margin-right: auto; text-wrap: balance;
+}
+.hero-feature {
+  display: grid; grid-template-columns: 1.4fr 1fr;
+  gap: 48px; align-items: center;
+  padding-top: 24px; border-top: 1px solid var(--line);
+}
+.hero-feature-img {
+  aspect-ratio: 5 / 4; border-radius: 6px;
+  background: linear-gradient(135deg, #d9cfb8 0%, #c4b393 50%, #a89372 100%);
+  position: relative; overflow: hidden;
+}
+.hero-feature-img::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.25), transparent 50%),
+    repeating-linear-gradient(45deg, transparent 0 18px, rgba(255,255,255,0.06) 18px 19px);
+}
+.hero-feature-img .placeholder-label {
+  position: absolute; top: 14px; left: 14px;
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(255,255,255,0.7);
+  background: rgba(0,0,0,0.15); padding: 4px 10px; border-radius: 3px;
+  backdrop-filter: blur(4px);
+}
+.hero-feature-img .pin {
+  position: absolute; bottom: 16px; left: 16px;
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.92);
+  padding: 6px 12px; border-radius: 30px;
+  font-size: 11px; font-weight: 700; color: var(--ink);
+}
+.hero-feature-img .pin::before {
+  content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--red);
+}
+.hero-feature .kicker {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--red); margin-bottom: 14px;
+}
+.hero-feature h2 {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 38px; line-height: 1.1; letter-spacing: -1px;
+  color: var(--ink); margin-bottom: 16px; text-wrap: balance;
+}
+.hero-feature .lede {
+  font-size: 16px; color: var(--ink-soft); line-height: 1.6;
+  margin-bottom: 20px; max-width: 480px; text-wrap: pretty;
+}
+.byline { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); }
+.byline .avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, #c9a04a, #8a6a2a);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 11px; font-weight: 700;
+}
+.byline .name { color: var(--ink); font-weight: 600; }
+.byline .sep { color: var(--line); }
+
+/* ── FEATURED CARDS SHELF ── */
+.cards-shelf {
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 56px 0;
+}
+.cards-shelf-inner { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+.shelf-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 32px;
+}
+.shelf-head h2 {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 30px; letter-spacing: -0.6px; color: var(--ink);
+}
+.shelf-head h2 em { font-style: italic; color: var(--gold); font-weight: 500; }
+.shelf-head .more { font-size: 12px; font-weight: 600; color: var(--ink); }
+.cards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.card-offer {
+  border: 1px solid var(--line); border-radius: 8px; padding: 22px;
+  background: var(--bg); display: flex; flex-direction: column;
+  transition: border-color 0.15s;
+}
+.card-offer:hover { border-color: var(--gold); }
+.card-offer .super {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 8px;
+}
+.card-offer .visual {
+  aspect-ratio: 1.6 / 1; border-radius: 6px;
+  background: linear-gradient(135deg, #1a1f2e, #0d1119);
+  margin-bottom: 18px; position: relative; overflow: hidden;
+  display: flex; align-items: flex-end; padding: 14px;
+}
+.card-offer .visual.fab    { background: linear-gradient(135deg, #1a3a5c, #0f2240); }
+.card-offer .visual.enbd   { background: linear-gradient(135deg, #5a1a2c, #2e0e18); }
+.card-offer .visual.adcb   { background: linear-gradient(135deg, #c9a04a, #8a6a2a); }
+.card-offer .visual.mashreq{ background: linear-gradient(135deg, #2e3a4a, #181f29); }
+.card-offer .visual::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15), transparent 60%);
+}
+.card-offer .visual .bank-name {
+  font-family: 'Fraunces', serif; font-weight: 600; font-size: 18px;
+  color: rgba(255,255,255,0.95); letter-spacing: -0.3px;
+  position: relative; z-index: 1;
+}
+.card-offer .card-name {
+  font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px;
+  letter-spacing: -0.3px; color: var(--ink); line-height: 1.25; margin-bottom: 14px;
+}
+.card-offer .bonus {
+  background: var(--paper); border-radius: 5px; padding: 12px 14px;
+  margin-bottom: 14px; border: 1px solid var(--line);
+}
+.card-offer .bonus .num {
+  font-family: 'Fraunces', serif; font-weight: 600; font-size: 24px;
+  color: var(--ink); letter-spacing: -0.6px; line-height: 1;
+}
+.card-offer .bonus .lbl { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.card-offer ul {
+  list-style: none; font-size: 12px; color: var(--ink-soft);
+  margin-bottom: 18px; flex: 1;
+}
+.card-offer ul li { padding: 4px 0; display: flex; gap: 8px; align-items: flex-start; }
+.card-offer ul li::before { content: '+'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+.card-offer .apply {
+  text-align: center; padding: 10px; background: var(--ink);
+  color: white; border-radius: 5px; font-size: 12px; font-weight: 600;
+}
+.card-offer .apply:hover { background: var(--gold); }
+
+/* ── VALUATIONS ── */
+.valuations { padding: 80px 32px; max-width: 1180px; margin: 0 auto; }
+.valuations-head { text-align: center; margin-bottom: 48px; max-width: 680px; margin-left: auto; margin-right: auto; }
+.valuations-head .eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+}
+.valuations-head h2 {
+  font-family: 'Fraunces', serif; font-weight: 400; font-size: 42px;
+  letter-spacing: -1px; color: var(--ink); margin-bottom: 14px; text-wrap: balance;
+}
+.valuations-head h2 em { font-style: italic; color: var(--gold); font-weight: 500; }
+.valuations-head p { font-size: 16px; color: var(--ink-soft); line-height: 1.55; text-wrap: pretty; }
+.val-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.val-card {
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 6px; padding: 24px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: border-color 0.15s;
+}
+.val-card:hover { border-color: var(--gold); }
+.val-card .val {
+  font-family: 'Fraunces', serif; font-weight: 500; font-size: 36px;
+  letter-spacing: -1px; color: var(--ink); line-height: 1;
+}
+.val-card .val .unit { font-size: 14px; font-weight: 400; color: var(--muted); margin-left: 2px; }
+.val-card .program { font-size: 13px; font-weight: 600; color: var(--ink); letter-spacing: -0.1px; }
+.val-card .desc { font-size: 11px; color: var(--muted); line-height: 1.45; }
+.val-card .trend {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  margin-top: auto; padding-top: 8px; text-transform: uppercase;
+}
+.val-card .trend.up   { color: var(--green); }
+.val-card .trend.flat { color: var(--muted); }
+.val-card .trend.down { color: var(--red); }
+.val-foot { text-align: center; margin-top: 32px; font-size: 13px; color: var(--ink); font-weight: 600; }
+.val-foot a { color: var(--gold); }
+
+/* ── CATEGORY STRIP ── */
+.cat-strip { background: var(--paper); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.cat-strip-inner {
+  max-width: 1180px; margin: 0 auto; padding: 0 32px;
+  display: flex; align-items: center; height: 46px; gap: 28px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.cat-strip-inner::-webkit-scrollbar { display: none; }
+.cat-strip .label {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--muted); flex-shrink: 0;
+}
+.cat-strip a {
+  font-size: 13px; font-weight: 500; color: var(--ink-soft);
+  white-space: nowrap; transition: color 0.15s; cursor: pointer;
+}
+.cat-strip a:hover { color: var(--gold); }
+.cat-strip a.active { color: var(--gold); font-weight: 600; }
+
+/* ── MAIN CONTENT ── */
+.main { max-width: 1180px; margin: 0 auto; padding: 56px 32px 72px; }
+.section-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 28px; padding-bottom: 14px; border-bottom: 1px solid var(--line);
+}
+.section-head h2 {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 26px; letter-spacing: -0.5px; color: var(--ink);
+}
+.section-head h2 em { font-style: italic; color: var(--gold); font-weight: 500; }
+.section-head .more { font-size: 12px; font-weight: 600; color: var(--ink); }
+.section-head .more:hover { color: var(--gold); }
+
+/* Latest grid */
+.latest-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.story { display: flex; flex-direction: column; gap: 14px; cursor: pointer; }
+.story-img {
+  aspect-ratio: 4 / 3; border-radius: 5px;
+  background: var(--line-soft); position: relative; overflow: hidden;
+}
+.story-img .tag {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--paper); padding: 4px 9px; border-radius: 3px;
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--ink);
+}
+.story-img.t1 { background: linear-gradient(135deg, #c9b896, #a89372); }
+.story-img.t2 { background: linear-gradient(135deg, #b8c4d4, #7a8fa8); }
+.story-img.t3 { background: linear-gradient(135deg, #d4b896, #b89272); }
+.story-img.t4 { background: linear-gradient(135deg, #c8a895, #a07a6a); }
+.story-img.t5 { background: linear-gradient(135deg, #a8b8a4, #6a8478); }
+.story-img.t6 { background: linear-gradient(135deg, #d4c4a4, #a89472); }
+.story-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.2), transparent 60%);
+}
+.story .cat {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--red);
+}
+.story h3 {
+  font-family: 'Fraunces', serif; font-weight: 500; font-size: 20px;
+  line-height: 1.25; letter-spacing: -0.3px; color: var(--ink); text-wrap: balance;
+}
+.story:hover h3 { color: var(--gold); }
+.story .meta { font-size: 12px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.story .meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--muted); }
+
+/* ── EXPIRING DEALS ── */
+.deals-section { margin-top: 80px; }
+.deals-rows { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.deal-row {
+  display: grid; grid-template-columns: 140px 1fr 180px 100px;
+  gap: 24px; align-items: center; padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer; transition: background 0.15s;
+}
+.deal-row:hover { background: var(--paper); padding-left: 8px; padding-right: 8px; }
+.deal-row .bank {
+  font-family: 'Fraunces', serif; font-weight: 600; font-size: 18px;
+  color: var(--ink); letter-spacing: -0.3px;
+}
+.deal-row .bank .cat-tag {
+  display: block; font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 4px;
+}
+.deal-row .desc { font-size: 15px; color: var(--ink-soft); line-height: 1.45; }
+.deal-row .terms { font-size: 12px; color: var(--muted); }
+.deal-row .expiry { text-align: right; font-size: 11px; font-weight: 700; color: var(--red); letter-spacing: 0.3px; }
+.deal-row .expiry .arrow { display: block; font-size: 18px; color: var(--ink); margin-top: 4px; font-weight: 400; }
+
+/* ── TRUST ── */
+.trust {
+  margin-top: 96px; background: var(--paper);
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  padding: 72px 32px;
+}
+.trust-inner { max-width: 1180px; margin: 0 auto; }
+.trust-head { text-align: center; max-width: 680px; margin: 0 auto 48px; }
+.trust-head .eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+}
+.trust-head h2 {
+  font-family: 'Fraunces', serif; font-weight: 400; font-size: 42px;
+  letter-spacing: -1px; color: var(--ink); margin-bottom: 14px; text-wrap: balance;
+}
+.trust-head h2 em { font-style: italic; color: var(--gold); font-weight: 500; }
+.trust-head p { font-size: 16px; color: var(--ink-soft); line-height: 1.55; text-wrap: pretty; }
+.trust-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.trust-item .num {
+  font-family: 'Fraunces', serif; font-weight: 500; font-size: 42px;
+  color: var(--gold); letter-spacing: -1.2px; line-height: 1; margin-bottom: 14px;
+}
+.trust-item h4 {
+  font-family: 'Fraunces', serif; font-weight: 600; font-size: 18px;
+  color: var(--ink); letter-spacing: -0.3px; margin-bottom: 8px;
+}
+.trust-item p { font-size: 13px; color: var(--ink-soft); line-height: 1.55; }
+
+/* ── TESTIMONIALS ── */
+.testimonials { max-width: 1180px; margin: 0 auto; padding: 80px 32px 0; }
+.test-head { text-align: center; margin-bottom: 48px; }
+.test-head h2 {
+  font-family: 'Fraunces', serif; font-weight: 400; font-size: 36px;
+  letter-spacing: -0.8px; color: var(--ink); text-wrap: balance;
+}
+.test-head h2 em { font-style: italic; color: var(--gold); font-weight: 500; }
+.test-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.test {
+  background: var(--paper); border: 1px solid var(--line); border-radius: 6px;
+  padding: 32px; display: flex; flex-direction: column; gap: 18px;
+}
+.test .quote-mark {
+  font-family: 'Fraunces', serif; font-size: 48px; line-height: 0.6;
+  color: var(--gold); font-weight: 500;
+}
+.test blockquote {
+  font-family: 'Fraunces', serif; font-weight: 400; font-size: 17px;
+  line-height: 1.45; letter-spacing: -0.2px; color: var(--ink); flex: 1; text-wrap: pretty;
+}
+.test .person { display: flex; align-items: center; gap: 12px; }
+.test .person .avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #c9a04a, #8a6a2a);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 13px; font-weight: 700;
+}
+.test .person .name { font-weight: 600; color: var(--ink); font-size: 13px; }
+.test .person .where { font-size: 11px; color: var(--muted); }
+
+/* ── NEWSLETTER ── */
+.newsletter {
+  margin: 80px 32px 0;
+  max-width: 1180px; margin-left: auto; margin-right: auto;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 6px; padding: 48px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 48px; align-items: center;
+}
+.nl-text h2 {
+  font-family: 'Fraunces', serif; font-weight: 500; font-size: 32px;
+  letter-spacing: -0.6px; color: var(--ink); margin-bottom: 10px; text-wrap: balance;
+}
+.nl-text h2 em { font-style: italic; color: var(--gold); font-weight: 500; }
+.nl-text p { font-size: 15px; color: var(--ink-soft); line-height: 1.55; max-width: 380px; }
+.nl-form { display: flex; flex-direction: column; gap: 10px; }
+.nl-form .row { display: flex; gap: 8px; }
+.nl-form input {
+  flex: 1; padding: 14px 16px; border: 1px solid var(--line);
+  border-radius: 5px; font-size: 14px; font-family: inherit;
+  background: var(--bg); outline: none; transition: border-color 0.15s;
+}
+.nl-form input:focus { border-color: var(--gold); }
+.nl-form button {
+  padding: 14px 22px; background: var(--ink); color: white;
+  border: none; border-radius: 5px; font-size: 14px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: background 0.15s;
+}
+.nl-form button:hover { background: var(--gold); }
+.nl-form .meta { font-size: 11px; color: var(--muted); }
+
+/* ── BROWSE BY CATEGORY ── */
+.cats-section { max-width: 1180px; margin: 80px auto 0; padding: 0 32px; }
+.cats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.cat-card {
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 5px; padding: 24px 22px; cursor: pointer;
+  transition: border-color 0.15s; display: flex; flex-direction: column; gap: 6px;
+}
+.cat-card:hover { border-color: var(--gold); }
+.cat-card .cat-num {
+  font-family: 'Fraunces', serif; font-weight: 500; font-size: 32px;
+  color: var(--gold); letter-spacing: -1px; line-height: 1;
+}
+.cat-card .cat-name {
+  font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px;
+  color: var(--ink); letter-spacing: -0.3px; margin-top: 8px;
+}
+.cat-card .cat-desc { font-size: 12px; color: var(--muted); line-height: 1.5; margin-top: 2px; }
+.cat-card .cat-arrow { font-size: 16px; color: var(--ink); margin-top: 14px; }
+
+@media (max-width: 900px) {
+  .hero-headline h1 { font-size: 42px; }
+  .hero-feature { grid-template-columns: 1fr; }
+  .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  .val-grid { grid-template-columns: repeat(2, 1fr); }
+  .latest-grid { grid-template-columns: 1fr; }
+  .trust-grid { grid-template-columns: repeat(2, 1fr); }
+  .test-grid { grid-template-columns: 1fr; }
+  .newsletter { grid-template-columns: 1fr; }
+  .cats-grid { grid-template-columns: repeat(2, 1fr); }
+  .deal-row { grid-template-columns: 1fr 1fr; }
+}
+</style>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-headline">
+    <div class="eyebrow">UAE's #1 Points &amp; Miles Blog</div>
+    <h1>Make every <em>dirham</em> work harder.</h1>
+    <p class="sub">Independent guides to UAE credit cards, salary-transfer bonuses, miles redemptions and staycation deals — written by residents, for residents.</p>
+  </div>
+
+  <div class="hero-feature">
+    <div class="hero-feature-img">
+      <span class="placeholder-label">Hero image</span>
+      <span class="pin">Editor's Pick · May 1</span>
+    </div>
+    <div>
+      <div class="kicker">Credit Cards · UAE</div>
+      <h2>The 5 best credit cards for UAE expats in 2026</h2>
+      <p class="lede">We compared 22 cards across every major UAE bank. Here's exactly which card wins for groceries, dining, travel, and everyday spend — and which to avoid.</p>
+      <div class="byline">
+        <div class="avatar">RK</div>
+        <span class="name">Rohan Khanna</span>
+        <span class="sep">·</span>
+        <span>May 1, 2026</span>
+        <span class="sep">·</span>
+        <span>8 min read</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED CARDS SHELF -->
+<section class="cards-shelf">
+  <div class="cards-shelf-inner">
+    <div class="shelf-head">
+      <h2>Top UAE card offers <em>this month</em></h2>
+      <a class="more" href="/cards">Compare all cards →</a>
+    </div>
+    <div class="cards-grid">
+
+      <div class="card-offer">
+        <div class="super">Best for dining</div>
+        <div class="visual fab"><span class="bank-name">FAB Signature</span></div>
+        <div class="card-name">FAB Signature Credit Card</div>
+        <div class="bonus">
+          <div class="num">5×</div>
+          <div class="lbl">points on UAE dining</div>
+        </div>
+        <ul>
+          <li>No monthly cap on dining points</li>
+          <li>Free Skywards transfer 1:1</li>
+          <li>AED 500 annual fee waived first year</li>
+        </ul>
+        <a href="/cards/fab-signature" class="apply">View card</a>
+      </div>
+
+      <div class="card-offer">
+        <div class="super">Best welcome bonus</div>
+        <div class="visual enbd"><span class="bank-name">ENBD Beyond</span></div>
+        <div class="card-name">Emirates NBD Beyond</div>
+        <div class="bonus">
+          <div class="num">75,000</div>
+          <div class="lbl">Skywards miles bonus</div>
+        </div>
+        <ul>
+          <li>Spend AED 25k in 60 days</li>
+          <li>2 Marhaba lounge passes / month</li>
+          <li>Complimentary airport transfers</li>
+        </ul>
+        <a href="/cards/enbd-beyond" class="apply">View card</a>
+      </div>
+
+      <div class="card-offer">
+        <div class="super">Best everyday</div>
+        <div class="visual adcb"><span class="bank-name">ADCB Lulu</span></div>
+        <div class="card-name">ADCB Lulu Platinum</div>
+        <div class="bonus">
+          <div class="num">10%</div>
+          <div class="lbl">cashback at Lulu &amp; groceries</div>
+        </div>
+        <ul>
+          <li>No annual fee, ever</li>
+          <li>5% on utilities &amp; telco</li>
+          <li>Min salary AED 5,000</li>
+        </ul>
+        <a href="/cards/adcb-lulu" class="apply">View card</a>
+      </div>
+
+      <div class="card-offer">
+        <div class="super">Best cashback</div>
+        <div class="visual mashreq"><span class="bank-name">Mashreq</span></div>
+        <div class="card-name">Mashreq Cashback Platinum</div>
+        <div class="bonus">
+          <div class="num">5%</div>
+          <div class="lbl">cashback on all spend</div>
+        </div>
+        <ul>
+          <li>Up to AED 1,500 cashback / month</li>
+          <li>Buy 1 Get 1 cinema tickets</li>
+          <li>AED 600 annual fee</li>
+        </ul>
+        <a href="/cards/mashreq-cashback" class="apply">View card</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- VALUATIONS -->
+<section class="valuations">
+  <div class="valuations-head">
+    <div class="eyebrow">May 2026 Valuations</div>
+    <h2>What UAE points are <em>actually worth</em></h2>
+    <p>Our monthly valuations help you decide whether to redeem now, transfer, or save up. Updated every first Friday — based on real Dubai-resident redemptions.</p>
+  </div>
+  <div class="val-grid">
+
+    <div class="val-card">
+      <div class="program">Emirates Skywards</div>
+      <div class="val">2.4<span class="unit">fils</span></div>
+      <div class="desc">Best for premium-cabin redemptions on Emirates &amp; partners.</div>
+      <div class="trend up">↑ Up from 2.2 in April</div>
+    </div>
+
+    <div class="val-card">
+      <div class="program">Etihad Guest</div>
+      <div class="val">2.1<span class="unit">fils</span></div>
+      <div class="desc">Strong on EY metal; weaker via partner award charts.</div>
+      <div class="trend flat">— Flat month-on-month</div>
+    </div>
+
+    <div class="val-card">
+      <div class="program">Marriott Bonvoy</div>
+      <div class="val">2.8<span class="unit">fils</span></div>
+      <div class="desc">UAE Marriotts hold strong off-peak award value.</div>
+      <div class="trend up">↑ Up from 2.6</div>
+    </div>
+
+    <div class="val-card">
+      <div class="program">FAB Rewards</div>
+      <div class="val">3.6<span class="unit">fils</span></div>
+      <div class="desc">Highest value when transferred 1:1 to Skywards.</div>
+      <div class="trend up">↑ New high</div>
+    </div>
+
+    <div class="val-card">
+      <div class="program">ADCB TouchPoints</div>
+      <div class="val">2.0<span class="unit">fils</span></div>
+      <div class="desc">Statement credit redemptions hold steady.</div>
+      <div class="trend flat">— Flat</div>
+    </div>
+
+    <div class="val-card">
+      <div class="program">ENBD Smiles</div>
+      <div class="val">1.4<span class="unit">fils</span></div>
+      <div class="desc">Best used on partner gift cards, not flights.</div>
+      <div class="trend down">↓ Down from 1.7</div>
+    </div>
+
+    <div class="val-card">
+      <div class="program">IHG One Rewards</div>
+      <div class="val">2.5<span class="unit">fils</span></div>
+      <div class="desc">UAE properties slightly above global average.</div>
+      <div class="trend flat">— Flat</div>
+    </div>
+
+    <div class="val-card">
+      <div class="program">Hilton Honors</div>
+      <div class="val">1.7<span class="unit">fils</span></div>
+      <div class="desc">Reliable for Dubai resort weekends with 5th-night-free.</div>
+      <div class="trend up">↑ Up from 1.5</div>
+    </div>
+
+  </div>
+  <div class="val-foot">
+    See full methodology and historical data → <a href="/valuations">DubaiPoints valuations</a>
+  </div>
+</section>
+
+<!-- CATEGORY STRIP -->
+<div class="cat-strip">
+  <div class="cat-strip-inner">
+    <span class="label">Filter</span>
+    <a class="active" href="/">All</a>
+    <a href="/cards">Credit Cards</a>
+    <a href="/banks">Banking &amp; Salary</a>
+    <a href="/programs">Miles &amp; Points</a>
+    <a href="/guides?cat=staycations">Staycations</a>
+    <a href="/guides?cat=hotels">Hotel Loyalty</a>
+    <a href="/guides?cat=dining">Dining</a>
+    <a href="/guides?cat=cashback">Cashback</a>
+  </div>
+</div>
+
+<!-- LATEST ARTICLES -->
+<main class="main">
+  <section>
+    <div class="section-head">
+      <h2>Latest <em>articles</em></h2>
+      <a href="/guides" class="more">View all →</a>
+    </div>
+    <div class="latest-grid">
+
+      <article class="story">
+        <div class="story-img t1"><span class="tag">News</span></div>
+        <div class="cat">Banking &amp; Salary</div>
+        <h3>ENBD vs FAB: which salary transfer bonus is worth it in May 2026?</h3>
+        <div class="meta"><span>Apr 30</span><span class="dot"></span><span>5 min read</span></div>
+      </article>
+
+      <article class="story">
+        <div class="story-img t2"><span class="tag">Guide</span></div>
+        <div class="cat">Miles Guide</div>
+        <h3>Emirates Skywards upgrade bids: how to win without overpaying</h3>
+        <div class="meta"><span>Apr 29</span><span class="dot"></span><span>7 min read</span></div>
+      </article>
+
+      <article class="story">
+        <div class="story-img t3"><span class="tag">Deal</span></div>
+        <div class="cat">Staycation</div>
+        <h3>5 Dubai hotel deals this weekend — paid with points or discounted rates</h3>
+        <div class="meta"><span>Apr 28</span><span class="dot"></span><span>4 min read</span></div>
+      </article>
+
+      <article class="story">
+        <div class="story-img t4"><span class="tag">Review</span></div>
+        <div class="cat">Credit Cards</div>
+        <h3>Mashreq Cashback Platinum: is the AED 600 annual fee worth it?</h3>
+        <div class="meta"><span>Apr 27</span><span class="dot"></span><span>6 min read</span></div>
+      </article>
+
+      <article class="story">
+        <div class="story-img t5"><span class="tag">Compare</span></div>
+        <div class="cat">Hotel Loyalty</div>
+        <h3>Marriott Bonvoy vs IHG One: which earns more in UAE hotels?</h3>
+        <div class="meta"><span>Apr 26</span><span class="dot"></span><span>5 min read</span></div>
+      </article>
+
+      <article class="story">
+        <div class="story-img t6"><span class="tag">Beginner</span></div>
+        <div class="cat">Guide</div>
+        <h3>How to start collecting UAE points from zero — a 2026 starter</h3>
+        <div class="meta"><span>Apr 25</span><span class="dot"></span><span>9 min read</span></div>
+      </article>
+
+    </div>
   </section>
+
+  <!-- EXPIRING DEALS -->
+  <section class="deals-section">
+    <div class="section-head">
+      <h2>Expiring <em>this week</em></h2>
+      <a href="/deals" class="more">All deals →</a>
+    </div>
+    <div class="deals-rows">
+      <a href="/deals/enbd-salary-bonus" class="deal-row">
+        <div class="bank"><span class="cat-tag">Banking</span>ENBD</div>
+        <div class="desc">AED 2,000 cash bonus for salary transfers this month</div>
+        <div class="terms">Min salary AED 5,000 · Account required</div>
+        <div class="expiry">Ends May 10<span class="arrow">→</span></div>
+      </a>
+      <a href="/deals/fab-dining" class="deal-row">
+        <div class="bank"><span class="cat-tag">Credit Card</span>FAB</div>
+        <div class="desc">5x points on dining — no monthly cap, all of May</div>
+        <div class="terms">Signature cardholders · UAE restaurants only</div>
+        <div class="expiry">Ends May 31<span class="arrow">→</span></div>
+      </a>
+      <a href="/deals/mashreq-atlantis" class="deal-row">
+        <div class="bank"><span class="cat-tag">Staycation</span>Mashreq</div>
+        <div class="desc">30% off Atlantis The Palm with Mashreq Cashback card</div>
+        <div class="terms">Stays before May 5 · Cashback card holders</div>
+        <div class="expiry">Ends May 5<span class="arrow">→</span></div>
+      </a>
+      <a href="/deals/marriott-double-points" class="deal-row">
+        <div class="bank"><span class="cat-tag">Hotel Loyalty</span>Marriott</div>
+        <div class="desc">Double Bonvoy points at every UAE Marriott property</div>
+        <div class="terms">Register by May 1 · Stays through June 30</div>
+        <div class="expiry">Ends Jun 30<span class="arrow">→</span></div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<!-- TRUST SECTION -->
+<section class="trust">
+  <div class="trust-inner">
+    <div class="trust-head">
+      <div class="eyebrow">Why DubaiPoints</div>
+      <h2>Independent. UAE-resident-led. <em>Reader-first</em>.</h2>
+      <p>We hold ourselves to a simple standard: every guide is researched, verified against official sources, and written without sponsorship influence.</p>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-item">
+        <div class="num">01</div>
+        <h4>Researched in the UAE</h4>
+        <p>Every article is written by writers who actually live in Dubai and Abu Dhabi — and use these cards every day.</p>
+      </div>
+      <div class="trust-item">
+        <div class="num">02</div>
+        <h4>Verified with the bank</h4>
+        <p>Rates, fees and bonuses are checked directly against the issuer's official terms before publication.</p>
+      </div>
+      <div class="trust-item">
+        <div class="num">03</div>
+        <h4>No paid placements</h4>
+        <p>We never accept payment to feature, rank or recommend a card. Affiliate links are disclosed, never decisive.</p>
+      </div>
+      <div class="trust-item">
+        <div class="num">04</div>
+        <h4>Updated monthly</h4>
+        <p>Offers change fast in the UAE. We re-verify every featured deal at the start of each month.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="test-head">
+    <h2>What <em>readers</em> say</h2>
+  </div>
+  <div class="test-grid">
+    <div class="test">
+      <div class="quote-mark">"</div>
+      <blockquote>Finally, a UAE-specific guide that doesn't read like a press release. Helped me pick the right Skywards card before our Bali trip.</blockquote>
+      <div class="person">
+        <div class="avatar">SM</div>
+        <div class="who">
+          <div class="name">Sara Mansoor</div>
+          <div class="where">Dubai Marina</div>
+        </div>
+      </div>
+    </div>
+    <div class="test">
+      <div class="quote-mark">"</div>
+      <blockquote>The salary-transfer comparison saved me from picking the wrong bank. The breakdowns are honest and clearly UAE-focused.</blockquote>
+      <div class="person">
+        <div class="avatar">JH</div>
+        <div class="who">
+          <div class="name">James Holloway</div>
+          <div class="where">Abu Dhabi</div>
+        </div>
+      </div>
+    </div>
+    <div class="test">
+      <div class="quote-mark">"</div>
+      <blockquote>I read the weekend deals every Friday morning. Booked a 4-star Atlantis stay at half price thanks to one tip.</blockquote>
+      <div class="person">
+        <div class="avatar">NK</div>
+        <div class="who">
+          <div class="name">Noura Khalifa</div>
+          <div class="where">JBR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter" id="newsletter">
+  <div class="nl-text">
+    <h2>The best UAE deals, <em>delivered weekly</em>.</h2>
+    <p>1–2 emails a week. Salary bonuses, points hacks, hot card offers — written for UAE residents, sent every Friday.</p>
+  </div>
+  <form class="nl-form" onsubmit="event.preventDefault();">
+    <div class="row">
+      <input type="email" placeholder="your@email.com" />
+      <button type="submit">Subscribe</button>
+    </div>
+    <span class="meta">Free forever · No spam · Unsubscribe anytime</span>
+  </form>
+</section>
+
+<!-- BROWSE BY CATEGORY -->
+<section class="cats-section">
+  <div class="section-head">
+    <h2>Browse by <em>category</em></h2>
+  </div>
+  <div class="cats-grid">
+    <a href="/cards" class="cat-card">
+      <div class="cat-num">84</div>
+      <div class="cat-name">Credit Cards</div>
+      <div class="cat-desc">Reviews, comparisons and earn-rate guides</div>
+      <div class="cat-arrow">→</div>
+    </a>
+    <a href="/banks" class="cat-card">
+      <div class="cat-num">52</div>
+      <div class="cat-name">Banking</div>
+      <div class="cat-desc">Salary transfers, account bonuses and savings</div>
+      <div class="cat-arrow">→</div>
+    </a>
+    <a href="/programs" class="cat-card">
+      <div class="cat-num">76</div>
+      <div class="cat-name">Miles &amp; Points</div>
+      <div class="cat-desc">Skywards, Etihad Guest, transfer partners</div>
+      <div class="cat-arrow">→</div>
+    </a>
+    <a href="/guides?cat=staycations" class="cat-card">
+      <div class="cat-num">41</div>
+      <div class="cat-name">Staycations</div>
+      <div class="cat-desc">Hotel discounts and resort deals across the UAE</div>
+      <div class="cat-arrow">→</div>
+    </a>
+  </div>
+</section>
+
 </BaseLayout>

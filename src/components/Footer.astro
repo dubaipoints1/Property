@@ -2,14 +2,85 @@
 const year = new Date().getFullYear();
 ---
 
-<footer class="border-t border-slate-200 bg-slate-50">
-  <div class="mx-auto w-full max-w-5xl px-4 py-8 text-sm text-slate-600">
-    <p>
-      &copy; {year} dubaipoints.ae &middot; All amounts in AED unless otherwise stated.
-    </p>
-    <p class="mt-2 text-xs text-slate-500">
-      Independent UAE points &amp; miles coverage. We are not affiliated with any
-      bank or loyalty programme. Verify all terms with the issuer before applying.
-    </p>
+<style>
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.6);
+  margin-top: 96px;
+  padding: 56px 32px 32px;
+}
+.footer-inner { max-width: 1180px; margin: 0 auto; }
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 40px;
+}
+.footer-brand .logo-wordmark img { height: 36px; }
+.footer-brand p {
+  font-size: 13px; color: rgba(255,255,255,0.45);
+  line-height: 1.6; margin-top: 16px; max-width: 300px;
+}
+.footer-col h4 {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.4);
+  margin-bottom: 14px;
+}
+.footer-col a {
+  display: block; font-size: 13px;
+  color: rgba(255,255,255,0.6); padding: 5px 0;
+  transition: color 0.15s;
+}
+.footer-col a:hover { color: white; }
+.footer-bottom {
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 24px;
+}
+.footer-bottom p { font-size: 11px; color: rgba(255,255,255,0.3); }
+.footer-bottom .disclaimer {
+  font-size: 10px; color: rgba(255,255,255,0.25);
+  max-width: 520px; line-height: 1.5;
+}
+@media (max-width: 768px) {
+  .footer-top { grid-template-columns: 1fr 1fr; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+</style>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo-wordmark"><img src="/logo-white.svg" alt="DubaiPoints" /></div>
+        <p>The UAE's go-to source for points, miles, credit-card deals and banking hacks. Independent. Written by UAE residents, for UAE residents.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Categories</h4>
+        <a href="/cards">Credit Cards</a>
+        <a href="/banks">Banking &amp; Salary</a>
+        <a href="/programs">Miles &amp; Points</a>
+        <a href="/guides?cat=staycations">Staycations</a>
+        <a href="/deals">Hot Deals</a>
+      </div>
+      <div class="footer-col">
+        <h4>Site</h4>
+        <a href="/about">About Us</a>
+        <a href="/#newsletter">Newsletter</a>
+        <a href="/advertise">Advertise</a>
+        <a href="/contact">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/disclaimer">Disclaimer</a>
+        <a href="/terms">Terms of Use</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; {year} DubaiPoints.ae</p>
+      <p class="disclaimer">DubaiPoints is independent and not affiliated with any bank or financial institution. Content is for informational purposes only — always verify terms directly with the provider.</p>
+    </div>
   </div>
 </footer>
