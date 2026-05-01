@@ -73,6 +73,7 @@ const cards = defineCollection({
     earnRates: z.object({
       dining: z.number().optional(),
       groceries: z.number().optional(),
+      shopping: z.number().optional(),
       travel: z.number().optional(),
       fuel: z.number().optional(),
       entertainment: z.number().optional(),
