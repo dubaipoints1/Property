@@ -1,15 +1,63 @@
 ---
+import { getCollection } from "astro:content";
+
+const banks = await getCollection("banks");
+const programs = await getCollection("programs");
+
 const year = new Date().getFullYear();
 ---
 
-<footer class="border-t border-slate-200 bg-slate-50">
-  <div class="mx-auto w-full max-w-5xl px-4 py-8 text-sm text-slate-600">
-    <p>
-      &copy; {year} dubaipoints.ae &middot; All amounts in AED unless otherwise stated.
-    </p>
-    <p class="mt-2 text-xs text-slate-500">
-      Independent UAE points &amp; miles coverage. We are not affiliated with any
-      bank or loyalty programme. Verify all terms with the issuer before applying.
-    </p>
+<footer class="mt-16 border-t border-slate-200 bg-slate-50">
+  <div class="mx-auto grid w-full max-w-5xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">Salary transfer</h3>
+      <ul class="mt-3 space-y-1 text-sm">
+        <li><a href="/salary-transfer/">Live tracker</a></li>
+        <li><a href="/salary-transfer/calculator/">Calculator</a></li>
+        <li><a href="/salary-transfer/aed-5000-to-8000/">AED 5k–8k</a></li>
+        <li><a href="/salary-transfer/aed-8000-to-15000/">AED 8k–15k</a></li>
+        <li><a href="/salary-transfer/aed-15000-to-30000/">AED 15k–30k</a></li>
+        <li><a href="/salary-transfer/aed-30000-to-50000/">AED 30k–50k</a></li>
+        <li><a href="/salary-transfer/aed-50000-plus/">AED 50k+</a></li>
+      </ul>
+    </section>
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">Banks</h3>
+      <ul class="mt-3 space-y-1 text-sm">
+        {banks.map((b) => (
+          <li><a href={`/banks/${b.id}/`}>{b.data.name}</a></li>
+        ))}
+      </ul>
+    </section>
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">Programmes</h3>
+      <ul class="mt-3 space-y-1 text-sm">
+        {programs.map((p) => (
+          <li><a href={`/airlines/${p.id}/`}>{p.data.name}</a></li>
+        ))}
+      </ul>
+    </section>
+    <section>
+      <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-500">Site</h3>
+      <ul class="mt-3 space-y-1 text-sm">
+        <li><a href="/cards/">All cards</a></li>
+        <li><a href="/cards/cashback/">Cashback cards</a></li>
+        <li><a href="/cards/miles/">Miles cards</a></li>
+        <li><a href="/cards/islamic/">Islamic cards</a></li>
+        <li><a href="/guides/">Guides</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/contact/">Contact</a></li>
+        <li><a href="/rss.xml">RSS</a></li>
+      </ul>
+    </section>
+  </div>
+  <div class="border-t border-slate-200 px-4 py-6">
+    <div class="mx-auto w-full max-w-5xl text-xs text-slate-500">
+      <p>&copy; {year} dubaipoints.ae · All amounts in AED unless otherwise stated.</p>
+      <p class="mt-2">
+        Independent UAE points &amp; miles coverage. We are not affiliated with any
+        bank or loyalty programme. Verify all terms with the issuer before applying.
+      </p>
+    </div>
   </div>
 </footer>

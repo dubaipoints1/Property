@@ -1,0 +1,36 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const programs = await getCollection("programs");
+---
+
+<BaseLayout
+  title="Middle East airline programmes"
+  description="Skywards, Etihad Guest, Qatar Privilege Club, Saudia Alfursan and more — UAE-relevant frequent flyer programmes covered in depth."
+>
+  <header class="border-b border-slate-200 pb-6">
+    <h1 class="text-3xl font-semibold text-slate-900">Airline programmes</h1>
+    <p class="mt-2 text-slate-700">
+      The frequent flyer programmes UAE residents earn and redeem in.
+    </p>
+  </header>
+
+  <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+    {
+      programs.map((p) => (
+        <li>
+          <a
+            href={`/airlines/${p.id}/`}
+            class="block rounded-md border border-slate-200 bg-white p-4 no-underline hover:border-brand-500"
+          >
+            <p class="text-xs uppercase tracking-wide text-slate-500">
+              {p.data.region} · {p.data.currencyName}
+            </p>
+            <h2 class="mt-1 font-semibold text-slate-900">{p.data.name}</h2>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

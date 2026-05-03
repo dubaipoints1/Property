@@ -1,0 +1,71 @@
+---
+bank: adcb
+name: "ADCB — Combined Salary Transfer + Card Spend Offer (Jan–Jun 2026)"
+validFrom: 2026-01-01
+validUntil: 2026-06-30
+tenureMonths: 12
+sharia: false
+creditCardRequired: true
+additionalProductsRequired:
+  - credit_card
+salaryBands:
+  - minSalary: 15000
+    maxSalary: 24999
+    rewardAmount: 4000
+    rewardType: cash
+    monthsToPayout: 3
+    components:
+      - label: Salary transfer cash bonus
+        amount: 2000
+        requires: 12 consecutive months of salary transfer
+      - label: Card spend bonus
+        amount: 2000
+        requires: AED 5,000+ monthly card spend for 6 months
+  - minSalary: 25000
+    maxSalary: 49999
+    rewardAmount: 8000
+    rewardType: cash
+    monthsToPayout: 3
+    components:
+      - label: Salary transfer cash bonus
+        amount: 4000
+        requires: 12 consecutive months of salary transfer
+      - label: Card spend bonus
+        amount: 4000
+        requires: AED 7,500+ monthly card spend for 6 months
+  - minSalary: 50000
+    maxSalary: null
+    rewardAmount: 12000
+    rewardType: cash
+    monthsToPayout: 3
+    components:
+      - label: Salary transfer cash bonus
+        amount: 6000
+        requires: 12 consecutive months of salary transfer
+      - label: Card spend bonus
+        amount: 6000
+        requires: AED 12,500+ monthly card spend for 6 months
+requirements:
+  - "Open ADCB salary account and transfer salary."
+  - "Activate an ADCB credit card and meet monthly spend tier."
+  - "Maintain salary transfer for 12 months."
+clawbackTerms: |
+  Salary transfer portion clawed back pro-rata if salary transfer stops in
+  months 1–12. Card spend portion forfeited entirely if spend tier missed in
+  any qualifying month — no partial credit.
+sourceUrl: https://www.adcb.com/en/personal/promotions/salary-transfer
+lastVerified: 2026-04-29
+archived: false
+---
+
+## Real-world notes
+
+> **Verification status:** illustrative skeleton. Confirm exact bands and split
+> values in Phase 2.
+
+- The headline "AED 12,000" requires hitting **both** the salary transfer
+  tenure **and** the card spend tier — easy to miss on the marketing page.
+- Card spend bonus is *not* paid if spend tier missed in any single month, even
+  by a small amount.
+- ADCB cards earn TouchPoints, separately convertible to Skywards / Etihad
+  Guest. The card spend bonus here is paid as cash, not TouchPoints.

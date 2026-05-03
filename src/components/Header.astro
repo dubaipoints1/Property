@@ -1,10 +1,10 @@
 ---
 const links = [
-  { href: "/banks", label: "Banks" },
-  { href: "/cards", label: "Cards" },
-  { href: "/programs", label: "Programs" },
-  { href: "/guides", label: "Guides" },
-  { href: "/deals", label: "Deals" },
+  { href: "/", label: "News" },
+  { href: "/cards/", label: "Cards" },
+  { href: "/airlines/", label: "Airlines" },
+  { href: "/banks/", label: "Banks" },
+  { href: "/guides/", label: "Guides" },
 ];
 ---
 
@@ -13,7 +13,7 @@ const links = [
     <a href="/" class="text-lg font-semibold text-slate-900 no-underline">
       dubaipoints<span class="text-brand-500">.ae</span>
     </a>
-    <nav class="flex items-center gap-6 text-sm text-slate-700">
+    <nav class="flex items-center gap-4 text-sm text-slate-700 sm:gap-6">
       {links.map((l) => <a href={l.href} class="hover:text-brand-600">{l.label}</a>)}
     </nav>
   </div>

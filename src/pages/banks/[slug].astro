@@ -1,0 +1,77 @@
+---
+import BankHubLayout from "~/layouts/BankHubLayout.astro";
+import { getCollection, render } from "astro:content";
+import { getOffersForBank } from "~/lib/offerAdapter";
+import { formatAED } from "~/lib/salaryTransfer";
+
+export async function getStaticPaths() {
+  const banks = await getCollection("banks");
+  return banks.map((b) => ({ params: { slug: b.id }, props: { bank: b } }));
+}
+
+const { bank } = Astro.props;
+const { Content } = await render(bank);
+const offers = await getOffersForBank(bank.id);
+const allCards = await getCollection("cards", (c) => c.data.bank.id === bank.id);
+---
+
+<BankHubLayout
+  title={`${bank.data.name} — hub`}
+  description={`Everything we track for ${bank.data.name}: current salary transfer offer, cards, reward currencies and customer service.`}
+  bankName={bank.data.name}
+  customerService={bank.data.customerService}
+>
+  <div slot="salary-transfer">
+    {
+      offers.length === 0 ? (
+        <p class="mt-2 text-sm text-slate-600">
+          No live salary transfer offer tracked for {bank.data.name}.
+        </p>
+      ) : (
+        offers.map((o) => (
+          <div class="mt-2 text-sm">
+            <p class="font-semibold text-slate-900">{o.name}</p>
+            <p class="text-slate-700">
+              Up to{" "}
+              <strong>
+                {formatAED(Math.max(...o.salaryBands.map((b) => b.rewardAmount)))}
+              </strong>{" "}
+              · {o.tenureMonths} months · ends{" "}
+              {new Date(o.validUntil).toLocaleDateString("en-GB")}
+            </p>
+            <p class="mt-1">
+              <a href={`/salary-transfer/${bank.id}/`}>Full offer details →</a>
+            </p>
+          </div>
+        ))
+      )
+    }
+  </div>
+
+  <div slot="currencies" class="text-sm text-slate-700">
+    Reward currency mapping coming in Phase 4 (TouchPoints, ENBD Plus, Mashreq
+    Salaam, etc.).
+  </div>
+
+  <div slot="cards" class="grid gap-3 sm:grid-cols-2">
+    {
+      allCards.length === 0 ? (
+        <p class="text-sm text-slate-500">No cards from {bank.data.name} indexed yet.</p>
+      ) : (
+        allCards.map((c) => (
+          <a
+            href={`/cards/${c.id}/`}
+            class="rounded-md border border-slate-200 bg-white p-3 no-underline hover:border-brand-500"
+          >
+            <p class="text-xs uppercase tracking-wide text-slate-500">{c.data.network}</p>
+            <p class="mt-1 font-semibold text-slate-900">{c.data.name}</p>
+          </a>
+        ))
+      )
+    }
+  </div>
+
+  <div slot="articles" class="text-sm text-slate-500">No articles yet.</div>
+
+  <Content />
+</BankHubLayout>

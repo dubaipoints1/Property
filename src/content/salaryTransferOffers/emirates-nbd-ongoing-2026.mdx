@@ -1,0 +1,55 @@
+---
+bank: emirates-nbd
+name: "Emirates NBD — Ongoing Salary Transfer + Skywards Card (2026)"
+validFrom: 2026-01-01
+validUntil: 2026-12-31
+tenureMonths: 12
+sharia: false
+creditCardRequired: true
+additionalProductsRequired:
+  - credit_card
+salaryBands:
+  - minSalary: 5000
+    maxSalary: 9999
+    rewardAmount: 1500
+    rewardType: cash
+    monthsToPayout: 2
+  - minSalary: 10000
+    maxSalary: 24999
+    rewardAmount: 3000
+    rewardType: cash
+    monthsToPayout: 2
+  - minSalary: 25000
+    maxSalary: null
+    rewardAmount: 5000
+    rewardType: cash
+    monthsToPayout: 2
+    components:
+      - label: Salary transfer cash bonus
+        amount: 3500
+      - label: Skywards co-branded card welcome top-up
+        amount: 1500
+        requires: Activate an ENBD Skywards card alongside the salary account
+requirements:
+  - "Transfer your salary to an ENBD account."
+  - "Take an Emirates NBD credit card."
+  - "Maintain salary transfer for 12 months."
+clawbackTerms: |
+  Cash bonus is clawed back fully if salary transfer ceases in months 1–6, and
+  pro-rata in months 7–12. Card welcome top-up is forfeited if the card is
+  cancelled within 12 months.
+sourceUrl: https://www.emiratesnbd.com/en/personal-banking/accounts/salary-account
+lastVerified: 2026-04-29
+archived: false
+---
+
+## Real-world notes
+
+> **Verification status:** illustrative skeleton; will be replaced by scraped
+> values in Phase 2.
+
+- ENBD is a year-round programme rather than a quarterly promotion — useful
+  baseline when nothing better is live.
+- The savings interest boost mentioned in marketing applies to ENBD's tiered
+  savings account, not the salary account itself; not modelled in the calculator.
+- Salary transfer turnaround typically 1–2 working days for new ENBD customers.

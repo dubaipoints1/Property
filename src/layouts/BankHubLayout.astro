@@ -1,0 +1,82 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  bankName: string;
+  logo?: string;
+  customerService?: {
+    phone?: string;
+    email?: string;
+    website?: string;
+  };
+}
+
+const { title, description, bankName, logo, customerService } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <header class="flex items-start justify-between gap-4 border-b border-slate-200 pb-6">
+    <div>
+      <h1 class="text-3xl font-semibold text-slate-900">{bankName}</h1>
+      {description && <p class="mt-2 text-slate-700">{description}</p>}
+    </div>
+    {
+      logo && (
+        <div class="flex h-16 w-16 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-400">
+          logo
+        </div>
+      )
+    }
+  </header>
+
+  <section class="mt-8 space-y-8">
+    <div class="rounded-lg border border-brand-200 bg-brand-50 p-5">
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-brand-700">
+        Current salary transfer offer
+      </h2>
+      <slot name="salary-transfer" />
+    </div>
+
+    <section>
+      <h2 class="text-xl font-semibold text-slate-900">Reward currencies</h2>
+      <slot name="currencies" />
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-slate-900">Cards from {bankName}</h2>
+      <slot name="cards" />
+    </section>
+
+    <section>
+      <h2 class="text-xl font-semibold text-slate-900">Recent articles</h2>
+      <slot name="articles" />
+    </section>
+
+    {
+      customerService && (
+        <section class="rounded-md bg-slate-50 p-4 text-sm text-slate-700">
+          <h3 class="font-semibold">Customer service</h3>
+          <ul class="mt-2 space-y-1">
+            {customerService.phone && <li>Phone: {customerService.phone}</li>}
+            {customerService.email && (
+              <li>
+                Email: <a href={`mailto:${customerService.email}`}>{customerService.email}</a>
+              </li>
+            )}
+            {customerService.website && (
+              <li>
+                Web: <a href={customerService.website}>{customerService.website}</a>
+              </li>
+            )}
+          </ul>
+        </section>
+      )
+    }
+  </section>
+
+  <div class="prose prose-slate mt-8 max-w-none">
+    <slot />
+  </div>
+</BaseLayout>

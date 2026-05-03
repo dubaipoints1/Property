@@ -1,0 +1,29 @@
+---
+import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
+import { getCollection, getEntry } from "astro:content";
+
+const cards = await getCollection("cards", (c) => c.data.category === "miles");
+const rows = await Promise.all(
+  cards.map(async (c) => {
+    const bank = await getEntry(c.data.bank);
+    return {
+      cardName: c.data.name,
+      bankName: bank?.data.name ?? c.data.bank.id,
+      href: `/cards/${c.id}/`,
+      values: [
+        `AED ${c.data.annualFee.amount.toLocaleString()}`,
+        `${c.data.fxFee}%`,
+        `${c.data.earnRates.everythingElse}× per AED`,
+        c.data.welcomeBonus ?? "—",
+      ],
+    };
+  }),
+);
+---
+
+<ComparisonTableLayout
+  title="Best UAE miles credit cards"
+  description="Side-by-side comparison of UAE credit cards earning Skywards Miles, Etihad Guest Miles, and convertible TouchPoints / ENBD Plus / Mashreq Salaam."
+  columns={["Annual fee", "FX fee", "Base earn", "Welcome bonus"]}
+  rows={rows}
+/>

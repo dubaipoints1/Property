@@ -1,0 +1,56 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Row {
+  cardName: string;
+  bankName: string;
+  href: string;
+  values: (string | number)[];
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  columns: string[];
+  rows: Row[];
+}
+
+const { title, description, columns, rows } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <header class="border-b border-slate-200 pb-6">
+    <h1 class="text-3xl font-semibold text-slate-900">{title}</h1>
+    {description && <p class="mt-2 text-slate-700">{description}</p>}
+  </header>
+
+  <section class="mt-6 overflow-x-auto">
+    <table class="w-full min-w-[640px] text-sm">
+      <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+        <tr>
+          <th class="px-3 py-2">Card</th>
+          {columns.map((c) => <th class="px-3 py-2">{c}</th>)}
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200">
+        {
+          rows.map((r) => (
+            <tr class="hover:bg-slate-50">
+              <td class="px-3 py-3">
+                <a href={r.href} class="font-semibold text-slate-900 no-underline">
+                  {r.cardName}
+                </a>
+                <div class="text-xs text-slate-500">{r.bankName}</div>
+              </td>
+              {r.values.map((v) => <td class="px-3 py-3 text-slate-700">{v}</td>)}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <div class="prose prose-slate mt-8 max-w-none">
+    <slot />
+  </div>
+</BaseLayout>

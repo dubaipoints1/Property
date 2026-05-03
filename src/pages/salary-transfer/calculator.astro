@@ -1,0 +1,16 @@
+---
+import SalaryTransferCalculatorLayout from "~/layouts/SalaryTransferCalculatorLayout.astro";
+import SalaryTransferCalculator from "~/components/islands/SalaryTransferCalculator.tsx";
+import { getLiveOffers } from "~/lib/offerAdapter";
+
+const offers = await getLiveOffers();
+---
+
+<SalaryTransferCalculatorLayout
+  title="UAE salary transfer calculator — dubaipoints.ae"
+  description="Personalised, cash-equivalent ranking of every live UAE salary transfer offer based on your salary, card spend, and product preferences."
+>
+  <div slot="calculator">
+    <SalaryTransferCalculator offers={offers} client:load />
+  </div>
+</SalaryTransferCalculatorLayout>

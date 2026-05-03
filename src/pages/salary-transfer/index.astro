@@ -1,0 +1,39 @@
+---
+import SalaryTransferTrackerLayout from "~/layouts/SalaryTransferTrackerLayout.astro";
+import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
+import { getLiveOffers } from "~/lib/offerAdapter";
+
+const offers = await getLiveOffers();
+
+const bands = [
+  { slug: "aed-5000-to-8000", label: "AED 5,000 – 8,000" },
+  { slug: "aed-8000-to-15000", label: "AED 8,000 – 15,000" },
+  { slug: "aed-15000-to-30000", label: "AED 15,000 – 30,000" },
+  { slug: "aed-30000-to-50000", label: "AED 30,000 – 50,000" },
+  { slug: "aed-50000-plus", label: "AED 50,000+" },
+];
+---
+
+<SalaryTransferTrackerLayout
+  title="UAE salary transfer offers — live tracker"
+  description="All live UAE salary transfer cash bonuses, voucher offers, and combined card+salary promotions, filterable by salary band and reward type."
+  liveCount={offers.length}
+>
+  <div slot="tracker">
+    <SalaryTransferTracker offers={offers} client:load />
+  </div>
+
+  <Fragment slot="bands">
+    {
+      bands.map((b) => (
+        <a
+          href={`/salary-transfer/${b.slug}/`}
+          class="rounded-md border border-slate-200 bg-white p-4 no-underline hover:border-brand-500"
+        >
+          <p class="text-xs uppercase tracking-wide text-slate-500">Salary band</p>
+          <p class="mt-1 text-base font-semibold text-slate-900">{b.label}</p>
+        </a>
+      ))
+    }
+  </Fragment>
+</SalaryTransferTrackerLayout>
