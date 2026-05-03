@@ -1,20 +1,136 @@
 ---
-const links = [
+const navLinks = [
   { href: "/", label: "News" },
   { href: "/cards/", label: "Cards" },
   { href: "/airlines/", label: "Airlines" },
   { href: "/banks/", label: "Banks" },
   { href: "/guides/", label: "Guides" },
 ];
+
+const today = new Date().toLocaleDateString("en-GB", {
+  weekday: "long", year: "numeric", month: "long", day: "numeric",
+});
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 ---
 
-<header class="border-b border-slate-200 bg-white">
-  <div class="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4">
-    <a href="/" class="text-lg font-semibold text-slate-900 no-underline">
-      dubaipoints<span class="text-brand-500">.ae</span>
+<style>
+/* ── UTILITY BAR ── */
+.utility { border-bottom: 1px solid var(--line); background: var(--paper); font-size: 11px; }
+.utility-inner {
+  max-width: 1180px; margin: 0 auto;
+  padding: 0 32px; height: 34px;
+  display: flex; align-items: center; justify-content: space-between;
+  color: var(--muted);
+}
+.utility-left { display: flex; gap: 18px; align-items: center; }
+.utility-left .date { font-weight: 500; letter-spacing: 0.3px; }
+.utility-left .sep { color: var(--line); }
+.utility-left .live {
+  color: var(--red); font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+}
+.utility-left .live::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--red); animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.utility-right { display: flex; gap: 16px; align-items: center; }
+.utility-right a { color: var(--muted); transition: color 0.15s; }
+.utility-right a:hover { color: var(--ink); }
+
+/* ── MASTHEAD ── */
+.masthead { background: var(--paper); border-bottom: 1px solid var(--line); }
+.masthead-inner {
+  max-width: 1180px; margin: 0 auto;
+  padding: 28px 32px 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  text-align: center;
+}
+.logo-wordmark { display: inline-block; line-height: 0; }
+.logo-wordmark img { height: 54px; width: auto; display: block; }
+.masthead-tagline {
+  font-size: 11px; font-weight: 500; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted); margin-top: 2px;
+}
+
+/* ── PRIMARY NAV ── */
+.primary-nav {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  position: sticky; top: 0; z-index: 100;
+}
+.primary-nav-inner {
+  max-width: 1180px; margin: 0 auto;
+  padding: 0 32px; height: 48px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-links { display: flex; gap: 28px; flex: 1; }
+.nav-links a {
+  font-size: 13px; font-weight: 600; color: var(--ink-soft);
+  letter-spacing: 0.2px; padding: 14px 0; position: relative;
+  transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links a.active { color: var(--ink); }
+.nav-links a.active::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 2px; background: var(--gold);
+}
+.nav-right { display: flex; gap: 14px; align-items: center; }
+.nav-search {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border: 1px solid var(--line);
+  border-radius: 6px; font-size: 12px; color: var(--muted);
+  cursor: pointer; transition: border-color 0.15s;
+}
+.nav-search:hover { border-color: var(--ink); color: var(--ink); }
+.nav-cta {
+  padding: 7px 14px; background: var(--ink); color: white;
+  border-radius: 6px; font-size: 12px; font-weight: 600;
+}
+.nav-cta:hover { background: var(--gold); }
+</style>
+
+<!-- UTILITY BAR -->
+<div class="utility">
+  <div class="utility-inner">
+    <div class="utility-left">
+      <span class="date">{today} · Dubai</span>
+      <span class="sep">·</span>
+      <span class="live">Live: salary transfer tracker</span>
+    </div>
+    <div class="utility-right">
+      <a href="/about">About</a>
+      <a href="/#newsletter">Newsletter</a>
+      <a href="/sign-in">Sign in</a>
+    </div>
+  </div>
+</div>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <a href="/" class="logo-wordmark" aria-label="DubaiPoints">
+      <img src="/logo.svg" alt="DubaiPoints" />
     </a>
-    <nav class="flex items-center gap-4 text-sm text-slate-700 sm:gap-6">
-      {links.map((l) => <a href={l.href} class="hover:text-brand-600">{l.label}</a>)}
-    </nav>
+    <div class="masthead-tagline">UAE Miles · Deals · Banking Hacks</div>
   </div>
 </header>
+
+<!-- PRIMARY NAV -->
+<nav class="primary-nav">
+  <div class="primary-nav-inner">
+    <div class="nav-links">
+      {navLinks.map((l) => (
+        <a href={l.href} class={isActive(l.href) ? "active" : ""}>{l.label}</a>
+      ))}
+    </div>
+    <div class="nav-right">
+      <a href="/salary-transfer/" class="nav-search"><span>⌕</span><span>Salary tracker</span></a>
+      <a href="/#newsletter" class="nav-cta">Subscribe</a>
+    </div>
+  </div>
+</nav>

@@ -1,25 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fraunces:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,500&display=swap");
 @import "tailwindcss";
 
-@theme {
-  --color-brand-50: #f0f7ff;
-  --color-brand-100: #dceafd;
-  --color-brand-500: #1e6bd6;
-  --color-brand-600: #1856b3;
-  --color-brand-900: #0a2647;
-
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Source Serif 4", ui-serif, Georgia, serif;
+:root {
+  --bg:        #fbfaf6;
+  --paper:     #ffffff;
+  --ink:       #15171c;
+  --ink-soft:  #4a4f5b;
+  --muted:     #8a8f9a;
+  --line:      #e8e4dc;
+  --line-soft: #f0ece4;
+  --gold:      #b8842a;
+  --gold-soft: #f3ead6;
+  --navy:      #0d2151;
+  --red:       #c8412d;
+  --green:     #2d7a4a;
 }
 
-html {
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-}
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg); }
 body {
-  @apply bg-white text-slate-900;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-size: 15px;
+  line-height: 1.55;
 }
-
-a {
-  @apply text-brand-600 underline-offset-2 hover:underline;
-}
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
