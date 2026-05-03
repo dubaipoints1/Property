@@ -2,38 +2,71 @@
 bank: emirates-nbd
 name: Emirates NBD Skywards Infinite
 network: Visa
+categories: [travel, co-brand]
+
 annualFee:
   amount: 1575
   currency: AED
-annualFeeWaiver: "Waived in year one; reversible from year two on AED 100,000 spend."
+annualFeeWaiver: "Waived in year one; reversible from year two on AED 100,000 annual spend."
 fxFee: 1.99
+interestRate:
+  monthly: 3.25
+
+loyaltyProgram: Emirates Skywards
 earnRates:
   dining: 2.5
   travel: 2.5
   groceries: 1
   fuel: 1
   everythingElse: 1
+earnUnit: "Skywards Miles per AED 1 spent"
+
 welcomeBonus: "Up to 40,000 Skywards Miles on first eligible spend within 90 days."
+welcomeBonusValue: 40000
+
 eligibility:
   minSalary: 30000
   salaryTransferRequired: false
   residencyRequired: true
+  employmentTypes: [salaried, self-employed, business-owner]
+  minAge: 21
+  nationalities: "All UAE residents"
+  documents:
+    - Completed credit card application form
+    - Original Emirates ID + copy
+    - Passport copy (with visa page for expatriates)
+    - Latest salary certificate (salaried) or valid trade licence (self-employed/business)
+    - Latest 3 months original bank statements
+    - Security cheque
+
 perks:
-  - Complimentary unlimited DXB and AUH lounge access via DragonPass
-  - Emirates Skywards Silver tier match (first year)
-  - Complimentary travel insurance
+  - "Complimentary unlimited DXB and AUH lounge access via DragonPass"
+  - "Emirates Skywards Silver tier match (first year)"
+  - "Complimentary travel insurance"
 transferPartners:
   - skywards
+
+applyUrl: "https://www.emiratesnbd.com/en/campaigns/credit-card-apply?campaign=skywards-infinite-credit-card"
+kfsUrl: "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf"
 lastVerified: 2026-04-15
 sources:
   - https://www.emiratesnbd.com/en/cards/credit-cards/skywards-infinite-credit-card
 ---
 
-The Skywards Infinite is Emirates NBD's flagship co-branded card with Emirates
-Skywards. Geared at frequent Emirates flyers based in the UAE.
+The Skywards Infinite is Emirates NBD's flagship co-branded card with Emirates Skywards.
+Geared at frequent Emirates flyers based in the UAE.
+
+## Earn rates
+
+Earn rates are in **Skywards Miles per AED 1** of eligible spend:
+
+| Category | Miles per AED 1 |
+|---|---|
+| Dining & travel | **2.5** |
+| Everything else | **1** |
 
 ## Notes
 
-- Earn rates above are in Skywards Miles per AED 1 of eligible spend.
 - Lounge access is via DragonPass, not Priority Pass.
-- Salary transfer is not strictly required, but improves approval odds.
+- Salary transfer not strictly required but improves approval odds.
+- Annual fee waiver requires AED 100,000 annual spend from year two.

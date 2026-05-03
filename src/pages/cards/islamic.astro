@@ -2,7 +2,7 @@
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getCollection, getEntry } from "astro:content";
 
-const cards = await getCollection("cards", (c) => c.data.category === "islamic");
+const cards = await getCollection("cards", (c) => c.data.categories.includes("Islamic"));
 const rows = await Promise.all(
   cards.map(async (c) => {
     const bank = await getEntry(c.data.bank);
