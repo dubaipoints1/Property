@@ -10,6 +10,15 @@ const DEAL_CATEGORY = z.enum([
   "fee-waiver",
   "other",
 ]);
+const REWARD_TYPE = z.enum(["cash", "voucher", "cashback_monthly", "points"]);
+const ADDITIONAL_PRODUCT = z.enum([
+  "loan",
+  "insurance",
+  "savings",
+  "mortgage",
+  "credit_card",
+  "other",
+]);
 const EMPLOYMENT_TYPE = z.enum([
   "salaried",
   "self-employed",
@@ -152,4 +161,84 @@ const guides = defineCollection({
   }),
 });
 
-export const collections = { banks, cards, programs, deals, guides };
+const SalaryBand = z.object({
+  minSalary: z.number().nonnegative(),
+  maxSalary: z.number().positive().nullable(),
+  rewardAmount: z.number().nonnegative(),
+  rewardType: REWARD_TYPE,
+  voucherRetailer: z.string().optional(),
+  monthsToPayout: z.number().int().nonnegative(),
+  components: z
+    .array(
+      z.object({
+        label: z.string(),
+        amount: z.number().nonnegative(),
+        requires: z.string().optional(),
+      }),
+    )
+    .optional(),
+});
+
+const SalaryTransferOfferShape = z.object({
+  bank: reference("banks"),
+  name: z.string(),
+  validFrom: z.coerce.date(),
+  validUntil: z.coerce.date(),
+  tenureMonths: z.number().int().positive(),
+  sharia: z.boolean(),
+  creditCardRequired: z.boolean(),
+  additionalProductsRequired: z.array(ADDITIONAL_PRODUCT).default([]),
+  salaryBands: z.array(SalaryBand).min(1),
+  requirements: z.array(z.string()).default([]),
+  clawbackTerms: z.string(),
+  sourceUrl: z.string().url(),
+  lastVerified: z.coerce.date(),
+  archived: z.boolean().default(false),
+});
+
+const salaryTransferOffers = defineCollection({
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/salaryTransferOffers",
+  }),
+  schema: SalaryTransferOfferShape,
+});
+
+const salaryTransferOfferHistory = defineCollection({
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/salaryTransferOfferHistory",
+  }),
+  schema: SalaryTransferOfferShape.extend({
+    archived: z.literal(true),
+    archivedReason: z.string().optional(),
+  }),
+});
+
+const bankReputation = defineCollection({
+  loader: glob({
+    pattern: "**/*.{md,mdx}",
+    base: "./src/content/bankReputation",
+  }),
+  schema: z.object({
+    bank: reference("banks"),
+    customerServiceRating: z.number().min(0).max(5),
+    appStoreRatingIOS: z.number().min(0).max(5).optional(),
+    appStoreRatingAndroid: z.number().min(0).max(5).optional(),
+    branchCount: z.number().int().nonnegative().optional(),
+    digitalFirst: z.boolean(),
+    salaryTransferTurnaroundDays: z.number().int().nonnegative().optional(),
+    notes: z.string().optional(),
+  }),
+});
+
+export const collections = {
+  banks,
+  cards,
+  programs,
+  deals,
+  guides,
+  salaryTransferOffers,
+  salaryTransferOfferHistory,
+  bankReputation,
+};

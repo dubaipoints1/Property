@@ -1,4 +1,11 @@
 ---
+import { getCollection } from "astro:content";
+
+const banks = (await getCollection("banks")).sort((a, b) =>
+  a.data.name.localeCompare(b.data.name),
+);
+const programs = await getCollection("programs");
+
 const year = new Date().getFullYear();
 ---
 
@@ -12,8 +19,8 @@ footer {
 .footer-inner { max-width: 1180px; margin: 0 auto; }
 .footer-top {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 48px;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  gap: 40px;
   margin-bottom: 40px;
 }
 .footer-brand .logo-wordmark img { height: 36px; }
@@ -43,6 +50,9 @@ footer {
   font-size: 10px; color: rgba(255,255,255,0.25);
   max-width: 520px; line-height: 1.5;
 }
+@media (max-width: 1024px) {
+  .footer-top { grid-template-columns: 1fr 1fr 1fr; }
+}
 @media (max-width: 768px) {
   .footer-top { grid-template-columns: 1fr 1fr; }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
@@ -57,25 +67,33 @@ footer {
         <p>The UAE's go-to source for points, miles, credit-card deals and banking hacks. Independent. Written by UAE residents, for UAE residents.</p>
       </div>
       <div class="footer-col">
-        <h4>Categories</h4>
-        <a href="/cards">Credit Cards</a>
-        <a href="/banks">Banking &amp; Salary</a>
-        <a href="/programs">Miles &amp; Points</a>
-        <a href="/guides?cat=staycations">Staycations</a>
-        <a href="/deals">Hot Deals</a>
+        <h4>Salary transfer</h4>
+        <a href="/salary-transfer/">Live tracker</a>
+        <a href="/salary-transfer/calculator/">Calculator</a>
+        <a href="/salary-transfer/aed-5000-to-8000/">AED 5k–8k</a>
+        <a href="/salary-transfer/aed-8000-to-15000/">AED 8k–15k</a>
+        <a href="/salary-transfer/aed-15000-to-30000/">AED 15k–30k</a>
+        <a href="/salary-transfer/aed-30000-to-50000/">AED 30k–50k</a>
+        <a href="/salary-transfer/aed-50000-plus/">AED 50k+</a>
+      </div>
+      <div class="footer-col">
+        <h4>Banks</h4>
+        {banks.map((b) => <a href={`/banks/${b.id}/`}>{b.data.name}</a>)}
+      </div>
+      <div class="footer-col">
+        <h4>Programmes</h4>
+        {programs.map((p) => <a href={`/airlines/${p.id}/`}>{p.data.name}</a>)}
       </div>
       <div class="footer-col">
         <h4>Site</h4>
-        <a href="/about">About Us</a>
-        <a href="/#newsletter">Newsletter</a>
-        <a href="/advertise">Advertise</a>
-        <a href="/contact">Contact</a>
-      </div>
-      <div class="footer-col">
-        <h4>Legal</h4>
-        <a href="/privacy">Privacy Policy</a>
-        <a href="/disclaimer">Disclaimer</a>
-        <a href="/terms">Terms of Use</a>
+        <a href="/cards/">All cards</a>
+        <a href="/cards/cashback/">Cashback</a>
+        <a href="/cards/miles/">Miles</a>
+        <a href="/cards/islamic/">Islamic</a>
+        <a href="/guides/">Guides</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href="/rss.xml">RSS</a>
       </div>
     </div>
     <div class="footer-bottom">

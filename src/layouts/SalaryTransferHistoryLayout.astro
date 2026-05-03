@@ -1,0 +1,69 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface TimelineEntry {
+  validFrom: Date;
+  validUntil: Date;
+  headline: string;
+  bands: { range: string; reward: string }[];
+  archived: boolean;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  bankName: string;
+  entries: TimelineEntry[];
+}
+
+const { title, description, bankName, entries } = Astro.props;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+---
+
+<BaseLayout title={title} description={description}>
+  <header class="border-b border-slate-200 pb-6">
+    <p class="text-xs uppercase tracking-wide text-slate-500">Offer history</p>
+    <h1 class="mt-1 text-3xl font-semibold text-slate-900">{bankName}</h1>
+    <p class="mt-2 text-slate-700">
+      Every salary transfer offer we've tracked from {bankName}, oldest at the
+      bottom. We never delete offers — archives are useful for spotting cycles
+      and predicting future promotions.
+    </p>
+  </header>
+
+  <ol class="mt-8 space-y-4 border-l-2 border-slate-200 pl-6">
+    {
+      entries.map((e) => (
+        <li class="relative">
+          <span
+            class={`absolute -left-[31px] top-2 inline-block h-3 w-3 rounded-full ${
+              e.archived ? "bg-slate-300" : "bg-brand-500"
+            }`}
+          />
+          <article class="rounded-md border border-slate-200 bg-white p-4">
+            <header class="flex flex-wrap items-baseline justify-between gap-2">
+              <h3 class="font-semibold text-slate-900">{e.headline}</h3>
+              <span class="text-xs uppercase tracking-wide text-slate-500">
+                {fmt(e.validFrom)} – {fmt(e.validUntil)}
+                {!e.archived && <span class="ml-1 text-brand-600">· live</span>}
+              </span>
+            </header>
+            <ul class="mt-2 space-y-1 text-sm text-slate-700">
+              {e.bands.map((b) => (
+                <li>
+                  <span class="text-slate-500">{b.range}:</span> {b.reward}
+                </li>
+              ))}
+            </ul>
+          </article>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="prose prose-slate mt-10 max-w-none">
+    <slot />
+  </div>
+</BaseLayout>

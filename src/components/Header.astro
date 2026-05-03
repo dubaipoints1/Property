@@ -1,17 +1,19 @@
 ---
 const navLinks = [
-  { href: "/", label: "Home", active: true },
-  { href: "/cards", label: "Credit Cards" },
-  { href: "/banks", label: "Banking" },
-  { href: "/programs", label: "Miles & Points" },
-  { href: "/guides?cat=staycations", label: "Staycations" },
-  { href: "/deals", label: "Hot Deals" },
-  { href: "/guides", label: "Guides" },
+  { href: "/", label: "News" },
+  { href: "/cards/", label: "Cards" },
+  { href: "/airlines/", label: "Airlines" },
+  { href: "/banks/", label: "Banks" },
+  { href: "/guides/", label: "Guides" },
 ];
 
 const today = new Date().toLocaleDateString("en-GB", {
   weekday: "long", year: "numeric", month: "long", day: "numeric",
 });
+
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 ---
 
 <style>
@@ -98,7 +100,7 @@ const today = new Date().toLocaleDateString("en-GB", {
     <div class="utility-left">
       <span class="date">{today} · Dubai</span>
       <span class="sep">·</span>
-      <span class="live">Live: 4 deals expiring this week</span>
+      <span class="live">Live: salary transfer tracker</span>
     </div>
     <div class="utility-right">
       <a href="/about">About</a>
@@ -123,11 +125,11 @@ const today = new Date().toLocaleDateString("en-GB", {
   <div class="primary-nav-inner">
     <div class="nav-links">
       {navLinks.map((l) => (
-        <a href={l.href} class={l.active ? "active" : ""}>{l.label}</a>
+        <a href={l.href} class={isActive(l.href) ? "active" : ""}>{l.label}</a>
       ))}
     </div>
     <div class="nav-right">
-      <div class="nav-search"><span>⌕</span><span>Search</span></div>
+      <a href="/salary-transfer/" class="nav-search"><span>⌕</span><span>Salary tracker</span></a>
       <a href="/#newsletter" class="nav-cta">Subscribe</a>
     </div>
   </div>

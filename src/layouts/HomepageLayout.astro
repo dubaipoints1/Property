@@ -1,0 +1,43 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="grid grid-cols-1 gap-8 lg:grid-cols-5">
+    <div class="lg:col-span-3 space-y-4">
+      <h1 class="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+        UAE rewards, banking and travel — without the marketing fluff.
+      </h1>
+      <p class="text-lg text-slate-700">
+        Live salary transfer offers, cashback card analysis, and regional airline
+        programmes. All amounts in AED, all checked against UAE eligibility.
+      </p>
+      <slot name="hero-tracker" />
+    </div>
+    <aside class="lg:col-span-2 space-y-4">
+      <slot name="hero-pinned" />
+    </aside>
+  </section>
+
+  <section class="mt-12 space-y-6">
+    <h2 class="text-2xl font-semibold text-slate-900">Latest articles</h2>
+    <slot name="latest" />
+  </section>
+
+  <section class="mt-12 space-y-6">
+    <h2 class="text-2xl font-semibold text-slate-900">Points hacks</h2>
+    <slot name="points" />
+  </section>
+
+  <section class="mt-12 space-y-6">
+    <h2 class="text-2xl font-semibold text-slate-900">Card recommendations</h2>
+    <slot name="cards" />
+  </section>
+</BaseLayout>

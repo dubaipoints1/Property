@@ -1,0 +1,76 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getCollection, getEntry } from "astro:content";
+
+const cards = await getCollection("cards");
+const cardsWithBanks = await Promise.all(
+  cards.map(async (c) => {
+    const bank = await getEntry(c.data.bank);
+    return { card: c, bankName: bank?.data.name ?? c.data.bank.id };
+  }),
+);
+
+const categories = [
+  { slug: "cashback", label: "Cashback" },
+  { slug: "miles", label: "Miles" },
+  { slug: "islamic", label: "Islamic" },
+];
+---
+
+<BaseLayout
+  title="UAE credit cards — directory"
+  description="Every UAE credit card we cover, with annual fee, FX fee, and minimum salary at a glance."
+>
+  <header class="border-b border-slate-200 pb-6">
+    <h1 class="text-3xl font-semibold text-slate-900">UAE credit cards</h1>
+    <p class="mt-2 text-slate-700">
+      Browse the full directory or jump to a category.
+    </p>
+    <ul class="mt-3 flex flex-wrap gap-2">
+      {
+        categories.map((c) => (
+          <li>
+            <a
+              href={`/cards/${c.slug}/`}
+              class="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs no-underline hover:border-brand-500"
+            >
+              {c.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </header>
+
+  <section class="mt-6 overflow-x-auto">
+    <table class="w-full min-w-[640px] text-sm">
+      <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+        <tr>
+          <th class="px-3 py-2">Card</th>
+          <th class="px-3 py-2">Annual fee</th>
+          <th class="px-3 py-2">FX fee</th>
+          <th class="px-3 py-2">Min salary</th>
+          <th class="px-3 py-2">Network</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200">
+        {
+          cardsWithBanks.map(({ card, bankName }) => (
+            <tr class="hover:bg-slate-50">
+              <td class="px-3 py-3">
+                <a href={`/cards/${card.id}/`} class="font-semibold text-slate-900 no-underline">
+                  {card.data.name}
+                </a>
+                <div class="text-xs text-slate-500">{bankName}</div>
+              </td>
+              <td class="px-3 py-3">AED {card.data.annualFee.amount.toLocaleString()}</td>
+              <td class="px-3 py-3">{card.data.fxFee}%</td>
+              <td class="px-3 py-3">AED {card.data.eligibility.minSalary.toLocaleString()}/mo</td>
+              <td class="px-3 py-3">{card.data.network}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </section>
+</BaseLayout>

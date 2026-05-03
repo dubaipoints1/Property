@@ -1,5 +1,9 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
+import { getLiveOffers } from "~/lib/offerAdapter";
+
+const offers = await getLiveOffers();
 ---
 
 <BaseLayout
@@ -29,6 +33,32 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
   letter-spacing: -0.3px; max-width: 680px;
   margin-left: auto; margin-right: auto; text-wrap: balance;
 }
+.tracker-hero {
+  margin: 0 auto 48px;
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.tracker-hero-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 24px; margin-bottom: 18px; flex-wrap: wrap;
+}
+.tracker-hero-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--red);
+}
+.tracker-hero-title {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 28px; letter-spacing: -0.6px; color: var(--ink);
+  margin-top: 6px;
+}
+.tracker-hero-cta {
+  font-size: 12px; font-weight: 600; color: var(--ink);
+  border: 1px solid var(--ink); padding: 8px 14px; border-radius: 6px;
+  transition: all 0.15s;
+}
+.tracker-hero-cta:hover { background: var(--ink); color: white; }
+
 .hero-feature {
   display: grid; grid-template-columns: 1.4fr 1fr;
   gap: 48px; align-items: center;
@@ -420,6 +450,19 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     <div class="eyebrow">UAE's #1 Points &amp; Miles Blog</div>
     <h1>Make every <em>dirham</em> work harder.</h1>
     <p class="sub">Independent guides to UAE credit cards, salary-transfer bonuses, miles redemptions and staycation deals — written by residents, for residents.</p>
+  </div>
+
+  <div class="tracker-hero">
+    <div class="tracker-hero-head">
+      <div>
+        <span class="tracker-hero-eyebrow">Live tracker · {offers.length} offers</span>
+        <h2 class="tracker-hero-title">UAE salary transfer offers</h2>
+      </div>
+      <a href="/salary-transfer/calculator/" class="tracker-hero-cta">
+        Open calculator →
+      </a>
+    </div>
+    <SalaryTransferTracker offers={offers} client:load />
   </div>
 
   <div class="hero-feature">

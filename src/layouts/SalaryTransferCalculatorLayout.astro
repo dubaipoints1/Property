@@ -1,0 +1,46 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <header class="border-b border-slate-200 pb-6">
+    <p class="text-xs uppercase tracking-wide text-brand-600">Calculator</p>
+    <h1 class="mt-1 text-3xl font-semibold text-slate-900 sm:text-4xl">
+      Personalised salary transfer ranking
+    </h1>
+    <p class="mt-2 max-w-2xl text-slate-700">
+      Enter your monthly salary, expected card spend and constraints. Every live
+      offer is scored in cash-equivalent AED — vouchers are discounted 20% to
+      reflect resale and utility loss.
+    </p>
+  </header>
+
+  <section class="mt-8">
+    <slot name="calculator" />
+  </section>
+
+  <section class="prose prose-slate mt-10 max-w-none text-sm">
+    <h2>How the score works</h2>
+    <ul>
+      <li><strong>Cash:</strong> face value, no discount.</li>
+      <li><strong>Voucher:</strong> face value × 0.80 (resale / utility loss).</li>
+      <li><strong>Monthly cashback:</strong> per-month value × tenure months.</li>
+      <li><strong>Points / miles:</strong> face value × AED 0.04 per point (conservative Skywards baseline).</li>
+    </ul>
+    <p>
+      Disqualifications surface above the score: required products you didn't
+      accept, salary outside the offer's bands, or hard filters (Sharia, cash-only).
+      Warnings — like clawback risk if you can't commit to the full tenure — keep
+      the offer in the ranking but flag it.
+    </p>
+  </section>
+
+  <slot />
+</BaseLayout>

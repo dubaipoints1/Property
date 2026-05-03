@@ -1,0 +1,63 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  author?: string;
+  publishedAt?: Date;
+  updatedAt?: Date;
+}
+
+const {
+  title,
+  description,
+  author = "dubaipoints.ae",
+  publishedAt,
+  updatedAt,
+} = Astro.props;
+
+const fmt = (d?: Date) =>
+  d
+    ? d.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : null;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="grid grid-cols-1 gap-10 lg:grid-cols-4">
+    <div class="lg:col-span-3 space-y-6">
+      <header class="space-y-3 border-b border-slate-200 pb-6">
+        <h1 class="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+          {title}
+        </h1>
+        {description && <p class="text-lg text-slate-700">{description}</p>}
+        <p class="text-xs uppercase tracking-wide text-slate-500">
+          By {author}
+          {publishedAt && <span> · Published {fmt(publishedAt)}</span>}
+          {
+            updatedAt && publishedAt && updatedAt.getTime() !== publishedAt.getTime() && (
+              <span> · Updated {fmt(updatedAt)}</span>
+            )
+          }
+        </p>
+      </header>
+
+      <div class="prose prose-slate max-w-none">
+        <slot />
+      </div>
+
+      <section class="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+        Comments are coming in Phase 3 (giscus). For now, send tips to
+        <a href="mailto:hello@dubaipoints.ae">hello@dubaipoints.ae</a>.
+      </section>
+    </div>
+
+    <aside class="lg:col-span-1 space-y-6">
+      <slot name="related" />
+    </aside>
+  </article>
+</BaseLayout>

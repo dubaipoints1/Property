@@ -1,0 +1,52 @@
+---
+import SalaryTransferHistoryLayout from "~/layouts/SalaryTransferHistoryLayout.astro";
+import { getCollection } from "astro:content";
+import { getOffersForBank, getHistoryForBank } from "~/lib/offerAdapter";
+import { formatAED } from "~/lib/salaryTransfer";
+
+export async function getStaticPaths() {
+  const banks = await getCollection("banks");
+  return banks.map((b) => ({
+    params: { bank: b.id },
+    props: { bankId: b.id, bankName: b.data.name },
+  }));
+}
+
+const { bankId, bankName } = Astro.props as { bankId: string; bankName: string };
+
+const live = await getOffersForBank(bankId);
+const history = await getHistoryForBank(bankId);
+
+const bandToString = (b: { minSalary: number; maxSalary: number | null }) =>
+  `${formatAED(b.minSalary)}${b.maxSalary === null ? "+" : ` – ${formatAED(b.maxSalary)}`}`;
+
+const entries = [
+  ...live.map((o) => ({
+    validFrom: new Date(o.validFrom),
+    validUntil: new Date(o.validUntil),
+    headline: o.name,
+    bands: o.salaryBands.map((b) => ({
+      range: bandToString(b),
+      reward: `${formatAED(b.rewardAmount)} ${b.rewardType.replace("_", " ")}`,
+    })),
+    archived: false,
+  })),
+  ...history.map((o) => ({
+    validFrom: new Date(o.validFrom),
+    validUntil: new Date(o.validUntil),
+    headline: o.name,
+    bands: o.salaryBands.map((b) => ({
+      range: bandToString(b),
+      reward: `${formatAED(b.rewardAmount)} ${b.rewardType.replace("_", " ")}`,
+    })),
+    archived: true,
+  })),
+].sort((a, b) => b.validFrom.getTime() - a.validFrom.getTime());
+---
+
+<SalaryTransferHistoryLayout
+  title={`${bankName} salary transfer history`}
+  description={`Every salary transfer offer ${bankName} has run, in chronological order. Useful for spotting cycles and predicting future promotions.`}
+  bankName={bankName}
+  entries={entries}
+/>

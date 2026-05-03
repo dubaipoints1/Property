@@ -1,0 +1,29 @@
+---
+import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
+import { getCollection, getEntry } from "astro:content";
+
+const cards = await getCollection("cards", (c) => c.data.categories.includes("Islamic"));
+const rows = await Promise.all(
+  cards.map(async (c) => {
+    const bank = await getEntry(c.data.bank);
+    return {
+      cardName: c.data.name,
+      bankName: bank?.data.name ?? c.data.bank.id,
+      href: `/cards/${c.id}/`,
+      values: [
+        `AED ${c.data.annualFee.amount.toLocaleString()}`,
+        `${c.data.fxFee}%`,
+        `AED ${c.data.eligibility.minSalary.toLocaleString()}/mo`,
+        c.data.welcomeBonus ?? "—",
+      ],
+    };
+  }),
+);
+---
+
+<ComparisonTableLayout
+  title="Sharia-compliant UAE credit cards"
+  description="UAE Islamic credit cards from Emirates Islamic, ADIB, DIB and others. No interest (riba) charged; profit-rate or fee-based structure."
+  columns={["Annual fee", "FX fee", "Min salary", "Welcome bonus"]}
+  rows={rows}
+/>

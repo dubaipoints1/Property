@@ -1,0 +1,30 @@
+---
+import CardReviewLayout from "~/layouts/CardReviewLayout.astro";
+import { getCollection, getEntry, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const cards = await getCollection("cards");
+  return cards.map((c) => ({ params: { slug: c.id }, props: { card: c } }));
+}
+
+const { card } = Astro.props;
+const bank = await getEntry(card.data.bank);
+const { Content } = await render(card);
+---
+
+<CardReviewLayout
+  title={`${card.data.name} review`}
+  description={card.data.welcomeBonus}
+  bankName={bank?.data.name ?? card.data.bank.id}
+  cardName={card.data.name}
+  network={card.data.network}
+  annualFee={card.data.annualFee.amount}
+  fxFee={card.data.fxFee}
+  minSalary={card.data.eligibility.minSalary}
+  earnRates={card.data.earnRates}
+  perks={card.data.perks}
+  lastVerified={card.data.lastVerified}
+  sources={card.data.sources}
+>
+  <Content />
+</CardReviewLayout>

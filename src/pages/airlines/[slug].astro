@@ -1,0 +1,25 @@
+---
+import AirlineProgramLayout from "~/layouts/AirlineProgramLayout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const programs = await getCollection("programs");
+  return programs.map((p) => ({ params: { slug: p.id }, props: { program: p } }));
+}
+
+const { program } = Astro.props;
+const { Content } = await render(program);
+---
+
+<AirlineProgramLayout
+  title={`${program.data.name} — programme guide`}
+  description={`UAE-focused guide to ${program.data.name}: tier table, earning methods, redemption sweet spots and transfer partners.`}
+  programName={program.data.name}
+  currencyName={program.data.currencyName}
+  region={program.data.region}
+  expiryPolicy={program.data.expiryPolicy}
+  sweetSpots={program.data.sweetSpots}
+  transferPartners={program.data.transferPartners}
+>
+  <Content />
+</AirlineProgramLayout>

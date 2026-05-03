@@ -1,0 +1,97 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getLiveOffers } from "~/lib/offerAdapter";
+import { rankOffers, type CalculatorInput } from "~/lib/salaryTransfer";
+
+const offers = await getLiveOffers();
+
+const tests: { label: string; input: CalculatorInput }[] = [
+  {
+    label: "T1: AED 22k salary, AED 5k spend, 12mo yes, willing card, no Sharia, not cash-only",
+    input: {
+      monthlySalary: 22000,
+      monthlyCardSpend: 5000,
+      willStay12Months: true,
+      willingProducts: ["credit_card"],
+      shariaOnly: false,
+      cashOnly: false,
+    },
+  },
+  {
+    label: "T2: AED 6k salary, no card spend, 12mo yes, no products, no filters",
+    input: {
+      monthlySalary: 6000,
+      monthlyCardSpend: 0,
+      willStay12Months: true,
+      willingProducts: [],
+      shariaOnly: false,
+      cashOnly: false,
+    },
+  },
+  {
+    label: "T3: AED 30k salary, AED 8k spend, Sharia-only filter on, willing card",
+    input: {
+      monthlySalary: 30000,
+      monthlyCardSpend: 8000,
+      willStay12Months: true,
+      willingProducts: ["credit_card"],
+      shariaOnly: true,
+      cashOnly: false,
+    },
+  },
+  {
+    label: "T4: AED 60k salary, AED 15k spend, NOT staying 12mo, all products",
+    input: {
+      monthlySalary: 60000,
+      monthlyCardSpend: 15000,
+      willStay12Months: false,
+      willingProducts: ["credit_card", "loan", "insurance", "savings"],
+      shariaOnly: false,
+      cashOnly: false,
+    },
+  },
+];
+
+const results = tests.map((t) => ({
+  label: t.label,
+  input: t.input,
+  ranked: rankOffers(offers, t.input),
+}));
+---
+
+<BaseLayout title="Calculator test cases (dev)">
+  <h1 class="text-2xl font-semibold">Calculator test cases</h1>
+  <p class="mt-2 text-sm text-slate-600">
+    Build-time fixture page. Verifies the scoring formula against four
+    representative inputs.
+  </p>
+
+  {
+    results.map((r) => (
+      <section class="mt-8 border-t border-slate-200 pt-4">
+        <h2 class="font-mono text-sm">{r.label}</h2>
+        <ol class="mt-2 list-decimal space-y-2 pl-5 text-sm">
+          {r.ranked.map((s) => (
+            <li>
+              <strong data-bank={s.offer.bankSlug}>{s.offer.bankName}</strong>{" "}
+              · status=<span data-status={s.status}>{s.status}</span>{" "}
+              · cashEq=<span data-cash-equivalent>{Math.round(s.cashEquivalentAED)}</span>{" "}
+              · raw={Math.round(s.rawRewardAED)}{" "}
+              · band=
+              {s.matchedBand
+                ? `${s.matchedBand.minSalary}-${s.matchedBand.maxSalary ?? "∞"}`
+                : "none"}
+              {s.reasons.length > 0 && (
+                <ul class="mt-1 list-disc pl-5 text-xs text-slate-600">
+                  {s.reasons.map((reason) => (
+                    <li>{reason}</li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))
+  }
+</BaseLayout>
