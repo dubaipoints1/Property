@@ -17,92 +17,332 @@ const isActive = (href: string) =>
 ---
 
 <style>
-/* ── UTILITY BAR ── */
-.utility { border-bottom: 1px solid var(--line); background: var(--paper); font-size: 11px; }
-.utility-inner {
-  max-width: 1180px; margin: 0 auto;
-  padding: 0 32px; height: 34px;
-  display: flex; align-items: center; justify-content: space-between;
-  color: var(--muted);
-}
-.utility-left { display: flex; gap: 18px; align-items: center; }
-.utility-left .date { font-weight: 500; letter-spacing: 0.3px; }
-.utility-left .sep { color: var(--line); }
-.utility-left .live {
-  color: var(--red); font-weight: 700; letter-spacing: 0.5px;
-  text-transform: uppercase; display: flex; align-items: center; gap: 6px;
-}
-.utility-left .live::before {
-  content: ''; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--red); animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.utility-right { display: flex; gap: 16px; align-items: center; }
-.utility-right a { color: var(--muted); transition: color 0.15s; }
-.utility-right a:hover { color: var(--ink); }
+/* ════════════════════════════════════════════════════════════════════════
+   MOBILE-FIRST HEADER
+   Default styles target ≤1023px (mobile + tablet).
+   Three-tier desktop layout restored at ≥1024px via media query.
+   No JS — drawer toggled by a hidden checkbox.
+   ════════════════════════════════════════════════════════════════════════ */
 
-/* ── MASTHEAD ── */
-.masthead { background: var(--paper); border-bottom: 1px solid var(--line); }
-.masthead-inner {
-  max-width: 1180px; margin: 0 auto;
-  padding: 28px 32px 24px;
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  text-align: center;
-}
-.logo-wordmark { display: inline-block; line-height: 0; }
-.logo-wordmark img { height: 54px; width: auto; display: block; }
-.masthead-tagline {
-  font-size: 11px; font-weight: 500; letter-spacing: 3px;
-  text-transform: uppercase; color: var(--muted); margin-top: 2px;
+/* ── Hidden state input ──────────────────────────────────────────────── */
+.nav-toggle { position: absolute; opacity: 0; pointer-events: none; }
+.nav-toggle:focus-visible + .mobile-bar .hamburger {
+  outline: 2px solid var(--gold); outline-offset: 2px;
 }
 
-/* ── PRIMARY NAV ── */
-.primary-nav {
+/* ── MOBILE BAR (default, <1024px) ──────────────────────────────────── */
+.mobile-bar {
+  position: sticky; top: 0; z-index: 100;
   background: var(--paper);
   border-bottom: 1px solid var(--line);
-  position: sticky; top: 0; z-index: 100;
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  height: 56px;
+  padding-inline: 8px;
 }
-.primary-nav-inner {
-  max-width: 1180px; margin: 0 auto;
-  padding: 0 32px; height: 48px;
+.hamburger,
+.search-btn {
+  width: 44px; height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  background: transparent; border: none;
+  color: var(--ink);
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.hamburger:hover,
+.search-btn:hover { background: var(--line-soft); }
+.hamburger svg,
+.search-btn svg { width: 22px; height: 22px; }
+.mobile-logo {
+  display: inline-flex; justify-content: center;
+  line-height: 0;
+}
+.mobile-logo img { height: 32px; width: auto; }
+
+/* ── DRAWER (full-screen overlay, slides in from left) ──────────────── */
+.drawer-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(13, 17, 25, 0.55);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 200;
+}
+.drawer {
+  position: fixed; inset: 0 auto 0 0;
+  width: min(86vw, 380px);
+  background: var(--paper);
+  z-index: 201;
+  transform: translateX(-100%);
+  transition: transform 0.22s ease;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nav-toggle:checked ~ .drawer-backdrop {
+  opacity: 1; pointer-events: auto;
+}
+.nav-toggle:checked ~ .drawer { transform: translateX(0); }
+
+/* Body scroll-lock when drawer open (modern browsers) */
+:global(html:has(.nav-toggle:checked)) { overflow: hidden; }
+
+.drawer-head {
   display: flex; align-items: center; justify-content: space-between;
+  height: 56px; padding-inline: 16px;
+  border-bottom: 1px solid var(--line);
 }
-.nav-links { display: flex; gap: 28px; flex: 1; }
-.nav-links a {
-  font-size: 13px; font-weight: 600; color: var(--ink-soft);
-  letter-spacing: 0.2px; padding: 14px 0; position: relative;
-  transition: color 0.15s;
+.drawer-logo img { height: 30px; width: auto; }
+.drawer-close {
+  width: 44px; height: 44px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 6px;
+  color: var(--ink);
+  transition: background 0.15s;
 }
-.nav-links a:hover { color: var(--ink); }
-.nav-links a.active { color: var(--ink); }
-.nav-links a.active::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
-  height: 2px; background: var(--gold);
+.drawer-close:hover { background: var(--line-soft); }
+.drawer-close svg { width: 20px; height: 20px; }
+
+.drawer-nav {
+  display: flex; flex-direction: column;
+  padding: 8px 0;
 }
-.nav-right { display: flex; gap: 14px; align-items: center; }
-.nav-search {
-  display: flex; align-items: center; gap: 8px;
-  padding: 6px 12px; border: 1px solid var(--line);
-  border-radius: 6px; font-size: 12px; color: var(--muted);
-  cursor: pointer; transition: border-color 0.15s;
+.drawer-link {
+  display: flex; align-items: center;
+  min-height: 52px; padding: 8px 20px;
+  font-family: 'Fraunces', serif;
+  font-size: 18px; font-weight: 500;
+  color: var(--ink); letter-spacing: -0.2px;
+  border-left: 3px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
 }
-.nav-search:hover { border-color: var(--ink); color: var(--ink); }
-.nav-cta {
-  padding: 7px 14px; background: var(--ink); color: white;
-  border-radius: 6px; font-size: 12px; font-weight: 600;
+.drawer-link:hover { background: var(--line-soft); }
+.drawer-link.active {
+  border-left-color: var(--gold);
+  color: var(--ink);
+  background: var(--gold-soft);
 }
-.nav-cta:hover { background: var(--gold); }
+
+.drawer-divider {
+  height: 1px; background: var(--line); margin: 8px 16px;
+}
+
+.drawer-cta-block {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 12px 16px 4px;
+}
+.drawer-cta-primary {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: 0 16px;
+  background: var(--ink); color: white;
+  border-radius: 6px;
+  font-size: 14px; font-weight: 600;
+  transition: background 0.15s;
+}
+.drawer-cta-primary:hover { background: var(--gold); }
+.drawer-cta-secondary {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 14px; font-weight: 600;
+  color: var(--ink);
+  transition: border-color 0.15s;
+}
+.drawer-cta-secondary:hover { border-color: var(--ink); }
+
+.drawer-foot {
+  margin-top: auto;
+  display: flex; justify-content: center; gap: 24px;
+  padding: 20px 16px 28px;
+  border-top: 1px solid var(--line);
+  font-size: 12px; color: var(--muted);
+}
+.drawer-foot a { color: var(--muted); }
+.drawer-foot a:hover { color: var(--ink); }
+
+/* ── DESKTOP (≥1024px) — original three-tier layout ─────────────────── */
+.desktop-utility,
+.desktop-masthead,
+.desktop-nav { display: none; }
+
+@media (min-width: 1024px) {
+  .mobile-bar { display: none; }
+  .drawer-backdrop, .drawer { display: none; }
+
+  /* UTILITY BAR */
+  .desktop-utility {
+    display: block;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+    font-size: 11px;
+  }
+  .desktop-utility-inner {
+    max-width: 1180px; margin: 0 auto;
+    padding: 0 32px; height: 34px;
+    display: flex; align-items: center; justify-content: space-between;
+    color: var(--muted);
+  }
+  .desktop-utility .left { display: flex; gap: 18px; align-items: center; }
+  .desktop-utility .left .date { font-weight: 500; letter-spacing: 0.3px; }
+  .desktop-utility .left .sep { color: var(--line); }
+  .desktop-utility .left .live {
+    color: var(--red); font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+  }
+  .desktop-utility .left .live::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--red); animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .desktop-utility .right { display: flex; gap: 16px; align-items: center; }
+  .desktop-utility .right a { color: var(--muted); transition: color 0.15s; }
+  .desktop-utility .right a:hover { color: var(--ink); }
+
+  /* MASTHEAD */
+  .desktop-masthead {
+    display: block;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .desktop-masthead-inner {
+    max-width: 1180px; margin: 0 auto;
+    padding: 28px 32px 24px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    text-align: center;
+  }
+  .logo-wordmark { display: inline-block; line-height: 0; }
+  .logo-wordmark img { height: 54px; width: auto; display: block; }
+  .masthead-tagline {
+    font-size: 11px; font-weight: 500; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted); margin-top: 2px;
+  }
+
+  /* PRIMARY NAV */
+  .desktop-nav {
+    display: block;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .desktop-nav-inner {
+    max-width: 1180px; margin: 0 auto;
+    padding: 0 32px; height: 48px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .desktop-nav .links { display: flex; gap: 28px; flex: 1; }
+  .desktop-nav .links a {
+    font-size: 13px; font-weight: 600; color: var(--ink-soft);
+    letter-spacing: 0.2px; padding: 14px 0; position: relative;
+    transition: color 0.15s;
+  }
+  .desktop-nav .links a:hover { color: var(--ink); }
+  .desktop-nav .links a.active { color: var(--ink); }
+  .desktop-nav .links a.active::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
+    height: 2px; background: var(--gold);
+  }
+  .desktop-nav .right { display: flex; gap: 14px; align-items: center; }
+  .desktop-nav .tracker-cta {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border: 1px solid var(--line);
+    border-radius: 6px; font-size: 12px; color: var(--muted);
+    cursor: pointer; transition: border-color 0.15s;
+  }
+  .desktop-nav .tracker-cta:hover { border-color: var(--ink); color: var(--ink); }
+  .desktop-nav .subscribe-cta {
+    padding: 7px 14px; background: var(--ink); color: white;
+    border-radius: 6px; font-size: 12px; font-weight: 600;
+  }
+  .desktop-nav .subscribe-cta:hover { background: var(--gold); }
+}
 </style>
 
-<!-- UTILITY BAR -->
-<div class="utility">
-  <div class="utility-inner">
-    <div class="utility-left">
+<!-- Hidden checkbox controls drawer state (no JS required) -->
+<input type="checkbox" id="nav-toggle" class="nav-toggle" aria-hidden="true" />
+
+<!-- ── MOBILE / TABLET BAR ─────────────────────────────────────────── -->
+<div class="mobile-bar">
+  <label
+    for="nav-toggle"
+    class="hamburger"
+    role="button"
+    tabindex="0"
+    aria-label="Open menu"
+    aria-controls="nav-drawer"
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <line x1="4" y1="7" x2="20" y2="7"></line>
+      <line x1="4" y1="12" x2="20" y2="12"></line>
+      <line x1="4" y1="17" x2="20" y2="17"></line>
+    </svg>
+  </label>
+
+  <a href="/" class="mobile-logo" aria-label="DubaiPoints">
+    <img src="/logo.svg" alt="DubaiPoints" />
+  </a>
+
+  <a href="/search/" class="search-btn" aria-label="Search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"></circle>
+      <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+    </svg>
+  </a>
+</div>
+
+<!-- Backdrop (clicking it closes the drawer) -->
+<label for="nav-toggle" class="drawer-backdrop" aria-hidden="true"></label>
+
+<!-- ── DRAWER ──────────────────────────────────────────────────────── -->
+<aside id="nav-drawer" class="drawer" aria-label="Site navigation">
+  <div class="drawer-head">
+    <a href="/" class="drawer-logo" aria-label="DubaiPoints">
+      <img src="/logo.svg" alt="DubaiPoints" />
+    </a>
+    <label
+      for="nav-toggle"
+      class="drawer-close"
+      role="button"
+      tabindex="0"
+      aria-label="Close menu"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+      </svg>
+    </label>
+  </div>
+
+  <nav class="drawer-nav">
+    {navLinks.map((l) => (
+      <a href={l.href} class={`drawer-link${isActive(l.href) ? " active" : ""}`}>{l.label}</a>
+    ))}
+  </nav>
+
+  <div class="drawer-divider"></div>
+
+  <div class="drawer-cta-block">
+    <a href="/salary-transfer/" class="drawer-cta-primary">Salary transfer tracker</a>
+    <a href="/#newsletter" class="drawer-cta-secondary">Subscribe to newsletter</a>
+  </div>
+
+  <div class="drawer-foot">
+    <a href="/about">About</a>
+    <a href="/sign-in">Sign in</a>
+  </div>
+</aside>
+
+<!-- ── DESKTOP UTILITY BAR ─────────────────────────────────────────── -->
+<div class="desktop-utility">
+  <div class="desktop-utility-inner">
+    <div class="left">
       <span class="date">{today} · Dubai</span>
       <span class="sep">·</span>
       <span class="live">Live: salary transfer tracker</span>
     </div>
-    <div class="utility-right">
+    <div class="right">
       <a href="/about">About</a>
       <a href="/#newsletter">Newsletter</a>
       <a href="/sign-in">Sign in</a>
@@ -110,9 +350,9 @@ const isActive = (href: string) =>
   </div>
 </div>
 
-<!-- MASTHEAD -->
-<header class="masthead">
-  <div class="masthead-inner">
+<!-- ── DESKTOP MASTHEAD ────────────────────────────────────────────── -->
+<header class="desktop-masthead">
+  <div class="desktop-masthead-inner">
     <a href="/" class="logo-wordmark" aria-label="DubaiPoints">
       <img src="/logo.svg" alt="DubaiPoints" />
     </a>
@@ -120,17 +360,17 @@ const isActive = (href: string) =>
   </div>
 </header>
 
-<!-- PRIMARY NAV -->
-<nav class="primary-nav">
-  <div class="primary-nav-inner">
-    <div class="nav-links">
+<!-- ── DESKTOP PRIMARY NAV ─────────────────────────────────────────── -->
+<nav class="desktop-nav">
+  <div class="desktop-nav-inner">
+    <div class="links">
       {navLinks.map((l) => (
         <a href={l.href} class={isActive(l.href) ? "active" : ""}>{l.label}</a>
       ))}
     </div>
-    <div class="nav-right">
-      <a href="/salary-transfer/" class="nav-search"><span>⌕</span><span>Salary tracker</span></a>
-      <a href="/#newsletter" class="nav-cta">Subscribe</a>
+    <div class="right">
+      <a href="/salary-transfer/" class="tracker-cta"><span>⌕</span><span>Salary tracker</span></a>
+      <a href="/#newsletter" class="subscribe-cta">Subscribe</a>
     </div>
   </div>
 </nav>
