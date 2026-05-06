@@ -1,0 +1,33 @@
+---
+// Outbound affiliate link with a visible asterisk and a tooltip footnote.
+// MoneySavingExpert convention: every commercial outbound link is asterisked
+// and resolves to /how-we-make-money/ for full disclosure.
+//
+// Usage:
+//   <AffiliateLink href="https://bank.example.com/apply">Apply now</AffiliateLink>
+//
+// At launch we have no live affiliate partners — the convention is locked in
+// so we never publish an unmarked commercial link.
+
+interface Props {
+  href: string;
+  rel?: string;
+}
+
+const { href, rel = "noopener noreferrer sponsored" } = Astro.props;
+---
+
+<a href={href} rel={rel} target="_blank" class="dp-affiliate">
+  <slot />
+  <sup class="dp-affiliate-mark" aria-label="Affiliate link">*</sup>
+</a>
+
+<style>
+  .dp-affiliate { position: relative; }
+  .dp-affiliate-mark {
+    color: var(--gold);
+    font-weight: 700;
+    margin-left: 1px;
+    font-size: 0.85em;
+  }
+</style>

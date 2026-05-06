@@ -47,4 +47,6 @@ const { title, description, liveCount } = Astro.props;
   <div class="prose prose-slate mt-8 max-w-none">
     <slot />
   </div>
+
+  <slot name="footer" />
 </BaseLayout>

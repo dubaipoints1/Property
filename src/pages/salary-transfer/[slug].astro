@@ -2,6 +2,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTrackerLayout from "~/layouts/SalaryTransferTrackerLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
+import Disclaimer from "~/components/Disclaimer.astro";
 import { getCollection, render } from "astro:content";
 import { getLiveOffers, getOffersForBank } from "~/lib/offerAdapter";
 import { findBand, formatAED } from "~/lib/salaryTransfer";
@@ -62,6 +63,7 @@ if (props.kind === "band") {
       <div slot="tracker">
         <SalaryTransferTracker offers={bandOffers} client:load />
       </div>
+      <Disclaimer slot="footer" variant="offer" />
     </SalaryTransferTrackerLayout>
   )
 }
@@ -149,6 +151,8 @@ if (props.kind === "band") {
           </article>
         );
       })}
+
+      <Disclaimer variant="offer" />
     </BaseLayout>
   )
 }
