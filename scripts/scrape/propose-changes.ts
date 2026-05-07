@@ -43,11 +43,14 @@ const PR_BODY_PATH = "PR_BODY.md";
 /**
  * Top-level fields the scraper writes directly into cards.json.
  *
- * Typed editor fields (welcomeBonus, annualFeeWaiver, _features) are NOT in
- * this list. The scraper produces free-text equivalents which land in
- * _scraped_freetext (see FREETEXT_FIELDS below) for the editor to type up.
+ * `welcomeBonus` was restored 2026-05-08 (Council STATUS Q-A resolved):
+ * the normaliser's `parseWelcomeBonus()` now emits a structured object
+ * (or string fallback) at `draft.welcomeBonus`, which routes here.
+ *
+ * `annualFeeWaiver` and `_features` typed forms are still NOT scraped —
+ * those remain editor-only per the LLM-extraction policy in CLAUDE.md.
  */
-const SCRAPED_FIELDS = [
+export const SCRAPED_FIELDS = [
   "bank",
   "name",
   "network",
@@ -57,6 +60,7 @@ const SCRAPED_FIELDS = [
   "loyaltyProgram",
   "earnRates",
   "earnUnit",
+  "welcomeBonus",
   "welcomeBonusValue",
   "eligibility",
   "applyUrl",
@@ -66,10 +70,20 @@ const SCRAPED_FIELDS = [
 ] as const;
 
 /**
- * Scraper-produced free-text fields. These land under _scraped_freetext
- * and never overwrite the typed editor versions at the top level.
+ * Scraper-produced free-text fields. Map of target stash key → draft source key.
+ *
+ * `welcomeBonus` (target) sources from `welcomeBonusFreetext` (the normaliser's
+ * always-raw copy) so the editor can audit the structured parse against the
+ * raw bank copy. `annualFeeWaiver` and `perks` keep matching keys.
+ *
+ * These land under `_scraped_freetext.<target>` and never overwrite the typed
+ * editor versions at the top level.
  */
-const FREETEXT_FIELDS = ["welcomeBonus", "annualFeeWaiver", "perks"] as const;
+export const FREETEXT_FIELDS = {
+  welcomeBonus: "welcomeBonusFreetext",
+  annualFeeWaiver: "annualFeeWaiver",
+  perks: "perks",
+} as const;
 
 function latestScrape(bankSlug: string): ScrapeFile | null {
   const dir = path.join(SCRAPED_DIR, bankSlug);
@@ -116,7 +130,7 @@ interface MergeOutcome {
  *   - All replaced fields get _provenance = "scraped".
  *   - _lastScraped is set to today's date.
  */
-function mergeDraft(
+export function mergeDraft(
   slug: string,
   existing: CardEntry | undefined,
   draft: Record<string, unknown>,
@@ -145,16 +159,17 @@ function mergeDraft(
   }
 
   // ── Free-text fields: stash under _scraped_freetext, never overwrite
-  //    typed editor versions at the top level.
+  //    typed editor versions at the top level. Source key may differ from
+  //    target stash key (see FREETEXT_FIELDS comment).
   const existingFreetext = (entry._scraped_freetext as Record<string, unknown> | undefined) ?? {};
   const newFreetext: Record<string, unknown> = { ...existingFreetext };
-  for (const field of FREETEXT_FIELDS) {
-    if (!(field in draft)) continue;
-    const before = JSON.stringify(existingFreetext[field]);
-    const after = JSON.stringify(draft[field]);
+  for (const [target, source] of Object.entries(FREETEXT_FIELDS)) {
+    if (!(source in draft)) continue;
+    const before = JSON.stringify(existingFreetext[target]);
+    const after = JSON.stringify(draft[source]);
     if (before !== after) {
-      newFreetext[field] = draft[field];
-      changedFields.push(`_scraped_freetext.${field}`);
+      newFreetext[target] = draft[source];
+      changedFields.push(`_scraped_freetext.${target}`);
     }
   }
   if (Object.keys(newFreetext).length > 0) {
@@ -260,7 +275,16 @@ async function main() {
   console.log(`[propose] Wrote ${PR_BODY_PATH}: ${totalNew} new, ${totalChanged} changed, ${totalErrors} warning(s)`);
 }
 
-main().catch((err) => {
-  console.error("[propose] Fatal:", err);
-  process.exit(1);
-});
+// Only auto-run main() when invoked as a script (e.g. `npm run scrape:propose`).
+// Importing this module from a test must not trigger an fs walk + cards.json
+// rewrite.
+const isDirectInvocation =
+  typeof process.argv[1] === "string" &&
+  /propose-changes(\.ts)?$/.test(process.argv[1]);
+
+if (isDirectInvocation) {
+  main().catch((err) => {
+    console.error("[propose] Fatal:", err);
+    process.exit(1);
+  });
+}

@@ -58,23 +58,21 @@ prior default in the named source document.
 - Tool minimisation per Charter is enforced by the agent
   frontmatter `tools:` allowlists.
 
-## Open questions still awaiting Chairman
+## Open questions
 
-The following were flagged by the May 2026 spike and have **not** been
-resolved on this branch. Each requires explicit Chairman go before a
-change lands.
+### A. `SCRAPED_FIELDS` amendment for `welcomeBonus` — **RESOLVED 2026-05-08**
 
-### A. `SCRAPED_FIELDS` amendment for `welcomeBonus`
+Chairman approved the contract change. `welcomeBonus` is back in
+`SCRAPED_FIELDS` so the structured `parseWelcomeBonus()` output reaches
+`cards.json`. `_scraped_freetext.welcomeBonus` is now sourced from the
+normaliser's `welcomeBonusFreetext` field so editors can audit the
+parsed object against the raw bank copy.
 
-The structured `parseWelcomeBonus()` parser ships in
-`scripts/scrape/_normaliser.ts`, but `welcomeBonus` was removed from
-`SCRAPED_FIELDS` in commit `e291a87`. Until it moves back, the
-parser's output cannot land in `cards.json` — it parses and never
-ships. This is a fenced contract change.
-
-**Recommendation:** approve, restore to `SCRAPED_FIELDS`. The
-existing provenance contract still protects editor-confirmed entries
-from overwrite.
+Contract tests at `tests/scrape/propose-changes.test.ts` cover:
+- structured object routes to top-level
+- raw copy stashes under `_scraped_freetext.welcomeBonus`
+- editor-confirmed entries are never overwritten by a scrape
+- string fallback still routes when normaliser couldn't parse
 
 ### B. Live-site backfill via Firecrawl
 
@@ -119,3 +117,4 @@ The phased plan is at
 | Date | Editor | Note |
 |---|---|---|
 | 2026-05-08 | managing-editor | Council declared operational; Chairman picks recorded; design-doc amendments propagated. |
+| 2026-05-08 | managing-editor | Q-A resolved: `welcomeBonus` restored to `SCRAPED_FIELDS`; freetext stash remapped to source from `welcomeBonusFreetext`. Contract tests added. Phase A homepage rebuild approved per technical judgement; Phase B routes trickle per editor beat; Phase C cadence revised to seed-then-watch (initial bulk across priority banks, then weekly cron handles deltas). |
