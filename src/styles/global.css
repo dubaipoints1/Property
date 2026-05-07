@@ -27,3 +27,142 @@ body {
 }
 a { text-decoration: none; color: inherit; }
 img { display: block; max-width: 100%; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Salary Transfer Tracker (Preact island) — editorial idiom.
+   Mirrors the homepage card-spot/deal-card visual language so the tracker
+   reads as part of the same magazine, not a separate app.
+   ════════════════════════════════════════════════════════════════════════ */
+.dp-tracker { display: flex; flex-direction: column; gap: 16px; }
+
+.dp-tracker-bands { display: flex; flex-wrap: wrap; gap: 8px; }
+.dp-tracker-chip {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.2px;
+  padding: 7px 12px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+  min-height: 36px;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+.dp-tracker-chip:hover { border-color: var(--ink); color: var(--ink); }
+.dp-tracker-chip.is-active {
+  background: var(--ink); color: white; border-color: var(--ink);
+}
+.dp-tracker-chip.is-muted {
+  color: var(--muted);
+  border-style: dashed;
+}
+.dp-tracker-chip.is-muted:hover { color: var(--ink-soft); border-color: var(--ink-soft); }
+
+.dp-tracker-filters {
+  display: flex; flex-wrap: wrap; gap: 12px 18px;
+  align-items: center;
+  font-size: 12px; color: var(--ink-soft);
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.dp-tracker-toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  cursor: pointer;
+}
+.dp-tracker-toggle input {
+  accent-color: var(--ink);
+  width: 14px; height: 14px;
+}
+.dp-tracker-select {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+  text-transform: uppercase; color: var(--muted);
+}
+.dp-tracker-select select {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 12px; font-weight: 500;
+  color: var(--ink);
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  text-transform: none; letter-spacing: 0;
+  min-height: 32px;
+}
+.dp-tracker-select select:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+.dp-tracker-select-end { margin-left: auto; }
+@media (max-width: 640px) {
+  .dp-tracker-select-end { margin-left: 0; }
+}
+
+.dp-tracker-empty {
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold);
+  border-radius: 4px;
+  background: var(--gold-soft);
+  font-size: 13px; line-height: 1.55;
+  color: #6b4a14;
+}
+
+.dp-tracker-list {
+  list-style: none; padding: 0; margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--paper);
+}
+.dp-tracker-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.15s;
+}
+.dp-tracker-row:last-child { border-bottom: none; }
+.dp-tracker-row:hover { background: var(--bg); }
+@media (min-width: 640px) {
+  .dp-tracker-row {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 24px;
+  }
+}
+.dp-tracker-row-main { min-width: 0; }
+.dp-tracker-bank {
+  font-family: 'Fraunces', serif;
+  font-size: 17px; font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--ink);
+  display: inline-block;
+}
+.dp-tracker-bank:hover { color: var(--gold); }
+.dp-tracker-name {
+  margin-top: 2px;
+  font-size: 12px; color: var(--ink-soft); line-height: 1.5;
+}
+.dp-tracker-meta {
+  margin-top: 6px;
+  display: flex; flex-wrap: wrap; gap: 6px;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted);
+}
+.dp-tracker-row-amount { text-align: left; }
+@media (min-width: 640px) {
+  .dp-tracker-row-amount { text-align: right; }
+}
+.dp-tracker-reward .num {
+  font-family: 'Fraunces', serif;
+  font-size: 24px; font-weight: 600;
+  letter-spacing: -0.6px; color: var(--ink);
+  line-height: 1;
+}
+.dp-tracker-expiry {
+  margin-top: 4px;
+  font-size: 11px; color: var(--muted);
+  letter-spacing: 0.3px;
+}
