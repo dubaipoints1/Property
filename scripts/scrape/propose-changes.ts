@@ -1,14 +1,14 @@
-// Propose-changes script (post-Audit-05 — writes to data layer L2).
+// Propose-changes script (Audit-06 — typed fields + freetext stash).
 //
 // Reads the most recent scrape output for each bank under data/scraped/<bank>/
-// and merges the parsed fields into src/data/cards.json. Crucially:
+// and merges parsed fields into src/data/cards.json with these rules:
 //
 //   - Per-field merge: each field gets a _provenance entry. Editor-confirmed
 //     fields are NEVER overwritten by a scrape.
-//   - New cards (no prior entry in cards.json) land with full _provenance =
-//     "scraped" and are visible to the editor for review.
-//   - PR_BODY.md is always written with the per-card change summary so a
-//     human reviewer sees what shifted.
+//   - Typed fields (welcomeBonus / annualFeeWaiver / _features) the scraper
+//     does NOT write directly. Scraper produces free-text; that free-text
+//     is stashed in _scraped_freetext for the editor to type up later.
+//   - PR_BODY.md is always written with the per-card change summary.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -40,7 +40,13 @@ const SCRAPED_DIR = path.join("data", "scraped");
 const CARDS_DATA_PATH = path.join("src", "data", "cards.json");
 const PR_BODY_PATH = "PR_BODY.md";
 
-/** Top-level fields the scraper writes into cards.json. */
+/**
+ * Top-level fields the scraper writes directly into cards.json.
+ *
+ * Typed editor fields (welcomeBonus, annualFeeWaiver, _features) are NOT in
+ * this list. The scraper produces free-text equivalents which land in
+ * _scraped_freetext (see FREETEXT_FIELDS below) for the editor to type up.
+ */
 const SCRAPED_FIELDS = [
   "bank",
   "name",
@@ -51,15 +57,19 @@ const SCRAPED_FIELDS = [
   "loyaltyProgram",
   "earnRates",
   "earnUnit",
-  "welcomeBonus",
   "welcomeBonusValue",
   "eligibility",
-  "perks",
   "applyUrl",
   "kfsUrl",
   "lastVerified",
   "sources",
 ] as const;
+
+/**
+ * Scraper-produced free-text fields. These land under _scraped_freetext
+ * and never overwrite the typed editor versions at the top level.
+ */
+const FREETEXT_FIELDS = ["welcomeBonus", "annualFeeWaiver", "perks"] as const;
 
 function latestScrape(bankSlug: string): ScrapeFile | null {
   const dir = path.join(SCRAPED_DIR, bankSlug);
@@ -132,6 +142,24 @@ function mergeDraft(
       provenance[field] = "scraped";
       changedFields.push(field);
     }
+  }
+
+  // ── Free-text fields: stash under _scraped_freetext, never overwrite
+  //    typed editor versions at the top level.
+  const existingFreetext = (entry._scraped_freetext as Record<string, unknown> | undefined) ?? {};
+  const newFreetext: Record<string, unknown> = { ...existingFreetext };
+  for (const field of FREETEXT_FIELDS) {
+    if (!(field in draft)) continue;
+    const before = JSON.stringify(existingFreetext[field]);
+    const after = JSON.stringify(draft[field]);
+    if (before !== after) {
+      newFreetext[field] = draft[field];
+      changedFields.push(`_scraped_freetext.${field}`);
+    }
+  }
+  if (Object.keys(newFreetext).length > 0) {
+    entry._scraped_freetext = newFreetext;
+    // _scraped_freetext provenance is always "scraped" — it's the raw output
   }
 
   entry._provenance = provenance;

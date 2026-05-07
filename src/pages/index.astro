@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { getAllCards } from "~/lib/cardsData";
+import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
 
 // ── Live data ────────────────────────────────────────────────────────────
 const todayMs = Date.now();
@@ -585,7 +585,7 @@ const fmtDate = (d: Date) =>
             </div>
             <h3>{c.name}</h3>
             <div class="bonus">
-              <div class="num">{c.welcomeBonus}</div>
+              <div class="num">{welcomeBonusDisplay(c.welcomeBonus)}</div>
               <div class="lbl">Welcome offer</div>
             </div>
             <div class="req">

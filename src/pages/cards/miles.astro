@@ -1,7 +1,7 @@
 ---
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
-import { getAllCards } from "~/lib/cardsData";
+import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
 
 const milesCards = getAllCards().filter(
   (c) => c.categories.includes("travel") || c.categories.includes("co-brand"),
@@ -17,7 +17,7 @@ const rows = await Promise.all(
         `AED ${c.annualFee.amount.toLocaleString()}`,
         `${c.fxFee}%`,
         `${c.earnRates.everythingElse}× per AED`,
-        c.welcomeBonus ?? "—",
+        welcomeBonusDisplay(c.welcomeBonus) || "—",
       ],
     };
   }),

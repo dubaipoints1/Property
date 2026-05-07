@@ -1,7 +1,11 @@
 ---
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
-import { getAllCards } from "~/lib/cardsData";
+import {
+  getAllCards,
+  welcomeBonusDisplay,
+  earnRatesNumeric,
+} from "~/lib/cardsData";
 
 const cards = await Promise.all(
   getAllCards().map(async (card) => {
@@ -36,8 +40,8 @@ const rows = cards.map(({ card, bankName }) => ({
     `${card.fxFee}%`,
     `AED ${card.eligibility.minSalary.toLocaleString()}/mo`,
     card.eligibility.salaryTransferRequired ? "Required" : "Not required",
-    card.welcomeBonus ?? "—",
-    bestEarn(card.earnRates),
+    welcomeBonusDisplay(card.welcomeBonus) || "—",
+    bestEarn(earnRatesNumeric(card.earnRates)),
   ],
 }));
 ---
