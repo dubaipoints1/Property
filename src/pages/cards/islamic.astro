@@ -1,7 +1,7 @@
 ---
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
-import { getAllCards } from "~/lib/cardsData";
+import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
 
 const islamicCards = getAllCards().filter((c) => c.categories.includes("Islamic"));
 const rows = await Promise.all(
@@ -15,7 +15,7 @@ const rows = await Promise.all(
         `AED ${c.annualFee.amount.toLocaleString()}`,
         `${c.fxFee}%`,
         `AED ${c.eligibility.minSalary.toLocaleString()}/mo`,
-        c.welcomeBonus ?? "—",
+        welcomeBonusDisplay(c.welcomeBonus) || "—",
       ],
     };
   }),

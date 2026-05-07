@@ -2,7 +2,11 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import BankLogo from "~/components/BankLogo.astro";
 import { getEntry } from "astro:content";
-import { getAllCards } from "~/lib/cardsData";
+import {
+  getAllCards,
+  welcomeBonusDisplay,
+  annualFeeWaiverDisplay,
+} from "~/lib/cardsData";
 
 const cards = await Promise.all(
   getAllCards().map(async (card) => {
@@ -45,7 +49,7 @@ const categories = [
             <span>{bankName} · {card.network}</span>
           </span>
           <span class="title">{card.name}</span>
-          <span class="desc">{card.welcomeBonus ?? "Annual fee waiver: " + (card.annualFeeWaiver ?? "see review")}</span>
+          <span class="desc">{welcomeBonusDisplay(card.welcomeBonus) || ("Annual fee waiver: " + (annualFeeWaiverDisplay(card.annualFeeWaiver) || "see review"))}</span>
           <span class="meta">
             AED {card.annualFee.amount.toLocaleString()}/yr ·
             {" "}AED {card.eligibility.minSalary.toLocaleString()}/mo min

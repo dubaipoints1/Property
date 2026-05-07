@@ -1,7 +1,12 @@
 ---
 import CardReviewLayout from "~/layouts/CardReviewLayout.astro";
 import { getCollection, getEntry, render } from "astro:content";
-import { getCardData, getAllCards } from "~/lib/cardsData";
+import {
+  getCardData,
+  getAllCards,
+  earnRatesNumeric,
+  welcomeBonusDisplay,
+} from "~/lib/cardsData";
 
 // Generate one route per card in the data layer (L2). Even cards without
 // editorial MDX (L3) get a page — it just renders attributes only.
@@ -29,14 +34,14 @@ const bankName = bankEntry?.data.name ?? data.bank;
 
 <CardReviewLayout
   title={`${data.name} review`}
-  description={data.welcomeBonus}
+  description={welcomeBonusDisplay(data.welcomeBonus)}
   bankName={bankName}
   cardName={data.name}
   network={data.network}
   annualFee={data.annualFee.amount}
   fxFee={data.fxFee}
   minSalary={data.eligibility.minSalary}
-  earnRates={data.earnRates}
+  earnRates={earnRatesNumeric(data.earnRates)}
   perks={data.perks}
   pros={editorial?.data.pros}
   cons={editorial?.data.cons}

@@ -73,13 +73,42 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed"
+      "perks": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "_features": "editor-confirmed"
     },
     "_lastScraped": null,
-    "_lastReviewed": "2026-05-01"
+    "_lastReviewed": "2026-05-07",
+    "annualFeeWaiver": {
+      "year_one_waived": false,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "AED 104 annual fee; no published waiver."
+    },
+    "_features": [
+      {
+        "type": "transit_card",
+        "networks": [
+          "Nol",
+          "RTA bus",
+          "RTA parking",
+          "Dubai Ferry"
+        ],
+        "notes": "Free Dubai Ferry ride for cardholder + 1 guest"
+      },
+      {
+        "type": "insurance_life",
+        "cover_aed": 75000
+      },
+      {
+        "type": "golf",
+        "discount_pct": 40,
+        "courses_count": 100,
+        "scope": "global"
+      }
+    ]
   },
   "emirates-nbd-go4it-platinum": {
-    "welcomeBonus": "Contact ENBD for current welcome offer.",
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "Plus Points per AED 1 spent (weekend entertainment: 0.025; standard: 0.01)",
     "eligibility": {
@@ -140,7 +169,6 @@
       "Apple Pay, Samsung Pay, Google Pay"
     ],
     "_provenance": {
-      "welcomeBonus": "editor-confirmed",
       "kfsUrl": "editor-confirmed",
       "earnUnit": "editor-confirmed",
       "eligibility": "editor-confirmed",
@@ -157,13 +185,64 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed"
+      "perks": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "_features": "editor-confirmed"
     },
     "_lastScraped": null,
-    "_lastReviewed": "2026-05-01"
+    "_lastReviewed": "2026-05-07",
+    "_scraped_freetext": {
+      "welcomeBonus": "Contact ENBD for current welcome offer."
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": false,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "AED 209 annual fee; no published waiver."
+    },
+    "_features": [
+      {
+        "type": "cinema_bogo",
+        "operator": "VOX",
+        "max_per_month": "unlimited",
+        "fb_discount_pct": 25
+      },
+      {
+        "type": "transit_card",
+        "networks": [
+          "Nol",
+          "RTA bus",
+          "RTA parking",
+          "Dubai Ferry"
+        ],
+        "notes": "Gold Class access on Dubai Metro"
+      },
+      {
+        "type": "insurance_life",
+        "cover_aed": 100000
+      },
+      {
+        "type": "entertainer_bogo",
+        "program": "The Entertainer",
+        "scope": "limited"
+      },
+      {
+        "type": "golf",
+        "discount_pct": 40,
+        "courses_count": 100,
+        "scope": "global"
+      }
+    ]
   },
   "emirates-nbd-lulu-247-platinum": {
-    "welcomeBonus": "500 LuLu Points on card activation.",
+    "welcomeBonus": {
+      "amount": 500,
+      "unit": "lulu_points",
+      "spend_threshold_aed": null,
+      "qualify_window_days": null,
+      "headline_value_aed": 5,
+      "notes": "On card activation."
+    },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "% back as LuLu Points",
     "eligibility": {
@@ -190,9 +269,18 @@
     "earnRates": {
       "groceries": 7,
       "fuel": 4,
-      "everythingElse": 1
+      "everythingElse": 1,
+      "_caps": {
+        "monthly_max_aed": null,
+        "min_monthly_spend_to_qualify_aed": null
+      }
     },
-    "annualFeeWaiver": "Free for life — no annual fee.",
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": 0,
+      "threshold_period": "annual",
+      "notes": "Free for life — no annual fee."
+    },
     "loyaltyProgram": "LuLu Points",
     "transferPartners": [],
     "annualFee": {
@@ -247,10 +335,39 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed"
+      "perks": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "earnRates._caps": "editor-confirmed"
     },
     "_lastScraped": null,
-    "_lastReviewed": "2026-05-01"
+    "_lastReviewed": "2026-05-07",
+    "_scraped_freetext": {
+      "welcomeBonus": "500 LuLu Points on card activation.",
+      "annualFeeWaiver": "Free for life — no annual fee."
+    },
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "Visa Airport Companion",
+        "scope": "unlimited",
+        "geo": [
+          "global"
+        ],
+        "notes": "25+ Middle East and global lounges"
+      },
+      {
+        "type": "travel_desk_discount",
+        "flights_pct": 3,
+        "holiday_pct": 7,
+        "desk_name": "ENBD Travel Desk"
+      },
+      {
+        "type": "golf",
+        "discount_pct": 40,
+        "courses_count": 100,
+        "scope": "global"
+      }
+    ]
   },
   "emirates-nbd-lulu-247-titanium": {
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
@@ -280,7 +397,12 @@
       "fuel": 2,
       "everythingElse": 0.5
     },
-    "annualFeeWaiver": "Free for life — no annual fee.",
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": 0,
+      "threshold_period": "annual",
+      "notes": "Free for life — no annual fee."
+    },
     "loyaltyProgram": "LuLu Points",
     "transferPartners": [],
     "annualFee": {
@@ -331,13 +453,49 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed"
+      "perks": "editor-confirmed",
+      "_features": "editor-confirmed"
     },
     "_lastScraped": null,
-    "_lastReviewed": "2026-05-01"
+    "_lastReviewed": "2026-05-07",
+    "_scraped_freetext": {
+      "annualFeeWaiver": "Free for life — no annual fee."
+    },
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "Visa Airport Companion",
+        "scope": {
+          "visits_per_year": 12
+        },
+        "geo": [
+          "ME"
+        ],
+        "notes": "10+ Middle East lounges"
+      },
+      {
+        "type": "travel_desk_discount",
+        "flights_pct": 3,
+        "holiday_pct": 7,
+        "desk_name": "ENBD Travel Desk"
+      },
+      {
+        "type": "golf",
+        "discount_pct": 40,
+        "courses_count": 100,
+        "scope": "global"
+      }
+    ]
   },
   "emirates-nbd-share-visa-infinite": {
-    "welcomeBonus": "Joining fee (AED 1,500) refunded on AED 40,000 spend in first 3 months.",
+    "welcomeBonus": {
+      "amount": 1500,
+      "unit": "aed_credit",
+      "spend_threshold_aed": 40000,
+      "qualify_window_days": 90,
+      "headline_value_aed": 1500,
+      "notes": "Joining fee refunded on AED 40,000 cumulative spend in 90 days."
+    },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "% back as SHARE Points",
     "eligibility": {
@@ -366,9 +524,18 @@
       "shopping": 8,
       "groceries": 8,
       "entertainment": 8,
-      "everythingElse": 1
+      "everythingElse": 1,
+      "_caps": {
+        "monthly_max_aed": null,
+        "min_monthly_spend_to_qualify_aed": null
+      }
     },
-    "annualFeeWaiver": "Joining fee refunded on AED 40,000 cumulative spend within first 3 months.",
+    "annualFeeWaiver": {
+      "year_one_waived": false,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "AED 1,500 joining and AED 1,500 annual; joining fee refundable; annual fee not waived."
+    },
     "loyaltyProgram": "SHARE Points (Majid Al Futtaim)",
     "joiningFee": {
       "amount": 1500,
@@ -432,13 +599,51 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed"
+      "perks": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "earnRates._caps": "editor-confirmed"
     },
     "_lastScraped": null,
-    "_lastReviewed": "2026-05-01"
+    "_lastReviewed": "2026-05-07",
+    "_scraped_freetext": {
+      "welcomeBonus": "Joining fee (AED 1,500) refunded on AED 40,000 spend in first 3 months.",
+      "annualFeeWaiver": "Joining fee refunded on AED 40,000 cumulative spend within first 3 months."
+    },
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "Visa Airport Companion",
+        "scope": "unlimited",
+        "geo": [
+          "global"
+        ],
+        "notes": "1,200+ airport lounges worldwide"
+      },
+      {
+        "type": "concierge",
+        "scope": "24/7"
+      },
+      {
+        "type": "insurance_travel",
+        "scope": "Visa Infinite travel insurance"
+      },
+      {
+        "type": "golf",
+        "discount_pct": 40,
+        "courses_count": 100,
+        "scope": "global"
+      }
+    ]
   },
   "emirates-nbd-share-visa-signature": {
-    "welcomeBonus": "5,000 SHARE Points (worth ~AED 500) on AED 25,000 cumulative spend within first 3 billing statements.",
+    "welcomeBonus": {
+      "amount": 5000,
+      "unit": "share_points",
+      "spend_threshold_aed": 25000,
+      "qualify_window_days": 90,
+      "headline_value_aed": 500,
+      "notes": "Cumulative spend within first 3 billing statements."
+    },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "% back as SHARE Points",
     "eligibility": {
@@ -469,7 +674,12 @@
       "entertainment": 6,
       "everythingElse": 1
     },
-    "annualFeeWaiver": "Free for life — no annual or joining fee.",
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": 0,
+      "threshold_period": "annual",
+      "notes": "Free for life — no annual or joining fee."
+    },
     "loyaltyProgram": "SHARE Points (Majid Al Futtaim)",
     "transferPartners": [],
     "annualFee": {
@@ -527,13 +737,48 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed"
+      "perks": "editor-confirmed",
+      "_features": "editor-confirmed"
     },
     "_lastScraped": null,
-    "_lastReviewed": "2026-05-01"
+    "_lastReviewed": "2026-05-07",
+    "_scraped_freetext": {
+      "welcomeBonus": "5,000 SHARE Points (worth ~AED 500) on AED 25,000 cumulative spend within first 3 billing statements.",
+      "annualFeeWaiver": "Free for life — no annual or joining fee."
+    },
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "Visa Airport Companion",
+        "scope": "unlimited",
+        "geo": [
+          "global"
+        ],
+        "notes": "1,000+ lounges via Visa Airport Companion App"
+      },
+      {
+        "type": "concierge",
+        "scope": "24/7"
+      },
+      {
+        "type": "insurance_travel"
+      },
+      {
+        "type": "golf",
+        "discount_pct": 40,
+        "scope": "global"
+      }
+    ]
   },
   "emirates-nbd-skywards-infinite": {
-    "welcomeBonus": "Up to 40,000 Skywards Miles on first eligible spend within 90 days.",
+    "welcomeBonus": {
+      "amount": 40000,
+      "unit": "skywards_miles",
+      "spend_threshold_aed": null,
+      "qualify_window_days": 90,
+      "headline_value_aed": 800,
+      "notes": "first eligible spend"
+    },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "Skywards Miles per AED 1 spent",
     "eligibility": {
@@ -564,7 +809,12 @@
       "fuel": 1,
       "everythingElse": 1
     },
-    "annualFeeWaiver": "Waived in year one; reversible from year two on AED 100,000 annual spend.",
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": 100000,
+      "threshold_period": "annual",
+      "notes": "Reversible from year two on cumulative spend."
+    },
     "loyaltyProgram": "Emirates Skywards",
     "transferPartners": [
       "skywards"
@@ -614,13 +864,46 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed"
+      "perks": "editor-confirmed",
+      "_features": "editor-confirmed"
     },
     "_lastScraped": null,
-    "_lastReviewed": "2026-04-15"
+    "_lastReviewed": "2026-05-07",
+    "_scraped_freetext": {
+      "welcomeBonus": "Up to 40,000 Skywards Miles on first eligible spend within 90 days.",
+      "annualFeeWaiver": "Waived in year one; reversible from year two on AED 100,000 annual spend."
+    },
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "DragonPass",
+        "scope": "unlimited",
+        "geo": [
+          "UAE"
+        ],
+        "notes": "DXB and AUH"
+      },
+      {
+        "type": "insurance_travel",
+        "scope": "Visa Infinite travel insurance"
+      },
+      {
+        "type": "status_match",
+        "program": "Skywards",
+        "tier": "Silver",
+        "duration": "year_one"
+      }
+    ]
   },
   "emirates-nbd-skywards-signature": {
-    "welcomeBonus": "Up to 25,000 Skywards Miles — 15,000 Miles on USD 10,000 cumulative spend within first 3 billing statements; plus 10,000 Miles on USD 3,750 spend at emirates.com or Emirates sales office in UAE within first 12 billing statements.",
+    "welcomeBonus": {
+      "amount": 25000,
+      "unit": "skywards_miles",
+      "spend_threshold_aed": 50500,
+      "qualify_window_days": 360,
+      "headline_value_aed": 500,
+      "notes": "USD 13,750 equivalent across 12 statements; includes 10,000 bonus on emirates.com spend"
+    },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "Skywards Miles per USD 1 equivalent spend",
     "eligibility": {
@@ -649,7 +932,12 @@
       "international": 1.0,
       "everythingElse": 0.75
     },
-    "annualFeeWaiver": "First year free for eligible applicants; contact ENBD for waiver conditions.",
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "First year free for eligible applicants; no published spend waiver from year two."
+    },
     "loyaltyProgram": "Emirates Skywards",
     "transferPartners": [
       "skywards"
@@ -702,13 +990,51 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed"
+      "perks": "editor-confirmed",
+      "_features": "editor-confirmed"
     },
     "_lastScraped": null,
-    "_lastReviewed": "2026-05-01"
+    "_lastReviewed": "2026-05-07",
+    "_scraped_freetext": {
+      "welcomeBonus": "Up to 25,000 Skywards Miles — 15,000 Miles on USD 10,000 cumulative spend within first 3 billing statements; plus 10,000 Miles on USD 3,750 spend at emirates.com or Emirates sales office in UAE within first 12 billing statements.",
+      "annualFeeWaiver": "First year free for eligible applicants; contact ENBD for waiver conditions."
+    },
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "DragonPass",
+        "scope": {
+          "visits_per_year": 6
+        },
+        "geo": [
+          "UAE"
+        ],
+        "notes": "Limited DragonPass visits"
+      },
+      {
+        "type": "insurance_travel"
+      },
+      {
+        "type": "entertainer_bogo",
+        "program": "The Entertainer",
+        "scope": "limited"
+      },
+      {
+        "type": "golf",
+        "discount_pct": 40,
+        "scope": "global"
+      }
+    ]
   },
   "emirates-nbd-u-by-emaar-infinite": {
-    "welcomeBonus": "Up to 25,000 UPoints — 15,000 on card activation + joining fee payment, plus 10,000 on USD 10,000 cumulative retail spend in first 3 billing statements.",
+    "welcomeBonus": {
+      "amount": 25000,
+      "unit": "upoints",
+      "spend_threshold_aed": 36750,
+      "qualify_window_days": 90,
+      "headline_value_aed": 2500,
+      "notes": "15,000 on activation + 10,000 on USD 10,000 retail spend"
+    },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "% back as UPoints",
     "eligibility": {
@@ -737,7 +1063,11 @@
       "dining": 7.5,
       "travel": 7.5,
       "groceries": 1.5,
-      "everythingElse": 1.5
+      "everythingElse": 1.5,
+      "_caps": {
+        "monthly_max_aed": null,
+        "min_monthly_spend_to_qualify_aed": null
+      }
     },
     "loyaltyProgram": "UPoints",
     "joiningFee": {
@@ -811,10 +1141,89 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed"
+      "perks": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "earnRates._caps": "editor-confirmed"
     },
     "_lastScraped": null,
-    "_lastReviewed": "2026-05-01"
+    "_lastReviewed": "2026-05-07",
+    "_scraped_freetext": {
+      "welcomeBonus": "Up to 25,000 UPoints — 15,000 on card activation + joining fee payment, plus 10,000 on USD 10,000 cumulative retail spend in first 3 billing statements."
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": false,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "Joining fee AED 2,625 + AED 1,575 annual; no published waiver."
+    },
+    "_features": [
+      {
+        "type": "status_match",
+        "program": "U by Emaar",
+        "tier": "Platinum",
+        "duration": "ongoing"
+      },
+      {
+        "type": "lounge_access",
+        "network": "Visa Airport Companion",
+        "scope": "unlimited",
+        "geo": [
+          "global"
+        ],
+        "notes": "1,000+ lounges via Visa Airport Companion App"
+      },
+      {
+        "type": "hotel_discount",
+        "operator": "Emaar",
+        "discount_pct": 20,
+        "scope": "F&B and spas at Emaar Hospitality Group hotels"
+      },
+      {
+        "type": "hotel_earn_boost",
+        "operator": "Emaar",
+        "earn_pct": 7.5,
+        "notes": "Stays at Address, Rove, Vida hotels"
+      },
+      {
+        "type": "cinema_bogo",
+        "operator": "Reel",
+        "max_per_month": 3,
+        "fb_discount_pct": null,
+        "min_monthly_spend_aed": 5000,
+        "notes": "Free soft drink + popcorn; online booking only"
+      },
+      {
+        "type": "entertainer_bogo",
+        "program": "The Entertainer",
+        "scope": "limited"
+      },
+      {
+        "type": "valet",
+        "location": "Grand Drive, Dubai Mall",
+        "scope": "Galeries Lafayette + The Souk"
+      },
+      {
+        "type": "concierge",
+        "scope": "24/7"
+      },
+      {
+        "type": "roadside_assistance",
+        "scope": "uae"
+      },
+      {
+        "type": "transit_card",
+        "networks": [
+          "Salik"
+        ]
+      },
+      {
+        "type": "golf",
+        "discount_pct": 40,
+        "courses_count": 100,
+        "scope": "global"
+      }
+    ]
   },
   "fab-cashback": {
     "kfsUrl": "https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf",
@@ -886,7 +1295,24 @@
       "perks": "scraped"
     },
     "_lastScraped": "2026-05-07",
-    "_lastReviewed": null
+    "_lastReviewed": null,
+    "_scraped_freetext": {
+      "perks": [
+        "English",
+        "[العربية\\\\",
+        "[Personal Online Banking (UAE)](https://online.bankfab.com/PersonalBankingWeb/login)",
+        "[Ratibi Prepaid Card Balance Enquiry](https://ppc.magnati.com/ppc-inquiry)",
+        "[FAB Business Portal](https://business.bankfab.com/)",
+        "[FABeAccess - Corporate Online Banking](https://fabeaccess.bankfab.com/)",
+        "[FABOnline Banking Cash (Corporate)](https://online.bankfab.com/fabonline)",
+        "[FABOnline Banking Trade (Corporate)](https://fabeaccesstrade.bankfab.com/fabonlinetrade/portal)",
+        "[iBanking Corporate Online Banking](https://ibanking.bankfab.com/iportalweb/)",
+        "[IPO/RI Subscription](https://www.bankfab.com/v1/en-ae/investment-banking/iposubscription)",
+        "[FAB Securities Services (INSIGHT)](https://fss.bankfab.com/)",
+        "[iBanking ADGM Corporate Online Banking](https://ibanking-adgm.bankfab.com/iportalweb)"
+      ]
+    },
+    "_features": []
   },
   "fab-elite": {
     "welcomeBonus": "Up to 500,000 FAB Rewards on all your spending You can earn up to 500,000 FAB Rewards on all your spending",
@@ -957,7 +1383,25 @@
       "perks": "scraped"
     },
     "_lastScraped": "2026-05-07",
-    "_lastReviewed": null
+    "_lastReviewed": null,
+    "_scraped_freetext": {
+      "welcomeBonus": "Up to 500,000 FAB Rewards on all your spending You can earn up to 500,000 FAB Rewards on all your spending",
+      "perks": [
+        "English",
+        "[العربية\\\\",
+        "[Personal Online Banking (UAE)](https://online.bankfab.com/PersonalBankingWeb/login)",
+        "[Ratibi Prepaid Card Balance Enquiry](https://ppc.magnati.com/ppc-inquiry)",
+        "[FAB Business Portal](https://business.bankfab.com/)",
+        "[FABeAccess - Corporate Online Banking](https://fabeaccess.bankfab.com/)",
+        "[FABOnline Banking Cash (Corporate)](https://online.bankfab.com/fabonline)",
+        "[FABOnline Banking Trade (Corporate)](https://fabeaccesstrade.bankfab.com/fabonlinetrade/portal)",
+        "[iBanking Corporate Online Banking](https://ibanking.bankfab.com/iportalweb/)",
+        "[IPO/RI Subscription](https://www.bankfab.com/v1/en-ae/investment-banking/iposubscription)",
+        "[FAB Securities Services (INSIGHT)](https://fss.bankfab.com/)",
+        "[iBanking ADGM Corporate Online Banking](https://ibanking-adgm.bankfab.com/iportalweb)"
+      ]
+    },
+    "_features": []
   },
   "fab-etihad-guest-infinite": {
     "kfsUrl": "https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf",
@@ -1026,7 +1470,24 @@
       "perks": "scraped"
     },
     "_lastScraped": "2026-05-07",
-    "_lastReviewed": null
+    "_lastReviewed": null,
+    "_scraped_freetext": {
+      "perks": [
+        "English",
+        "[العربية\\\\",
+        "[Personal Online Banking (UAE)](https://online.bankfab.com/PersonalBankingWeb/login)",
+        "[Ratibi Prepaid Card Balance Enquiry](https://ppc.magnati.com/ppc-inquiry)",
+        "[FAB Business Portal](https://business.bankfab.com/)",
+        "[FABeAccess - Corporate Online Banking](https://fabeaccess.bankfab.com/)",
+        "[FABOnline Banking Cash (Corporate)](https://online.bankfab.com/fabonline)",
+        "[FABOnline Banking Trade (Corporate)](https://fabeaccesstrade.bankfab.com/fabonlinetrade/portal)",
+        "[iBanking Corporate Online Banking](https://ibanking.bankfab.com/iportalweb/)",
+        "[IPO/RI Subscription](https://www.bankfab.com/v1/en-ae/investment-banking/iposubscription)",
+        "[FAB Securities Services (INSIGHT)](https://fss.bankfab.com/)",
+        "[iBanking ADGM Corporate Online Banking](https://ibanking-adgm.bankfab.com/iportalweb)"
+      ]
+    },
+    "_features": []
   },
   "fab-world-elite": {
     "kfsUrl": "https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf",
@@ -1095,6 +1556,23 @@
       "perks": "scraped"
     },
     "_lastScraped": "2026-05-07",
-    "_lastReviewed": null
+    "_lastReviewed": null,
+    "_scraped_freetext": {
+      "perks": [
+        "English",
+        "[العربية\\\\",
+        "[Personal Online Banking (UAE)](https://online.bankfab.com/PersonalBankingWeb/login)",
+        "[Ratibi Prepaid Card Balance Enquiry](https://ppc.magnati.com/ppc-inquiry)",
+        "[FAB Business Portal](https://business.bankfab.com/)",
+        "[FABeAccess - Corporate Online Banking](https://fabeaccess.bankfab.com/)",
+        "[FABOnline Banking Cash (Corporate)](https://online.bankfab.com/fabonline)",
+        "[FABOnline Banking Trade (Corporate)](https://fabeaccesstrade.bankfab.com/fabonlinetrade/portal)",
+        "[iBanking Corporate Online Banking](https://ibanking.bankfab.com/iportalweb/)",
+        "[IPO/RI Subscription](https://www.bankfab.com/v1/en-ae/investment-banking/iposubscription)",
+        "[FAB Securities Services (INSIGHT)](https://fss.bankfab.com/)",
+        "[iBanking ADGM Corporate Online Banking](https://ibanking-adgm.bankfab.com/iportalweb)"
+      ]
+    },
+    "_features": []
   }
 }
