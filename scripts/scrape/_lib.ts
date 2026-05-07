@@ -3,8 +3,6 @@
 // - Firecrawl client wrapper (reads FIRECRAWL_API_KEY from env)
 // - Pure parser helpers (price, percent, salary, date)
 // - Type definitions matching the cards Zod schema
-//
-// See PLAN.md Phase 2 and EDITORIAL.md visual standard.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -36,11 +34,8 @@ export interface CardUrlSet {
 
 export interface FetchedSource {
   url: string;
-  /** Cleaned markdown returned by Firecrawl (or fixture loader). */
   markdown: string;
-  /** Raw HTML if available; some downstream parsers need it for tables. */
   html?: string;
-  /** Status: "ok" if the fetch returned content, "fail" with reason if not. */
   status: "ok" | "fail";
   failReason?: string;
 }
@@ -49,21 +44,12 @@ export interface CardScrapeResult {
   slug: string;
   name: string;
   fetched: FetchedSource[];
-  /** Normalised draft card data, mapped to the cards Zod shape. Null when normalisation failed. */
   draft: Record<string, unknown> | null;
   errors: string[];
 }
 
 // ── Firecrawl client ─────────────────────────────────────────────────────
 
-/**
- * Fetch a single URL via Firecrawl.
- *
- * Reads FIRECRAWL_API_KEY from env. If the key is missing or set to "skip",
- * returns a synthetic FetchedSource with status "fail" so dry-runs work.
- *
- * Network call shape mirrors Firecrawl v1 /scrape endpoint.
- */
 export async function firecrawlFetch(url: string): Promise<FetchedSource> {
   const key = process.env.FIRECRAWL_API_KEY;
   if (!key || key === "skip") {
@@ -125,7 +111,6 @@ export async function firecrawlFetch(url: string): Promise<FetchedSource> {
   }
 }
 
-/** Fetch a fixture file from disk — used by tests + offline dev. */
 export function loadFixture(fixturePath: string): FetchedSource {
   const abs = path.resolve(fixturePath);
   if (!fs.existsSync(abs)) {
@@ -145,7 +130,6 @@ export function loadFixture(fixturePath: string): FetchedSource {
   };
 }
 
-/** Bare-minimum HTML → markdown fallback for fixture testing. Not production. */
 function htmlToMarkdownFallback(html: string): string {
   return html
     .replace(/<script[\s\S]*?<\/script>/gi, "")
@@ -181,15 +165,50 @@ export function parsePercent(input: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
-/** Parse "Minimum salary AED 12,000 per month" → 12000. */
+/**
+ * Parse a UAE minimum monthly salary in AED.
+ *
+ * Tolerated phrasings (in priority order):
+ *   1. "Minimum salary AED 12,000 per month"     (existing)
+ *   2. "Min salary: AED 5,000"                   (existing)
+ *   3. "Minimum Monthly Salary\n\n## 5,000"      (FAB heading layout)
+ *   4. "Minimum Monthly Salary **5,000**"        (FAB bold layout)
+ *   5. "Minimum Monthly Salary 5,000"            (bare number)
+ *   6. "Salary AED 8,000"                        (no "minimum" prefix)
+ *
+ * Validates the parsed number is in the plausible AED-salary range
+ * (1,000–500,000) so we don't pick up FX-fee percentages, fees, etc.
+ */
 export function parseMinSalary(input: string): number | null {
-  // Look for "minimum salary" or "min salary" preceded form.
-  const m = input.match(/min(?:imum)?\s+salary\s*[:of\s]*AED\s*([\d,]+)/i);
+  // Pattern 1+2 — explicit AED prefix near "salary" word
+  let m = input.match(/min(?:imum)?\s+(?:monthly\s+)?salary\s*[:of\s]*AED\s*([\d,]+)/i);
   if (m) {
     const n = Number(m[1].replace(/,/g, ""));
-    return Number.isFinite(n) ? n : null;
+    if (isPlausibleSalary(n)) return n;
   }
+
+  // Pattern 3+4+5 — "Minimum (Monthly )Salary" label, look ahead up to
+  // 80 chars (handles markdown headings, bold, currency icons) for a
+  // number that looks like a salary band.
+  m = input.match(/min(?:imum)?\s+(?:monthly\s+)?salary[\s\S]{0,80}?(\d{1,3}(?:,\d{3})+|\d{4,6})/i);
+  if (m) {
+    const n = Number(m[1].replace(/,/g, ""));
+    if (isPlausibleSalary(n)) return n;
+  }
+
+  // Pattern 6 — generic "Salary AED 8,000" without "minimum"
+  m = input.match(/(?:^|\W)salary\s*[:of\s]*AED\s*([\d,]+)/i);
+  if (m) {
+    const n = Number(m[1].replace(/,/g, ""));
+    if (isPlausibleSalary(n)) return n;
+  }
+
   return null;
+}
+
+/** Plausible UAE monthly salary band: AED 1,000 – AED 500,000. */
+function isPlausibleSalary(n: number): boolean {
+  return Number.isFinite(n) && n >= 1000 && n <= 500000;
 }
 
 /**
