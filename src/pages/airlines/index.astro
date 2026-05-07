@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import ProgrammeLogo from "~/components/ProgrammeLogo.astro";
 import { getCollection } from "astro:content";
 
 const programs = await getCollection("programs");
@@ -25,6 +26,7 @@ const programs = await getCollection("programs");
       {programs.map((p) => (
         <a href={`/airlines/${p.id}/`} class="dp-dir-tile">
           <span class="eyebrow">{p.data.region} · {p.data.currencyName}</span>
+          <ProgrammeLogo slug={p.id} name={p.data.name} size="lg" />
           <span class="title">{p.data.name}</span>
         </a>
       ))}

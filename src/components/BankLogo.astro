@@ -1,0 +1,72 @@
+---
+// Bank logo — renders the SVG mark from /logos/banks/[slug].svg.
+// Falls back to a styled text initial if the file is missing.
+//
+// Usage:
+//   <BankLogo slug="emirates-nbd" name="Emirates NBD" size="md" />
+
+interface Props {
+  slug: string;
+  name: string;
+  size?: "sm" | "md" | "lg";
+}
+
+const { slug, name, size = "md" } = Astro.props;
+
+const dim = { sm: 18, md: 28, lg: 44 }[size];
+
+// Initial fallback: first capital letter of each word, max 2.
+const initials = name
+  .split(/\s+/)
+  .map((w) => w[0]?.toUpperCase() ?? "")
+  .slice(0, 2)
+  .join("");
+---
+
+<span class={`dp-bank-logo dp-bank-logo--${size}`} aria-label={`${name} logo`} role="img">
+  <img
+    src={`/logos/banks/${slug}.svg`}
+    alt=""
+    width={dim}
+    height={dim}
+    loading="lazy"
+    decoding="async"
+    onerror={`this.style.display='none';this.nextElementSibling.style.display='inline-flex'`}
+  />
+  <span class="dp-bank-logo-fallback" aria-hidden="true">{initials}</span>
+</span>
+
+<style>
+  .dp-bank-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 0;
+  }
+  .dp-bank-logo img {
+    display: block;
+    width: auto;
+    object-fit: contain;
+    background: transparent;
+  }
+  .dp-bank-logo--sm img { height: 18px; max-width: 60px; }
+  .dp-bank-logo--md img { height: 28px; max-width: 96px; }
+  .dp-bank-logo--lg img { height: 44px; max-width: 140px; }
+
+  .dp-bank-logo-fallback {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .dp-bank-logo--sm .dp-bank-logo-fallback { width: 22px; height: 22px; font-size: 10px; }
+  .dp-bank-logo--md .dp-bank-logo-fallback { width: 32px; height: 32px; font-size: 12px; }
+  .dp-bank-logo--lg .dp-bank-logo-fallback { width: 48px; height: 48px; font-size: 16px; }
+</style>

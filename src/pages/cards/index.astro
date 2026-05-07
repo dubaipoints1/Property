@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import BankLogo from "~/components/BankLogo.astro";
 import { getCollection, getEntry } from "astro:content";
 
 const cards = await getCollection("cards");
@@ -42,7 +43,10 @@ const categories = [
     <div class="dp-dir-grid">
       {cardsWithBanks.map(({ card, bankName }) => (
         <a href={`/cards/${card.id}/`} class="dp-dir-tile">
-          <span class="eyebrow">{bankName} · {card.data.network}</span>
+          <span class="eyebrow">
+            <BankLogo slug={card.data.bank.id} name={bankName} size="sm" />
+            <span>{bankName} · {card.data.network}</span>
+          </span>
           <span class="title">{card.data.name}</span>
           <span class="desc">{card.data.welcomeBonus ?? "Annual fee waiver: " + (card.data.annualFeeWaiver ?? "see review")}</span>
           <span class="meta">

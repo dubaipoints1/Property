@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import BankLogo from "~/components/BankLogo.astro";
 import { getCollection } from "astro:content";
 
 const banks = (await getCollection("banks")).sort((a, b) =>
@@ -23,6 +24,7 @@ const banks = (await getCollection("banks")).sort((a, b) =>
       {banks.map((b) => (
         <a href={`/banks/${b.id}/`} class="dp-dir-tile">
           <span class="eyebrow">UAE Bank</span>
+          <BankLogo slug={b.id} name={b.data.name} size="lg" />
           <span class="title">{b.data.name}</span>
           {b.data.customerService.website && (
             <span class="meta">{new URL(b.data.customerService.website).hostname}</span>

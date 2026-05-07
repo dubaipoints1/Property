@@ -1,0 +1,52 @@
+---
+// Loyalty programme logo — renders the SVG mark from /logos/airlines/[slug].svg.
+// Same fallback pattern as BankLogo.
+//
+// Usage:
+//   <ProgrammeLogo slug="skywards" name="Emirates Skywards" size="md" />
+
+interface Props {
+  slug: string;
+  name: string;
+  size?: "sm" | "md" | "lg";
+}
+
+const { slug, name, size = "md" } = Astro.props;
+
+const dim = { sm: 18, md: 28, lg: 44 }[size];
+
+const initials = name
+  .split(/\s+/)
+  .map((w) => w[0]?.toUpperCase() ?? "")
+  .slice(0, 2)
+  .join("");
+---
+
+<span class={`dp-prog-logo dp-bank-logo--${size}`} aria-label={`${name} logo`} role="img">
+  <img
+    src={`/logos/airlines/${slug}.svg`}
+    alt=""
+    width={dim}
+    height={dim}
+    loading="lazy"
+    decoding="async"
+    onerror={`this.style.display='none';this.nextElementSibling.style.display='inline-flex'`}
+  />
+  <span class="dp-bank-logo-fallback" aria-hidden="true">{initials}</span>
+</span>
+
+<style>
+  .dp-prog-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 0;
+  }
+  .dp-prog-logo img {
+    display: block;
+    width: auto;
+    object-fit: contain;
+    background: transparent;
+  }
+</style>

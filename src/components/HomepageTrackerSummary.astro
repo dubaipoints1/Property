@@ -1,6 +1,7 @@
 ---
 import { getLiveOffers } from "~/lib/offerAdapter";
 import { formatAED, daysUntil } from "~/lib/salaryTransfer";
+import BankLogo from "~/components/BankLogo.astro";
 
 const offers = await getLiveOffers();
 
@@ -24,7 +25,8 @@ const ranked = offers
         <li class="dp-tracker-row">
           <div class="dp-tracker-row-main">
             <a href={`/salary-transfer/${offer.bankSlug}/`} class="dp-tracker-bank">
-              {offer.bankName}
+              <BankLogo slug={offer.bankSlug} name={offer.bankName} size="sm" />
+              <span>{offer.bankName}</span>
             </a>
             <p class="dp-tracker-name">{offer.name}</p>
             <p class="dp-tracker-meta">
