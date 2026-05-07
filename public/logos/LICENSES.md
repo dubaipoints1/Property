@@ -29,6 +29,7 @@ this document.
 | Slug | Source URL | Pulled | Notes |
 |---|---|---|---|
 | banks/emirates-nbd | placeholder | 2026-05-06 | Replace with ENBD brand-kit SVG |
+| banks/fab | placeholder | 2026-05-07 | Replace with FAB brand-kit SVG |
 | banks/adcb | placeholder | 2026-05-06 | Replace with ADCB brand-kit SVG |
 | banks/emirates-islamic | placeholder | 2026-05-06 | Replace with Emirates Islamic brand-kit SVG |
 | banks/rakbank | placeholder | 2026-05-06 | Replace with RAKBANK brand-kit SVG |
