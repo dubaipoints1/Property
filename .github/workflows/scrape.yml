@@ -1,6 +1,9 @@
 # Weekly card-data refresh.
 #
-# Runs every Sunday 23:00 UTC (Monday 03:00 GST) and after manual dispatch.
+# Runs every Sunday 23:00 UTC (Monday 03:00 GST), after manual dispatch,
+# and after any direct edit to this workflow file (path-scoped push trigger,
+# used to fire a run from a phone without `gh workflow run`).
+#
 # Scrapes each bank's card pages via Firecrawl, normalises into draft MDX,
 # and opens a PR with a side-by-side diff in the body.
 #
@@ -21,6 +24,11 @@ on:
   schedule:
     - cron: "0 23 * * 0" # Sunday 23:00 UTC
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/scrape.yml
 
 jobs:
   refresh:
