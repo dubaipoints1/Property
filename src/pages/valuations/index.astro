@@ -1,0 +1,208 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import Disclaimer from "~/components/Disclaimer.astro";
+import { valuations, valuationsAsOf } from "~/lib/valuations";
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+
+const trendArrow = (t: "up" | "flat" | "down") =>
+  ({ up: "↑", flat: "→", down: "↓" })[t];
+
+const trendClass = (t: "up" | "flat" | "down") =>
+  ({ up: "text-emerald-700", flat: "text-slate-500", down: "text-rose-700" })[t];
+
+const groups: Array<{ label: string; key: "airline" | "hotel" | "bank" }> = [
+  { label: "Airline programmes", key: "airline" },
+  { label: "Hotel programmes", key: "hotel" },
+  { label: "Bank-proprietary points", key: "bank" },
+];
+---
+
+<BaseLayout
+  title="DubaiPoints AED Valuations — what UAE points and miles are actually worth"
+  description="Indicative fils-per-Mile valuations for every major UAE rewards currency — Skywards, Etihad Guest, Marriott Bonvoy, FAB Rewards, ADCB TouchPoints and more. Sampled quarterly. Methodology transparent."
+>
+  <article class="val-page">
+    <header class="head">
+      <p class="eyebrow">DubaiPoints AED Valuations · {fmt(valuationsAsOf)}</p>
+      <h1>What a UAE Mile, point or fil is <em>actually</em> worth.</h1>
+      <p class="lede">
+        Indicative fils-per-Mile valuations for every UAE rewards currency we
+        cover. Sampled best-case for premium-cabin redemption availability
+        ~30 days out, or for the highest-value redemption path. <strong>Your
+        mileage will vary.</strong>
+      </p>
+      <p class="status">
+        <strong>Status: Indicative — pre-sampling.</strong> First formal
+        sampling cadence begins Q3 2026. Until then, treat the figures below
+        as DubaiPoints' editorial best estimate informed by published award
+        charts and UAE-resident redemption reports. See the{" "}
+        <a href="/valuations/methodology/">methodology page</a> for how these
+        figures will be sampled going forward.
+      </p>
+    </header>
+
+    {groups.map((g) => {
+      const rows = valuations.filter((v) => v.category === g.key);
+      return (
+        <section>
+          <h2>{g.label}</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Programme</th>
+                  <th class="num">fils / Mile</th>
+                  <th>Trend</th>
+                  <th>Sweet spot</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((v) => (
+                  <tr>
+                    <td>
+                      {v.hasProgrammePage ? (
+                        <a href={`/airlines/${v.slug}/`}>{v.programme}</a>
+                      ) : (
+                        <span>{v.programme}</span>
+                      )}
+                    </td>
+                    <td class="num value">
+                      {v.valueFils.toFixed(1)}
+                      <span class="unit">fils</span>
+                    </td>
+                    <td class={`trend ${trendClass(v.trend)}`}>
+                      <span class="arrow">{trendArrow(v.trend)}</span>
+                      <span class="note">{v.trendNote}</span>
+                    </td>
+                    <td class="sweet">{v.sweetSpot}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      );
+    })}
+
+    <section>
+      <h2>How to read these figures</h2>
+      <p>
+        A "Skywards Mile worth 2.4 fils" means: if you redeem 100,000 Miles for
+        an Emirates redemption priced at AED 2,400 cash, you have redeemed
+        each Mile at 2.4 fils. The figure is a sampled best-case for the
+        programme's <em>strongest</em> redemption — premium-cabin availability
+        for airlines, off-peak award rates for hotels, and the best
+        statement-credit / gift-card / transfer exit for bank-proprietary
+        points.
+      </p>
+      <p>
+        It is <strong>not</strong> what every Mile redeemed will be worth.
+        Partner-airline awards, peak-season cash prices, and "Cash + Miles"
+        hybrid redemptions all reduce the realised value. Use this table to
+        decide which programme to prefer at the earn stage; use the per-card
+        review pages to decide which UAE card actually earns it.
+      </p>
+    </section>
+
+    <Disclaimer variant="general" />
+  </article>
+</BaseLayout>
+
+<style>
+  .val-page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-block: 24px 48px;
+  }
+  @media (min-width: 768px) {
+    .val-page { padding-block: 48px 72px; }
+  }
+  .head { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  .eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+  }
+  .head h1 {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(28px, 5vw, 44px);
+    line-height: 1.1; letter-spacing: -1px;
+    color: var(--ink); text-wrap: balance;
+  }
+  .head h1 em { font-style: italic; color: var(--gold); font-weight: 500; }
+  .head .lede {
+    margin-top: 14px;
+    font-size: 16px; line-height: 1.6; color: var(--ink-soft);
+    max-width: 65ch; text-wrap: pretty;
+  }
+  .head .status {
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: var(--gold-soft);
+    border-left: 3px solid var(--gold);
+    border-radius: 4px;
+    font-size: 13px;
+    color: #6b4a14;
+    line-height: 1.55;
+  }
+  .head .status a { color: #6b4a14; text-decoration: underline; font-weight: 600; }
+
+  section { margin-block: 36px; }
+  section h2 {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(20px, 3vw, 26px);
+    letter-spacing: -0.4px; color: var(--ink);
+    margin-bottom: 16px;
+  }
+  section p {
+    font-size: 15px; line-height: 1.65;
+    color: var(--ink-soft); margin-bottom: 12px;
+    max-width: 70ch; text-wrap: pretty;
+  }
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+  }
+  table {
+    width: 100%; min-width: 720px;
+    border-collapse: collapse;
+  }
+  thead {
+    background: var(--bg);
+    text-align: left;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted);
+  }
+  thead th { padding: 12px 16px; }
+  thead th.num { text-align: right; }
+  tbody td {
+    padding: 14px 16px;
+    border-top: 1px solid var(--line);
+    font-size: 14px; color: var(--ink-soft);
+    vertical-align: top;
+  }
+  tbody td.num { text-align: right; }
+  tbody td a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
+  tbody td a:hover { color: var(--gold); }
+  td.value {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 22px; letter-spacing: -0.4px; color: var(--ink); line-height: 1;
+  }
+  td.value .unit {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; font-weight: 400;
+    color: var(--muted); margin-left: 4px;
+  }
+  td.trend { white-space: nowrap; }
+  td.trend .arrow { font-weight: 700; margin-right: 6px; font-size: 16px; }
+  td.trend .note { font-size: 12px; color: var(--muted); display: block; margin-top: 2px; }
+  td.sweet { color: var(--ink); font-weight: 500; }
+
+  .text-emerald-700 { color: #047857; }
+  .text-slate-500 { color: #64748b; }
+  .text-rose-700 { color: #be123c; }
+</style>
