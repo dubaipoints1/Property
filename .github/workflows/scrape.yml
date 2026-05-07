@@ -54,54 +54,40 @@ jobs:
           npm install --no-audit --no-fund 2>&1 | tee -a "$LOG"
           INSTALL_RC=${PIPESTATUS[0]}
           echo "[install] exit=$INSTALL_RC" | tee -a "$LOG"
+          if [ "$INSTALL_RC" -ne 0 ]; then echo "FAIL: install" | tee -a "$LOG"; exit 0; fi
 
-          if [ "$INSTALL_RC" -ne 0 ]; then
-            echo "FAIL: install" | tee -a "$LOG"
-            exit 0
-          fi
-
-          echo "=== FIRECRAWL_API_KEY presence check ===" | tee -a "$LOG"
-          if [ -n "$FIRECRAWL_API_KEY" ]; then
-            echo "FIRECRAWL_API_KEY: present (${#FIRECRAWL_API_KEY} chars)" | tee -a "$LOG"
+          # ── Firecrawl /v1/map: discover real FAB credit-card URLs ─────
+          echo "=== Firecrawl /v1/map: bankfab.com (credit card) ===" | tee -a "$LOG"
+          curl -sS -X POST https://api.firecrawl.dev/v1/map \
+            -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"url":"https://www.bankfab.com","search":"credit card","limit":100}' \
+            -o /tmp/map.json
+          echo "[map] response head:" | tee -a "$LOG"
+          head -c 2000 /tmp/map.json 2>&1 | tee -a "$LOG"
+          echo "" | tee -a "$LOG"
+          echo "[map] all URLs (filtered to credit-card / cards):" | tee -a "$LOG"
+          if command -v jq >/dev/null 2>&1; then
+            jq -r '.links[]?' /tmp/map.json 2>/dev/null \
+              | grep -iE 'credit.?card|/cards/' \
+              | sort -u \
+              | tee -a "$LOG"
           else
-            echo "FIRECRAWL_API_KEY: MISSING from env" | tee -a "$LOG"
+            echo "[map] jq not available, dumping raw" | tee -a "$LOG"
+            cat /tmp/map.json | tee -a "$LOG"
           fi
           echo "" | tee -a "$LOG"
 
+          # ── Existing scrape pipeline against fab.urls.json (still 404 territory until we update) ──
           echo "=== npm run scrape:fab ===" | tee -a "$LOG"
           npm run scrape:fab 2>&1 | tee -a "$LOG"
-          FAB_RC=${PIPESTATUS[0]}
-          echo "[scrape:fab] exit=$FAB_RC" | tee -a "$LOG"
-          echo "" | tee -a "$LOG"
-
-          echo "=== ls data/scraped/fab/ ===" | tee -a "$LOG"
-          ls -la data/scraped/fab/ 2>&1 | tee -a "$LOG"
-          echo "" | tee -a "$LOG"
-
-          echo "=== latest scrape JSON (first 200 lines) ===" | tee -a "$LOG"
-          LATEST_JSON=$(ls -t data/scraped/fab/*.json 2>/dev/null | head -1)
-          if [ -n "$LATEST_JSON" ]; then
-            echo "FILE: $LATEST_JSON" | tee -a "$LOG"
-            head -200 "$LATEST_JSON" 2>&1 | tee -a "$LOG"
-          else
-            echo "No scrape JSON written." | tee -a "$LOG"
-          fi
           echo "" | tee -a "$LOG"
 
           echo "=== npm run scrape:propose ===" | tee -a "$LOG"
           npm run scrape:propose 2>&1 | tee -a "$LOG"
-          PROPOSE_RC=${PIPESTATUS[0]}
-          echo "[scrape:propose] exit=$PROPOSE_RC" | tee -a "$LOG"
           echo "" | tee -a "$LOG"
 
-          if [ -f PR_BODY.md ]; then
-            cp PR_BODY.md LATEST_SCRAPE.md
-            echo "=== PR_BODY.md head ===" | tee -a "$LOG"
-            head -80 PR_BODY.md 2>&1 | tee -a "$LOG"
-          else
-            echo "No PR_BODY.md produced." | tee -a "$LOG"
-          fi
-
+          if [ -f PR_BODY.md ]; then cp PR_BODY.md LATEST_SCRAPE.md; fi
           exit 0
 
       - name: Always commit log + diagnostic body to main
@@ -109,7 +95,6 @@ jobs:
         run: |
           git config user.name "dubaipoints-bot"
           git config user.email "info@dubaipoints.ae"
-          # force-add so .gitignore doesn't drop them
           git add -f LATEST_RUN.log LATEST_SCRAPE.md 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "[diag] Nothing to commit."
