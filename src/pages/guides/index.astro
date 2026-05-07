@@ -5,30 +5,81 @@ import { getCollection } from "astro:content";
 const guides = (await getCollection("guides")).sort(
   (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
 );
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+// Surface the Expat Starter pillar prominently if present.
+const pillar = guides.find((g) => g.id === "expat-starter");
+const others = guides.filter((g) => g.id !== "expat-starter");
 ---
 
 <BaseLayout
   title="Guides — UAE points and miles"
-  description="Long-form guides to UAE credit card eligibility, salary transfer mechanics, miles redemption strategy, and expat-specific friction."
+  description="Long-form, AED-first guides to UAE credit-card eligibility, salary-transfer mechanics, miles redemption strategy, and expat-specific friction."
+  fullWidth
 >
-  <header class="border-b border-slate-200 pb-6">
-    <h1 class="text-3xl font-semibold text-slate-900">Guides</h1>
-    <p class="mt-2 text-slate-700">Deep, evergreen reference content.</p>
-  </header>
+  <article class="dp-article is-wide">
+    <header class="dp-article-head">
+      <p class="dp-article-eyebrow">Guides</p>
+      <h1 class="dp-article-title">Deep, evergreen <em>UAE</em> reference content.</h1>
+      <p class="dp-article-lede">Long-form guides built to last — refreshed quarterly, every figure in AED, every figure sourced.</p>
+    </header>
 
-  <ul class="mt-6 grid gap-4 sm:grid-cols-2">
-    {
-      guides.map((g) => (
-        <li>
-          <a
-            href={`/guides/${g.id}/`}
-            class="block rounded-md border border-slate-200 bg-white p-4 no-underline hover:border-brand-500"
-          >
-            <h2 class="font-semibold text-slate-900">{g.data.title}</h2>
-            <p class="mt-1 text-sm text-slate-600">{g.data.description}</p>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+    {pillar && (
+      <a href={`/guides/${pillar.id}/`} class="dp-pillar-card">
+        <span class="badge">Cornerstone</span>
+        <h2>{pillar.data.title}</h2>
+        <p>{pillar.data.description}</p>
+        <span class="cta">Open the Expat Starter →</span>
+      </a>
+    )}
+
+    <div class="dp-dir-grid">
+      {others.map((g) => (
+        <a href={`/guides/${g.id}/`} class="dp-dir-tile">
+          <span class="eyebrow">Guide</span>
+          <span class="title">{g.data.title}</span>
+          <span class="desc">{g.data.description}</span>
+          <span class="meta">Updated {fmt(g.data.updatedAt)}</span>
+        </a>
+      ))}
+    </div>
+  </article>
 </BaseLayout>
+
+<style>
+  .dp-pillar-card {
+    display: block;
+    border: 1px solid var(--ink);
+    border-radius: 8px;
+    background: var(--ink);
+    color: white;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+    transition: background 0.15s;
+  }
+  .dp-pillar-card:hover { background: #1c1f27; }
+  .dp-pillar-card .badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .dp-pillar-card h2 {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(20px, 3vw, 26px);
+    letter-spacing: -0.4px; color: white;
+    margin-bottom: 10px; text-wrap: balance;
+  }
+  .dp-pillar-card p {
+    font-size: 14px; line-height: 1.6;
+    color: rgba(255,255,255,0.78);
+    max-width: 65ch; margin-bottom: 14px;
+  }
+  .dp-pillar-card .cta {
+    display: inline-block;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
+    color: var(--gold);
+  }
+</style>

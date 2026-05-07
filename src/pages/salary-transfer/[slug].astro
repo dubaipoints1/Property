@@ -73,86 +73,131 @@ if (props.kind === "band") {
     <BaseLayout
       title={`${props.bankName} — salary transfer offer details`}
       description={`Deep-dive on ${props.bankName}'s current salary transfer offer: bands, clawback, payout timing, and expat-relevant gotchas.`}
+      fullWidth
     >
-      <header class="border-b border-slate-200 pb-6">
-        <p class="text-xs uppercase tracking-wide text-slate-500">Salary transfer</p>
-        <h1 class="mt-1 text-3xl font-semibold text-slate-900">{props.bankName}</h1>
-        <p class="mt-2 text-sm text-slate-700">
-          <a href={`/salary-transfer/history/${props.bankId}/`}>
-            View {props.bankName} offer history →
-          </a>
-        </p>
-      </header>
+      <article class="dp-article is-wide">
+        <header class="dp-article-head">
+          <p class="dp-article-eyebrow">Salary transfer</p>
+          <h1 class="dp-article-title">{props.bankName}</h1>
+          <p class="dp-article-meta">
+            <a href={`/salary-transfer/history/${props.bankId}/`}>
+              View {props.bankName} offer history →
+            </a>
+          </p>
+        </header>
 
-      {bankOffers.length === 0 && (
-        <p class="mt-6 rounded-md bg-slate-50 p-4 text-sm text-slate-600">
-          No live offer tracked for {props.bankName}.
-        </p>
-      )}
+        {bankOffers.length === 0 && (
+          <p class="dp-tracker-empty">No live offer tracked for {props.bankName}.</p>
+        )}
 
-      {bankOffers.map((o) => {
-        const noteEntry = renderedNotes.find((n) => n.id === o.id);
-        const NoteContent = noteEntry?.Content;
-        return (
-          <article class="mt-8 space-y-4 rounded-lg border border-slate-200 bg-white p-6">
-            <header class="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 class="text-xl font-semibold text-slate-900">{o.name}</h2>
-              <span class="text-xs uppercase tracking-wide text-slate-500">
-                Last verified {new Date(o.lastVerified).toLocaleDateString("en-GB")}
-              </span>
-            </header>
+        {bankOffers.map((o) => {
+          const noteEntry = renderedNotes.find((n) => n.id === o.id);
+          const NoteContent = noteEntry?.Content;
+          return (
+            <section class="dp-offer-card">
+              <header class="dp-offer-head">
+                <h2>{o.name}</h2>
+                <span class="dp-offer-verified">
+                  Last verified {new Date(o.lastVerified).toLocaleDateString("en-GB")}
+                </span>
+              </header>
 
-            <table class="w-full text-sm">
-              <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th class="px-3 py-2">Salary band</th>
-                  <th class="px-3 py-2">Reward</th>
-                  <th class="px-3 py-2">Type</th>
-                  <th class="px-3 py-2">Pays out</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-200">
-                {o.salaryBands.map((b) => (
+              <table class="dp-data-table">
+                <thead>
                   <tr>
-                    <td class="px-3 py-2">
-                      {formatAED(b.minSalary)} –{" "}
-                      {b.maxSalary === null ? "no limit" : formatAED(b.maxSalary)}
-                    </td>
-                    <td class="px-3 py-2 font-semibold">{formatAED(b.rewardAmount)}</td>
-                    <td class="px-3 py-2">{b.rewardType.replace("_", " ")}</td>
-                    <td class="px-3 py-2">+{b.monthsToPayout} months</td>
+                    <th>Salary band</th>
+                    <th>Reward</th>
+                    <th>Type</th>
+                    <th>Pays out</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {o.salaryBands.map((b) => (
+                    <tr>
+                      <td>
+                        {formatAED(b.minSalary)} –{" "}
+                        {b.maxSalary === null ? "no limit" : formatAED(b.maxSalary)}
+                      </td>
+                      <td class="num">{formatAED(b.rewardAmount)}</td>
+                      <td>{b.rewardType.replace("_", " ")}</td>
+                      <td>+{b.monthsToPayout} months</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-            <section>
-              <h3 class="text-sm font-semibold text-slate-900">Requirements</h3>
-              <ul class="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-700">
-                {o.requirements.map((r) => (
-                  <li>{r}</li>
-                ))}
-              </ul>
-            </section>
-
-            <section class="rounded-md bg-rose-50 p-3 text-sm text-rose-900">
-              <strong>Clawback:</strong> {o.clawbackTerms}
-            </section>
-
-            {NoteContent && (
-              <section class="prose prose-slate max-w-none border-t border-slate-200 pt-4">
-                <NoteContent />
+              <section class="dp-article-section">
+                <h3>Requirements</h3>
+                <ul class="dp-bullet-list">
+                  {o.requirements.map((r) => <li>{r}</li>)}
+                </ul>
               </section>
-            )}
 
-            <p class="text-xs text-slate-500">
-              <a href={o.sourceUrl}>Source</a>
-            </p>
-          </article>
-        );
-      })}
+              <aside class="dp-clawback">
+                <strong>Clawback:</strong> {o.clawbackTerms}
+              </aside>
 
-      <Disclaimer variant="offer" />
+              {NoteContent && (
+                <section class="dp-prose dp-offer-note">
+                  <NoteContent />
+                </section>
+              )}
+
+              <p class="dp-offer-source">
+                <a href={o.sourceUrl} target="_blank" rel="noopener">Source →</a>
+              </p>
+            </section>
+          );
+        })}
+
+        <Disclaimer variant="offer" />
+      </article>
     </BaseLayout>
   )
 }
+
+<style>
+  .dp-offer-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .dp-offer-head {
+    display: flex; flex-wrap: wrap;
+    align-items: baseline; justify-content: space-between;
+    gap: 12px; margin-bottom: 18px;
+    padding-bottom: 14px; border-bottom: 1px solid var(--line);
+  }
+  .dp-offer-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(18px, 3vw, 22px);
+    letter-spacing: -0.3px; color: var(--ink);
+  }
+  .dp-offer-verified {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .dp-clawback {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-left: 3px solid var(--red);
+    background: #fef2f2;
+    border-radius: 4px;
+    font-size: 13px; line-height: 1.55;
+    color: #7f1d1d;
+  }
+  .dp-clawback strong { color: #7f1d1d; }
+  .dp-offer-note {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .dp-offer-source {
+    margin-top: 14px;
+    font-size: 12px; color: var(--muted);
+  }
+  .dp-offer-source a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
+  .dp-offer-source a:hover { color: var(--gold); }
+</style>

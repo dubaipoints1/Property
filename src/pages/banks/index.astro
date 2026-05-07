@@ -9,30 +9,26 @@ const banks = (await getCollection("banks")).sort((a, b) =>
 
 <BaseLayout
   title="UAE banks — directory"
-  description="All the UAE banks we cover, with a link to each bank's dedicated hub: salary transfer offers, cards, and reward currencies."
+  description="Every UAE bank we cover, with a hub page each: salary-transfer offers, card lineup, and reward currencies."
+  fullWidth
 >
-  <header class="border-b border-slate-200 pb-6">
-    <h1 class="text-3xl font-semibold text-slate-900">UAE banks</h1>
-    <p class="mt-2 text-slate-700">Hubs for each bank we cover.</p>
-  </header>
+  <article class="dp-article is-wide">
+    <header class="dp-article-head">
+      <p class="dp-article-eyebrow">Banks</p>
+      <h1 class="dp-article-title">UAE banks.</h1>
+      <p class="dp-article-lede">A hub for each bank we cover — salary-transfer offer, card lineup, reward currency, and reputation notes in one place.</p>
+    </header>
 
-  <ul class="mt-6 grid gap-3 sm:grid-cols-2">
-    {
-      banks.map((b) => (
-        <li>
-          <a
-            href={`/banks/${b.id}/`}
-            class="block rounded-md border border-slate-200 bg-white p-4 no-underline hover:border-brand-500"
-          >
-            <h2 class="font-semibold text-slate-900">{b.data.name}</h2>
-            {b.data.customerService.website && (
-              <p class="mt-1 truncate text-xs text-slate-500">
-                {b.data.customerService.website}
-              </p>
-            )}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+    <div class="dp-dir-grid">
+      {banks.map((b) => (
+        <a href={`/banks/${b.id}/`} class="dp-dir-tile">
+          <span class="eyebrow">UAE Bank</span>
+          <span class="title">{b.data.name}</span>
+          {b.data.customerService.website && (
+            <span class="meta">{new URL(b.data.customerService.website).hostname}</span>
+          )}
+        </a>
+      ))}
+    </div>
+  </article>
 </BaseLayout>
