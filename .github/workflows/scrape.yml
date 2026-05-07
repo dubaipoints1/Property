@@ -3,9 +3,8 @@
 # Runs every Sunday 23:00 UTC, on workflow_dispatch, and on any direct
 # edit to this file (path-scoped push trigger).
 #
-# Always commits a run log to data/scraped/LATEST_RUN.log so we can
-# inspect failures from outside the runner — this is the only way to
-# diagnose runs without GitHub Actions log access.
+# Always commits a run log to LATEST_RUN.log (repo root) so we can
+# inspect failures from outside the runner.
 
 name: scrape
 
@@ -43,17 +42,12 @@ jobs:
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
         run: |
           set +e
-          mkdir -p data/scraped
-          LOG=data/scraped/LATEST_RUN.log
+          LOG=LATEST_RUN.log
           : > "$LOG"
 
           echo "=== node + npm versions ===" | tee -a "$LOG"
           node --version 2>&1 | tee -a "$LOG"
           npm --version 2>&1 | tee -a "$LOG"
-          echo "" | tee -a "$LOG"
-
-          echo "=== package.json scripts ===" | tee -a "$LOG"
-          cat package.json 2>&1 | tee -a "$LOG"
           echo "" | tee -a "$LOG"
 
           echo "=== npm install ===" | tee -a "$LOG"
@@ -63,7 +57,6 @@ jobs:
 
           if [ "$INSTALL_RC" -ne 0 ]; then
             echo "FAIL: install" | tee -a "$LOG"
-            echo "scrape_rc=1" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -85,7 +78,7 @@ jobs:
           ls -la data/scraped/fab/ 2>&1 | tee -a "$LOG"
           echo "" | tee -a "$LOG"
 
-          echo "=== latest scrape JSON (truncated) ===" | tee -a "$LOG"
+          echo "=== latest scrape JSON (first 200 lines) ===" | tee -a "$LOG"
           LATEST_JSON=$(ls -t data/scraped/fab/*.json 2>/dev/null | head -1)
           if [ -n "$LATEST_JSON" ]; then
             echo "FILE: $LATEST_JSON" | tee -a "$LOG"
@@ -102,14 +95,13 @@ jobs:
           echo "" | tee -a "$LOG"
 
           if [ -f PR_BODY.md ]; then
-            cp PR_BODY.md data/scraped/LATEST_SCRAPE.md
+            cp PR_BODY.md LATEST_SCRAPE.md
             echo "=== PR_BODY.md head ===" | tee -a "$LOG"
-            head -60 PR_BODY.md 2>&1 | tee -a "$LOG"
+            head -80 PR_BODY.md 2>&1 | tee -a "$LOG"
           else
             echo "No PR_BODY.md produced." | tee -a "$LOG"
           fi
 
-          echo "scrape_rc=0" >> "$GITHUB_OUTPUT"
           exit 0
 
       - name: Always commit log + diagnostic body to main
@@ -117,7 +109,8 @@ jobs:
         run: |
           git config user.name "dubaipoints-bot"
           git config user.email "info@dubaipoints.ae"
-          git add -A data/scraped/ || true
+          # force-add so .gitignore doesn't drop them
+          git add -f LATEST_RUN.log LATEST_SCRAPE.md 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "[diag] Nothing to commit."
           else
