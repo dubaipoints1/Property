@@ -1,12 +1,9 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
-import { getLiveOffers } from "~/lib/offerAdapter";
+import HomepageTrackerSummary from "~/components/HomepageTrackerSummary.astro";
 import { getCollection } from "astro:content";
 
 // ── Live data ────────────────────────────────────────────────────────────
-const offers = await getLiveOffers();
-
 const todayMs = Date.now();
 const allDeals = await getCollection("deals");
 const liveDeals = allDeals
@@ -608,17 +605,16 @@ const fmtDate = (d: Date) =>
   </div>
 </section>
 
-<!-- ── 4. SALARY TRANSFER tracker preview ─────────────────────────── -->
+<!-- ── 4. SALARY TRANSFER summary (top 3 by reward) ───────────────── -->
 <section class="section tracker-section">
   <div class="wrap">
     <div class="head">
       <div>
-        <span class="eyebrow">Live tracker · {offers.length} offers</span>
+        <span class="eyebrow">Live offers · top 3 by reward</span>
         <h2>UAE salary transfer offers</h2>
       </div>
-      <a href="/salary-transfer/calculator/" class="cta">Open calculator →</a>
     </div>
-    <SalaryTransferTracker offers={offers} client:load />
+    <HomepageTrackerSummary />
   </div>
 </section>
 
