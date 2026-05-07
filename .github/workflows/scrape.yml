@@ -13,6 +13,10 @@
 # REQUIRED REPO PERMISSIONS (Settings → Actions → General → Workflow perms):
 #   - "Read and write permissions"
 #   - "Allow GitHub Actions to create and approve pull requests"
+#
+# Diagnostic: this workflow always copies PR_BODY.md to
+# data/scraped/LATEST_SCRAPE.md on main, so we can read what the
+# scraper saw regardless of whether any card MDX changed.
 
 name: scrape
 
