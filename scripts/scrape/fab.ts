@@ -18,6 +18,36 @@ import { normalise } from "./_normaliser.ts";
 const BANK_SLUG = "fab";
 const URLS_PATH = path.join("scripts", "scrape", "banks", "fab.urls.json");
 
+/**
+ * Decide whether a draft has enough usable data to commit.
+ *
+ * Rule: emit the draft if any of the headline fields parsed.
+ * - annualFee.amount > 0   → real fee data
+ * - eligibility.minSalary > 0 → real salary band
+ * - any earn-rate category > 1 → real earn rate (1 is the default)
+ *
+ * Drop only if every field is at default — fetches probably failed entirely.
+ */
+function hasUsableData(draft: ReturnType<typeof normalise>): boolean {
+  if (draft.annualFee.amount > 0) return true;
+  if (draft.eligibility.minSalary > 0) return true;
+  const r = draft.earnRates;
+  for (const k of [
+    "dining",
+    "groceries",
+    "shopping",
+    "travel",
+    "fuel",
+    "entertainment",
+    "online",
+    "international",
+  ] as const) {
+    if (typeof r[k] === "number" && r[k]! > 0) return true;
+  }
+  if (draft.earnRates.everythingElse > 1) return true;
+  return false;
+}
+
 async function main() {
   if (!fs.existsSync(URLS_PATH)) {
     console.error(`[fab] URL config missing: ${URLS_PATH}`);
@@ -45,7 +75,7 @@ async function main() {
       slug: card.slug,
       name: card.name,
       fetched: sources,
-      draft: draft._errors.length > 0 && draft.eligibility.minSalary === 0 ? null : draft,
+      draft: hasUsableData(draft) ? draft : null,
       errors: draft._errors,
     });
   }
@@ -55,7 +85,7 @@ async function main() {
 
   const failures = results.filter((r) => r.errors.length > 0);
   if (failures.length > 0) {
-    console.log(`[fab] ${failures.length} card(s) had parsing errors:`);
+    console.log(`[fab] ${failures.length} card(s) had parsing warnings:`);
     for (const f of failures) {
       console.log(`[fab]   ${f.slug}: ${f.errors.join("; ")}`);
     }
