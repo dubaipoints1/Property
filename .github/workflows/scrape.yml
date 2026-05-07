@@ -1,7 +1,8 @@
 # Weekly card-data refresh.
 #
 # Runs every Sunday 23:00 UTC, on workflow_dispatch, and on any direct
-# edit to this file (path-scoped push trigger).
+# edit to this file or to a per-bank URL config (path-scoped push
+# trigger).
 #
 # Always commits a run log to LATEST_RUN.log (repo root) so we can
 # inspect failures from outside the runner.
@@ -17,6 +18,7 @@ on:
       - main
     paths:
       - .github/workflows/scrape.yml
+      - scripts/scrape/banks/*.urls.json
 
 jobs:
   refresh:
@@ -56,31 +58,40 @@ jobs:
           echo "[install] exit=$INSTALL_RC" | tee -a "$LOG"
           if [ "$INSTALL_RC" -ne 0 ]; then echo "FAIL: install" | tee -a "$LOG"; exit 0; fi
 
-          # ── Firecrawl /v1/map: discover real FAB credit-card URLs ─────
+          # ── Firecrawl /v1/map: keep discovering for visibility on URL drift ─
           echo "=== Firecrawl /v1/map: bankfab.com (credit card) ===" | tee -a "$LOG"
           curl -sS -X POST https://api.firecrawl.dev/v1/map \
             -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
             -H "Content-Type: application/json" \
             -d '{"url":"https://www.bankfab.com","search":"credit card","limit":100}' \
             -o /tmp/map.json
-          echo "[map] response head:" | tee -a "$LOG"
-          head -c 2000 /tmp/map.json 2>&1 | tee -a "$LOG"
-          echo "" | tee -a "$LOG"
-          echo "[map] all URLs (filtered to credit-card / cards):" | tee -a "$LOG"
+          echo "[map] all FAB credit-card URLs:" | tee -a "$LOG"
           if command -v jq >/dev/null 2>&1; then
             jq -r '.links[]?' /tmp/map.json 2>/dev/null \
-              | grep -iE 'credit.?card|/cards/' \
+              | grep -iE '/personal/credit-cards/[^/]+$' \
+              | grep -v '/credit-cards/offers' \
+              | grep -v '/credit-cards/services' \
               | sort -u \
               | tee -a "$LOG"
-          else
-            echo "[map] jq not available, dumping raw" | tee -a "$LOG"
-            cat /tmp/map.json | tee -a "$LOG"
           fi
           echo "" | tee -a "$LOG"
 
-          # ── Existing scrape pipeline against fab.urls.json (still 404 territory until we update) ──
           echo "=== npm run scrape:fab ===" | tee -a "$LOG"
           npm run scrape:fab 2>&1 | tee -a "$LOG"
+          echo "" | tee -a "$LOG"
+
+          echo "=== ls data/scraped/fab/ ===" | tee -a "$LOG"
+          ls -la data/scraped/fab/ 2>&1 | tee -a "$LOG"
+          echo "" | tee -a "$LOG"
+
+          echo "=== latest scrape JSON (head 300 lines) ===" | tee -a "$LOG"
+          LATEST_JSON=$(ls -t data/scraped/fab/*.json 2>/dev/null | head -1)
+          if [ -n "$LATEST_JSON" ]; then
+            echo "FILE: $LATEST_JSON" | tee -a "$LOG"
+            head -300 "$LATEST_JSON" 2>&1 | tee -a "$LOG"
+          else
+            echo "No scrape JSON written." | tee -a "$LOG"
+          fi
           echo "" | tee -a "$LOG"
 
           echo "=== npm run scrape:propose ===" | tee -a "$LOG"
