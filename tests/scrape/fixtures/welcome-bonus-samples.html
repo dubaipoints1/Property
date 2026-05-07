@@ -1,0 +1,41 @@
+<!--
+  Synthetic welcome-bonus fixture — Audit-08 (council/scrape spike).
+
+  Three representative UAE bank welcome-bonus phrasings. Lifted from the
+  patterns we see across FAB, Emirates NBD, ADCB, Mashreq and the smaller
+  banks. Used by tests/scrape/_normaliser.test.ts to exercise
+  parseWelcomeBonus end-to-end without burning Firecrawl quota.
+
+  Each card has the minimum non-bonus fields the normaliser needs to
+  emit a draft (annual fee, FX, salary band) so the end-to-end test can
+  assert against a fully-shaped CardDraft.
+-->
+<!DOCTYPE html>
+<html>
+<head><title>Welcome bonus samples — synthetic fixture</title></head>
+<body>
+<main>
+  <h1>FAB Sample Card</h1>
+
+  <h2>Welcome offer</h2>
+  <p>
+    Welcome bonus: Earn 30,000 FAB Rewards points when you spend AED 5,000
+    in the first 60 days of card activation.
+  </p>
+
+  <h2>Alternate phrasings under test</h2>
+  <ul>
+    <li>Receive 50,000 Skywards Miles on AED 10,000 spend within 90 days.</li>
+    <li>Get AED 1,500 cashback when you spend AED 8,000 in your first 3 months.</li>
+  </ul>
+
+  <h2>Fees and charges</h2>
+  <p>Annual fee: AED 700.</p>
+  <p>FX fee: 1.99% on every non-AED transaction.</p>
+
+  <h2>Eligibility</h2>
+  <p>Minimum salary AED 10,000 per month for UAE residents.</p>
+  <p>No salary transfer required.</p>
+</main>
+</body>
+</html>

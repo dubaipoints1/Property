@@ -8,7 +8,7 @@ import assert from "node:assert/strict";
 import path from "node:path";
 
 import { loadFixture, parseAED, parsePercent, parseMinSalary, parseEarnRate } from "../../scripts/scrape/_lib.ts";
-import { normalise } from "../../scripts/scrape/_normaliser.ts";
+import { normalise, parseWelcomeBonus } from "../../scripts/scrape/_normaliser.ts";
 
 test("parseAED extracts dirhams from common phrasings", () => {
   assert.equal(parseAED("Annual fee: AED 525"), 525);
@@ -247,4 +247,151 @@ FX fee: 1.99%.`;
     40,
     "earn-rate cap should reject 40 as welcome-bonus contamination",
   );
+});
+
+// ── Audit-08: structured welcomeBonus parsing ────────────────────────────
+
+test("Audit-08 parseWelcomeBonus: FAB Rewards points + spend + window", () => {
+  const out = parseWelcomeBonus(
+    "Earn 30,000 FAB Rewards points when you spend AED 5,000 in the first 60 days of card activation.",
+  );
+  assert.deepEqual(out, {
+    amount: 30000,
+    unit: "fab_rewards",
+    spend_threshold_aed: 5000,
+    qualify_window_days: 60,
+  });
+});
+
+test("Audit-08 parseWelcomeBonus: Skywards Miles, months → days", () => {
+  const out = parseWelcomeBonus(
+    "Receive 50,000 Skywards Miles on AED 10,000 spend within 90 days.",
+  );
+  assert.deepEqual(out, {
+    amount: 50000,
+    unit: "skywards_miles",
+    spend_threshold_aed: 10000,
+    qualify_window_days: 90,
+  });
+
+  const months = parseWelcomeBonus(
+    "Get AED 1,500 cashback when you spend AED 8,000 in your first 3 months.",
+  );
+  assert.deepEqual(months, {
+    amount: 1500,
+    unit: "aed_cashback",
+    spend_threshold_aed: 8000,
+    qualify_window_days: 90, // 3 months × 30
+  });
+});
+
+test("Audit-08 parseWelcomeBonus returns null for un-parseable copy", () => {
+  // No reward-unit keyword → null. The editor still gets the freetext stash;
+  // we just don't fabricate a structured shape from a partial match.
+  assert.equal(
+    parseWelcomeBonus("Welcome to FAB. Apply today and unlock benefits."),
+    null,
+    "no unit keyword → null",
+  );
+  assert.equal(parseWelcomeBonus(""), null, "empty string → null");
+  assert.equal(parseWelcomeBonus("AED 500"), null, "below min length → null");
+  // Has a unit hint ("miles") but no amount adjacent to it → null.
+  assert.equal(
+    parseWelcomeBonus("Earn Skywards Miles on every dirham spent."),
+    null,
+    "unit without amount → null",
+  );
+});
+
+test("Audit-08 normalise emits structured welcomeBonus from fixture", () => {
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "welcome-bonus-samples.html"),
+  );
+  assert.equal(
+    fixture.status,
+    "ok",
+    `Fixture must load: ${fixture.failReason ?? ""}`,
+  );
+
+  const draft = normalise(
+    "fab",
+    {
+      slug: "fab-sample",
+      name: "FAB Sample Card",
+      network: "Visa",
+      categories: ["lifestyle"],
+      loyaltyProgram: "FAB Rewards",
+      salaryTransferRequired: false,
+      urls: {
+        product: "https://www.bankfab.com/en-ae/personal/credit-cards/fab-sample",
+        kfs: null,
+        welcome: null,
+      },
+    },
+    [fixture],
+  );
+
+  // Structured form, not a string. Asserting on the typed shape forces a
+  // failure if the wiring regresses to the old free-text-only behaviour.
+  assert.equal(
+    typeof draft.welcomeBonus,
+    "object",
+    "welcomeBonus should be the structured object, not a string",
+  );
+  const wb = draft.welcomeBonus as {
+    amount: number;
+    unit: string;
+    spend_threshold_aed: number | null;
+    qualify_window_days: number | null;
+  };
+  assert.equal(wb.amount, 30000);
+  assert.equal(wb.unit, "fab_rewards");
+  assert.equal(wb.spend_threshold_aed, 5000);
+  assert.equal(wb.qualify_window_days, 60);
+
+  // Free-text capture is preserved alongside, so propose-changes can still
+  // stash it under _scraped_freetext.welcomeBonus for editor review.
+  assert.ok(
+    draft.welcomeBonusFreetext &&
+      draft.welcomeBonusFreetext.includes("FAB Rewards"),
+    "welcomeBonusFreetext should keep the original marketing copy",
+  );
+
+  // welcomeBonusValue should mirror the structured amount, not the AED
+  // spend-threshold figure (this was a regression risk pre-Audit-08).
+  assert.equal(draft.welcomeBonusValue, 30000);
+});
+
+test("Audit-08 normalise falls back to free-text when structured parse fails", () => {
+  // Welcome copy that mentions a unit-like word but no amount adjacent —
+  // parseWelcomeBonus returns null and normalise falls back to the string.
+  const md = `# Card
+
+Welcome offer: earn rewards on every dirham. Contact us for details.
+
+Annual fee: AED 200. FX fee: 1.99%. Minimum salary AED 8,000.`;
+
+  const draft = normalise(
+    "fab",
+    {
+      slug: "fab-fallback",
+      name: "FAB Fallback Card",
+      network: "Visa",
+      categories: ["lifestyle"],
+      salaryTransferRequired: false,
+      urls: { product: "https://test", kfs: null, welcome: null },
+    },
+    [{ url: "file://test", markdown: md, status: "ok" as const }],
+  );
+
+  // Either undefined (no welcome match at all) or a string fallback is
+  // acceptable — the contract is "never silently emit a half-structured
+  // object". If welcomeBonus is set, it must be a string in the fallback path.
+  if (draft.welcomeBonus !== undefined) {
+    assert.equal(
+      typeof draft.welcomeBonus,
+      "string",
+      "fallback path should emit string, not partial structured shape",
+    );
+  }
 });
