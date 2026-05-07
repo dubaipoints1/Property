@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
+import { getAllCards } from "~/lib/cardsData";
 
 // ── Live data ────────────────────────────────────────────────────────────
 const todayMs = Date.now();
@@ -17,13 +18,9 @@ const guidesSorted = [...allGuides].sort(
 const latestGuide = guidesSorted[0];
 const evergreenGuides = guidesSorted.slice(0, 4);
 
-const allCards = await getCollection("cards");
-const cardSpotlights = allCards
-  .filter((c) => c.data.welcomeBonus)
-  .sort(
-    (a, b) =>
-      (b.data.welcomeBonusValue ?? 0) - (a.data.welcomeBonusValue ?? 0),
-  )
+const cardSpotlights = getAllCards()
+  .filter((c) => c.welcomeBonus)
+  .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
   .slice(0, 3);
 
 // Recent posts feed — interleave guides + deals
@@ -579,21 +576,21 @@ const fmtDate = (d: Date) =>
       </div>
       <div class="cards-grid">
         {cardSpotlights.map((c, i) => (
-          <a href={`/cards/${c.id}/`} class="card-spot">
+          <a href={`/cards/${c.slug}/`} class="card-spot">
             <div class="super">
-              {i === 0 ? "Best welcome bonus" : c.data.categories[0] ? `Best for ${c.data.categories[0]}` : "Featured"}
+              {i === 0 ? "Best welcome bonus" : c.categories[0] ? `Best for ${c.categories[0]}` : "Featured"}
             </div>
             <div class="visual">
-              <span class="bank-name">{c.data.name}</span>
+              <span class="bank-name">{c.name}</span>
             </div>
-            <h3>{c.data.name}</h3>
+            <h3>{c.name}</h3>
             <div class="bonus">
-              <div class="num">{c.data.welcomeBonus}</div>
+              <div class="num">{c.welcomeBonus}</div>
               <div class="lbl">Welcome offer</div>
             </div>
             <div class="req">
-              Min salary AED {c.data.eligibility.minSalary.toLocaleString()}
-              {c.data.eligibility.salaryTransferRequired && " · Salary transfer required"}
+              Min salary AED {c.eligibility.minSalary.toLocaleString()}
+              {c.eligibility.salaryTransferRequired && " · Salary transfer required"}
             </div>
             <span class="apply">View card →</span>
           </a>

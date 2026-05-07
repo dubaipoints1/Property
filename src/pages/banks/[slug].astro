@@ -3,6 +3,7 @@ import BankHubLayout from "~/layouts/BankHubLayout.astro";
 import { getCollection, render } from "astro:content";
 import { getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
+import { getCardsByBank } from "~/lib/cardsData";
 
 export async function getStaticPaths() {
   const banks = await getCollection("banks");
@@ -12,7 +13,7 @@ export async function getStaticPaths() {
 const { bank } = Astro.props;
 const { Content } = await render(bank);
 const offers = await getOffersForBank(bank.id);
-const allCards = await getCollection("cards", (c) => c.data.bank.id === bank.id);
+const allCards = getCardsByBank(bank.id);
 ---
 
 <BankHubLayout
@@ -60,11 +61,11 @@ const allCards = await getCollection("cards", (c) => c.data.bank.id === bank.id)
       ) : (
         allCards.map((c) => (
           <a
-            href={`/cards/${c.id}/`}
+            href={`/cards/${c.slug}/`}
             class="rounded-md border border-slate-200 bg-white p-3 no-underline hover:border-brand-500"
           >
-            <p class="text-xs uppercase tracking-wide text-slate-500">{c.data.network}</p>
-            <p class="mt-1 font-semibold text-slate-900">{c.data.name}</p>
+            <p class="text-xs uppercase tracking-wide text-slate-500">{c.network}</p>
+            <p class="mt-1 font-semibold text-slate-900">{c.name}</p>
           </a>
         ))
       )
