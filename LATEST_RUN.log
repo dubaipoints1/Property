@@ -20,7 +20,7 @@ added 492 packages in 5s
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
 [fab] Fetching https://www.bankfab.com/en-ae/personal/credit-cards/fab-world-elite
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
-[fab] Wrote data/scraped/fab/2026-05-07T09-49-32-267Z.json
+[fab] Wrote data/scraped/fab/2026-05-07T09-59-14-350Z.json
 [fab] 1 card(s) had parsing warnings:
 [fab]   fab-world-elite: Could not parse minimum salary
 
@@ -31,21 +31,9 @@ added 492 packages in 5s
 
 [propose] Wrote PR_BODY.md: 4 change(s), 1 warning(s)
 
-=== ls src/content/cards/ (after propose) ===
-total 84
-drwxr-xr-x  2 runner runner 4096 May  7 09:49 .
-drwxr-xr-x 10 runner runner 4096 May  7 09:49 ..
--rw-r--r--  1 runner runner 3514 May  7 09:49 emirates-nbd-go4it-gold.mdx
--rw-r--r--  1 runner runner 4199 May  7 09:49 emirates-nbd-go4it-platinum.mdx
--rw-r--r--  1 runner runner 4248 May  7 09:49 emirates-nbd-lulu-247-platinum.mdx
--rw-r--r--  1 runner runner 3567 May  7 09:49 emirates-nbd-lulu-247-titanium.mdx
--rw-r--r--  1 runner runner 5303 May  7 09:49 emirates-nbd-share-visa-infinite.mdx
--rw-r--r--  1 runner runner 5054 May  7 09:49 emirates-nbd-share-visa-signature.mdx
--rw-r--r--  1 runner runner 2977 May  7 09:49 emirates-nbd-skywards-infinite.mdx
--rw-r--r--  1 runner runner 4263 May  7 09:49 emirates-nbd-skywards-signature.mdx
--rw-r--r--  1 runner runner 6423 May  7 09:49 emirates-nbd-u-by-emaar-infinite.mdx
--rw-r--r--  1 runner runner 1910 May  7 09:49 fab-cashback.mdx
--rw-r--r--  1 runner runner 1997 May  7 09:49 fab-elite.mdx
--rw-r--r--  1 runner runner 1877 May  7 09:49 fab-etihad-guest-infinite.mdx
--rw-r--r--  1 runner runner 1871 May  7 09:49 fab-world-elite.mdx
+=== git status src/content/cards/ ===
+?? src/content/cards/fab-cashback.mdx
+?? src/content/cards/fab-elite.mdx
+?? src/content/cards/fab-etihad-guest-infinite.mdx
+?? src/content/cards/fab-world-elite.mdx
 
