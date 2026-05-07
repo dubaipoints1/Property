@@ -1,0 +1,88 @@
+---
+// Reusable regulatory disclaimer block.
+// Slot into the foot of any card review, salary-transfer offer, or
+// otherwise financial-product page to satisfy general-guidance disclosure.
+//
+// Variants:
+//   - "card"    : credit-card review pages
+//   - "offer"   : salary-transfer / promo offer pages
+//   - "general" : generic finance-adjacent content (default)
+
+interface Props {
+  variant?: "card" | "offer" | "general";
+}
+
+const { variant = "general" } = Astro.props;
+
+const copy = {
+  card:
+    "Information on this card is provided for general guidance only. Rates, fees, eligibility criteria and welcome offers change without notice — verify all current terms with the issuing bank before applying. DubaiPoints is not regulated by the DFSA or UAE Central Bank and does not provide financial advice or product recommendations tailored to your circumstances.",
+  offer:
+    "Salary-transfer offers are subject to the issuing bank's terms, eligibility checks, and clawback conditions. Bonus amounts, payout timing, and salary bands change without notice — verify all current terms directly with the bank before transferring your salary. DubaiPoints is not regulated by the DFSA or UAE Central Bank and does not provide financial advice.",
+  general:
+    "Content is provided for general guidance only. Verify all rates, fees and terms directly with the issuing bank or provider. DubaiPoints is not regulated by the DFSA or UAE Central Bank and does not provide financial advice.",
+}[variant];
+---
+
+<aside class="dp-disclaimer" role="note" aria-label="Regulatory disclaimer">
+  <div class="dp-disclaimer-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <span>Regulatory notice</span>
+  </div>
+  <p>{copy}</p>
+  <p class="dp-disclaimer-links">
+    <a href="/editorial-policy/">Editorial policy</a>
+    <span aria-hidden="true">·</span>
+    <a href="/how-we-make-money/">How we make money</a>
+  </p>
+</aside>
+
+<style>
+  .dp-disclaimer {
+    margin-top: 32px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .dp-disclaimer-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dp-disclaimer-head svg {
+    width: 14px;
+    height: 14px;
+    color: var(--muted);
+  }
+  .dp-disclaimer p { margin: 0; }
+  .dp-disclaimer-links {
+    margin-top: 10px !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .dp-disclaimer-links a {
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 3px;
+  }
+  .dp-disclaimer-links a:hover { color: var(--gold); }
+  .dp-disclaimer-links span { color: var(--line); }
+</style>

@@ -13,70 +13,68 @@ interface Props {
   };
 }
 
-const { title, description, bankName, logo, customerService } = Astro.props;
+const { title, description, bankName, customerService } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
-  <header class="flex items-start justify-between gap-4 border-b border-slate-200 pb-6">
-    <div>
-      <h1 class="text-3xl font-semibold text-slate-900">{bankName}</h1>
-      {description && <p class="mt-2 text-slate-700">{description}</p>}
-    </div>
-    {
-      logo && (
-        <div class="flex h-16 w-16 items-center justify-center rounded-md bg-slate-100 text-xs text-slate-400">
-          logo
-        </div>
-      )
-    }
-  </header>
+<BaseLayout title={title} description={description} fullWidth>
+  <article class="dp-article is-wide">
+    <header class="dp-article-head">
+      <p class="dp-article-eyebrow">UAE bank</p>
+      <h1 class="dp-article-title">{bankName}</h1>
+      {description && <p class="dp-article-lede">{description}</p>}
+    </header>
 
-  <section class="mt-8 space-y-8">
-    <div class="rounded-lg border border-brand-200 bg-brand-50 p-5">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-brand-700">
-        Current salary transfer offer
-      </h2>
+    <section class="dp-bank-callout">
+      <p class="label">Current salary transfer offer</p>
       <slot name="salary-transfer" />
-    </div>
+    </section>
 
-    <section>
-      <h2 class="text-xl font-semibold text-slate-900">Reward currencies</h2>
+    <section class="dp-article-section">
+      <h2>Reward currencies</h2>
       <slot name="currencies" />
     </section>
 
-    <section>
-      <h2 class="text-xl font-semibold text-slate-900">Cards from {bankName}</h2>
+    <section class="dp-article-section">
+      <h2>Cards from {bankName}</h2>
       <slot name="cards" />
     </section>
 
-    <section>
-      <h2 class="text-xl font-semibold text-slate-900">Recent articles</h2>
+    <section class="dp-article-section">
+      <h2>Recent articles</h2>
       <slot name="articles" />
     </section>
 
-    {
-      customerService && (
-        <section class="rounded-md bg-slate-50 p-4 text-sm text-slate-700">
-          <h3 class="font-semibold">Customer service</h3>
-          <ul class="mt-2 space-y-1">
-            {customerService.phone && <li>Phone: {customerService.phone}</li>}
-            {customerService.email && (
-              <li>
-                Email: <a href={`mailto:${customerService.email}`}>{customerService.email}</a>
-              </li>
-            )}
-            {customerService.website && (
-              <li>
-                Web: <a href={customerService.website}>{customerService.website}</a>
-              </li>
-            )}
-          </ul>
-        </section>
-      )
-    }
-  </section>
+    {customerService && (
+      <section class="dp-article-foot">
+        <p><strong>Customer service</strong></p>
+        {customerService.phone && <p>Phone: {customerService.phone}</p>}
+        {customerService.email && (
+          <p>Email: <a href={`mailto:${customerService.email}`}>{customerService.email}</a></p>
+        )}
+        {customerService.website && (
+          <p>Web: <a href={customerService.website} target="_blank" rel="noopener">{customerService.website}</a></p>
+        )}
+      </section>
+    )}
 
-  <div class="prose prose-slate mt-8 max-w-none">
-    <slot />
-  </div>
+    <section class="dp-prose" style="margin-top: 32px;">
+      <slot />
+    </section>
+  </article>
 </BaseLayout>
+
+<style>
+  .dp-bank-callout {
+    border: 1px solid var(--gold);
+    border-left-width: 3px;
+    border-radius: 6px;
+    background: var(--gold-soft);
+    padding: 18px 20px;
+    margin-bottom: 32px;
+  }
+  .dp-bank-callout .label {
+    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: #6b4a14;
+    margin-bottom: 10px;
+  }
+</style>

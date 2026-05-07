@@ -515,6 +515,19 @@ const fmtDate = (d: Date) =>
 }
 .nl-form button:hover { background: var(--gold); }
 .nl-form .meta { font-size: 11px; color: var(--muted); }
+.nl-form .wa-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 4px; padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font-size: 13px; font-weight: 600;
+  color: var(--ink);
+  background: transparent;
+  transition: border-color 0.15s, background 0.15s;
+  align-self: flex-start;
+}
+.nl-form .wa-cta:hover { border-color: #25d366; background: rgba(37, 211, 102, 0.06); }
+.nl-form .wa-cta svg { width: 16px; height: 16px; color: #25d366; flex-shrink: 0; }
 </style>
 
 <!-- ── 1. HERO + TODAY'S BEST DEALS ─────────────────────────────────── -->
@@ -647,8 +660,8 @@ const fmtDate = (d: Date) =>
 <section class="section">
   <div class="wrap">
     <div class="section-head">
-      <h2>Recent <em>posts</em></h2>
-      <a class="more" href="/guides/">View all →</a>
+      <h2>This week on <em>DubaiPoints</em></h2>
+      <a class="more" href="/guides/">All posts →</a>
     </div>
     <div class="feed">
       {recentPosts.map((p) => (
@@ -683,20 +696,26 @@ const fmtDate = (d: Date) =>
   </section>
 )}
 
-<!-- ── 8. NEWSLETTER ──────────────────────────────────────────────── -->
+<!-- ── 8. NEWSLETTER (email or WhatsApp) ──────────────────────────── -->
 <section class="section">
   <div class="wrap">
     <div class="newsletter" id="newsletter">
       <div>
         <h2>UAE deals, <em>delivered weekly</em>.</h2>
-        <p>Salary bonuses, points hacks, and the best card offers — sent every Friday. Tag your salary band for offers that match your eligibility.</p>
+        <p>Salary bonuses, points hacks, and the best card offers — sent every Friday. Pick the channel that fits how you actually read.</p>
       </div>
       <form class="nl-form" onsubmit="return false;">
         <div class="row">
           <input type="email" placeholder="your@email.com" inputmode="email" autocomplete="email" />
-          <button type="submit">Subscribe</button>
+          <button type="submit">Subscribe by email</button>
         </div>
-        <span class="meta">Free · No spam · Unsubscribe anytime</span>
+        <a href="https://wa.me/971500000000?text=Subscribe" class="wa-cta" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.7-.8-2.7-1.4-3.7-3.2-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.2-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.7 1.5 5.3L2 22l4.8-1.5c1.5.8 3.3 1.3 5.2 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"></path>
+          </svg>
+          <span>or get it on WhatsApp →</span>
+        </a>
+        <span class="meta">Free · One message a week · Unsubscribe anytime</span>
       </form>
     </div>
   </div>

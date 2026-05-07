@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import Disclaimer from "~/components/Disclaimer.astro";
 
 interface Props {
   title: string;
@@ -14,7 +15,9 @@ interface Props {
   perks: string[];
   pros?: string[];
   cons?: string[];
+  editorTake?: string;
   lastVerified: Date;
+  verifiedBy?: string;
   sources: string[];
 }
 
@@ -31,105 +34,118 @@ const {
   perks,
   pros = [],
   cons = [],
+  editorTake,
   lastVerified,
+  verifiedBy,
   sources,
 } = Astro.props;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+const earnRows = Object.entries(earnRates).filter(
+  ([, v]) => typeof v === "number",
+) as Array<[string, number]>;
 ---
 
-<BaseLayout title={title} description={description}>
-  <article class="space-y-8">
-    <header class="grid gap-6 rounded-lg border border-slate-200 bg-white p-6 lg:grid-cols-[2fr_1fr]">
-      <div class="space-y-2">
-        <p class="text-xs uppercase tracking-wide text-slate-500">{bankName} · {network}</p>
-        <h1 class="text-3xl font-semibold text-slate-900">{cardName}</h1>
-        {description && <p class="text-slate-700">{description}</p>}
-      </div>
-      <div class="rounded-md bg-slate-50 p-4 text-sm">
-        <dl class="grid grid-cols-2 gap-2">
-          <dt class="text-slate-500">Annual fee</dt>
-          <dd class="font-semibold">AED {annualFee.toLocaleString()}</dd>
-          <dt class="text-slate-500">FX fee</dt>
-          <dd class="font-semibold">{fxFee}%</dd>
-          <dt class="text-slate-500">Min salary</dt>
-          <dd class="font-semibold">AED {minSalary.toLocaleString()}/mo</dd>
-        </dl>
-      </div>
+<BaseLayout title={title} description={description} fullWidth>
+  <article class="dp-article">
+    <header class="dp-article-head">
+      <p class="dp-article-eyebrow">{bankName} · {network}</p>
+      <h1 class="dp-article-title">{cardName}</h1>
+      {description && <p class="dp-article-lede">{description}</p>}
     </header>
 
-    <section>
-      <h2 class="text-xl font-semibold text-slate-900">Earn rates</h2>
-      <table class="mt-3 w-full text-sm">
-        <tbody class="divide-y divide-slate-200">
-          {
-            Object.entries(earnRates).map(([k, v]) =>
-              v !== undefined ? (
-                <tr>
-                  <td class="py-2 capitalize text-slate-600">{k.replace(/([A-Z])/g, " $1")}</td>
-                  <td class="py-2 text-right font-semibold">{v}× per AED 1</td>
-                </tr>
-              ) : null,
-            )
-          }
-        </tbody>
-      </table>
-    </section>
+    <dl class="dp-stats is-four">
+      <div class="dp-stat">
+        <dt>Annual fee</dt>
+        <dd>AED {annualFee.toLocaleString()}</dd>
+      </div>
+      <div class="dp-stat">
+        <dt>FX fee</dt>
+        <dd>{fxFee}%</dd>
+      </div>
+      <div class="dp-stat">
+        <dt>Min salary</dt>
+        <dd>AED {minSalary.toLocaleString()}<span style="font-size:11px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;"> /mo</span></dd>
+      </div>
+      <div class="dp-stat">
+        <dt>Network</dt>
+        <dd>{network}</dd>
+      </div>
+    </dl>
 
-    {
-      (pros.length > 0 || cons.length > 0) && (
-        <section class="grid gap-4 sm:grid-cols-2">
-          {pros.length > 0 && (
-            <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
-              <h3 class="text-sm font-semibold text-emerald-800">Pros</h3>
-              <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-emerald-900">
-                {pros.map((p) => <li>{p}</li>)}
-              </ul>
-            </div>
-          )}
-          {cons.length > 0 && (
-            <div class="rounded-lg border border-rose-200 bg-rose-50 p-4">
-              <h3 class="text-sm font-semibold text-rose-800">Cons</h3>
-              <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-rose-900">
-                {cons.map((c) => <li>{c}</li>)}
-              </ul>
-            </div>
-          )}
-        </section>
-      )
-    }
+    {editorTake && (
+      <aside class="dp-take">
+        <p class="label">Our take</p>
+        <p>{editorTake}</p>
+      </aside>
+    )}
 
-    {
-      perks.length > 0 && (
-        <section>
-          <h2 class="text-xl font-semibold text-slate-900">Perks</h2>
-          <ul class="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
-            {perks.map((p) => <li>{p}</li>)}
-          </ul>
-        </section>
-      )
-    }
+    {(pros.length > 0 || cons.length > 0) && (
+      <section class="dp-proscons">
+        {pros.length > 0 && (
+          <div class="dp-proscons-block is-pros">
+            <h3>Pros</h3>
+            <ul>{pros.map((p) => <li>{p}</li>)}</ul>
+          </div>
+        )}
+        {cons.length > 0 && (
+          <div class="dp-proscons-block is-cons">
+            <h3>Cons</h3>
+            <ul>{cons.map((c) => <li>{c}</li>)}</ul>
+          </div>
+        )}
+      </section>
+    )}
 
-    <section class="prose prose-slate max-w-none">
+    {earnRows.length > 0 && (
+      <section class="dp-article-section">
+        <h2>Earn rates</h2>
+        <table class="dp-data-table">
+          <tbody>
+            {earnRows.map(([k, v]) => (
+              <tr>
+                <td>{k.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase())}</td>
+                <td class="num">{v}× per AED 1</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    )}
+
+    {perks.length > 0 && (
+      <section class="dp-article-section">
+        <h2>Perks</h2>
+        <ul class="dp-bullet-list">
+          {perks.map((p) => <li>{p}</li>)}
+        </ul>
+      </section>
+    )}
+
+    <section class="dp-prose">
       <slot />
     </section>
 
-    <footer class="rounded-md bg-slate-50 p-4 text-xs text-slate-600">
+    <footer class="dp-article-foot">
       <p>
-        <strong>Last verified:</strong>{" "}
-        {lastVerified.toLocaleDateString("en-GB")}
+        <strong>Last verified:</strong> {fmt(lastVerified)}
+        {verifiedBy && <span class="dp-article-meta" style="margin-left:6px;display:inline-flex;"><span class="verified-chip">By {verifiedBy}</span></span>}
       </p>
-      {
-        sources.length > 0 && (
-          <p class="mt-1">
-            <strong>Sources:</strong>{" "}
-            {sources.map((s, i) => (
-              <>
-                {i > 0 && " · "}
-                <a href={s}>{new URL(s).hostname}</a>
-              </>
-            ))}
-          </p>
-        )
-      }
+      {sources.length > 0 && (
+        <p>
+          <strong>Sources:</strong>{" "}
+          {sources.map((s, i) => (
+            <>
+              {i > 0 && " · "}
+              <a href={s} target="_blank" rel="noopener noreferrer">{new URL(s).hostname}</a>
+            </>
+          ))}
+        </p>
+      )}
     </footer>
+
+    <Disclaimer variant="card" />
   </article>
 </BaseLayout>

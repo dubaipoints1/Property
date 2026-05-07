@@ -1,0 +1,89 @@
+---
+import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
+import { getCollection, getEntry } from "astro:content";
+
+const cards = await getCollection("cards");
+const cardsWithBanks = await Promise.all(
+  cards.map(async (c) => {
+    const bank = await getEntry(c.data.bank);
+    return { card: c, bankName: bank?.data.name ?? c.data.bank.id };
+  }),
+);
+
+cardsWithBanks.sort((a, b) =>
+  a.card.data.eligibility.minSalary - b.card.data.eligibility.minSalary,
+);
+
+const columns = [
+  "Annual fee",
+  "FX fee",
+  "Min salary",
+  "Salary transfer",
+  "Welcome bonus",
+  "Best earn rate",
+];
+
+const bestEarn = (rates: Record<string, number | undefined>) => {
+  const entries = Object.entries(rates).filter(([, v]) => typeof v === "number");
+  if (entries.length === 0) return "—";
+  const top = entries.sort((a, b) => (b[1] as number) - (a[1] as number))[0];
+  const [k, v] = top as [string, number];
+  return `${v}× on ${k.replace(/([A-Z])/g, " $1").toLowerCase()}`;
+};
+
+const rows = cardsWithBanks.map(({ card, bankName }) => ({
+  cardName: card.data.name,
+  bankName,
+  href: `/cards/${card.id}/`,
+  values: [
+    `AED ${card.data.annualFee.amount.toLocaleString()}`,
+    `${card.data.fxFee}%`,
+    `AED ${card.data.eligibility.minSalary.toLocaleString()}/mo`,
+    card.data.eligibility.salaryTransferRequired ? "Required" : "Not required",
+    card.data.welcomeBonus ?? "—",
+    bestEarn(card.data.earnRates),
+  ],
+}));
+---
+
+<ComparisonTableLayout
+  title="Compare UAE credit cards"
+  description="Side-by-side comparison of every card we cover — annual fee, FX fee, minimum salary, salary-transfer status, welcome bonus, and best earn rate. Sorted by minimum salary, lowest first."
+  columns={columns}
+  rows={rows}
+>
+  <h2>How to use this table</h2>
+  <p>
+    The cards are sorted by <strong>minimum monthly salary</strong>, lowest
+    first, so the most accessible cards appear at the top. UAE banks are
+    legally required to verify the salary band you've declared, so a card with
+    a minimum salary higher than yours is not eligible — even if you find a
+    workaround. Filter accordingly.
+  </p>
+
+  <h3>What "Best earn rate" means</h3>
+  <p>
+    The category with the highest multiplier on the card. A figure like
+    "2.5× on dining" means each AED of dining spend earns 2.5 of the card's
+    base reward unit (typically a Skywards Mile, an Etihad Guest Mile, or a
+    bank-specific point). It is not directly comparable across cards because
+    the underlying currency may differ — see our quarterly{" "}
+    <a href="/valuations/">AED valuations</a> for the dirham value of each
+    programme's currency.
+  </p>
+
+  <h3>What this table doesn't show</h3>
+  <p>
+    Eligibility detail (UAE residency, employment type, documents required),
+    perks (lounge access, free supplementary cards, insurance), and the
+    editorial verdict — those live on each card's individual review page.
+    Click any card name to read the full review.
+  </p>
+
+  <p>
+    Information for general guidance only. Verify rates, fees, and terms with
+    the issuing bank before applying. See our{" "}
+    <a href="/editorial-policy/">editorial policy</a> for our verification
+    standards.
+  </p>
+</ComparisonTableLayout>

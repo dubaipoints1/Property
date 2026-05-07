@@ -82,8 +82,8 @@ export default function SalaryTransferTracker({ offers }: Props) {
   ]);
 
   return (
-    <div class="space-y-4">
-      <div class="flex flex-wrap gap-2">
+    <div class="dp-tracker">
+      <div class="dp-tracker-bands">
         {BANDS.map((b) => {
           const active = activeBand === b.label;
           return (
@@ -91,11 +91,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
               key={b.label}
               type="button"
               onClick={() => setActiveBand(active ? null : b.label)}
-              class={`rounded-full border px-3 py-1 text-xs font-medium ${
-                active
-                  ? "border-brand-500 bg-brand-500 text-white"
-                  : "border-slate-300 bg-white text-slate-700 hover:border-brand-500"
-              }`}
+              class={`dp-tracker-chip${active ? " is-active" : ""}`}
             >
               {b.label}
             </button>
@@ -104,14 +100,14 @@ export default function SalaryTransferTracker({ offers }: Props) {
         <button
           type="button"
           onClick={() => setActiveBand(null)}
-          class="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-medium text-slate-500"
+          class="dp-tracker-chip is-muted"
         >
           All bands
         </button>
       </div>
 
-      <div class="flex flex-wrap items-center gap-3 text-xs text-slate-700">
-        <label class="flex items-center gap-1">
+      <div class="dp-tracker-filters">
+        <label class="dp-tracker-toggle">
           <input
             type="checkbox"
             checked={cashOnly}
@@ -119,9 +115,9 @@ export default function SalaryTransferTracker({ offers }: Props) {
               setCashOnly((e.target as HTMLInputElement).checked)
             }
           />
-          Cash only
+          <span>Cash only</span>
         </label>
-        <label class="flex items-center gap-1">
+        <label class="dp-tracker-toggle">
           <input
             type="checkbox"
             checked={noCardRequired}
@@ -129,9 +125,9 @@ export default function SalaryTransferTracker({ offers }: Props) {
               setNoCardRequired((e.target as HTMLInputElement).checked)
             }
           />
-          No credit card required
+          <span>No credit card required</span>
         </label>
-        <label class="flex items-center gap-1">
+        <label class="dp-tracker-toggle">
           <input
             type="checkbox"
             checked={shariaOnly}
@@ -139,17 +135,16 @@ export default function SalaryTransferTracker({ offers }: Props) {
               setShariaOnly((e.target as HTMLInputElement).checked)
             }
           />
-          Sharia-compliant
+          <span>Sharia-compliant</span>
         </label>
-        <label class="flex items-center gap-1">
-          Tenure
+        <label class="dp-tracker-select">
+          <span>Tenure</span>
           <select
             value={tenureFilter ?? ""}
             onChange={(e) => {
               const v = (e.target as HTMLSelectElement).value;
               setTenureFilter(v === "" ? null : Number(v));
             }}
-            class="rounded border border-slate-300 px-2 py-1"
           >
             <option value="">Any</option>
             <option value="6">6 months</option>
@@ -157,14 +152,13 @@ export default function SalaryTransferTracker({ offers }: Props) {
             <option value="24">24 months</option>
           </select>
         </label>
-        <label class="ml-auto flex items-center gap-1">
-          Sort
+        <label class="dp-tracker-select dp-tracker-select-end">
+          <span>Sort</span>
           <select
             value={sortKey}
             onChange={(e) =>
               setSortKey((e.target as HTMLSelectElement).value as SortKey)
             }
-            class="rounded border border-slate-300 px-2 py-1"
           >
             <option value="reward-desc">Highest reward</option>
             <option value="expiry-asc">Ending soonest</option>
@@ -174,41 +168,31 @@ export default function SalaryTransferTracker({ offers }: Props) {
       </div>
 
       {filtered.length === 0 ? (
-        <p class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          No live offers match these filters. Try removing one — most filters
-          are restrictive when stacked.
+        <p class="dp-tracker-empty">
+          No live offers match these filters. Remove one — most filters are
+          restrictive when stacked.
         </p>
       ) : (
-        <ul class="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 bg-white">
+        <ul class="dp-tracker-list">
           {filtered.map(({ offer, headlineReward }) => (
-            <li
-              key={offer.id}
-              class="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <div>
-                <a
-                  href={`/salary-transfer/${offer.bankSlug}/`}
-                  class="text-base font-semibold text-slate-900 no-underline hover:text-brand-600"
-                >
+            <li class="dp-tracker-row" key={offer.id}>
+              <div class="dp-tracker-row-main">
+                <a href={`/salary-transfer/${offer.bankSlug}/`} class="dp-tracker-bank">
                   {offer.bankName}
                 </a>
-                <p class="text-xs text-slate-600">{offer.name}</p>
-                <p class="mt-1 flex flex-wrap gap-2 text-[11px] text-slate-500">
-                  <span>
-                    {offer.salaryBands[0]?.rewardType.replace("_", " ")}
-                  </span>
+                <p class="dp-tracker-name">{offer.name}</p>
+                <p class="dp-tracker-meta">
+                  <span>{offer.salaryBands[0]?.rewardType.replace("_", " ")}</span>
                   <span>· {offer.tenureMonths} months</span>
                   {offer.sharia && <span>· Sharia</span>}
-                  {!offer.creditCardRequired && <span>· No card needed</span>}
+                  {!offer.creditCardRequired && <span>· No card</span>}
                 </p>
               </div>
-              <div class="text-right">
-                <p class="text-2xl font-bold text-slate-900">
-                  {formatAED(headlineReward)}
+              <div class="dp-tracker-row-amount">
+                <p class="dp-tracker-reward">
+                  <span class="num">{formatAED(headlineReward)}</span>
                 </p>
-                <p class="text-[11px] text-slate-500">
-                  Ends in {daysUntil(offer.validUntil)} days
-                </p>
+                <p class="dp-tracker-expiry">Ends in {daysUntil(offer.validUntil)} days</p>
               </div>
             </li>
           ))}

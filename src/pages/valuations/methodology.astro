@@ -1,0 +1,58 @@
+---
+import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+---
+
+<TrustPageLayout
+  title="AED Valuations methodology — DubaiPoints"
+  description="How DubaiPoints samples and calculates fils-per-Mile valuations for UAE rewards currencies. Sampling cadence, sources, and the redemptions we measure against."
+  eyebrow="Valuations methodology"
+  heading="How we calculate the fils-per-Mile figures on the AED Valuations page."
+  lastUpdated={new Date("2026-05-06")}
+>
+  <section>
+    <h2>What the figure means</h2>
+    <p>The headline number on the <a href="/valuations/">AED Valuations page</a> is the <strong>indicative best-case redemption value</strong> of one Mile or point in fils — i.e. one-hundredth of a UAE dirham. A figure of 2.4 means each Mile, redeemed at the strongest path we currently track, returns ~2.4 fils of cash-equivalent value.</p>
+    <p>"Best case" matters. We do not publish an average across redemption paths because the worst paths (low-rate partner gift cards, peak-season cash conversions, "Cash + Miles" hybrids) drag the average down to a number that is misleading at the earn stage. Most readers using DubaiPoints to choose a card want to know what the Miles <em>can</em> be worth on their best redemption — not what they will be worth if redeemed badly.</p>
+  </section>
+
+  <section>
+    <h2>What we sample against</h2>
+    <p>For each programme:</p>
+    <ul>
+      <li><strong>Airline programmes (Skywards, Etihad Guest, Qatar Privilege Club, Saudia Alfursan):</strong> sampled best available Saver-tier business-class redemption out of DXB or AUH, ~30 days out, on a primary route the programme actively flies. We compare the Miles cost (excluding cash taxes and surcharges) against the cash price for the same flight, same day, same fare class.</li>
+      <li><strong>Hotel programmes (Marriott Bonvoy, IHG One, Hilton Honors):</strong> sampled best off-peak award rate at a UAE-located property compared against the prevailing cash rate for the same date and room category. Where applicable, we adjust for the "5th-night-free" or equivalent benefit to reflect a likely real redemption.</li>
+      <li><strong>Bank-proprietary points (FAB Rewards, ADCB TouchPoints, ENBD Smiles, Mashreq Reward Points):</strong> sampled best-published statement-credit, gift-card, or 1:1 airline-transfer exit. Where the strongest exit is a transfer to an airline programme (FAB → Skywards, for example), we use the airline programme's sampled value as the upstream figure.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Sampling cadence</h2>
+    <p>Beginning Q3 2026, valuations are sampled and republished <strong>quarterly</strong> on the first Friday of January, April, July, and October. Each quarter's figures are dated; prior quarters' figures are archived and remain accessible.</p>
+    <p>Until the first formal sampling, every figure on the AED Valuations page is flagged "Indicative — pre-sampling" and represents DubaiPoints' editorial estimate informed by published award charts and redemption reports from UAE residents.</p>
+  </section>
+
+  <section>
+    <h2>What we don't do</h2>
+    <ul>
+      <li>We do not publish a single "industry average" Mile value. There isn't one — the redemption value depends entirely on the programme and the path.</li>
+      <li>We do not adjust the value upward to reflect "elite-tier perks" (lounge access, free baggage, etc). Those are perks of the card or status, not of the Mile.</li>
+      <li>We do not extrapolate from a single sampled redemption — every published figure is the median of at least three sampled redemption paths in the same quarter.</li>
+      <li>We do not change historical figures. If a programme devalues mid-quarter, the next published figure will reflect it; the prior quarter's figure stays on the record.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Caveats</h2>
+    <p>The published figure is a tool for comparing programmes at the earn stage — i.e. when you are choosing a credit card. It is <strong>not</strong> a guarantee of the value you will realise on any specific redemption. Award availability, booking window, route, fare class, taxes and surcharges, and programme rule changes all affect realised value.</p>
+    <p>If a redemption you are considering would clear the published value, take it. If it would not, weigh that against the alternative cash cost and decide accordingly. Do not redeem at a rate substantially below the published figure unless you have a clear reason — that is the most common avoidable mistake in points and miles.</p>
+  </section>
+
+  <section class="related">
+    <h3>Related</h3>
+    <ul>
+      <li><a href="/valuations/">AED Valuations table</a></li>
+      <li><a href="/editorial-policy/">Editorial policy</a></li>
+      <li><a href="/guides/expat-starter-points-101/">Points 101 — for newcomers</a></li>
+    </ul>
+  </section>
+</TrustPageLayout>

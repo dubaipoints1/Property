@@ -115,7 +115,13 @@ const cards = defineCollection({
     applyUrl: z.string().url().optional(),
     kfsUrl: z.string().url().optional(),
     lastVerified: z.coerce.date(),
+    verifiedBy: z.string().optional(),
     sources: z.array(z.string().url()).min(1),
+
+    // ── Editorial verdict (council Decision 3) ───────────────────────────
+    pros: z.array(z.string()).optional(),
+    cons: z.array(z.string()).optional(),
+    editorTake: z.string().optional(),
   }),
 });
 
