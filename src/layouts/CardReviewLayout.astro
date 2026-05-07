@@ -46,6 +46,14 @@ const fmt = (d: Date) =>
 const earnRows = Object.entries(earnRates).filter(
   ([, v]) => typeof v === "number",
 ) as Array<[string, number]>;
+
+const initials = verifiedBy
+  ? verifiedBy
+      .split(/\s+/)
+      .map((w) => w[0]?.toUpperCase() ?? "")
+      .slice(0, 2)
+      .join("")
+  : "";
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
@@ -54,6 +62,14 @@ const earnRows = Object.entries(earnRates).filter(
       <p class="dp-article-eyebrow">{bankName} · {network}</p>
       <h1 class="dp-article-title">{cardName}</h1>
       {description && <p class="dp-article-lede">{description}</p>}
+      {verifiedBy && (
+        <p class="dp-byline">
+          <span class="dp-byline-avatar" aria-hidden="true">{initials}</span>
+          <span>By <strong>{verifiedBy}</strong></span>
+          <span class="dp-byline-sep">·</span>
+          <span>Verified {fmt(lastVerified)}</span>
+        </p>
+      )}
     </header>
 
     <dl class="dp-stats is-four">

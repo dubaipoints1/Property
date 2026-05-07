@@ -1,12 +1,9 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
-import { getLiveOffers } from "~/lib/offerAdapter";
+import HomepageTrackerSummary from "~/components/HomepageTrackerSummary.astro";
 import { getCollection } from "astro:content";
 
 // ── Live data ────────────────────────────────────────────────────────────
-const offers = await getLiveOffers();
-
 const todayMs = Date.now();
 const allDeals = await getCollection("deals");
 const liveDeals = allDeals
@@ -572,7 +569,7 @@ const fmtDate = (d: Date) =>
   <section class="section section-band">
     <div class="wrap">
       <div class="section-head">
-        <h2>Latest <em>analysis</em></h2>
+        <h2>Latest analysis</h2>
         <a class="more" href="/guides/">All guides →</a>
       </div>
       <a href={`/guides/${latestGuide.id}/`} class="latest-feature">
@@ -608,17 +605,16 @@ const fmtDate = (d: Date) =>
   </div>
 </section>
 
-<!-- ── 4. SALARY TRANSFER tracker preview ─────────────────────────── -->
+<!-- ── 4. SALARY TRANSFER summary (top 3 by reward) ───────────────── -->
 <section class="section tracker-section">
   <div class="wrap">
     <div class="head">
       <div>
-        <span class="eyebrow">Live tracker · {offers.length} offers</span>
+        <span class="eyebrow">Live offers · top 3 by reward</span>
         <h2>UAE salary transfer offers</h2>
       </div>
-      <a href="/salary-transfer/calculator/" class="cta">Open calculator →</a>
     </div>
-    <SalaryTransferTracker offers={offers} client:load />
+    <HomepageTrackerSummary />
   </div>
 </section>
 
@@ -627,7 +623,7 @@ const fmtDate = (d: Date) =>
   <section class="section section-band">
     <div class="wrap">
       <div class="section-head">
-        <h2>Top UAE card offers <em>this month</em></h2>
+        <h2>Top UAE card offers this month</h2>
         <a class="more" href="/cards/">Compare all →</a>
       </div>
       <div class="cards-grid">
@@ -660,7 +656,7 @@ const fmtDate = (d: Date) =>
 <section class="section">
   <div class="wrap">
     <div class="section-head">
-      <h2>This week on <em>DubaiPoints</em></h2>
+      <h2>This week on DubaiPoints</h2>
       <a class="more" href="/guides/">All posts →</a>
     </div>
     <div class="feed">
@@ -680,7 +676,7 @@ const fmtDate = (d: Date) =>
   <section class="section section-band">
     <div class="wrap">
       <div class="section-head">
-        <h2>Most-read <em>guides</em></h2>
+        <h2>Most-read guides</h2>
         <a class="more" href="/guides/">All guides →</a>
       </div>
       <div class="evergreen-grid">
@@ -701,7 +697,7 @@ const fmtDate = (d: Date) =>
   <div class="wrap">
     <div class="newsletter" id="newsletter">
       <div>
-        <h2>UAE deals, <em>delivered weekly</em>.</h2>
+        <h2>UAE deals, delivered weekly.</h2>
         <p>Salary bonuses, points hacks, and the best card offers — sent every Friday. Pick the channel that fits how you actually read.</p>
       </div>
       <form class="nl-form" onsubmit="return false;">

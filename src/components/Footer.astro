@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import BankLogo from "~/components/BankLogo.astro";
 
 const banks = (await getCollection("banks")).sort((a, b) =>
   a.data.name.localeCompare(b.data.name),
@@ -39,6 +40,15 @@ footer {
   transition: color 0.15s;
 }
 .footer-col a:hover { color: white; }
+.footer-col a.footer-bank-row {
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.footer-col a.footer-bank-row :global(img) {
+  filter: invert(1) brightness(0.85);
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+.footer-col a.footer-bank-row:hover :global(img) { opacity: 1; }
 .footer-bottom {
   padding-top: 24px;
   border-top: 1px solid rgba(255,255,255,0.08);
@@ -78,7 +88,12 @@ footer {
       </div>
       <div class="footer-col">
         <h4>Banks</h4>
-        {banks.map((b) => <a href={`/banks/${b.id}/`}>{b.data.name}</a>)}
+        {banks.map((b) => (
+          <a href={`/banks/${b.id}/`} class="footer-bank-row">
+            <BankLogo slug={b.id} name={b.data.name} size="sm" />
+            <span>{b.data.name}</span>
+          </a>
+        ))}
       </div>
       <div class="footer-col">
         <h4>Programmes</h4>
@@ -95,11 +110,11 @@ footer {
       </div>
       <div class="footer-col">
         <h4>Trust</h4>
+        <a href="/about/">Why we built it</a>
         <a href="/editorial-policy/">Editorial policy</a>
         <a href="/how-we-make-money/">How we make money</a>
         <a href="/team/">The team</a>
-        <a href="mailto:corrections@dubaipoints.ae">Corrections</a>
-        <a href="mailto:tips@dubaipoints.ae">Send a tip</a>
+        <a href="mailto:info@dubaipoints.ae">Contact</a>
       </div>
     </div>
     <div class="footer-bottom">

@@ -137,7 +137,7 @@ img { display: block; max-width: 100%; }
   font-size: 17px; font-weight: 600;
   letter-spacing: -0.2px;
   color: var(--ink);
-  display: inline-block;
+  display: inline-flex; align-items: center; gap: 8px;
 }
 .dp-tracker-bank:hover { color: var(--gold); }
 .dp-tracker-name {
@@ -219,6 +219,24 @@ img { display: block; max-width: 100%; }
   font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
   text-transform: uppercase;
 }
+
+.dp-byline {
+  margin-top: 16px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--ink-soft);
+  letter-spacing: 0.1px;
+}
+.dp-byline strong { color: var(--ink); font-weight: 600; }
+.dp-byline-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), #8a6a2a);
+  color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+}
+.dp-byline-sep { color: var(--line); }
 
 /* Stat strip (Annual fee · FX fee · Min salary etc.) */
 .dp-stats {
@@ -480,6 +498,7 @@ img { display: block; max-width: 100%; }
 .dp-dir-tile .eyebrow {
   font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
   text-transform: uppercase; color: var(--muted);
+  display: inline-flex; align-items: center; gap: 8px;
 }
 .dp-dir-tile .title {
   font-family: 'Fraunces', serif; font-weight: 500;
