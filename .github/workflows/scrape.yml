@@ -101,11 +101,15 @@ jobs:
           git add -A src/data/cards.json
           git commit -m "scrape: weekly card refresh ($(date +%Y-%m-%d))"
           git push -u origin "$BRANCH"
+          # Audit-07: dropped --label flag because the labels "scrape" and
+          # "needs-review" don't exist in this repo and gh pr create errors
+          # out on missing labels. PRs still open cleanly without them; if
+          # we want labels later, create them once via the GitHub UI and
+          # reintroduce --label.
           gh pr create \
             --base main \
             --head "$BRANCH" \
             --title "scrape: weekly card refresh ($(date +%Y-%m-%d))" \
-            --body-file PR_BODY.md \
-            --label "scrape,needs-review"
+            --body-file PR_BODY.md
         env:
           GH_TOKEN: ${{ github.token }}
