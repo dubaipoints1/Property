@@ -67,8 +67,8 @@ jobs:
           npm run scrape:propose 2>&1 | tee -a "$LOG"
           echo "" | tee -a "$LOG"
 
-          echo "=== ls src/content/cards/ (after propose) ===" | tee -a "$LOG"
-          ls -la src/content/cards/ 2>&1 | tee -a "$LOG"
+          echo "=== git status src/content/cards/ ===" | tee -a "$LOG"
+          git status --porcelain src/content/cards/ 2>&1 | tee -a "$LOG"
           echo "" | tee -a "$LOG"
 
           if [ -f PR_BODY.md ]; then cp PR_BODY.md LATEST_SCRAPE.md; fi
@@ -87,15 +87,17 @@ jobs:
             git push origin main || echo "[diag] push failed"
           fi
 
-      - name: Open PR if cards changed
+      - name: Open PR if cards changed (handles new untracked files)
         run: |
-          if git diff --quiet src/content/cards/; then
+          # Use git status --porcelain so new (untracked) files are detected,
+          # not just modifications to existing tracked files.
+          if [ -z "$(git status --porcelain src/content/cards/)" ]; then
             echo "[scrape] No card MDX changes; skipping PR."
             exit 0
           fi
           BRANCH="scrape/weekly-$(date +%Y-%m-%d-%H%M%S)"
           git checkout -b "$BRANCH"
-          git add src/content/cards/
+          git add -A src/content/cards/
           git commit -m "scrape: weekly card refresh ($(date +%Y-%m-%d))"
           git push -u origin "$BRANCH"
           gh pr create \
