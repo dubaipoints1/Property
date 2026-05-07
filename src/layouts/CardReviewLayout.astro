@@ -15,7 +15,9 @@ interface Props {
   perks: string[];
   pros?: string[];
   cons?: string[];
+  editorTake?: string;
   lastVerified: Date;
+  verifiedBy?: string;
   sources: string[];
 }
 
@@ -32,7 +34,9 @@ const {
   perks,
   pros = [],
   cons = [],
+  editorTake,
   lastVerified,
+  verifiedBy,
   sources,
 } = Astro.props;
 ---
@@ -56,6 +60,17 @@ const {
         </dl>
       </div>
     </header>
+
+    {
+      editorTake && (
+        <section class="rounded-lg border border-amber-200 bg-amber-50 p-5">
+          <p class="text-xs font-bold uppercase tracking-wider text-amber-800">
+            Our take
+          </p>
+          <p class="mt-2 text-sm leading-relaxed text-amber-950">{editorTake}</p>
+        </section>
+      )
+    }
 
     <section>
       <h2 class="text-xl font-semibold text-slate-900">Earn rates</h2>
@@ -114,9 +129,14 @@ const {
     </section>
 
     <footer class="rounded-md bg-slate-50 p-4 text-xs text-slate-600">
-      <p>
-        <strong>Last verified:</strong>{" "}
-        {lastVerified.toLocaleDateString("en-GB")}
+      <p class="flex flex-wrap items-center gap-2">
+        <strong>Last verified:</strong>
+        <span>{lastVerified.toLocaleDateString("en-GB")}</span>
+        {verifiedBy && (
+          <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-800">
+            By {verifiedBy}
+          </span>
+        )}
       </p>
       {
         sources.length > 0 && (
