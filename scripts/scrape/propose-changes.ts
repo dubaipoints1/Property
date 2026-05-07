@@ -114,10 +114,6 @@ function draftToYaml(draft: Record<string, unknown>): string {
   for (const s of d.sources) lines.push(`  - ${s}`);
   lines.push("---");
   lines.push("");
-  lines.push(
-    `Auto-generated draft from the weekly scrape on ${d.lastVerified}. Review the diff in the PR body before merging — every figure is editorial responsibility.`,
-  );
-  lines.push("");
   return lines.join("\n");
 }
 
