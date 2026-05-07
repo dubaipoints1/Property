@@ -57,6 +57,57 @@ homepage band switches to read from it.
 - AECB / DFSA / UAE Central Bank rule changes monitored continuously;
   affected guide pages flagged for refresh within 7 days.
 
+## Visual standard
+
+**One idiom across the site.** Audit Session 02 (commits c1e9cac, 66d0418,
+074d770) consolidated the previous two-idiom split. The single editorial
+language is:
+
+- **Type.** Fraunces (serif) for headlines, eyebrows, "Our take" labels,
+  and section heads. DM Sans for body, meta, and UI.
+- **Palette.** CSS custom properties only — `--ink`, `--ink-soft`,
+  `--paper`, `--bg`, `--line`, `--gold`, `--gold-soft`, `--red`,
+  `--green`, `--muted`. No Tailwind slate utilities in layouts or
+  long-form pages.
+- **Radius.** 4px on chips and inputs, 6px on callouts and small cards,
+  8px on article cards and tables. No `rounded-full` pills.
+- **Eyebrows.** 11px / 700 / 2.5px letter-spacing / uppercase / `--gold`
+  (or `--red` for live indicators).
+- **Headlines.** Fraunces 500, `clamp(28px, 5vw, 44px)`, balanced text
+  wrap, italic + `--gold` on emphasised words.
+- **Tap targets.** ≥44px on every clickable element. ≥36px on filter
+  chips.
+- **Tables.** `.dp-data-table` for stat tables, `.dp-compare-table` for
+  side-by-side comparisons. Both have hairline borders and uppercase
+  letter-spaced headers.
+
+**Reference components in `src/styles/global.css`:**
+
+| Pattern | Class | Used by |
+|---|---|---|
+| Article wrapper | `.dp-article` (+ `.is-wide`) | Card review, guide, comparison, bank hub, airline programme, salary-transfer slug, valuations |
+| Article header | `.dp-article-head` + `.dp-article-eyebrow` + `.dp-article-title` + `.dp-article-lede` + `.dp-article-meta` | Every long-form page |
+| Stat strip | `.dp-stats` + `.dp-stat` | Card review |
+| Editor's verdict | `.dp-take` | Card review (when `editorTake` set) |
+| Pros / Cons | `.dp-proscons` + `.dp-proscons-block` | Card review (when `pros` or `cons` set) |
+| Section head | `.dp-article-section` | Long-form sections inside any article |
+| Data table | `.dp-data-table` | Card earn rates, salary-transfer bands |
+| Bullet list | `.dp-bullet-list` | Perks, requirements |
+| Article footer | `.dp-article-foot` | Sources / verification / customer-service blocks |
+| MDX prose | `.dp-prose` | Every `<slot />` rendering MDX |
+| TOC rail | `.dp-article-grid` + `.dp-toc` | Guide layout |
+| Directory grid | `.dp-dir-grid` + `.dp-dir-tile` | Index pages (cards, banks, airlines, guides) |
+| Directory pills | `.dp-dir-pills` + `.dp-dir-pill` (`.is-feature` for gold) | Filter rails on index pages |
+| Tracker (Preact) | `.dp-tracker-*` | SalaryTransferTracker island |
+
+**When adding a new long-form page:** start from `BaseLayout` with
+`fullWidth`, wrap in `<article class="dp-article">`, use the article
+patterns above. Do not introduce Tailwind slate utilities.
+
+**When adding a new directory page:** wrap in `<article class="dp-article
+is-wide">`, then `<div class="dp-dir-grid">` with `<a class="dp-dir-tile">`
+children. Pills at the top use `.dp-dir-pills`.
+
 ## Channels
 
 - **Site** — primary, all evergreen content lives here.

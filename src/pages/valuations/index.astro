@@ -71,6 +71,7 @@ const groups: Array<{ label: string; key: "airline" | "hotel" | "bank" }> = [
                     <td class="num value">
                       {v.valueFils.toFixed(1)}
                       <span class="unit">fils</span>
+                      <a href="/valuations/methodology/" class="method-link" aria-label="See methodology" title="How this figure is calculated">?</a>
                     </td>
                     <td class={`trend ${trendClass(v.trend)}`}>
                       <span class="arrow">{trendArrow(v.trend)}</span>
@@ -196,6 +197,24 @@ const groups: Array<{ label: string; key: "airline" | "hotel" | "bank" }> = [
     font-family: 'DM Sans', sans-serif;
     font-size: 11px; font-weight: 400;
     color: var(--muted); margin-left: 4px;
+  }
+  td.value .method-link {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px;
+    margin-left: 6px;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px; font-weight: 700;
+    color: var(--muted);
+    text-decoration: none;
+    vertical-align: super;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  td.value .method-link:hover {
+    border-color: var(--gold);
+    color: var(--gold);
   }
   td.trend { white-space: nowrap; }
   td.trend .arrow { font-weight: 700; margin-right: 6px; font-size: 16px; }
