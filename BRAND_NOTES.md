@@ -129,3 +129,37 @@ either email or RSS, segmented identically.
 | 5 | Comments at launch | C (none) |
 | 6 | Newsletter | A (Buttondown) |
 | 7 | RSS-by-band | Yes, build in Phase 3 |
+
+---
+
+## Amendments
+
+### 2026-05-08 — Quiet Ledger direction adopted
+
+**Authority:** Chairman pick on `/council` session output.
+**Brief:** `.council/research/2026-05/ux-redesign-brief.md`.
+**Status file:** `.council/STATUS.md`.
+
+**§2 Primary brand colour — clarification.** Recommendation C (electric
+blue) **stands**, but the role narrows: blue is an **interactive
+colour only**. It appears on link text, link hover, and focus rings.
+It does **not** appear on display type, eyebrows, backgrounds,
+gradients, or chrome. The token `--brand` shifts from `#1e6bd6` to
+the slightly desaturated `#2a6bd1` to read clearly as a link colour
+on white.
+
+**§2 (new clause) — Gold sunsets as a UI accent.** `--gold` and
+`--gold-soft` remain defined as legacy variables for backward
+compatibility, but no `.dp-*` rule and no future production page
+reaches for them. The "Verified" chip, the "Our take" callout, the
+byline avatar, the affiliate asterisk, the valuations status block,
+and the methodology row hover all re-theme to ink-on-paper with
+optional red label for live/expiry signals.
+
+**§3 Tone of voice — refined.** Recommendation A (HfP-dry)
+**stands**, with two amplifications encoded in `EDITORIAL.md`'s own
+amendment: no exclamation marks anywhere on the site; numbers always
+written numerically; pull-numbers replace pull-quotes.
+
+**Other §s unchanged.** Logo, tagline, comments, newsletter, and
+RSS-by-band recommendations carry forward as written.

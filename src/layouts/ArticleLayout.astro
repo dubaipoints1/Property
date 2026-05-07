@@ -1,9 +1,19 @@
 ---
+// Editorial article shell — mirrors the .dp-* idiom enforced by
+// `EDITORIAL.md` and `CLAUDE.md`. Replaces the prior prose-slate
+// implementation as part of the Quiet Ledger redesign (2026-05).
+//
+// No call sites at the time of rewrite; kept as a layout primitive
+// so any future prose page (news post, profile, weekly recap) does
+// not reach for Tailwind `prose` and reintroduce a competing
+// visual grammar.
+
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
   title: string;
   description?: string;
+  eyebrow?: string;
   author?: string;
   publishedAt?: Date;
   updatedAt?: Date;
@@ -12,7 +22,8 @@ interface Props {
 const {
   title,
   description,
-  author = "dubaipoints.ae",
+  eyebrow,
+  author = "DubaiPoints Editorial",
   publishedAt,
   updatedAt,
 } = Astro.props;
@@ -25,39 +36,52 @@ const fmt = (d?: Date) =>
         year: "numeric",
       })
     : null;
+
+const showUpdated =
+  updatedAt && publishedAt && updatedAt.getTime() !== publishedAt.getTime();
+
+const initials = author
+  .split(/\s+/)
+  .map((w) => w[0]?.toUpperCase() ?? "")
+  .slice(0, 2)
+  .join("");
 ---
 
-<BaseLayout title={title} description={description}>
-  <article class="grid grid-cols-1 gap-10 lg:grid-cols-4">
-    <div class="lg:col-span-3 space-y-6">
-      <header class="space-y-3 border-b border-slate-200 pb-6">
-        <h1 class="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-          {title}
-        </h1>
-        {description && <p class="text-lg text-slate-700">{description}</p>}
-        <p class="text-xs uppercase tracking-wide text-slate-500">
-          By {author}
-          {publishedAt && <span> · Published {fmt(publishedAt)}</span>}
-          {
-            updatedAt && publishedAt && updatedAt.getTime() !== publishedAt.getTime() && (
-              <span> · Updated {fmt(updatedAt)}</span>
-            )
-          }
-        </p>
-      </header>
+<BaseLayout title={title} description={description} fullWidth>
+  <article class="dp-article">
+    <header class="dp-article-head">
+      {eyebrow && <p class="dp-article-eyebrow">{eyebrow}</p>}
+      <h1 class="dp-article-title">{title}</h1>
+      {description && <p class="dp-article-lede">{description}</p>}
+      <p class="dp-byline">
+        <span class="dp-byline-avatar" aria-hidden="true">{initials}</span>
+        <span>By <strong>{author}</strong></span>
+        {publishedAt && (
+          <>
+            <span class="dp-byline-sep">·</span>
+            <span>Filed {fmt(publishedAt)}</span>
+          </>
+        )}
+        {showUpdated && (
+          <>
+            <span class="dp-byline-sep">·</span>
+            <span>Updated <strong>{fmt(updatedAt)}</strong></span>
+          </>
+        )}
+      </p>
+    </header>
 
-      <div class="prose prose-slate max-w-none">
-        <slot />
-      </div>
+    <section class="dp-prose">
+      <slot />
+    </section>
 
-      <section class="rounded-lg border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-        Comments are coming in Phase 3 (giscus). For now, send tips to
+    <slot name="related" />
+
+    <footer class="dp-article-foot">
+      <p>
+        Comments are out of scope at launch. Send tips and corrections to
         <a href="mailto:info@dubaipoints.ae">info@dubaipoints.ae</a>.
-      </section>
-    </div>
-
-    <aside class="lg:col-span-1 space-y-6">
-      <slot name="related" />
-    </aside>
+      </p>
+    </footer>
   </article>
 </BaseLayout>

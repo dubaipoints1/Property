@@ -2,23 +2,27 @@
 @import "tailwindcss";
 
 :root {
-  --bg:        #fbfaf6;
+  /* Quiet Ledger palette — adopted 2026-05-08 by Chairman.
+     White paper, near-black ink, link-only blue, signal-only red.
+     --gold and --green are retained as variables but removed from UI usage. */
+  --bg:        #ffffff;
   --paper:     #ffffff;
-  --ink:       #15171c;
-  --ink-soft:  #4a4f5b;
+  --ink:       #0d1117;
+  --ink-soft:  #5a6068;
   --muted:     #8a8f9a;
-  --line:      #e8e4dc;
-  --line-soft: #f0ece4;
-  --gold:      #b8842a;
-  --gold-soft: #f3ead6;
+  --line:      #e3e3e1;
+  --line-soft: #f1f1ef;
+  --gold:      #b8842a;     /* legacy — do not reach for in new UI */
+  --gold-soft: #f3ead6;     /* legacy — do not reach for in new UI */
   --navy:      #0d2151;
   --red:       #c8412d;
-  --green:     #2d7a4a;
+  --green:     #2d7a4a;     /* legacy — used only in code/data prose */
 
-  /* Primary brand accent (BRAND_NOTES §2 Option C — electric blue) */
-  --brand:      #1e6bd6;
+  /* Interactive blue — used only on link / focus / hover states.
+     Never on display type, never on eyebrows, never on backgrounds. */
+  --brand:      #2a6bd1;
   --brand-deep: #154fa3;
-  --brand-soft: #e5edfa;
+  --brand-soft: #eef3fb;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -192,19 +196,22 @@ img { display: block; max-width: 100%; }
   border-bottom: 1px solid var(--line);
   margin-bottom: 32px;
 }
+/* Eyebrow: black caps, never accented (Quiet Ledger §"Visual standard").
+   .is-red is reserved for live and expiry indicators only. */
 .dp-article-eyebrow {
   font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--brand);
+  text-transform: uppercase; color: var(--ink);
   margin-bottom: 12px;
 }
 .dp-article-eyebrow.is-red { color: var(--red); }
 .dp-article-title {
-  font-family: 'Fraunces', serif; font-weight: 500;
+  font-family: 'Fraunces', serif; font-weight: 600;
   font-size: clamp(28px, 5vw, 44px);
-  line-height: 1.1; letter-spacing: -1px;
+  line-height: 1.08; letter-spacing: -1.1px;
   color: var(--ink); text-wrap: balance;
 }
-.dp-article-title em { font-style: italic; color: var(--brand); font-weight: 500; }
+/* Italic display words removed (Quiet Ledger). em inside titles renders flat. */
+.dp-article-title em { font-style: normal; color: inherit; font-weight: inherit; }
 .dp-article-lede {
   margin-top: 14px;
   font-size: 16px; line-height: 1.6; color: var(--ink-soft);
@@ -217,11 +224,15 @@ img { display: block; max-width: 100%; }
 }
 .dp-article-meta strong { color: var(--ink); font-weight: 600; }
 .dp-article-meta .sep { color: var(--line); }
+/* Verified chip: hairline-bordered, ink-on-paper. Trust signal lives in
+   the typography and the date, not in colour. */
 .dp-article-meta .verified-chip {
   display: inline-flex; align-items: center;
-  padding: 3px 9px; border-radius: 30px;
-  background: var(--gold-soft); color: #6b4a14;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  padding: 3px 9px; border-radius: 4px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
@@ -232,10 +243,11 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.1px;
 }
 .dp-byline strong { color: var(--ink); font-weight: 600; }
+/* Byline avatar: flat ink circle, not the brand gradient. */
 .dp-byline-avatar {
   width: 28px; height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--brand), var(--brand-deep));
+  background: var(--ink);
   color: white;
   display: inline-flex; align-items: center; justify-content: center;
   font-family: 'DM Sans', sans-serif;
@@ -271,47 +283,46 @@ img { display: block; max-width: 100%; }
   margin: 0;
 }
 
-/* Editor's take callout — matches gold-soft / amber editorial palette */
+/* Editor's take callout — Quiet Ledger: hairline-bordered ink-on-paper,
+   red label only. Replaces the prior gold-on-cream pattern. */
 .dp-take {
-  padding: 18px 20px;
-  border: 1px solid var(--gold);
-  border-left-width: 3px;
-  border-radius: 6px;
-  background: var(--gold-soft);
+  padding: 20px 22px 22px;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  background: var(--paper);
   margin-bottom: 32px;
 }
 .dp-take .label {
   font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: #6b4a14;
-  margin-bottom: 8px;
+  text-transform: uppercase; color: var(--red);
+  margin-bottom: 10px;
 }
 .dp-take p {
-  font-size: 15px; line-height: 1.6;
-  color: #3d2a0d;
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 19px; line-height: 1.5;
+  color: var(--ink);
   text-wrap: pretty;
-  margin: 0;
+  margin: 0; max-width: 56ch;
 }
 
-/* Pros / Cons two-column block */
+/* Pros / Cons — Quiet Ledger: drop the green/red top borders;
+   pros use a `+` glyph, cons use a `−` glyph; everything flat ink. */
 .dp-proscons { display: grid; gap: 14px; margin-bottom: 32px; }
 @media (min-width: 640px) {
   .dp-proscons { grid-template-columns: 1fr 1fr; }
 }
 .dp-proscons-block {
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 0;
   padding: 16px 18px;
   background: var(--paper);
 }
-.dp-proscons-block.is-pros { border-top: 3px solid var(--green); }
-.dp-proscons-block.is-cons { border-top: 3px solid var(--red); }
 .dp-proscons-block h3 {
   font-size: 11px; font-weight: 700; letter-spacing: 2px;
   text-transform: uppercase;
+  color: var(--ink);
   margin-bottom: 10px;
 }
-.dp-proscons-block.is-pros h3 { color: var(--green); }
-.dp-proscons-block.is-cons h3 { color: var(--red); }
 .dp-proscons-block ul {
   list-style: none; padding: 0; margin: 0;
   display: flex; flex-direction: column; gap: 8px;
@@ -322,11 +333,14 @@ img { display: block; max-width: 100%; }
   display: flex; gap: 8px; align-items: flex-start;
 }
 .dp-proscons-block li::before {
-  content: ''; width: 6px; height: 6px; border-radius: 50%;
-  margin-top: 7px; flex-shrink: 0;
+  font-weight: 700;
+  color: var(--ink);
+  flex-shrink: 0;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.55;
 }
-.dp-proscons-block.is-pros li::before { background: var(--green); }
-.dp-proscons-block.is-cons li::before { background: var(--red); }
+.dp-proscons-block.is-pros li::before { content: '+'; }
+.dp-proscons-block.is-cons li::before { content: '−'; }
 
 /* Section heading inside an article */
 .dp-article-section { margin-block: 32px; }
@@ -381,7 +395,7 @@ img { display: block; max-width: 100%; }
 }
 .dp-bullet-list li::before {
   content: '+';
-  color: var(--brand);
+  color: var(--ink);
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -434,9 +448,10 @@ img { display: block; max-width: 100%; }
 }
 .dp-prose a:hover { color: var(--brand); text-decoration-color: var(--brand); }
 .dp-prose blockquote {
-  border-left: 3px solid var(--gold);
+  border-left: 3px solid var(--ink);
   padding: 4px 0 4px 16px; margin: 18px 0;
-  font-family: 'Fraunces', serif; font-style: italic;
+  font-family: 'Fraunces', serif; font-style: normal;
+  font-weight: 500;
   color: var(--ink); font-size: 18px; line-height: 1.5;
 }
 .dp-prose code {
