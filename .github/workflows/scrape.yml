@@ -87,17 +87,18 @@ jobs:
             git push origin main || echo "[diag] push failed"
           fi
 
-      - name: Open PR if cards changed (handles new untracked files)
+      - name: Open PR if cards.json changed
         run: |
-          # Use git status --porcelain so new (untracked) files are detected,
-          # not just modifications to existing tracked files.
-          if [ -z "$(git status --porcelain src/content/cards/)" ]; then
-            echo "[scrape] No card MDX changes; skipping PR."
+          # Audit-05: scraper writes to src/data/cards.json (the L2 data
+          # layer), not to MDX content collection files. Detect changes
+          # there.
+          if [ -z "$(git status --porcelain src/data/cards.json)" ]; then
+            echo "[scrape] No cards.json changes; skipping PR."
             exit 0
           fi
           BRANCH="scrape/weekly-$(date +%Y-%m-%d-%H%M%S)"
           git checkout -b "$BRANCH"
-          git add -A src/content/cards/
+          git add -A src/data/cards.json
           git commit -m "scrape: weekly card refresh ($(date +%Y-%m-%d))"
           git push -u origin "$BRANCH"
           gh pr create \

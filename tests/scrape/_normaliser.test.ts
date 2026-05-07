@@ -74,3 +74,88 @@ test("normalise produces a valid draft against the FAB fixture", () => {
   assert.ok(draft.welcomeBonus, "Should detect a welcome bonus");
   assert.ok(draft.perks.length >= 5, "Should extract perks bullets");
 });
+
+test("Audit-05 perk filter strips bank-site navigation links", () => {
+  const fakeMd = `# Card name
+
+- 7% cashback on LuLu groceries
+- [Personal Online Banking (UAE)](https://online.bankfab.com/PersonalBankingWeb/login)
+- [FAB Business Portal](https://business.bankfab.com/)
+- Complimentary access to 25 airport lounges
+- [iBanking Corporate Online Banking](https://ibanking.bankfab.com/iportalweb/)
+- Buy 1 Get 1 cinema tickets at VOX
+
+Annual fee: AED 100.
+Minimum salary AED 8,000 per month.
+FX fee: 2%.`;
+
+  const fixture = {
+    url: "file://test",
+    markdown: fakeMd,
+    status: "ok" as const,
+  };
+  const draft = normalise(
+    "fab",
+    {
+      slug: "test-card",
+      name: "Test Card",
+      network: "Visa",
+      categories: ["cashback"],
+      loyaltyProgram: "FAB Rewards",
+      salaryTransferRequired: false,
+      urls: { product: "https://test", kfs: null, welcome: null },
+    },
+    [fixture],
+  );
+
+  // Real card features are kept; nav-link bullets are dropped.
+  assert.ok(
+    draft.perks.some((p) => p.includes("LuLu groceries")),
+    "Should keep real perks",
+  );
+  assert.ok(
+    draft.perks.some((p) => p.includes("VOX")),
+    "Should keep VOX cinema perk",
+  );
+  for (const navTerm of ["Online Banking", "Business Portal", "iBanking"]) {
+    assert.ok(
+      !draft.perks.some((p) => p.includes(navTerm)),
+      `Should drop nav link containing "${navTerm}"`,
+    );
+  }
+});
+
+test("Audit-05 earn-rate cap rejects welcome-bonus contamination", () => {
+  // FAB welcome offers like "Earn 40,000 Etihad Guest Miles" used to bleed
+  // into earnRates.travel as 40 (mistaken for "40% on travel"). Cap at 10.
+  const fakeMd = `Earn 40,000 Etihad Guest Miles when you spend AED 25,000 on travel in your first 90 days.
+Annual fee: AED 1,500.
+Minimum monthly salary AED 30,000.
+FX fee: 1.99%.`;
+
+  const fixture = {
+    url: "file://test",
+    markdown: fakeMd,
+    status: "ok" as const,
+  };
+  const draft = normalise(
+    "fab",
+    {
+      slug: "test-card",
+      name: "Test Card",
+      network: "Visa",
+      categories: ["travel"],
+      loyaltyProgram: "Etihad Guest",
+      salaryTransferRequired: false,
+      urls: { product: "https://test", kfs: null, welcome: null },
+    },
+    [fixture],
+  );
+
+  // travel earn rate must NOT be 40 (welcome bonus mile count).
+  assert.notEqual(
+    draft.earnRates.travel,
+    40,
+    "earn-rate cap should reject 40 as welcome-bonus contamination",
+  );
+});

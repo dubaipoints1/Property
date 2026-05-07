@@ -1,17 +1,13 @@
 ---
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
-import { getCollection, getEntry } from "astro:content";
+import { getEntry } from "astro:content";
+import { getAllCards } from "~/lib/cardsData";
 
-const cards = await getCollection("cards");
-const cardsWithBanks = await Promise.all(
-  cards.map(async (c) => {
-    const bank = await getEntry(c.data.bank);
-    return { card: c, bankName: bank?.data.name ?? c.data.bank.id };
+const cards = await Promise.all(
+  getAllCards().map(async (card) => {
+    const bank = await getEntry("banks", card.bank);
+    return { card, bankName: bank?.data.name ?? card.bank };
   }),
-);
-
-cardsWithBanks.sort((a, b) =>
-  a.card.data.eligibility.minSalary - b.card.data.eligibility.minSalary,
 );
 
 const columns = [
@@ -31,17 +27,17 @@ const bestEarn = (rates: Record<string, number | undefined>) => {
   return `${v}× on ${k.replace(/([A-Z])/g, " $1").toLowerCase()}`;
 };
 
-const rows = cardsWithBanks.map(({ card, bankName }) => ({
-  cardName: card.data.name,
+const rows = cards.map(({ card, bankName }) => ({
+  cardName: card.name,
   bankName,
-  href: `/cards/${card.id}/`,
+  href: `/cards/${card.slug}/`,
   values: [
-    `AED ${card.data.annualFee.amount.toLocaleString()}`,
-    `${card.data.fxFee}%`,
-    `AED ${card.data.eligibility.minSalary.toLocaleString()}/mo`,
-    card.data.eligibility.salaryTransferRequired ? "Required" : "Not required",
-    card.data.welcomeBonus ?? "—",
-    bestEarn(card.data.earnRates),
+    `AED ${card.annualFee.amount.toLocaleString()}`,
+    `${card.fxFee}%`,
+    `AED ${card.eligibility.minSalary.toLocaleString()}/mo`,
+    card.eligibility.salaryTransferRequired ? "Required" : "Not required",
+    card.welcomeBonus ?? "—",
+    bestEarn(card.earnRates),
   ],
 }));
 ---

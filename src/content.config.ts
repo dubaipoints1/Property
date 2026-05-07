@@ -1,7 +1,6 @@
 import { defineCollection, reference, z } from "astro:content";
 import { glob } from "astro/loaders";
 
-const NETWORK = z.enum(["Visa", "Mastercard", "Amex"]);
 const REGION = z.enum(["UAE", "GCC", "Global"]);
 const DEAL_CATEGORY = z.enum([
   "welcome-bonus",
@@ -19,21 +18,7 @@ const ADDITIONAL_PRODUCT = z.enum([
   "credit_card",
   "other",
 ]);
-const EMPLOYMENT_TYPE = z.enum([
-  "salaried",
-  "self-employed",
-  "business-owner",
-  "any",
-]);
-const CARD_CATEGORY = z.enum([
-  "travel",
-  "cashback",
-  "shopping",
-  "dining",
-  "lifestyle",
-  "co-brand",
-  "Islamic",
-]);
+// NETWORK, EMPLOYMENT_TYPE, CARD_CATEGORY moved to src/lib/cardsData.ts (L2).
 
 const banks = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/banks" }),
@@ -50,78 +35,21 @@ const banks = defineCollection({
   }),
 });
 
+// Cards content collection — editorial layer (L3) only.
+// Card attributes (fees, earn rates, eligibility, perks, sources) live in
+// `src/data/cards.json` and load via `src/lib/cardsData.ts`. The MDX file
+// here is for editorial prose + per-card editor verdict.
 const cards = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/cards" }),
   schema: z.object({
-    bank: reference("banks"),
-    name: z.string(),
-    network: NETWORK,
-    categories: z.array(CARD_CATEGORY).default([]),
+    /** File-id slug — matches the key in src/data/cards.json. */
+    slug: z.string(),
 
-    // ── Fees ──────────────────────────────────────────────────────────────
-    joiningFee: z
-      .object({ amount: z.number().nonnegative(), currency: z.literal("AED").default("AED") })
-      .optional(),
-    annualFee: z.object({
-      amount: z.number().nonnegative(),
-      currency: z.literal("AED").default("AED"),
-    }),
-    annualFeeWaiver: z.string().optional(),
-    fxFee: z.number().min(0).max(10),
-    interestRate: z
-      .object({
-        monthly: z.number(),
-        annual: z.number().optional(),
-      })
-      .optional(),
-    minPayment: z.string().optional(),
-    cashAdvanceFee: z.string().optional(),
-
-    // ── Earn ──────────────────────────────────────────────────────────────
-    loyaltyProgram: z.string().optional(),
-    earnRates: z.object({
-      dining: z.number().optional(),
-      groceries: z.number().optional(),
-      shopping: z.number().optional(),
-      travel: z.number().optional(),
-      fuel: z.number().optional(),
-      entertainment: z.number().optional(),
-      online: z.number().optional(),
-      international: z.number().optional(),
-      everythingElse: z.number(),
-    }),
-    earnUnit: z.string().optional(),
-
-    // ── Welcome offer ─────────────────────────────────────────────────────
-    welcomeBonus: z.string().optional(),
-    welcomeBonusValue: z.number().optional(),
-
-    // ── Eligibility ───────────────────────────────────────────────────────
-    eligibility: z.object({
-      minSalary: z.number().nonnegative(),
-      salaryTransferRequired: z.boolean(),
-      residencyRequired: z.boolean(),
-      employmentTypes: z.array(EMPLOYMENT_TYPE).default(["salaried"]),
-      minAge: z.number().optional(),
-      nationalities: z.string().optional(),
-      documents: z.array(z.string()).default([]),
-    }),
-
-    // ── Perks & partners ─────────────────────────────────────────────────
-    perks: z.array(z.string()).default([]),
-    transferPartners: z.array(reference("programs")).default([]),
-
-    // ── Meta ─────────────────────────────────────────────────────────────
-    applyUrl: z.string().url().optional(),
-    kfsUrl: z.string().url().optional(),
-    lastVerified: z.coerce.date(),
-    verifiedBy: z.string().optional(),
-    sources: z.array(z.string().url()).min(1),
-
-    // ── Editorial verdict (council Decision 3) ───────────────────────────
+    // ── Editorial verdict (Audit 03 Decision 3) ─────────────────────────
     pros: z.array(z.string()).optional(),
     cons: z.array(z.string()).optional(),
     editorTake: z.string().optional(),
+    verifiedBy: z.string().optional(),
   }),
 });
 

@@ -1,17 +1,14 @@
-// Propose-changes script.
+// Propose-changes script (post-Audit-05 — writes to data layer L2).
 //
 // Reads the most recent scrape output for each bank under data/scraped/<bank>/
-// and emits:
+// and merges the parsed fields into src/data/cards.json. Crucially:
 //
-//   1. Draft MDX files for new/changed cards in src/content/cards/<slug>.mdx
-//      (only writes if the draft differs from the existing file)
-//   2. A side-by-side diff table to PR_BODY.md (read by the GH Actions
-//      workflow when opening the weekly scrape PR)
-//
-// Run:
-//   npm run scrape:propose
-//
-// Never auto-merges. Every emitted MDX change is reviewed via the PR body.
+//   - Per-field merge: each field gets a _provenance entry. Editor-confirmed
+//     fields are NEVER overwritten by a scrape.
+//   - New cards (no prior entry in cards.json) land with full _provenance =
+//     "scraped" and are visible to the editor for review.
+//   - PR_BODY.md is always written with the per-card change summary so a
+//     human reviewer sees what shifted.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -28,143 +25,144 @@ interface ScrapeFile {
   }>;
 }
 
+interface ProvenanceMap {
+  [key: string]: "scraped" | "editor-confirmed" | "editor-corrected" | "needs-review";
+}
+
+interface CardEntry {
+  [k: string]: unknown;
+  _provenance?: ProvenanceMap;
+  _lastScraped?: string | null;
+  _lastReviewed?: string | null;
+}
+
 const SCRAPED_DIR = path.join("data", "scraped");
-const CARDS_DIR = path.join("src", "content", "cards");
+const CARDS_DATA_PATH = path.join("src", "data", "cards.json");
 const PR_BODY_PATH = "PR_BODY.md";
+
+/** Top-level fields the scraper writes into cards.json. */
+const SCRAPED_FIELDS = [
+  "bank",
+  "name",
+  "network",
+  "categories",
+  "annualFee",
+  "fxFee",
+  "loyaltyProgram",
+  "earnRates",
+  "earnUnit",
+  "welcomeBonus",
+  "welcomeBonusValue",
+  "eligibility",
+  "perks",
+  "applyUrl",
+  "kfsUrl",
+  "lastVerified",
+  "sources",
+] as const;
 
 function latestScrape(bankSlug: string): ScrapeFile | null {
   const dir = path.join(SCRAPED_DIR, bankSlug);
   if (!fs.existsSync(dir)) return null;
-  const files = fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith(".json"))
-    .sort();
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith(".json")).sort();
   if (files.length === 0) return null;
   const file = path.join(dir, files[files.length - 1]);
   return JSON.parse(fs.readFileSync(file, "utf8")) as ScrapeFile;
 }
 
-function readExistingCard(slug: string): string | null {
-  const file = path.join(CARDS_DIR, `${slug}.mdx`);
-  return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
+function loadCardsData(): Record<string, CardEntry> {
+  if (!fs.existsSync(CARDS_DATA_PATH)) return {};
+  return JSON.parse(fs.readFileSync(CARDS_DATA_PATH, "utf8")) as Record<string, CardEntry>;
 }
 
-function draftToYaml(draft: Record<string, unknown>): string {
-  // Hand-rolled YAML — keeps frontmatter readable and avoids a yaml dep.
-  // Only emits the fields the cards Zod schema uses.
-  const d = draft as {
-    bank: string;
-    name: string;
-    network: string;
-    categories: string[];
-    annualFee: { amount: number; currency: string };
-    fxFee: number;
-    loyaltyProgram?: string;
-    earnRates: Record<string, number | undefined>;
-    earnUnit?: string;
-    welcomeBonus?: string;
-    welcomeBonusValue?: number;
-    eligibility: {
-      minSalary: number;
-      salaryTransferRequired: boolean;
-      residencyRequired: boolean;
-      employmentTypes: string[];
-    };
-    perks: string[];
-    applyUrl?: string;
-    kfsUrl?: string;
-    lastVerified: string;
-    sources: string[];
-  };
-
-  const lines: string[] = ["---"];
-  lines.push(`bank: ${d.bank}`);
-  lines.push(`name: ${JSON.stringify(d.name)}`);
-  lines.push(`network: ${d.network}`);
-  lines.push(`categories: [${d.categories.join(", ")}]`);
-  lines.push("");
-  lines.push("annualFee:");
-  lines.push(`  amount: ${d.annualFee.amount}`);
-  lines.push(`  currency: ${d.annualFee.currency}`);
-  lines.push(`fxFee: ${d.fxFee}`);
-  if (d.loyaltyProgram) lines.push(`loyaltyProgram: ${JSON.stringify(d.loyaltyProgram)}`);
-  lines.push("earnRates:");
-  for (const [k, v] of Object.entries(d.earnRates)) {
-    if (typeof v === "number") lines.push(`  ${k}: ${v}`);
-  }
-  if (d.earnUnit) lines.push(`earnUnit: ${JSON.stringify(d.earnUnit)}`);
-  if (d.welcomeBonus) lines.push(`welcomeBonus: ${JSON.stringify(d.welcomeBonus)}`);
-  if (typeof d.welcomeBonusValue === "number")
-    lines.push(`welcomeBonusValue: ${d.welcomeBonusValue}`);
-  lines.push("eligibility:");
-  lines.push(`  minSalary: ${d.eligibility.minSalary}`);
-  lines.push(`  salaryTransferRequired: ${d.eligibility.salaryTransferRequired}`);
-  lines.push(`  residencyRequired: ${d.eligibility.residencyRequired}`);
-  lines.push(`  employmentTypes: [${d.eligibility.employmentTypes.join(", ")}]`);
-  if (d.perks.length > 0) {
-    lines.push("perks:");
-    for (const p of d.perks) lines.push(`  - ${JSON.stringify(p)}`);
-  } else {
-    lines.push("perks: []");
-  }
-  if (d.applyUrl) lines.push(`applyUrl: ${JSON.stringify(d.applyUrl)}`);
-  if (d.kfsUrl) lines.push(`kfsUrl: ${JSON.stringify(d.kfsUrl)}`);
-  lines.push(`lastVerified: ${d.lastVerified}`);
-  lines.push("sources:");
-  for (const s of d.sources) lines.push(`  - ${s}`);
-  lines.push("---");
-  lines.push("");
-  return lines.join("\n");
+function writeCardsData(data: Record<string, CardEntry>): void {
+  // Stable key order for diffs.
+  const sorted = Object.keys(data)
+    .sort()
+    .reduce<Record<string, CardEntry>>((acc, k) => {
+      acc[k] = data[k];
+      return acc;
+    }, {});
+  fs.writeFileSync(
+    CARDS_DATA_PATH,
+    JSON.stringify(sorted, null, 2) + "\n",
+  );
 }
 
-function compareSummary(existing: string | null, draft: string): string {
-  if (!existing) return "**NEW CARD** — no prior MDX exists.";
-  if (existing.trim() === draft.trim()) return "_No changes._";
-  return [
-    "Diff:",
-    "```diff",
-    diffPreview(existing, draft),
-    "```",
-  ].join("\n");
+interface MergeOutcome {
+  changedFields: string[];
+  preservedFields: string[];
+  newCard: boolean;
 }
 
-function diffPreview(a: string, b: string): string {
-  const aLines = a.split("\n");
-  const bLines = b.split("\n");
-  const out: string[] = [];
-  const max = Math.max(aLines.length, bLines.length);
-  let lastWasUnchanged = false;
-  for (let i = 0; i < max; i++) {
-    const aL = aLines[i] ?? "";
-    const bL = bLines[i] ?? "";
-    if (aL === bL) {
-      if (!lastWasUnchanged && i < max - 1) out.push(`  ${aL}`);
-      lastWasUnchanged = true;
+/**
+ * Merge a scraped draft into the existing card entry.
+ *
+ * Rules:
+ *   - If existing entry has _provenance[field] === "editor-confirmed" or
+ *     "editor-corrected", the scrape NEVER overwrites it.
+ *   - Fields with _provenance "scraped" or "needs-review" or absent are
+ *     replaced with the new scraped value.
+ *   - All replaced fields get _provenance = "scraped".
+ *   - _lastScraped is set to today's date.
+ */
+function mergeDraft(
+  slug: string,
+  existing: CardEntry | undefined,
+  draft: Record<string, unknown>,
+): { entry: CardEntry; outcome: MergeOutcome } {
+  const today = new Date().toISOString().slice(0, 10);
+  const newCard = !existing;
+  const entry: CardEntry = existing ? { ...existing } : { _provenance: {}, _lastScraped: null, _lastReviewed: null };
+  const provenance: ProvenanceMap = { ...(entry._provenance ?? {}) };
+  const changedFields: string[] = [];
+  const preservedFields: string[] = [];
+
+  for (const field of SCRAPED_FIELDS) {
+    if (!(field in draft)) continue;
+    const currentProv = provenance[field];
+    if (currentProv === "editor-confirmed" || currentProv === "editor-corrected") {
+      preservedFields.push(field);
       continue;
     }
-    lastWasUnchanged = false;
-    if (aL) out.push(`- ${aL}`);
-    if (bL) out.push(`+ ${bL}`);
+    const before = JSON.stringify(entry[field]);
+    const after = JSON.stringify(draft[field]);
+    if (before !== after) {
+      entry[field] = draft[field];
+      provenance[field] = "scraped";
+      changedFields.push(field);
+    }
   }
-  return out.slice(0, 80).join("\n");
+
+  entry._provenance = provenance;
+  entry._lastScraped = today;
+  if (newCard) entry._lastReviewed = null;
+
+  return { entry, outcome: { changedFields, preservedFields, newCard } };
 }
 
 async function main() {
   const banks = fs.existsSync(SCRAPED_DIR)
-    ? fs.readdirSync(SCRAPED_DIR).filter((d) => fs.statSync(path.join(SCRAPED_DIR, d)).isDirectory())
+    ? fs.readdirSync(SCRAPED_DIR).filter((d) =>
+        fs.statSync(path.join(SCRAPED_DIR, d)).isDirectory(),
+      )
     : [];
+
+  const cardsData = loadCardsData();
 
   const prSections: string[] = [
     "# Weekly card refresh",
     "",
     `_Generated by \`scripts/scrape/propose-changes.ts\` on ${new Date().toISOString()}._`,
     "",
-    "Every change below was auto-extracted from a bank's published page.",
+    "Every change below was auto-extracted from a bank's published page and merged",
+    "into `src/data/cards.json`. Editor-confirmed fields were preserved, not overwritten.",
     "Review every figure before merging; the scraper is best-effort, not authoritative.",
     "",
   ];
 
-  let totalChanges = 0;
+  let totalNew = 0;
+  let totalChanged = 0;
   let totalErrors = 0;
 
   for (const bankSlug of banks) {
@@ -177,6 +175,7 @@ async function main() {
 
     for (const card of scrape.cards) {
       prSections.push(`### \`${card.slug}\` — ${card.name}`);
+
       const sourceList = card.fetched
         .map((s) => `- ${s.status === "ok" ? "✓" : "✗"} ${s.url}${s.failReason ? ` (${s.failReason})` : ""}`)
         .join("\n");
@@ -197,28 +196,40 @@ async function main() {
         continue;
       }
 
-      const draftYaml = draftToYaml(card.draft);
-      const existing = readExistingCard(card.slug);
-      prSections.push(compareSummary(existing, draftYaml));
-      prSections.push("");
+      const { entry, outcome } = mergeDraft(
+        card.slug,
+        cardsData[card.slug],
+        card.draft,
+      );
+      cardsData[card.slug] = entry;
 
-      // Write the draft to disk so reviewers can see it as a real file change.
-      const out = path.join(CARDS_DIR, `${card.slug}.mdx`);
-      if (!existing || existing.trim() !== draftYaml.trim()) {
-        fs.writeFileSync(out, draftYaml);
-        totalChanges++;
+      if (outcome.newCard) totalNew++;
+      if (outcome.changedFields.length > 0 || outcome.newCard) totalChanged++;
+
+      if (outcome.newCard) {
+        prSections.push("**NEW CARD** — created entry in `src/data/cards.json`. All fields marked `_provenance: scraped`.");
+      } else if (outcome.changedFields.length === 0) {
+        prSections.push("_No changes._");
+      } else {
+        prSections.push(`**Updated fields:** ${outcome.changedFields.map((f) => `\`${f}\``).join(", ")}`);
+        if (outcome.preservedFields.length > 0) {
+          prSections.push(`**Preserved (editor-confirmed):** ${outcome.preservedFields.map((f) => `\`${f}\``).join(", ")}`);
+        }
       }
+      prSections.push("");
     }
   }
 
+  writeCardsData(cardsData);
+
   prSections.push("---");
   prSections.push("");
-  prSections.push(`**Summary:** ${totalChanges} card file(s) changed, ${totalErrors} parser warning(s).`);
+  prSections.push(`**Summary:** ${totalNew} new card(s), ${totalChanged} entr(y/ies) changed, ${totalErrors} parser warning(s).`);
   prSections.push("");
   prSections.push("This PR is auto-opened by `.github/workflows/scrape.yml`. Never auto-merge — review every figure against the cited source URLs.");
 
   fs.writeFileSync(PR_BODY_PATH, prSections.join("\n"));
-  console.log(`[propose] Wrote ${PR_BODY_PATH}: ${totalChanges} change(s), ${totalErrors} warning(s)`);
+  console.log(`[propose] Wrote ${PR_BODY_PATH}: ${totalNew} new, ${totalChanged} changed, ${totalErrors} warning(s)`);
 }
 
 main().catch((err) => {

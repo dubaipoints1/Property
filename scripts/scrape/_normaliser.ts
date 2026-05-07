@@ -117,13 +117,48 @@ function parseWelcomeValue(welcome: string | null): number | null {
   return aed;
 }
 
-/** Bullet/list scrape for perks — anything resembling "<li>...</li>" content. */
+/**
+ * Bullet/list scrape for perks — filters to plausible card-feature lines.
+ *
+ * Rejects bullets that look like site navigation:
+ *   - lines that are only a markdown link, e.g. "[Personal Online Banking](https://...)"
+ *   - lines mentioning common chrome words (Banking, Login, Portal, Online,
+ *     Subscription, Securities, Corporate, Business)
+ *   - lines under 8 chars or over 200 chars
+ */
 function parsePerks(text: string): string[] {
+  const NAV_RX = /\b(?:online\s+banking|portal|login|subscription|corporate|securities|ipo|business\s+banking|investment\s+banking|securities\s+services|ibanking|adgm|fabonline|fabe?access|prepaid\s+card\s+balance)\b/i;
+  const ONLY_LINK_RX = /^\[[^\]]+\]\(https?:[^)]+\)\s*\.?$/;
+
   const lines = text.split(/\n/).map((l) => l.trim());
-  return lines
-    .filter((l) => /^[-*•]\s+/.test(l))
-    .map((l) => l.replace(/^[-*•]\s+/, "").trim())
-    .filter((l) => l.length > 4 && l.length < 200);
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of lines) {
+    if (!/^[-*•]\s+/.test(raw)) continue;
+    const line = raw.replace(/^[-*•]\s+/, "").trim();
+    if (line.length < 8 || line.length > 200) continue;
+    if (ONLY_LINK_RX.test(line)) continue;
+    if (NAV_RX.test(line)) continue;
+    if (seen.has(line)) continue;
+    seen.add(line);
+    out.push(line);
+  }
+  return out;
+}
+
+/**
+ * Plausible UAE card earn rate. Anything above the cap is almost always
+ * welcome-bonus contamination ("Earn 40,000 Etihad Guest Miles" → 40 mistaken
+ * for 40%). Real rates on UAE cards top out around 8% (cashback) or 8 miles
+ * per AED. Above 10 → mark as suspicious; we return null so the field stays
+ * undefined and the propose script surfaces a needs-review warning.
+ */
+const PLAUSIBLE_EARN_MAX = 10;
+function plausibleRate(n: number | null): number | null {
+  if (n === null) return null;
+  if (!Number.isFinite(n) || n < 0) return null;
+  if (n > PLAUSIBLE_EARN_MAX) return null;
+  return n;
 }
 
 /**
@@ -146,15 +181,17 @@ export function normalise(
   const welcomeBonus = parseWelcome(text);
   const welcomeBonusValue = parseWelcomeValue(welcomeBonus);
 
+  // Apply plausibility cap (≤ PLAUSIBLE_EARN_MAX) so welcome-bonus mile counts
+  // can't masquerade as 40% earn rates on travel/online.
   const earnRates = {
-    dining: parseEarnRate(text, "dining") ?? undefined,
-    groceries: parseEarnRate(text, "groceries") ?? undefined,
-    shopping: parseEarnRate(text, "shopping") ?? undefined,
-    travel: parseEarnRate(text, "travel") ?? undefined,
-    fuel: parseEarnRate(text, "fuel") ?? undefined,
-    entertainment: parseEarnRate(text, "entertainment") ?? undefined,
-    online: parseEarnRate(text, "online") ?? undefined,
-    international: parseEarnRate(text, "international") ?? undefined,
+    dining: plausibleRate(parseEarnRate(text, "dining")) ?? undefined,
+    groceries: plausibleRate(parseEarnRate(text, "groceries")) ?? undefined,
+    shopping: plausibleRate(parseEarnRate(text, "shopping")) ?? undefined,
+    travel: plausibleRate(parseEarnRate(text, "travel")) ?? undefined,
+    fuel: plausibleRate(parseEarnRate(text, "fuel")) ?? undefined,
+    entertainment: plausibleRate(parseEarnRate(text, "entertainment")) ?? undefined,
+    online: plausibleRate(parseEarnRate(text, "online")) ?? undefined,
+    international: plausibleRate(parseEarnRate(text, "international")) ?? undefined,
     everythingElse: 1, // sane default; overridden if base rate parseable
   };
   const baseRateMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:x|×|%)\s+(?:on\s+)?(?:all\s+)?(?:other|everything\s+else|every\s+spend)/i);
