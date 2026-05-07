@@ -1,28 +1,17 @@
 # Weekly card-data refresh.
 #
-# Runs every Sunday 23:00 UTC (Monday 03:00 GST), after manual dispatch,
-# and after any direct edit to this workflow file (path-scoped push trigger,
-# used to fire a run from a phone without `gh workflow run`).
+# Runs every Sunday 23:00 UTC, on workflow_dispatch, and on any direct
+# edit to this file (path-scoped push trigger).
 #
-# Scrapes each bank's card pages via Firecrawl, normalises into draft MDX,
-# and opens a PR with a side-by-side diff in the body.
-#
-# REQUIRED REPO SECRET:
-#   - FIRECRAWL_API_KEY  (sign up at firecrawl.dev)
-#
-# REQUIRED REPO PERMISSIONS (Settings → Actions → General → Workflow perms):
-#   - "Read and write permissions"
-#   - "Allow GitHub Actions to create and approve pull requests"
-#
-# Diagnostic: this workflow always copies PR_BODY.md to
-# data/scraped/LATEST_SCRAPE.md on main, so we can read what the
-# scraper saw regardless of whether any card MDX changed.
+# Always commits a run log to data/scraped/LATEST_RUN.log so we can
+# inspect failures from outside the runner — this is the only way to
+# diagnose runs without GitHub Actions log access.
 
 name: scrape
 
 on:
   schedule:
-    - cron: "0 23 * * 0" # Sunday 23:00 UTC
+    - cron: "0 23 * * 0"
   workflow_dispatch:
   push:
     branches:
@@ -48,58 +37,110 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Scrape FAB
+      - name: Run scrape with full logging
+        id: scrape
         env:
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
-        run: npm run scrape:fab
+        run: |
+          set +e
+          mkdir -p data/scraped
+          LOG=data/scraped/LATEST_RUN.log
+          : > "$LOG"
 
-      - name: Propose changes
-        run: npm run scrape:propose
+          echo "=== node + npm versions ===" | tee -a "$LOG"
+          node --version 2>&1 | tee -a "$LOG"
+          npm --version 2>&1 | tee -a "$LOG"
+          echo "" | tee -a "$LOG"
 
-      - name: Commit diagnostic PR_BODY.md to main (always)
+          echo "=== package.json scripts ===" | tee -a "$LOG"
+          cat package.json 2>&1 | tee -a "$LOG"
+          echo "" | tee -a "$LOG"
+
+          echo "=== npm install ===" | tee -a "$LOG"
+          npm install --no-audit --no-fund 2>&1 | tee -a "$LOG"
+          INSTALL_RC=${PIPESTATUS[0]}
+          echo "[install] exit=$INSTALL_RC" | tee -a "$LOG"
+
+          if [ "$INSTALL_RC" -ne 0 ]; then
+            echo "FAIL: install" | tee -a "$LOG"
+            echo "scrape_rc=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "=== FIRECRAWL_API_KEY presence check ===" | tee -a "$LOG"
+          if [ -n "$FIRECRAWL_API_KEY" ]; then
+            echo "FIRECRAWL_API_KEY: present (${#FIRECRAWL_API_KEY} chars)" | tee -a "$LOG"
+          else
+            echo "FIRECRAWL_API_KEY: MISSING from env" | tee -a "$LOG"
+          fi
+          echo "" | tee -a "$LOG"
+
+          echo "=== npm run scrape:fab ===" | tee -a "$LOG"
+          npm run scrape:fab 2>&1 | tee -a "$LOG"
+          FAB_RC=${PIPESTATUS[0]}
+          echo "[scrape:fab] exit=$FAB_RC" | tee -a "$LOG"
+          echo "" | tee -a "$LOG"
+
+          echo "=== ls data/scraped/fab/ ===" | tee -a "$LOG"
+          ls -la data/scraped/fab/ 2>&1 | tee -a "$LOG"
+          echo "" | tee -a "$LOG"
+
+          echo "=== latest scrape JSON (truncated) ===" | tee -a "$LOG"
+          LATEST_JSON=$(ls -t data/scraped/fab/*.json 2>/dev/null | head -1)
+          if [ -n "$LATEST_JSON" ]; then
+            echo "FILE: $LATEST_JSON" | tee -a "$LOG"
+            head -200 "$LATEST_JSON" 2>&1 | tee -a "$LOG"
+          else
+            echo "No scrape JSON written." | tee -a "$LOG"
+          fi
+          echo "" | tee -a "$LOG"
+
+          echo "=== npm run scrape:propose ===" | tee -a "$LOG"
+          npm run scrape:propose 2>&1 | tee -a "$LOG"
+          PROPOSE_RC=${PIPESTATUS[0]}
+          echo "[scrape:propose] exit=$PROPOSE_RC" | tee -a "$LOG"
+          echo "" | tee -a "$LOG"
+
+          if [ -f PR_BODY.md ]; then
+            cp PR_BODY.md data/scraped/LATEST_SCRAPE.md
+            echo "=== PR_BODY.md head ===" | tee -a "$LOG"
+            head -60 PR_BODY.md 2>&1 | tee -a "$LOG"
+          else
+            echo "No PR_BODY.md produced." | tee -a "$LOG"
+          fi
+
+          echo "scrape_rc=0" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Always commit log + diagnostic body to main
+        if: always()
         run: |
           git config user.name "dubaipoints-bot"
           git config user.email "info@dubaipoints.ae"
-          mkdir -p data/scraped
-          if [ -f PR_BODY.md ]; then
-            cp PR_BODY.md data/scraped/LATEST_SCRAPE.md
-            git add data/scraped/LATEST_SCRAPE.md
-            if git diff --cached --quiet; then
-              echo "[diag] No diagnostic delta to commit."
-            else
-              git commit -m "diag(scrape): latest scrape body [skip ci]"
-              git push origin main
-            fi
+          git add -A data/scraped/ || true
+          if git diff --cached --quiet; then
+            echo "[diag] Nothing to commit."
+          else
+            git commit -m "diag(scrape): run log + body"
+            git push origin main || echo "[diag] push failed"
           fi
 
-      - name: Branch + commit if anything changed
-        id: commit
+      - name: Open PR if cards changed
         run: |
-          BRANCH="scrape/weekly-$(date +%Y-%m-%d)"
-          git checkout -b "$BRANCH"
           if git diff --quiet src/content/cards/; then
-            echo "no_changes=true" >> "$GITHUB_OUTPUT"
-            echo "[scrape] No card MDX changes detected; skipping PR."
+            echo "[scrape] No card MDX changes; skipping PR."
             exit 0
           fi
+          BRANCH="scrape/weekly-$(date +%Y-%m-%d-%H%M%S)"
+          git checkout -b "$BRANCH"
           git add src/content/cards/
           git commit -m "scrape: weekly card refresh ($(date +%Y-%m-%d))"
           git push -u origin "$BRANCH"
-          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
-          echo "no_changes=false" >> "$GITHUB_OUTPUT"
-
-      - name: Open pull request
-        if: steps.commit.outputs.no_changes == 'false'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BRANCH: ${{ steps.commit.outputs.branch }}
-        run: |
           gh pr create \
             --base main \
             --head "$BRANCH" \
             --title "scrape: weekly card refresh ($(date +%Y-%m-%d))" \
             --body-file PR_BODY.md \
             --label "scrape,needs-review"
+        env:
+          GH_TOKEN: ${{ github.token }}
