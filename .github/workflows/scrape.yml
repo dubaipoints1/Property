@@ -7,16 +7,12 @@
 # Scrapes each bank's card pages via Firecrawl, normalises into draft MDX,
 # and opens a PR with a side-by-side diff in the body.
 #
-# REQUIRED REPO SECRET (add at GitHub → Settings → Secrets → Actions):
+# REQUIRED REPO SECRET:
 #   - FIRECRAWL_API_KEY  (sign up at firecrawl.dev)
 #
-# REQUIRED REPO PERMISSIONS (set at GitHub → Settings → Actions → General →
-# "Workflow permissions"):
+# REQUIRED REPO PERMISSIONS (Settings → Actions → General → Workflow perms):
 #   - "Read and write permissions"
 #   - "Allow GitHub Actions to create and approve pull requests"
-#
-# This workflow never auto-merges. Every weekly PR gets human-reviewed for
-# at least the first 8 weeks per Audit Session 04 / Council Decision Karim.
 
 name: scrape
 
@@ -59,11 +55,25 @@ jobs:
       - name: Propose changes
         run: npm run scrape:propose
 
-      - name: Branch + commit if anything changed
-        id: commit
+      - name: Commit diagnostic PR_BODY.md to main (always)
         run: |
           git config user.name "dubaipoints-bot"
           git config user.email "info@dubaipoints.ae"
+          mkdir -p data/scraped
+          if [ -f PR_BODY.md ]; then
+            cp PR_BODY.md data/scraped/LATEST_SCRAPE.md
+            git add data/scraped/LATEST_SCRAPE.md
+            if git diff --cached --quiet; then
+              echo "[diag] No diagnostic delta to commit."
+            else
+              git commit -m "diag(scrape): latest scrape body [skip ci]"
+              git push origin main
+            fi
+          fi
+
+      - name: Branch + commit if anything changed
+        id: commit
+        run: |
           BRANCH="scrape/weekly-$(date +%Y-%m-%d)"
           git checkout -b "$BRANCH"
           if git diff --quiet src/content/cards/; then
