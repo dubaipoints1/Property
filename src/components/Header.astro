@@ -27,7 +27,7 @@ const isActive = (href: string) =>
 /* ── Hidden state input ──────────────────────────────────────────────── */
 .nav-toggle { position: absolute; opacity: 0; pointer-events: none; }
 .nav-toggle:focus-visible + .mobile-bar .hamburger {
-  outline: 2px solid var(--gold); outline-offset: 2px;
+  outline: 2px solid var(--brand); outline-offset: 2px;
 }
 
 /* ── MOBILE BAR (default, <1024px) ──────────────────────────────────── */
@@ -120,7 +120,7 @@ const isActive = (href: string) =>
 }
 .drawer-link:hover { background: var(--line-soft); }
 .drawer-link.active {
-  border-left-color: var(--gold);
+  border-left-color: var(--brand);
   color: var(--ink);
   background: var(--gold-soft);
 }
@@ -141,7 +141,7 @@ const isActive = (href: string) =>
   font-size: 14px; font-weight: 600;
   transition: background 0.15s;
 }
-.drawer-cta-primary:hover { background: var(--gold); }
+.drawer-cta-primary:hover { background: var(--brand); }
 .drawer-cta-secondary {
   display: flex; align-items: center; justify-content: center;
   min-height: 48px; padding: 0 16px;
@@ -242,7 +242,7 @@ const isActive = (href: string) =>
   .desktop-nav .links a.active { color: var(--ink); }
   .desktop-nav .links a.active::after {
     content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
-    height: 2px; background: var(--gold);
+    height: 2px; background: var(--brand);
   }
   .desktop-nav .right { display: flex; gap: 14px; align-items: center; }
   .desktop-nav .tracker-cta {
@@ -256,7 +256,7 @@ const isActive = (href: string) =>
     padding: 7px 14px; background: var(--ink); color: white;
     border-radius: 6px; font-size: 12px; font-weight: 600;
   }
-  .desktop-nav .subscribe-cta:hover { background: var(--gold); }
+  .desktop-nav .subscribe-cta:hover { background: var(--brand); }
 }
 </style>
 

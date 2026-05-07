@@ -66,9 +66,20 @@ language is:
 - **Type.** Fraunces (serif) for headlines, eyebrows, "Our take" labels,
   and section heads. DM Sans for body, meta, and UI.
 - **Palette.** CSS custom properties only — `--ink`, `--ink-soft`,
-  `--paper`, `--bg`, `--line`, `--gold`, `--gold-soft`, `--red`,
-  `--green`, `--muted`. No Tailwind slate utilities in layouts or
-  long-form pages.
+  `--paper`, `--bg`, `--line`, `--brand`, `--brand-deep`, `--brand-soft`,
+  `--gold`, `--gold-soft`, `--red`, `--green`, `--muted`. No Tailwind
+  slate utilities in layouts or long-form pages.
+- **Two-accent system.** `--brand` (electric blue, `#1e6bd6`) is the
+  primary accent: section eyebrows, italic title accents, hover
+  states, link-hover, focus rings, primary CTAs, directory tile hover
+  borders, "+" bullet markers, and the byline avatar gradient.
+  `--gold` (`#b8842a`) is the secondary trust-signal accent: the
+  Verified chip on bylines, the "Our take" callout border + soft
+  background, the affiliate-link asterisk (`*`), the bank-callout
+  block on bank hub pages, the "Indicative — pre-sampling" status
+  block on the valuations page, and the methodology-link hover on
+  valuation rows. Each colour does one job; never mix them in the
+  same UI element.
 - **Radius.** 4px on chips and inputs, 6px on callouts and small cards,
   8px on article cards and tables. No `rounded-full` pills.
 - **Eyebrows.** 11px / 700 / 2.5px letter-spacing / uppercase / `--gold`
