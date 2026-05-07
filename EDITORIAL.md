@@ -129,3 +129,66 @@ children. Pills at the top use `.dp-dir-pills`.
   API tier (Twilio or 360dialog) past 256 subscribers.
 - **RSS** — site-wide and per-AED-band, generated at build time (see
   `BRAND_NOTES.md` §7).
+
+---
+
+## Amendments
+
+### 2026-05-08 — Quiet Ledger direction adopted
+
+**Authority:** Chairman pick on `/council` session output.
+**Brief:** `.council/research/2026-05/ux-redesign-brief.md`.
+**Status file:** `.council/STATUS.md`.
+
+The §"Visual standard" rules below are amended as follows. The
+original rules remain in the file as historical context; where the
+amendment supersedes a clause, the amendment wins.
+
+- **Palette.** White paper (`--bg #ffffff`), near-black ink
+  (`--ink #0d1117`), softened grey (`--ink-soft #5a6068`), hairline
+  rule (`--line #e3e3e1`). Red `--red #c8412d` is reserved for live
+  indicators, expiry stamps, and the "Our take" label only.
+- **Two-accent system — sunsetted.** The brand-blue + gold pairing
+  collapses to a single interactive colour. `--brand #2a6bd1` is
+  link-only (link text, link hover, focus ring). `--gold` and
+  `--gold-soft` retire from UI usage; their bindings remain defined
+  for backward compatibility but no new rule reaches for them.
+- **Eyebrows — strike old rule, replace with:** 11px / 700 / 2.5px
+  letter-spacing / uppercase / `--ink` (black caps, never accented).
+  `.is-red` modifier is reserved for live and expiry indicators
+  only.
+- **Headlines — strike old rule, replace with:** Fraunces 600,
+  `clamp(28px, 5vw, 44px)`, balanced text wrap. **Italic display
+  words are removed.** No `em` element inside `.dp-article-title`
+  renders italic or in an accent colour. `font-style: normal`,
+  `color: inherit`, `font-weight: inherit`.
+- **"Our take" — replace.** Hairline-bordered (1px `--ink`) block on
+  white paper background, red label (`--red`) in 11px caps, body
+  copy in Fraunces 500. Replaces the prior gold-on-cream callout.
+- **Pros / Cons — replace.** Drop the green/red top borders. Pros
+  list items prefix with `+`; cons list items prefix with `−` (U+2212
+  minus sign). Glyphs in `--ink`, no colour coding.
+- **Byline avatar — replace.** Flat `--ink` circle with white
+  initials. Replaces the prior `var(--brand) → var(--brand-deep)`
+  gradient.
+- **Verified chip — replace.** `--paper` background, 1px `--ink`
+  border, 4px radius, ink text. Replaces the gold-soft / brown-text
+  pill.
+- **Continuous logo scale.** 36px (mobile, <768px), 44px
+  (768–1023px), 52px (≥1024px). No single-step jump at any
+  breakpoint.
+
+**Tone amplifications (per Quiet Ledger §"Editorial tone").**
+
+- No exclamation marks anywhere on the site (excludes quoted source
+  material).
+- Numbers in body copy are always written numerically (`30,000
+  Skywards Miles`, never `thirty thousand`).
+- Pull-quotes are replaced with pull-numbers — typically the AED
+  figure that anchors the piece.
+- The Friday recap is one paragraph plus dated bullets, not a
+  magazine-style spread.
+
+**Other rules unchanged.** Type pairing (Fraunces + DM Sans), tap
+targets, table classes, eyebrow size, and reference-component
+mappings carry forward as written.

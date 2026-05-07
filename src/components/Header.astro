@@ -59,7 +59,11 @@ const isActive = (href: string) =>
   display: inline-flex; justify-content: center;
   line-height: 0;
 }
-.mobile-logo img { height: 32px; width: auto; }
+/* Continuous logo scale (Quiet Ledger §"Mobile rules"): 36 / 44 / 52. */
+.mobile-logo img { height: 36px; width: auto; }
+@media (min-width: 768px) {
+  .mobile-logo img { height: 44px; }
+}
 
 /* ── DRAWER (full-screen overlay, slides in from left) ──────────────── */
 .drawer-backdrop {
@@ -214,7 +218,7 @@ const isActive = (href: string) =>
     text-align: center;
   }
   .logo-wordmark { display: inline-block; line-height: 0; }
-  .logo-wordmark img { height: 54px; width: auto; display: block; }
+  .logo-wordmark img { height: 52px; width: auto; display: block; }
   .masthead-tagline {
     font-size: 11px; font-weight: 500; letter-spacing: 3px;
     text-transform: uppercase; color: var(--muted); margin-top: 2px;

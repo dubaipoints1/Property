@@ -266,3 +266,81 @@ When ready to apply this document:
 4. **Expat Starter cornerstone** — author the `/guides/expat-starter/` pillar and four spoke articles.
 5. **Per-band RSS** — implement per `BRAND_NOTES.md` §7 in Phase 3.
 6. **Verification** — Lighthouse mobile run, manual one-handed test on iPhone 14 (390px), Pagefind smoke test, all internal links resolve.
+
+---
+
+## Amendments
+
+### 2026-05-08 — Quiet Ledger direction adopted
+
+**Authority:** Chairman pick on `/council` session output.
+**Brief:** `.council/research/2026-05/ux-redesign-brief.md`.
+**Status file:** `.council/STATUS.md`.
+
+**§4 Homepage hierarchy — supersede.** The 8-section hierarchy in §4
+is replaced with a 4-section Quiet Ledger spec:
+
+1. **Masthead-dateline + 5-story typographic index.** Wordmark, the
+   day's dateline, and a typographic stack of 5 lead stories (no
+   images, no hero photography). Replaces the current hero,
+   "Today's Best Deals" rail (now folded into section 2), and the
+   "New to the UAE?" inverted ink band (now linked from the index
+   row, not given its own band).
+2. **Live: salary transfer + deals rail.** Single two-column module
+   ≥768px, stacked <768px. The salary-transfer tracker preview and
+   the deals rail share one section header.
+3. **Latest analysis.** Single-column reverse-chronological feed
+   covering recent posts, card spotlights, and evergreen
+   refreshes — interleaved by date, not split into separate bands.
+4. **Newsletter + RSS-by-band.** Quiet card with both subscription
+   options visible.
+
+The 5-section "Card spotlights / Recent posts / Evergreen guides /
+Newsletter" stack from the original §4 is collapsed into sections 3
+and 4 above.
+
+**§5.3 Header — correction.** The original §5.3 claimed `Header.astro`
+has *no hamburger drawer*. **This is incorrect.** The header has
+shipped a working hamburger drawer with full-screen overlay since at
+least 2026-Q1; see `src/components/Header.astro` lines ~34–88
+(`.hamburger`, `.drawer-backdrop`, no-JS checkbox toggle). The
+original §5.3 spec is otherwise correct in describing the drawer's
+intended content and the desktop three-tier layout — it simply
+mis-described the starting state.
+
+**§5.3 Logo discontinuity — supersede.** The original §5.3 specifies
+"32px height" on mobile and (implicitly) 54px desktop. Quiet Ledger
+amends this to a continuous 3-tier scale: **36px / 44px / 52px** at
+the standard breakpoints (`<768px`, `768–1023px`, `≥1024px`). No
+single-step jump at any breakpoint. Implemented in
+`src/components/Header.astro` 2026-05-08.
+
+**§5.4 Typography — append.** Italic display words are removed
+site-wide. `em` inside `.dp-article-title` renders flat in body
+weight and inherits the parent colour. The `--brand` token is
+reserved for interactive states (link text, link hover, focus ring)
+and never appears on display type or eyebrows.
+
+**§5 Layout & touch — append.** The 16/24/32 padding scale is
+unchanged. The Quiet Ledger spike at `/design-spike/` references
+the same scale.
+
+**§7 Monetization — unchanged.** The five reserved zones carry
+forward; the labelling system (Editorial / Affiliate / Sponsored /
+Partner Spotlight) is unchanged.
+
+**§3 Sitemap — unchanged.** No new top-level destinations or removed
+paths from this amendment.
+
+### Implementation status
+
+| Component | Status |
+|---|---|
+| `src/styles/global.css` palette + Quiet Ledger rules | applied 2026-05-08 |
+| `src/components/Header.astro` continuous logo scale | applied 2026-05-08 |
+| `src/layouts/ArticleLayout.astro` `.dp-*` rewrite | applied 2026-05-08 (was unused) |
+| `src/pages/index.astro` 4-section homepage rebuild | **deferred** to next session |
+| Per-band salary-transfer landing pages | **deferred** to next session |
+| `/news/`, `/newsletter/`, `/search/` routes | **deferred** to next session |
+| Card-review `.dp-take` re-theme on existing pages | inherited via `.dp-*` for free |
+| Deal-rail negative-margin bug | resolved by Quiet Ledger merging the rail into section 2 |
