@@ -1,6 +1,5 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import HomepageTrackerSummary from "~/components/HomepageTrackerSummary.astro";
 import { getCollection } from "astro:content";
 
 // ── Live data ────────────────────────────────────────────────────────────
@@ -304,43 +303,7 @@ const fmtDate = (d: Date) =>
 }
 .expat-band .cta:hover { background: var(--brand-deep); }
 
-/* ── 4. SALARY TRANSFER tracker preview ──────────────────────────── */
-.tracker-section .head {
-  display: flex; flex-direction: column; gap: 6px;
-  margin-bottom: 16px;
-  padding-bottom: 12px; border-bottom: 1px solid var(--line);
-}
-@media (min-width: 768px) {
-  .tracker-section .head {
-    flex-direction: row; align-items: flex-end; justify-content: space-between;
-    gap: 24px;
-  }
-}
-.tracker-section .eyebrow {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--red);
-  display: flex; align-items: center; gap: 8px;
-}
-.tracker-section .eyebrow::before {
-  content: ''; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--red); animation: pulse 2s infinite;
-}
-.tracker-section h2 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: clamp(22px, 4vw, 28px);
-  letter-spacing: -0.5px; color: var(--ink);
-}
-.tracker-section .cta {
-  font-size: 13px; font-weight: 600; color: var(--ink);
-  border: 1px solid var(--ink);
-  padding: 10px 16px; border-radius: 6px;
-  min-height: 44px;
-  display: inline-flex; align-items: center;
-  transition: all 0.15s;
-}
-.tracker-section .cta:hover { background: var(--ink); color: white; }
-
-/* ── 5. CARD SPOTLIGHTS ──────────────────────────────────────────── */
+/* ── 4. CARD SPOTLIGHTS ──────────────────────────────────────────── */
 .cards-grid {
   display: grid; grid-template-columns: 1fr; gap: 16px;
 }
@@ -605,20 +568,8 @@ const fmtDate = (d: Date) =>
   </div>
 </section>
 
-<!-- ── 4. SALARY TRANSFER summary (top 3 by reward) ───────────────── -->
-<section class="section tracker-section">
-  <div class="wrap">
-    <div class="head">
-      <div>
-        <span class="eyebrow">Live offers · top 3 by reward</span>
-        <h2>UAE salary transfer offers</h2>
-      </div>
-    </div>
-    <HomepageTrackerSummary />
-  </div>
-</section>
 
-<!-- ── 5. CARD SPOTLIGHTS ─────────────────────────────────────────── -->
+<!-- ── 4. CARD SPOTLIGHTS ─────────────────────────────────────────── -->
 {cardSpotlights.length > 0 && (
   <section class="section section-band">
     <div class="wrap">
@@ -652,7 +603,7 @@ const fmtDate = (d: Date) =>
   </section>
 )}
 
-<!-- ── 6. RECENT POSTS ────────────────────────────────────────────── -->
+<!-- ── 5. RECENT POSTS ────────────────────────────────────────────── -->
 <section class="section">
   <div class="wrap">
     <div class="section-head">
@@ -671,7 +622,7 @@ const fmtDate = (d: Date) =>
   </div>
 </section>
 
-<!-- ── 7. EVERGREEN guides ────────────────────────────────────────── -->
+<!-- ── 6. EVERGREEN guides ────────────────────────────────────────── -->
 {evergreenGuides.length > 0 && (
   <section class="section section-band">
     <div class="wrap">
@@ -692,7 +643,7 @@ const fmtDate = (d: Date) =>
   </section>
 )}
 
-<!-- ── 8. NEWSLETTER (email or WhatsApp) ──────────────────────────── -->
+<!-- ── 7. NEWSLETTER (email or WhatsApp) ──────────────────────────── -->
 <section class="section">
   <div class="wrap">
     <div class="newsletter" id="newsletter">
