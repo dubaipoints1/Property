@@ -14,77 +14,49 @@ const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 ---
 
-<BaseLayout title={title} description={description}>
-  <article class="trust-page">
-    <header class="head">
-      <p class="eyebrow">{eyebrow}</p>
-      <h1>{heading}</h1>
-      <p class="updated">Last updated: {fmt(lastUpdated)}</p>
+<BaseLayout title={title} description={description} fullWidth>
+  <article class="dp-article is-trust">
+    <header class="dp-article-head">
+      <p class="dp-article-eyebrow">{eyebrow}</p>
+      <h1 class="dp-article-title">{heading}</h1>
+      <p class="dp-article-meta">
+        <span><strong>Last updated</strong> {fmt(lastUpdated)}</span>
+      </p>
     </header>
-    <div class="body">
+
+    <section class="dp-prose">
       <slot />
-    </div>
+    </section>
   </article>
 </BaseLayout>
 
 <style is:global>
-  .trust-page {
-    max-width: 720px;
-    margin: 0 auto;
-    padding-block: 24px 48px;
+  /* Trust-page tweaks layered on top of the .dp-* idiom.
+     Narrower reading width than .dp-article default; section blocks for
+     topical grouping; affiliate asterisk in --red (signal); related-links
+     footer with hairline rule. */
+  .dp-article.is-trust { max-width: 720px; }
+  .dp-article.is-trust .dp-prose section { margin-block: 28px; }
+  .dp-article.is-trust .dp-prose section:first-child { margin-top: 0; }
+  .dp-article.is-trust .dp-prose .ast {
+    color: var(--red);
+    font-weight: 700;
   }
-  @media (min-width: 768px) {
-    .trust-page { padding-block: 48px 72px; }
-  }
-  .trust-page .head {
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--line);
-  }
-  .trust-page .eyebrow {
-    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--brand); margin-bottom: 14px;
-  }
-  .trust-page h1 {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: clamp(28px, 5vw, 40px);
-    line-height: 1.15; letter-spacing: -0.8px;
-    color: var(--ink); text-wrap: balance; margin-bottom: 12px;
-  }
-  .trust-page .updated { font-size: 13px; color: var(--muted); }
-  .trust-page .body section { margin-block: 32px; }
-  .trust-page .body h2 {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: clamp(20px, 3vw, 24px);
-    letter-spacing: -0.4px; color: var(--ink);
-    margin-bottom: 12px;
-  }
-  .trust-page .body h3 {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: 18px; letter-spacing: -0.3px;
-    color: var(--ink); margin-bottom: 10px;
-  }
-  .trust-page .body p,
-  .trust-page .body li {
-    font-size: 16px;
-    line-height: 1.65;
-    color: var(--ink-soft);
-    text-wrap: pretty;
-  }
-  .trust-page .body p { margin-bottom: 12px; }
-  .trust-page .body ul { padding-left: 20px; margin-bottom: 12px; }
-  .trust-page .body li { margin-bottom: 6px; }
-  .trust-page .body a {
-    color: var(--ink);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: var(--line);
-  }
-  .trust-page .body a:hover { color: var(--brand); text-decoration-color: var(--brand); }
-  .trust-page .body .ast { color: var(--gold); font-weight: 700; }
-  .trust-page .body .related {
+  .dp-article.is-trust .dp-prose .related {
+    margin-top: 36px;
     padding-top: 24px;
     border-top: 1px solid var(--line);
   }
-  .trust-page .body .related ul { list-style: none; padding: 0; }
+  .dp-article.is-trust .dp-prose .related ul {
+    list-style: none;
+    padding: 0;
+  }
+  .dp-article.is-trust .dp-prose .related h3 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 12px;
+  }
 </style>
