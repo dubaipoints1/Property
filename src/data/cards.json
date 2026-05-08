@@ -1368,7 +1368,12 @@
     "_lastScraped": "2026-05-07",
     "_lastReviewed": null,
     "_scraped_freetext": {
-      "welcomeBonus": "Up to 500,000 FAB Rewards on all your spending You can earn up to 500,000 FAB Rewards on all your spending",
+      "welcomeBonus": {
+        "amount": 500000,
+        "unit": "fab_rewards",
+        "spend_threshold_aed": null,
+        "qualify_window_days": null
+      },
       "perks": [
         "[العربية\\\\",
         "Half-board (breakfast and dinner) at the resort",
