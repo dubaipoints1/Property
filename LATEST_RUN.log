@@ -4,7 +4,7 @@ v20.20.2
 
 === npm install ===
 
-added 492 packages in 6s
+added 492 packages in 5s
 [install] exit=0
 === npm run scrape:fab ===
 
@@ -20,17 +20,86 @@ added 492 packages in 6s
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
 [fab] Fetching https://www.bankfab.com/en-ae/personal/credit-cards/fab-world-elite
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
-[fab] Wrote data/scraped/fab/2026-05-08T05-51-58-157Z.json
+[fab] Wrote data/scraped/fab/2026-05-08T06-17-22-328Z.json
 [fab] 2 card(s) had parsing warnings:
 [fab]   fab-elite: No earn-rate categories detected — base rate defaulted to 1
 [fab]   fab-world-elite: Could not parse minimum salary
+[fab] exit=0
+
+=== npm run scrape:enbd ===
+
+> dubaipoints@0.1.0 scrape:enbd
+> tsx scripts/scrape/enbd.ts
+
+[enbd] Scraping 28 card(s)
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/skywards-infinite-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/skywards-signature-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/darna-visa-infinite-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/darna-visa-signature-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/darna-select-visa-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/priority-banking-visa-infinite-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/visa-infinite-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/visa-flexi-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/mastercard-platinum-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/duo-credit-cards
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/go4it-platinum-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/go4it-gold-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/visa-platinum-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/diners-club-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/webshopper-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/dnata-world-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/dnata-platinum-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-elevate
+[enbd]   ✗ Firecrawl HTTP 500: Internal Server Error
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-inspire
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/manchester-united-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/lulu-247-platinum-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/lulu-247-titanium-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/marriott-bonvoy-world-elite-mastercard-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/marriott-bonvoy-world-mastercard
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card-for-emiratis
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-family-credit-card
+[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/noon-one-visa-credit-card
+[enbd] Wrote data/scraped/enbd/2026-05-08T06-18-40-033Z.json
+[enbd] 28 card(s) had parsing warnings:
+[enbd]   emirates-nbd-skywards-infinite: Could not parse FX fee
+[enbd]   emirates-nbd-skywards-signature: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[enbd]   emirates-nbd-darna-visa-infinite: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[enbd]   emirates-nbd-darna-visa-signature: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[enbd]   emirates-nbd-darna-select-visa: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-priority-banking-visa-infinite: Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-visa-infinite: Could not parse FX fee
+[enbd]   emirates-nbd-visa-flexi: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-mastercard-platinum: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-duo: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-go4it-platinum: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-go4it-gold: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-visa-platinum: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-diners-club: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-webshopper: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-dnata-world: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-dnata-platinum: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-etihad-guest-elevate: https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-elevate: Firecrawl HTTP 500: Internal Server Error; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-etihad-guest-inspire: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-manchester-united: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-lulu-247-platinum: Could not parse annual fee; Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[enbd]   emirates-nbd-lulu-247-titanium: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-marriott-bonvoy-world-elite: Could not parse annual fee; Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[enbd]   emirates-nbd-marriott-bonvoy-world: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-u-by-emaar-infinite: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[enbd]   emirates-nbd-u-by-emaar-infinite-emiratis: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-u-by-emaar-family: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-noon-one: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[enbd] exit=0
 
 === npm run scrape:propose ===
 
 > dubaipoints@0.1.0 scrape:propose
 > tsx scripts/scrape/propose-changes.ts
 
-[propose] Wrote PR_BODY.md: 0 new, 4 changed, 2 warning(s)
+[propose] Wrote PR_BODY.md: 20 new, 31 changed, 78 warning(s)
 
-=== git status src/content/cards/ ===
+=== git status src/data/cards.json ===
+ M src/data/cards.json
 
