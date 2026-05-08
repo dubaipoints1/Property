@@ -1,11 +1,15 @@
-# Weekly card-data refresh.
+# Weekly card-data refresh — "always on" since 2026-05-08.
 #
-# Runs every Sunday 23:00 UTC, on workflow_dispatch, and on any direct
-# edit to this file, scraper code, or a per-bank URL config (path-scoped
-# push trigger).
+# Runs every Sunday 23:00 UTC, on workflow_dispatch (with optional single-
+# bank override), and on any direct edit to this file, scraper code, or a
+# per-bank URL config (path-scoped push trigger).
 #
-# Always commits a run log to LATEST_RUN.log (repo root) so we can
-# inspect failures from outside the runner.
+# Iterates the bank registry at scripts/scrape/banks.registry.json. New
+# banks are added by appending to that JSON; this workflow file does not
+# need to be edited.
+#
+# Always commits a run log to LATEST_RUN.log (repo root) so failures are
+# inspectable from outside the runner.
 
 name: scrape
 
@@ -13,6 +17,12 @@ on:
   schedule:
     - cron: "0 23 * * 0"
   workflow_dispatch:
+    inputs:
+      bank:
+        description: "Bank slug to scrape (or 'all' for the full registry)"
+        required: false
+        default: "all"
+        type: string
   push:
     branches:
       - main
@@ -20,6 +30,7 @@ on:
       - .github/workflows/scrape.yml
       - scripts/scrape/**.ts
       - scripts/scrape/banks/*.urls.json
+      - scripts/scrape/banks.registry.json
 
 jobs:
   refresh:
@@ -38,6 +49,21 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+
+      - name: Resolve banks to scrape
+        id: banks
+        run: |
+          # Honour the workflow_dispatch input when present; otherwise scrape every
+          # bank in the registry. The cron and push triggers always pass through
+          # the empty default and scrape all.
+          INPUT="${{ github.event.inputs.bank }}"
+          if [ -z "$INPUT" ] || [ "$INPUT" = "all" ]; then
+            BANKS=$(node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync("scripts/scrape/banks.registry.json","utf8")).banks.join(" "))')
+          else
+            BANKS="$INPUT"
+          fi
+          echo "banks=$BANKS" >> "$GITHUB_OUTPUT"
+          echo "Scraping: $BANKS"
 
       - name: Run scrape with full logging
         id: scrape
@@ -59,16 +85,26 @@ jobs:
           echo "[install] exit=$INSTALL_RC" | tee -a "$LOG"
           if [ "$INSTALL_RC" -ne 0 ]; then echo "FAIL: install" | tee -a "$LOG"; exit 0; fi
 
-          echo "=== npm run scrape:fab ===" | tee -a "$LOG"
-          npm run scrape:fab 2>&1 | tee -a "$LOG"
-          echo "" | tee -a "$LOG"
+          BANKS="${{ steps.banks.outputs.banks }}"
+          for BANK in $BANKS; do
+            echo "=== npm run scrape:$BANK ===" | tee -a "$LOG"
+            npm run "scrape:$BANK" 2>&1 | tee -a "$LOG"
+            BANK_RC=${PIPESTATUS[0]}
+            echo "[$BANK] exit=$BANK_RC" | tee -a "$LOG"
+            echo "" | tee -a "$LOG"
+            # Continue on per-bank failure; one bank's outage must not abort
+            # the others. Errors get surfaced in LATEST_RUN.log and PR_BODY.md.
+          done
 
           echo "=== npm run scrape:propose ===" | tee -a "$LOG"
+          # propose-changes iterates every directory under data/scraped/, so
+          # it picks up every bank that wrote a snapshot in this run plus
+          # any bank that wrote in a prior run that hasn't been merged yet.
           npm run scrape:propose 2>&1 | tee -a "$LOG"
           echo "" | tee -a "$LOG"
 
-          echo "=== git status src/content/cards/ ===" | tee -a "$LOG"
-          git status --porcelain src/content/cards/ 2>&1 | tee -a "$LOG"
+          echo "=== git status src/data/cards.json ===" | tee -a "$LOG"
+          git status --porcelain src/data/cards.json 2>&1 | tee -a "$LOG"
           echo "" | tee -a "$LOG"
 
           if [ -f PR_BODY.md ]; then cp PR_BODY.md LATEST_SCRAPE.md; fi
