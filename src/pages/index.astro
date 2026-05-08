@@ -93,6 +93,34 @@ const filterPills = [
   { label: "Banks",      href: "/banks/" },
   { label: "Airlines",   href: "/airlines/" },
 ];
+
+// ── Iteration 1 (Claude Design): per-bank card-art differentiation ──────
+// Maps a card's bank name → a CSS modifier slug. Drives the accent stripe
+// + radial glow on each tile. Anything not in the map falls back to navy.
+const bankClass = (bank: string): string => {
+  const k = bank.toLowerCase();
+  if (k.includes("first abu dhabi") || k === "fab") return "is-fab";
+  if (k.includes("emirates nbd") || k.includes("enbd")) return "is-enbd";
+  if (k.includes("mashreq")) return "is-mashreq";
+  if (k.includes("hsbc")) return "is-hsbc";
+  if (k.includes("adcb")) return "is-adcb";
+  if (k.includes("dib") || k.includes("dubai islamic")) return "is-dib";
+  if (k.includes("rakbank") || k.includes("rak ")) return "is-rak";
+  if (k.includes("cbd") || k.includes("commercial bank of dubai")) return "is-cbd";
+  return "";
+};
+
+// 2-letter monogram from a card name — first letter of the first two words
+// that aren't network names. Bleeds out the bottom-right of each tile.
+const monogram = (name: string): string => {
+  const skip = new Set(["visa", "mastercard", "amex", "infinite", "platinum", "world", "elite"]);
+  const words = name
+    .split(/\s+/)
+    .map((w) => w.replace(/[^a-zA-Z]/g, ""))
+    .filter((w) => w && !skip.has(w.toLowerCase()));
+  return ((words[0]?.[0] ?? "") + (words[1]?.[0] ?? words[0]?.[1] ?? "")).toUpperCase();
+};
+
 ---
 
 <BaseLayout
@@ -108,7 +136,6 @@ const filterPills = [
         <header class="hp-masthead">
           <span class="hp-masthead-eyebrow">DubaiPoints</span>
           <span class="hp-masthead-date">{fmtFull(today)} · Dubai</span>
-          <a href="/salary-transfer/" class="hp-masthead-live">Live · salary transfer tracker</a>
         </header>
 
         <h1 class="hp-hero-h1">UAE rewards rewarded.</h1>
@@ -199,24 +226,28 @@ const filterPills = [
         </div>
 
         <div class="hp-cards-grid">
-          {favouriteCards.map((c) => (
-            <a href={`/cards/${c.slug}/`} class="dp-card-tile">
-              <div class="art">
-                <span class="art-bank">{c.bank}</span>
-                <span class="art-name">{c.name}</span>
-                <span class="art-network">{c.network}</span>
-              </div>
-              <div class="body">
-                <span class="eyebrow">Review</span>
-                <span class="title">{c.name}</span>
-                <div class="specs">
-                  <span><strong>AED {c.annualFee.toLocaleString()}</strong> / yr</span>
-                  <span><strong>AED {(c.eligibility?.minSalary ?? 0).toLocaleString()}</strong> / mo min</span>
+          {favouriteCards.map((c) => {
+            const cls = bankClass(c.bank);
+            return (
+              <a href={`/cards/${c.slug}/`} class={`dp-card-tile${cls ? ` ${cls}` : ""}`}>
+                <div class="art">
+                  <span class="art-bank">{c.bank}</span>
+                  <span class="art-name">{c.name}</span>
+                  <span class="art-network">{c.network}</span>
+                  <span class="art-monogram" aria-hidden="true">{monogram(c.name)}</span>
                 </div>
-                <span class="review-cta">Read review →</span>
-              </div>
-            </a>
-          ))}
+                <div class="body">
+                  <span class="eyebrow">Review</span>
+                  <span class="title">{c.name}</span>
+                  <div class="specs">
+                    <span><strong>AED {c.annualFee.toLocaleString()}</strong> / yr</span>
+                    <span><strong>AED {(c.eligibility?.minSalary ?? 0).toLocaleString()}</strong> / mo min</span>
+                  </div>
+                  <span class="review-cta">Read review →</span>
+                </div>
+              </a>
+            );
+          })}
         </div>
 
         <div class="hp-cards-foot">
@@ -227,6 +258,13 @@ const filterPills = [
 
     <!-- ── 5. NEWSLETTER — emerald band ──────────────────────────────── -->
     <section class="hp-newsletter-section dp-band-green">
+      <svg class="hp-newsletter-wave" viewBox="0 0 600 400" fill="none" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0,180 C100,140 200,220 300,180 C400,140 500,220 600,180" stroke="rgba(255,255,255,0.10)" stroke-width="1.2" />
+        <path d="M0,210 C100,170 200,250 300,210 C400,170 500,250 600,210" stroke="rgba(255,255,255,0.09)" stroke-width="1.2" />
+        <path d="M0,240 C100,200 200,280 300,240 C400,200 500,280 600,240" stroke="rgba(255,255,255,0.08)" stroke-width="1.2" />
+        <path d="M0,270 C100,230 200,310 300,270 C400,230 500,310 600,270" stroke="rgba(255,255,255,0.07)" stroke-width="1.2" />
+        <path d="M0,300 C100,260 200,340 300,300 C400,260 500,340 600,300" stroke="rgba(255,255,255,0.06)" stroke-width="1.2" />
+      </svg>
       <div class="hp-wrap">
         <div class="hp-newsletter">
           <p class="hp-news-eyebrow">The DubaiPoints brief</p>
@@ -512,4 +550,69 @@ const filterPills = [
     line-height: 1.5;
   }
   .hp-news-microcopy a { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     Claude Design — 5 homepage iterations applied 2026-05-08-claude.
+     Source: dubaipoints/project/Homepage.html (handoff bundle).
+     ════════════════════════════════════════════════════════════════════ */
+
+  /* Iteration 4 (rotating tracker) moved to the global Header in Phase 0;
+     keeping its previous home here would duplicate the ticker.  */
+
+  /* ── Iteration 2: feature card DP ghost mark (~520px, bleeds left) ─ */
+  .hp-feature-section .dp-feature-card { position: relative; isolation: isolate; }
+  .hp-feature-section .dp-feature-card::before {
+    content: "DP";
+    position: absolute;
+    top: 50%;
+    left: -8%;
+    transform: translateY(-52%);
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(260px, 58vw, 520px);
+    letter-spacing: -22px;
+    line-height: 0.85;
+    color: rgba(255, 255, 255, 0.055);
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 0;
+  }
+  .hp-feature-section .dp-feature-card > * { position: relative; z-index: 1; }
+
+  /* ── Iteration 3: numbered hero index (decimal-leading-zero) ───── */
+  .hp-latest-list { counter-reset: hp-idx; }
+  .hp-latest-row { counter-increment: hp-idx; position: relative; }
+  .hp-latest-link::before {
+    content: counter(hp-idx, decimal-leading-zero);
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--muted);
+    grid-column: 1;
+  }
+  @media (min-width: 768px) {
+    .hp-latest-link {
+      grid-template-columns: 44px 130px minmax(0, 1fr) 100px;
+    }
+    .hp-latest-link::before { grid-column: 1; align-self: baseline; }
+    .hp-latest-cat    { grid-column: 2; }
+    .hp-latest-title  { grid-column: 3; }
+    .hp-latest-detail { grid-column: 3; }
+    .hp-latest-date   { grid-column: 4; }
+  }
+
+  /* ── Iteration 5: newsletter band wave SVG ──────────────────────── */
+  .hp-newsletter-section { position: relative; overflow: hidden; }
+  .hp-newsletter-wave {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    width: 100%;
+    height: 60%;
+    opacity: 0.85;
+    pointer-events: none;
+  }
+  .hp-newsletter-section .hp-wrap { position: relative; z-index: 1; }
 </style>

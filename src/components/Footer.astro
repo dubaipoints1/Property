@@ -1,4 +1,12 @@
 ---
+// Footer — Claude Design (handoff bundle, polished pass).
+// Visual idiom from dubaipoints/project/templates/chrome.jsx Footer
+// + dubaipoints/project/Homepage.html footer block. Navy-deep band,
+// Fraunces tagline under the wordmark, four-column nav, bottom-line
+// disclaimer + email. Rich link inventory preserved (banks /
+// programmes / salary-transfer bands) — wireframe never claimed to
+// be exhaustive, only to set the visual idiom.
+
 import { getCollection } from "astro:content";
 import BankLogo from "~/components/BankLogo.astro";
 
@@ -10,116 +18,207 @@ const programs = await getCollection("programs");
 const year = new Date().getFullYear();
 ---
 
-<style>
-footer {
-  background: var(--ink);
-  color: rgba(255,255,255,0.6);
-  margin-top: 96px;
-  padding: 56px 32px 32px;
-}
-.footer-inner { max-width: 1180px; margin: 0 auto; }
-.footer-top {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
-  gap: 40px;
-  margin-bottom: 40px;
-}
-.footer-brand .logo-wordmark img { height: 36px; }
-.footer-brand p {
-  font-size: 13px; color: rgba(255,255,255,0.45);
-  line-height: 1.6; margin-top: 16px; max-width: 300px;
-}
-.footer-col h4 {
-  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: rgba(255,255,255,0.4);
-  margin-bottom: 14px;
-}
-.footer-col a {
-  display: block; font-size: 13px;
-  color: rgba(255,255,255,0.6); padding: 5px 0;
-  transition: color 0.15s;
-}
-.footer-col a:hover { color: white; }
-.footer-col a.footer-bank-row {
-  display: inline-flex; align-items: center; gap: 8px;
-}
-.footer-col a.footer-bank-row :global(img) {
-  filter: invert(1) brightness(0.85);
-  opacity: 0.8;
-  transition: opacity 0.15s;
-}
-.footer-col a.footer-bank-row:hover :global(img) { opacity: 1; }
-.footer-bottom {
-  padding-top: 24px;
-  border-top: 1px solid rgba(255,255,255,0.08);
-  display: flex; justify-content: space-between; align-items: center;
-  gap: 24px;
-}
-.footer-bottom p { font-size: 11px; color: rgba(255,255,255,0.3); }
-.footer-bottom .disclaimer {
-  font-size: 10px; color: rgba(255,255,255,0.25);
-  max-width: 520px; line-height: 1.5;
-}
-@media (max-width: 1024px) {
-  .footer-top { grid-template-columns: 1fr 1fr 1fr; }
-}
-@media (max-width: 768px) {
-  .footer-top { grid-template-columns: 1fr 1fr; }
-  .footer-bottom { flex-direction: column; align-items: flex-start; }
-}
-</style>
+<footer class="dp-footer">
+  <div class="dp-footer-inner">
+    <div class="dp-footer-top">
+      <div class="dp-footer-brand">
+        <div class="dp-footer-wordmark">
+          DubaiPoints<span class="dot">.</span>
+        </div>
+        <p class="dp-footer-tag">UAE rewards, without the marketing.</p>
+      </div>
 
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="logo-wordmark"><img src="/logo-white.svg" alt="DubaiPoints" /></div>
-        <p>The UAE's go-to source for points, miles, credit-card deals and banking hacks. Independent. Written by UAE residents, for UAE residents.</p>
-      </div>
-      <div class="footer-col">
+      <div class="dp-footer-col">
         <h4>Salary transfer</h4>
-        <a href="/salary-transfer/">Live tracker</a>
-        <a href="/salary-transfer/calculator/">Calculator</a>
-        <a href="/salary-transfer/aed-5000-to-8000/">AED 5k–8k</a>
-        <a href="/salary-transfer/aed-8000-to-15000/">AED 8k–15k</a>
-        <a href="/salary-transfer/aed-15000-to-30000/">AED 15k–30k</a>
-        <a href="/salary-transfer/aed-30000-to-50000/">AED 30k–50k</a>
-        <a href="/salary-transfer/aed-50000-plus/">AED 50k+</a>
+        <ul>
+          <li><a href="/salary-transfer/">Live tracker</a></li>
+          <li><a href="/salary-transfer/calculator/">Calculator</a></li>
+          <li><a href="/salary-transfer/aed-5000-to-8000/">AED 5k–8k</a></li>
+          <li><a href="/salary-transfer/aed-8000-to-15000/">AED 8k–15k</a></li>
+          <li><a href="/salary-transfer/aed-15000-to-30000/">AED 15k–30k</a></li>
+          <li><a href="/salary-transfer/aed-30000-to-50000/">AED 30k–50k</a></li>
+          <li><a href="/salary-transfer/aed-50000-plus/">AED 50k+</a></li>
+        </ul>
       </div>
-      <div class="footer-col">
+
+      <div class="dp-footer-col">
         <h4>Banks</h4>
-        {banks.map((b) => (
-          <a href={`/banks/${b.id}/`} class="footer-bank-row">
-            <BankLogo slug={b.id} name={b.data.name} size="sm" />
-            <span>{b.data.name}</span>
-          </a>
-        ))}
+        <ul>
+          {banks.map((b) => (
+            <li>
+              <a href={`/banks/${b.id}/`} class="dp-footer-bank-row">
+                <BankLogo slug={b.id} name={b.data.name} size="sm" />
+                <span>{b.data.name}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-      <div class="footer-col">
+
+      <div class="dp-footer-col">
         <h4>Programmes</h4>
-        {programs.map((p) => <a href={`/airlines/${p.id}/`}>{p.data.name}</a>)}
+        <ul>
+          {programs.map((p) => (
+            <li><a href={`/airlines/${p.id}/`}>{p.data.name}</a></li>
+          ))}
+        </ul>
       </div>
-      <div class="footer-col">
+
+      <div class="dp-footer-col">
         <h4>Site</h4>
-        <a href="/cards/">All cards</a>
-        <a href="/cards/compare/">Compare cards</a>
-        <a href="/valuations/">AED valuations</a>
-        <a href="/guides/">Guides</a>
-        <a href="/guides/expat-starter/">Expat Starter</a>
-        <a href="/rss.xml">RSS</a>
+        <ul>
+          <li><a href="/cards/">All cards</a></li>
+          <li><a href="/cards/compare/">Compare cards</a></li>
+          <li><a href="/valuations/">AED valuations</a></li>
+          <li><a href="/guides/">Guides</a></li>
+          <li><a href="/guides/expat-starter/">Expat Starter</a></li>
+          <li><a href="/rss.xml">RSS</a></li>
+        </ul>
       </div>
-      <div class="footer-col">
+
+      <div class="dp-footer-col">
         <h4>Trust</h4>
-        <a href="/about/">Why we built it</a>
-        <a href="/editorial-policy/">Editorial policy</a>
-        <a href="/how-we-make-money/">How we make money</a>
-        <a href="/team/">The team</a>
-        <a href="mailto:info@dubaipoints.ae">Contact</a>
+        <ul>
+          <li><a href="/about/">Why we built it</a></li>
+          <li><a href="/editorial-policy/">Editorial policy</a></li>
+          <li><a href="/how-we-make-money/">How we make money</a></li>
+          <li><a href="/team/">The team</a></li>
+          <li><a href="mailto:info@dubaipoints.ae">Contact</a></li>
+        </ul>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; {year} DubaiPoints.ae</p>
-      <p class="disclaimer">DubaiPoints is independent and not affiliated with any bank or financial institution. Content is for informational purposes only — always verify terms directly with the provider.</p>
+
+    <div class="dp-footer-bottom">
+      <span>© {year} DubaiPoints. UAE-resident-led, independent.</span>
+      <span class="dp-footer-bottom-mail">info@dubaipoints.ae</span>
     </div>
+
+    <p class="dp-footer-disclaimer">
+      DubaiPoints is independent and not affiliated with any bank or
+      financial institution. Content is for informational purposes only —
+      always verify terms directly with the provider.
+    </p>
   </div>
 </footer>
+
+<style>
+  .dp-footer {
+    background: var(--navy-deep);
+    color: rgba(255, 255, 255, 0.78);
+    margin-top: 96px;
+    padding: 56px 32px 32px;
+  }
+  .dp-footer-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .dp-footer-top {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+
+  .dp-footer-brand {
+    grid-column: span 1;
+  }
+  .dp-footer-wordmark {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.6px;
+    color: #fff;
+  }
+  .dp-footer-wordmark .dot { color: var(--green); }
+  .dp-footer-tag {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    line-height: 1.4;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 10px;
+    max-width: 26ch;
+    text-wrap: balance;
+  }
+
+  .dp-footer-col h4 {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #9bb1a4;
+    margin: 0 0 12px;
+  }
+  .dp-footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .dp-footer-col a {
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .dp-footer-col a:hover { color: #fff; }
+
+  .dp-footer-bank-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dp-footer-bank-row :global(img) {
+    filter: invert(1) brightness(0.85);
+    opacity: 0.8;
+    transition: opacity 0.15s ease;
+  }
+  .dp-footer-bank-row:hover :global(img) { opacity: 1; }
+
+  .dp-footer-bottom {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .dp-footer-bottom-mail {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dp-footer-disclaimer {
+    margin-top: 16px;
+    font-size: 10px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.35);
+    max-width: 80ch;
+  }
+
+  @media (max-width: 1024px) {
+    .dp-footer-top {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .dp-footer-brand { grid-column: span 3; }
+  }
+  @media (max-width: 768px) {
+    .dp-footer { padding: 40px 20px 24px; }
+    .dp-footer-top {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+      margin-bottom: 28px;
+    }
+    .dp-footer-brand { grid-column: span 2; }
+    .dp-footer-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+  }
+</style>
