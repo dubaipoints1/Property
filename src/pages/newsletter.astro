@@ -1,0 +1,77 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+
+// Buttondown signup is the planned platform per BRAND_NOTES §6.
+// While the integration is pending, this page is a placeholder
+// that explains what's coming and offers the email-tip alternative.
+// When the form is wired up, swap the placeholder section for a
+// Buttondown form posting to the team's account.
+---
+
+<BaseLayout
+  title="Subscribe — DubaiPoints"
+  description="The DubaiPoints brief: one email each Friday with the week's UAE salary-transfer changes, new card offers, and lifestyle deals. AED-first, no fluff. Per-band RSS feeds also available."
+  fullWidth
+>
+  <article class="dp-article is-trust">
+    <header class="dp-article-head">
+      <p class="dp-article-eyebrow">Subscribe</p>
+      <h1 class="dp-article-title">The Friday brief, in your inbox.</h1>
+      <p class="dp-article-lede">
+        One email each Friday with the week's salary-transfer changes, new
+        card offers, miles redemptions worth knowing about, and lifestyle
+        deals. AED-first, no fluff.
+      </p>
+    </header>
+
+    <section class="dp-prose">
+      <h2>Coming soon — sign-up is being wired up</h2>
+      <p>
+        The newsletter is on the launch list. The platform we're using
+        (<a href="https://buttondown.email/" target="_blank" rel="noopener">Buttondown</a>) is a paid email service
+        run by an independent founder; we picked it because it doesn't sell
+        subscriber data and doesn't auto-redirect tracking links — both
+        matter for a UAE-resident audience that gets enough surveillance
+        already.
+      </p>
+
+      <h2>What you'll get</h2>
+      <ul>
+        <li>One Friday-morning send with the week's UAE points / banking news.</li>
+        <li>Per-band RSS feeds (5–8k, 8–15k, 15–30k, 30–50k, 50k+) so you only get the salary-transfer offers your band qualifies for.</li>
+        <li>Time-bound deal alerts only when the deal is genuinely worth your time (we use the lifestyle-culture editor's judgement, not affiliate volume).</li>
+      </ul>
+
+      <h2>What you won't get</h2>
+      <ul>
+        <li>Pop-up newsletter modals while you're trying to read.</li>
+        <li>Affiliate links disguised as editorial picks.</li>
+        <li>Sold or shared email addresses. Cloudflare Web Analytics is the only third-party measurement on the site, and it doesn't use cookies.</li>
+      </ul>
+
+      <h2>Until the integration ships</h2>
+      <p>
+        If you'd like to be on the list when it goes live, send a one-line
+        email to <a href="mailto:info@dubaipoints.ae?subject=Newsletter">info@dubaipoints.ae</a>
+        with the subject "<em>Newsletter</em>". We'll add you manually from
+        a small holding list and migrate everyone over when the form goes
+        live. No promotional content while you wait.
+      </p>
+
+      <h2>RSS already works</h2>
+      <p>
+        If you prefer RSS over email, the site-wide feed is at
+        <a href="/rss.xml"><code>/rss.xml</code></a>. Per-band salary-transfer
+        feeds will follow once the band landings ship — see the
+        <a href="/editorial-policy/">editorial policy</a> for what we publish
+        and how often.
+      </p>
+
+      <p class="related">
+        <a href="/editorial-policy/">Editorial policy</a> ·
+        <a href="/how-we-make-money/">How we make money</a> ·
+        <a href="/about/">About DubaiPoints</a>
+      </p>
+    </section>
+  </article>
+</BaseLayout>
