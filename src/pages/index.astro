@@ -121,12 +121,6 @@ const monogram = (name: string): string => {
   return ((words[0]?.[0] ?? "") + (words[1]?.[0] ?? words[0]?.[1] ?? "")).toUpperCase();
 };
 
-// ── Iteration 4 (Claude Design): rotating tracker headline ──────────────
-const trackerItems: string[] = [
-  "FAB raised tier-2 to AED 1,200 · 2 days ago",
-  "ENBD added 25k tier · 5 days ago",
-  "14 banks tracked · refreshed daily",
-];
 ---
 
 <BaseLayout
@@ -142,14 +136,6 @@ const trackerItems: string[] = [
         <header class="hp-masthead">
           <span class="hp-masthead-eyebrow">DubaiPoints</span>
           <span class="hp-masthead-date">{fmtFull(today)} · Dubai</span>
-          <a href="/salary-transfer/" class="hp-masthead-live">
-            <span class="hp-masthead-live-label">Live · Salary-transfer tracker</span>
-            <span class="hp-ticker-wrap" aria-live="polite">
-              {trackerItems.map((item) => (
-                <span class="hp-ticker-item">{item}</span>
-              ))}
-            </span>
-          </a>
         </header>
 
         <h1 class="hp-hero-h1">UAE rewards rewarded.</h1>
@@ -570,43 +556,8 @@ const trackerItems: string[] = [
      Source: dubaipoints/project/Homepage.html (handoff bundle).
      ════════════════════════════════════════════════════════════════════ */
 
-  /* ── Iteration 4: rotating tracker headline ───────────────────────── */
-  .hp-masthead-live {
-    display: inline-flex; flex-direction: column; gap: 2px;
-    color: var(--green);
-  }
-  .hp-masthead-live-label { display: block; }
-  .hp-ticker-wrap {
-    position: relative;
-    height: 14px;
-    min-width: 18ch;
-    overflow: hidden;
-    color: var(--ink-soft);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    text-transform: none;
-  }
-  .hp-ticker-item {
-    position: absolute;
-    inset: 0;
-    white-space: nowrap;
-    opacity: 0;
-    animation: hp-ticker 12s linear infinite;
-  }
-  .hp-ticker-item:nth-child(1) { animation-delay: 0s; }
-  .hp-ticker-item:nth-child(2) { animation-delay: 4s; }
-  .hp-ticker-item:nth-child(3) { animation-delay: 8s; }
-  @keyframes hp-ticker {
-    0%, 2%   { opacity: 0; transform: translateY(6px); }
-    6%, 30%  { opacity: 1; transform: translateY(0); }
-    33%, 100% { opacity: 0; transform: translateY(-6px); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .hp-ticker-item { animation: none; }
-    .hp-ticker-item:nth-child(1) { opacity: 1; }
-    .hp-ticker-item:not(:nth-child(1)) { display: none; }
-  }
+  /* Iteration 4 (rotating tracker) moved to the global Header in Phase 0;
+     keeping its previous home here would duplicate the ticker.  */
 
   /* ── Iteration 2: feature card DP ghost mark (~520px, bleeds left) ─ */
   .hp-feature-section .dp-feature-card { position: relative; isolation: isolate; }
