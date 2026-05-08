@@ -335,12 +335,27 @@ export function parseWelcomeBonus(input: string): StructuredWelcomeBonus | null 
  *
  * Rejects bullets that look like site navigation:
  *   - lines that are only a markdown link, e.g. "[Personal Online Banking](https://...)"
- *   - lines mentioning common chrome words (Banking, Login, Portal, Online,
- *     Subscription, Securities, Corporate, Business)
+ *   - lines mentioning common chrome words (banking, login, portal, etc.)
+ *   - lines mentioning bank-specific platform / sub-brand names (per the
+ *     `BANK_NAV_OVERRIDES` map below)
  *   - lines under 8 chars or over 200 chars
+ *
+ * Generalising the bank-specific filter lets a new bank scraper inherit the
+ * generic rules and only ship its own override regex for its in-house chrome
+ * (mobile app brand, digital sub-brand, corporate-banking line names, etc.).
  */
-function parsePerks(text: string): string[] {
-  const NAV_RX = /\b(?:online\s+banking|portal|login|subscription|corporate|securities|ipo|business\s+banking|investment\s+banking|securities\s+services|ibanking|adgm|fabonline|fabe?access|prepaid\s+card\s+balance)\b/i;
+const GENERIC_NAV_RX = /\b(?:online\s+banking|portal|login|subscription|corporate|securities|ipo|business\s+banking|investment\s+banking|securities\s+services|ibanking|adgm|prepaid\s+card\s+balance)\b/i;
+
+const BANK_NAV_OVERRIDES: Record<string, RegExp> = {
+  // FAB chrome: FABonline (web banking), FABaccess (mobile app), bankfab.com
+  fab: /\b(?:fabonline|fabe?access|bankfab\.com)\b/i,
+  // ENBD chrome: Liv. (digital sub-brand), ENBD X (mobile app brand),
+  // smartBUSINESS / smartTRADE (corporate platforms), WealthLine (advisory)
+  enbd: /\b(?:liv\.?\s+by\s+(?:emirates\s+nbd|enbd)|enbd\s+x\b|smartbusiness|smarttrade|wealthline)\b/i,
+};
+
+function parsePerks(text: string, bankSlug: string): string[] {
+  const bankNavRx = BANK_NAV_OVERRIDES[bankSlug];
   const ONLY_LINK_RX = /^\[[^\]]+\]\(https?:[^)]+\)\s*\.?$/;
 
   const lines = text.split(/\n/).map((l) => l.trim());
@@ -351,7 +366,8 @@ function parsePerks(text: string): string[] {
     const line = raw.replace(/^[-*•]\s+/, "").trim();
     if (line.length < 8 || line.length > 200) continue;
     if (ONLY_LINK_RX.test(line)) continue;
-    if (NAV_RX.test(line)) continue;
+    if (GENERIC_NAV_RX.test(line)) continue;
+    if (bankNavRx?.test(line)) continue;
     if (seen.has(line)) continue;
     seen.add(line);
     out.push(line);
@@ -468,7 +484,7 @@ export function normalise(
       employmentTypes: ["salaried"],
     },
 
-    perks: parsePerks(text).slice(0, 12),
+    perks: parsePerks(text, bankSlug).slice(0, 12),
 
     applyUrl: config.urls.product,
     kfsUrl: config.urls.kfs ?? undefined,

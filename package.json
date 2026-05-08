@@ -13,6 +13,7 @@
     "check": "astro check",
     "test": "node --import tsx --test tests/**/*.test.ts",
     "scrape:fab": "tsx scripts/scrape/fab.ts",
+    "scrape:enbd": "tsx scripts/scrape/enbd.ts",
     "scrape:propose": "tsx scripts/scrape/propose-changes.ts"
   },
   "dependencies": {
