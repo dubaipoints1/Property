@@ -362,21 +362,28 @@ is complete.
 
 ---
 
-## Open questions for the Chairman
+## Open questions for the Chairman — ANSWERED 2026-05-08
 
-1. **Mobile drawer pattern:** rebuild as the wireframe `MobileMenu`
+> Chairman direction: "Yes everything that we have in the design. Of
+> course the colour palette was for me to see. But everything else we
+> can implement. This is how I want my site to look like."
+
+1. **Mobile drawer pattern:** REBUILD as the wireframe `MobileMenu`
    full-screen overlay (3 expandable sections + tools + publication
-   block) or keep the existing slim left-drawer pattern restyled to
-   wireframe colours? *Recommendation: rebuild — the wireframe
-   pattern is what the user signed off on.*
-2. **New-route content:** for `/best-of/2026/`, `/authors/<slug>/`,
-   `/glossary/` — do we ship with placeholder content (`/best-of/`
-   with 3 categories filled, the rest "coming soon") or wait until
-   real content exists for each? *Recommendation: ship the chrome,
-   stub the content; readers see the architecture immediately.*
-3. **`/search/` route:** wire to Pagefind in Phase 9 or punt to a
-   later session? *Recommendation: wire it — Pagefind is already
-   running in `postbuild`; we just need a search results page.*
+   block). The slim left-drawer is retired.
+2. **New-route content:** SHIP the chrome with empty-state copy on
+   any route that doesn't have real content yet. Content fills in
+   over time (Firecrawl + manual editorial). The architecture is
+   visible immediately.
+3. **`/search/` route:** WIRE to Pagefind in Phase 9.
 
-Once the Chairman answers these and approves the phasing, execution
-starts at Phase 0.
+## Out of scope (per Chairman)
+
+- The three palette-direction artboards (`I · Phantom`,
+  `J · Apartamento`, `K · Gulf desert`) were for the Chairman to
+  *choose against*, not to ship. Production palette stays the
+  navy/emerald/warm-paper system the polished `Homepage.html` already
+  uses. The palette artboard remains in `/design-spike/templates/` as
+  a record of the decision — no live route.
+
+Execution starts at Phase 0.
