@@ -2,27 +2,45 @@
 @import "tailwindcss";
 
 :root {
-  /* Quiet Ledger palette — adopted 2026-05-08 by Chairman.
-     White paper, near-black ink, link-only blue, signal-only red.
-     --gold and --green are retained as variables but removed from UI usage. */
-  --bg:        #ffffff;
-  --paper:     #ffffff;
-  --ink:       #0d1117;
-  --ink-soft:  #5a6068;
-  --muted:     #8a8f9a;
+  /* TPG-adapted palette — adopted 2026-05-08-bis (supersedes Quiet Ledger).
+     Brief: .council/research/2026-05/tpg-redesign-brief.md §"Locked palette".
+     Five-tone section background rotation; emerald is the universal accent;
+     navy is the primary dark identity; link blue is interactive only. */
+
+  /* Surfaces (rotate across sections to signal section purpose) */
+  --bg:        #ffffff;          /* default page surface */
+  --paper:     #ffffff;          /* cards, callouts on white */
+  --cool:      #f4f5f7;          /* light cool band — valuations */
+  --cream:     #f8f0e0;          /* warm band — optional, low priority */
+  --navy:      #0a2540;          /* primary dark identity — feature card, dark bands */
+  --navy-deep: #06182d;          /* footer / very dark band */
+  --green:     #0c8463;          /* emerald — universal eyebrow + chrome accent */
+  --green-band:#1d6b54;          /* slightly darker emerald — newsletter band */
+
+  /* Type */
+  --ink:       #0a2540;          /* body text on white — aligns with --navy */
+  --ink-soft:  #5a6068;          /* meta, secondary copy */
+  --muted:     #8a8f9a;          /* dates, byline timestamps */
+
+  /* Lines + chrome */
   --line:      #e3e3e1;
   --line-soft: #f1f1ef;
-  --gold:      #b8842a;     /* legacy — do not reach for in new UI */
-  --gold-soft: #f3ead6;     /* legacy — do not reach for in new UI */
-  --navy:      #0d2151;
-  --red:       #c8412d;
-  --green:     #2d7a4a;     /* legacy — used only in code/data prose */
 
-  /* Interactive blue — used only on link / focus / hover states.
-     Never on display type, never on eyebrows, never on backgrounds. */
-  --brand:      #2a6bd1;
-  --brand-deep: #154fa3;
-  --brand-soft: #eef3fb;
+  /* Interactive (link / focus / "Read review" pill — never display type, never eyebrows) */
+  --link:      #1a5fc6;
+  --link-deep: #154fa3;
+  --link-soft: #eef3fb;
+
+  /* Signal (live indicators, expiry stamps, "Needs reverify" only) */
+  --red:       #c8412d;
+
+  /* Legacy — defined for backward compat, NOT used in new UI.
+     Quiet Ledger sunsetted gold; TPG pivot does not re-introduce. */
+  --gold:      #b8842a;
+  --gold-soft: #f3ead6;
+  --brand:     #1a5fc6;          /* legacy alias to --link for old rules */
+  --brand-deep:#154fa3;
+  --brand-soft:#eef3fb;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -31,7 +49,7 @@ body {
   font-family: 'DM Sans', system-ui, sans-serif;
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  font-size: 15px;
+  font-size: 16px;            /* TPG-adapted bump from QL 15px */
   line-height: 1.55;
 }
 a { text-decoration: none; color: inherit; }
@@ -196,21 +214,22 @@ img { display: block; max-width: 100%; }
   border-bottom: 1px solid var(--line);
   margin-bottom: 32px;
 }
-/* Eyebrow: black caps, never accented (Quiet Ledger §"Visual standard").
+/* Eyebrow: emerald caps (TPG-adapted; superseded QL's black caps).
    .is-red is reserved for live and expiry indicators only. */
 .dp-article-eyebrow {
   font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--ink);
+  text-transform: uppercase; color: var(--green);
   margin-bottom: 12px;
 }
 .dp-article-eyebrow.is-red { color: var(--red); }
+.dp-article-eyebrow.is-ink { color: var(--ink); }   /* opt-out for navy-band contexts */
 .dp-article-title {
-  font-family: 'Fraunces', serif; font-weight: 600;
-  font-size: clamp(28px, 5vw, 44px);
-  line-height: 1.08; letter-spacing: -1.1px;
+  font-family: 'Fraunces', serif; font-weight: 700;   /* TPG-adapted bump from QL 600 */
+  font-size: clamp(30px, 5.4vw, 48px);
+  line-height: 1.06; letter-spacing: -1.2px;
   color: var(--ink); text-wrap: balance;
 }
-/* Italic display words removed (Quiet Ledger). em inside titles renders flat. */
+/* Italic display words remain removed. em inside titles renders flat. */
 .dp-article-title em { font-style: normal; color: inherit; font-weight: inherit; }
 .dp-article-lede {
   margin-top: 14px;

@@ -7,9 +7,199 @@ A council spike, second pass. The Chairman has overridden the
 `tpg-design-dossier.md` and proposes a single locked-in spec the
 Chairman can sign off on.
 
-PRs **#23 (homepage, merged)** and **#24 (trust pages, open)** were
+PRs **#23 (homepage, merged)** and **#24 (trust pages, merged)** were
 shipped under Quiet Ledger. They are visually superseded by this
 direction and will be re-themed in the implementation pass below.
+
+---
+
+## CHAIRMAN LOCK-IN — 2026-05-08-bis
+
+The three blocking questions resolved on 2026-05-08-bis. The brief
+below remains valid as the working spec; this section is the
+authoritative locked record. Where the dossier (recall-based) and
+the screenshots (primary-source) disagree, **the screenshots win**.
+
+### Q1 — Source verification
+
+**Resolved by primary-source screenshots** in lieu of a Firecrawl
+pass (TPG WebFetch was 403'd by their bot detection; Firecrawl is
+configured for our weekly bank scraper but not loaded in this
+session). Eight mobile screenshots verified the live site at
+2026-05-08 13:52–13:53 local. Dossier corrections:
+
+| Field | Recall said | Screenshots show | Action |
+|---|---|---|---|
+| Yellow / honey accent | `#f7c948`-ish "legacy" | **Not present.** Emerald green is the live accent. | **Drop yellow/gold from the spec.** Legacy artifact; TPG migrated. DP does NOT re-introduce gold. |
+| Cyan accent | `#00aaff`-ish saturated | **Not present** in mobile homepage. | Drop cyan from the spec. |
+| Category eyebrow accent | Cyan | **Emerald green** `~#0c8463`–`#117f5a` (consistent across category labels, footer headings, "OUR COMMITMENT TO TRANSPARENCY") | Adopt emerald as the universal eyebrow accent |
+| Hero | "Photographic, image-dominant" | **Typographic.** "Your life rewarded" sits on white with no image. Image used in *Featured story* card only. | **Correct the dossier** — TPG's homepage hero is typographic. Adopt verbatim. |
+| Section backgrounds | Single tone | **Five-tone rotation**: white / cool grey `~#f4f5f7` (valuations) / deep navy `~#0a2540` (Featured story, "Explore favourite cards", "Points 101", footer) / emerald `~#1d6b54` (newsletter band) / warm cream `~#f8f0e0` (CardMatch — DP skips) | Adopt the rotation; cream is optional |
+| Display type weight | 600–800 | **700–800**, very large (60–80px hero) | Confirmed; bump our Fraunces from 500/600 to 700 |
+| Body type | Sans | Sans (Graphik or similar) | Confirmed; DM Sans stays as our equivalent |
+| Filter UI | Not described | **Two patterns**: (a) outlined-pill row on navy band ("BEST / TRAVEL / AIRLINE / REWARDS / BUSINESS / HOTEL / CASH BACK"), (b) underline-tab row ("The latest / Credit cards / Loyalty programs" with green underline on active) | Adopt both for our IA |
+| Valuation strip | Not described | Heavy bold-serif **right-aligned number** + brand-mark left + name; one row per programme | Adopt for `/valuations/` |
+| Numerical hero | Not described | "2.05¢", "2.20¢" — ~80px serif 700 right-aligned | Adopt the pull-number pattern (this was Quiet Ledger Direction C — vindicated) |
+| Footer | Recalled as deep navy | Confirmed. Dark navy with **green** eyebrow headings ("MEET TPG", "LEGAL"), white wordmark, social-icon row, newsletter capture, "OUR COMMITMENT TO TRANSPARENCY" disclosure block | Adopt; DP's transparency block reads differently (see Q3) |
+
+### Q2 — Card-art licensing
+
+**Placeholder until permission lands.** DP does not yet have
+explicit permission from FAB or ENBD to render their card art.
+Implementation uses a **typographic placeholder card** — a styled
+rectangle with bank-mark + tier name + network — rendered in the
+same dimensions as a real card image (1.586:1 aspect ratio,
+ISO/IEC 7810 ID-1 ratio).
+
+Card data layer gains an optional `cardArtUrl` field that defaults
+to the placeholder generator. Permission landing → URL config
+swap, no other change.
+
+### Q3 — Voice question — "review blog hack kind of vibe"
+
+**Resolved decisively against TPG's transactional energy.** Chairman
+verbatim: *"Ours is a review blog hack kind of vibe not apply now.
+We haven't reached affiliate or partners. In future maybe."*
+
+Implementation consequences:
+
+- **No "Apply now" CTAs anywhere on the site.** Card review pages,
+  card directory tiles, side rails, comparison tables — all
+  surface a **"Read review"** or **"Compare"** CTA, never apply.
+- **No "Try CardMatch™"-style recommender quiz.** TPG's CardMatch
+  funnels to apply; we don't have that surface.
+- **No advertiser-disclosure ribbon** at the top of pages.
+- **No "ADVERTISEMENT" inline blocks** in editorial.
+- **No "OUR COMMITMENT TO TRANSPARENCY" footer block** with the
+  affiliate-compensation disclaimer. DP's equivalent footer block
+  reads *"How we make money"* and *"Editorial policy"* — both
+  already exist as routes; the footer just links them, no inline
+  long-form disclaimer.
+- **Sponsor / commercial fence stays.** When DP eventually adds
+  affiliate links, the inline asterisk + the `/how-we-make-money/`
+  page are the disclosure mechanism. TPG-style ribbons are not
+  adopted.
+- **Verdict copy retains HfP-dry voice.** Visual chrome borrows
+  TPG; editorial voice does not.
+
+### Locked palette (CSS custom properties)
+
+```css
+/* TPG-adapted Quiet Ledger v2 — locked 2026-05-08-bis */
+:root {
+  /* Surfaces */
+  --bg:        #ffffff;          /* default page surface */
+  --paper:     #ffffff;          /* cards, callouts on white */
+  --cool:      #f4f5f7;          /* valuations strip section */
+  --navy:      #0a2540;          /* primary dark identity */
+  --navy-deep: #06182d;          /* footer (slightly darker) */
+  --green:     #0c8463;          /* category eyebrows + hover accents */
+  --green-band:#1d6b54;          /* newsletter band background */
+  --cream:     #f8f0e0;          /* optional warm section, low priority */
+
+  /* Type */
+  --ink:       #0a2540;          /* body text on white (was #0d1117) */
+  --ink-soft:  #5a6068;          /* meta, secondary copy */
+  --muted:     #8a8f9a;          /* dates, byline timestamps */
+
+  /* Lines + chrome */
+  --line:      #e3e3e1;
+  --line-soft: #f1f1ef;
+
+  /* Interactive */
+  --link:      #1a5fc6;          /* link / focus / "Read review" pill */
+  --link-deep: #154fa3;          /* link hover */
+
+  /* Signal */
+  --red:       #c8412d;          /* live, expiry, "Needs reverify" */
+
+  /* Legacy — defined for backward compat, NOT used in new UI */
+  --gold:      #b8842a;
+  --gold-soft: #f3ead6;
+  --brand:     #2a6bd1;          /* old interactive blue, replaced by --link */
+}
+```
+
+### Locked typography
+
+- **Display (Fraunces serif):** weight 700, letter-spacing -1.4px on
+  hero (60–80px), -1.1px on H1 (44–56px), -0.6px on H2 (28–36px).
+  Bump from Quiet Ledger's 500/600. If a heavier display serif
+  ships later (Tiempos / Publico if licensed), the scale carries
+  over.
+- **Body (DM Sans sans):** 16px on body (was 15px), 17px in
+  `.dp-prose` long-form, 14px on meta, 11px on caps eyebrows.
+- **Eyebrows:** 11px / 700 / 2.5px tracking / uppercase / `--green`
+  (was `--ink` in QL, was `--brand` in pre-QL).
+
+### Locked component additions
+
+These ship as new `.dp-*` classes in the chunks that consume them:
+
+- `.dp-band-navy` — navy section wrapper, white text inside
+- `.dp-band-green` — emerald section wrapper (newsletter)
+- `.dp-band-cool` — cool grey section wrapper (valuations)
+- `.dp-feature-card` — Featured story card (navy bg, circular-mask
+  image or typographic placeholder, white serif headline, eyebrow,
+  meta, arrow CTA)
+- `.dp-card-tile` — card directory tile (placeholder card art top,
+  bank/name, "Read review" pill, no Apply)
+- `.dp-filter-pills` — outlined oval pills on navy band
+- `.dp-tabs` — underline tabs (green underline on active, sans caps)
+- `.dp-valuation-row` — icon left + name + heavy serif number right
+- `.dp-points-101` — educational dark-navy band with video / illustration
+
+### Implementation order — locked
+
+1. **Chunk 1 — `global.css` token retune.** Palette tokens, type
+   weights, body size, eyebrow colour. Cascades to every existing
+   `.dp-*` component. *(Branch: `claude/tpg-pivot`, this PR.)*
+2. **Chunk 2 — Homepage rebuild.** Typographic hero / feature card /
+   feed (with tabs) / favourite cards (with filter pills) / valuation
+   strip / newsletter band / footer retheme. Supersedes PR #23.
+3. **Chunk 3 — Card review template.** `CardReviewLayout` gains
+   navy hero band, placeholder card-art, "Read review" CTA pattern,
+   green eyebrow.
+4. **Chunk 4 — Directory pages.** Card-tile grid, filter pills.
+5. **Chunk 5 — Trust pages.** Already on `.dp-article` shell;
+   inherit chunk 1 + minor adjustments. Supersedes PR #24.
+6. **Chunk 6 — Salary-transfer pages.**
+7. **Chunk 7 — Valuations pages.** Adopt the `.dp-valuation-row`
+   pattern with AED-per-mile values when our valuation methodology
+   ships.
+
+### Doc-churn list — locked
+
+- `BRAND_NOTES.md` §2 — append amendment recording the move from
+  Quiet Ledger's "interactive blue only" to TPG-adapted four-token
+  system (navy / emerald / link blue / red).
+- `EDITORIAL.md` §"Visual standard" — append amendment with new
+  type weights, body size, eyebrow colour `--ink → --green`.
+- `SITE_ARCHITECTURE.md` §4 — Quiet Ledger's 4-section homepage is
+  replaced by TPG's pattern: hero / Featured story / feed /
+  favourite cards / valuations / Points 101 / newsletter / footer.
+- `CLAUDE.md` Part I — palette table updated; non-negotiables stay
+  verbatim.
+- `.council/04_content_taxonomy.md` — unchanged.
+
+### Editorial fence — re-stated
+
+The TPG visual pivot does NOT touch the Charter's editorial non-
+negotiables. These remain in force regardless:
+
+- AED-first pricing on every page
+- No advertorial-driven recommendations at launch
+- Affiliate disclosure inline above the fold (when affiliates land)
+- Chairman publish gate
+- Firecrawl exclusive to Head of Research
+- LLM-extraction policy — `editorTake` only; typed numerics via
+  deterministic regex
+- HfP-dry voice in prose
+
+If a chunk's implementation conflicts with any of the above, the
+Charter wins and the chunk amends.
+
+---
 
 **Source-confidence caveat.** The TPG dossier is recall-based (see
 `tpg-design-dossier.md` §"Source-access status"); WebFetch was 403'd
