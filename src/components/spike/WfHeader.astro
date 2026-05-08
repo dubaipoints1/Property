@@ -1,0 +1,24 @@
+---
+interface Props {
+  active?: string;
+}
+const { active = "" } = Astro.props;
+const navItems = ["Cards", "Banks", "Airlines", "Guides", "Deals", "News"];
+---
+<div class="wf-header">
+  <div class="wf-header-row">
+    <div class="wf-wordmark">DubaiPoints<span class="dot">.</span></div>
+    <div class="wf-nav">
+      {navItems.map((n) => (
+        <span class={n === active ? "active" : ""}>{n}</span>
+      ))}
+    </div>
+    <div class="wf-header-actions">
+      <span>Search</span><span>·</span><span>Subscribe</span>
+    </div>
+  </div>
+  <div class="wf-tracker">
+    <span class="live">Live · Salary-transfer tracker</span>
+    <span class="meta">Auto-rotating headline · refreshed daily</span>
+  </div>
+</div>

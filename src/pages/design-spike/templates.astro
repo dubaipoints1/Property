@@ -1,0 +1,2561 @@
+---
+import "~/styles/spike/wireframes.css";
+import WfHeader from "~/components/spike/WfHeader.astro";
+import WfFooter from "~/components/spike/WfFooter.astro";
+import WfBoard from "~/components/spike/WfBoard.astro";
+
+const title = "Page templates · wireframes (spike) · DubaiPoints";
+const description =
+  "Wireframe canvas: every page template the publication needs, in one place. Layout & IA only — colour and richer brand decoration land in the polish pass.";
+
+// ─── Section index data ──────────────────────────────────────────────
+const indexItems: Array<[string, string, string, string, string]> = [
+  ["Guide", "What FAB's salary-transfer programme actually pays out, by salary band", "A bracket-by-bracket teardown of AED 8k, 15k, 25k+ tiers.", "8 May", "9 min"],
+  ["Review", "Emirates NBD Skywards Infinite — earns, but not enough", "The earn rate is thin once you account for the AED 1,575 fee.", "7 May", "12 min"],
+  ["Deal", "Cinnabon UAE 2-for-1 boxes — runs through May", "In-store at all UAE locations on 6-pack and 12-pack boxes.", "6 May", "3 min"],
+  ["News", "Etihad Guest devalues partner redemptions on Lufthansa", "Long-haul business class to Europe rises 22 — 35% in miles.", "5 May", "5 min"],
+  ["Guide", "Opening a UAE bank account: what AECB looks at", "Score weighting, common rejection reasons, documentation.", "30 Apr", "11 min"],
+  ["Review", "FAB Cashback Visa — capped, but tier-1 categories are right", "Groceries and fuel hit 5%; the cap is the binding constraint.", "28 Apr", "8 min"],
+  ["News", "DLD raises off-plan registration fees for first-time buyers", "Oqood fee structure shifts from flat AED 5,000 to graduated.", "25 Apr", "6 min"],
+  ["Deal", "Mashreq + noon: 10% off groceries through July", "Capped at AED 100/mo, Mashreq personal banking customers only.", "22 Apr", "3 min"],
+  ["Guide", "How to pre-qualify for a UAE credit card without a hard pull", "Soft-check pathways at FAB, ENBD, Mashreq compared.", "18 Apr", "7 min"],
+  ["Review", "HSBC Premier World Elite — repriced, but still niche", "Overseas-spend optimised; weak on UAE-domestic categories.", "15 Apr", "10 min"],
+];
+
+// ─── Tracker / valuations / compare data ────────────────────────────
+const trackerRows: Array<[string, string, string, string, string, string, string, string]> = [
+  ["FAB", "First Abu Dhabi", "Tier 3", "30,000+", "1,500", "+200", "3 days ago", "Active"],
+  ["ENBD", "Emirates NBD", "Tier 3", "25,000+", "1,200", "—", "—", "Active"],
+  ["MASH", "Mashreq", "Tier 2", "15,000+", "1,000", "+100", "1 week ago", "Active"],
+  ["HSBC", "HSBC Premier", "Premier", "40,000+", "2,500", "—", "—", "Active"],
+  ["ADCB", "ADCB", "Tier 2", "15,000+", "750", "-50", "2 weeks ago", "Active"],
+  ["CBD", "CBD", "Tier 1", "8,000+", "500", "—", "—", "Active"],
+  ["DIB", "DIB (Islamic)", "Tier 2", "15,000+", "750", "+150", "5 days ago", "Active"],
+  ["ADIB", "ADIB (Islamic)", "Tier 2", "15,000+", "700", "—", "—", "Active"],
+  ["RAK", "RAKBANK", "Tier 1", "8,000+", "400", "—", "—", "Paused"],
+  ["SCB", "Standard Chartered", "Tier 3", "30,000+", "1,800", "+300", "12 days ago", "Active"],
+];
+
+const valRows: Array<[string, string, string, string, string, string, string, string]> = [
+  ["Emirates", "Skywards", "SKY", "3.2", "3.8", "3.5", "+0.2", "Active"],
+  ["Etihad", "Guest", "ETI", "2.6", "3.2", "2.8", "-0.3", "Active"],
+  ["Qatar", "Avios", "QR", "2.9", "3.4", "3.0", "—", "Active"],
+  ["British Airways", "Avios", "BA", "3.0", "3.6", "3.1", "+0.1", "Active"],
+  ["Marriott", "Bonvoy", "MAR", "2.4", "2.9", "2.5", "—", "Active"],
+  ["IHG", "One Rewards", "IHG", "1.7", "2.2", "1.9", "—", "Active"],
+  ["Hilton", "Honors", "HIL", "1.2", "1.6", "1.4", "-0.1", "Active"],
+  ["flydubai", "OPEN", "FZ", "1.8", "2.4", "2.0", "—", "Active"],
+  ["Wizz Air", "Discount Club", "W6", "—", "—", "—", "—", "Pending"],
+  ["Air Arabia", "Airewards", "G9", "1.5", "2.1", "1.7", "—", "Active"],
+];
+
+const valBarPct = (floor: string, ceil: string, dp: string): number => {
+  if (dp === "—") return 0;
+  const f = parseFloat(floor);
+  const c = parseFloat(ceil);
+  const d = parseFloat(dp);
+  if (Number.isNaN(f) || Number.isNaN(c) || Number.isNaN(d) || c === f) return 0;
+  return Math.max(15, ((d - f) / (c - f)) * 100);
+};
+
+const compareCards = [
+  { bank: "FAB", name: "Cashback Visa", net: "Visa", fee: "525", minSal: "8,000", earnUae: "5% groceries, 1% other", earnFx: "1%", cap: "1,000/mo", fx: "2.49%", lounge: "—", welcome: "AED 500 cashback", verdict: "Best for ≤25k spend", score: "4.0" },
+  { bank: "ENBD", name: "Skywards Infinite", net: "Visa Infinite", fee: "1,575", minSal: "30,000", earnUae: "1 mile/4 AED", earnFx: "1 mile/2 AED", cap: "None", fx: "1.99%", lounge: "Unlimited", welcome: "25,000 miles", verdict: "Niche keeper", score: "2.5" },
+  { bank: "ENBD", name: "Visa Infinite", net: "Visa Infinite", fee: "700", minSal: "25,000", earnUae: "1 pt / 1 AED", earnFx: "2 pt / 1 AED", cap: "None", fx: "2.49%", lounge: "6 visits/yr", welcome: "10,000 pts", verdict: "Solid generalist", score: "3.5" },
+];
+
+// ─── Best of / Brief / Author ────────────────────────────────────────
+const bestOf: Array<[string, string, string]> = [
+  ["Overall best", "FAB Cashback Visa", "4.6"],
+  ["Best for miles", "ENBD Visa Infinite", "3.8"],
+  ["Best for spend abroad", "HSBC Premier", "4.1"],
+  ["Best free card", "CBD One", "3.9"],
+  ["Best Islamic card", "DIB Prime", "4.0"],
+  ["Best for groceries", "Mashreq Cashback", "4.3"],
+  ["Best for dining", "ADCB TouchPoints", "3.7"],
+  ["Best premium", "SCB Visa Infinite", "4.2"],
+];
+
+const briefIssues: Array<[string, string, string]> = [
+  ["Issue 142", "2 May 2026", "FAB raises tier-3 bonus by AED 200, ENBD does nothing"],
+  ["Issue 141", "25 Apr 2026", "The quiet Etihad Guest devaluation, and what it means for your stash"],
+  ["Issue 140", "18 Apr 2026", "A Skywards sweet-spot we have been sitting on for six weeks"],
+  ["Issue 139", "11 Apr 2026", "How AECB scoring actually weights “card-stacking”"],
+  ["Issue 138", "4 Apr 2026", "Reader question: should I pay the AED 1,575 to keep ENBD Skywards?"],
+];
+
+const authorArticles: Array<[string, string, string, string]> = [
+  ["Review", "Emirates NBD Skywards Infinite — earns, but not enough", "7 May", "12 min"],
+  ["Guide", "What FAB's salary-transfer programme actually pays out", "8 May", "9 min"],
+  ["News", "Etihad Guest devalues partner redemptions on Lufthansa", "5 May", "5 min"],
+  ["Review", "FAB Cashback Visa — capped, but tier-1 categories are right", "28 Apr", "8 min"],
+  ["Guide", "How to pre-qualify for a UAE credit card without a hard pull", "18 Apr", "7 min"],
+  ["Review", "HSBC Premier World Elite — repriced, but still niche", "15 Apr", "10 min"],
+];
+
+// ─── Palettes ────────────────────────────────────────────────────────
+const palettes: Array<{ name: string; tag: string; swatches: Array<[string, string, string]> }> = [
+  {
+    name: "I · Phantom",
+    tag: "Pitch black ground, off-white type, hi-vis yellow reserved for live signals and verdicts only. Fashion-house register — Acne / Berghain. Reads as a publication with a point of view, not a product page.",
+    swatches: [
+      ["Phantom", "#0b0b0b", "#f0ede4"],
+      ["Carbon panel", "#181818", "#f0ede4"],
+      ["Off-white type", "#f0ede4", "#0b0b0b"],
+      ["Hairline", "#2a2a2a", "#f0ede4"],
+      ["Accent · hi-vis", "#e8ff2c", "#0b0b0b"],
+      ["Link", "#f0ede4", "#0b0b0b"],
+    ],
+  },
+  {
+    name: "J · Apartamento",
+    tag: "Warm tan stock, tomato red for headers and verdicts, olive for live data. Indie-magazine layering — Apartamento / Cabana — lived-in and editorial without being precious.",
+    swatches: [
+      ["Tan stock", "#e8d8b8", "#1c140a"],
+      ["Putty", "#d4c094", "#1c140a"],
+      ["Espresso ink", "#1c140a", "#e8d8b8"],
+      ["Tomato header", "#c63e2c", "#e8d8b8"],
+      ["Accent · olive", "#5a6630", "#e8d8b8"],
+      ["Link", "#3d2a14", "#e8d8b8"],
+    ],
+  },
+  {
+    name: "K · Gulf desert",
+    tag: "Saturated pink-clay paper, inky aubergine ink, mint accent for live signals. UAE-rooted in a way the bank-blue palettes are not — pulls from desert light and gulf jewellery, not from finance.",
+    swatches: [
+      ["Clay", "#e6c4b3", "#2a1228"],
+      ["Sienna", "#d49d80", "#2a1228"],
+      ["Aubergine ink", "#2a1228", "#e6c4b3"],
+      ["Plum band", "#3f1a3a", "#e6c4b3"],
+      ["Accent · mint", "#7ec4a8", "#2a1228"],
+      ["Link", "#2a1228", "#e6c4b3"],
+    ],
+  },
+];
+
+// ─── Glossary, press, archive, RSS ───────────────────────────────────
+const glossaryTerms: Array<[string, string, string]> = [
+  ["A", "AECB", "Al Etihad Credit Bureau — the UAE's only credit bureau. Issuers query AECB for a credit score before approving cards or loans."],
+  ["A", "AED", "Arab Emirates Dirham — every figure on this site is in AED unless explicitly noted."],
+  ["A", "Affiliate / referral link", "A link that pays the publisher a commission if the reader applies. We use them; they don't affect verdicts."],
+  ["D", "Devaluation", "When a points programme increases the points required for a redemption without notice, or with little notice. Always permanent."],
+  ["D", "DP value", "DubaiPoints' weighted-blend valuation of a points currency, used in every earn-rate calculation. Recalibrated quarterly."],
+  ["E", "Earn rate", "Points or cashback earned per AED spent, before any caps, exclusions, or category multipliers."],
+  ["F", "FX markup", "The percentage premium an issuer adds to non-AED transactions, on top of the network rate."],
+  ["M", "Min salary", "Minimum monthly salary required to be eligible for a card. Almost always required to be salary-transferred to the issuing bank."],
+  ["Q", "Qualifying months", "Number of consecutive months a salary must be transferred to qualify for a salary-transfer bonus. FAB raised this from 3 to 4 in Jan 2026."],
+  ["S", "Salary transfer", "UAE-specific arrangement where an employer pays salary directly to one bank, in exchange for a bonus, preferential rates, or fee waivers."],
+  ["S", "Salik / Darb", "Toll systems in Dubai (Salik) and Abu Dhabi (Darb). Excluded from earn rates on most UAE credit cards."],
+  ["S", "Sweet spot", "A redemption where the value extracted significantly exceeds DP value — usually premium-cabin partner award space."],
+];
+const glossaryLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const glossaryByLetter: Record<string, typeof glossaryTerms> = {};
+for (const t of glossaryTerms) {
+  (glossaryByLetter[t[0]] ||= []).push(t);
+}
+const glossaryOrderedLetters = Object.keys(glossaryByLetter);
+
+const pressLogos = ["The National", "Khaleej Times", "Gulf News", "Bloomberg", "Skift", "MoneyHelper", "Wamda", "Arabian Business", "LBB", "TimeOut Dubai"];
+const pressList: Array<[string, string, string, string]> = [
+  ["Bloomberg", "How UAE banks redesigned salary-transfer programmes for the post-COVID job market", "Apr 2026", "Cited DP's salary-transfer tracker for FAB and Emirates NBD year-on-year deltas."],
+  ["The National", "The hidden cost of credit-card devaluations", "Feb 2026", "Quoted Reema A. on Skywards partner-award changes."],
+  ["Skift", "Why Etihad Guest is harder to redeem in 2026", "Mar 2026", "Referenced DP-value methodology in modelling business-class sweet spots."],
+  ["Khaleej Times", "Choosing a credit card as a UAE expat: what AECB actually looks at", "Jan 2026", "Cited the DP guide on AECB scoring weights."],
+];
+
+const archiveMonths: Array<[string, number, number]> = [
+  ["December", 24, 6],
+  ["November", 18, 5],
+  ["October", 22, 5],
+  ["September", 19, 5],
+  ["August", 15, 5],
+  ["July", 21, 5],
+];
+const archiveTitles = [
+  "ENBD Skywards Infinite — Q4 verdict review",
+  "Mashreq Salaam: re-priced, re-positioned",
+  "Etihad Guest off-peak chart, December 2025",
+  "Cinnabon UAE 2-for-1 — final week",
+  "HSBC Premier devaluation analysis",
+  "How AECB weights salary-transfer history",
+];
+const archiveCats = ["Review", "Guide", "News", "Deal", "Review", "Guide"];
+
+const rssFeeds: Array<[string, string, string, string]> = [
+  ["Everything", "/feed.xml", "RSS · Atom · JSON", "Every article, in order. ~5 / week."],
+  ["Reviews only", "/reviews/feed.xml", "RSS · Atom", "Card and bank reviews. ~2 / week."],
+  ["News", "/news/feed.xml", "RSS · Atom", "UAE banking news. ~1 / week."],
+  ["Deals", "/deals/feed.xml", "RSS · Atom", "Time-sensitive offers. ~3 / month."],
+  ["Friday Brief", "/brief/feed.xml", "RSS · Atom", "Newsletter archive feed. 1 / week."],
+  ["Tracker changes", "/tracker/feed.xml", "JSON only", "Atomic deltas to the salary-transfer tracker."],
+];
+
+// ─── Hub / tag / tools / corrections / OG / style / card-art ────────
+const hubRows: Array<[string, string, string, string, string]> = [
+  ["News", "3 May", "FAB raises tier-3 salary-transfer bonus by AED 200", "Effective 1 May 2026, salaries above AED 30,000/mo now qualify for AED 1,500.", "Khalid B."],
+  ["Guide", "8 May", "What FAB's salary-transfer programme actually pays out, by salary band", "Bracket-by-bracket teardown, in AED. Updated for the four-month qualifying rule.", "Reema A."],
+  ["Review", "28 Apr", "FAB Cashback Visa — capped, but tier-1 categories are right", "Salary-transfer welcome bonus included; how it stacks against the standalone programme.", "Khalid B."],
+  ["Guide", "22 Apr", "How AECB scoring weights FAB salary-transfer history", "Tenure with the issuer matters more than most expats realise. Here's the math.", "Layla M."],
+  ["Review", "11 Apr", "FAB Skywards Infinite — earn rate strong, transfer partners narrow", "Worth holding for a year; reassess at renewal.", "Reema A."],
+  ["News", "29 Mar", "FAB Cashback Visa adds Salik exclusion — confirmed", "We checked. The exclusion appeared in the May statement, not in the T&Cs.", "News desk"],
+  ["Deal", "18 Mar", "FAB · 50% off Time Out Market for primary cardholders", "Dine-in only, until 31 May. Worth using once.", "Deals desk"],
+];
+
+const tagGroups: Array<[string, string[]]> = [
+  ["Banks", ["FAB · 64", "Emirates NBD · 48", "Mashreq · 32", "HSBC · 28", "ADCB · 24", "DIB · 18", "RAKBANK · 14", "CBD · 11", "ADIB · 9", "Standard Chartered · 8"]],
+  ["Airline programmes", ["Skywards · 42", "Etihad Guest · 38", "Qatar Privilege · 14", "Saudia Alfursan · 6", "Air India Maharaja · 5"]],
+  ["Hotel programmes", ["Marriott Bonvoy · 22", "Hilton Honors · 18", "IHG One · 12", "World of Hyatt · 9", "Accor ALL · 8"]],
+  ["Concepts", ["Salary transfer · 28", "AECB · 22", "Devaluations · 18", "Sweet spots · 16", "Welcome bonuses · 14", "Annual fees · 12", "FX markup · 9"]],
+  ["Card types", ["Cashback · 38", "Travel rewards · 34", "Points-flexible · 22", "Co-branded airline · 18", "Co-branded hotel · 12", "Premium / metal · 8"]],
+  ["Locales & contexts", ["UAE expats · 44", "Saudi residents · 9", "Long-haul travel · 28", "Family spend · 14", "Freelancers · 8"]],
+];
+
+const calcRedemptions: Array<[string, string, string, string]> = [
+  ["DXB ⇄ LHR · Business · Emirates", "64,000 pts + AED 1,180", "11,600", "Sweet spot — partner award space available 4 of next 12 weeks."],
+  ["DXB ⇄ BKK · Business · Emirates", "55,000 pts + AED 720", "7,400", "Solid value, broad availability."],
+  ["DXB ⇄ DEL · Economy · Emirates", "22,500 pts + AED 320", "1,840", "Floor — only worth it if cash is unavailable."],
+  ["Hotel partner · Marriott Bonvoy", "80,000 SK = 25,600 MR", "3,100", "Generally a poor transfer — avoid."],
+];
+
+const corrections: Array<[string, string, string, string, string]> = [
+  ["Substantive", "3 May 2026", "FAB raises tier-3 salary-transfer bonus by AED 200", "Original article said the bonus rose by AED 100; FAB confirmed AED 200 in a follow-up email. Headline figure corrected; effective-yield calculation re-run.", "Khalid B."],
+  ["Verdict", "22 Apr 2026", "HSBC Premier — verdict revised from “hold” to “downgrade”", "New T&Cs (effective 1 April) cap the lounge benefit at 4 visits/yr. We'd missed the cap in our initial review. Verdict revised, original article struck through and linked.", "Layla M."],
+  ["Substantive", "14 Apr 2026", "Skywards economy redemption rate", "Article quoted 0.04 AED/pt; correct floor is 0.046 AED/pt at the lowest band. DP-value model re-run; downstream articles updated.", "Reema A."],
+  ["Typo", "11 Apr 2026", "Salary-transfer tracker · ADCB row", "Listed “AED 1,000” where T&Cs say “AED 1,500”. Tracker fixed within 4 hours of reader email.", "—"],
+  ["Substantive", "3 Apr 2026", "Etihad Guest partner-award availability", "Original chart used pre-March-2026 dates; partner availability has tightened on three routes since.", "Reema A."],
+  ["Verdict", "29 Mar 2026", "Mashreq Salaam Platinum — verdict revised", "We'd weighted the lounge benefit at 4× actual reader use; corrected the model.", "Khalid B."],
+];
+
+const ogPreviews: Array<{ kind: string; title: string; byline: string; score: string | null; accent: string }> = [
+  { kind: "Review", title: "FAB Cashback Visa — capped, but tier-1 categories are right", byline: "Reema A.", score: "7.4", accent: "#1e3a8a" },
+  { kind: "Guide", title: "What FAB's salary-transfer programme actually pays out, by salary band", byline: "Reema A.", score: null, accent: "#2d6a52" },
+  { kind: "News", title: "FAB raises tier-3 salary-transfer bonus by AED 200", byline: "News desk · 3 May", score: null, accent: "#1a3a2a" },
+  { kind: "Tracker", title: "Salary-transfer · live tracker", byline: "Refreshed every 90 days", score: null, accent: "#0d1b2a" },
+];
+
+const styleTokens: Array<[string, string]> = [
+  ["Paper", "#fdfcf8"],
+  ["Ink", "#0a0a0a"],
+  ["Ink soft", "#3a3a3a"],
+  ["Muted", "#9aa0a6"],
+  ["Line", "#e5dfd1"],
+  ["Green", "#2d6a52"],
+  ["Band", "#1a3a2a"],
+  ["Link", "#234bff"],
+];
+
+const issuers = [
+  { name: "FAB", sub: "First Abu Dhabi Bank", from: "#1e3a8a", to: "#3b82f6", ink: "#e0e7ff" },
+  { name: "Emirates NBD", sub: "ENBD", from: "#7c1d1d", to: "#dc2626", ink: "#ffe4e1" },
+  { name: "Mashreq", sub: "Salaam", from: "#5b21b6", to: "#7c3aed", ink: "#ede9fe" },
+  { name: "HSBC", sub: "Premier", from: "#0c4a6e", to: "#0891b2", ink: "#cffafe" },
+  { name: "ADCB", sub: "TouchPoints", from: "#92400e", to: "#d97706", ink: "#fef3c7" },
+  { name: "DIB", sub: "Dubai Islamic", from: "#064e3b", to: "#059669", ink: "#d1fae5" },
+  { name: "RAKBANK", sub: "Red", from: "#831843", to: "#be185d", ink: "#fce7f3" },
+  { name: "CBD", sub: "Smart", from: "#1f2937", to: "#4b5563", ink: "#f3f4f6" },
+];
+
+const toc: Array<[string, string]> = [
+  ["indexes", "Section indexes"],
+  ["reviews", "Card review"],
+  ["articles", "Article"],
+  ["tools-tables", "Tools (tracker / valuations / compare)"],
+  ["menus", "Navigation menus"],
+  ["palettes", "Palette directions"],
+  ["bestof", "Best-of hub"],
+  ["brief", "Friday Brief"],
+  ["author", "Author page"],
+  ["search", "Search & reference"],
+  ["authority", "Authority surfaces"],
+  ["states", "Empty / error states"],
+  ["mobile", "Mobile views"],
+  ["hubs", "Topic hubs & tags"],
+  ["interactive", "Interactive tools"],
+  ["trust", "Trust & sourcing"],
+  ["system", "System & craft"],
+  ["editorial", "Editorial pages"],
+];
+
+// Mobile-menu open-section data, used by the three drawer artboards.
+const cardsPanel: Array<{ title: string; rows: Array<[string, string?, boolean?]> }> = [
+  {
+    title: "By card type",
+    rows: [
+      ["Best overall UAE cards", "Editor's pick · 12 cards"],
+      ["Best travel cards", "Miles & lounge access"],
+      ["Best cashback cards", "Capped & uncapped", true],
+      ["Best Islamic (Sharia) cards"],
+      ["Best entry-level cards", "Min salary AED 8k+"],
+      ["Best premium cards", "Min salary AED 30k+"],
+      ["All cards", "84 reviewed"],
+    ],
+  },
+  {
+    title: "By bank issuer",
+    rows: [
+      ["FAB cards"],
+      ["Emirates NBD cards"],
+      ["Mashreq cards"],
+      ["ADCB cards"],
+      ["HSBC cards"],
+      ["DIB cards", "Islamic"],
+      ["ADIB cards", "Islamic"],
+      ["All issuers"],
+    ],
+  },
+  {
+    title: "Co-branded cards",
+    rows: [
+      ["Emirates Skywards cards"],
+      ["Etihad Guest cards"],
+      ["flydubai OPEN cards"],
+      ["Marriott Bonvoy cards"],
+      ["All co-branded cards"],
+    ],
+  },
+  {
+    title: "Learn about UAE cards",
+    rows: [
+      ["Beginner's guide"],
+      ["AECB credit score"],
+      ["Salary transfer explained"],
+      ["Card reviews methodology"],
+    ],
+  },
+];
+
+const pointsPanel: Array<{ title: string; rows: Array<[string, string?, boolean?]> }> = [
+  {
+    title: "UAE bank programmes",
+    rows: [["ENBD Rewards"], ["FAB Rewards"], ["Mashreq Salaam"], ["ADCB TouchPoints"], ["All bank programmes"]],
+  },
+  {
+    title: "Airline programmes",
+    rows: [
+      ["Emirates Skywards", "3.5 fils · DP value"],
+      ["Etihad Guest", "2.8 fils · DP value"],
+      ["Qatar Avios", "3.0 fils · DP value"],
+      ["flydubai OPEN", "2.0 fils · DP value"],
+      ["Air Arabia Airewards", "1.7 fils · DP value"],
+      ["All airline programmes"],
+    ],
+  },
+  {
+    title: "Hotel programmes",
+    rows: [
+      ["Marriott Bonvoy"],
+      ["Hilton Honors"],
+      ["World of Hyatt"],
+      ["IHG One Rewards"],
+      ["All hotel programmes"],
+    ],
+  },
+  {
+    title: "Learn",
+    rows: [
+      ["Beginner's guide to UAE points"],
+      ["DP valuations methodology"],
+      ["Award vs cash calculator"],
+      ["Transfer-partner cheatsheet"],
+    ],
+  },
+];
+
+const travelPanel: Array<{ title: string; rows: Array<[string, string?, boolean?]> }> = [
+  {
+    title: "Airlines",
+    rows: [
+      ["Airline news"],
+      ["Airline reviews"],
+      ["Airline deals", "From DXB / AUH / SHJ"],
+      ["All airline stories"],
+    ],
+  },
+  {
+    title: "Hotels",
+    rows: [
+      ["Hotel news"],
+      ["Hotel reviews"],
+      ["UAE staycations"],
+      ["All hotel stories"],
+    ],
+  },
+  {
+    title: "Routes & destinations",
+    rows: [
+      ["From Dubai"],
+      ["From Abu Dhabi"],
+      ["GCC weekend"],
+      ["Long-haul awards", undefined, true],
+    ],
+  },
+];
+
+const megaIssuers: Array<[string, string]> = [
+  ["FAB", "First Abu Dhabi"],
+  ["ENBD", "Emirates NBD"],
+  ["Mashreq", ""],
+  ["ADCB", ""],
+  ["HSBC", "Premier"],
+  ["DIB", "Islamic"],
+  ["ADIB", "Islamic"],
+  ["All issuers", "14"],
+];
+---
+
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body data-pagefind-ignore="all" style="margin:0;background:#ece9e2;">
+    <div class="dp-spike-canvas">
+
+      <header class="dp-spike-intro">
+        <div class="ey">Wireframes · Templates.html</div>
+        <h1>Page templates — wireframe pass.</h1>
+        <p>
+          Layout & IA only. The DubaiPoints type system is applied so the wireframes scan as
+          DubaiPoints; colour, photography and richer brand decoration land in the polish pass.
+        </p>
+        <p>
+          Each artboard below is the markup from the original prototype, recreated as static
+          Astro/HTML. Drop a section into production by lifting its markup and wiring it to live
+          data.
+        </p>
+        <nav class="dp-spike-toc">
+          {toc.map(([id, label]) => (<a href={`#${id}`}>{label}</a>))}
+        </nav>
+      </header>
+
+      {/* ─── Section indexes ─────────────────────────────────────── */}
+      <section id="indexes" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">01 · Section indexes</div>
+          <h2>Section indexes</h2>
+          <p>Used for: Cards, Banks, Airlines, Guides, Deals, News, Latest.</p>
+        </header>
+        <div class="dp-spike-postit">
+          <strong>Wireframe pass.</strong>
+          Real DP type system applied so wireframes scan as DubaiPoints. Colour, photography and
+          richer brand decoration land in the polish pass.
+        </div>
+        <div class="dp-spike-boards">
+          <WfBoard label="Section index · feed" width={1280} height={1900}>
+            <div class="wf">
+              <WfHeader active="Guides" />
+              <div class="wf-pagehead">
+                <div class="crumb">DubaiPoints / Guides</div>
+                <h1>Guides</h1>
+                <p>
+                  Long-form analysis on UAE banking, salary transfer, points valuations and
+                  redemption strategy. Updated as products change — not on a schedule.
+                </p>
+              </div>
+              <div class="wf-filters">
+                <span class="wf-pill active">All</span>
+                <span class="wf-pill">Salary transfer</span>
+                <span class="wf-pill">Account opening</span>
+                <span class="wf-pill">Redemptions</span>
+                <span class="wf-pill">Valuations</span>
+                <span class="wf-pill">Tax & compliance</span>
+                <span class="wf-sort">Sort: <strong>Newest</strong> ▾</span>
+              </div>
+              <div class="wf-featured-band">
+                <div class="wf-featured-eyebrow">
+                  <span>Featured this week</span>
+                  <span class="rule"></span>
+                  <span class="meta">Curated by editors · refreshed Mondays</span>
+                </div>
+                <div class="wf-featured-grid">
+                  <a class="wf-card hero">
+                    <div class="wf-card-cover ph-img">Cover · {indexItems[0][0]}</div>
+                    <div class="wf-card-body">
+                      <div class="wf-card-meta">
+                        <span class="cat">{indexItems[0][0]}</span>
+                        <span>{indexItems[0][3]} · {indexItems[0][4]}</span>
+                      </div>
+                      <h3>{indexItems[0][1]}</h3>
+                      <p>{indexItems[0][2]}</p>
+                      <div class="wf-card-by">By Reema A. · Senior writer</div>
+                    </div>
+                  </a>
+                  <a class="wf-card med">
+                    <div class="wf-card-cover ph-img">Cover · {indexItems[1][0]}</div>
+                    <div class="wf-card-body">
+                      <div class="wf-card-meta">
+                        <span class="cat">{indexItems[1][0]}</span>
+                        <span>{indexItems[1][3]}</span>
+                      </div>
+                      <h3>{indexItems[1][1]}</h3>
+                      <p>{indexItems[1][2]}</p>
+                    </div>
+                  </a>
+                  <a class="wf-card med">
+                    <div class="wf-card-cover ph-img">Cover · {indexItems[2][0]}</div>
+                    <div class="wf-card-body">
+                      <div class="wf-card-meta">
+                        <span class="cat">{indexItems[2][0]}</span>
+                        <span>{indexItems[2][3]}</span>
+                      </div>
+                      <h3>{indexItems[2][1]}</h3>
+                      <p>{indexItems[2][2]}</p>
+                    </div>
+                  </a>
+                  {[3, 4, 5, 6].map((idx) => (
+                    <a class="wf-card sm">
+                      <div class="wf-card-cover ph-img">Cover</div>
+                      <div class="wf-card-body">
+                        <div class="wf-card-meta">
+                          <span class="cat">{indexItems[idx][0]}</span>
+                          <span>{indexItems[idx][3]}</span>
+                        </div>
+                        <h3>{indexItems[idx][1]}</h3>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+              <div class="wf-pullquote">
+                <div class="mark">“</div>
+                <blockquote>
+                  The only UAE points publication that pays its own annual fees, refuses
+                  advertorial, and prints the date next to every verdict.
+                </blockquote>
+                <div class="attr">
+                  <span class="rule"></span>Editorial standard · est. 2024
+                </div>
+              </div>
+              <div class="wf-list-head">
+                <div class="t">All guides</div>
+                <div class="m">Sorted by date · {indexItems.length - 7} more below</div>
+              </div>
+              <div class="wf-feed">
+                {indexItems.slice(7).map((it, i) => {
+                  const n = i + 8;
+                  return (
+                    <div class="wf-feed-row">
+                      <div>
+                        <div class="num">{String(n).padStart(2, "0")}</div>
+                        <div class="eyebrow" style="margin-top:6px;">{it[0]}</div>
+                      </div>
+                      <div>
+                        <h3>{it[1]}</h3>
+                        <div class="summary">{it[2]}</div>
+                      </div>
+                      <div class="thumb ph-img">Cover · {it[0]}</div>
+                      <div class="when">{it[3]}<br /><span style="color:#bbb;font-size:11px;">{it[4]}</span></div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div class="wf-page">
+                <span style="font-size:12px;color:#9a9a9a;">Showing 1–10 of 84</span>
+                <div>
+                  <span class="wf-page-num active">1</span>
+                  <span class="wf-page-num">2</span>
+                  <span class="wf-page-num">3</span>
+                  <span class="wf-page-num">…</span>
+                  <span class="wf-page-num">9</span>
+                  <span class="wf-page-num">→</span>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Card review ─────────────────────────────────────────── */}
+      <section id="reviews" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">02 · Card review</div>
+          <h2>Card review</h2>
+          <p>Per-card detail · long-form analysis with sticky specs sidebar.</p>
+        </header>
+        <div class="dp-spike-postit">
+          <strong>Card review</strong> uses the sidebar layout you picked. Sticky on scroll once
+          polished.
+        </div>
+        <div class="dp-spike-boards">
+          <WfBoard label="Card review · sidebar" width={1280} height={2000}>
+            <div class="wf">
+              <WfHeader active="Cards" />
+              <div class="wf-card-hero">
+                <div class="wf-card-mock">
+                  <div class="b">Emirates NBD</div>
+                  <div class="n">Skywards Infinite</div>
+                  <div class="b right">Visa</div>
+                </div>
+                <div>
+                  <div class="crumb">Cards / Miles / Emirates NBD</div>
+                  <h1>Emirates NBD Skywards Infinite — earns Skywards, but not enough of them</h1>
+                  <p class="strap">
+                    For a card priced at AED 1,575/yr the earn ceiling on UAE-domestic spend is hard
+                    to justify against a flat 1.5% cashback alternative. Worth keeping if you fly
+                    Emirates business at least twice a year — otherwise no.
+                  </p>
+                  <div class="verdict">
+                    <div class="score">2.5<span class="frac">/5</span></div>
+                    <div>
+                      <div class="lbl">DubaiPoints verdict</div>
+                      <div class="sub">Niche keeper · review last verified 7 May 2026</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="wf-article">
+                <div class="wf-article-body">
+                  <div class="wf-byline">
+                    <div class="av"></div>
+                    <div>
+                      <div class="name">Reema A.</div>
+                      <div class="when">Filed 7 May 2026 · Verified against issuer T&Cs</div>
+                    </div>
+                  </div>
+                  <div class="wf-deck">
+                    There's a reason this card is in every Dubai expat's "should I keep it?"
+                    thread — and a reason most should not.
+                  </div>
+                  <div class="wf-prose">
+                    <p>
+                      The Skywards Infinite is the ENBD flagship miles card and has been since
+                      2019. The proposition is straightforward: spend in AED, earn Skywards Miles,
+                      redeem on Emirates flights. The price tag is AED 1,575 a year — or four
+                      return economy redemptions to Mumbai, depending how you count it.
+                    </p>
+                    <p>
+                      What the marketing copy elides is the earn rate. On UAE-domestic spend the
+                      card pays 1 Skywards Mile per AED 4 spent, which on our Skywards valuation
+                      works out to roughly 0.6% effective return.
+                    </p>
+                    <h2>Where the card actually pays</h2>
+                    <p>
+                      It pays on direct Emirates spend (4 miles/AED), and on overseas non-AED
+                      spend after the 1.99% FX fee. The salvage proposition is the welcome bonus
+                      and the lounge access.
+                    </p>
+                    <blockquote>
+                      If you fly Emirates business twice a year, the lounge benefit alone covers
+                      the fee. If you don't, you're paying for someone else's flight.
+                    </blockquote>
+                    <div class="wf-pullbox">
+                      <h4>The math, in AED</h4>
+                      <div class="ph-line med" style="margin-bottom:8px;"></div>
+                      <div class="ph-line short" style="margin-bottom:8px;"></div>
+                      <div class="ph-line" style="margin-bottom:8px;"></div>
+                      <div class="ph-line med"></div>
+                    </div>
+                    <h2>Eligibility, fine print, and what changed in 2026</h2>
+                    <p>
+                      Minimum salary AED 30,000/month. AECB score gating unspecified by ENBD;
+                      reader-survey data suggests a 700+ floor. Annual fee waived for the first
+                      year on direct application; not on aggregator-referred applications.
+                    </p>
+                    <p>
+                      The Q1 2026 reprice raised the supplementary-card fee from AED 0 to AED
+                      200/yr each.
+                    </p>
+                  </div>
+                </div>
+                <aside class="wf-sidebar">
+                  <div class="wf-spec-card">
+                    <h4>At a glance</h4>
+                    <div class="wf-spec-row"><span class="k">Annual fee</span><span class="v">AED 1,575</span></div>
+                    <div class="wf-spec-row"><span class="k">Min salary</span><span class="v">AED 30,000/mo</span></div>
+                    <div class="wf-spec-row"><span class="k">Earn (UAE)</span><span class="v">1 mile / 4 AED</span></div>
+                    <div class="wf-spec-row"><span class="k">Earn (Emirates)</span><span class="v flag">4 miles / AED</span></div>
+                    <div class="wf-spec-row"><span class="k">FX markup</span><span class="v">1.99%</span></div>
+                    <div class="wf-spec-row"><span class="k">Network</span><span class="v">Visa Infinite</span></div>
+                  </div>
+                  <div class="wf-spec-card">
+                    <h4>Earn rates by category</h4>
+                    <div class="wf-spec-row"><span class="k">Emirates direct</span><span class="v flag">4 / AED</span></div>
+                    <div class="wf-spec-row"><span class="k">Travel & dining</span><span class="v">1 / 2 AED</span></div>
+                    <div class="wf-spec-row"><span class="k">Groceries</span><span class="v">1 / 4 AED</span></div>
+                    <div class="wf-spec-row"><span class="k">Salik / Darb</span><span class="v">excluded</span></div>
+                  </div>
+                  <div class="wf-spec-card" style="background:#1f3a4d;color:#fff;border:none;">
+                    <h4 style="color:#9bb1a4;">Editor's call</h4>
+                    <div style="font-family:'Fraunces',serif;font-size:18px;line-height:1.3;margin-bottom:12px;">
+                      Keep if you fly Emirates business 2×/yr. Otherwise, downgrade.
+                    </div>
+                    <div style="font-size:11px;opacity:0.7;letter-spacing:1.5px;text-transform:uppercase;">
+                      Compare alternatives →
+                    </div>
+                  </div>
+                </aside>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Article ─────────────────────────────────────────────── */}
+      <section id="articles" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">03 · Article</div>
+          <h2>Article</h2>
+          <p>Long-form: guides, news, deals — same template, different category.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Article · long-form" width={1280} height={1800}>
+            <div class="wf">
+              <WfHeader active="Guides" />
+              <div class="wf-pagehead" style="max-width:760px;padding:56px 32px 32px;">
+                <div class="crumb">Guides / Salary transfer</div>
+                <h1 style="font-size:48px;letter-spacing:-1.2px;">
+                  What FAB's salary-transfer programme actually pays out, by salary band
+                </h1>
+                <p style="font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:#5a5a5a;max-width:48ch;margin-top:18px;">
+                  The headline number is AED 1,500. The number you actually receive depends on
+                  three things they don't put in the brochure.
+                </p>
+              </div>
+              <div class="wf-article" style="grid-template-columns:1fr 240px;">
+                <div class="wf-article-body" style="max-width:680px;">
+                  <div class="wf-byline">
+                    <div class="av"></div>
+                    <div>
+                      <div class="name">Reema A. <span style="color:#9a9a9a;font-weight:400;">· Senior writer</span></div>
+                      <div class="when">Updated 8 May 2026 · 9 min read</div>
+                    </div>
+                    <div class="actions"><span>Share</span><span>·</span><span>Save</span><span>·</span><span>Print</span></div>
+                  </div>
+                  <div class="ph-img" style="aspect-ratio:2/1;margin-bottom:24px;">Hero illustration · 2:1</div>
+                  <div class="wf-prose">
+                    <p>
+                      FAB's salary-transfer programme is the most-asked-about product on this site,
+                      and the most-misunderstood. The reason: the marketing pages quote the maximum
+                      payout for the highest tier, while most readers will fall in the middle two.
+                    </p>
+                    <h2>The three salary bands, in AED</h2>
+                    <p>
+                      The bands haven't moved since 2024, but the qualifying period has — from
+                      three months to four — and that change hits the effective payout more than
+                      any of the headline numbers.
+                    </p>
+                    <div class="wf-pullbox">
+                      <h4>What you actually receive</h4>
+                      <div class="ph-line thick" style="margin-bottom:10px;"></div>
+                      <div class="ph-line med" style="margin-bottom:10px;"></div>
+                      <div class="ph-line" style="margin-bottom:10px;"></div>
+                      <div class="ph-line short"></div>
+                    </div>
+                    <h2>The qualifying months, and why they matter</h2>
+                    <p>
+                      Four months of qualifying salary credits, not three. We have screenshots
+                      from FAB customer service confirming the change took effect on transfers
+                      initiated after 1 January 2026.
+                    </p>
+                    <blockquote>
+                      The bonus pays out 90 days after the fourth qualifying credit — which means
+                      a programme started in May pays in October at the earliest.
+                    </blockquote>
+                    <h2>What we'd do</h2>
+                    <p>
+                      If you're in the AED 15–25k band and looking at this against ENBD's
+                      equivalent, the FAB number is larger but slower. The right answer is roughly
+                      bank-agnostic.
+                    </p>
+                  </div>
+                </div>
+                <aside style="position:sticky;top:32px;align-self:flex-start;">
+                  <div class="wf-spec-card">
+                    <h4 style="color:#2d6a52;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;font-weight:700;margin-bottom:12px;">In this guide</h4>
+                    {["The three salary bands", "Qualifying months", "Tax & AECB implications", "What we'd do", "Sources & methodology"].map((s, i, a) => (
+                      <div style={`padding:8px 0;border-bottom:${i < a.length - 1 ? "1px solid #e3e1db" : "0"};font-size:13px;color:#5a5a5a;display:flex;gap:10px;`}>
+                        <span style="color:#9a9a9a;font-variant-numeric:tabular-nums;font-size:11px;">{String(i + 1).padStart(2, "0")}</span>
+                        {s}
+                      </div>
+                    ))}
+                  </div>
+                  <div class="wf-spec-card" style="margin-top:20px;">
+                    <h4>Related</h4>
+                    <div class="ph-line" style="margin-bottom:8px;"></div>
+                    <div class="ph-line med" style="margin-bottom:14px;"></div>
+                    <div class="ph-line" style="margin-bottom:8px;"></div>
+                    <div class="ph-line short"></div>
+                  </div>
+                </aside>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Tools (tracker / valuations / compare) ───────────────── */}
+      <section id="tools-tables" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">04 · Tools</div>
+          <h2>Tools</h2>
+          <p>Three sortable, filterable tables sharing one chrome.</p>
+        </header>
+        <div class="dp-spike-postit">
+          <strong>Tools</strong> share one chrome — page-head, filter toolbar, sortable table,
+          methodology footer.
+        </div>
+        <div class="dp-spike-boards">
+          <WfBoard label="Salary-transfer tracker" width={1280} height={1700}>
+            <div class="wf">
+              <WfHeader active="Tools" />
+              <div class="wf-pagehead">
+                <div class="crumb">Tools / Salary-transfer tracker</div>
+                <h1 style="font-size:48px;">Salary-transfer tracker</h1>
+                <p>
+                  Every UAE bank's salary-transfer offer in one table. Verified against issuer
+                  T&Cs, refreshed daily. Deltas show what changed in the last 30 days.
+                </p>
+                <div class="stats">
+                  <span><span class="k">Banks tracked:</span> <strong>14</strong></span>
+                  <span><span class="k">Last refresh:</span> <strong>2 hours ago</strong></span>
+                  <span><span class="k">Changes (30d):</span> <strong style="color:#2d6a52;">+5 / -2</strong></span>
+                </div>
+              </div>
+              <div class="wf-toolbar">
+                <div class="wf-input">Search by bank, programme, or tier</div>
+                <div class="wf-select">Min salary: Any</div>
+                <div class="wf-select">Type: All (incl. Islamic)</div>
+                <div class="wf-select">Status: Active</div>
+                <div class="wf-toolbar-pill">Reset</div>
+              </div>
+              <div class="wf-table-wrap">
+                <table class="wf-table">
+                  <thead>
+                    <tr>
+                      <th>Bank</th>
+                      <th>Tier</th>
+                      <th>Min salary (AED)</th>
+                      <th class="sort">Bonus (AED) ▼</th>
+                      <th>Δ 30d</th>
+                      <th>Last change</th>
+                      <th>Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {trackerRows.map((r) => (
+                      <tr>
+                        <td>
+                          <div class="bank">
+                            <div class="bank-mark">{r[0]}</div>
+                            <div>
+                              <div class="bank-name">{r[1]}</div>
+                              <div class="bank-tier">{r[2]} programme</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td>{r[2]}</td>
+                        <td class="num">{r[3]}</td>
+                        <td class="num"><strong>{r[4]}</strong></td>
+                        <td class={r[5].startsWith("+") ? "delta-up" : r[5].startsWith("-") ? "delta-down" : ""}>{r[5]}</td>
+                        <td class="when">{r[6]}</td>
+                        <td>
+                          {r[7] === "Active" ? (
+                            <span class="status active">● Active</span>
+                          ) : (
+                            <span class="status paused">● Paused</span>
+                          )}
+                        </td>
+                        <td class="details">Details →</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div class="wf-tool-foot">
+                <span>Methodology · Sources · Submit a correction</span>
+                <span>Export CSV · Subscribe to changes</span>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Valuations" width={1280} height={1700}>
+            <div class="wf">
+              <WfHeader active="Tools" />
+              <div class="wf-pagehead">
+                <div class="crumb">Tools / Valuations</div>
+                <h1 style="font-size:48px;">Points & miles valuations</h1>
+                <p>
+                  What each UAE-relevant loyalty currency is actually worth, in fils per point.
+                  Range = floor (worst-case) to ceiling (sweet-spot premium-cabin). DP value is
+                  what we use in card reviews.
+                </p>
+                <div class="stats">
+                  <span><span class="k">Programmes:</span> <strong>22</strong></span>
+                  <span><span class="k">Last revalued:</span> <strong>1 May 2026</strong></span>
+                  <span><span class="k">Methodology:</span> <strong style="color:#1a5fc6;">Read →</strong></span>
+                </div>
+              </div>
+              <div class="wf-toolbar">
+                <div class="wf-input">Search programmes</div>
+                <div class="wf-select">Type: All</div>
+                <div class="wf-select">Region: UAE-relevant</div>
+                <div class="wf-toolbar-pill active">By DP value</div>
+                <div class="wf-toolbar-pill">By trend</div>
+              </div>
+              <div class="wf-table-wrap">
+                <table class="wf-table">
+                  <thead>
+                    <tr>
+                      <th style="width:24%;">Programme</th>
+                      <th>Floor (fils)</th>
+                      <th>Ceiling (fils)</th>
+                      <th class="sort">DP value (fils) ▼</th>
+                      <th style="width:200px;">Distribution</th>
+                      <th>Δ 90d</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {valRows.map((p, i) => {
+                      const pct = valBarPct(p[3], p[4], p[5]);
+                      return (
+                        <tr>
+                          <td>
+                            <div class="bank">
+                              <div class="bank-mark" style={`background:${i % 2 ? "#dedbd2" : "#eceae4"};`}>{p[2]}</div>
+                              <div>
+                                <div class="bank-name">{p[0]}</div>
+                                <div class="bank-tier">{p[1]}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="num">{p[3]}</td>
+                          <td class="num">{p[4]}</td>
+                          <td class="num"><strong style="font-size:15px;">{p[5]}</strong></td>
+                          <td>
+                            {p[5] !== "—" ? (
+                              <div class="wf-val-bar"><span style={`width:${pct}%;`}></span></div>
+                            ) : (
+                              <span style="font-size:11px;color:#9a9a9a;">under review</span>
+                            )}
+                          </td>
+                          <td class={p[6].startsWith("+") ? "delta-up" : p[6].startsWith("-") ? "delta-down" : ""}>{p[6]}</td>
+                          <td>
+                            <span class={`status ${p[7].toLowerCase()}`}>● {p[7]}</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div class="wf-val-foot">
+                <div>
+                  <div class="eyebrow" style="margin-bottom:10px;">Floor</div>
+                  <div class="body">Worst-case redemption — economy cash-vs-points on the programme's own metal.</div>
+                </div>
+                <div>
+                  <div class="eyebrow" style="margin-bottom:10px;">Ceiling</div>
+                  <div class="body">Sweet-spot — premium cabin on partner award space, on routes UAE residents fly.</div>
+                </div>
+                <div>
+                  <div class="eyebrow" style="margin-bottom:10px;">DP value</div>
+                  <div class="body">Our weighted blend used for every earn-rate calculation. Recalibrated quarterly.</div>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Card compare" width={1280} height={1700}>
+            <div class="wf">
+              <WfHeader active="Cards" />
+              <div class="wf-pagehead">
+                <div class="crumb">Tools / Compare</div>
+                <h1 style="font-size:48px;">Compare cards</h1>
+                <p>
+                  Side-by-side spec comparison. Pull two or three cards into the table; we'll
+                  surface where they actually differ.
+                </p>
+              </div>
+              <div class="wf-compare-head">
+                <div></div>
+                {compareCards.map((c) => (
+                  <div class="wf-compare-col">
+                    <div class="wf-card-mock" style="aspect-ratio:1.586/1;">
+                      <div class="b">{c.bank}</div>
+                      <div class="n">{c.name}</div>
+                      <div class="b right">{c.net}</div>
+                    </div>
+                    <div class="reviewed">
+                      <div class="lbl">Reviewed</div>
+                      <div class="rm">Remove ×</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div class="wf-compare-row section-row"><span class="k">Eligibility</span><span></span><span></span><span></span></div>
+              <div class="wf-compare-row"><span class="k">Annual fee</span>{compareCards.map((c) => (<span class="v">AED {c.fee}</span>))}</div>
+              <div class="wf-compare-row"><span class="k">Minimum salary</span>{compareCards.map((c) => (<span class="v">AED {c.minSal}/mo</span>))}</div>
+              <div class="wf-compare-row"><span class="k">Network</span>{compareCards.map((c) => (<span class="v normal">{c.net}</span>))}</div>
+              <div class="wf-compare-row section-row"><span class="k">Earn rates</span><span></span><span></span><span></span></div>
+              <div class="wf-compare-row"><span class="k">UAE domestic</span>{compareCards.map((c) => (<span class="v">{c.earnUae}</span>))}</div>
+              <div class="wf-compare-row"><span class="k">Foreign currency</span>{compareCards.map((c) => (<span class="v">{c.earnFx}</span>))}</div>
+              <div class="wf-compare-row"><span class="k">Monthly cap</span>{compareCards.map((c) => (<span class={`v ${c.cap === "None" ? "flag" : "warn"}`}>{c.cap}</span>))}</div>
+              <div class="wf-compare-row"><span class="k">FX markup</span>{compareCards.map((c) => (<span class="v">{c.fx}</span>))}</div>
+              <div class="wf-compare-row section-row"><span class="k">Benefits</span><span></span><span></span><span></span></div>
+              <div class="wf-compare-row"><span class="k">Airport lounge</span>{compareCards.map((c) => (<span class={`v ${c.lounge === "—" ? "warn" : "flag"}`}>{c.lounge}</span>))}</div>
+              <div class="wf-compare-row"><span class="k">Welcome bonus</span>{compareCards.map((c) => (<span class="v">{c.welcome}</span>))}</div>
+              <div class="wf-compare-row section-row"><span class="k">DP verdict</span><span></span><span></span><span></span></div>
+              <div class="wf-compare-row" style="padding:24px 32px;">
+                <span class="k">In a sentence</span>
+                {compareCards.map((c) => (<span class="v verdict">{c.verdict}</span>))}
+              </div>
+              <div class="wf-compare-row score-row">
+                <span class="k">Score</span>
+                {compareCards.map((c) => (
+                  <span class="v score">{c.score}<span class="frac">/5</span></span>
+                ))}
+              </div>
+              <div class="wf-compare-foot">
+                <div class="help">Add up to <strong>4</strong> cards. Scores are DubaiPoints internal, recalibrated quarterly.</div>
+                <div class="pills">
+                  <span class="wf-pill">Save comparison</span>
+                  <span class="wf-pill">Share link</span>
+                  <span class="wf-pill active">+ Add card</span>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Navigation menus ─────────────────────────────────────── */}
+      <section id="menus" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">05 · Navigation menus</div>
+          <h2>Navigation menus</h2>
+          <p>Mobile drawer (3 states) + desktop mega-panel — every link the site exposes.</p>
+        </header>
+        <div class="dp-spike-boards">
+          {/* Mobile menu — Cards open */}
+          <WfBoard label="Mobile menu · Cards open" width={390} height={1700}>
+            <div class="wf-menu-mobile">
+              <div class="status">
+                <span>9:41</span>
+                <span class="meta">· · ·</span>
+                <span>●●●</span>
+              </div>
+              <div class="header-row">
+                <span class="ic">×</span>
+                <span class="wm">DubaiPoints<span class="dot">.</span></span>
+                <span class="ic right">⌕</span>
+              </div>
+              <div class="live-strip">
+                <span class="live"><span class="dot"></span>Salary-transfer tracker · live</span>
+                <span class="count">14 banks ›</span>
+              </div>
+              <div class="body">
+                <div class="top-row subscribe">Subscribe<span class="ar">▾</span></div>
+                <div class="top-row">Latest<span class="ar">▾</span></div>
+                <div class="top-row open">Cards<span class="ar">▲</span></div>
+                <div class="panel">
+                  {cardsPanel.map((g) => (
+                    <div class="grp">
+                      <div class="grp-t">{g.title}</div>
+                      {g.rows.map(([label, sub, link]) => (
+                        <div class="row">
+                          <div>
+                            <div class={`lbl${link ? " linkish" : ""}`}>{label}</div>
+                            {sub && <div class="sub">{sub}</div>}
+                          </div>
+                          <div class="ar">›</div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div class="top-row">Banks<span class="ar">▾</span></div>
+                <div class="top-row">Points + Miles<span class="ar">▾</span></div>
+                <div class="top-row">Travel<span class="ar">▾</span></div>
+                <div class="top-row">Deals<span class="ar">▾</span></div>
+                <div class="top-row">Guides<span class="ar">▾</span></div>
+                <div class="top-row">News<span class="ar">▾</span></div>
+
+                <div class="tools-block">
+                  <div class="grp-t">Tools</div>
+                  <div class="row">
+                    <div><div class="lbl">Salary-transfer tracker</div><div class="sub">14 banks · refreshed daily</div></div>
+                    <div class="ar">›</div>
+                  </div>
+                  <div class="row">
+                    <div><div class="lbl">Points & miles valuations</div><div class="sub">22 programmes · DP value</div></div>
+                    <div class="ar">›</div>
+                  </div>
+                  <div class="row">
+                    <div><div class="lbl">Card compare</div><div class="sub">Side-by-side specs</div></div>
+                    <div class="ar">›</div>
+                  </div>
+                  <div class="row">
+                    <div><div class="lbl">Award vs cash calculator</div></div>
+                    <div class="ar">›</div>
+                  </div>
+                </div>
+                <div class="pub-block">
+                  <div class="grp-t">Publication</div>
+                  <div class="row"><div><div class="lbl">About DubaiPoints</div></div><div class="ar">›</div></div>
+                  <div class="row"><div><div class="lbl">Editorial policy</div></div><div class="ar">›</div></div>
+                  <div class="row"><div><div class="lbl">How we make money</div></div><div class="ar">›</div></div>
+                  <div class="row"><div><div class="lbl">Corrections</div></div><div class="ar">›</div></div>
+                  <div class="row"><div><div class="lbl">Submit a tip</div><div class="sub">info@dubaipoints.ae</div></div><div class="ar">›</div></div>
+                </div>
+                <div class="lang">
+                  <span>EN · العربية</span>
+                  <span>© 2026 DubaiPoints</span>
+                </div>
+              </div>
+            </div>
+          </WfBoard>
+
+          {/* Mobile menu — Points + Miles open */}
+          <WfBoard label="Mobile menu · Points + Miles open" width={390} height={1700}>
+            <div class="wf-menu-mobile">
+              <div class="status"><span>9:41</span><span class="meta">· · ·</span><span>●●●</span></div>
+              <div class="header-row">
+                <span class="ic">×</span>
+                <span class="wm">DubaiPoints<span class="dot">.</span></span>
+                <span class="ic right">⌕</span>
+              </div>
+              <div class="live-strip">
+                <span class="live"><span class="dot"></span>Salary-transfer tracker · live</span>
+                <span class="count">14 banks ›</span>
+              </div>
+              <div class="body">
+                <div class="top-row subscribe">Subscribe<span class="ar">▾</span></div>
+                <div class="top-row">Latest<span class="ar">▾</span></div>
+                <div class="top-row">Cards<span class="ar">▾</span></div>
+                <div class="top-row">Banks<span class="ar">▾</span></div>
+                <div class="top-row open">Points + Miles<span class="ar">▲</span></div>
+                <div class="panel">
+                  {pointsPanel.map((g) => (
+                    <div class="grp">
+                      <div class="grp-t">{g.title}</div>
+                      {g.rows.map(([label, sub, link]) => (
+                        <div class="row">
+                          <div>
+                            <div class={`lbl${link ? " linkish" : ""}`}>{label}</div>
+                            {sub && <div class="sub">{sub}</div>}
+                          </div>
+                          <div class="ar">›</div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div class="top-row">Travel<span class="ar">▾</span></div>
+                <div class="top-row">Deals<span class="ar">▾</span></div>
+                <div class="top-row">Guides<span class="ar">▾</span></div>
+                <div class="top-row">News<span class="ar">▾</span></div>
+              </div>
+            </div>
+          </WfBoard>
+
+          {/* Mobile menu — Travel open */}
+          <WfBoard label="Mobile menu · Travel open" width={390} height={1500}>
+            <div class="wf-menu-mobile">
+              <div class="status"><span>9:41</span><span class="meta">· · ·</span><span>●●●</span></div>
+              <div class="header-row">
+                <span class="ic">×</span>
+                <span class="wm">DubaiPoints<span class="dot">.</span></span>
+                <span class="ic right">⌕</span>
+              </div>
+              <div class="live-strip">
+                <span class="live"><span class="dot"></span>Salary-transfer tracker · live</span>
+                <span class="count">14 banks ›</span>
+              </div>
+              <div class="body">
+                <div class="top-row subscribe">Subscribe<span class="ar">▾</span></div>
+                <div class="top-row">Latest<span class="ar">▾</span></div>
+                <div class="top-row">Cards<span class="ar">▾</span></div>
+                <div class="top-row">Banks<span class="ar">▾</span></div>
+                <div class="top-row">Points + Miles<span class="ar">▾</span></div>
+                <div class="top-row open">Travel<span class="ar">▲</span></div>
+                <div class="panel">
+                  {travelPanel.map((g) => (
+                    <div class="grp">
+                      <div class="grp-t">{g.title}</div>
+                      {g.rows.map(([label, sub, link]) => (
+                        <div class="row">
+                          <div>
+                            <div class={`lbl${link ? " linkish" : ""}`}>{label}</div>
+                            {sub && <div class="sub">{sub}</div>}
+                          </div>
+                          <div class="ar">›</div>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+                <div class="top-row">Deals<span class="ar">▾</span></div>
+                <div class="top-row">Guides<span class="ar">▾</span></div>
+                <div class="top-row">News<span class="ar">▾</span></div>
+              </div>
+            </div>
+          </WfBoard>
+
+          {/* Desktop mega-menu — Cards */}
+          <WfBoard label="Desktop mega-menu · Cards" width={1280} height={900}>
+            <div class="wf-megamenu">
+              <div class="top">
+                <div class="wm">DubaiPoints<span class="dot">.</span></div>
+                <nav>
+                  <span>Latest</span>
+                  <span class="active">Cards ▾</span>
+                  <span>Banks</span>
+                  <span>Airlines</span>
+                  <span>Guides</span>
+                  <span>Deals</span>
+                  <span>News</span>
+                </nav>
+                <div class="actions">Search · Subscribe</div>
+              </div>
+              <div class="panel">
+                <div class="col">
+                  <div class="col-t">By card type</div>
+                  {["Best overall UAE cards", "Best travel & miles", "Best cashback", "Best Islamic (Sharia)", "Best entry-level", "Best premium", "All cards · 84 reviewed"].map((l, i, a) => (
+                    <div class={`row${i === a.length - 1 ? " last" : ""}`}>
+                      <span class="lbl">{l}</span>
+                      <span class="ar">›</span>
+                    </div>
+                  ))}
+                </div>
+                <div class="col">
+                  <div class="col-t">By issuer</div>
+                  {megaIssuers.map((p, i, a) => (
+                    <div class={`row${i === a.length - 1 ? " last" : ""}`}>
+                      <span class="mark">{p[0].slice(0, 4)}</span>
+                      <span class="lbl">{p[0]}</span>
+                      {p[1] && <span class="ext">{p[1]}</span>}
+                    </div>
+                  ))}
+                </div>
+                <div class="col">
+                  <div class="col-t">Co-branded</div>
+                  {["Emirates Skywards", "Etihad Guest", "flydubai OPEN", "Air Arabia Airewards", "Marriott Bonvoy", "Hilton Honors", "All co-branded"].map((l, i, a) => (
+                    <div class={`row${i === a.length - 1 ? " last" : ""}`}>
+                      <span class="lbl">{l}</span>
+                    </div>
+                  ))}
+                  <div class="col-t" style="margin-top:24px;">Learn</div>
+                  {["Beginner's guide", "AECB credit score", "Salary transfer", "Methodology"].map((l) => (
+                    <div class="row plain">{l}</div>
+                  ))}
+                </div>
+                <div class="col">
+                  <div class="col-t muted">Editor's pick</div>
+                  <div class="editor-card">
+                    <div class="mock">
+                      <div class="b">FAB</div>
+                      <div>
+                        <div class="n">Cashback Visa</div>
+                        <div class="b" style="margin-top:6px;">Visa</div>
+                      </div>
+                    </div>
+                    <div class="ey">This month</div>
+                    <h4>Best card for UAE residents earning under AED 25k.</h4>
+                    <div class="read">
+                      <span>Read review</span>
+                      <span class="ar">→</span>
+                    </div>
+                  </div>
+                  <div class="quiz">
+                    <strong>Not sure where to start?</strong>
+                    Take the 30-second quiz — we'll narrow 84 cards down to 3.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Palettes ─────────────────────────────────────────────── */}
+      <section id="palettes" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">06 · Palette directions</div>
+          <h2>Palette directions</h2>
+          <p>Three professional options — same type, same templates, different temperature.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Palettes · A / B / C" width={1280} height={1500}>
+            <div class="wf wf-palettes">
+              <div class="head">
+                <div class="eyebrow">Direction · pick one</div>
+                <h2>Three palette directions.</h2>
+                <p>
+                  Same type system, same templates — three different temperatures. Each shown
+                  across paper, ink, band, accent, link, to read against real layouts in your
+                  head.
+                </p>
+              </div>
+              {palettes.map((p) => (
+                <div class="pal">
+                  <div>
+                    <div class="pal-name">{p.name}</div>
+                    <div class="pal-tag">{p.tag}</div>
+                  </div>
+                  <div class="pal-swatches">
+                    {p.swatches.map((s) => (
+                      <div class="sw" style={`background:${s[1]};color:${s[2]};`}>
+                        <div class="hex">{s[1]}</div>
+                        <div class="lbl">{s[0]}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div class="pal-preview" style={`background:${p.swatches[0][1]};color:${p.swatches[2][1]};`}>
+                    <div class="ey" style={`color:${p.swatches[4][1]};`}>FEATURED · 8 MAY</div>
+                    <h3 style={`color:${p.swatches[2][1]};`}>What FAB's salary-transfer programme actually pays out, by salary band</h3>
+                    <p style={`color:${p.swatches[2][1]};opacity:0.72;`}>The headline number is AED 1,500. The number you actually receive depends on three things they don't put in the brochure.</p>
+                    <div class="row">
+                      <span class="band" style={`background:${p.swatches[3][1]};color:${p.swatches[3][2]};`}>SALARY-TRANSFER TRACKER · LIVE</span>
+                      <a class="lnk" style={`color:${p.swatches[5][1]};`}>Read the full guide →</a>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Best-of hub ──────────────────────────────────────────── */}
+      <section id="bestof" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">07 · Best-of hub</div>
+          <h2>Best-of hub</h2>
+          <p>Annual editorial awards — the page companies want to be on.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Best UAE cards 2026" width={1280} height={1500}>
+            <div class="wf">
+              <WfHeader active="Cards" />
+              <div class="wf-bestof-hero">
+                <div class="wf-bestof-eyebrow">DubaiPoints Awards · 2026 edition</div>
+                <h1>The best UAE credit cards, 2026.</h1>
+                <p>
+                  Eight categories. Forty-three cards reviewed. Every fee paid out of our own
+                  pocket. Verdicts re-run every quarter, last on 1 May.
+                </p>
+                <div class="wf-bestof-meta">
+                  <span><strong>43</strong> cards reviewed</span>
+                  <span class="sep">·</span>
+                  <span><strong>11</strong> banks tracked</span>
+                  <span class="sep">·</span>
+                  <span><strong>Quarter</strong>-ly recalibration</span>
+                  <span class="sep">·</span>
+                  <span><strong>Zero</strong> sponsored placement</span>
+                </div>
+              </div>
+              <div class="wf-bestof-grid">
+                {bestOf.map((c, i) => (
+                  <a class="wf-bestof-card">
+                    <div class="rank">No. {String(i + 1).padStart(2, "0")}</div>
+                    <div class="cat">{c[0]}</div>
+                    <h3>{c[1]}</h3>
+                    <div class="ph-img cover">Card art</div>
+                    <div class="meta">
+                      <span class="score">{c[2]}<span class="frac">/5</span></span>
+                      <span class="cta">Read review →</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+              <div class="wf-bestof-method">
+                <div>
+                  <div class="eyebrow" style="margin-bottom:12px;">Methodology</div>
+                  <h2>How a card wins a category.</h2>
+                </div>
+                <div class="wf-bestof-method-body">
+                  <p>
+                    Each card is scored on five axes: <strong>earn rate</strong> (DP-valued),
+                    <strong>annual fee net of welcome</strong>, <strong>FX & overseas use</strong>,
+                    <strong>benefits weighted by UAE-resident utility</strong>, and
+                    <strong>customer service signal</strong> from our reader survey.
+                  </p>
+                  <p>
+                    Category winners are not simply the highest-scoring card — they are the
+                    highest-scoring card that <em>any UAE resident in that category could
+                    realistically be approved for</em>. We list the runner-up for each category in
+                    the full review.
+                  </p>
+                  <a class="wf-bestof-method-link">Read the full methodology →</a>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Friday Brief ─────────────────────────────────────────── */}
+      <section id="brief" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">08 · Friday Brief</div>
+          <h2>Friday Brief</h2>
+          <p>Newsletter landing + archive — primary subscription surface.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Friday Brief · subscribe" width={1280} height={1450}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-brief-hero">
+                <div class="wf-brief-eyebrow">The Friday Brief · weekly · free</div>
+                <h1>One email. Fridays. The points moves<br />that actually matter, in AED.</h1>
+                <p>
+                  Salary-transfer changes, devaluations, sweet-spot redemptions, and the
+                  occasional reader question we found worth answering. Six minutes to read.
+                  Written by people who pay their own annual fees.
+                </p>
+                <div class="wf-brief-form">
+                  <input class="wf-brief-input" placeholder="you@example.com" readonly />
+                  <button class="wf-brief-btn">Subscribe →</button>
+                </div>
+                <div class="wf-brief-trust">
+                  <span><strong>14,820</strong> UAE-based subscribers</span>
+                  <span class="sep">·</span>
+                  <span><strong>0</strong> sponsored editions in 2025</span>
+                  <span class="sep">·</span>
+                  <span>Unsubscribe link in every issue</span>
+                </div>
+              </div>
+              <div class="wf-brief-body">
+                <div class="wf-brief-archive">
+                  <div class="head">
+                    <div class="t">Recent issues</div>
+                    <a class="all">View archive →</a>
+                  </div>
+                  {briefIssues.map((r) => (
+                    <a class="wf-brief-row">
+                      <span class="num">{r[0]}</span>
+                      <span class="date">{r[1]}</span>
+                      <span class="sub">{r[2]}</span>
+                      <span class="arrow">→</span>
+                    </a>
+                  ))}
+                </div>
+                <aside class="wf-brief-aside">
+                  <div class="wf-brief-card">
+                    <div class="eyebrow">What you'll get</div>
+                    <ul>
+                      <li>One issue, every Friday, 06:00 GST</li>
+                      <li>A weekly UAE banking change-log</li>
+                      <li>Our DP-value updates, before they go live on the site</li>
+                      <li>A monthly long-read, members-only</li>
+                    </ul>
+                  </div>
+                  <div class="wf-brief-card quote">
+                    <blockquote>"Saved me from re-applying for a card that had quietly devalued the week before."</blockquote>
+                    <div class="attr">— Mariam K. · Dubai · subscriber since 2024</div>
+                  </div>
+                </aside>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Author page ──────────────────────────────────────────── */}
+      <section id="author" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">09 · Author page</div>
+          <h2>Author page</h2>
+          <p>Per-writer hub — bio, disclosure, tabbed article list.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Author · Reema A." width={1280} height={1700}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-author-head">
+                <div class="ph-img portrait">Portrait · 1:1</div>
+                <div>
+                  <div class="wf-author-eyebrow">Senior writer · Dubai · since 2018</div>
+                  <h1>Reema A.</h1>
+                  <p class="bio">
+                    Writes about UAE banking products with the working assumption that the
+                    customer is smart and short on time. Eight years in Dubai. Currently holds
+                    cards from FAB, ENBD, Mashreq and HSBC, and has held five more we don't talk
+                    about anymore.
+                  </p>
+                  <div class="wf-author-meta">
+                    <div><div class="k">Articles</div><div class="v">87</div></div>
+                    <div><div class="k">Reviews verified</div><div class="v">42</div></div>
+                    <div><div class="k">Verdicts changed</div><div class="v">6</div></div>
+                    <div><div class="k">Banks held</div><div class="v">9</div></div>
+                  </div>
+                  <div class="wf-author-disclosure">
+                    <strong>Disclosure.</strong> Pays own annual fees. Does not accept advertorial.
+                    Holds no equity in any UAE bank. Has consulted (paid) for one fintech in
+                    2024 — disclosed in any related coverage and recused from reviews of
+                    competing products.
+                  </div>
+                </div>
+              </div>
+              <div class="wf-author-tabs">
+                <span class="tab active">All articles · 87</span>
+                <span class="tab">Reviews · 42</span>
+                <span class="tab">Guides · 28</span>
+                <span class="tab">News · 17</span>
+              </div>
+              <div class="wf-feed" style="padding:0 32px 24px;">
+                {authorArticles.map((it, i) => (
+                  <div class="wf-feed-row">
+                    <div>
+                      <div class="num">{String(i + 1).padStart(2, "0")}</div>
+                      <div class="eyebrow" style="margin-top:6px;">{it[0]}</div>
+                    </div>
+                    <div>
+                      <h3>{it[1]}</h3>
+                      <div class="summary">Excerpt of the article — a sentence, not a tagline. Sets context for the verdict.</div>
+                    </div>
+                    <div class="thumb ph-img">Cover · {it[0]}</div>
+                    <div class="when">{it[2]}<br /><span style="color:#bbb;font-size:11px;">{it[3]}</span></div>
+                  </div>
+                ))}
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Search & reference ───────────────────────────────────── */}
+      <section id="search" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">10 · Search & reference</div>
+          <h2>Search & reference</h2>
+          <p>Search results, methodology master page, glossary.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Search results · facets + suggest" width={1280} height={1300}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-search-bar">
+                <div class="wf-search-input">
+                  <span class="ic">⌕</span>
+                  <span class="q">salary transfer fab</span>
+                  <span class="x">×</span>
+                </div>
+                <div class="wf-search-meta">128 results · 0.06s · sorted by <strong>relevance</strong> ▾</div>
+              </div>
+              <div class="wf-search-body">
+                <aside class="wf-search-facets">
+                  <div class="grp">
+                    <h4>Type</h4>
+                    {[["Reviews", "42"], ["Guides", "28"], ["News", "12"], ["Deals", "9"], ["Pages", "7"]].map((r, i) => (
+                      <label class="row">
+                        <span><input type="checkbox" checked={i < 2} /> {r[0]}</span>
+                        <span class="n">{r[1]}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <div class="grp">
+                    <h4>Bank</h4>
+                    {["FAB", "Emirates NBD", "Mashreq", "HSBC", "ADCB", "DIB", "RAKBANK"].map((b, i) => {
+                      const counts = [58, 32, 18, 12, 9, 6, 3];
+                      return (
+                        <label class="row">
+                          <span><input type="checkbox" checked={i === 0} /> {b}</span>
+                          <span class="n">{counts[i]}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                  <div class="grp">
+                    <h4>Updated</h4>
+                    {["Last 7 days", "Last 30 days", "Last 90 days", "Older"].map((d, i) => (
+                      <label class="row">
+                        <span><input type="radio" name="when" checked={i === 1} /> {d}</span>
+                      </label>
+                    ))}
+                  </div>
+                </aside>
+                <div>
+                  <div class="wf-search-suggest">
+                    Did you mean <a>"FAB salary transfer"</a>?
+                  </div>
+                  {[
+                    ["Guide", "What FAB's salary-transfer programme actually pays out, by salary band", "We were tired of the marketing brochure quoting the highest-tier number. So we ran every band, in AED, with the qualifying months that changed in January 2026.", "8 May 2026", "Reema A."],
+                    ["Review", "FAB Cashback Visa — capped, but tier-1 categories are right", "Salary transfer welcome bonus is included; how it stacks against the standalone programme matters.", "28 Apr 2026", "Khalid B."],
+                    ["News", "FAB raises tier-3 salary-transfer bonus by AED 200", "Effective 1 May 2026, salaries above AED 30,000/mo qualify for AED 1,500 instead of 1,300.", "3 May 2026", "News desk"],
+                    ["Tool", "Salary-transfer tracker · FAB row", "Live data: bonus, qualifying months, eligible salary band, last verified.", "Refreshed 2 hours ago", "—"],
+                    ["Guide", "Salary-transfer vs. cashback: which actually pays more in year one?", "Modeled across three salary bands and three spend profiles, with real AED figures and break-even months.", "12 Apr 2026", "Reema A."],
+                  ].map((r) => {
+                    const segments = (r[1] as string).split("FAB");
+                    const last = segments.length - 1;
+                    return (
+                      <a class="wf-search-row">
+                        <div class="kind"><span class="cat">{r[0]}</span><span class="when">{r[3]}</span></div>
+                        <h3>
+                          {segments.map((s, j) => (
+                            j < last ? (
+                              <>{s}<mark>FAB</mark></>
+                            ) : (
+                              <>{s}</>
+                            )
+                          ))}
+                        </h3>
+                        <p>{r[2]}</p>
+                        <div class="trail">
+                          <span>By {r[4]}</span>
+                          <span class="path">dubaipoints.ae / {(r[0] as string).toLowerCase()}s / fab-salary-transfer</span>
+                        </div>
+                      </a>
+                    );
+                  })}
+                  <div class="wf-search-page">
+                    <span>Page 1 of 26</span>
+                    <div>
+                      <span class="n active">1</span>
+                      <span class="n">2</span>
+                      <span class="n">3</span>
+                      <span class="n">…</span>
+                      <span class="n">→</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Methodology · master page" width={1280} height={1500}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Methodology · last revised 1 May 2026</div>
+                <h1 style="font-size:56px;">How we score, value, and verify.</h1>
+                <p>
+                  Every figure on this site is in AED. Every redemption is modelled against
+                  DP-value points, not issuer-claimed valuations. Every review is verified against
+                  the issuer's own T&Cs and date-stamped on the page.
+                </p>
+              </div>
+              <div class="wf-method">
+                {[
+                  ["01", "Card scoring", "Five axes, equal weight: earn rate (DP-valued), annual fee net of welcome, FX & overseas use, benefits weighted by UAE-resident utility, customer-service signal from our reader survey. Scores rounded to 0.1."],
+                  ["02", "Points valuation", "Floor (worst-case economy redemption on own metal) and ceiling (sweet-spot premium-cabin on partner award space, on routes UAE residents fly). DP value is a weighted blend, recalibrated quarterly. Last recalibration: 1 May 2026."],
+                  ["03", "Salary-transfer tracker", "Pulled from issuer T&Cs and verified weekly by phone with retail-banking floor staff. Deltas show the last 30 days. Programmes flagged as “paused” are still listed for reference."],
+                  ["04", "Verification & dating", "Every review carries a “last verified” date. We re-verify on a rolling 90-day cycle, and immediately when a reader flags a discrepancy. Older verdicts that no longer hold are struck through, with the date and reason."],
+                  ["05", "Eligibility realism", "We do not award a category to a card you cannot realistically be approved for. Minimum salary, AECB floor, employer-list dependence are all part of the call."],
+                  ["06", "Corrections", "Errors fixed within 24 hours, with a dated note at the foot of the article. Substantive errors that change a verdict are headlined at the top, and emailed to subscribers in the next Friday Brief."],
+                ].map((r) => (
+                  <div class="wf-method-row">
+                    <div class="num">{r[0]}</div>
+                    <div>
+                      <h3>{r[1]}</h3>
+                      <p>{r[2]}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div class="wf-disclosure-band">
+                <div class="inner">
+                  <div class="eyebrow">Reusable disclosure block — appears at the foot of every review and tool</div>
+                  <div class="wf-disclosure">
+                    <strong>Disclosure.</strong> DubaiPoints is reader-funded and
+                    referral-supported. The author of this review pays the annual fee on this
+                    card out of their own pocket. We do not accept advertorial. Some links on
+                    this page are referral links — they do not affect the verdict, the score, or
+                    the position of the card in our rankings. <a>Read the full editorial policy →</a>
+                  </div>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Glossary · UAE terms" width={1280} height={1700}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Reference · UAE banking</div>
+                <h1 style="font-size:56px;">Glossary.</h1>
+                <p>Every term we use, defined plainly. UAE-specific where it matters, generic where it doesn't.</p>
+              </div>
+              <div class="wf-glossary-nav">
+                {glossaryLetters.map((l) => (
+                  <span class={`l ${glossaryByLetter[l] ? "has" : ""}`}>{l}</span>
+                ))}
+              </div>
+              <div class="wf-glossary">
+                {glossaryOrderedLetters.map((letter) => (
+                  <div class="grp">
+                    <div class="ltr">{letter}</div>
+                    <div>
+                      {glossaryByLetter[letter].map((t) => (
+                        <div class="term">
+                          <h3>{t[1]}</h3>
+                          <p>{t[2]}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Authority surfaces ───────────────────────────────────── */}
+      <section id="authority" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">11 · Authority surfaces</div>
+          <h2>Authority surfaces</h2>
+          <p>Press, partnerships, archive, RSS — the pages serious readers and pitchers look for.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Press · cited in" width={1280} height={1100}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Press · cited in</div>
+                <h1 style="font-size:56px;">Where our work has been cited.</h1>
+                <p>We don't pitch. Editors, reporters, and bank-product teams find the analysis on their own. Selected coverage from the last 12 months.</p>
+              </div>
+              <div class="wf-press-logos">
+                {pressLogos.map((p) => (<div class="logo"><span>{p}</span></div>))}
+              </div>
+              <div class="wf-press-list">
+                {pressList.map((p) => (
+                  <a class="wf-press-row">
+                    <div class="pub">{p[0]}</div>
+                    <div>
+                      <h3>{p[1]}</h3>
+                      <p>{p[3]}</p>
+                    </div>
+                    <div class="when">{p[2]}<span class="read">Read →</span></div>
+                  </a>
+                ))}
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Working with us" width={1280} height={1100}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Working with us</div>
+                <h1 style="font-size:56px;">What a partnership<br />with DubaiPoints looks like.</h1>
+                <p>
+                  Short answer: it isn't editorial. We don't sell coverage, we don't sell
+                  verdicts, and we don't sell scores. Here's what we do sell, and what it costs.
+                </p>
+              </div>
+              <div class="wf-partner-grid">
+                <div class="col yes">
+                  <div class="head">What we do</div>
+                  <ul>
+                    <li><strong>Referral links.</strong> Standard CPA on card applications. Disclosed on every page. Doesn't affect verdicts.</li>
+                    <li><strong>Sponsored Friday Briefs.</strong> Maximum one per quarter, clearly labelled, written by us not the sponsor.</li>
+                    <li><strong>Custom research.</strong> One-off paid analysis for product, pricing or positioning teams. Findings owned by you, not published.</li>
+                    <li><strong>Speaking & advisory.</strong> Conferences, internal training, founder calls. Per-day rate.</li>
+                  </ul>
+                </div>
+                <div class="col no">
+                  <div class="head">What we don't do</div>
+                  <ul>
+                    <li>Advertorial labelled as editorial.</li>
+                    <li>Score adjustments. Ever. Of any kind.</li>
+                    <li>Pre-publication review of any review or news article.</li>
+                    <li>Ranking-position purchase in best-of pages.</li>
+                    <li>"Sponsored review" placements.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="wf-partner-cta">
+                <div>
+                  <div class="eyebrow">Get in touch</div>
+                  <h2>Tell us what you're trying to achieve.<br />We'll tell you whether we're the right partner.</h2>
+                  <p>partnerships@dubaipoints.ae · 48-hour response.</p>
+                </div>
+                <a class="btn">Email partnerships →</a>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="2025 archive" width={1280} height={1500}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Archive · 2025</div>
+                <h1 style="font-size:64px;">All of 2025, in order.</h1>
+                <p>
+                  Every article we published in 2025 — 184 in total — by month. Strikethroughs
+                  mark verdicts that have since been revised; click through for the current
+                  version.
+                </p>
+              </div>
+              <div class="wf-archive">
+                {archiveMonths.map((m, mi) => (
+                  <div class="month">
+                    <div class="head">
+                      <div class="m">{m[0]} 2025</div>
+                      <div class="ct">{m[1]} articles</div>
+                    </div>
+                    <div>
+                      {Array.from({ length: m[2] }).map((_, i) => {
+                        const struck = (mi === 0 && i === 2) || (mi === 2 && i === 1);
+                        return (
+                          <a class={`row ${struck ? "struck" : ""}`}>
+                            <span class="d">{String(28 - i * 4).padStart(2, "0")}</span>
+                            <span class="cat">{archiveCats[i]}</span>
+                            <span class="t">{archiveTitles[i]}</span>
+                            <span class="by">Reema A.</span>
+                          </a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="RSS feeds" width={1280} height={900}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Feeds · for serious readers</div>
+                <h1 style="font-size:56px;">Subscribe by RSS or JSON.</h1>
+                <p>We publish full-text feeds. No tracking pixels, no truncation, no ads. Use any reader.</p>
+              </div>
+              <div class="wf-rss-grid">
+                {rssFeeds.map((r) => (
+                  <div class="wf-rss-card">
+                    <div class="t">{r[0]}</div>
+                    <div class="u">{r[1]}</div>
+                    <div class="f">{r[2]}</div>
+                    <div class="d">{r[3]}</div>
+                    <div class="cp">Copy URL →</div>
+                  </div>
+                ))}
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Empty / error states ─────────────────────────────────── */}
+      <section id="states" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">12 · Empty / error states</div>
+          <h2>Empty / error states</h2>
+          <p>404, no-results, paywall — the small details that signal craft.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="404 · No results · Paywall" width={1240} height={680}>
+            <div class="wf">
+              <div class="wf-error-stack">
+                <div class="wf-error-screen">
+                  <div class="wf-error-num">404.</div>
+                  <div class="wf-error-h">Not on this floor.</div>
+                  <p>The page you asked for either moved, was retired, or never existed. If you arrived from another site, the link is probably stale.</p>
+                  <div class="wf-error-actions">
+                    <a class="btn">Search the site →</a>
+                    <a class="lnk">Browse the homepage</a>
+                  </div>
+                  <div class="wf-error-popular">
+                    <div class="eyebrow">Popular instead</div>
+                    <a>The salary-transfer tracker</a>
+                    <a>Best UAE cards 2026</a>
+                    <a>Subscribe to the Friday Brief</a>
+                  </div>
+                </div>
+                <div class="wf-error-screen">
+                  <div class="wf-error-num">∅</div>
+                  <div class="wf-error-h">No results for "<em>Skywards Boeing 707</em>".</div>
+                  <p>We searched 1,840 articles, 87 reviews, and 22 tools. Nothing matched. That probably means we haven't covered it — or your spelling is more inventive than ours.</p>
+                  <div class="wf-error-actions">
+                    <a class="btn">Suggest a topic →</a>
+                    <a class="lnk">Reset filters</a>
+                  </div>
+                </div>
+                <div class="wf-error-screen paywall">
+                  <div class="wf-error-num">$</div>
+                  <div class="wf-error-h">Members-only long-read.</div>
+                  <p>This piece is one of our quarterly long-reads, available to Friday Brief subscribers. Free, no card required, unsubscribe link in every email.</p>
+                  <div class="wf-error-actions">
+                    <a class="btn">Subscribe — free →</a>
+                    <a class="lnk">Already a subscriber? Sign in</a>
+                  </div>
+                  <div class="wf-error-popular">
+                    <div class="eyebrow">In this issue · 14 May 2026</div>
+                    <a>The 2026 salary-transfer reckoning</a>
+                    <a>Six AECB myths, debunked</a>
+                    <a>Reader Q&A · downgrades and product changes</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Mobile views ─────────────────────────────────────────── */}
+      <section id="mobile" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">13 · Mobile views</div>
+          <h2>Mobile views</h2>
+          <p>Three primary screens: home feed, article, navigation drawer.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Mobile · home / article / drawer" width={1100} height={780}>
+            <div class="wf">
+              <div class="wf-mobile-stack">
+                {/* Homepage */}
+                <div class="wf-mobile">
+                  <div class="wf-mobile-status"><span>09:41</span><span>5G ◉ 100%</span></div>
+                  <div class="wf-mobile-header">
+                    <span class="ic">≡</span>
+                    <span class="wm">DubaiPoints<span class="dot">.</span></span>
+                    <span class="ic">⌕</span>
+                  </div>
+                  <div class="wf-mobile-tracker">SALARY-TRANSFER · LIVE · 2 hrs ago</div>
+                  <div class="wf-mobile-body">
+                    <div class="ey">Featured · 8 May</div>
+                    <h2>What FAB's salary-transfer programme actually pays.</h2>
+                    <div class="ph-img cover">Cover</div>
+                    <p>Bracket-by-bracket teardown, in AED. Updated for the four-month qualifying rule.</p>
+                    <div class="by">Reema A. · 9 min</div>
+                    <hr />
+                    {[
+                      ["Etihad Guest devalues partner redemptions", "NEWS"],
+                      ["FAB raises tier-3 bonus by AED 200", "NEWS"],
+                      ["Cinnabon UAE 2-for-1 — final week", "DEAL"],
+                    ].map(([t, cat]) => (
+                      <div class="row">
+                        <div class="ph-img tn">·</div>
+                        <div><div class="cat">{cat}</div><h3>{t}</h3></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Article */}
+                <div class="wf-mobile">
+                  <div class="wf-mobile-status"><span>09:41</span><span>5G ◉ 100%</span></div>
+                  <div class="wf-mobile-header">
+                    <span class="ic">←</span>
+                    <span class="wm">Guides</span>
+                    <span class="ic">⌕</span>
+                  </div>
+                  <div class="wf-mobile-progress"><span style="width:34%;"></span></div>
+                  <div class="wf-mobile-body">
+                    <div class="ey">Salary transfer · 9 min · 8 May</div>
+                    <h1 style="font-family:'Fraunces',serif;font-size:28px;letter-spacing:-0.6px;line-height:1.1;font-weight:800;">What FAB's salary-transfer programme actually pays out, by salary band.</h1>
+                    <div class="dek">The headline number is AED 1,500. The number you actually receive depends on three things they don't put in the brochure.</div>
+                    <div class="ph-img cover">Hero</div>
+                    <p style="font-size:15px;line-height:1.65;">FAB's salary-transfer programme is the most-asked-about product on this site, and the most-misunderstood. The reason: the marketing pages quote the maximum payout for the highest tier…</p>
+                    <p style="font-size:15px;line-height:1.65;">The bands haven't moved since 2024, but the qualifying period has — from three months to four — and that change hits the effective payout more than any of the headline numbers.</p>
+                  </div>
+                </div>
+                {/* Drawer */}
+                <div class="wf-mobile">
+                  <div class="wf-mobile-status"><span>09:41</span><span>5G ◉ 100%</span></div>
+                  <div class="wf-mobile-drawer">
+                    <div class="head"><span>Browse</span><span class="x">×</span></div>
+                    {[
+                      ["Cards", "Reviews · best-of · compare"],
+                      ["Banks", "By issuer · by product family"],
+                      ["Airlines", "By programme · sweet spots"],
+                      ["Guides", "Salary-transfer · AECB · redemptions"],
+                      ["Deals", "Active · expiring · archive"],
+                      ["News", "Latest · devaluations · regulation"],
+                      ["Tools", "Tracker · valuations · compare"],
+                      ["About", "Team · methodology · partnerships"],
+                    ].map((r) => (
+                      <div class="row">
+                        <div><div class="t">{r[0]}</div><div class="s">{r[1]}</div></div>
+                        <span class="ar">→</span>
+                      </div>
+                    ))}
+                    <div class="cta">
+                      <div class="eyebrow">Friday Brief</div>
+                      <div class="t">One email. Fridays. Free.</div>
+                      <a class="btn">Subscribe →</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Topic hubs & tags ────────────────────────────────────── */}
+      <section id="hubs" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">14 · Topic hubs & tags</div>
+          <h2>Topic hubs & tags</h2>
+          <p>The SEO and navigation backbone — every topic in one place.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Topic hub · FAB" width={1280} height={1500}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-hub-head">
+                <div class="wf-hub-crumb">Topics ▸ Banks ▸ <strong>FAB</strong></div>
+                <div class="wf-hub-grid">
+                  <div>
+                    <div class="eyebrow">Topic hub · 64 articles</div>
+                    <h1>First Abu Dhabi Bank</h1>
+                    <p>
+                      Every piece we've published on FAB cards, salary-transfer programmes, and
+                      product changes — in one place. Sorted by recency by default; pin the lens
+                      you care about.
+                    </p>
+                    <div class="wf-hub-stats">
+                      <div><div class="n">64</div><div class="l">Articles</div></div>
+                      <div><div class="n">14</div><div class="l">Active reviews</div></div>
+                      <div><div class="n">8</div><div class="l">Tracker rows</div></div>
+                      <div><div class="n">4</div><div class="l">Verdicts revised</div></div>
+                    </div>
+                  </div>
+                  <div class="wf-hub-meta">
+                    <div class="row"><span>Last published</span><strong>3 May 2026</strong></div>
+                    <div class="row"><span>Next planned</span><strong>15 May 2026</strong></div>
+                    <div class="row"><span>Lead author</span><strong>Reema A.</strong></div>
+                    <div class="row"><span>Re-verification cycle</span><strong>90 days</strong></div>
+                    <a class="follow">Follow this topic →</a>
+                  </div>
+                </div>
+              </div>
+              <div class="wf-hub-filter">
+                <div class="grp">
+                  <span class="lbl">Format</span>
+                  {["All", "Reviews", "Guides", "News", "Deals"].map((t, i) => (
+                    <span class={`chip ${i === 0 ? "on" : ""}`}>{t}</span>
+                  ))}
+                </div>
+                <div class="grp">
+                  <span class="lbl">Product</span>
+                  {["All", "Cashback Visa", "Skywards Infinite", "Etihad Guest", "Salary transfer"].map((t, i) => (
+                    <span class={`chip ${i === 0 ? "on" : ""}`}>{t}</span>
+                  ))}
+                </div>
+                <div class="grp r">
+                  <span class="lbl">Sort</span>
+                  <span class="chip on">Newest ▾</span>
+                </div>
+              </div>
+              <div class="wf-hub-list">
+                {hubRows.map((r) => (
+                  <a class="wf-hub-row">
+                    <div class="cat">{r[0]}</div>
+                    <div class="when">{r[1]}</div>
+                    <div>
+                      <h3>{r[2]}</h3>
+                      <p>{r[3]}</p>
+                    </div>
+                    <div class="by">{r[4]}<span class="read">Read →</span></div>
+                  </a>
+                ))}
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Tag index · every topic" width={1280} height={1100}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Topics · index</div>
+                <h1 style="font-size:56px;">Every topic, in one place.</h1>
+                <p>184 topic hubs, 1,840 articles. Each tag links to a hub that pins the lens, lists the canonical pieces, and shows what's been revised.</p>
+              </div>
+              <div class="wf-tag-index">
+                {tagGroups.map(([title, tags]) => (
+                  <div class="grp">
+                    <h3>{title}</h3>
+                    <div class="tags">
+                      {tags.map((t) => {
+                        const [name, n] = t.split(" · ");
+                        return (
+                          <a class="tag"><span class="t">{name}</span><span class="n">{n}</span></a>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Interactive tools ────────────────────────────────────── */}
+      <section id="interactive" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">15 · Interactive tools</div>
+          <h2>Interactive tools</h2>
+          <p>Beyond the salary-transfer tracker — decision tool, calculator, comparison picker.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Should I keep this card?" width={1280} height={1400}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-tool-head">
+                <div class="eyebrow">Decision tool</div>
+                <h1>Should I keep this card?</h1>
+                <p>Three questions, three minutes. We weight your answers against the card's effective annual cost and surface a verdict you can act on. No email required, nothing stored.</p>
+              </div>
+              <div class="wf-tool-progress">
+                <div class="bar"><span style="width:67%;"></span></div>
+                <div class="lbl">Step 2 of 3 · ~ 90 seconds remaining</div>
+              </div>
+              <div class="wf-tool-card">
+                <div class="step-n">02</div>
+                <h2>Did you pay the full annual fee, or did you negotiate a waiver?</h2>
+                <p class="sub">Most UAE issuers waive the fee for tenured customers who ask. We have a script for the call.</p>
+                <div class="opts">
+                  {["Paid in full", "Got a partial waiver", "Got it fully waived", "Haven't asked yet"].map((a, i) => (
+                    <div class={`opt ${i === 1 ? "on" : ""}`}>
+                      <span class="dot"></span>
+                      <span>{a}</span>
+                    </div>
+                  ))}
+                </div>
+                <div class="nav">
+                  <a class="back">← Back</a>
+                  <a class="next">Continue →</a>
+                </div>
+              </div>
+              <div class="wf-tool-preview">
+                <div class="eyebrow">Preview · what your verdict will look like</div>
+                <div class="verdict">
+                  <div class="v">Downgrade, don't cancel.</div>
+                  <p>Your headline benefit usage is light, the fee is full freight, and the exclusion you flagged hits one of your top spend categories. The free version of this card from the same issuer keeps your AECB tenure intact.</p>
+                  <div class="next-steps">
+                    <div class="eyebrow">Three next steps</div>
+                    <div>① Call retention with the script in our guide.</div>
+                    <div>② Ask for the no-fee variant of the same product.</div>
+                    <div>③ Re-run this tool in six months.</div>
+                  </div>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Points calculator" width={1280} height={1100}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-tool-head">
+                <div class="eyebrow">Calculator · DP-valued</div>
+                <h1>What are my points actually worth?</h1>
+                <p>Every redemption modelled against the floor (worst-case economy on own metal) and ceiling (sweet-spot premium-cabin on partner award space). Recalibrated 1 May 2026.</p>
+              </div>
+              <div class="wf-calc">
+                <div class="wf-calc-input">
+                  <div class="grp">
+                    <label>Programme</label>
+                    <div class="select"><span>Skywards</span><span class="ar">▾</span></div>
+                  </div>
+                  <div class="grp">
+                    <label>Balance</label>
+                    <div class="num"><span class="cur">pts</span><span class="v">80,000</span></div>
+                  </div>
+                  <div class="grp">
+                    <label>Use case</label>
+                    <div class="seg">
+                      {["Anything", "Premium long-haul", "Family economy", "Hotel", "Upgrade"].map((t, i) => (
+                        <span class={`s ${i === 1 ? "on" : ""}`}>{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div class="wf-calc-output">
+                  <div class="band">
+                    <div class="b floor">
+                      <div class="lbl">Floor value</div>
+                      <div class="v">AED 1,840</div>
+                      <div class="ex">Skywards economy redemption, own metal</div>
+                    </div>
+                    <div class="b mid">
+                      <div class="lbl">DP value</div>
+                      <div class="v">AED 4,200</div>
+                      <div class="ex">Weighted blend across realistic uses</div>
+                    </div>
+                    <div class="b ceil">
+                      <div class="lbl">Ceiling value</div>
+                      <div class="v">AED 11,600</div>
+                      <div class="ex">DXB ⇄ LHR business, partner award space</div>
+                    </div>
+                  </div>
+                  <div class="wf-calc-redemptions">
+                    <div class="eyebrow">Specific redemptions modelled</div>
+                    {calcRedemptions.map((r) => (
+                      <div class="row">
+                        <div class="t">{r[0]}</div>
+                        <div class="c">{r[1]}</div>
+                        <div class="v">AED {r[2]}</div>
+                        <div class="ex">{r[3]}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Compare cards · picker" width={1280} height={900}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-tool-head">
+                <div class="eyebrow">Tool · compare cards</div>
+                <h1>Pick up to three cards.</h1>
+                <p>We'll line them up on every dimension we score: earn rate, fees, FX, benefits weighted by UAE-resident utility, and customer service. Side-by-side, in AED, no marketing copy.</p>
+              </div>
+              <div class="wf-cmp-picker">
+                {[1, 2, 3].map((slot) => (
+                  <div class={`slot ${slot < 3 ? "filled" : "empty"}`}>
+                    {slot < 3 ? (
+                      <>
+                        <div class="card-art" style={`background:${slot === 1 ? "linear-gradient(135deg,#1e3a8a,#3b82f6)" : "linear-gradient(135deg,#7c2d12,#dc2626)"};`}>
+                          <div class="bank">{slot === 1 ? "FAB" : "Mashreq"}</div>
+                        </div>
+                        <div class="t">{slot === 1 ? "FAB Cashback Visa" : "Mashreq Salaam Platinum"}</div>
+                        <div class="s">{slot === 1 ? "AED 525 · 5% on top three" : "AED 0 · Salaam tier 2"}</div>
+                        <a class="x">×</a>
+                      </>
+                    ) : (
+                      <>
+                        <div class="plus">+</div>
+                        <div class="t">Add a card</div>
+                        <div class="s">Search by name, bank, or category</div>
+                      </>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div class="wf-cmp-search">
+                <div class="wf-search-input">
+                  <span class="ic">⌕</span>
+                  <span class="q">Search 184 cards…</span>
+                </div>
+                <div class="wf-cmp-suggest">
+                  <div class="eyebrow">Popular comparisons</div>
+                  {["FAB Cashback vs ENBD Skywards", "Mashreq Salaam vs ADCB TouchPoints", "HSBC Premier vs Citi Prestige", "Best AED-zero-fee cards"].map((t) => (
+                    <a class="row"><span>{t}</span><span class="ar">→</span></a>
+                  ))}
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Trust & sourcing ─────────────────────────────────────── */}
+      <section id="trust" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">16 · Trust & sourcing</div>
+          <h2>Trust & sourcing</h2>
+          <p>The pages that signal a serious publication — source-protected tip line, running corrections log.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Tip line · source-protected" width={1280} height={1100}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Tip line · source-protected</div>
+                <h1 style="font-size:56px;">Have a tip?</h1>
+                <p>If you work at a UAE bank, fintech, or rewards programme and you've seen something readers should know about — devaluations being prepared, fees being changed without notice, T&Cs being re-written quietly — we'd like to hear from you.</p>
+              </div>
+              <div class="wf-tip">
+                <div class="wf-tip-channels">
+                  <div class="ch">
+                    <div class="hd">Email · PGP-encrypted</div>
+                    <div class="addr">tips@dubaipoints.ae</div>
+                    <a class="key">Public key · 0xA1B2 C3D4 E5F6 7890 →</a>
+                    <p>Use a personal email, not your work account. Strip metadata from any documents.</p>
+                  </div>
+                  <div class="ch">
+                    <div class="hd">Signal</div>
+                    <div class="addr">+971 5X XXX XX12</div>
+                    <p>End-to-end encrypted. Set messages to disappear. We will never reveal who you are without your written consent — even if subpoenaed.</p>
+                  </div>
+                  <div class="ch">
+                    <div class="hd">Postal · for documents</div>
+                    <div class="addr">PO Box 12345<br />Dubai Internet City<br />UAE</div>
+                    <p>For physical documents you don't want digitally fingerprinted. Mark "Confidential — Editor".</p>
+                  </div>
+                </div>
+                <div class="wf-tip-ethics">
+                  <div class="eyebrow">Our promise</div>
+                  <ol>
+                    <li>We will never reveal a source's identity without their written consent.</li>
+                    <li>We will not publish anything that puts a source at legal risk without their full understanding.</li>
+                    <li>We will pay for travel and legal advice if a source needs it because of a story we run.</li>
+                    <li>We do not pay for tips. Verification, not transaction.</li>
+                  </ol>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Corrections · running log" width={1280} height={1300}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Corrections · running log</div>
+                <h1 style="font-size:56px;">Every correction we've made.</h1>
+                <p>If we get something wrong, we fix it within 24 hours and log it here. Substantive errors that change a verdict are headlined at the top of the original article and emailed to subscribers in the next Friday Brief. We've published 184 articles in 2025–26; this is the full record of where we've been wrong.</p>
+              </div>
+              <div class="wf-corr-stats">
+                <div><div class="n">28</div><div class="l">Total corrections</div></div>
+                <div><div class="n">6</div><div class="l">Verdict-changing</div></div>
+                <div><div class="n">3.4 hrs</div><div class="l">Median fix time</div></div>
+                <div><div class="n">100%</div><div class="l">Logged within 24 hrs</div></div>
+              </div>
+              <div class="wf-corr-list">
+                {corrections.map((r) => (
+                  <div class="wf-corr-row">
+                    <div class="kind">
+                      <span class={`tag ${r[0].toLowerCase()}`}>{r[0]}</span>
+                      <span class="when">{r[1]}</span>
+                    </div>
+                    <div>
+                      <h3>{r[2]}</h3>
+                      <p>{r[3]}</p>
+                    </div>
+                    <div class="by">{r[4]}<br /><a>Read original →</a></div>
+                  </div>
+                ))}
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── System & craft ───────────────────────────────────────── */}
+      <section id="system" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">17 · System & craft</div>
+          <h2>System & craft</h2>
+          <p>Per-issuer card art, social previews, internal style guide.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Per-issuer card art system" width={1240} height={680}>
+            <div class="wf">
+              <div class="wf-cardart">
+                <div class="wf-cardart-head">
+                  <div class="eyebrow">System · per-issuer card art</div>
+                  <h2>Each issuer has its own gradient. Cards inherit; templates inherit from the card.</h2>
+                  <p>Ends the "everything is navy" problem. The accent ink colour is used for the issuer logo and the card's chip pattern; the gradient is used for the card body and its tile background on feed pages.</p>
+                </div>
+                <div class="wf-cardart-grid">
+                  {issuers.map((iss) => (
+                    <div class="wf-cardart-tile">
+                      <div class="card" style={`background:linear-gradient(135deg,${iss.from},${iss.to});`}>
+                        <div class="bank" style={`color:${iss.ink};`}>{iss.name}</div>
+                        <div class="chip" style={`background:${iss.ink};opacity:0.85;`}></div>
+                        <div class="num" style={`color:${iss.ink};opacity:0.7;`}>•••• 4242</div>
+                      </div>
+                      <div class="meta">
+                        <div class="nm">{iss.name} · {iss.sub}</div>
+                        <div class="hx">{iss.from} → {iss.to}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </WfBoard>
+
+          <WfBoard label="Social / OG previews · 1200×630" width={1240} height={760}>
+            <div class="wf">
+              <div class="wf-og-stack">
+                {ogPreviews.map((og) => (
+                  <div class="wf-og" style={`background:${og.accent};`}>
+                    <div class="hd">
+                      <div class="wm">DubaiPoints<span class="dot">.</span></div>
+                      <div class="kind">{og.kind.toUpperCase()}</div>
+                    </div>
+                    <div class="bd">
+                      <h2>{og.title}</h2>
+                    </div>
+                    <div class="ft">
+                      <div>{og.byline}</div>
+                      {og.score && (
+                        <div class="sc"><span class="n">{og.score}</span><span class="t">/10</span></div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </WfBoard>
+
+          <WfBoard label="House style guide" width={1280} height={1500}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-pagehead">
+                <div class="crumb">Internal · for editors</div>
+                <h1 style="font-size:56px;">House style.</h1>
+                <p>Voice, tokens, and component vocabulary. The point is consistency, not control — when in doubt, write the way you'd brief a sceptical friend at a coffee.</p>
+              </div>
+              <div class="wf-styleguide">
+                <section>
+                  <h3>Voice</h3>
+                  <div class="vc">
+                    <div class="do">
+                      <div class="hd">Do</div>
+                      <ul>
+                        <li>Lead with the verdict.</li>
+                        <li>Show your math in AED, with caps and exclusions named explicitly.</li>
+                        <li>Concede the obvious counterargument early.</li>
+                        <li>Date every claim.</li>
+                      </ul>
+                    </div>
+                    <div class="dont">
+                      <div class="hd">Don't</div>
+                      <ul>
+                        <li>Use "amazing", "ultimate", "best ever".</li>
+                        <li>Quote the marketing brochure as if it were the T&Cs.</li>
+                        <li>Mistake high earn rate for high effective value.</li>
+                        <li>Hedge in the headline. Hedge in the body if you must.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+                <section>
+                  <h3>Tokens · colour</h3>
+                  <div class="sw">
+                    {styleTokens.map(([n, h]) => (
+                      <div class="tk">
+                        <div class="ch" style={`background:${h};${h === "#fdfcf8" ? "border:1px solid #e5dfd1;" : ""}`}></div>
+                        <div class="nm">{n}</div>
+                        <div class="hx">{h}</div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+                <section>
+                  <h3>Tokens · type</h3>
+                  <div class="ty">
+                    <div>
+                      <div class="lb">Display · Fraunces 800 · -1.2</div>
+                      <div class="display">Display.</div>
+                    </div>
+                    <div>
+                      <div class="lb">Headline · Fraunces 700 · -0.6</div>
+                      <div class="headline">Headline of an article.</div>
+                    </div>
+                    <div>
+                      <div class="lb">Dek · Fraunces italic 500</div>
+                      <div class="dek">The standfirst sits below the headline.</div>
+                    </div>
+                    <div>
+                      <div class="lb">Body · DM Sans 16/1.72</div>
+                      <div class="body">Body copy is set in DM Sans at sixteen pixels with a line-height of 1.72 — a slightly looser measure than the default.</div>
+                    </div>
+                    <div>
+                      <div class="lb">Eyebrow · DM Sans 600 · 1.5px tracking</div>
+                      <div class="eyebrow-sample">Salary transfer · 9 min · 8 May</div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+      {/* ─── Editorial pages ──────────────────────────────────────── */}
+      <section id="editorial" class="dp-spike-section">
+        <header class="dp-spike-section-head">
+          <div class="ey">18 · Editorial pages</div>
+          <h2>Editorial pages</h2>
+          <p>About · Editorial policy · How we make money · Corrections — same template.</p>
+        </header>
+        <div class="dp-spike-boards">
+          <WfBoard label="Editorial · about" width={1280} height={1700}>
+            <div class="wf">
+              <WfHeader />
+              <div class="wf-editorial">
+                <div class="crumb">About</div>
+                <h1>Why we built DubaiPoints.</h1>
+                <p class="lede">We were tired of every UAE points blog being a thinly-disguised affiliate funnel. So we wrote one that isn't.</p>
+                <div class="wf-editorial-grid">
+                  <h3>Who runs this</h3>
+                  <div>
+                    <p>DubaiPoints is run by three UAE residents — two writers and an editor — who collectively hold every card we review. We pay our annual fees out of pocket. We do not, and will not, accept advertorial.</p>
+                    <p>We've been in the UAE between four and eleven years. Between us we've held accounts at FAB, ENBD, Mashreq, ADCB, HSBC, DIB and ADIB.</p>
+                  </div>
+                </div>
+                <div class="wf-editorial-grid">
+                  <h3>Editorial fences</h3>
+                  <div>
+                    <p>No advertorial. No paid placement. No "sponsored review" labelling — because there are no sponsored reviews. Card-by-card affiliate links exist on this site; they never determine review scores, ranking order, or what gets covered.</p>
+                    <p>If we change a verdict — and we have, several times — the previous version stays in the article, struck through, with the date and reason.</p>
+                  </div>
+                </div>
+                <div class="wf-editorial-grid">
+                  <h3>How we make money</h3>
+                  <div>
+                    <p>Three sources, in this order: reader subscriptions to the Friday brief (~31% of revenue), card-application referrals (~58%), and one-off consulting (~11%).</p>
+                    <p>The referral percentage is highest because it's easiest to scale; the subscription percentage is the one we want to grow.</p>
+                  </div>
+                </div>
+                <div class="wf-editorial-grid">
+                  <h3>Corrections policy</h3>
+                  <div>
+                    <p>Errors corrected within 24 hours, with a dated note at the bottom. Substantive errors that affect the verdict are corrected immediately, headlined at the top, and emailed to subscribers in the next Friday brief.</p>
+                    <p>Submit a correction: <a style="color:#1a5fc6;">info@dubaipoints.ae</a>.</p>
+                  </div>
+                </div>
+                <div class="wf-editorial-grid">
+                  <h3>Methodology</h3>
+                  <div>
+                    <p>Every figure in AED. Every card checked against UAE eligibility rules. Every redemption modelled against DP-value points (not issuer-claimed). Verification dates stamped on each review.</p>
+                  </div>
+                </div>
+                <div class="wf-editorial-grid">
+                  <h3>The team</h3>
+                  <div class="wf-editorial-team">
+                    {[
+                      ["Reema A.", "Senior writer"],
+                      ["Khalid B.", "Writer"],
+                      ["Priya M.", "Editor"],
+                    ].map(([nm, role]) => (
+                      <div>
+                        <div class="ph-img">Portrait</div>
+                        <div class="nm">{nm}</div>
+                        <div class="role">{role}</div>
+                        <div class="bio">Short bio. Years in UAE. Banks held. Specialism.</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <WfFooter />
+            </div>
+          </WfBoard>
+        </div>
+      </section>
+
+    </div>
+  </body>
+</html>

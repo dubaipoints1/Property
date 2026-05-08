@@ -1,0 +1,17 @@
+---
+interface Props {
+  label: string;
+  width: number;
+  height?: number;
+}
+const { label, width, height } = Astro.props;
+---
+<div class="dp-spike-board" style={`width:${width}px;`}>
+  <div class="dp-spike-board-label">
+    {label}
+    <span class="dim">{width}{height ? ` × ${height}` : ""}</span>
+  </div>
+  <div class="dp-spike-board-frame">
+    <slot />
+  </div>
+</div>
