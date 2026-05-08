@@ -4,7 +4,7 @@ v20.20.2
 
 === npm install ===
 
-added 492 packages in 5s
+added 492 packages in 6s
 [install] exit=0
 === npm run scrape:fab ===
 
@@ -20,7 +20,7 @@ added 492 packages in 5s
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
 [fab] Fetching https://www.bankfab.com/en-ae/personal/credit-cards/fab-world-elite
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
-[fab] Wrote data/scraped/fab/2026-05-08T06-17-22-328Z.json
+[fab] Wrote data/scraped/fab/2026-05-08T10-12-31-809Z.json
 [fab] 2 card(s) had parsing warnings:
 [fab]   fab-elite: No earn-rate categories detected — base rate defaulted to 1
 [fab]   fab-world-elite: Could not parse minimum salary
@@ -50,7 +50,6 @@ added 492 packages in 5s
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/dnata-world-credit-card
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/dnata-platinum-credit-card
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-elevate
-[enbd]   ✗ Firecrawl HTTP 500: Internal Server Error
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-inspire
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/manchester-united-credit-card
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/lulu-247-platinum-credit-card
@@ -61,7 +60,7 @@ added 492 packages in 5s
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card-for-emiratis
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-family-credit-card
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/noon-one-visa-credit-card
-[enbd] Wrote data/scraped/enbd/2026-05-08T06-18-40-033Z.json
+[enbd] Wrote data/scraped/enbd/2026-05-08T10-12-54-032Z.json
 [enbd] 28 card(s) had parsing warnings:
 [enbd]   emirates-nbd-skywards-infinite: Could not parse FX fee
 [enbd]   emirates-nbd-skywards-signature: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
@@ -80,7 +79,7 @@ added 492 packages in 5s
 [enbd]   emirates-nbd-webshopper: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-dnata-world: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-dnata-platinum: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-etihad-guest-elevate: https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-elevate: Firecrawl HTTP 500: Internal Server Error; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-etihad-guest-elevate: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-etihad-guest-inspire: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-manchester-united: Could not parse annual fee; Could not parse FX fee
 [enbd]   emirates-nbd-lulu-247-platinum: Could not parse annual fee; Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
@@ -98,7 +97,7 @@ added 492 packages in 5s
 > dubaipoints@0.1.0 scrape:propose
 > tsx scripts/scrape/propose-changes.ts
 
-[propose] Wrote PR_BODY.md: 20 new, 31 changed, 78 warning(s)
+[propose] Wrote PR_BODY.md: 1 new, 2 changed, 76 warning(s)
 
 === git status src/data/cards.json ===
  M src/data/cards.json
