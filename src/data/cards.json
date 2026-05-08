@@ -459,6 +459,81 @@
       ]
     }
   },
+  "emirates-nbd-etihad-guest-elevate": {
+    "_provenance": {
+      "bank": "scraped",
+      "name": "scraped",
+      "network": "scraped",
+      "categories": "scraped",
+      "annualFee": "scraped",
+      "fxFee": "scraped",
+      "loyaltyProgram": "scraped",
+      "earnRates": "scraped",
+      "earnUnit": "scraped",
+      "welcomeBonus": "scraped",
+      "welcomeBonusValue": "scraped",
+      "eligibility": "scraped",
+      "applyUrl": "scraped",
+      "lastVerified": "scraped",
+      "sources": "scraped"
+    },
+    "_lastScraped": "2026-05-08",
+    "_lastReviewed": null,
+    "bank": "enbd",
+    "name": "Emirates NBD Etihad Guest Visa Elevate",
+    "network": "Visa",
+    "categories": [
+      "travel",
+      "co-brand"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "fxFee": 0,
+    "loyaltyProgram": "Etihad Guest Miles",
+    "earnRates": {
+      "everythingElse": 1
+    },
+    "earnUnit": "Etihad Guest Miles per AED 1 spent",
+    "welcomeBonus": {
+      "amount": 200000,
+      "unit": "etihad_guest_miles",
+      "spend_threshold_aed": null,
+      "qualify_window_days": null
+    },
+    "welcomeBonusValue": 200000,
+    "eligibility": {
+      "minSalary": 30000,
+      "salaryTransferRequired": true,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried"
+      ]
+    },
+    "applyUrl": "https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-elevate",
+    "lastVerified": "2026-05-08",
+    "sources": [
+      "https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-elevate"
+    ],
+    "_scraped_freetext": {
+      "welcomeBonus": "Welcome offer Up to 200,000 Etihad Guest Miles _![Fast track to Gold Tier](https://www",
+      "perks": [
+        "Earn **Etihad Guest Miles** on **spends**",
+        "**10 Miles** per  10 spend on Etihad Airways, hotels and dining",
+        "**Up to 6 Miles** on all other spends",
+        "**Welcome offer**: Up to **200,000 Etihad Guest Miles**",
+        "Get **50% Etihad Guest Miles** redemption discount voucher upon spending every  150,0001",
+        "Earn **2.5 Etihad Tier Miles** for every  10 spend on all spends2",
+        "Get **50% more** miles when you sign up for the Express Miles program for a nominal fee of  250 per month3",
+        "**Complimentary airport lounge access** to over 1000 lounges worldwide via the Visa Airport Companion App.",
+        "**Concierge services** to take care of your time-consuming errands",
+        "**Valet parking** at selected locations in Abu Dhabi",
+        "Interest rate of 3.25% per month; minimum payment: 5% of the outstanding or  100, whichever is higher",
+        "Original Emirates ID and copy with passport copy"
+      ]
+    }
+  },
   "emirates-nbd-etihad-guest-inspire": {
     "_provenance": {
       "bank": "scraped",
@@ -2827,7 +2902,8 @@
         "Bonus FAB Rewards for spending at eco-friendly merchants",
         "Tree planting programme linked to everyday spending",
         "Engaging eco prizes with seasonal gamification features on the FAB Mobile App"
-      ]
+      ],
+      "welcomeBonus": "Up to 500,000 FAB Rewards on all your spending You can earn up to 500,000 FAB Rewards on all your spending"
     },
     "_features": []
   },
