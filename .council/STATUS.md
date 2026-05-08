@@ -20,33 +20,35 @@ The Chairman has signed off on the following decisions, opening the
 Council and setting the design direction. Each pick supersedes the
 prior default in the named source document.
 
-### 1. UX direction — **Quiet Ledger** (Direction B)
+### 1. UX direction — **Quiet Ledger** (Direction B) — **SUPERSEDED 2026-05-08-bis**
 
-- **Brief:** `.council/research/2026-05/ux-redesign-brief.md`.
-- **Spike:** `/design-spike/` (route at
-  `src/pages/design-spike.astro`).
-- **Rationale:** smallest doc-churn move; closest to what
-  `EDITORIAL.md` already wants; addresses all three audited pain
-  points without inventing a fourth; needs no new visual assets we
-  do not have.
-- **Doc churn applied 2026-05-08:**
-  - `BRAND_NOTES.md` — Amendments §1 (blue is interactive only;
-    gold sunsets as a UI accent).
-  - `EDITORIAL.md` — Amendments §"Visual standard" rewrites; tone
-    amplifications (no `!`, numerical numbers, pull-numbers, single-
-    paragraph Friday recap).
-  - `SITE_ARCHITECTURE.md` — Amendments to §4 (4-section homepage),
-    §5.3 (hamburger correction + continuous logo scale), §5.4
-    (italic display sunset).
-- **Code applied 2026-05-08:**
-  - `src/styles/global.css` — palette retune; `.dp-article-eyebrow`
-    to ink; `.dp-article-title em` flattened; `.dp-byline-avatar`
-    flat-ink; `.dp-take` hairline-on-paper; `.dp-proscons` glyphs;
-    `.dp-prose blockquote` ink; verified-chip ink-bordered;
-    `.dp-bullet-list` glyph in ink.
-  - `src/components/Header.astro` — continuous logo scale 36/44/52.
-  - `src/layouts/ArticleLayout.astro` — rewritten to `.dp-*` idiom
-    (was unused; kept as primitive against future regression).
+Initially adopted on 2026-05-08; **overridden later the same day** by
+the TPG-inspired pivot (see Pick 3 below). Quiet Ledger's foundational
+work (palette retune, `.dp-*` rule rewrites, homepage 4-section spec)
+shipped on PRs #17, #23, #24 and lives on `main`. Those PRs are not
+rolled back — the next visual rebuild lands on top of them.
+
+Original brief: `.council/research/2026-05/ux-redesign-brief.md`.
+
+### 3. UX direction — **TPG-inspired** (override of Pick 1)
+
+- **Brief:** `.council/research/2026-05/tpg-redesign-brief.md`
+  (in progress; Head of Research dispatched 2026-05-08).
+- **Dossier:** `.council/research/2026-05/tpg-design-dossier.md`
+  (in progress).
+- **Session document:** `.council/sessions/2026-05-08-tpg-pivot.md`.
+- **Reference site:** <https://thepointsguy.com>.
+- **Editorial fence:** the visual pivot does NOT touch the Charter's
+  editorial non-negotiables (AED-first, no advertorial recommendations,
+  Chairman publish gate, Firecrawl exclusive to Research, deterministic
+  regex for typed numerics, HfP-dry voice). Visual TPG, voice HfP-dry.
+- **Doc churn pending Chairman sign-off:** `BRAND_NOTES.md`,
+  `EDITORIAL.md`, `SITE_ARCHITECTURE.md`, `CLAUDE.md` Part I,
+  `.council/04_content_taxonomy.md`. Specifics come back with the
+  Head of Research brief.
+- **Implementation order:** `global.css` → homepage → card review →
+  directory pages → trust pages → salary-transfer → valuations. Each
+  chunk own branch, own PR, Chairman gate.
 
 ### 2. Council convened — agents, commands, and policy in force
 
@@ -119,3 +121,4 @@ The phased plan is at
 | 2026-05-08 | managing-editor | Council declared operational; Chairman picks recorded; design-doc amendments propagated. |
 | 2026-05-08 | managing-editor | Q-A resolved: `welcomeBonus` restored to `SCRAPED_FIELDS`; freetext stash remapped to source from `welcomeBonusFreetext`. Contract tests added. Phase A homepage rebuild approved per technical judgement; Phase B routes trickle per editor beat; Phase C cadence revised to seed-then-watch (initial bulk across priority banks, then weekly cron handles deltas). |
 | 2026-05-08 | managing-editor | Cron cadence further revised to **monthly** (`0 23 1 * *`, 1st of month 23:00 UTC) per Chairman: weekly is overkill for UAE bank update cycles. `workflow_dispatch` available for between-cron runs. Firecrawl API key provisioned by Chairman; GitHub repo setting "Allow GitHub Actions to create and approve pull requests" still needs to be ticked (one-time admin) for `gh pr create` to succeed. |
+| 2026-05-08-bis | managing-editor | **Quiet Ledger SUPERSEDED**. Chairman overrode the visual direction in favour of TPG-inspired (`https://thepointsguy.com`) after seeing PRs #23 (homepage) and #24 (trust pages) merged. Head of Research dispatched to scrape TPG and produce `.council/research/2026-05/tpg-design-dossier.md` + `tpg-redesign-brief.md`. Editorial non-negotiables stay in force; visual scope only. Implementation will land in bite-size per-route PRs after Chairman locks the new spec. |
