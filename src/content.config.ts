@@ -166,12 +166,37 @@ const bankReputation = defineCollection({
   }),
 });
 
+const NEWS_CATEGORY = z.enum([
+  "news",
+  "deal-update",
+  "card-launch",
+  "regulation",
+  "programme-change",
+  "salary-transfer",
+]);
+
+const news = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/news" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    publishedAt: z.coerce.date(),
+    updatedAt: z.coerce.date().optional(),
+    category: NEWS_CATEGORY.default("news"),
+    relatedCards: z.array(reference("cards")).default([]),
+    relatedPrograms: z.array(reference("programs")).default([]),
+    relatedBanks: z.array(reference("banks")).default([]),
+    sources: z.array(z.string().url()).default([]),
+  }),
+});
+
 export const collections = {
   banks,
   cards,
   programs,
   deals,
   guides,
+  news,
   salaryTransferOffers,
   salaryTransferOfferHistory,
   bankReputation,
