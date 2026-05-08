@@ -1,55 +1,116 @@
 ---
+// Homepage — Quiet Ledger 4-section spec.
+// .council/sessions/2026-05-08-revamp.md (chunk 1).
+// Replaces the prior 7-section, 427-line scoped-CSS implementation with
+// the .dp-* idiom + a small set of homepage-only layout primitives.
+
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import { getAllCards } from "~/lib/cardsData";
 
-// ── Live data ────────────────────────────────────────────────────────────
 const todayMs = Date.now();
+const today = new Date();
+
+const fmtFull = (d: Date) =>
+  d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+const fmtShort = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+// ── Source collections ───────────────────────────────────────────────────
+const allGuides = await getCollection("guides");
 const allDeals = await getCollection("deals");
+const allSalaryOffers = await getCollection("salaryTransferOffers");
+const cards = getAllCards();
+
 const liveDeals = allDeals
   .filter((d) => d.data.expiresOn.getTime() >= todayMs)
-  .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime())
-  .slice(0, 5);
+  .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime());
 
-const allGuides = await getCollection("guides");
 const guidesSorted = [...allGuides].sort(
   (a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime(),
 );
-const latestGuide = guidesSorted[0];
-const evergreenGuides = guidesSorted.slice(0, 4);
 
-const cardSpotlights = getAllCards()
+const cardSpotlights = cards
   .filter((c) => c.welcomeBonus)
-  .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
-  .slice(0, 3);
+  .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0));
 
-// Recent posts feed — interleave guides + deals
+// ── Section 1 — typographic index (5 lead stories, no images) ───────────
+const indexStories = [
+  ...guidesSorted.slice(0, 2).map((g) => ({
+    cat: "Guide",
+    href: `/guides/${g.id}/`,
+    title: g.data.title,
+    meta: `Updated ${fmtShort(g.data.updatedAt)}`,
+  })),
+  ...liveDeals.slice(0, 2).map((d) => ({
+    cat: "Deal",
+    href: `/deals/${d.id}/`,
+    title: d.data.title,
+    meta: `Ends ${fmtShort(d.data.expiresOn)}`,
+  })),
+  ...cardSpotlights.slice(0, 1).map((c) => ({
+    cat: "Card review",
+    href: `/cards/${c.slug}/`,
+    title: c.name,
+    meta: `Verified ${fmtShort(c.lastVerified)}`,
+  })),
+].slice(0, 5);
+
+// ── Section 2 — Live: salary transfer + deals rail ──────────────────────
+const liveSalaryOffers = allSalaryOffers
+  .filter((o) => !o.data.archived && o.data.validUntil.getTime() >= todayMs)
+  .map((o) => {
+    const maxReward = Math.max(
+      ...o.data.salaryBands.map((b) => b.rewardAmount),
+    );
+    const minSalary = Math.min(
+      ...o.data.salaryBands.map((b) => b.minSalary),
+    );
+    return { entry: o, maxReward, minSalary };
+  })
+  .sort((a, b) => b.maxReward - a.maxReward)
+  .slice(0, 4);
+
+const railDeals = liveDeals.slice(0, 4);
+
+// ── Section 3 — Latest analysis (combined feed, reverse chronological) ──
 type FeedItem = {
   href: string;
-  category: string;
+  cat: string;
   title: string;
   date: Date;
+  detail: string;
 };
 const feed: FeedItem[] = [
   ...allGuides.map((g) => ({
     href: `/guides/${g.id}/`,
-    category: "Guide",
+    cat: "Guide",
     title: g.data.title,
     date: g.data.updatedAt,
+    detail: g.data.description,
   })),
-  ...allDeals.map((d) => ({
+  ...liveDeals.map((d) => ({
     href: `/deals/${d.id}/`,
-    category: "Deal",
+    cat: "Deal",
     title: d.data.title,
     date: d.data.expiresOn,
+    detail: `Ends ${fmtShort(d.data.expiresOn)}`,
+  })),
+  ...cardSpotlights.slice(0, 6).map((c) => ({
+    href: `/cards/${c.slug}/`,
+    cat: "Card review",
+    title: c.name,
+    date: c.lastVerified,
+    detail: `${c.bank} · annual fee AED ${c.annualFee.toLocaleString()}`,
   })),
 ];
-const recentPosts = feed
+const recentFeed = feed
   .sort((a, b) => b.date.getTime() - a.date.getTime())
-  .slice(0, 6);
-
-const fmtDate = (d: Date) =>
-  d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  .slice(0, 8);
 ---
 
 <BaseLayout
@@ -57,612 +118,487 @@ const fmtDate = (d: Date) =>
   description="Independent UAE-resident-led guides to credit cards, salary-transfer bonuses, miles redemptions and lifestyle deals. Every figure in AED, every card checked."
   fullWidth={true}
 >
+  <div class="hp-root">
+
+    <!-- ── 1. MASTHEAD-DATELINE + 5-STORY INDEX ──────────────────────── -->
+    <section class="hp-masthead-section">
+      <div class="hp-wrap">
+
+        <header class="hp-masthead">
+          <span class="hp-eyebrow">DubaiPoints</span>
+          <span class="hp-dateline">{fmtFull(today)} · Dubai</span>
+          <a href="/salary-transfer/" class="hp-live-tag">Live · salary transfer tracker</a>
+        </header>
+
+        <div class="hp-hero">
+          <h1>UAE rewards, banking, and travel — without the marketing.</h1>
+          <p class="hp-strap">
+            Independent UAE-resident-led analysis of credit cards, salary-transfer
+            bonuses, miles redemptions, and lifestyle deals — every figure in AED,
+            every card checked against UAE eligibility rules.
+          </p>
+        </div>
+
+        <div class="hp-index">
+          <div class="hp-index-head">In today's brief</div>
+          <div class="hp-index-list">
+            {indexStories.map((s) => (
+              <a href={s.href} class="hp-index-item">
+                <span class="hp-index-cat">{s.cat}</span>
+                <span class="hp-index-title">{s.title}</span>
+                <span class="hp-index-meta">{s.meta}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── 2. LIVE: SALARY TRANSFER + DEALS RAIL ─────────────────────── -->
+    <section class="hp-live-section">
+      <div class="hp-wrap">
+        <div class="hp-section-head">
+          <h2>Live this week</h2>
+          <span class="hp-section-meta">Updated {fmtFull(today)}</span>
+        </div>
+
+        <div class="hp-live-grid">
+
+          <div class="hp-live-col">
+            <div class="hp-col-head">
+              <h3>Salary transfer offers</h3>
+              <a href="/salary-transfer/" class="hp-col-more">All offers →</a>
+            </div>
+            {liveSalaryOffers.length === 0 ? (
+              <p class="hp-empty">No live offers tracked. Check the tracker page.</p>
+            ) : (
+              <ul class="hp-live-list">
+                {liveSalaryOffers.map(({ entry, maxReward, minSalary }) => (
+                  <li class="hp-live-row">
+                    <a href={`/salary-transfer/${entry.id}/`} class="hp-live-row-main">
+                      <span class="hp-live-row-name">{entry.data.name}</span>
+                      <span class="hp-live-row-meta">
+                        Min salary AED {minSalary.toLocaleString()} · ends {fmtShort(entry.data.validUntil)}
+                      </span>
+                    </a>
+                    <span class="hp-live-row-amount">
+                      <span class="num">AED {maxReward.toLocaleString()}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div class="hp-live-col">
+            <div class="hp-col-head">
+              <h3>Deals expiring soon</h3>
+              <a href="/deals/" class="hp-col-more">All deals →</a>
+            </div>
+            {railDeals.length === 0 ? (
+              <p class="hp-empty">No live deals right now.</p>
+            ) : (
+              <ul class="hp-live-list">
+                {railDeals.map((d) => (
+                  <li class="hp-live-row">
+                    <a href={`/deals/${d.id}/`} class="hp-live-row-main">
+                      <span class="hp-live-row-name">{d.data.title}</span>
+                      <span class="hp-live-row-meta">{d.data.category}</span>
+                    </a>
+                    <span class="hp-live-row-amount">
+                      <span class="hp-expiry">Ends {fmtShort(d.data.expiresOn)}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 3. LATEST ANALYSIS (single-column feed) ───────────────────── -->
+    <section class="hp-feed-section">
+      <div class="hp-wrap">
+        <div class="hp-section-head">
+          <h2>Latest analysis</h2>
+          <a href="/guides/" class="hp-section-meta">All guides →</a>
+        </div>
+
+        <ul class="hp-feed-list">
+          {recentFeed.map((f) => (
+            <li class="hp-feed-row">
+              <a href={f.href} class="hp-feed-link">
+                <span class="hp-feed-cat">{f.cat}</span>
+                <span class="hp-feed-title">{f.title}</span>
+                <span class="hp-feed-detail">{f.detail}</span>
+                <span class="hp-feed-date">{fmtShort(f.date)}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ── 4. NEWSLETTER + RSS-BY-BAND ───────────────────────────────── -->
+    <section class="hp-newsletter-section">
+      <div class="hp-wrap">
+        <div class="hp-newsletter">
+          <div class="hp-news-copy">
+            <p class="hp-news-eyebrow">Subscribe</p>
+            <h2>The Friday brief, in your inbox.</h2>
+            <p class="hp-news-strap">
+              One email each Friday with the week's salary-transfer changes, new
+              card offers, and lifestyle deals. AED-first, no fluff. Or follow
+              the per-band RSS feeds and get only what matches your salary.
+            </p>
+          </div>
+          <div class="hp-news-actions">
+            <a href="/newsletter/" class="hp-news-btn hp-news-btn-primary">
+              Subscribe to the brief
+            </a>
+            <a href="/rss.xml" class="hp-news-btn hp-news-btn-ghost">
+              RSS feeds (by salary band)
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</BaseLayout>
 
 <style>
-/* ════════════════════════════════════════════════════════════════════════
-   MOBILE-FIRST HOMEPAGE — SITE_ARCHITECTURE.md §4
-   Default styles target ≤640px (one-handed portrait). Breakpoints scale up.
-   ════════════════════════════════════════════════════════════════════════ */
+  /* ════════════════════════════════════════════════════════════════════
+     Homepage — Quiet Ledger.
+     Tokens come from src/styles/global.css (--ink, --ink-soft, --line,
+     --paper, --bg, --brand, --red). No new colour tokens, no Tailwind
+     utilities. Mobile-first; breakpoints at 768 (tablet) and 1024 (desktop).
+     ════════════════════════════════════════════════════════════════════ */
 
-/* ── Layout primitives ────────────────────────────────────────────────── */
-.wrap {
-  width: 100%;
-  max-width: 1180px;
-  margin: 0 auto;
-  padding-inline: 16px;
-}
-@media (min-width: 768px) { .wrap { padding-inline: 24px; } }
-@media (min-width: 1024px) { .wrap { padding-inline: 32px; } }
+  .hp-root {
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "tnum" 1, "lnum" 1;
+  }
 
-.section { padding-block: 40px; }
-@media (min-width: 768px) { .section { padding-block: 56px; } }
-@media (min-width: 1024px) { .section { padding-block: 72px; } }
+  .hp-wrap {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding-inline: 16px;
+  }
+  @media (min-width: 768px)  { .hp-wrap { padding-inline: 24px; } }
+  @media (min-width: 1024px) { .hp-wrap { padding-inline: 32px; } }
 
-.section-band {
-  background: var(--paper);
-  border-block: 1px solid var(--line);
-}
-
-.section-head {
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 16px; margin-bottom: 20px;
-  padding-bottom: 12px; border-bottom: 1px solid var(--line);
-}
-.section-head h2 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: clamp(22px, 4vw, 28px);
-  letter-spacing: -0.5px; color: var(--ink);
-  text-wrap: balance;
-}
-.section-head h2 em { font-style: italic; color: var(--brand); font-weight: 500; }
-.section-head .more {
-  font-size: 13px; font-weight: 600; color: var(--ink);
-  white-space: nowrap;
-}
-.section-head .more:hover { color: var(--brand); }
-
-/* ── 1. HERO + Today's Best Deals rail ─────────────────────────────── */
-.hero {
-  padding-block: 32px 24px;
-  text-align: left;
-}
-@media (min-width: 768px) { .hero { padding-block: 56px 40px; text-align: center; } }
-
-.hero .eyebrow {
-  font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--brand); margin-bottom: 14px;
-}
-.hero h1 {
-  font-family: 'Fraunces', serif; font-weight: 400;
-  font-size: clamp(32px, 8vw, 60px);
-  line-height: 1.05; letter-spacing: -1.4px;
-  color: var(--ink); text-wrap: balance;
-}
-.hero h1 em { font-style: italic; color: var(--brand); font-weight: 500; }
-.hero .sub {
-  margin-top: 16px;
-  font-family: 'Fraunces', serif; font-weight: 400;
-  font-size: clamp(16px, 2.4vw, 22px);
-  line-height: 1.4; color: var(--ink-soft);
-  letter-spacing: -0.2px; text-wrap: pretty;
-  max-width: 65ch;
-}
-@media (min-width: 768px) { .hero .sub { margin-inline: auto; } }
-
-/* Today's Best Deals — horizontal scroll-snap rail */
-.deals-rail-wrap {
-  margin-top: 28px;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  padding-block: 20px;
-}
-.deals-rail-head {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 14px; gap: 12px;
-}
-.deals-rail-head .label {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--red);
-  display: flex; align-items: center; gap: 8px;
-}
-.deals-rail-head .label::before {
-  content: ''; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--red); animation: pulse 2s infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.deals-rail-head .more { font-size: 12px; font-weight: 600; color: var(--ink); }
-
-.deals-rail {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: 78%;
-  gap: 12px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  margin-inline: -16px;
-  padding-inline: 16px;
-  padding-bottom: 6px;
-}
-.deals-rail::-webkit-scrollbar { display: none; }
-@media (min-width: 640px) { .deals-rail { grid-auto-columns: 46%; } }
-@media (min-width: 1024px) {
-  .deals-rail {
-    grid-auto-flow: initial;
-    grid-template-columns: repeat(4, 1fr);
+  /* Section heads — shared across live, feed, newsletter. */
+  .hp-section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
     gap: 16px;
-    margin-inline: 0; padding-inline: 0;
-    overflow: visible;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 12px;
+    margin-bottom: 24px;
   }
-}
-
-.deal-card {
-  scroll-snap-align: start;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 16px;
-  display: flex; flex-direction: column;
-  min-height: 140px;
-  transition: border-color 0.15s;
-}
-.deal-card:hover { border-color: var(--brand); }
-.deal-card .meta {
-  display: flex; gap: 8px; align-items: center; margin-bottom: 10px;
-  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-.deal-card .meta .cat { color: var(--brand); }
-.deal-card .meta .dot { color: var(--line); }
-.deal-card .meta .expiry { color: var(--red); }
-.deal-card h3 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: 16px; line-height: 1.3; color: var(--ink);
-  letter-spacing: -0.2px; flex: 1;
-}
-.deal-card .verified {
-  margin-top: 12px;
-  font-size: 11px; color: var(--muted);
-}
-
-/* ── 2. LATEST POST (single feature) ───────────────────────────────── */
-.latest-feature {
-  display: grid; grid-template-columns: 1fr; gap: 20px;
-}
-@media (min-width: 768px) {
-  .latest-feature { grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; }
-}
-.latest-feature-img {
-  aspect-ratio: 16 / 10; border-radius: 8px;
-  background: linear-gradient(135deg, #d9cfb8, #a89372);
-  position: relative; overflow: hidden;
-}
-.latest-feature-img::after {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.25), transparent 55%);
-}
-.latest-feature-img .pin {
-  position: absolute; top: 14px; left: 14px;
-  background: rgba(255,255,255,0.92);
-  padding: 5px 11px; border-radius: 30px;
-  font-size: 10px; font-weight: 700;
-  letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink);
-}
-.latest-feature .kicker {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--red); margin-bottom: 12px;
-}
-.latest-feature h2 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: clamp(24px, 4.5vw, 36px);
-  line-height: 1.12; letter-spacing: -0.8px;
-  color: var(--ink); margin-bottom: 14px; text-wrap: balance;
-}
-.latest-feature .lede {
-  font-size: 15px; color: var(--ink-soft); line-height: 1.55;
-  margin-bottom: 16px; max-width: 60ch;
-}
-.byline {
-  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-  font-size: 12px; color: var(--muted);
-}
-.byline .name { color: var(--ink); font-weight: 600; }
-.byline .verified-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 9px; border-radius: 30px;
-  background: var(--gold-soft); color: var(--gold);
-  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-.byline .sep { color: var(--line); }
-
-/* ── 3. NEW TO THE UAE? band ──────────────────────────────────────── */
-.expat-band {
-  background: var(--ink);
-  color: white;
-  border-radius: 0;
-}
-.expat-band .wrap {
-  display: grid; grid-template-columns: 1fr; gap: 20px;
-  padding-block: 40px;
-}
-@media (min-width: 768px) {
-  .expat-band .wrap {
-    grid-template-columns: 1fr auto;
-    align-items: center; gap: 40px;
-    padding-block: 48px;
+  .hp-section-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(22px, 3.4vw, 30px);
+    letter-spacing: -0.6px; color: var(--ink);
   }
-}
-.expat-band .eyebrow {
-  font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--brand); margin-bottom: 12px;
-}
-.expat-band h2 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: clamp(24px, 4vw, 34px);
-  line-height: 1.15; letter-spacing: -0.6px;
-  color: white; margin-bottom: 12px; text-wrap: balance;
-}
-.expat-band p {
-  font-size: 15px; color: rgba(255,255,255,0.78);
-  line-height: 1.55; max-width: 60ch;
-}
-.expat-band .cta {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 14px 22px;
-  background: var(--brand); color: white;
-  border-radius: 6px;
-  font-size: 14px; font-weight: 700;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
-  min-height: 44px;
-  transition: background 0.15s;
-}
-.expat-band .cta:hover { background: var(--brand-deep); }
-
-/* ── 4. CARD SPOTLIGHTS ──────────────────────────────────────────── */
-.cards-grid {
-  display: grid; grid-template-columns: 1fr; gap: 16px;
-}
-@media (min-width: 640px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1024px) { .cards-grid { grid-template-columns: repeat(3, 1fr); } }
-
-.card-spot {
-  border: 1px solid var(--line); border-radius: 8px;
-  padding: 20px;
-  background: var(--bg);
-  display: flex; flex-direction: column;
-  transition: border-color 0.15s;
-}
-.card-spot:hover { border-color: var(--brand); }
-.card-spot .super {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--brand); margin-bottom: 10px;
-}
-.card-spot .visual {
-  aspect-ratio: 1.6 / 1; border-radius: 6px;
-  background: linear-gradient(135deg, #1a1f2e, #0d1119);
-  margin-bottom: 16px; padding: 14px;
-  display: flex; align-items: flex-end;
-  position: relative; overflow: hidden;
-}
-.card-spot .visual::after {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15), transparent 60%);
-}
-.card-spot .visual .bank-name {
-  font-family: 'Fraunces', serif; font-weight: 600; font-size: 16px;
-  color: rgba(255,255,255,0.95); letter-spacing: -0.2px;
-  position: relative; z-index: 1;
-}
-.card-spot h3 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: 18px; letter-spacing: -0.3px;
-  color: var(--ink); line-height: 1.25; margin-bottom: 12px;
-}
-.card-spot .bonus {
-  background: var(--paper); border: 1px solid var(--line);
-  border-radius: 5px; padding: 10px 12px; margin-bottom: 14px;
-}
-.card-spot .bonus .num {
-  font-family: 'Fraunces', serif; font-weight: 600;
-  font-size: 22px; color: var(--ink);
-  letter-spacing: -0.5px; line-height: 1;
-}
-.card-spot .bonus .lbl {
-  font-size: 11px; color: var(--muted); margin-top: 4px;
-}
-.card-spot .req {
-  font-size: 12px; color: var(--ink-soft); flex: 1; margin-bottom: 14px;
-  line-height: 1.5;
-}
-.card-spot .apply {
-  text-align: center; padding: 12px;
-  background: var(--ink); color: white;
-  border-radius: 5px;
-  font-size: 13px; font-weight: 600;
-  min-height: 44px;
-  display: flex; align-items: center; justify-content: center;
-}
-.card-spot .apply:hover { background: var(--brand); }
-
-/* ── 6. RECENT POSTS feed ───────────────────────────────────────── */
-.feed {
-  display: grid; grid-template-columns: 1fr; gap: 0;
-}
-.feed-item {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 4px;
-  padding-block: 18px;
-  border-bottom: 1px solid var(--line);
-}
-@media (min-width: 768px) {
-  .feed-item {
-    grid-template-columns: 110px 1fr auto;
-    gap: 24px; align-items: center;
-    padding-block: 22px;
+  .hp-section-meta {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ink-soft);
+    white-space: nowrap;
   }
-}
-.feed-item:hover h3 { color: var(--brand); }
-.feed-item .cat {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--red);
-}
-.feed-item h3 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: 17px; line-height: 1.3; color: var(--ink);
-  letter-spacing: -0.2px; text-wrap: balance;
-}
-.feed-item .date {
-  font-size: 12px; color: var(--muted);
-}
+  a.hp-section-meta:hover { color: var(--brand); }
 
-/* ── 7. EVERGREEN guides ─────────────────────────────────────────── */
-.evergreen-grid {
-  display: grid; grid-template-columns: 1fr; gap: 14px;
-}
-@media (min-width: 640px) { .evergreen-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1024px) { .evergreen-grid { grid-template-columns: repeat(4, 1fr); } }
-
-.evergreen-card {
-  background: var(--paper); border: 1px solid var(--line);
-  border-radius: 6px; padding: 18px;
-  display: flex; flex-direction: column; gap: 8px;
-  min-height: 130px;
-  transition: border-color 0.15s;
-}
-.evergreen-card:hover { border-color: var(--brand); }
-.evergreen-card .num {
-  font-family: 'Fraunces', serif; font-weight: 500; font-size: 26px;
-  color: var(--brand); letter-spacing: -0.6px; line-height: 1;
-}
-.evergreen-card h4 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: 16px; letter-spacing: -0.2px; color: var(--ink);
-  line-height: 1.3; flex: 1;
-}
-.evergreen-card .date {
-  font-size: 11px; color: var(--muted);
-}
-
-/* ── 8. NEWSLETTER ─────────────────────────────────────────────── */
-.newsletter {
-  background: var(--paper);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 28px 20px;
-  display: grid; grid-template-columns: 1fr; gap: 20px;
-}
-@media (min-width: 768px) {
-  .newsletter {
-    grid-template-columns: 1fr 1fr;
-    gap: 40px; align-items: center;
-    padding: 40px;
+  /* ── 1. Masthead-dateline section ───────────────────────────────────── */
+  .hp-masthead-section {
+    border-bottom: 1px solid var(--line);
+    padding-block: 20px 36px;
   }
-}
-.newsletter h2 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: clamp(22px, 4vw, 28px);
-  letter-spacing: -0.5px; color: var(--ink);
-  margin-bottom: 8px; text-wrap: balance;
-}
-.newsletter h2 em { font-style: italic; color: var(--brand); font-weight: 500; }
-.newsletter p { font-size: 14px; color: var(--ink-soft); line-height: 1.55; }
-.nl-form { display: flex; flex-direction: column; gap: 10px; }
-.nl-form .row { display: flex; gap: 8px; flex-direction: column; }
-@media (min-width: 480px) { .nl-form .row { flex-direction: row; } }
-.nl-form input {
-  flex: 1; padding: 14px 16px;
-  border: 1px solid var(--line); border-radius: 5px;
-  font-size: 16px; /* prevent iOS zoom */
-  font-family: inherit; background: var(--bg);
-  outline: none; min-height: 44px;
-  transition: border-color 0.15s;
-}
-.nl-form input:focus { border-color: var(--brand); }
-.nl-form button {
-  padding: 14px 20px;
-  background: var(--ink); color: white;
-  border: none; border-radius: 5px;
-  font-size: 14px; font-weight: 600;
-  font-family: inherit; cursor: pointer;
-  min-height: 44px;
-  transition: background 0.15s;
-}
-.nl-form button:hover { background: var(--brand); }
-.nl-form .meta { font-size: 11px; color: var(--muted); }
-.nl-form .wa-cta {
-  display: inline-flex; align-items: center; gap: 8px;
-  margin-top: 4px; padding: 10px 12px;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  font-size: 13px; font-weight: 600;
-  color: var(--ink);
-  background: transparent;
-  transition: border-color 0.15s, background 0.15s;
-  align-self: flex-start;
-}
-.nl-form .wa-cta:hover { border-color: #25d366; background: rgba(37, 211, 102, 0.06); }
-.nl-form .wa-cta svg { width: 16px; height: 16px; color: #25d366; flex-shrink: 0; }
+  @media (min-width: 1024px) {
+    .hp-masthead-section { padding-block: 24px 56px; }
+  }
+
+  .hp-masthead {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--ink);
+    padding-block: 0 14px;
+    margin-bottom: 28px;
+  }
+  .hp-eyebrow {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--ink);
+  }
+  .hp-dateline {
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.4px;
+    color: var(--ink-soft);
+  }
+  .hp-live-tag {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--red);
+  }
+  .hp-live-tag:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  .hp-hero h1 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(32px, 5.6vw, 56px);
+    line-height: 1.04; letter-spacing: -1.4px;
+    color: var(--ink); text-wrap: balance;
+    max-width: 18ch;
+  }
+  .hp-strap {
+    margin-top: 14px;
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.55; color: var(--ink-soft);
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+
+  .hp-index {
+    margin-top: 36px;
+    border-top: 1px solid var(--ink);
+    padding-top: 18px;
+  }
+  .hp-index-head {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .hp-index-list { display: grid; grid-template-columns: 1fr; }
+  .hp-index-item {
+    display: grid; grid-template-columns: 1fr; gap: 4px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 768px) {
+    .hp-index-item {
+      grid-template-columns: 130px 1fr 110px;
+      gap: 24px; align-items: baseline;
+      padding: 18px 0;
+    }
+  }
+  .hp-index-cat {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .hp-index-title {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(18px, 2.2vw, 22px);
+    line-height: 1.25; letter-spacing: -0.3px;
+    color: var(--ink); text-wrap: balance;
+  }
+  .hp-index-item:hover .hp-index-title {
+    text-decoration: underline;
+    text-decoration-color: var(--brand);
+    text-underline-offset: 4px;
+  }
+  .hp-index-meta {
+    font-size: 12px; color: var(--muted);
+    letter-spacing: 0.2px;
+  }
+  @media (min-width: 768px) { .hp-index-meta { text-align: right; } }
+
+  /* ── 2. Live module ──────────────────────────────────────────────────── */
+  .hp-live-section {
+    padding-block: 48px 56px;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+  }
+  @media (min-width: 1024px) {
+    .hp-live-section { padding-block: 64px 72px; }
+  }
+
+  .hp-live-grid {
+    display: grid; gap: 28px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .hp-live-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+  }
+
+  .hp-col-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 8px;
+  }
+  .hp-col-head h3 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 18px; letter-spacing: -0.3px; color: var(--ink);
+  }
+  .hp-col-more {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .hp-col-more:hover { color: var(--brand); }
+
+  .hp-empty {
+    font-size: 13px; color: var(--muted);
+    padding: 14px 0;
+  }
+
+  .hp-live-list { list-style: none; padding: 0; margin: 0; }
+  .hp-live-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .hp-live-row:last-child { border-bottom: none; }
+  @media (min-width: 480px) {
+    .hp-live-row {
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: baseline;
+    }
+  }
+  .hp-live-row-main { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .hp-live-row-name {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 16px; letter-spacing: -0.2px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .hp-live-row-main:hover .hp-live-row-name { text-decoration: underline; text-underline-offset: 3px; }
+  .hp-live-row-meta {
+    font-size: 12px; color: var(--ink-soft); line-height: 1.4;
+  }
+  .hp-live-row-amount { text-align: left; }
+  @media (min-width: 480px) { .hp-live-row-amount { text-align: right; white-space: nowrap; } }
+  .hp-live-row-amount .num {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: 22px; letter-spacing: -0.5px; color: var(--ink);
+  }
+  .hp-expiry {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--red);
+  }
+
+  /* ── 3. Latest analysis feed ─────────────────────────────────────────── */
+  .hp-feed-section {
+    padding-block: 48px 56px;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 1024px) {
+    .hp-feed-section { padding-block: 64px 72px; }
+  }
+
+  .hp-feed-list { list-style: none; padding: 0; margin: 0; }
+  .hp-feed-row { border-bottom: 1px solid var(--line); }
+  .hp-feed-row:last-child { border-bottom: none; }
+  .hp-feed-link {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 18px 0;
+  }
+  @media (min-width: 768px) {
+    .hp-feed-link {
+      grid-template-columns: 130px minmax(0, 1fr) 110px;
+      gap: 24px; align-items: baseline;
+      padding: 20px 0;
+    }
+  }
+  .hp-feed-cat {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .hp-feed-title {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: clamp(17px, 2vw, 20px);
+    line-height: 1.3; letter-spacing: -0.3px;
+    color: var(--ink); text-wrap: balance;
+  }
+  .hp-feed-link:hover .hp-feed-title {
+    text-decoration: underline;
+    text-decoration-color: var(--brand);
+    text-underline-offset: 4px;
+  }
+  .hp-feed-detail {
+    font-size: 13px; color: var(--ink-soft); line-height: 1.5;
+    grid-column: 1;
+  }
+  @media (min-width: 768px) { .hp-feed-detail { grid-column: 2; } }
+  .hp-feed-date {
+    font-size: 12px; color: var(--muted);
+    letter-spacing: 0.2px;
+    grid-column: 1;
+  }
+  @media (min-width: 768px) {
+    .hp-feed-date { grid-column: 3; text-align: right; }
+  }
+
+  /* ── 4. Newsletter ───────────────────────────────────────────────────── */
+  .hp-newsletter-section { padding-block: 48px 72px; }
+  @media (min-width: 1024px) {
+    .hp-newsletter-section { padding-block: 64px 96px; }
+  }
+  .hp-newsletter {
+    display: grid; gap: 24px;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--ink);
+    padding: 24px;
+    background: var(--paper);
+  }
+  @media (min-width: 768px) {
+    .hp-newsletter {
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 36px;
+      padding: 36px 40px;
+      align-items: center;
+    }
+  }
+  .hp-news-eyebrow {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 10px;
+  }
+  .hp-news-copy h2 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(22px, 3vw, 28px);
+    line-height: 1.15; letter-spacing: -0.6px;
+    color: var(--ink); text-wrap: balance;
+  }
+  .hp-news-strap {
+    margin-top: 12px;
+    font-size: 14px; line-height: 1.55;
+    color: var(--ink-soft); max-width: 50ch;
+  }
+  .hp-news-actions {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .hp-news-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 12px 18px; min-height: 44px;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    text-align: center;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .hp-news-btn-primary {
+    background: var(--ink); color: white;
+    border: 1px solid var(--ink);
+  }
+  .hp-news-btn-primary:hover { background: var(--brand); border-color: var(--brand); }
+  .hp-news-btn-ghost {
+    background: var(--paper); color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .hp-news-btn-ghost:hover { color: var(--brand); border-color: var(--brand); }
 </style>
-
-<!-- ── 1. HERO + TODAY'S BEST DEALS ─────────────────────────────────── -->
-<section class="section hero">
-  <div class="wrap">
-    <div class="eyebrow">UAE rewards · banking · travel — decoded</div>
-    <h1>Make every <em>dirham</em> work harder.</h1>
-    <p class="sub">Independent UAE-resident-led analysis of credit cards, salary-transfer bonuses, miles redemptions, and lifestyle deals — every figure in AED, every card checked against UAE eligibility rules.</p>
-
-    <div class="deals-rail-wrap">
-      <div class="deals-rail-head">
-        <span class="label">Today's best deals</span>
-        <a class="more" href="/deals/">All deals →</a>
-      </div>
-
-      <div class="deals-rail" role="list">
-        {liveDeals.length === 0 && (
-          <div class="deal-card" role="listitem">
-            <div class="meta"><span class="cat">Coming soon</span></div>
-            <h3>New deals are verified daily — check back tomorrow morning.</h3>
-            <div class="verified">Last verified: {fmtDate(new Date())}</div>
-          </div>
-        )}
-        {liveDeals.map((d) => (
-          <a href={`/deals/${d.id}/`} class="deal-card" role="listitem">
-            <div class="meta">
-              <span class="cat">{d.data.category.replace("-", " ")}</span>
-              <span class="dot">·</span>
-              <span class="expiry">Ends {fmtDate(d.data.expiresOn)}</span>
-            </div>
-            <h3>{d.data.title}</h3>
-            <div class="verified">Last verified: {fmtDate(new Date())}</div>
-          </a>
-        ))}
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── 2. LATEST POST ─────────────────────────────────────────────── -->
-{latestGuide && (
-  <section class="section section-band">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>Latest analysis</h2>
-        <a class="more" href="/guides/">All guides →</a>
-      </div>
-      <a href={`/guides/${latestGuide.id}/`} class="latest-feature">
-        <div class="latest-feature-img">
-          <span class="pin">Editor's Pick</span>
-        </div>
-        <div>
-          <div class="kicker">Guide · UAE</div>
-          <h2>{latestGuide.data.title}</h2>
-          <p class="lede">{latestGuide.data.description}</p>
-          <div class="byline">
-            <span class="name">DubaiPoints Editorial</span>
-            <span class="sep">·</span>
-            <span>{fmtDate(latestGuide.data.publishedAt)}</span>
-            <span class="sep">·</span>
-            <span class="verified-badge">Verified {fmtDate(latestGuide.data.updatedAt)}</span>
-          </div>
-        </div>
-      </a>
-    </div>
-  </section>
-)}
-
-<!-- ── 3. NEW TO THE UAE? ─────────────────────────────────────────── -->
-<section class="expat-band">
-  <div class="wrap">
-    <div>
-      <div class="eyebrow">New to the UAE?</div>
-      <h2>Start with the Expat Starter Guide.</h2>
-      <p>Choosing your first card, opening a UAE bank account, salary transfer mechanics, and the points-and-miles basics — written for newcomers, no fluff.</p>
-    </div>
-    <a href="/guides/expat-starter/" class="cta">Open the guide →</a>
-  </div>
-</section>
-
-
-<!-- ── 4. CARD SPOTLIGHTS ─────────────────────────────────────────── -->
-{cardSpotlights.length > 0 && (
-  <section class="section section-band">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>Top UAE card offers this month</h2>
-        <a class="more" href="/cards/">Compare all →</a>
-      </div>
-      <div class="cards-grid">
-        {cardSpotlights.map((c, i) => (
-          <a href={`/cards/${c.slug}/`} class="card-spot">
-            <div class="super">
-              {i === 0 ? "Best welcome bonus" : c.categories[0] ? `Best for ${c.categories[0]}` : "Featured"}
-            </div>
-            <div class="visual">
-              <span class="bank-name">{c.name}</span>
-            </div>
-            <h3>{c.name}</h3>
-            <div class="bonus">
-              <div class="num">{welcomeBonusDisplay(c.welcomeBonus)}</div>
-              <div class="lbl">Welcome offer</div>
-            </div>
-            <div class="req">
-              Min salary AED {c.eligibility.minSalary.toLocaleString()}
-              {c.eligibility.salaryTransferRequired && " · Salary transfer required"}
-            </div>
-            <span class="apply">View card →</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-)}
-
-<!-- ── 5. RECENT POSTS ────────────────────────────────────────────── -->
-<section class="section">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>This week on DubaiPoints</h2>
-      <a class="more" href="/guides/">All posts →</a>
-    </div>
-    <div class="feed">
-      {recentPosts.map((p) => (
-        <a href={p.href} class="feed-item">
-          <span class="cat">{p.category}</span>
-          <h3>{p.title}</h3>
-          <span class="date">{fmtDate(p.date)}</span>
-        </a>
-      ))}
-    </div>
-  </div>
-</section>
-
-<!-- ── 6. EVERGREEN guides ────────────────────────────────────────── -->
-{evergreenGuides.length > 0 && (
-  <section class="section section-band">
-    <div class="wrap">
-      <div class="section-head">
-        <h2>Most-read guides</h2>
-        <a class="more" href="/guides/">All guides →</a>
-      </div>
-      <div class="evergreen-grid">
-        {evergreenGuides.map((g, i) => (
-          <a href={`/guides/${g.id}/`} class="evergreen-card">
-            <div class="num">{String(i + 1).padStart(2, "0")}</div>
-            <h4>{g.data.title}</h4>
-            <span class="date">Updated {fmtDate(g.data.updatedAt)}</span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-)}
-
-<!-- ── 7. NEWSLETTER (email or WhatsApp) ──────────────────────────── -->
-<section class="section">
-  <div class="wrap">
-    <div class="newsletter" id="newsletter">
-      <div>
-        <h2>UAE deals, delivered weekly.</h2>
-        <p>Salary bonuses, points hacks, and the best card offers — sent every Friday. Pick the channel that fits how you actually read.</p>
-      </div>
-      <form class="nl-form" onsubmit="return false;">
-        <div class="row">
-          <input type="email" placeholder="your@email.com" inputmode="email" autocomplete="email" />
-          <button type="submit">Subscribe by email</button>
-        </div>
-        <a href="https://wa.me/971500000000?text=Subscribe" class="wa-cta" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.7-.8-2.7-1.4-3.7-3.2-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4 0 1.4 1 2.8 1.2 3 .1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.2-.3-.2-.6-.4zM12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.7 1.5 5.3L2 22l4.8-1.5c1.5.8 3.3 1.3 5.2 1.3 5.5 0 10-4.5 10-10S17.5 2 12 2z"></path>
-          </svg>
-          <span>or get it on WhatsApp →</span>
-        </a>
-        <span class="meta">Free · One message a week · Unsubscribe anytime</span>
-      </form>
-    </div>
-  </div>
-</section>
-
-</BaseLayout>
