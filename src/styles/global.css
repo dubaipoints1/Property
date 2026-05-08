@@ -580,3 +580,250 @@ img { display: block; max-width: 100%; }
   color: var(--brand-deep);
 }
 .dp-dir-pill.is-feature:hover { background: var(--brand); color: white; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   TPG-adapted components (locked 2026-05-08-bis).
+   Brief: .council/research/2026-05/tpg-redesign-brief.md
+                                        §"Locked component additions".
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* ── Section bands — five-tone background rotation ──────────────────────── */
+.dp-band-navy {
+  background: var(--navy);
+  color: white;
+}
+.dp-band-navy a { color: white; }
+.dp-band-navy h1, .dp-band-navy h2, .dp-band-navy h3 { color: white; }
+.dp-band-navy .dp-article-eyebrow { color: white; }       /* eyebrow on navy is white-on-navy */
+.dp-band-navy .dp-article-eyebrow.is-green { color: var(--green); }
+
+.dp-band-green {
+  background: var(--green-band);
+  color: white;
+}
+.dp-band-green a { color: white; }
+.dp-band-green h1, .dp-band-green h2, .dp-band-green h3 { color: white; }
+.dp-band-green .dp-article-eyebrow { color: white; }
+
+.dp-band-cool {
+  background: var(--cool);
+  color: var(--ink);
+}
+
+/* ── .dp-feature-card — TPG Featured story pattern ─────────────────────── */
+.dp-feature-card {
+  background: var(--navy);
+  color: white;
+  border-radius: 12px;
+  padding: 28px 24px 32px;
+  display: flex; flex-direction: column;
+  gap: 20px;
+  position: relative; overflow: hidden;
+  text-decoration: none;
+}
+@media (min-width: 768px) {
+  .dp-feature-card { padding: 40px 36px 44px; gap: 28px; }
+}
+
+/* Circular masked image (or placeholder shape) at the top.
+   Renders as a div if no image is supplied. */
+.dp-feature-card .feat-mask {
+  width: clamp(180px, 38vw, 320px); aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  margin: 0 auto;
+  background: linear-gradient(140deg, #1a3a60 0%, var(--navy) 70%);
+  position: relative; overflow: hidden;
+  flex-shrink: 0;
+}
+.dp-feature-card .feat-mask img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.dp-feature-card .feat-mask::after {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    140deg,
+    transparent 0px, transparent 10px,
+    rgba(255,255,255,0.04) 10px, rgba(255,255,255,0.04) 11px
+  );
+  pointer-events: none;
+}
+
+.dp-feature-card .feat-body { display: flex; flex-direction: column; gap: 14px; }
+.dp-feature-card .feat-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--green);
+}
+.dp-feature-card .feat-title {
+  font-family: 'Fraunces', serif; font-weight: 700;
+  font-size: clamp(22px, 3.6vw, 30px);
+  line-height: 1.18; letter-spacing: -0.6px;
+  color: white; text-wrap: balance;
+}
+.dp-feature-card .feat-meta {
+  font-size: 13px; color: rgba(255,255,255,0.72);
+  letter-spacing: 0.3px;
+}
+.dp-feature-card .feat-arrow {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: white; color: var(--navy);
+  align-self: flex-start;
+  margin-top: 4px;
+  font-size: 16px;
+  transition: transform 0.18s;
+}
+.dp-feature-card:hover .feat-arrow { transform: translateX(4px); }
+
+/* ── .dp-tabs — green-underline tabs (TPG content-feed pattern) ────────── */
+.dp-tabs {
+  display: flex; gap: 28px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.dp-tabs::-webkit-scrollbar { display: none; }
+.dp-tab {
+  padding: 12px 0;
+  font-size: 14px; font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.dp-tab:hover { color: var(--ink); }
+.dp-tab.is-active {
+  color: var(--green);
+  border-bottom-color: var(--green);
+}
+
+/* ── .dp-filter-pills — outlined ovals (used on navy or white) ──────────── */
+.dp-filter-pills {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-top: 8px;
+}
+.dp-filter-pill {
+  display: inline-flex; align-items: center;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--ink);
+  background: transparent;
+  transition: background 0.15s, color 0.15s;
+}
+.dp-filter-pill:hover {
+  background: var(--ink); color: white;
+}
+.dp-band-navy .dp-filter-pill { color: white; }
+.dp-band-navy .dp-filter-pill:hover { background: white; color: var(--navy); }
+
+/* ── .dp-card-tile — directory tile with placeholder card art ───────────── */
+.dp-card-tile {
+  display: flex; flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.dp-card-tile:hover { border-color: var(--ink); }
+/* Placeholder card art — 1.586:1 aspect ratio (ID-1) */
+.dp-card-tile .art {
+  aspect-ratio: 1.586 / 1;
+  background: linear-gradient(135deg, var(--navy) 0%, #1a3a60 100%);
+  position: relative;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 16px 18px;
+  color: white;
+}
+.dp-card-tile .art::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0px, transparent 22px,
+    rgba(255,255,255,0.03) 22px, rgba(255,255,255,0.03) 23px
+  );
+  pointer-events: none;
+}
+.dp-card-tile .art .art-bank {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: rgba(255,255,255,0.85);
+  position: relative;
+}
+.dp-card-tile .art .art-name {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: 15px;
+  line-height: 1.2; letter-spacing: -0.2px;
+  position: relative;
+}
+.dp-card-tile .art .art-network {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  position: relative;
+}
+
+.dp-card-tile .body {
+  padding: 16px 18px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.dp-card-tile .body .eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--green);
+}
+.dp-card-tile .body .title {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: 17px; line-height: 1.25; letter-spacing: -0.3px;
+  color: var(--ink); text-wrap: balance;
+}
+.dp-card-tile .body .specs {
+  display: flex; gap: 14px;
+  font-size: 12px; color: var(--ink-soft);
+  margin-top: 2px;
+}
+.dp-card-tile .body .specs strong { color: var(--ink); font-weight: 600; }
+.dp-card-tile .review-cta {
+  margin-top: 6px;
+  display: inline-flex; align-items: center;
+  gap: 8px;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--link);
+}
+.dp-card-tile:hover .review-cta { color: var(--link-deep); }
+
+/* ── .dp-valuation-row — heavy-number row (chunk 7) ─────────────────────── */
+.dp-valuation-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.dp-valuation-row:last-child { border-bottom: none; }
+.dp-valuation-row .icon {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+  color: var(--ink);
+}
+.dp-valuation-row .name {
+  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  font-size: 16px; color: var(--ink);
+}
+.dp-valuation-row .value {
+  font-family: 'Fraunces', serif; font-weight: 700;
+  font-size: clamp(28px, 4vw, 36px);
+  letter-spacing: -0.6px; color: var(--ink);
+  white-space: nowrap;
+}
