@@ -1,8 +1,15 @@
 ---
-// Homepage — Quiet Ledger 4-section spec.
-// .council/sessions/2026-05-08-revamp.md (chunk 1).
-// Replaces the prior 7-section, 427-line scoped-CSS implementation with
-// the .dp-* idiom + a small set of homepage-only layout primitives.
+// Homepage — TPG-adapted 5-section spec (locked 2026-05-08-bis).
+// Brief: .council/research/2026-05/tpg-redesign-brief.md.
+// Supersedes the Quiet Ledger 4-section build (PR #23).
+//
+// Sections:
+//   1. Typographic hero
+//   2. Feature card (navy band) — newest guide, .dp-feature-card pattern
+//   3. Latest analysis — .dp-tabs (The latest / Credit cards / Loyalty programs)
+//      → tabs are anchor links to dedicated pages, not JS state
+//   4. "Explore our favourite cards" (navy band) — filter pills + .dp-card-tile grid
+//   5. Newsletter (green band) + RSS pointer
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
@@ -13,17 +20,18 @@ const today = new Date();
 
 const fmtFull = (d: Date) =>
   d.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
+    day: "numeric", month: "long", year: "numeric",
   });
 const fmtShort = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+const fmtUS = (d: Date) =>
+  d.toLocaleDateString("en-US", {
+    month: "long", day: "2-digit", year: "numeric",
+  });
 
 // ── Source collections ───────────────────────────────────────────────────
 const allGuides = await getCollection("guides");
 const allDeals = await getCollection("deals");
-const allSalaryOffers = await getCollection("salaryTransferOffers");
 const cards = getAllCards();
 
 const liveDeals = allDeals
@@ -38,79 +46,53 @@ const cardSpotlights = cards
   .filter((c) => c.welcomeBonus)
   .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0));
 
-// ── Section 1 — typographic index (5 lead stories, no images) ───────────
-const indexStories = [
-  ...guidesSorted.slice(0, 2).map((g) => ({
-    cat: "Guide",
-    href: `/guides/${g.id}/`,
-    title: g.data.title,
-    meta: `Updated ${fmtShort(g.data.updatedAt)}`,
-  })),
-  ...liveDeals.slice(0, 2).map((d) => ({
-    cat: "Deal",
-    href: `/deals/${d.id}/`,
-    title: d.data.title,
-    meta: `Ends ${fmtShort(d.data.expiresOn)}`,
-  })),
-  ...cardSpotlights.slice(0, 1).map((c) => ({
-    cat: "Card review",
-    href: `/cards/${c.slug}/`,
-    title: c.name,
-    meta: `Verified ${fmtShort(c.lastVerified)}`,
-  })),
-].slice(0, 5);
+// ── Feature card — newest guide ─────────────────────────────────────────
+const featureGuide = guidesSorted[0];
 
-// ── Section 2 — Live: salary transfer + deals rail ──────────────────────
-const liveSalaryOffers = allSalaryOffers
-  .filter((o) => !o.data.archived && o.data.validUntil.getTime() >= todayMs)
-  .map((o) => {
-    const maxReward = Math.max(
-      ...o.data.salaryBands.map((b) => b.rewardAmount),
-    );
-    const minSalary = Math.min(
-      ...o.data.salaryBands.map((b) => b.minSalary),
-    );
-    return { entry: o, maxReward, minSalary };
-  })
-  .sort((a, b) => b.maxReward - a.maxReward)
-  .slice(0, 4);
-
-const railDeals = liveDeals.slice(0, 4);
-
-// ── Section 3 — Latest analysis (combined feed, reverse chronological) ──
+// ── Latest feed (8 items, mixed types, reverse-chronological) ───────────
 type FeedItem = {
-  href: string;
-  cat: string;
-  title: string;
-  date: Date;
-  detail: string;
+  href: string; cat: string; title: string; date: Date; detail: string;
 };
 const feed: FeedItem[] = [
   ...allGuides.map((g) => ({
     href: `/guides/${g.id}/`,
-    cat: "Guide",
+    cat: "Guides",
     title: g.data.title,
     date: g.data.updatedAt,
     detail: g.data.description,
   })),
   ...liveDeals.map((d) => ({
     href: `/deals/${d.id}/`,
-    cat: "Deal",
+    cat: "Deals",
     title: d.data.title,
     date: d.data.expiresOn,
-    detail: `Ends ${fmtShort(d.data.expiresOn)}`,
+    detail: `${d.data.category} · ends ${fmtShort(d.data.expiresOn)}`,
   })),
   ...cardSpotlights.slice(0, 6).map((c) => ({
     href: `/cards/${c.slug}/`,
-    cat: "Card review",
+    cat: "Reviews",
     title: c.name,
     date: c.lastVerified,
     detail: `${c.bank} · annual fee AED ${c.annualFee.toLocaleString()}`,
   })),
 ];
-const recentFeed = feed
+const latest = feed
   .sort((a, b) => b.date.getTime() - a.date.getTime())
   .slice(0, 8);
+
+// ── Favourite cards — top 8 by welcome-bonus value ──────────────────────
+const favouriteCards = cardSpotlights.slice(0, 8);
+
+// ── Filter pill destinations ────────────────────────────────────────────
+const filterPills = [
+  { label: "All cards",  href: "/cards/" },
+  { label: "Cashback",   href: "/cards/cashback/" },
+  { label: "Miles",      href: "/cards/miles/" },
+  { label: "Islamic",    href: "/cards/islamic/" },
+  { label: "Compare",    href: "/cards/compare/" },
+  { label: "Banks",      href: "/banks/" },
+  { label: "Airlines",   href: "/airlines/" },
+];
 ---
 
 <BaseLayout
@@ -120,149 +102,152 @@ const recentFeed = feed
 >
   <div class="hp-root">
 
-    <!-- ── 1. MASTHEAD-DATELINE + 5-STORY INDEX ──────────────────────── -->
-    <section class="hp-masthead-section">
+    <!-- ── 1. HERO — typographic, no images ──────────────────────────── -->
+    <section class="hp-hero-section">
       <div class="hp-wrap">
-
         <header class="hp-masthead">
-          <span class="hp-eyebrow">DubaiPoints</span>
-          <span class="hp-dateline">{fmtFull(today)} · Dubai</span>
-          <a href="/salary-transfer/" class="hp-live-tag">Live · salary transfer tracker</a>
+          <span class="hp-masthead-eyebrow">DubaiPoints</span>
+          <span class="hp-masthead-date">{fmtFull(today)} · Dubai</span>
+          <a href="/salary-transfer/" class="hp-masthead-live">Live · salary transfer tracker</a>
         </header>
 
-        <div class="hp-hero">
-          <h1>UAE rewards, banking, and travel — without the marketing.</h1>
-          <p class="hp-strap">
-            Independent UAE-resident-led analysis of credit cards, salary-transfer
-            bonuses, miles redemptions, and lifestyle deals — every figure in AED,
-            every card checked against UAE eligibility rules.
+        <h1 class="hp-hero-h1">UAE rewards rewarded.</h1>
+        <p class="hp-hero-strap">
+          Independent UAE-resident-led analysis of credit cards, salary-transfer
+          bonuses, miles redemptions, and lifestyle deals — every figure in AED,
+          every card checked against UAE eligibility rules.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── 2. FEATURE CARD — navy band ───────────────────────────────── -->
+    {featureGuide && (
+      <section class="hp-feature-section">
+        <div class="hp-wrap">
+          <div class="hp-section-eyebrow-row">
+            <span class="hp-section-eyebrow">Editor's read</span>
+            <a href="/guides/" class="hp-section-more">All guides →</a>
+          </div>
+
+          <a href={`/guides/${featureGuide.id}/`} class="dp-feature-card">
+            <div class="feat-mask" aria-hidden="true"></div>
+            <div class="feat-body">
+              <span class="feat-eyebrow">Guides</span>
+              <h2 class="feat-title">{featureGuide.data.title}</h2>
+              <p class="feat-meta">
+                {fmtUS(featureGuide.data.updatedAt)}
+                <span class="hp-bullet"> · </span>
+                Updated {fmtShort(featureGuide.data.updatedAt)}
+              </p>
+            </div>
+            <span class="feat-arrow" aria-hidden="true">→</span>
+          </a>
+        </div>
+      </section>
+    )}
+
+    <!-- ── 3. LATEST ANALYSIS — tabs + feed ───────────────────────────── -->
+    <section class="hp-latest-section">
+      <div class="hp-wrap">
+        <div class="hp-latest-head">
+          <h2>Navigate with more news, reviews + guides</h2>
+          <p class="hp-latest-strap">
+            Independent analysis from Dubai. Every figure in AED, every claim sourced.
           </p>
         </div>
 
-        <div class="hp-index">
-          <div class="hp-index-head">In today's brief</div>
-          <div class="hp-index-list">
-            {indexStories.map((s) => (
-              <a href={s.href} class="hp-index-item">
-                <span class="hp-index-cat">{s.cat}</span>
-                <span class="hp-index-title">{s.title}</span>
-                <span class="hp-index-meta">{s.meta}</span>
-              </a>
-            ))}
-          </div>
-        </div>
+        <nav class="dp-tabs" aria-label="Filter by content type">
+          <a href="#latest" class="dp-tab is-active">The latest</a>
+          <a href="/cards/" class="dp-tab">Credit cards</a>
+          <a href="/airlines/" class="dp-tab">Loyalty programs</a>
+        </nav>
 
-      </div>
-    </section>
-
-    <!-- ── 2. LIVE: SALARY TRANSFER + DEALS RAIL ─────────────────────── -->
-    <section class="hp-live-section">
-      <div class="hp-wrap">
-        <div class="hp-section-head">
-          <h2>Live this week</h2>
-          <span class="hp-section-meta">Updated {fmtFull(today)}</span>
-        </div>
-
-        <div class="hp-live-grid">
-
-          <div class="hp-live-col">
-            <div class="hp-col-head">
-              <h3>Salary transfer offers</h3>
-              <a href="/salary-transfer/" class="hp-col-more">All offers →</a>
-            </div>
-            {liveSalaryOffers.length === 0 ? (
-              <p class="hp-empty">No live offers tracked. Check the tracker page.</p>
-            ) : (
-              <ul class="hp-live-list">
-                {liveSalaryOffers.map(({ entry, maxReward, minSalary }) => (
-                  <li class="hp-live-row">
-                    <a href={`/salary-transfer/${entry.id}/`} class="hp-live-row-main">
-                      <span class="hp-live-row-name">{entry.data.name}</span>
-                      <span class="hp-live-row-meta">
-                        Min salary AED {minSalary.toLocaleString()} · ends {fmtShort(entry.data.validUntil)}
-                      </span>
-                    </a>
-                    <span class="hp-live-row-amount">
-                      <span class="num">AED {maxReward.toLocaleString()}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          <div class="hp-live-col">
-            <div class="hp-col-head">
-              <h3>Deals expiring soon</h3>
-              <a href="/deals/" class="hp-col-more">All deals →</a>
-            </div>
-            {railDeals.length === 0 ? (
-              <p class="hp-empty">No live deals right now.</p>
-            ) : (
-              <ul class="hp-live-list">
-                {railDeals.map((d) => (
-                  <li class="hp-live-row">
-                    <a href={`/deals/${d.id}/`} class="hp-live-row-main">
-                      <span class="hp-live-row-name">{d.data.title}</span>
-                      <span class="hp-live-row-meta">{d.data.category}</span>
-                    </a>
-                    <span class="hp-live-row-amount">
-                      <span class="hp-expiry">Ends {fmtShort(d.data.expiresOn)}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- ── 3. LATEST ANALYSIS (single-column feed) ───────────────────── -->
-    <section class="hp-feed-section">
-      <div class="hp-wrap">
-        <div class="hp-section-head">
-          <h2>Latest analysis</h2>
-          <a href="/guides/" class="hp-section-meta">All guides →</a>
-        </div>
-
-        <ul class="hp-feed-list">
-          {recentFeed.map((f) => (
-            <li class="hp-feed-row">
-              <a href={f.href} class="hp-feed-link">
-                <span class="hp-feed-cat">{f.cat}</span>
-                <span class="hp-feed-title">{f.title}</span>
-                <span class="hp-feed-detail">{f.detail}</span>
-                <span class="hp-feed-date">{fmtShort(f.date)}</span>
+        <ul class="hp-latest-list" id="latest">
+          {latest.map((f) => (
+            <li class="hp-latest-row">
+              <a href={f.href} class="hp-latest-link">
+                <span class="hp-latest-cat">{f.cat}</span>
+                <span class="hp-latest-title">{f.title}</span>
+                <span class="hp-latest-detail">{f.detail}</span>
+                <span class="hp-latest-date">{fmtShort(f.date)}</span>
               </a>
             </li>
           ))}
         </ul>
+
+        <div class="hp-latest-foot">
+          <a href="/guides/" class="hp-find-more">Find more stories →</a>
+        </div>
       </div>
     </section>
 
-    <!-- ── 4. NEWSLETTER + RSS-BY-BAND ───────────────────────────────── -->
-    <section class="hp-newsletter-section">
+    <!-- ── 4. EXPLORE OUR FAVOURITE CARDS — navy band ────────────────── -->
+    <section class="hp-cards-section dp-band-navy">
+      <div class="hp-wrap">
+        <div class="hp-cards-head">
+          <h2>Explore our favourite cards</h2>
+          <p class="hp-cards-strap">
+            Reviewed against UAE eligibility, not US norms. Every card checked
+            against the issuer's published Schedule of Charges.
+          </p>
+        </div>
+
+        <div class="dp-filter-pills hp-cards-pills">
+          {filterPills.map((p) => (
+            <a href={p.href} class="dp-filter-pill">{p.label}</a>
+          ))}
+        </div>
+
+        <div class="hp-cards-grid">
+          {favouriteCards.map((c) => (
+            <a href={`/cards/${c.slug}/`} class="dp-card-tile">
+              <div class="art">
+                <span class="art-bank">{c.bank}</span>
+                <span class="art-name">{c.name}</span>
+                <span class="art-network">{c.network}</span>
+              </div>
+              <div class="body">
+                <span class="eyebrow">Review</span>
+                <span class="title">{c.name}</span>
+                <div class="specs">
+                  <span><strong>AED {c.annualFee.toLocaleString()}</strong> / yr</span>
+                  <span><strong>AED {(c.eligibility?.minSalary ?? 0).toLocaleString()}</strong> / mo min</span>
+                </div>
+                <span class="review-cta">Read review →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div class="hp-cards-foot">
+          <a href="/cards/" class="hp-find-more is-on-navy">See all reviewed cards →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 5. NEWSLETTER — emerald band ──────────────────────────────── -->
+    <section class="hp-newsletter-section dp-band-green">
       <div class="hp-wrap">
         <div class="hp-newsletter">
-          <div class="hp-news-copy">
-            <p class="hp-news-eyebrow">Subscribe</p>
-            <h2>The Friday brief, in your inbox.</h2>
-            <p class="hp-news-strap">
-              One email each Friday with the week's salary-transfer changes, new
-              card offers, and lifestyle deals. AED-first, no fluff. Or follow
-              the per-band RSS feeds and get only what matches your salary.
-            </p>
-          </div>
+          <p class="hp-news-eyebrow">The DubaiPoints brief</p>
+          <h2>Friday morning, in your inbox.</h2>
+          <p class="hp-news-strap">
+            One email each Friday with the week's salary-transfer changes, new
+            card offers, and lifestyle deals worth knowing about. AED-first, no
+            fluff. Per-band RSS feeds available too.
+          </p>
           <div class="hp-news-actions">
             <a href="/newsletter/" class="hp-news-btn hp-news-btn-primary">
-              Subscribe to the brief
+              Subscribe
             </a>
             <a href="/rss.xml" class="hp-news-btn hp-news-btn-ghost">
-              RSS feeds (by salary band)
+              RSS feeds
             </a>
           </div>
+          <p class="hp-news-microcopy">
+            We never sell email addresses or browsing data.
+            <a href="/editorial-policy/">Editorial policy</a>.
+          </p>
         </div>
       </div>
     </section>
@@ -272,55 +257,57 @@ const recentFeed = feed
 
 <style>
   /* ════════════════════════════════════════════════════════════════════
-     Homepage — Quiet Ledger.
-     Tokens come from src/styles/global.css (--ink, --ink-soft, --line,
-     --paper, --bg, --brand, --red). No new colour tokens, no Tailwind
-     utilities. Mobile-first; breakpoints at 768 (tablet) and 1024 (desktop).
+     Homepage — TPG-adapted (Chunk 2 of the revamp).
+     Tokens come from src/styles/global.css. Components defined globally:
+     .dp-feature-card, .dp-tabs, .dp-filter-pills, .dp-card-tile,
+     .dp-band-navy, .dp-band-green. This file holds homepage-specific
+     layout glue only.
      ════════════════════════════════════════════════════════════════════ */
-
-  .hp-root {
-    background: var(--paper);
-    color: var(--ink);
-    font-feature-settings: "tnum" 1, "lnum" 1;
-  }
+  .hp-root { background: var(--paper); color: var(--ink); }
 
   .hp-wrap {
-    width: 100%;
-    max-width: 1180px;
+    width: 100%; max-width: 1180px;
     margin: 0 auto;
     padding-inline: 16px;
   }
   @media (min-width: 768px)  { .hp-wrap { padding-inline: 24px; } }
   @media (min-width: 1024px) { .hp-wrap { padding-inline: 32px; } }
 
-  /* Section heads — shared across live, feed, newsletter. */
-  .hp-section-head {
+  /* ── Section eyebrow row (used above feature card) ──────────────────── */
+  .hp-section-eyebrow-row {
     display: flex; align-items: baseline; justify-content: space-between;
     gap: 16px;
-    border-bottom: 1px solid var(--ink);
-    padding-bottom: 12px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
-  .hp-section-head h2 {
-    font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: clamp(22px, 3.4vw, 30px);
-    letter-spacing: -0.6px; color: var(--ink);
-  }
-  .hp-section-meta {
+  .hp-section-eyebrow {
     font-size: 11px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--ink-soft);
-    white-space: nowrap;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
   }
-  a.hp-section-meta:hover { color: var(--brand); }
+  .hp-section-more {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .hp-section-more:hover { color: var(--link); }
 
-  /* ── 1. Masthead-dateline section ───────────────────────────────────── */
-  .hp-masthead-section {
+  .hp-find-more {
+    display: inline-flex; align-items: center;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--link);
+  }
+  .hp-find-more:hover { color: var(--link-deep); }
+  .hp-find-more.is-on-navy { color: white; }
+  .hp-find-more.is-on-navy:hover { color: rgba(255,255,255,0.85); }
+
+  /* ── Section 1: Hero — typographic ───────────────────────────────────── */
+  .hp-hero-section {
+    padding-block: 24px 56px;
     border-bottom: 1px solid var(--line);
-    padding-block: 20px 36px;
   }
   @media (min-width: 1024px) {
-    .hp-masthead-section { padding-block: 24px 56px; }
+    .hp-hero-section { padding-block: 32px 88px; }
   }
 
   .hp-masthead {
@@ -328,277 +315,201 @@ const recentFeed = feed
     gap: 16px; flex-wrap: wrap;
     border-bottom: 1px solid var(--ink);
     padding-block: 0 14px;
-    margin-bottom: 28px;
+    margin-bottom: 36px;
   }
-  .hp-eyebrow {
+  .hp-masthead-eyebrow {
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--ink);
   }
-  .hp-dateline {
+  .hp-masthead-date {
     font-size: 11px; font-weight: 500;
     letter-spacing: 0.4px;
     color: var(--ink-soft);
   }
-  .hp-live-tag {
+  .hp-masthead-live {
     font-size: 11px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--red);
   }
-  .hp-live-tag:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .hp-masthead-live:hover { text-decoration: underline; text-underline-offset: 3px; }
 
-  .hp-hero h1 {
-    font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: clamp(32px, 5.6vw, 56px);
-    line-height: 1.04; letter-spacing: -1.4px;
+  .hp-hero-h1 {
+    font-family: 'Fraunces', serif; font-weight: 700;
+    font-size: clamp(40px, 8.4vw, 96px);
+    line-height: 0.96; letter-spacing: -2.4px;
     color: var(--ink); text-wrap: balance;
-    max-width: 18ch;
+    max-width: 11ch;
   }
-  .hp-strap {
-    margin-top: 14px;
+  .hp-hero-strap {
+    margin-top: 20px;
     font-size: clamp(15px, 1.6vw, 17px);
     line-height: 1.55; color: var(--ink-soft);
     max-width: 60ch;
     text-wrap: pretty;
   }
 
-  .hp-index {
-    margin-top: 36px;
-    border-top: 1px solid var(--ink);
-    padding-top: 18px;
-  }
-  .hp-index-head {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
-    color: var(--ink);
-    margin-bottom: 14px;
-  }
-  .hp-index-list { display: grid; grid-template-columns: 1fr; }
-  .hp-index-item {
-    display: grid; grid-template-columns: 1fr; gap: 4px;
-    padding: 16px 0;
+  /* ── Section 2: Feature card ─────────────────────────────────────────── */
+  .hp-feature-section {
+    padding-block: 40px 56px;
     border-bottom: 1px solid var(--line);
   }
-  @media (min-width: 768px) {
-    .hp-index-item {
-      grid-template-columns: 130px 1fr 110px;
-      gap: 24px; align-items: baseline;
-      padding: 18px 0;
-    }
+  @media (min-width: 1024px) {
+    .hp-feature-section { padding-block: 56px 80px; }
   }
-  .hp-index-cat {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--ink-soft);
+  .hp-bullet { color: rgba(255,255,255,0.4); }
+
+  /* ── Section 3: Latest analysis ──────────────────────────────────────── */
+  .hp-latest-section {
+    padding-block: 48px 56px;
+    border-bottom: 1px solid var(--line);
   }
-  .hp-index-title {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: clamp(18px, 2.2vw, 22px);
-    line-height: 1.25; letter-spacing: -0.3px;
+  @media (min-width: 1024px) {
+    .hp-latest-section { padding-block: 72px 80px; }
+  }
+  .hp-latest-head { margin-bottom: 28px; max-width: 740px; }
+  .hp-latest-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 700;
+    font-size: clamp(28px, 5vw, 44px);
+    line-height: 1.08; letter-spacing: -1.2px;
     color: var(--ink); text-wrap: balance;
   }
-  .hp-index-item:hover .hp-index-title {
-    text-decoration: underline;
-    text-decoration-color: var(--brand);
-    text-underline-offset: 4px;
-  }
-  .hp-index-meta {
-    font-size: 12px; color: var(--muted);
-    letter-spacing: 0.2px;
-  }
-  @media (min-width: 768px) { .hp-index-meta { text-align: right; } }
-
-  /* ── 2. Live module ──────────────────────────────────────────────────── */
-  .hp-live-section {
-    padding-block: 48px 56px;
-    border-bottom: 1px solid var(--line);
-    background: var(--bg);
-  }
-  @media (min-width: 1024px) {
-    .hp-live-section { padding-block: 64px 72px; }
-  }
-
-  .hp-live-grid {
-    display: grid; gap: 28px;
-    grid-template-columns: 1fr;
-  }
-  @media (min-width: 768px) {
-    .hp-live-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
-  }
-
-  .hp-col-head {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 12px;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 10px;
-    margin-bottom: 8px;
-  }
-  .hp-col-head h3 {
-    font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: 18px; letter-spacing: -0.3px; color: var(--ink);
-  }
-  .hp-col-more {
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
+  .hp-latest-strap {
+    margin-top: 12px;
+    font-size: 16px; line-height: 1.55;
     color: var(--ink-soft);
-  }
-  .hp-col-more:hover { color: var(--brand); }
-
-  .hp-empty {
-    font-size: 13px; color: var(--muted);
-    padding: 14px 0;
+    max-width: 56ch;
   }
 
-  .hp-live-list { list-style: none; padding: 0; margin: 0; }
-  .hp-live-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 4px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .hp-live-row:last-child { border-bottom: none; }
-  @media (min-width: 480px) {
-    .hp-live-row {
-      grid-template-columns: 1fr auto;
-      gap: 16px;
-      align-items: baseline;
-    }
-  }
-  .hp-live-row-main { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-  .hp-live-row-name {
-    font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: 16px; letter-spacing: -0.2px;
-    color: var(--ink);
-    line-height: 1.3;
-  }
-  .hp-live-row-main:hover .hp-live-row-name { text-decoration: underline; text-underline-offset: 3px; }
-  .hp-live-row-meta {
-    font-size: 12px; color: var(--ink-soft); line-height: 1.4;
-  }
-  .hp-live-row-amount { text-align: left; }
-  @media (min-width: 480px) { .hp-live-row-amount { text-align: right; white-space: nowrap; } }
-  .hp-live-row-amount .num {
-    font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: 22px; letter-spacing: -0.5px; color: var(--ink);
-  }
-  .hp-expiry {
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--red);
-  }
-
-  /* ── 3. Latest analysis feed ─────────────────────────────────────────── */
-  .hp-feed-section {
-    padding-block: 48px 56px;
-    border-bottom: 1px solid var(--line);
-  }
-  @media (min-width: 1024px) {
-    .hp-feed-section { padding-block: 64px 72px; }
-  }
-
-  .hp-feed-list { list-style: none; padding: 0; margin: 0; }
-  .hp-feed-row { border-bottom: 1px solid var(--line); }
-  .hp-feed-row:last-child { border-bottom: none; }
-  .hp-feed-link {
+  .hp-latest-list { list-style: none; padding: 0; margin: 0; }
+  .hp-latest-row { border-bottom: 1px solid var(--line); }
+  .hp-latest-row:last-child { border-bottom: none; }
+  .hp-latest-link {
     display: grid;
     grid-template-columns: 1fr;
     gap: 4px;
     padding: 18px 0;
   }
   @media (min-width: 768px) {
-    .hp-feed-link {
-      grid-template-columns: 130px minmax(0, 1fr) 110px;
+    .hp-latest-link {
+      grid-template-columns: 130px minmax(0, 1fr) 100px;
       gap: 24px; align-items: baseline;
       padding: 20px 0;
     }
   }
-  .hp-feed-cat {
+  .hp-latest-cat {
     font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
-    color: var(--ink-soft);
+    color: var(--green);
   }
-  .hp-feed-title {
-    font-family: 'Fraunces', serif; font-weight: 500;
+  .hp-latest-title {
+    font-family: 'Fraunces', serif; font-weight: 600;
     font-size: clamp(17px, 2vw, 20px);
     line-height: 1.3; letter-spacing: -0.3px;
     color: var(--ink); text-wrap: balance;
   }
-  .hp-feed-link:hover .hp-feed-title {
+  .hp-latest-link:hover .hp-latest-title {
     text-decoration: underline;
-    text-decoration-color: var(--brand);
+    text-decoration-color: var(--link);
     text-underline-offset: 4px;
   }
-  .hp-feed-detail {
+  .hp-latest-detail {
     font-size: 13px; color: var(--ink-soft); line-height: 1.5;
     grid-column: 1;
   }
-  @media (min-width: 768px) { .hp-feed-detail { grid-column: 2; } }
-  .hp-feed-date {
+  @media (min-width: 768px) { .hp-latest-detail { grid-column: 2; } }
+  .hp-latest-date {
     font-size: 12px; color: var(--muted);
-    letter-spacing: 0.2px;
     grid-column: 1;
   }
   @media (min-width: 768px) {
-    .hp-feed-date { grid-column: 3; text-align: right; }
+    .hp-latest-date { grid-column: 3; text-align: right; }
   }
 
-  /* ── 4. Newsletter ───────────────────────────────────────────────────── */
-  .hp-newsletter-section { padding-block: 48px 72px; }
+  .hp-latest-foot { margin-top: 28px; text-align: center; }
+
+  /* ── Section 4: Favourite cards (navy band) ──────────────────────────── */
+  .hp-cards-section {
+    padding-block: 56px 64px;
+  }
   @media (min-width: 1024px) {
-    .hp-newsletter-section { padding-block: 64px 96px; }
+    .hp-cards-section { padding-block: 88px 96px; }
   }
-  .hp-newsletter {
-    display: grid; gap: 24px;
+  .hp-cards-head { margin-bottom: 28px; max-width: 740px; }
+  .hp-cards-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 700;
+    font-size: clamp(28px, 5vw, 44px);
+    line-height: 1.08; letter-spacing: -1.2px;
+    text-wrap: balance;
+  }
+  .hp-cards-strap {
+    margin-top: 12px;
+    font-size: 16px; line-height: 1.55;
+    color: rgba(255,255,255,0.78);
+    max-width: 56ch;
+  }
+  .hp-cards-pills { margin-bottom: 32px; }
+  .hp-cards-grid {
+    display: grid; gap: 16px;
     grid-template-columns: 1fr;
-    border: 1px solid var(--ink);
-    padding: 24px;
-    background: var(--paper);
   }
-  @media (min-width: 768px) {
-    .hp-newsletter {
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-      gap: 36px;
-      padding: 36px 40px;
-      align-items: center;
-    }
+  @media (min-width: 640px)  { .hp-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .hp-cards-grid { grid-template-columns: repeat(4, 1fr); } }
+  .hp-cards-foot { margin-top: 36px; text-align: center; }
+
+  /* ── Section 5: Newsletter (green band) ──────────────────────────────── */
+  .hp-newsletter-section {
+    padding-block: 56px 72px;
   }
+  @media (min-width: 1024px) {
+    .hp-newsletter-section { padding-block: 88px 104px; }
+  }
+  .hp-newsletter { max-width: 720px; margin: 0 auto; text-align: left; }
   .hp-news-eyebrow {
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
-    color: var(--red);
-    margin-bottom: 10px;
+    color: white;
+    margin-bottom: 14px;
   }
-  .hp-news-copy h2 {
-    font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: clamp(22px, 3vw, 28px);
-    line-height: 1.15; letter-spacing: -0.6px;
-    color: var(--ink); text-wrap: balance;
+  .hp-newsletter h2 {
+    font-family: 'Fraunces', serif; font-weight: 700;
+    font-size: clamp(28px, 5vw, 44px);
+    line-height: 1.06; letter-spacing: -1.2px;
+    text-wrap: balance;
   }
   .hp-news-strap {
-    margin-top: 12px;
-    font-size: 14px; line-height: 1.55;
-    color: var(--ink-soft); max-width: 50ch;
+    margin-top: 16px;
+    font-size: 16px; line-height: 1.55;
+    color: rgba(255,255,255,0.88);
+    max-width: 56ch;
   }
   .hp-news-actions {
-    display: flex; flex-direction: column; gap: 10px;
+    margin-top: 22px;
+    display: flex; flex-wrap: wrap; gap: 12px;
   }
   .hp-news-btn {
     display: inline-flex; align-items: center; justify-content: center;
-    padding: 12px 18px; min-height: 44px;
+    padding: 12px 22px; min-height: 44px;
+    border-radius: 999px;
     font-size: 13px; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
+    letter-spacing: 1px;
     text-align: center;
     transition: background 0.12s, color 0.12s, border-color 0.12s;
   }
   .hp-news-btn-primary {
-    background: var(--ink); color: white;
-    border: 1px solid var(--ink);
+    background: white; color: var(--green-band);
+    border: 1px solid white;
   }
-  .hp-news-btn-primary:hover { background: var(--brand); border-color: var(--brand); }
+  .hp-news-btn-primary:hover { background: rgba(255,255,255,0.9); }
   .hp-news-btn-ghost {
-    background: var(--paper); color: var(--ink);
-    border: 1px solid var(--ink);
+    background: transparent; color: white;
+    border: 1px solid rgba(255,255,255,0.6);
   }
-  .hp-news-btn-ghost:hover { color: var(--brand); border-color: var(--brand); }
+  .hp-news-btn-ghost:hover { border-color: white; }
+  .hp-news-microcopy {
+    margin-top: 20px;
+    font-size: 12px; color: rgba(255,255,255,0.65);
+    line-height: 1.5;
+  }
+  .hp-news-microcopy a { text-decoration: underline; text-underline-offset: 3px; }
 </style>
