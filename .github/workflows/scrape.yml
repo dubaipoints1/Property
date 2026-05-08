@@ -1,8 +1,15 @@
-# Weekly card-data refresh — "always on" since 2026-05-08.
+# Monthly card-data refresh — "always on" since 2026-05-08.
 #
-# Runs every Sunday 23:00 UTC, on workflow_dispatch (with optional single-
-# bank override), and on any direct edit to this file, scraper code, or a
-# per-bank URL config (path-scoped push trigger).
+# Runs on the 1st of every month at 23:00 UTC, on workflow_dispatch (with
+# optional single-bank override), and on any direct edit to this file,
+# scraper code, or a per-bank URL config (path-scoped push trigger).
+#
+# Cadence rationale: UAE banks update KFS / Schedule of Charges quarterly
+# typically; welcome offers shift seasonally (DSF, Ramadan, summer).
+# Monthly is the lowest cadence that catches seasonal change windows
+# without burning Firecrawl credits on weekly no-ops. Use the
+# `workflow_dispatch` button (Actions tab → scrape → Run workflow) for
+# any "I just saw a change, push it now" run between scheduled runs.
 #
 # Iterates the bank registry at scripts/scrape/banks.registry.json. New
 # banks are added by appending to that JSON; this workflow file does not
@@ -15,7 +22,9 @@ name: scrape
 
 on:
   schedule:
-    - cron: "0 23 * * 0"
+    # 1st of every month at 23:00 UTC. Switch to "0 23 1,15 * *" for
+    # fortnightly (1st and 15th); switch to "0 23 * * 0" for weekly.
+    - cron: "0 23 1 * *"
   workflow_dispatch:
     inputs:
       bank:
