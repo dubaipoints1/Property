@@ -1236,7 +1236,7 @@
         "salaried"
       ]
     },
-    "lastVerified": "2026-05-07",
+    "lastVerified": "2026-05-08",
     "earnRates": {
       "dining": 5,
       "shopping": 5,
@@ -1286,7 +1286,7 @@
       "applyUrl": "scraped",
       "perks": "scraped"
     },
-    "_lastScraped": "2026-05-07",
+    "_lastScraped": "2026-05-08",
     "_lastReviewed": null,
     "_scraped_freetext": {
       "perks": [
@@ -1296,14 +1296,18 @@
         "Benefit from a first year fee waiver.",
         "There is a minimum spend criteria of  3,000 in the previous month to be eligible to earn FAB Rewards.",
         "To learn more about select categories and all other spending, please read the below Terms & Conditions PDF.",
-        "Cashback will be processed in equivalent FAB Rewards, redeemable instantly on the FAB Mobile app.",
-        "![icon.node-minus.alt](https://www.bankfab.com/-/jssmedia/Project/FAB2/Fab2/data/media/svgs/icons/node-minus.svg)"
+        "Cashback will be processed in equivalent FAB Rewards, redeemable instantly on the FAB Mobile app."
       ]
     },
     "_features": []
   },
   "fab-elite": {
-    "welcomeBonus": "Up to 500,000 FAB Rewards on all your spending You can earn up to 500,000 FAB Rewards on all your spending",
+    "welcomeBonus": {
+      "amount": 500000,
+      "unit": "fab_rewards",
+      "spend_threshold_aed": null,
+      "qualify_window_days": null
+    },
     "kfsUrl": "https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf",
     "earnUnit": "FAB Rewards per AED 1 spent",
     "eligibility": {
@@ -1314,7 +1318,7 @@
         "salaried"
       ]
     },
-    "lastVerified": "2026-05-07",
+    "lastVerified": "2026-05-08",
     "earnRates": {
       "everythingElse": 1
     },
@@ -1365,7 +1369,7 @@
       "applyUrl": "scraped",
       "perks": "scraped"
     },
-    "_lastScraped": "2026-05-07",
+    "_lastScraped": "2026-05-08",
     "_lastReviewed": null,
     "_scraped_freetext": {
       "welcomeBonus": {
@@ -1379,7 +1383,6 @@
         "Half-board (breakfast and dinner) at the resort",
         "A memorable experience for 2 adults and 2 children under 12",
         "An elegant, Deluxe Room for added comfort",
-        "![icon.node-minus.alt](https://www.bankfab.com/-/jssmedia/Project/FAB2/Fab2/data/media/svgs/icons/node-minus.svg)",
         "Bonus FAB Rewards for spending at eco-friendly merchants",
         "Tree planting programme linked to everyday spending",
         "Engaging eco prizes with seasonal gamification features on the FAB Mobile App"
@@ -1398,7 +1401,7 @@
         "salaried"
       ]
     },
-    "lastVerified": "2026-05-07",
+    "lastVerified": "2026-05-08",
     "earnRates": {
       "travel": 2,
       "international": 10,
@@ -1443,12 +1446,11 @@
       "applyUrl": "scraped",
       "perks": "scraped"
     },
-    "_lastScraped": "2026-05-07",
+    "_lastScraped": "2026-05-08",
     "_lastReviewed": null,
     "_scraped_freetext": {
       "perks": [
-        "[العربية\\\\",
-        "![icon.node-minus.alt](https://www.bankfab.com/-/jssmedia/Project/FAB2/Fab2/data/media/svgs/icons/node-minus.svg)"
+        "[العربية\\\\"
       ]
     },
     "_features": []
@@ -1464,7 +1466,7 @@
         "salaried"
       ]
     },
-    "lastVerified": "2026-05-07",
+    "lastVerified": "2026-05-08",
     "earnRates": {
       "international": 10,
       "everythingElse": 1
@@ -1512,7 +1514,7 @@
       "applyUrl": "scraped",
       "perks": "scraped"
     },
-    "_lastScraped": "2026-05-07",
+    "_lastScraped": "2026-05-08",
     "_lastReviewed": null,
     "_scraped_freetext": {
       "perks": [
@@ -1520,8 +1522,7 @@
         "24/7 concierge service",
         "Worldwide airport lounge access for you and a guest",
         "Travel insurance coverage of up to USD 500,000",
-        "If you make only the minimum repayment/payment each period, you will pay more in interest/profit/fees and it will take you longer to pay off your outstanding balance.",
-        "![icon.node-minus.alt](https://www.bankfab.com/-/jssmedia/Project/FAB2/Fab2/data/media/svgs/icons/node-minus.svg)"
+        "If you make only the minimum repayment/payment each period, you will pay more in interest/profit/fees and it will take you longer to pay off your outstanding balance."
       ]
     },
     "_features": []
