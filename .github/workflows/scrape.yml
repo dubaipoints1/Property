@@ -137,24 +137,68 @@ jobs:
           # Audit-05: scraper writes to src/data/cards.json (the L2 data
           # layer), not to MDX content collection files. Detect changes
           # there.
+          LOG=LATEST_RUN.log
           if [ -z "$(git status --porcelain src/data/cards.json)" ]; then
-            echo "[scrape] No cards.json changes; skipping PR."
+            echo "[scrape] No cards.json changes; skipping PR." | tee -a "$LOG"
+            # Still re-commit LATEST_RUN.log so the no-PR conclusion is visible
+            # on main without waiting for the next run.
+            git config user.name "dubaipoints-bot"
+            git config user.email "info@dubaipoints.ae"
+            git add -f "$LOG" 2>/dev/null || true
+            git diff --cached --quiet || { git commit -m "diag(scrape): no cards.json change"; git push origin main || true; }
             exit 0
           fi
           BRANCH="scrape/weekly-$(date +%Y-%m-%d-%H%M%S)"
           git checkout -b "$BRANCH"
           git add -A src/data/cards.json
           git commit -m "scrape: weekly card refresh ($(date +%Y-%m-%d))"
-          git push -u origin "$BRANCH"
-          # Audit-07: dropped --label flag because the labels "scrape" and
-          # "needs-review" don't exist in this repo and gh pr create errors
-          # out on missing labels. PRs still open cleanly without them; if
-          # we want labels later, create them once via the GitHub UI and
-          # reintroduce --label.
-          gh pr create \
+          if ! git push -u origin "$BRANCH" 2>&1 | tee -a "$LOG"; then
+            echo "[scrape] FAIL: branch push rejected. Likely cause: contents:write permission missing." | tee -a "$LOG"
+            exit 1
+          fi
+          # Audit-07: dropped --label flag (labels not configured in repo).
+          # Audit-09 (2026-05-08): wrap gh pr create in error capture so the
+          # exact failure message lands in LATEST_RUN.log instead of being
+          # buried in the runner's job log. Most common cause: the repo
+          # setting "Allow GitHub Actions to create and approve pull
+          # requests" (Settings → Actions → General → Workflow permissions)
+          # is unticked. That setting is a hard cap that workflow YAML
+          # cannot override.
+          set +e
+          PR_OUT=$(gh pr create \
             --base main \
             --head "$BRANCH" \
-            --title "scrape: weekly card refresh ($(date +%Y-%m-%d))" \
-            --body-file PR_BODY.md
+            --title "scrape: card refresh ($(date +%Y-%m-%d))" \
+            --body-file PR_BODY.md 2>&1)
+          PR_RC=$?
+          set -e
+          echo "$PR_OUT" | tee -a "$LOG"
+          echo "[scrape] gh pr create exit=$PR_RC" | tee -a "$LOG"
+          if [ "$PR_RC" -ne 0 ]; then
+            {
+              echo ""
+              echo "=== ACTION REQUIRED ==="
+              echo "PR creation failed for branch $BRANCH."
+              echo ""
+              echo "If the error above mentions \"GitHub Actions is not"
+              echo "permitted to create or approve pull requests\":"
+              echo ""
+              echo "  1. https://github.com/${GITHUB_REPOSITORY}/settings/actions"
+              echo "  2. Workflow permissions → tick \"Allow GitHub Actions"
+              echo "     to create and approve pull requests\""
+              echo "  3. Save"
+              echo ""
+              echo "The branch is pushed and ready; once the setting is"
+              echo "fixed, open the PR manually from the branches tab or"
+              echo "re-run this workflow to produce a fresh one."
+              echo "=== END ACTION REQUIRED ==="
+            } | tee -a "$LOG"
+            # Re-commit LATEST_RUN.log to main so the user sees the error
+            # without digging through the Actions UI.
+            git checkout main
+            git add -f "$LOG"
+            git diff --cached --quiet || { git commit -m "diag(scrape): PR creation failed — see LATEST_RUN.log"; git push origin main || true; }
+            exit 1
+          fi
         env:
           GH_TOKEN: ${{ github.token }}
