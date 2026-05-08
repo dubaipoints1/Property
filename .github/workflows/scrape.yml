@@ -1,18 +1,37 @@
-# Weekly card-data refresh.
+# Monthly card-data refresh — "always on" since 2026-05-08.
 #
-# Runs every Sunday 23:00 UTC, on workflow_dispatch, and on any direct
-# edit to this file, scraper code, or a per-bank URL config (path-scoped
-# push trigger).
+# Runs on the 1st of every month at 23:00 UTC, on workflow_dispatch (with
+# optional single-bank override), and on any direct edit to this file,
+# scraper code, or a per-bank URL config (path-scoped push trigger).
 #
-# Always commits a run log to LATEST_RUN.log (repo root) so we can
-# inspect failures from outside the runner.
+# Cadence rationale: UAE banks update KFS / Schedule of Charges quarterly
+# typically; welcome offers shift seasonally (DSF, Ramadan, summer).
+# Monthly is the lowest cadence that catches seasonal change windows
+# without burning Firecrawl credits on weekly no-ops. Use the
+# `workflow_dispatch` button (Actions tab → scrape → Run workflow) for
+# any "I just saw a change, push it now" run between scheduled runs.
+#
+# Iterates the bank registry at scripts/scrape/banks.registry.json. New
+# banks are added by appending to that JSON; this workflow file does not
+# need to be edited.
+#
+# Always commits a run log to LATEST_RUN.log (repo root) so failures are
+# inspectable from outside the runner.
 
 name: scrape
 
 on:
   schedule:
-    - cron: "0 23 * * 0"
+    # 1st of every month at 23:00 UTC. Switch to "0 23 1,15 * *" for
+    # fortnightly (1st and 15th); switch to "0 23 * * 0" for weekly.
+    - cron: "0 23 1 * *"
   workflow_dispatch:
+    inputs:
+      bank:
+        description: "Bank slug to scrape (or 'all' for the full registry)"
+        required: false
+        default: "all"
+        type: string
   push:
     branches:
       - main
@@ -20,6 +39,7 @@ on:
       - .github/workflows/scrape.yml
       - scripts/scrape/**.ts
       - scripts/scrape/banks/*.urls.json
+      - scripts/scrape/banks.registry.json
 
 jobs:
   refresh:
@@ -38,6 +58,21 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+
+      - name: Resolve banks to scrape
+        id: banks
+        run: |
+          # Honour the workflow_dispatch input when present; otherwise scrape every
+          # bank in the registry. The cron and push triggers always pass through
+          # the empty default and scrape all.
+          INPUT="${{ github.event.inputs.bank }}"
+          if [ -z "$INPUT" ] || [ "$INPUT" = "all" ]; then
+            BANKS=$(node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync("scripts/scrape/banks.registry.json","utf8")).banks.join(" "))')
+          else
+            BANKS="$INPUT"
+          fi
+          echo "banks=$BANKS" >> "$GITHUB_OUTPUT"
+          echo "Scraping: $BANKS"
 
       - name: Run scrape with full logging
         id: scrape
@@ -59,16 +94,26 @@ jobs:
           echo "[install] exit=$INSTALL_RC" | tee -a "$LOG"
           if [ "$INSTALL_RC" -ne 0 ]; then echo "FAIL: install" | tee -a "$LOG"; exit 0; fi
 
-          echo "=== npm run scrape:fab ===" | tee -a "$LOG"
-          npm run scrape:fab 2>&1 | tee -a "$LOG"
-          echo "" | tee -a "$LOG"
+          BANKS="${{ steps.banks.outputs.banks }}"
+          for BANK in $BANKS; do
+            echo "=== npm run scrape:$BANK ===" | tee -a "$LOG"
+            npm run "scrape:$BANK" 2>&1 | tee -a "$LOG"
+            BANK_RC=${PIPESTATUS[0]}
+            echo "[$BANK] exit=$BANK_RC" | tee -a "$LOG"
+            echo "" | tee -a "$LOG"
+            # Continue on per-bank failure; one bank's outage must not abort
+            # the others. Errors get surfaced in LATEST_RUN.log and PR_BODY.md.
+          done
 
           echo "=== npm run scrape:propose ===" | tee -a "$LOG"
+          # propose-changes iterates every directory under data/scraped/, so
+          # it picks up every bank that wrote a snapshot in this run plus
+          # any bank that wrote in a prior run that hasn't been merged yet.
           npm run scrape:propose 2>&1 | tee -a "$LOG"
           echo "" | tee -a "$LOG"
 
-          echo "=== git status src/content/cards/ ===" | tee -a "$LOG"
-          git status --porcelain src/content/cards/ 2>&1 | tee -a "$LOG"
+          echo "=== git status src/data/cards.json ===" | tee -a "$LOG"
+          git status --porcelain src/data/cards.json 2>&1 | tee -a "$LOG"
           echo "" | tee -a "$LOG"
 
           if [ -f PR_BODY.md ]; then cp PR_BODY.md LATEST_SCRAPE.md; fi
@@ -92,24 +137,68 @@ jobs:
           # Audit-05: scraper writes to src/data/cards.json (the L2 data
           # layer), not to MDX content collection files. Detect changes
           # there.
+          LOG=LATEST_RUN.log
           if [ -z "$(git status --porcelain src/data/cards.json)" ]; then
-            echo "[scrape] No cards.json changes; skipping PR."
+            echo "[scrape] No cards.json changes; skipping PR." | tee -a "$LOG"
+            # Still re-commit LATEST_RUN.log so the no-PR conclusion is visible
+            # on main without waiting for the next run.
+            git config user.name "dubaipoints-bot"
+            git config user.email "info@dubaipoints.ae"
+            git add -f "$LOG" 2>/dev/null || true
+            git diff --cached --quiet || { git commit -m "diag(scrape): no cards.json change"; git push origin main || true; }
             exit 0
           fi
           BRANCH="scrape/weekly-$(date +%Y-%m-%d-%H%M%S)"
           git checkout -b "$BRANCH"
           git add -A src/data/cards.json
           git commit -m "scrape: weekly card refresh ($(date +%Y-%m-%d))"
-          git push -u origin "$BRANCH"
-          # Audit-07: dropped --label flag because the labels "scrape" and
-          # "needs-review" don't exist in this repo and gh pr create errors
-          # out on missing labels. PRs still open cleanly without them; if
-          # we want labels later, create them once via the GitHub UI and
-          # reintroduce --label.
-          gh pr create \
+          if ! git push -u origin "$BRANCH" 2>&1 | tee -a "$LOG"; then
+            echo "[scrape] FAIL: branch push rejected. Likely cause: contents:write permission missing." | tee -a "$LOG"
+            exit 1
+          fi
+          # Audit-07: dropped --label flag (labels not configured in repo).
+          # Audit-09 (2026-05-08): wrap gh pr create in error capture so the
+          # exact failure message lands in LATEST_RUN.log instead of being
+          # buried in the runner's job log. Most common cause: the repo
+          # setting "Allow GitHub Actions to create and approve pull
+          # requests" (Settings → Actions → General → Workflow permissions)
+          # is unticked. That setting is a hard cap that workflow YAML
+          # cannot override.
+          set +e
+          PR_OUT=$(gh pr create \
             --base main \
             --head "$BRANCH" \
-            --title "scrape: weekly card refresh ($(date +%Y-%m-%d))" \
-            --body-file PR_BODY.md
+            --title "scrape: card refresh ($(date +%Y-%m-%d))" \
+            --body-file PR_BODY.md 2>&1)
+          PR_RC=$?
+          set -e
+          echo "$PR_OUT" | tee -a "$LOG"
+          echo "[scrape] gh pr create exit=$PR_RC" | tee -a "$LOG"
+          if [ "$PR_RC" -ne 0 ]; then
+            {
+              echo ""
+              echo "=== ACTION REQUIRED ==="
+              echo "PR creation failed for branch $BRANCH."
+              echo ""
+              echo "If the error above mentions \"GitHub Actions is not"
+              echo "permitted to create or approve pull requests\":"
+              echo ""
+              echo "  1. https://github.com/${GITHUB_REPOSITORY}/settings/actions"
+              echo "  2. Workflow permissions → tick \"Allow GitHub Actions"
+              echo "     to create and approve pull requests\""
+              echo "  3. Save"
+              echo ""
+              echo "The branch is pushed and ready; once the setting is"
+              echo "fixed, open the PR manually from the branches tab or"
+              echo "re-run this workflow to produce a fresh one."
+              echo "=== END ACTION REQUIRED ==="
+            } | tee -a "$LOG"
+            # Re-commit LATEST_RUN.log to main so the user sees the error
+            # without digging through the Actions UI.
+            git checkout main
+            git add -f "$LOG"
+            git diff --cached --quiet || { git commit -m "diag(scrape): PR creation failed — see LATEST_RUN.log"; git push origin main || true; }
+            exit 1
+          fi
         env:
           GH_TOKEN: ${{ github.token }}
