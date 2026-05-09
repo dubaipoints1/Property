@@ -1,5 +1,11 @@
 ---
+// Salary-transfer calculator layout — Phase F1 (Claude Design handoff).
+// Mirrors the Phase C tools chrome (pagehead-narrow + stats strip +
+// methodology footer). The interactive tool itself is the Preact
+// island injected via `slot="calculator"`.
+
 import BaseLayout from "./BaseLayout.astro";
+import Disclaimer from "~/components/Disclaimer.astro";
 
 interface Props {
   title: string;
@@ -9,38 +15,66 @@ interface Props {
 const { title, description } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
-  <header class="border-b border-slate-200 pb-6">
-    <p class="text-xs uppercase tracking-wide text-brand-600">Calculator</p>
-    <h1 class="mt-1 text-3xl font-semibold text-slate-900 sm:text-4xl">
-      Personalised salary transfer ranking
-    </h1>
-    <p class="mt-2 max-w-2xl text-slate-700">
-      Enter your monthly salary, expected card spend and constraints. Every live
-      offer is scored in cash-equivalent AED — vouchers are discounted 20% to
-      reflect resale and utility loss.
+<BaseLayout title={title} description={description} fullWidth>
+  <header class="dp-pagehead is-narrow">
+    <div class="crumb">Tools / Salary transfer</div>
+    <h1>What's your salary transfer actually worth?</h1>
+    <p class="deck">
+      Enter monthly salary, expected card spend and constraints. Every live
+      UAE offer scored in cash-equivalent AED — vouchers discounted 20% for
+      resale and utility loss; points and miles at AED 0.04 per Skywards
+      baseline.
     </p>
+    <div class="dp-tools-stats">
+      <div><strong>Inputs</strong> <span class="lbl">salary · spend · tenure</span></div>
+      <div><strong>Currency</strong> <span class="lbl">AED-equivalent</span></div>
+      <div><strong>Voucher discount</strong> <span class="lbl">20%</span></div>
+      <div><strong>Refresh</strong> <span class="lbl">daily</span></div>
+    </div>
   </header>
 
-  <section class="mt-8">
+  <section class="dp-calc-shell">
     <slot name="calculator" />
   </section>
 
-  <section class="prose prose-slate mt-10 max-w-none text-sm">
-    <h2>How the score works</h2>
-    <ul>
-      <li><strong>Cash:</strong> face value, no discount.</li>
-      <li><strong>Voucher:</strong> face value × 0.80 (resale / utility loss).</li>
-      <li><strong>Monthly cashback:</strong> per-month value × tenure months.</li>
-      <li><strong>Points / miles:</strong> face value × AED 0.04 per point (conservative Skywards baseline).</li>
-    </ul>
-    <p>
-      Disqualifications surface above the score: required products you didn't
-      accept, salary outside the offer's bands, or hard filters (Sharia, cash-only).
-      Warnings — like clawback risk if you can't commit to the full tenure — keep
-      the offer in the ranking but flag it.
-    </p>
+  <section class="dp-tools-methodology">
+    <div class="col">
+      <div class="lbl">How the score works</div>
+      <p><strong>Cash bonus</strong> — face value, no discount. <strong>Voucher</strong> — face value × 0.80 (resale + utility loss). <strong>Monthly cashback</strong> — per-month value × tenure months. <strong>Points / miles</strong> — face value × AED 0.04 per Skywards baseline.</p>
+    </div>
+    <div class="col">
+      <div class="lbl">Disqualifications surface above</div>
+      <p>Required products you didn't accept (insurance, savings deposit). Salary outside the offer's bands. Hard filters — Sharia compliance, cash-only preference. Anything that makes the offer unavailable to you.</p>
+    </div>
+    <div class="col">
+      <div class="lbl">Warnings keep the offer in the list</div>
+      <p>Clawback risk if tenure is shorter than the offer's minimum. Salary at the edge of a band — confirm with the bank. A tax or fee that the bank doesn't always disclose up-front.</p>
+    </div>
   </section>
+
+  <section class="dp-tools-actions">
+    <a href="/salary-transfer/">Live tracker →</a>
+    <a href="/cards/compare/">Compare cards →</a>
+    <a href="/valuations/">AED valuations →</a>
+    <a href="/editorial-policy/">Methodology</a>
+  </section>
+
+  <div class="dp-calc-disclaimer">
+    <Disclaimer variant="general" />
+  </div>
 
   <slot />
 </BaseLayout>
+
+<style>
+  .dp-calc-shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+  .dp-calc-disclaimer {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 32px 64px;
+  }
+</style>
