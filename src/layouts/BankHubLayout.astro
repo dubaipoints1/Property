@@ -13,6 +13,12 @@ interface Props {
   description?: string;
   bankName: string;
   logo?: string;
+  /** Number of cards we cover from this issuer; renders as the headline metric. */
+  cardCount?: number;
+  /** Live salary-transfer top bonus in AED (or undefined when none). */
+  topBonusAed?: number;
+  /** Date this hub was last verified by the editorial team. */
+  lastVerified?: Date;
   customerService?: {
     phone?: string;
     email?: string;
@@ -20,7 +26,18 @@ interface Props {
   };
 }
 
-const { title, description, bankName, customerService } = Astro.props;
+const {
+  title,
+  description,
+  bankName,
+  cardCount,
+  topBonusAed,
+  lastVerified,
+  customerService,
+} = Astro.props;
+
+const fmtVerified = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
@@ -28,6 +45,30 @@ const { title, description, bankName, customerService } = Astro.props;
     <div class="crumb">UAE bank</div>
     <h1>{bankName}</h1>
     {description && <p class="deck">{description}</p>}
+
+    {(cardCount != null || topBonusAed != null || lastVerified) && (
+      <div class="dp-metric-strip">
+        {cardCount != null && (
+          <div class="metric">
+            <span class="v">{cardCount}</span>
+            <span class="l">Cards covered</span>
+          </div>
+        )}
+        {topBonusAed != null && (
+          <div class="metric is-live">
+            <span class="v">AED {topBonusAed.toLocaleString()}</span>
+            <span class="l">Top live bonus</span>
+            <span class="meta">Salary-transfer offer</span>
+          </div>
+        )}
+        {lastVerified && (
+          <div class="metric">
+            <span class="v">{fmtVerified(lastVerified)}</span>
+            <span class="l">Last verified</span>
+          </div>
+        )}
+      </div>
+    )}
   </header>
 
   <article class="dp-bank-body">

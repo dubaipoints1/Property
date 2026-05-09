@@ -14,12 +14,23 @@ const { bank } = Astro.props;
 const { Content } = await render(bank);
 const offers = await getOffersForBank(bank.id);
 const allCards = getCardsByBank(bank.id);
+
+const topBonusAed = offers.length === 0
+  ? undefined
+  : Math.max(...offers.flatMap((o) => o.salaryBands.map((b) => b.rewardAmount)));
+
+const latestVerified = allCards.length === 0
+  ? undefined
+  : new Date(Math.max(...allCards.map((c) => new Date(c.lastVerified).getTime())));
 ---
 
 <BankHubLayout
   title={`${bank.data.name} — hub`}
   description={`Everything we track for ${bank.data.name}: current salary transfer offer, cards, reward currencies and customer service.`}
   bankName={bank.data.name}
+  cardCount={allCards.length}
+  topBonusAed={topBonusAed}
+  lastVerified={latestVerified}
   customerService={bank.data.customerService}
 >
   <div slot="salary-transfer">

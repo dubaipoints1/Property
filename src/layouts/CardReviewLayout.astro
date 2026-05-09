@@ -103,10 +103,9 @@ const fmtScore = (s?: number) => {
       <div class="b">{network}</div>
     </div>
 
-    <div>
+    <div class="dp-cr-text">
       <div class="crumb">Cards / {category} / {bankName}</div>
       <h1>{title}</h1>
-      {description && <p class="strap">{description}</p>}
 
       {(score != null || verdictLabel) && (
         <div class="dp-verdict-pill">
@@ -124,6 +123,8 @@ const fmtScore = (s?: number) => {
           </div>
         </div>
       )}
+
+      {description && <p class="strap">{description}</p>}
     </div>
   </header>
 
