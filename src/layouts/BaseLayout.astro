@@ -7,15 +7,25 @@ interface Props {
   title: string;
   description?: string;
   fullWidth?: boolean;
+  /** Override the default OG image for a specific page (absolute or root path). */
+  ogImage?: string;
+  /** og:type — "website" (default) or "article" for editorial pages. */
+  ogType?: "website" | "article";
 }
 
 const {
   title,
   description = "UAE points and miles — credit card analysis, loyalty programs, and deals.",
   fullWidth = false,
+  ogImage,
+  ogType = "website",
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const siteName = "DubaiPoints";
+const ogImageUrl = ogImage
+  ? new URL(ogImage, Astro.site).toString()
+  : new URL("/og-default.svg", Astro.site).toString();
 ---
 
 <!doctype html>
@@ -26,6 +36,21 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
     <link rel="canonical" href={canonical} />
     <title>{title}</title>
     <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="en_AE" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Font loading: preconnect first, then non-blocking stylesheet.
          Weights pruned to in-use axes only (~9 files vs 14). -->
