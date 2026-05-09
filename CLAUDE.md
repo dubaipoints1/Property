@@ -255,10 +255,14 @@ code, not lint rules — match them when adding pages:
   **Do not** introduce Tailwind slate utilities in long-form pages
   or layouts. Colours come from CSS custom properties (`--ink`,
   `--brand`, `--gold`, ...), not Tailwind palette utilities.
-- **Two-accent system.** `--brand` (electric blue `#1e6bd6`) is the
-  primary; `--gold` (`#b8842a`) is the secondary trust-signal accent
-  (Verified chip, "Our take" callout, affiliate asterisk). Each
-  colour has a single job — don't mix them in one element.
+- **Two-accent system.** `--green` (`#2d6a52`, deep editorial green)
+  is the **primary brand accent** — eyebrows, links, "Our take"
+  label, hover, focus, hero kickers, success states. `--gold`
+  (`#b8842a`) is the secondary trust-signal accent — Verified chip,
+  affiliate asterisk, gold-callout boxes (e.g. salary-transfer offer
+  on bank hubs). Each colour has a single job — don't mix them in
+  one element. The legacy electric-blue `--brand` token survives
+  only as a fallback alias to `--link`; new code uses `--green`.
 - **Type.** Fraunces (serif) for headlines / eyebrows / "Our take"
   labels; DM Sans for body and UI.
 - **Long-form page skeleton.** `BaseLayout` with `fullWidth`, then
@@ -307,5 +311,28 @@ above remains in force until the Chairman approves a swap.
   `.gitignore`d.
 - Commit messages reference the relevant Council policy file when
   changing one.
+
+## Amendments
+
+### 2026-05-09 — Brand palette ratification (green canonical)
+
+The Council's joint UX + Standards audit (9 May 2026) flagged that
+the Charter named electric blue (`#1e6bd6`) as the primary brand
+accent while the live stylesheet had migrated to deep editorial
+green (`#2d6a52`) across the Claude Design handoff (Phases A–H).
+On Chairman direction "consistent across all site", the Charter is
+amended to ratify green as the primary brand accent. The site is
+not changing; the Charter catches up to the site.
+
+- `--green` (`#2d6a52`) is the canonical primary accent.
+- `--gold` (`#b8842a`) remains the secondary trust accent.
+- `--brand` legacy alias is preserved for backwards compatibility
+  but **not used in new code**.
+
+Reasoning: green ties to the deep-editorial / dirham-numerate tone
+the publication has settled into; restoring blue across 70+ pages
+would be a cosmetic rollback for no reader benefit.
+
+— Chairman, 9 May 2026.
 
 End.
