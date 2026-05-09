@@ -1,113 +1,158 @@
 ---
+// News index — section-index template (Phase B1 cascade).
+// Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
+// Replaces the empty-state implementation from PR #28 with the full pattern.
+
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
 const posts = (await getCollection("news"))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
-const fmtShort = (d: Date) =>
+const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+const featured = posts.slice(0, 7);
+const remaining = posts.slice(7);
+
+const filters = [
+  { label: "All", active: true },
+  { label: "News" },
+  { label: "Deal updates" },
+  { label: "Card launches" },
+  { label: "Programme changes" },
+  { label: "Regulation" },
+];
+
+const formatCategory = (c: string) =>
+  c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 ---
 
 <BaseLayout
-  title="News — DubaiPoints"
+  title="News — UAE points and rewards"
   description="UAE points-and-miles news: salary-transfer offer updates, card launches, programme changes, and regulatory shifts that affect UAE residents."
   fullWidth
 >
-  <article class="dp-article is-wide">
-    <header class="dp-article-head">
-      <p class="dp-article-eyebrow">News</p>
-      <h1 class="dp-article-title">UAE points and rewards news</h1>
-      <p class="dp-article-lede">
-        Salary-transfer changes, card launches, programme shifts, and the
-        regulatory updates that affect UAE residents — every figure in AED,
-        every claim sourced.
+  <div class="dp-pagehead">
+    <div class="crumb">DubaiPoints / News</div>
+    <h1>News</h1>
+    <p>Salary-transfer changes, card launches, programme shifts, and the regulatory updates that affect UAE residents — every figure in AED, every claim sourced.</p>
+  </div>
+
+  <div class="dp-filters">
+    {filters.map((f) => (
+      <span class={`dp-filter-pill${f.active ? " is-active" : ""}`}>{f.label}</span>
+    ))}
+    <span class="dp-sort">Sort: <strong>Newest</strong> ▾</span>
+  </div>
+
+  {posts.length === 0 ? (
+    <section class="dp-featured-band">
+      <div class="dp-featured-eyebrow">
+        <span>The newsroom is being assembled</span>
+        <span class="rule"></span>
+        <span class="meta">No posts yet</span>
+      </div>
+      <p style="padding: 32px; color: var(--ink-soft); font-size: 15px; line-height: 1.6;">
+        When stories land, they appear here in reverse-chronological order
+        and on the homepage feed. Follow the <a href="/rss.xml" style="color: var(--link); font-weight: 600;">site-wide
+        RSS feed</a> to get every post as it ships, or subscribe to
+        <a href="/newsletter/" style="color: var(--link); font-weight: 600;">the Friday brief</a> for the weekly recap.
       </p>
-    </header>
+      <p style="padding: 0 32px 32px; color: var(--ink-soft); font-size: 14px;">
+        Have a tip? <a href="mailto:info@dubaipoints.ae" style="color: var(--link); font-weight: 600;">Email us</a>.
+      </p>
+    </section>
+  ) : (
+    <>
+      {featured.length > 0 && (
+        <section class="dp-featured-band">
+          <div class="dp-featured-eyebrow">
+            <span>Latest news</span>
+            <span class="rule"></span>
+            <span class="meta">{posts.length} post{posts.length === 1 ? "" : "s"} filed</span>
+          </div>
+          <div class="dp-featured-grid">
+            {featured[0] && (
+              <a href={`/news/${featured[0].id}/`} class="dp-story-card hero">
+                <div class="cover">{formatCategory(featured[0].data.category)}</div>
+                <div class="body">
+                  <div class="meta">
+                    <span class="cat">{formatCategory(featured[0].data.category)}</span>
+                    <span>{fmt(featured[0].data.publishedAt)}</span>
+                  </div>
+                  <h3>{featured[0].data.title}</h3>
+                  <p>{featured[0].data.description}</p>
+                  <div class="by">By DubaiPoints Editorial</div>
+                </div>
+              </a>
+            )}
+            {[featured[1], featured[2]].filter(Boolean).map((p) => (
+              <a href={`/news/${p.id}/`} class="dp-story-card med">
+                <div class="cover">{formatCategory(p.data.category)}</div>
+                <div class="body">
+                  <div class="meta"><span class="cat">{formatCategory(p.data.category)}</span><span>{fmt(p.data.publishedAt)}</span></div>
+                  <h3>{p.data.title}</h3>
+                  <p>{p.data.description}</p>
+                </div>
+              </a>
+            ))}
+            {featured.slice(3, 7).map((p) => (
+              <a href={`/news/${p.id}/`} class="dp-story-card sm">
+                <div class="cover">{formatCategory(p.data.category)}</div>
+                <div class="body">
+                  <div class="meta"><span class="cat">{formatCategory(p.data.category)}</span><span>{fmt(p.data.publishedAt)}</span></div>
+                  <h3>{p.data.title}</h3>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
-    {posts.length === 0 ? (
-      <section class="dp-prose news-empty">
-        <p>
-          <strong>No news posts yet.</strong> The newsroom is being assembled.
-        </p>
-        <p>
-          When stories land, they appear here in reverse-chronological order
-          and on the homepage feed under the <em>Latest analysis</em> tab.
-          You can also follow the <a href="/rss.xml">site-wide RSS feed</a> to
-          get every post as it ships, or subscribe to <a href="/newsletter/">the
-          Friday brief</a> for the weekly recap.
-        </p>
-        <p>
-          Have a tip? <a href="mailto:info@dubaipoints.ae">Email us</a>.
-        </p>
-      </section>
-    ) : (
-      <section class="news-list">
-        {posts.map((post) => (
-          <a href={`/news/${post.id}/`} class="news-row">
-            <span class="news-cat">{post.data.category.replace(/-/g, " ")}</span>
-            <span class="news-title">{post.data.title}</span>
-            <span class="news-meta">
-              {fmtShort(post.data.publishedAt)}
-              {post.data.updatedAt && (
-                <> · updated {fmtShort(post.data.updatedAt)}</>
-              )}
-            </span>
-            <span class="news-desc">{post.data.description}</span>
-          </a>
-        ))}
-      </section>
-    )}
-  </article>
+      <div class="dp-pullquote">
+        <div class="mark">"</div>
+        <blockquote>
+          UAE-specific news, written for UAE residents — not US-norms parachuted into AED-language. Every regulatory citation traces to a primary source.
+        </blockquote>
+        <div class="attr"><span class="rule"></span>Editorial standard · est. 2026</div>
+      </div>
+
+      {remaining.length > 0 && (
+        <>
+          <div class="dp-list-head">
+            <div class="t">All news</div>
+            <div class="m">Sorted by date · {remaining.length} more below</div>
+          </div>
+          <div class="dp-feed">
+            {remaining.map((p, i) => {
+              const n = i + featured.length + 1;
+              return (
+                <a href={`/news/${p.id}/`} class="dp-feed-row">
+                  <div>
+                    <div class="num">{String(n).padStart(2, "0")}</div>
+                    <div class="feed-eyebrow">{formatCategory(p.data.category)}</div>
+                  </div>
+                  <div>
+                    <h3>{p.data.title}</h3>
+                    <div class="summary">{p.data.description}</div>
+                  </div>
+                  <div class="thumb">{formatCategory(p.data.category)}</div>
+                  <div class="when">{fmt(p.data.publishedAt)}</div>
+                </a>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </>
+  )}
+
+  <div class="dp-page-nav">
+    <span style="font-size:12px;color:var(--muted);">
+      {posts.length === 0
+        ? "Newsroom is being assembled"
+        : `Showing all ${posts.length} post${posts.length === 1 ? "" : "s"}`}
+    </span>
+  </div>
 </BaseLayout>
-
-<style>
-  .news-empty p {
-    margin-bottom: 14px;
-  }
-
-  .news-list {
-    display: flex; flex-direction: column;
-    border-top: 1px solid var(--ink);
-  }
-  .news-row {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 6px;
-    padding: 22px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  @media (min-width: 768px) {
-    .news-row {
-      grid-template-columns: 130px minmax(0, 1fr) 130px;
-      gap: 24px;
-      align-items: baseline;
-    }
-  }
-  .news-cat {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--green);
-  }
-  .news-title {
-    font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: clamp(18px, 2vw, 22px);
-    line-height: 1.3; letter-spacing: -0.3px;
-    color: var(--ink); text-wrap: balance;
-  }
-  .news-row:hover .news-title {
-    text-decoration: underline;
-    text-decoration-color: var(--link);
-    text-underline-offset: 4px;
-  }
-  .news-meta {
-    font-size: 12px; color: var(--muted);
-    letter-spacing: 0.2px;
-  }
-  @media (min-width: 768px) { .news-meta { text-align: right; } }
-  .news-desc {
-    font-size: 14px; color: var(--ink-soft); line-height: 1.55;
-    grid-column: 1;
-  }
-  @media (min-width: 768px) { .news-desc { grid-column: 2; } }
-</style>
