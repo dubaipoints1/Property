@@ -1,6 +1,6 @@
 ---
 import { getCollection, render } from "astro:content";
-import BaseLayout from "~/layouts/BaseLayout.astro";
+import ArticleLayout from "~/layouts/ArticleLayout.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("news");
@@ -11,53 +11,26 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
-const fmt = (d: Date) =>
-  d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+const toc = headings
+  .filter((h) => h.depth === 2)
+  .map((h) => ({ id: h.slug, label: h.text }));
 
-const showUpdated =
-  post.data.updatedAt &&
-  post.data.updatedAt.getTime() !== post.data.publishedAt.getTime();
+const formatCategory = (c: string) =>
+  c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 ---
 
-<BaseLayout
-  title={`${post.data.title} — DubaiPoints`}
+<ArticleLayout
+  title={post.data.title}
   description={post.data.description}
-  fullWidth
+  crumb={`DubaiPoints / News / ${formatCategory(post.data.category)}`}
+  publishedAt={post.data.publishedAt}
+  updatedAt={post.data.updatedAt}
+  toc={toc}
+  sources={post.data.sources}
+  showHero
+  heroLabel={`News · ${formatCategory(post.data.category)}`}
 >
-  <article class="dp-article">
-    <header class="dp-article-head">
-      <p class="dp-article-eyebrow">{post.data.category.replace(/-/g, " ")}</p>
-      <h1 class="dp-article-title">{post.data.title}</h1>
-      <p class="dp-article-lede">{post.data.description}</p>
-      <p class="dp-article-meta">
-        <span><strong>Filed</strong> {fmt(post.data.publishedAt)}</span>
-        {showUpdated && (
-          <>
-            <span class="sep">·</span>
-            <span class="verified-chip">Updated {fmt(post.data.updatedAt!)}</span>
-          </>
-        )}
-      </p>
-    </header>
-
-    <section class="dp-prose">
-      <Content />
-    </section>
-
-    {post.data.sources.length > 0 && (
-      <footer class="dp-article-foot">
-        <p>
-          <strong>Sources</strong>{" "}
-          {post.data.sources.map((s, i) => (
-            <>
-              {i > 0 && " · "}
-              <a href={s} target="_blank" rel="noopener noreferrer">{new URL(s).hostname}</a>
-            </>
-          ))}
-        </p>
-      </footer>
-    )}
-  </article>
-</BaseLayout>
+  <Content />
+</ArticleLayout>

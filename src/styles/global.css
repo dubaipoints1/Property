@@ -1170,3 +1170,172 @@ img { display: block; max-width: 100%; }
 .dp-page-num.is-active {
   background: var(--ink); color: white; border-color: var(--ink);
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Article template (Phase B2 — Claude Design handoff).
+   Used by /guides/<slug>/, /news/<slug>/, /deals/<slug>/.
+   Reference: dubaipoints/project/templates/article.jsx::Article.
+   Narrow pagehead + byline + hero placeholder + drop-cap prose +
+   sticky right-rail TOC + sources footer.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Narrow pagehead variant — used inside article shell, max-w 760 */
+.dp-pagehead.is-narrow {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 56px 32px 32px;
+  background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
+}
+.dp-pagehead.is-narrow h1 {
+  font-size: clamp(32px, 4.5vw, 48px);
+  letter-spacing: -1.2px;
+}
+.dp-pagehead .deck {
+  font-family: 'Fraunces', serif; font-style: italic;
+  font-size: clamp(18px, 2.2vw, 22px);
+  color: var(--ink-soft);
+  max-width: 48ch; margin-top: 18px;
+  line-height: 1.4; font-weight: 500;
+}
+
+/* Byline strip */
+.dp-byline-strip {
+  display: flex; gap: 16px; align-items: center;
+  padding: 16px 32px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin: 0 32px 32px;
+  max-width: 760px;
+  margin-inline: auto;
+}
+.dp-byline-strip .av {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--shade-2);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Sans', sans-serif; font-weight: 700;
+  font-size: 13px; color: var(--ink);
+}
+.dp-byline-strip .name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.dp-byline-strip .when {
+  font-size: 11px; color: var(--muted);
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-top: 1px;
+}
+.dp-byline-strip .actions {
+  margin-left: auto;
+  display: flex; gap: 8px;
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); font-weight: 600;
+}
+
+/* Article body grid (1fr + 240px sidebar at >=1024px) */
+.dp-article-body-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  padding: 0 32px 80px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (min-width: 1024px) {
+  .dp-article-body-grid {
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 64px;
+  }
+}
+
+.dp-article-body { max-width: 680px; margin-inline: auto; }
+.dp-article-body .hero-img {
+  aspect-ratio: 2 / 1;
+  background: repeating-linear-gradient(-45deg, #eceae4 0 8px, #e3e1db 8px 16px);
+  border: 1px solid var(--line); border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+/* Drop-cap on first paragraph of prose */
+.dp-prose p:first-of-type::first-letter {
+  font-family: 'Fraunces', serif; font-weight: 700;
+  font-size: 54px; line-height: 0.9;
+  float: left;
+  padding: 6px 10px 0 0;
+  color: var(--ink);
+}
+
+/* Pullbox — highlighted info block inside prose */
+.dp-pullbox {
+  background: var(--shade-1);
+  border-radius: 10px;
+  padding: 24px;
+  margin: 24px 0;
+}
+.dp-pullbox h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--green);
+  margin: 0 0 12px; font-weight: 700;
+}
+
+/* Article sticky sidebar (TOC + Related) */
+.dp-article-aside { display: flex; flex-direction: column; gap: 24px; }
+@media (min-width: 1024px) {
+  .dp-article-aside { position: sticky; top: 32px; align-self: flex-start; }
+}
+.dp-toc-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+}
+.dp-toc-card h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--green);
+  margin: 0 0 12px; font-weight: 700;
+}
+.dp-toc-card ol {
+  list-style: none; padding: 0; margin: 0;
+}
+.dp-toc-card li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13px; color: var(--ink-soft);
+  display: flex; gap: 10px;
+  line-height: 1.5;
+}
+.dp-toc-card li:last-child { border-bottom: 0; }
+.dp-toc-card .num {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+}
+.dp-toc-card a {
+  color: var(--ink-soft);
+}
+.dp-toc-card a:hover { color: var(--green); }
+
+/* Sources footer for articles */
+.dp-article-sources {
+  max-width: 760px;
+  margin: 32px auto 80px;
+  padding: 24px 32px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  font-size: 13px; color: var(--ink-soft);
+}
+.dp-article-sources strong { color: var(--ink); font-weight: 600; }
+.dp-article-sources a {
+  color: var(--ink); font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+}
+.dp-article-sources a:hover {
+  color: var(--green);
+  text-decoration-color: var(--green);
+}

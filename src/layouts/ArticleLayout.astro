@@ -1,31 +1,50 @@
 ---
-// Editorial article shell — mirrors the .dp-* idiom enforced by
-// `EDITORIAL.md` and `CLAUDE.md`. Replaces the prior prose-slate
-// implementation as part of the Quiet Ledger redesign (2026-05).
+// Article layout — Phase B2 (Claude Design handoff).
+// Reference: dubaipoints/project/templates/article.jsx::Article.
+// Used by /guides/<slug>/, /news/<slug>/, /deals/<slug>/.
 //
-// No call sites at the time of rewrite; kept as a layout primitive
-// so any future prose page (news post, profile, weekly recap) does
-// not reach for Tailwind `prose` and reintroduce a competing
-// visual grammar.
+// Shape:
+//   pagehead-narrow (gradient + crumb + h1 800 + italic deck)
+//   ↓
+//   byline strip (avatar + name + filed-date + share/save/print)
+//   ↓
+//   2-col grid at ≥1024px:
+//     [body] hero placeholder + drop-cap prose (slot)
+//     [aside] sticky TOC + Related (slot name="related")
+//   ↓
+//   sources footer
 
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
   title: string;
   description?: string;
+  crumb?: string;
   eyebrow?: string;
+  deck?: string;
   author?: string;
+  authorRole?: string;
   publishedAt?: Date;
   updatedAt?: Date;
+  toc?: { id: string; label: string }[];
+  sources?: string[];
+  showHero?: boolean;
+  heroLabel?: string;
 }
 
 const {
   title,
   description,
-  eyebrow,
+  crumb,
+  deck,
   author = "DubaiPoints Editorial",
+  authorRole,
   publishedAt,
   updatedAt,
+  toc = [],
+  sources = [],
+  showHero = false,
+  heroLabel = "Hero illustration · 2:1",
 } = Astro.props;
 
 const fmt = (d?: Date) =>
@@ -48,40 +67,66 @@ const initials = author
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
-  <article class="dp-article">
-    <header class="dp-article-head">
-      {eyebrow && <p class="dp-article-eyebrow">{eyebrow}</p>}
-      <h1 class="dp-article-title">{title}</h1>
-      {description && <p class="dp-article-lede">{description}</p>}
-      <p class="dp-byline">
-        <span class="dp-byline-avatar" aria-hidden="true">{initials}</span>
-        <span>By <strong>{author}</strong></span>
-        {publishedAt && (
-          <>
-            <span class="dp-byline-sep">·</span>
-            <span>Filed {fmt(publishedAt)}</span>
-          </>
-        )}
-        {showUpdated && (
-          <>
-            <span class="dp-byline-sep">·</span>
-            <span>Updated <strong>{fmt(updatedAt)}</strong></span>
-          </>
-        )}
-      </p>
-    </header>
+  <header class="dp-pagehead is-narrow">
+    {crumb && <div class="crumb">{crumb}</div>}
+    <h1>{title}</h1>
+    {(deck || description) && <p class="deck">{deck ?? description}</p>}
+  </header>
 
-    <section class="dp-prose">
-      <slot />
-    </section>
+  <div class="dp-byline-strip">
+    <div class="av" aria-hidden="true">{initials}</div>
+    <div>
+      <div class="name">
+        {author}
+        {authorRole && <span style="color: var(--muted); font-weight: 400;"> · {authorRole}</span>}
+      </div>
+      <div class="when">
+        {publishedAt && <>Filed {fmt(publishedAt)}</>}
+        {showUpdated && <> · Updated {fmt(updatedAt)}</>}
+      </div>
+    </div>
+    <div class="actions">
+      <span>Share</span><span>·</span><span>Save</span><span>·</span><span>Print</span>
+    </div>
+  </div>
 
-    <slot name="related" />
+  <div class="dp-article-body-grid">
+    <article class="dp-article-body">
+      {showHero && <div class="hero-img">{heroLabel}</div>}
+      <div class="dp-prose">
+        <slot />
+      </div>
+    </article>
 
-    <footer class="dp-article-foot">
+    <aside class="dp-article-aside">
+      {toc.length > 0 && (
+        <nav class="dp-toc-card">
+          <h4>In this guide</h4>
+          <ol>
+            {toc.map((t, i) => (
+              <li>
+                <span class="num">{String(i + 1).padStart(2, "0")}</span>
+                <a href={`#${t.id}`}>{t.label}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <slot name="related" />
+    </aside>
+  </div>
+
+  {sources.length > 0 && (
+    <footer class="dp-article-sources">
       <p>
-        Comments are out of scope at launch. Send tips and corrections to
-        <a href="mailto:info@dubaipoints.ae">info@dubaipoints.ae</a>.
+        <strong>Sources:</strong>{" "}
+        {sources.map((s, i) => (
+          <>
+            {i > 0 && " · "}
+            <a href={s} target="_blank" rel="noopener noreferrer">{new URL(s).hostname}</a>
+          </>
+        ))}
       </p>
     </footer>
-  </article>
+  )}
 </BaseLayout>
