@@ -93,23 +93,42 @@ const filters = [
 >
   <!-- ── 1. Masthead hero ─────────────────────────────────────────────── -->
   <header class="dp-pagehead is-hero">
-    <h1>Points and miles for the&nbsp;UAE.</h1>
+    <span class="kicker">Dubai · Independent · Reader-funded</span>
+    <h1>The UAE <em>rewards</em>, banking and miles journal.</h1>
     <p>
       Independent analysis of UAE credit cards, salary-transfer bonuses,
-      miles redemptions and lifestyle deals — every figure in AED, every
+      loyalty programmes and lifestyle deals — every figure in AED, every
       card checked against UAE eligibility.
     </p>
-    <div class="meta-strip">
-      <span><strong>{cards.length}</strong> cards reviewed</span>
-      <span class="sep" aria-hidden="true"></span>
-      <span><strong>{liveDeals.length}</strong> live deals</span>
-      <span class="sep" aria-hidden="true"></span>
-      <span><strong>{allGuides.length}</strong> guides</span>
-      <a href="/salary-transfer/" class="live-link">
-        <span class="dot" aria-hidden="true"></span>
-        Live tracker
+
+    <!-- Editor quote / trust signal -->
+    <figure class="hero-quote">
+      <blockquote>
+        We pay our own annual fees, source every figure, and print the
+        date next to every verdict. No advertorial. No "Apply Now" buttons.
+      </blockquote>
+      <figcaption>— DubaiPoints Editorial</figcaption>
+    </figure>
+
+    <!-- Quick-nav tiles — replaces the pill-chip meta strip -->
+    <nav class="hero-nav" aria-label="Start here">
+      <a href="/cards/" class="hero-nav-tile">
+        <span class="t">Cards</span>
+        <span class="c">{cards.length} reviewed</span>
       </a>
-    </div>
+      <a href="/salary-transfer/" class="hero-nav-tile is-live">
+        <span class="t"><span class="dot" aria-hidden="true"></span>Salary transfer</span>
+        <span class="c">Live tracker</span>
+      </a>
+      <a href="/guides/" class="hero-nav-tile">
+        <span class="t">Guides</span>
+        <span class="c">{allGuides.length} long-form</span>
+      </a>
+      <a href="/deals/" class="hero-nav-tile">
+        <span class="t">Deals</span>
+        <span class="c">{liveDeals.length} live</span>
+      </a>
+    </nav>
   </header>
 
   <!-- Decorative section divider between hero and featured band -->
@@ -268,19 +287,34 @@ const filters = [
 
   .dp-pagehead.is-hero {
     background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
-    padding: 88px 32px 64px;
+    padding: 72px 32px 56px;
     text-align: center;
+  }
+  .dp-pagehead.is-hero .kicker {
+    display: inline-block;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 18px;
   }
   .dp-pagehead.is-hero h1 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: clamp(36px, 6.2vw, 72px);
-    line-height: 1.02;
-    letter-spacing: -1.6px;
+    font-size: clamp(34px, 5.8vw, 64px);
+    line-height: 1.04;
+    letter-spacing: -1.4px;
     color: var(--ink);
     text-wrap: balance;
-    margin: 0 auto 20px;
-    max-width: 18ch;
+    margin: 0 auto 18px;
+    max-width: 16ch;
+  }
+  .dp-pagehead.is-hero h1 em {
+    font-style: italic;
+    color: var(--green);
+    font-weight: 500;
   }
   .dp-pagehead.is-hero p {
     max-width: 56ch;
@@ -290,69 +324,100 @@ const filters = [
     color: var(--ink-soft);
     text-wrap: pretty;
   }
-  .dp-pagehead.is-hero .meta-strip {
-    margin: 32px auto 0;
-    display: inline-flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 14px;
-    align-items: center;
-    font-size: 13px;
-    color: var(--ink-soft);
-    padding: 10px 20px;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    border-radius: 999px;
+
+  /* Editor pull-quote — Fraunces italic, no decorative card */
+  .hero-quote {
+    max-width: 60ch;
+    margin: 36px auto 0;
+    padding: 16px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
   }
-  .dp-pagehead.is-hero .meta-strip strong {
+  .hero-quote blockquote {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(15px, 1.6vw, 17px);
+    line-height: 1.5;
     color: var(--ink);
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
+    margin: 0;
+    text-wrap: pretty;
   }
-  .dp-pagehead.is-hero .meta-strip .sep {
-    width: 1px;
-    height: 14px;
-    background: var(--line);
-  }
-  .dp-pagehead.is-hero .meta-strip .live-link {
-    display: inline-flex; align-items: center; gap: 6px;
-    margin-left: 6px;
-    padding-left: 14px;
-    border-left: 1px solid var(--line);
-    color: var(--green);
-    font-weight: 700;
+  .hero-quote figcaption {
+    margin-top: 10px;
+    font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 11px;
+    font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    text-decoration: none;
+    color: var(--muted);
   }
-  .dp-pagehead.is-hero .meta-strip .live-link .dot {
-    width: 8px; height: 8px; border-radius: 50%;
+
+  /* Quick-nav tiles — 4 entry points to the major sections */
+  .hero-nav {
+    margin: 36px auto 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 760px;
+  }
+  .hero-nav-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 18px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-align: left;
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .hero-nav-tile:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+  }
+  .hero-nav-tile .t {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hero-nav-tile .c {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .hero-nav-tile.is-live .t .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
     background: var(--green);
     animation: hp-pulse 2.4s ease-in-out infinite;
   }
+  .hero-nav-tile.is-live .c { color: var(--green); }
+
   @keyframes hp-pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
   @media (prefers-reduced-motion: reduce) {
-    .dp-pagehead.is-hero .meta-strip .live-link .dot { animation: none; }
+    .hero-nav-tile.is-live .t .dot { animation: none; }
   }
+
   @media (max-width: 768px) {
-    .dp-pagehead.is-hero { padding: 56px 20px 40px; }
-    .dp-pagehead.is-hero .meta-strip {
-      flex-direction: column;
-      gap: 8px;
-      border-radius: 14px;
-      padding: 14px 18px;
+    .dp-pagehead.is-hero { padding: 52px 20px 36px; }
+    .hero-nav {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 360px;
     }
-    .dp-pagehead.is-hero .meta-strip .sep { display: none; }
-    .dp-pagehead.is-hero .meta-strip .live-link {
-      margin-left: 0;
-      padding-left: 0;
-      border-left: 0;
-      padding-top: 6px;
-      border-top: 1px solid var(--line);
-      width: 100%;
-      justify-content: center;
-    }
+  }
+  @media (max-width: 380px) {
+    .hero-nav { grid-template-columns: 1fr; }
   }
 
   /* Decorative section divider — Fraunces-flavoured ornament */
