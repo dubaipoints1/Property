@@ -1,35 +1,124 @@
 ---
+// Airlines index — section-index template (Phase B1 cascade).
+// Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
+
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import ProgrammeLogo from "~/components/ProgrammeLogo.astro";
 import { getCollection } from "astro:content";
 
-const programs = await getCollection("programs");
+const programs = (await getCollection("programs")).sort((a, b) =>
+  a.data.name.localeCompare(b.data.name),
+);
+
+const featured = programs.slice(0, 7);
+const remaining = programs.slice(7);
+
+const filters = [
+  { label: "All", active: true },
+  { label: "Skywards", href: "/airlines/skywards/" },
+  { label: "Etihad Guest", href: "/airlines/etihad-guest/" },
+  { label: "Valuations", href: "/valuations/" },
+];
 ---
 
 <BaseLayout
-  title="Middle East airline programmes"
-  description="Skywards, Etihad Guest, Qatar Privilege Club, Saudia Alfursan and more — UAE-relevant frequent flyer programmes covered in depth."
+  title="Airline & loyalty programmes — UAE-relevant"
+  description="Skywards, Etihad Guest, Qatar Privilege Club, Saudia Alfursan and the hotel programmes UAE residents earn and redeem in. Each programme covered for tiers, sweet spots, transfer partners, and expiry policy."
   fullWidth
 >
-  <article class="dp-article is-wide">
-    <header class="dp-article-head">
-      <p class="dp-article-eyebrow">Airline programmes</p>
-      <h1 class="dp-article-title">Frequent flyer programmes <em>UAE residents</em> earn and redeem in.</h1>
-      <p class="dp-article-lede">Each programme page covers tiers, sweet spots, transfer partners, and expiry policy — the things that determine whether the Miles you earn are worth what you think they are.</p>
+  <div class="dp-pagehead">
+    <div class="crumb">DubaiPoints / Airlines</div>
+    <h1>Airlines &amp; loyalty programmes</h1>
+    <p>Each programme page covers tiers, sweet spots, transfer partners, and expiry policy — the things that determine whether the Miles you earn are worth what you think they are.</p>
+  </div>
 
-      <div class="dp-dir-pills">
-        <a href="/valuations/" class="dp-dir-pill is-feature">View AED valuations →</a>
+  <div class="dp-filters">
+    {filters.map((f) => (
+      f.active
+        ? <span class="dp-filter-pill is-active">{f.label}</span>
+        : <a href={f.href} class="dp-filter-pill">{f.label}</a>
+    ))}
+    <span class="dp-sort">Sort: <strong>A–Z</strong> ▾</span>
+  </div>
+
+  {featured.length > 0 && (
+    <section class="dp-featured-band">
+      <div class="dp-featured-eyebrow">
+        <span>UAE-relevant programmes</span>
+        <span class="rule"></span>
+        <span class="meta">{programs.length} programme{programs.length === 1 ? "" : "s"} covered</span>
       </div>
-    </header>
+      <div class="dp-featured-grid">
+        {featured[0] && (
+          <a href={`/airlines/${featured[0].id}/`} class="dp-story-card hero">
+            <div class="cover">{featured[0].data.name}</div>
+            <div class="body">
+              <div class="meta"><span class="cat">{featured[0].data.region}</span><span>{featured[0].data.currencyName}</span></div>
+              <h3>{featured[0].data.name}</h3>
+              <p>Tiers, sweet spots, transfer partners and expiry policy for {featured[0].data.currencyName} earned in the UAE.</p>
+              <div class="by">Programme guide</div>
+            </div>
+          </a>
+        )}
+        {[featured[1], featured[2]].filter(Boolean).map((p) => (
+          <a href={`/airlines/${p.id}/`} class="dp-story-card med">
+            <div class="cover">{p.data.name}</div>
+            <div class="body">
+              <div class="meta"><span class="cat">{p.data.region}</span><span>{p.data.currencyName}</span></div>
+              <h3>{p.data.name}</h3>
+              <p>Programme guide.</p>
+            </div>
+          </a>
+        ))}
+        {featured.slice(3, 7).map((p) => (
+          <a href={`/airlines/${p.id}/`} class="dp-story-card sm">
+            <div class="cover">{p.data.name}</div>
+            <div class="body">
+              <div class="meta"><span class="cat">{p.data.region}</span></div>
+              <h3>{p.data.name}</h3>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
-    <div class="dp-dir-grid">
-      {programs.map((p) => (
-        <a href={`/airlines/${p.id}/`} class="dp-dir-tile">
-          <span class="eyebrow">{p.data.region} · {p.data.currencyName}</span>
-          <ProgrammeLogo slug={p.id} name={p.data.name} size="lg" />
-          <span class="title">{p.data.name}</span>
-        </a>
-      ))}
-    </div>
-  </article>
+  <div class="dp-pullquote">
+    <div class="mark">"</div>
+    <blockquote>
+      A Mile is only worth what you can redeem it for. Every valuation here is the rate we use in our own card reviews.
+    </blockquote>
+    <div class="attr"><span class="rule"></span>DP-value methodology</div>
+  </div>
+
+  {remaining.length > 0 && (
+    <>
+      <div class="dp-list-head">
+        <div class="t">All programmes</div>
+        <div class="m">A–Z · {remaining.length} more</div>
+      </div>
+      <div class="dp-feed">
+        {remaining.map((p, i) => {
+          const n = i + featured.length + 1;
+          return (
+            <a href={`/airlines/${p.id}/`} class="dp-feed-row">
+              <div>
+                <div class="num">{String(n).padStart(2, "0")}</div>
+                <div class="feed-eyebrow">{p.data.region}</div>
+              </div>
+              <div>
+                <h3>{p.data.name}</h3>
+                <div class="summary">{p.data.currencyName}</div>
+              </div>
+              <div class="thumb">{p.data.name}</div>
+              <div class="when">Programme →</div>
+            </a>
+          );
+        })}
+      </div>
+    </>
+  )}
+
+  <div class="dp-page-nav">
+    <span style="font-size:12px;color:var(--muted);">Showing all {programs.length} programme{programs.length === 1 ? "" : "s"}</span>
+  </div>
 </BaseLayout>

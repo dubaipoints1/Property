@@ -1,0 +1,165 @@
+---
+// Deals index — section-index template (Phase B1 cascade).
+// Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
+// /deals/[slug].astro detail route lands in Phase B2 (article template).
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getCollection, getEntry } from "astro:content";
+
+const todayMs = Date.now();
+
+const allDeals = await getCollection("deals");
+const liveDeals = allDeals
+  .filter((d) => d.data.expiresOn.getTime() >= todayMs)
+  .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime());
+
+const dealsWithBank = await Promise.all(
+  liveDeals.map(async (d) => {
+    const bank = await getEntry(d.data.bank);
+    return { entry: d, bankName: bank?.data.name ?? d.data.bank.id };
+  }),
+);
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+const featured = dealsWithBank.slice(0, 7);
+const remaining = dealsWithBank.slice(7);
+
+const filters = [
+  { label: "All live", active: true },
+  { label: "Welcome bonus" },
+  { label: "Transfer bonus" },
+  { label: "Spend promo" },
+  { label: "Fee waiver" },
+];
+
+const formatCategory = (c: string) =>
+  c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+---
+
+<BaseLayout
+  title="UAE deals — live offers from banks and merchants"
+  description="Live UAE deals: welcome bonuses, salary-transfer top-ups, spend promos and fee waivers. Every offer dated and sourced — expired deals are removed, not buried."
+  fullWidth
+>
+  <div class="dp-pagehead">
+    <div class="crumb">DubaiPoints / Deals</div>
+    <h1>Deals</h1>
+    <p>Live UAE offers from banks and merchants — sorted by expiry. Welcome bonuses, salary-transfer top-ups, spend promos and fee waivers, dated and sourced.</p>
+  </div>
+
+  <div class="dp-filters">
+    {filters.map((f) => (
+      <span class={`dp-filter-pill${f.active ? " is-active" : ""}`}>{f.label}</span>
+    ))}
+    <span class="dp-sort">Sort: <strong>Expiring soonest</strong> ▾</span>
+  </div>
+
+  {dealsWithBank.length === 0 ? (
+    <section class="dp-featured-band">
+      <div class="dp-featured-eyebrow">
+        <span>No live deals right now</span>
+        <span class="rule"></span>
+        <span class="meta">Refreshed daily</span>
+      </div>
+      <p style="padding: 32px; color: var(--ink-soft); font-size: 15px; line-height: 1.6;">
+        We only list deals that are <em>live</em> on the day you visit. Expired
+        deals don't sit in the archive pretending to be available.
+        Subscribe to the <a href="/newsletter/" style="color: var(--link); font-weight: 600;">Friday brief</a>
+        for new deals as they land, or follow the <a href="/rss.xml" style="color: var(--link); font-weight: 600;">RSS feed</a>.
+      </p>
+    </section>
+  ) : (
+    <>
+      {featured.length > 0 && (
+        <section class="dp-featured-band">
+          <div class="dp-featured-eyebrow">
+            <span>Live this week</span>
+            <span class="rule"></span>
+            <span class="meta">{dealsWithBank.length} live deal{dealsWithBank.length === 1 ? "" : "s"}</span>
+          </div>
+          <div class="dp-featured-grid">
+            {featured[0] && (
+              <a href={`/deals/${featured[0].entry.id}/`} class="dp-story-card hero">
+                <div class="cover">{formatCategory(featured[0].entry.data.category)}</div>
+                <div class="body">
+                  <div class="meta">
+                    <span class="cat">{formatCategory(featured[0].entry.data.category)}</span>
+                    <span>{featured[0].bankName}</span>
+                  </div>
+                  <h3>{featured[0].entry.data.title}</h3>
+                  <p>Live until {fmt(featured[0].entry.data.expiresOn)}.</p>
+                  <div class="by">Source: issuer page · verified at publish</div>
+                </div>
+              </a>
+            )}
+            {[featured[1], featured[2]].filter(Boolean).map((d) => (
+              <a href={`/deals/${d.entry.id}/`} class="dp-story-card med">
+                <div class="cover">{formatCategory(d.entry.data.category)}</div>
+                <div class="body">
+                  <div class="meta"><span class="cat">{formatCategory(d.entry.data.category)}</span><span>{d.bankName}</span></div>
+                  <h3>{d.entry.data.title}</h3>
+                  <p>Live until {fmt(d.entry.data.expiresOn)}.</p>
+                </div>
+              </a>
+            ))}
+            {featured.slice(3, 7).map((d) => (
+              <a href={`/deals/${d.entry.id}/`} class="dp-story-card sm">
+                <div class="cover">{formatCategory(d.entry.data.category)}</div>
+                <div class="body">
+                  <div class="meta"><span class="cat">{formatCategory(d.entry.data.category)}</span><span>{d.bankName}</span></div>
+                  <h3>{d.entry.data.title}</h3>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <div class="dp-pullquote">
+        <div class="mark">"</div>
+        <blockquote>
+          Live deals only. Expired offers are removed from this page on the day they expire — never archived under "still available" copy.
+        </blockquote>
+        <div class="attr"><span class="rule"></span>Editorial standard · est. 2026</div>
+      </div>
+
+      {remaining.length > 0 && (
+        <>
+          <div class="dp-list-head">
+            <div class="t">All live deals</div>
+            <div class="m">Sorted by expiry · {remaining.length} more</div>
+          </div>
+          <div class="dp-feed">
+            {remaining.map((d, i) => {
+              const n = i + featured.length + 1;
+              return (
+                <a href={`/deals/${d.entry.id}/`} class="dp-feed-row">
+                  <div>
+                    <div class="num">{String(n).padStart(2, "0")}</div>
+                    <div class="feed-eyebrow">{formatCategory(d.entry.data.category)}</div>
+                  </div>
+                  <div>
+                    <h3>{d.entry.data.title}</h3>
+                    <div class="summary">{d.bankName} · live until {fmt(d.entry.data.expiresOn)}</div>
+                  </div>
+                  <div class="thumb">{formatCategory(d.entry.data.category)}</div>
+                  <div class="when">{fmt(d.entry.data.expiresOn)}</div>
+                </a>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </>
+  )}
+
+  <div class="dp-page-nav">
+    <span style="font-size:12px;color:var(--muted);">
+      {dealsWithBank.length === 0
+        ? "No live deals · subscribe to be notified"
+        : `Showing all ${dealsWithBank.length} live deal${dealsWithBank.length === 1 ? "" : "s"}`}
+    </span>
+  </div>
+</BaseLayout>

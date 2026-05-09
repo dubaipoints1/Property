@@ -1,61 +1,143 @@
 ---
-import BaseLayout from "~/layouts/BaseLayout.astro";
-import BankLogo from "~/components/BankLogo.astro";
-import { getEntry } from "astro:content";
-import {
-  getAllCards,
-  welcomeBonusDisplay,
-  annualFeeWaiverDisplay,
-} from "~/lib/cardsData";
+// Cards index — section-index template (Phase B1 cascade).
+// Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
 
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getEntry } from "astro:content";
+import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
+
+// Resolve bank entry per card so the eyebrow / metadata can use the
+// human-readable bank name.
 const cards = await Promise.all(
-  getAllCards().map(async (card) => {
-    const bank = await getEntry("banks", card.bank);
-    return { card, bankName: bank?.data.name ?? card.bank };
-  }),
+  getAllCards()
+    .sort((a, b) => b.lastVerified.getTime() - a.lastVerified.getTime())
+    .map(async (card) => {
+      const bank = await getEntry("banks", card.bank);
+      return { card, bankName: bank?.data.name ?? card.bank };
+    }),
 );
 
-const categories = [
-  { slug: "cashback", label: "Cashback" },
-  { slug: "miles", label: "Miles" },
-  { slug: "islamic", label: "Islamic" },
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+const featured = cards.slice(0, 7);
+const remaining = cards.slice(7);
+
+const filters = [
+  { label: "All", active: true },
+  { label: "Cashback", href: "/cards/cashback/" },
+  { label: "Miles", href: "/cards/miles/" },
+  { label: "Islamic", href: "/cards/islamic/" },
+  { label: "Compare", href: "/cards/compare/" },
 ];
 ---
 
 <BaseLayout
   title="UAE credit cards — directory"
-  description="Every UAE credit card we cover, sorted by minimum monthly salary. Browse the directory or jump into a category."
+  description="Every UAE credit card we cover, sorted by latest verification. Browse the directory or filter by category."
   fullWidth
 >
-  <article class="dp-article is-wide">
-    <header class="dp-article-head">
-      <p class="dp-article-eyebrow">Cards</p>
-      <h1 class="dp-article-title">UAE credit cards.</h1>
-      <p class="dp-article-lede">Every card we cover, sorted by minimum monthly salary — the first eligibility filter that matters in the UAE. Click a card for the full review and verdict.</p>
+  <div class="dp-pagehead">
+    <div class="crumb">DubaiPoints / Cards</div>
+    <h1>Credit cards</h1>
+    <p>Every UAE credit card we cover, sorted by latest verification. Filter by category, or open any card for the full review and verdict.</p>
+  </div>
 
-      <div class="dp-dir-pills">
-        <a href="/cards/compare/" class="dp-dir-pill is-feature">Compare side-by-side →</a>
-        {categories.map((c) => (
-          <a href={`/cards/${c.slug}/`} class="dp-dir-pill">{c.label}</a>
+  <div class="dp-filters">
+    {filters.map((f) => (
+      f.active
+        ? <span class="dp-filter-pill is-active">{f.label}</span>
+        : <a href={f.href} class="dp-filter-pill">{f.label}</a>
+    ))}
+    <span class="dp-sort">Sort: <strong>Last verified</strong> ▾</span>
+  </div>
+
+  {featured.length > 0 && (
+    <section class="dp-featured-band">
+      <div class="dp-featured-eyebrow">
+        <span>Latest reviews</span>
+        <span class="rule"></span>
+        <span class="meta">{cards.length} cards covered · refreshed monthly</span>
+      </div>
+      <div class="dp-featured-grid">
+        {featured[0] && (
+          <a href={`/cards/${featured[0].card.slug}/`} class="dp-story-card hero">
+            <div class="cover">Card art · {featured[0].card.network}</div>
+            <div class="body">
+              <div class="meta">
+                <span class="cat">Review</span>
+                <span>{featured[0].bankName}</span>
+              </div>
+              <h3>{featured[0].card.name}</h3>
+              <p>{welcomeBonusDisplay(featured[0].card.welcomeBonus) || `Annual fee AED ${featured[0].card.annualFee.amount.toLocaleString()} · min salary AED ${featured[0].card.eligibility.minSalary.toLocaleString()}/mo.`}</p>
+              <div class="by">Verified {fmt(featured[0].card.lastVerified)}</div>
+            </div>
+          </a>
+        )}
+        {[featured[1], featured[2]].filter(Boolean).map((f) => (
+          <a href={`/cards/${f.card.slug}/`} class="dp-story-card med">
+            <div class="cover">Card · {f.card.network}</div>
+            <div class="body">
+              <div class="meta"><span class="cat">Review</span><span>{f.bankName}</span></div>
+              <h3>{f.card.name}</h3>
+              <p>AED {f.card.annualFee.amount.toLocaleString()}/yr · AED {f.card.eligibility.minSalary.toLocaleString()}/mo min</p>
+            </div>
+          </a>
+        ))}
+        {featured.slice(3, 7).map((f) => (
+          <a href={`/cards/${f.card.slug}/`} class="dp-story-card sm">
+            <div class="cover">Card</div>
+            <div class="body">
+              <div class="meta"><span class="cat">Review</span><span>{f.bankName}</span></div>
+              <h3>{f.card.name}</h3>
+            </div>
+          </a>
         ))}
       </div>
-    </header>
+    </section>
+  )}
 
-    <div class="dp-dir-grid">
-      {cards.map(({ card, bankName }) => (
-        <a href={`/cards/${card.slug}/`} class="dp-dir-tile">
-          <span class="eyebrow">
-            <BankLogo slug={card.bank} name={bankName} size="sm" />
-            <span>{bankName} · {card.network}</span>
-          </span>
-          <span class="title">{card.name}</span>
-          <span class="desc">{welcomeBonusDisplay(card.welcomeBonus) || ("Annual fee waiver: " + (annualFeeWaiverDisplay(card.annualFeeWaiver) || "see review"))}</span>
-          <span class="meta">
-            AED {card.annualFee.amount.toLocaleString()}/yr ·
-            {" "}AED {card.eligibility.minSalary.toLocaleString()}/mo min
-          </span>
-        </a>
-      ))}
-    </div>
-  </article>
+  <div class="dp-pullquote">
+    <div class="mark">"</div>
+    <blockquote>
+      Every figure in AED. Every card checked against the issuer's published Schedule of Charges. No advertorial-driven rankings.
+    </blockquote>
+    <div class="attr"><span class="rule"></span>Editorial standard · est. 2026</div>
+  </div>
+
+  {remaining.length > 0 && (
+    <>
+      <div class="dp-list-head">
+        <div class="t">All cards</div>
+        <div class="m">Sorted by last verification · {remaining.length} more below</div>
+      </div>
+      <div class="dp-feed">
+        {remaining.map((f, i) => {
+          const n = i + featured.length + 1;
+          return (
+            <a href={`/cards/${f.card.slug}/`} class="dp-feed-row">
+              <div>
+                <div class="num">{String(n).padStart(2, "0")}</div>
+                <div class="feed-eyebrow">{f.bankName}</div>
+              </div>
+              <div>
+                <h3>{f.card.name}</h3>
+                <div class="summary">
+                  AED {f.card.annualFee.amount.toLocaleString()}/yr ·
+                  AED {f.card.eligibility.minSalary.toLocaleString()}/mo min ·
+                  {f.card.network}
+                </div>
+              </div>
+              <div class="thumb">Card · {f.card.network}</div>
+              <div class="when">{fmt(f.card.lastVerified)}</div>
+            </a>
+          );
+        })}
+      </div>
+    </>
+  )}
+
+  <div class="dp-page-nav">
+    <span style="font-size:12px;color:var(--muted);">Showing all {cards.length} cards</span>
+  </div>
 </BaseLayout>
