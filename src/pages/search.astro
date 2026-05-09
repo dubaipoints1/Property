@@ -1,0 +1,103 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Search — DubaiPoints"
+  description="Search every UAE credit card review, salary-transfer offer, points-and-miles guide, and lifestyle deal on DubaiPoints."
+  fullWidth
+>
+  <header class="dp-pagehead is-narrow">
+    <div class="crumb">Search</div>
+    <h1>What are you looking for?</h1>
+    <p class="deck">Every card review, salary-transfer offer, guide, deal and news note we've published — searchable.</p>
+  </header>
+
+  <div class="dp-search-body">
+    <div id="search" data-pagefind-ignore></div>
+
+    <noscript>
+      <p class="dp-search-fallback">
+        Search requires JavaScript. The full site map is on the
+        <a href="/sitemap-index.xml">sitemap</a>, or browse by section:
+        <a href="/cards/">Cards</a> · <a href="/guides/">Guides</a> ·
+        <a href="/news/">News</a> · <a href="/deals/">Deals</a> ·
+        <a href="/airlines/">Airlines</a> · <a href="/banks/">Banks</a>.
+      </p>
+    </noscript>
+
+    <p class="dp-search-tip">
+      <strong>Tips.</strong>
+      Search matches title, body and metadata. Use quotes to match a phrase
+      (e.g. <code>"salary transfer"</code>). Filter results by type using
+      the side panel.
+    </p>
+  </div>
+</BaseLayout>
+
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+<script src="/pagefind/pagefind-ui.js" is:inline></script>
+<script is:inline>
+  window.addEventListener("DOMContentLoaded", () => {
+    if (typeof window.PagefindUI === "undefined") return;
+    new window.PagefindUI({
+      element: "#search",
+      showImages: false,
+      resetStyles: false,
+      autofocus: true,
+      showSubResults: true,
+    });
+  });
+</script>
+
+<style>
+  .dp-search-body {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 32px 80px;
+  }
+  #search { margin-bottom: 24px; }
+  /* Override Pagefind UI defaults to match design idiom */
+  :global(.pagefind-ui) {
+    --pagefind-ui-primary: var(--green);
+    --pagefind-ui-text: var(--ink);
+    --pagefind-ui-background: var(--paper);
+    --pagefind-ui-border: var(--line);
+    --pagefind-ui-tag: var(--shade-1);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 10px;
+    --pagefind-ui-image-border-radius: 8px;
+    --pagefind-ui-image-box-ratio: 3 / 2;
+    --pagefind-ui-font: 'DM Sans', system-ui, sans-serif;
+  }
+  :global(.pagefind-ui__search-input) {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 16px !important;
+  }
+  .dp-search-fallback,
+  .dp-search-tip {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 24px;
+    padding: 16px 20px;
+    background: var(--shade-1);
+    border-radius: 10px;
+  }
+  .dp-search-tip strong { color: var(--ink); font-weight: 700; }
+  .dp-search-tip code {
+    background: var(--paper);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .dp-search-fallback a,
+  .dp-search-tip a {
+    color: var(--green);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>
