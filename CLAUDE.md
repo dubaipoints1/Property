@@ -45,6 +45,54 @@ Council is convened automatically by the workflow defined in
    **off-limits for typed numerics** (fees, salary bands, earn rates,
    amounts) — those require deterministic regex parsers in
    `scripts/scrape/_lib.ts` so each value has a traceable source line.
+7. **Council sign-off is mandatory.** No pull request merges to
+   `main` without a `## Council sign-off` section in its body
+   declaring which specialists reviewed it. The required reviewer
+   set scales by change tier (see §"Tiered review" below). The
+   Chairman's `approved` status is mandatory on every tier; the
+   `/publish` slash command halts at this gate by design. A PR
+   missing the sign-off block is not mergeable, no exceptions.
+
+## Tiered review
+
+Three tiers govern which specialists must sign off on any change.
+Tier is declared in the PR body's `## Council sign-off` section
+(see template below).
+
+| Tier | Scope | Required sign-offs |
+|---|---|---|
+| **T1 — typo / link / source** | Fix a typo, swap a dead link, refresh a source URL, bump a `lastVerified` date. ≤ 5 lines, no chrome change, no prose change beyond the fix. | Section editor + Chairman. |
+| **T2 — chrome / copy / layout** | New microcopy, button label, hero quote, navigation label, CTA, kicker, deck. Restyling a layout component. New visual pattern in `global.css`. New trust-page content. AED format / format-string changes. | Standards Editor + Head of UX + Section editor + Chairman. |
+| **T3 — feature / collection / template** | New page route, new content collection, new layout template, new tool, new homepage section, new editorial section, new cross-section workflow, schema/scrape changes, framework/dependency upgrade, regulatory exposure. | Full council convened via `/council`. Head of Research, SEO Strategist, Fact-Checker, Standards Editor, Head of UX, Technical Lead, Growth-Analytics-Lead, relevant Section Editor, Managing Editor, Chairman. |
+
+When in doubt, escalate to the higher tier. Under-tiering is a
+discipline failure that the Chairman flags at the publish gate.
+
+## PR body template — Council sign-off
+
+Every PR body **must** include this block. The Chairman line is
+mandatory; other roles only when their tier requires sign-off.
+
+```markdown
+## Council sign-off
+
+**Tier**: T1 / T2 / T3
+**Brief**: `<path or "ad-hoc">` (T2 / T3 only)
+
+| Role | Status | Notes |
+|---|---|---|
+| Section editor | pass / pass-with-edits / fail / n/a | one line |
+| Head of UX (Stage 5.5) | pass / pass-with-edits / fail / n/a | one line |
+| Fact-Checker (Stage 6) | pass / fail / n/a | one line |
+| Standards Editor (Stage 6.5) | pass / pass-with-edits / fail / n/a | one line |
+| Technical Lead | pass / fail / n/a | one line |
+| Chairman (Stage 7) | **approved** | required on every tier |
+```
+
+The CI `validate` workflow does not (yet) parse this block; it is
+enforced editorially by the Chairman at the merge gate. A future
+GitHub Action may grep PR bodies for the section header to
+hard-fail PRs without it.
 
 ## Authority
 

@@ -102,6 +102,42 @@ of the brief and set `chairman-status: killed`. The brief stays in
 `.council/briefs/` as a record; the draft (if any) moves to
 `.council/killed/<YYYY-MM>/`.
 
+## Council sign-off enforcement (publish gate)
+
+Per CLAUDE.md non-negotiable #7, every PR merging to `main` must
+carry a `## Council sign-off` block in its body. **You are the
+gate.** Before approving a merge:
+
+1. Read the PR body. If the `## Council sign-off` section is absent
+   or the Chairman line is missing, the PR is not mergeable. Send
+   it back for sign-off, even if every line of code is correct.
+2. Verify the declared tier matches the change. T1 with new chrome
+   strings is under-tiered → escalate to T2 and require Standards
+   + UX sign-off before merging.
+3. Check that **every required reviewer for the tier shows pass /
+   pass-with-edits / approved status**, not blank, not "skipped".
+4. If any required reviewer marked `fail`, the PR cannot merge.
+   Hand back to the section editor with the specific kick-back
+   reason.
+5. Mark the Chairman line `**approved**` only after 1–4 are clean.
+
+You may override the tier system in genuine emergencies (regulatory
+deadline, legal correction, security fix). Any override is logged
+in the next `## Amendments` entry of CLAUDE.md with date, reason,
+and what was skipped.
+
+## Tier escalation triggers
+
+Beyond the CLAUDE.md tier table, escalate **at your discretion** for
+any of:
+
+- A reviewer disagreement that didn't resolve at section-editor level.
+- A precedent-setting decision (first time the site says X, does Y).
+- Anything that touches the affiliate / advertorial firewall.
+- Anything that changes the homepage above the fold.
+- Anything that changes the AED format, the kill-list, or the
+  workflow stages.
+
 ## Examples
 
 ### Approve
