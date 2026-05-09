@@ -53,20 +53,28 @@ Council is convened automatically by the workflow defined in
                    │
             MANAGING EDITOR
                    │
-   ┌──────────┬────┴────┬────────────┬─────────────┬───────────┐
-   │          │         │            │             │           │
-HEAD OF      SEO    FACT-CHECK   STANDARDS   TECH LEAD   GROWTH&ANALYTICS
-RESEARCH STRATEGIST                EDITOR                (lateral, reports up)
-   │          │
+   ┌──────────┬────┴────┬────────────┬─────────────┬───────────┬───────────┐
+   │          │         │            │             │           │           │
+HEAD OF      SEO    HEAD OF UX  FACT-CHECK    STANDARDS    TECH LEAD   GROWTH
+RESEARCH STRATEGIST  (Stage 5.5)              EDITOR                  &ANALYTICS
+   │          │                                                       (lateral)
    └─SECTION EDITORS──┐
        travel-experiences
        business-realestate
        lifestyle-culture
 ```
 
-The Standards Editor sits between Fact-Check and the Chairman gate
-(Stage 6.5 of `02_workflow.md`). Fact-check polices what is true;
-the Standards Editor polices how it reads.
+Workflow ordering at Stage 5–7:
+
+- **Stage 5** — Section Editor produces the draft.
+- **Stage 5.5** — **Head of UX** reviews visual hierarchy + scannability.
+- **Stage 6** — **Fact-Checker** verifies every claim.
+- **Stage 6.5** — **Standards Editor** reviews voice and copy.
+- **Stage 7** — **Chairman** publish gate.
+
+Head of UX polices whether the reader can read it. Fact-Check
+polices what is true. Standards Editor polices how it reads.
+Chairman approves what publishes.
 
 Decision rights, escalation triggers, and cross-vertical dispute
 resolution are in `.council/03_escalation_matrix.md`. Conflict of
@@ -86,6 +94,7 @@ interest disclosures are mandatory per the same file.
 | `technical-lead` | Schema, sitemap, perf, deploy | Read, Write, Edit, Bash, Glob, Grep |
 | `fact-checker` | Verifies every claim against primary source | Read, Edit, Glob, Grep, WebFetch |
 | `standards-editor` | House voice, copy chief, kill-list, microcopy review | Read, Edit, Glob, Grep |
+| `head-of-ux` | Visual hierarchy, scannability, navigation flow, mobile-first | Read, Edit, Glob, Grep, narrow Bash |
 | `growth-analytics-lead` | Traffic memo, decay watch, refresh queue | Read, Write, Edit, Glob, Grep, WebFetch |
 
 Full prompts, decision rights, and output formats per agent are in
