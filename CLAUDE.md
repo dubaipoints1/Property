@@ -53,16 +53,20 @@ Council is convened automatically by the workflow defined in
                    │
             MANAGING EDITOR
                    │
-   ┌──────────┬────┴────┬────────────┬───────────┐
-   │          │         │            │           │
-HEAD OF      SEO    FACT-CHECK   TECH LEAD   GROWTH&ANALYTICS
-RESEARCH STRATEGIST                          (lateral, reports up)
+   ┌──────────┬────┴────┬────────────┬─────────────┬───────────┐
+   │          │         │            │             │           │
+HEAD OF      SEO    FACT-CHECK   STANDARDS   TECH LEAD   GROWTH&ANALYTICS
+RESEARCH STRATEGIST                EDITOR                (lateral, reports up)
    │          │
    └─SECTION EDITORS──┐
        travel-experiences
        business-realestate
        lifestyle-culture
 ```
+
+The Standards Editor sits between Fact-Check and the Chairman gate
+(Stage 6.5 of `02_workflow.md`). Fact-check polices what is true;
+the Standards Editor polices how it reads.
 
 Decision rights, escalation triggers, and cross-vertical dispute
 resolution are in `.council/03_escalation_matrix.md`. Conflict of
@@ -81,6 +85,7 @@ interest disclosures are mandatory per the same file.
 | `lifestyle-culture-editor` | Dining, DSF, Ramadan, expat onboarding | Read, Write, Edit, Glob, Grep, narrow Bash |
 | `technical-lead` | Schema, sitemap, perf, deploy | Read, Write, Edit, Bash, Glob, Grep |
 | `fact-checker` | Verifies every claim against primary source | Read, Edit, Glob, Grep, WebFetch |
+| `standards-editor` | House voice, copy chief, kill-list, microcopy review | Read, Edit, Glob, Grep |
 | `growth-analytics-lead` | Traffic memo, decay watch, refresh queue | Read, Write, Edit, Glob, Grep, WebFetch |
 
 Full prompts, decision rights, and output formats per agent are in
