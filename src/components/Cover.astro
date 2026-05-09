@@ -1,0 +1,196 @@
+---
+// Cover-card SVG component — generated editorial cover art.
+// Used by homepage featured band, every section-index featured grid,
+// every .dp-feed-row thumb. Replaces the "Cover · Guide" placeholder
+// rectangles previously hard-coded in those layouts.
+//
+// Why generated SVG, not photographs:
+// - Zero external image dependency (no fetch, no CDN, no licence
+//   tracking).
+// - Visually coherent across the whole site — one editorial brand
+//   identity, not a stock-photo collage.
+// - Renders at any size, any device, any colour scheme.
+// - Operator can swap individual covers for real photos later by
+//   dropping a file at public/cover/<slug>.png — ArticleLayout will
+//   prefer the file when present.
+//
+// Props:
+//   title    — overlay text, clipped to 2-3 lines depending on size.
+//   category — drives the colour band (Guide / Review / Deal / News /
+//              Programme / Topic). Falls back to "Editorial".
+//   size     — "hero" (16:9, wraps to 3 lines) | "med" (3:2, 2 lines)
+//              | "sm" (1:1, 1 line + eyebrow only) | "thumb" (4:3, no
+//              text — just the band tint).
+
+interface Props {
+  title?: string;
+  category?: string;
+  size?: "hero" | "med" | "sm" | "thumb";
+}
+
+const {
+  title = "",
+  category = "Editorial",
+  size = "med",
+} = Astro.props;
+
+// Category palette — green is the canonical accent (per the 2026-05-09
+// Charter amendment); other categories tint off the navy / shade scale.
+const palette: Record<string, { from: string; to: string; ink: string }> = {
+  Guide:      { from: "#2d6a52", to: "#1f4a3a", ink: "#ffffff" },
+  Guides:     { from: "#2d6a52", to: "#1f4a3a", ink: "#ffffff" },
+  Review:     { from: "#1f3a4d", to: "#0f1f2e", ink: "#ffffff" },
+  Reviews:    { from: "#1f3a4d", to: "#0f1f2e", ink: "#ffffff" },
+  Deal:       { from: "#b8842a", to: "#7a571c", ink: "#ffffff" },
+  Deals:      { from: "#b8842a", to: "#7a571c", ink: "#ffffff" },
+  News:       { from: "#1f2328", to: "#0a0e14", ink: "#ffffff" },
+  Programme:  { from: "#2c5161", to: "#16323d", ink: "#ffffff" },
+  Topic:      { from: "#56606b", to: "#363c44", ink: "#ffffff" },
+  Editorial:  { from: "#2d6a52", to: "#1f4a3a", ink: "#ffffff" },
+};
+const tone = palette[category] ?? palette.Editorial;
+
+// Aspect + viewport per size
+const dims = {
+  hero:  { vb: "0 0 800 450", aspect: "16 / 9", titleSize: 32, eyebrowY: 50, titleY: 200 },
+  med:   { vb: "0 0 600 400", aspect: "3 / 2",  titleSize: 26, eyebrowY: 44, titleY: 160 },
+  sm:    { vb: "0 0 400 400", aspect: "1 / 1",  titleSize: 22, eyebrowY: 40, titleY: 200 },
+  thumb: { vb: "0 0 240 180", aspect: "4 / 3",  titleSize: 0,  eyebrowY: 0,  titleY: 0 },
+};
+const d = dims[size];
+
+// Word-wrap title for SVG <text>. Naive but adequate.
+function wrapWords(text: string, maxLines: number, maxCharsPerLine: number): string[] {
+  if (!text) return [];
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let current = "";
+  for (const w of words) {
+    const next = current ? current + " " + w : w;
+    if (next.length > maxCharsPerLine && current) {
+      lines.push(current);
+      current = w;
+      if (lines.length >= maxLines - 1) break;
+    } else {
+      current = next;
+    }
+  }
+  if (current && lines.length < maxLines) lines.push(current);
+  return lines.slice(0, maxLines);
+}
+
+const maxLines = size === "hero" ? 3 : size === "med" ? 2 : size === "sm" ? 1 : 0;
+const maxChars = size === "hero" ? 24 : size === "med" ? 22 : 20;
+const lines = size === "thumb" ? [] : wrapWords(title, maxLines, maxChars);
+
+// SVG corner ID slug — used by the diagonal-line pattern
+const patternId = `cover-pattern-${Math.random().toString(36).slice(2, 8)}`;
+const gradientId = `cover-gradient-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<svg
+  class={`dp-cover dp-cover-${size}`}
+  viewBox={d.vb}
+  preserveAspectRatio="xMidYMid slice"
+  role="img"
+  aria-label={`${category}${title ? `: ${title}` : ""}`}
+  style={`aspect-ratio: ${d.aspect};`}
+>
+  <defs>
+    <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color={tone.from} />
+      <stop offset="100%" stop-color={tone.to} />
+    </linearGradient>
+    <pattern id={patternId} x="0" y="0" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="22" stroke="#ffffff" stroke-width="1" stroke-opacity="0.05" />
+    </pattern>
+  </defs>
+
+  <!-- Base gradient + diagonal pattern -->
+  <rect width="100%" height="100%" fill={`url(#${gradientId})`} />
+  <rect width="100%" height="100%" fill={`url(#${patternId})`} />
+
+  <!-- Glow blob top-right for depth -->
+  <circle
+    cx={size === "hero" ? 700 : size === "med" ? 540 : 360}
+    cy={size === "hero" ? 80 : size === "med" ? 70 : 60}
+    r={size === "hero" ? 160 : size === "med" ? 120 : 90}
+    fill="#ffffff"
+    fill-opacity="0.06"
+  />
+
+  {size !== "thumb" && (
+    <>
+      {/* Eyebrow */}
+      <text
+        x="32"
+        y={d.eyebrowY}
+        fill={tone.ink}
+        opacity="0.7"
+        font-family="DM Sans, system-ui, sans-serif"
+        font-size="11"
+        font-weight="700"
+        letter-spacing="2.5"
+        style="text-transform: uppercase;"
+      >
+        {category.toUpperCase()}
+      </text>
+
+      {/* Title — multi-line */}
+      {lines.map((line, i) => (
+        <text
+          x="32"
+          y={d.titleY + i * (d.titleSize + 6)}
+          fill={tone.ink}
+          font-family="Fraunces, Georgia, serif"
+          font-size={d.titleSize}
+          font-weight="500"
+          letter-spacing="-0.4"
+        >
+          {line}
+        </text>
+      ))}
+
+      {/* Wordmark watermark, lower-right */}
+      <text
+        x={size === "hero" ? 768 : size === "med" ? 568 : 368}
+        y={size === "hero" ? 425 : size === "med" ? 375 : 375}
+        text-anchor="end"
+        fill={tone.ink}
+        opacity="0.45"
+        font-family="DM Sans, system-ui, sans-serif"
+        font-size="10"
+        font-weight="700"
+        letter-spacing="2"
+      >
+        DUBAIPOINTS<tspan fill={tone.ink} opacity="0.7">.</tspan>
+      </text>
+    </>
+  )}
+
+  {size === "thumb" && (
+    <text
+      x="50%"
+      y="55%"
+      text-anchor="middle"
+      fill={tone.ink}
+      opacity="0.7"
+      font-family="DM Sans, system-ui, sans-serif"
+      font-size="11"
+      font-weight="700"
+      letter-spacing="2"
+      style="text-transform: uppercase;"
+    >
+      {category.toUpperCase()}
+    </text>
+  )}
+</svg>
+
+<style>
+  .dp-cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: inherit;
+  }
+</style>

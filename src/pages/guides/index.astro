@@ -5,6 +5,7 @@
 // green-mark pull-quote + numbered feed + pagination.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import Cover from "~/components/Cover.astro";
 import { getCollection } from "astro:content";
 
 const guides = (await getCollection("guides")).sort(
@@ -60,7 +61,7 @@ const filters = [
       <div class="dp-featured-grid">
         {featured[0] && (
           <a href={`/guides/${featured[0].id}/`} class="dp-story-card hero">
-            <div class="cover">Cover · Guide</div>
+            <Cover title={featured[0].data.title} category="Guide" size="hero" />
             <div class="body">
               <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[0].data.updatedAt)}</span></div>
               <h3>{featured[0].data.title}</h3>
@@ -71,7 +72,7 @@ const filters = [
         )}
         {featured[1] && (
           <a href={`/guides/${featured[1].id}/`} class="dp-story-card med">
-            <div class="cover">Cover · Guide</div>
+            <Cover title={featured[1].data.title} category="Guide" size="med" />
             <div class="body">
               <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[1].data.updatedAt)}</span></div>
               <h3>{featured[1].data.title}</h3>
@@ -81,7 +82,7 @@ const filters = [
         )}
         {featured[2] && (
           <a href={`/guides/${featured[2].id}/`} class="dp-story-card med">
-            <div class="cover">Cover · Guide</div>
+            <Cover title={featured[2].data.title} category="Guide" size="med" />
             <div class="body">
               <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[2].data.updatedAt)}</span></div>
               <h3>{featured[2].data.title}</h3>
@@ -91,7 +92,7 @@ const filters = [
         )}
         {featured.slice(3, 7).map((g) => (
           <a href={`/guides/${g.id}/`} class="dp-story-card sm">
-            <div class="cover">Cover</div>
+            <Cover title={g.data.title} category="Guide" size="sm" />
             <div class="body">
               <div class="meta"><span class="cat">Guide</span><span>{fmt(g.data.updatedAt)}</span></div>
               <h3>{g.data.title}</h3>
@@ -129,7 +130,7 @@ const filters = [
                 <h3>{g.data.title}</h3>
                 <div class="summary">{g.data.description}</div>
               </div>
-              <div class="thumb">Cover · Guide</div>
+              <Cover category="Guide" size="thumb" />
               <div class="when">{fmt(g.data.updatedAt)}</div>
             </a>
           );

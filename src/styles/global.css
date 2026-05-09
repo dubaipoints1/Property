@@ -1021,17 +1021,15 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 12px 32px -16px rgba(15,31,46,0.18);
 }
 .dp-story-card:hover h3 { color: var(--green); }
-.dp-story-card .cover {
-  background: repeating-linear-gradient(-45deg, #eceae4 0 8px, #e3e1db 8px 16px);
+/* Cover SVG (Cover.astro) — sits inside .dp-story-card. The SVG carries
+   its own intrinsic aspect-ratio, so we only need to add the hairline
+   separator and clip behaviour from the old .cover wrapper. */
+.dp-story-card > .dp-cover {
   border-bottom: 1px solid var(--line);
-  display: flex; align-items: center; justify-content: center;
-  color: var(--muted);
-  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-  font-weight: 700;
+  width: 100%;
+  height: auto;
+  display: block;
 }
-.dp-story-card.hero .cover { aspect-ratio: 4 / 3; }
-.dp-story-card.med .cover  { aspect-ratio: 4 / 3; }
-.dp-story-card.sm .cover   { aspect-ratio: 16 / 9; }
 .dp-story-card .body {
   padding: 22px 22px 24px;
   display: flex; flex-direction: column; gap: 10px;
@@ -1157,14 +1155,14 @@ img { display: block; max-width: 100%; }
 .dp-feed-row .summary {
   font-size: 13px; color: var(--ink-soft); line-height: 1.5;
 }
-.dp-feed-row .thumb {
-  aspect-ratio: 1.6 / 1;
-  background: repeating-linear-gradient(-45deg, #eceae4 0 8px, #e3e1db 8px 16px);
-  border: 1px solid var(--line); border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--muted);
-  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-  font-weight: 700;
+/* Feed-row thumb is a Cover SVG (size="thumb"). Wrap with a border + radius
+   to match the design from before the placeholder swap. */
+.dp-feed-row > .dp-cover {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  display: block;
+  height: auto;
 }
 .dp-feed-row .when {
   text-align: right;

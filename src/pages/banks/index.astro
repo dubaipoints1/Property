@@ -3,6 +3,7 @@
 // Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import Cover from "~/components/Cover.astro";
 import { getCollection } from "astro:content";
 
 const banks = (await getCollection("banks")).sort((a, b) =>
@@ -50,7 +51,7 @@ const filters = [
       <div class="dp-featured-grid">
         {featured[0] && (
           <a href={`/banks/${featured[0].id}/`} class="dp-story-card hero">
-            <div class="cover">{featured[0].data.name}</div>
+            <Cover title={featured[0].data.name} category="Programme" size="hero" />
             <div class="body">
               <div class="meta"><span class="cat">UAE Bank</span><span>{featured[0].data.cards.length} card{featured[0].data.cards.length === 1 ? "" : "s"}</span></div>
               <h3>{featured[0].data.name}</h3>
@@ -63,7 +64,7 @@ const filters = [
         )}
         {[featured[1], featured[2]].filter(Boolean).map((b) => (
           <a href={`/banks/${b.id}/`} class="dp-story-card med">
-            <div class="cover">{b.data.name}</div>
+            <Cover title={b.data.name} category="Programme" size="med" />
             <div class="body">
               <div class="meta"><span class="cat">UAE Bank</span></div>
               <h3>{b.data.name}</h3>
@@ -75,7 +76,7 @@ const filters = [
         ))}
         {featured.slice(3, 7).map((b) => (
           <a href={`/banks/${b.id}/`} class="dp-story-card sm">
-            <div class="cover">{b.data.name}</div>
+            <Cover title={b.data.name} category="Programme" size="sm" />
             <div class="body">
               <div class="meta"><span class="cat">UAE Bank</span></div>
               <h3>{b.data.name}</h3>
@@ -115,7 +116,7 @@ const filters = [
                   <div class="summary">{new URL(b.data.customerService.website).hostname}</div>
                 )}
               </div>
-              <div class="thumb">{b.data.name.split(" ").map((w) => w[0]).slice(0, 3).join("")}</div>
+              <Cover category="Programme" size="thumb" />
               <div class="when">Hub →</div>
             </a>
           );
