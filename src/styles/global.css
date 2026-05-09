@@ -1982,3 +1982,61 @@ img { display: block; max-width: 100%; }
     gap: 8px;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Back-to-top button — site-wide, fixed bottom-right.
+   Hidden by default; .is-visible toggled by inline script in BaseLayout
+   when window.scrollY > 600. Click smooths to top, honouring
+   prefers-reduced-motion. Sits above the footer at z-index 40 (under the
+   header overlay at 200 / mega-panel at 48 by design).
+   ════════════════════════════════════════════════════════════════════════ */
+.dp-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(15, 31, 46, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    visibility 0s linear 0.2s;
+  z-index: 40;
+  padding: 0;
+}
+.dp-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+.dp-to-top:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dp-to-top {
+    transition: opacity 0.01s, visibility 0s linear 0.01s;
+    transform: none;
+  }
+  .dp-to-top.is-visible { transform: none; }
+}
+@media (max-width: 768px) {
+  .dp-to-top {
+    bottom: 16px;
+    right: 16px;
+  }
+}

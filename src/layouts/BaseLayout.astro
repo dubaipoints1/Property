@@ -77,5 +77,30 @@ const ogImageUrl = ogImage
       <slot />
     </main>
     <Footer />
+
+    <!-- Back-to-top — visible after 600px scroll, click smooths to top -->
+    <button id="dp-to-top" class="dp-to-top" type="button" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+           stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+           stroke-linejoin="round" aria-hidden="true">
+        <polyline points="6 14 12 8 18 14"></polyline>
+      </svg>
+    </button>
+    <script is:inline>
+      (function () {
+        var btn = document.getElementById('dp-to-top');
+        if (!btn) return;
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function update() {
+          if (window.scrollY > 600) btn.classList.add('is-visible');
+          else btn.classList.remove('is-visible');
+        }
+        window.addEventListener('scroll', update, { passive: true });
+        update();
+        btn.addEventListener('click', function () {
+          window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+        });
+      })();
+    </script>
   </body>
 </html>
