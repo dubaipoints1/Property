@@ -1,0 +1,103 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Page not found — DubaiPoints"
+  description="The page you were looking for has moved or no longer exists. Try the most-used sections of DubaiPoints, or use search to find what you need."
+  fullWidth
+>
+  <header class="dp-pagehead is-narrow">
+    <div class="crumb">404 · Page not found</div>
+    <h1>This page has moved or never existed.</h1>
+    <p class="deck">If you followed a link to get here, it's pointing somewhere we don't recognise. Try one of these instead.</p>
+  </header>
+
+  <div class="dp-404-body">
+    <div class="dp-404-grid">
+      <a class="dp-404-tile" href="/cards/">
+        <div class="t">Cards</div>
+        <div class="d">Every UAE credit card we've reviewed, sortable by salary, fee and reward type.</div>
+      </a>
+      <a class="dp-404-tile" href="/salary-transfer/">
+        <div class="t">Salary-transfer tracker</div>
+        <div class="d">Live cash, voucher and combined offers. Refreshed daily.</div>
+      </a>
+      <a class="dp-404-tile" href="/guides/">
+        <div class="t">Guides</div>
+        <div class="d">UAE-resident guides to credit, points, miles and the chrome around them.</div>
+      </a>
+      <a class="dp-404-tile" href="/airlines/">
+        <div class="t">Airlines + miles</div>
+        <div class="d">Skywards, Etihad Guest, Avios, flydubai OPEN — programme guides + sweet spots.</div>
+      </a>
+      <a class="dp-404-tile" href="/deals/">
+        <div class="t">Deals</div>
+        <div class="d">Time-bound UAE deals — only when they're actually worth your time.</div>
+      </a>
+      <a class="dp-404-tile" href="/search/">
+        <div class="t">Search</div>
+        <div class="d">If you remember a phrase from the page, search will probably find it.</div>
+      </a>
+    </div>
+
+    <p class="dp-404-tip">
+      Spotted a broken link?
+      <a href="mailto:info@dubaipoints.ae?subject=Broken+link">Email us</a>
+      and we'll fix it.
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .dp-404-body {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+  .dp-404-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .dp-404-tile {
+    display: block;
+    padding: 24px 22px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .dp-404-tile:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+  }
+  .dp-404-tile .t {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.4px;
+    margin-bottom: 8px;
+  }
+  .dp-404-tile .d {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .dp-404-tip {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  .dp-404-tip a {
+    color: var(--green);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
