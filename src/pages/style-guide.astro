@@ -118,6 +118,67 @@ const components = [
         <li><strong>HfP-dry voice.</strong> Evidence-led, AED-numerate, sceptical of programme marketing. Authority through specifics, not adjectives.</li>
       </ul>
     </section>
+
+    <section>
+      <h2>Voice fences (Standards Editor kill-list)</h2>
+      <p>Every user-facing string is reviewed at Stage 6.5 of the workflow. A draft fails Standards review if any of the following appear. Each rule has an example of what we reject and what we ship instead.</p>
+      <div class="sg-kill">
+        <div class="sg-kill-row"><div class="r">1 · Snarky / Twitter-voice</div><div class="x">"No 'Apply Now' buttons because we're not a comparison engine."</div><div class="y">"We do not run affiliate buttons in editorial copy."</div></div>
+        <div class="sg-kill-row"><div class="r">2 · Marketing hyperbole</div><div class="x">"The most trusted UAE points publication."</div><div class="y">"Independent. Source-verified. Reader-funded."</div></div>
+        <div class="sg-kill-row"><div class="r">3 · Inside-baseball jargon</div><div class="x">"LCC loyalty done plainly."</div><div class="y">"Loyalty for Air Arabia's low-cost network."</div></div>
+        <div class="sg-kill-row"><div class="r">4 · First-person plural in chrome</div><div class="x">"We think this card is good."</div><div class="y">"This card earns 4.2 of 5."</div></div>
+        <div class="sg-kill-row"><div class="r">5 · Excess punctuation</div><div class="x">"Save with our newsletter!"</div><div class="y">"Subscribe to the Friday brief."</div></div>
+        <div class="sg-kill-row"><div class="r">6 · Empty signposting</div><div class="x">"Here at DubaiPoints, we want to share something important: …"</div><div class="y">Just say the important thing.</div></div>
+        <div class="sg-kill-row"><div class="r">7 · Print-publication metaphor</div><div class="x">"Prints the date next to every verdict."</div><div class="y">"Every verdict is dated."</div></div>
+        <div class="sg-kill-row"><div class="r">8 · Inverted-pyramid violation</div><div class="x">Burying the most important word at the end of an h1.</div><div class="y">Lead with the most important word.</div></div>
+        <div class="sg-kill-row"><div class="r">9 · Imperative bullying</div><div class="x">"Apply now / Don't miss out / Get yours."</div><div class="y">"Read review / See offers / Open the calculator."</div></div>
+        <div class="sg-kill-row"><div class="r">10 · AED format drift</div><div class="x">"1,200 AED / Dh 1,200 / AED1200 / 5k+"</div><div class="y">"AED 1,200 / AED 5,000+"</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>AED format rule</h2>
+      <p>The standard is <code>AED&nbsp;&lt;number with thousand separators&gt;</code>. The space between unit and value is mandatory. Examples:</p>
+      <ul>
+        <li><strong>Allowed:</strong> <code>AED 1,200</code> · <code>AED 1,200 / yr</code> · <code>AED 5,000 – 8,000</code> · <code>AED 30,000+</code> · <code>AED 1,200/mo min</code></li>
+        <li><strong>Forbidden:</strong> <code>1,200 AED</code> · <code>Dh 1,200</code> · <code>Dhs. 1,200</code> · <code>AED1200</code> · <code>AED 5k</code> · <code>AED 30k+</code></li>
+      </ul>
+      <p>Shorthand <code>k</code> / <code>k+</code> is reserved for prose where the number is descriptive (e.g. "salaries north of AED 30,000"); never use it for chrome strings, URL labels, or tracker copy.</p>
+    </section>
+
+    <section>
+      <h2>Button labels</h2>
+      <p>Buttons describe what the next surface is, not what the reader should do. Approved verbs:</p>
+      <ul>
+        <li><code>Read review</code> · <code>Read the brief</code> · <code>Read the {`{programme}`} guide</code></li>
+        <li><code>See offers</code> · <code>See details</code> · <code>See methodology</code></li>
+        <li><code>Open the calculator</code> · <code>Open the tracker</code></li>
+        <li><code>Compare cards</code> · <code>Compare alternatives</code></li>
+      </ul>
+      <p>Forbidden: <code>Apply now</code>, <code>Sign up today</code>, <code>Don't miss out</code>, <code>Get yours</code>, <code>Click here</code>, <code>Read more →</code> (no destination).</p>
+    </section>
+
+    <section>
+      <h2>Self-reference guard</h2>
+      <p>Constructions that imply hyperbole or unverifiable rank are rejected even when they sound like brand voice:</p>
+      <ul>
+        <li><code>The only…</code> / <code>The leading…</code> / <code>The most trusted…</code></li>
+        <li><code>The first publication to…</code> (only allowed when factually documented)</li>
+        <li><code>Best-in-class</code> / <code>Industry-leading</code> / <code>Award-winning</code> (without the award)</li>
+      </ul>
+      <p>Verifiable substitutes: <code>Independent</code>, <code>Source-verified</code>, <code>Reader-funded</code>, <code>UAE-resident-led</code>.</p>
+    </section>
+
+    <section>
+      <h2>Crumb format</h2>
+      <p>Breadcrumb separator is <code>/</code> (forward slash with single spaces). Mid-string label separators are <code>·</code> (middle dot). Examples:</p>
+      <ul>
+        <li><code>DubaiPoints / Cards</code> (section index)</li>
+        <li><code>Cards / Cashback / FAB</code> (card review)</li>
+        <li><code>Tools / Salary transfer</code> (tools page)</li>
+        <li><code>404 · Page not found</code> (status, not breadcrumb — uses ·)</li>
+      </ul>
+    </section>
   </div>
   </div>
 </BaseLayout>
@@ -230,5 +291,49 @@ const components = [
   @media (max-width: 640px) {
     .sg-type-row,
     .sg-component-row { grid-template-columns: 1fr; gap: 6px; }
+  }
+
+  /* Voice fences kill-list */
+  .sg-kill {
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .sg-kill-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr;
+    gap: 16px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px;
+    align-items: start;
+  }
+  .sg-kill-row:last-child { border-bottom: 0; }
+  .sg-kill-row .r {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sg-kill-row .x {
+    color: var(--ink-soft);
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 1px;
+  }
+  .sg-kill-row .y {
+    color: var(--ink);
+    font-weight: 500;
+    border-left: 2px solid var(--green);
+    padding-left: 12px;
+  }
+  @media (max-width: 768px) {
+    .sg-kill-row { grid-template-columns: 1fr; gap: 6px; }
+    .sg-kill-row .y { border-left: 0; padding-left: 0; }
   }
 </style>
