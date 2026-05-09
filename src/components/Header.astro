@@ -20,16 +20,6 @@ const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 
-// Desktop primary nav — wireframe chrome.jsx Header order.
-const navLinks = [
-  { href: "/cards/",    label: "Cards"    },
-  { href: "/banks/",    label: "Banks"    },
-  { href: "/airlines/", label: "Airlines" },
-  { href: "/guides/",   label: "Guides"   },
-  { href: "/deals/",    label: "Deals"    },
-  { href: "/news/",     label: "News"     },
-];
-
 // Mobile menu — flat top-level rows (mirror wireframe MobileMenu).
 const mobileTop = [
   { href: "/newsletter/", label: "Subscribe", subscribe: true },
@@ -180,11 +170,57 @@ const trackerItems = [
       DubaiPoints<span class="dot">.</span>
     </a>
 
-    <!-- Desktop nav -->
+    <!-- Desktop nav (Cards + Airlines wrap mega panels) -->
     <nav class="dp-header-nav" aria-label="Primary">
-      {navLinks.map((l) => (
-        <a href={l.href} class={isActive(l.href) ? "is-active" : ""}>{l.label}</a>
-      ))}
+      <div class="dp-nav-mega-wrap">
+        <a href="/cards/" class={isActive("/cards/") ? "is-active" : ""}>
+          Cards
+          <span class="dp-mega-caret" aria-hidden="true">▾</span>
+        </a>
+        <div class="dp-megapanel" role="region" aria-label="Cards menu">
+          <div class="dp-megapanel-inner">
+            {cardsPanel.map((g) => (
+              <div class="dp-mega-grp">
+                <div class="dp-mega-grp-t">{g.title}</div>
+                {g.rows.map((r) => (
+                  <a class="dp-mega-sub" href={r.href}>
+                    <span class="lbl">{r.label}</span>
+                    {r.sub && <span class="sub">{r.sub}</span>}
+                  </a>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <a href="/banks/" class={isActive("/banks/") ? "is-active" : ""}>Banks</a>
+
+      <div class="dp-nav-mega-wrap">
+        <a href="/airlines/" class={isActive("/airlines/") ? "is-active" : ""}>
+          Airlines
+          <span class="dp-mega-caret" aria-hidden="true">▾</span>
+        </a>
+        <div class="dp-megapanel" role="region" aria-label="Airlines menu">
+          <div class="dp-megapanel-inner">
+            {pointsPanel.map((g) => (
+              <div class="dp-mega-grp">
+                <div class="dp-mega-grp-t">{g.title}</div>
+                {g.rows.map((r) => (
+                  <a class="dp-mega-sub" href={r.href}>
+                    <span class="lbl">{r.label}</span>
+                    {r.sub && <span class="sub">{r.sub}</span>}
+                  </a>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <a href="/guides/" class={isActive("/guides/") ? "is-active" : ""}>Guides</a>
+      <a href="/deals/" class={isActive("/deals/") ? "is-active" : ""}>Deals</a>
+      <a href="/news/" class={isActive("/news/") ? "is-active" : ""}>News</a>
     </nav>
 
     <!-- Desktop actions -->
@@ -520,6 +556,94 @@ const trackerItems = [
   .dp-header-nav a.is-active {
     color: var(--green);
     border-bottom-color: var(--green);
+  }
+
+  /* Desktop mega-menu wrappers — Cards + Airlines */
+  .dp-nav-mega-wrap { position: static; }
+  .dp-nav-mega-wrap > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .dp-mega-caret {
+    font-size: 10px;
+    color: var(--muted);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .dp-nav-mega-wrap:hover .dp-mega-caret,
+  .dp-nav-mega-wrap:focus-within .dp-mega-caret {
+    transform: rotate(180deg);
+    color: var(--green);
+  }
+
+  .dp-megapanel {
+    position: fixed;
+    top: 80px; /* dp-header-inner desktop height */
+    left: 0;
+    right: 0;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 12px 32px rgba(15, 31, 46, 0.10);
+    z-index: 48;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+  }
+  .dp-nav-mega-wrap:hover .dp-megapanel,
+  .dp-nav-mega-wrap:focus-within .dp-megapanel,
+  .dp-megapanel:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+  .dp-megapanel-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 32px 36px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+  .dp-mega-grp { display: flex; flex-direction: column; }
+  .dp-mega-grp-t {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin: 0 0 14px;
+  }
+  .dp-mega-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dp-mega-sub:last-child { border-bottom: 0; }
+  .dp-mega-sub .lbl {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink);
+    transition: color 0.15s ease;
+  }
+  .dp-mega-sub .sub {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .dp-mega-sub:hover .lbl,
+  .dp-mega-sub:focus-visible .lbl { color: var(--green); }
+
+  /* Hide mega panels under 1024 — mobile uses the full-screen overlay */
+  @media (max-width: 1023px) {
+    .dp-megapanel { display: none; }
+    .dp-mega-caret { display: none; }
   }
   .dp-header-actions {
     display: flex;
