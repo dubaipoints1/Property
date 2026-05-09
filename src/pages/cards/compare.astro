@@ -1,89 +1,170 @@
 ---
-import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
+// Card compare — Phase C tools template (Claude Design handoff).
+// Reference: dubaipoints/project/templates/tools.jsx::Compare.
+// Side-by-side spec comparison grouped by section (Eligibility /
+// Earn rates / Benefits / DP verdict / Score). Defaults to top-3
+// cards by welcomeBonusValue; future iteration adds a picker.
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
-import {
-  getAllCards,
-  welcomeBonusDisplay,
-  earnRatesNumeric,
-} from "~/lib/cardsData";
+import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
+
+// Default to top-3 cards by welcome-bonus value (the comparison-picker
+// from the design's Phase F lands later — for now this is a static
+// curated comparison).
+const allCards = getAllCards()
+  .filter((c) => c.welcomeBonus)
+  .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
+  .slice(0, 3);
 
 const cards = await Promise.all(
-  getAllCards().map(async (card) => {
+  allCards.map(async (card) => {
     const bank = await getEntry("banks", card.bank);
     return { card, bankName: bank?.data.name ?? card.bank };
   }),
 );
 
-const columns = [
-  "Annual fee",
-  "FX fee",
-  "Min salary",
-  "Salary transfer",
-  "Welcome bonus",
-  "Best earn rate",
-];
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
-const bestEarn = (rates: Record<string, number | undefined>) => {
-  const entries = Object.entries(rates).filter(([, v]) => typeof v === "number");
-  if (entries.length === 0) return "—";
-  const top = entries.sort((a, b) => (b[1] as number) - (a[1] as number))[0];
-  const [k, v] = top as [string, number];
-  return `${v}× on ${k.replace(/([A-Z])/g, " $1").toLowerCase()}`;
+// Pick a representative earn-rate metric per card.
+const earnLine = (card: typeof cards[number]["card"]) => {
+  const r = card.earnRates;
+  const max = Math.max(
+    ...[r.dining, r.groceries, r.shopping, r.travel, r.fuel, r.online].filter(
+      (v): v is number => typeof v === "number",
+    ),
+    r.everythingElse,
+  );
+  if (max === r.everythingElse) return `${max}× per AED 1`;
+  const cat =
+    r.travel === max ? "travel" :
+    r.dining === max ? "dining" :
+    r.groceries === max ? "groceries" :
+    r.shopping === max ? "shopping" :
+    r.fuel === max ? "fuel" : "category";
+  return `${max}× ${cat}, ${r.everythingElse}× rest`;
 };
-
-const rows = cards.map(({ card, bankName }) => ({
-  cardName: card.name,
-  bankName,
-  href: `/cards/${card.slug}/`,
-  values: [
-    `AED ${card.annualFee.amount.toLocaleString()}`,
-    `${card.fxFee}%`,
-    `AED ${card.eligibility.minSalary.toLocaleString()}/mo`,
-    card.eligibility.salaryTransferRequired ? "Required" : "Not required",
-    welcomeBonusDisplay(card.welcomeBonus) || "—",
-    bestEarn(earnRatesNumeric(card.earnRates)),
-  ],
-}));
 ---
 
-<ComparisonTableLayout
-  title="Compare UAE credit cards"
-  description="Side-by-side comparison of every card we cover — annual fee, FX fee, minimum salary, salary-transfer status, welcome bonus, and best earn rate. Sorted by minimum salary, lowest first."
-  columns={columns}
-  rows={rows}
+<BaseLayout
+  title="Compare UAE credit cards — side-by-side specs"
+  description="Side-by-side comparison of UAE credit cards across eligibility, earn rates, benefits, and DubaiPoints verdict. Top welcome-bonus cards by default."
+  fullWidth
 >
-  <h2>How to use this table</h2>
-  <p>
-    The cards are sorted by <strong>minimum monthly salary</strong>, lowest
-    first, so the most accessible cards appear at the top. UAE banks are
-    legally required to verify the salary band you've declared, so a card with
-    a minimum salary higher than yours is not eligible — even if you find a
-    workaround. Filter accordingly.
-  </p>
+  <div class="dp-pagehead">
+    <div class="crumb">DubaiPoints / Tools / Compare</div>
+    <h1>Compare cards</h1>
+    <p>Side-by-side spec comparison. Defaults to the three highest welcome-bonus cards we cover. A picker lands in a future release; for now the comparison is curated.</p>
 
-  <h3>What "Best earn rate" means</h3>
-  <p>
-    The category with the highest multiplier on the card. A figure like
-    "2.5× on dining" means each AED of dining spend earns 2.5 of the card's
-    base reward unit (typically a Skywards Mile, an Etihad Guest Mile, or a
-    bank-specific point). It is not directly comparable across cards because
-    the underlying currency may differ — see our quarterly{" "}
-    <a href="/valuations/">AED valuations</a> for the dirham value of each
-    programme's currency.
-  </p>
+    <div class="dp-tools-stats">
+      <span><span class="lbl">Cards covered:</span> <strong>{getAllCards().length}</strong></span>
+      <span><span class="lbl">Showing:</span> <strong>{cards.length} top welcome-bonus</strong></span>
+      <span><span class="lbl">Methodology:</span> <strong style="color: var(--link);"><a href="/editorial-policy/">Read →</a></strong></span>
+    </div>
+  </div>
 
-  <h3>What this table doesn't show</h3>
-  <p>
-    Eligibility detail (UAE residency, employment type, documents required),
-    perks (lounge access, free supplementary cards, insurance), and the
-    editorial verdict — those live on each card's individual review page.
-    Click any card name to read the full review.
-  </p>
+  {cards.length === 0 ? (
+    <div style="padding: 64px 32px; text-align: center; color: var(--ink-soft);">
+      <p style="font-size: 16px;">No cards available to compare.</p>
+    </div>
+  ) : (
+    <>
+      <!-- Card mocks across the top -->
+      <div class="dp-compare-head">
+        <div></div>
+        {cards.map((c) => (
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="dp-cr-mock" style="aspect-ratio: 1.586/1; max-width: 100%;">
+              <div class="b">{c.bankName}</div>
+              <div class="n">{c.card.name}</div>
+              <div class="b" style="align-self: flex-end;">{c.card.network}</div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <a href={`/cards/${c.card.slug}/`} style="font-size: 11px; color: var(--ink-soft); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600;">Read review →</a>
+            </div>
+          </div>
+        ))}
+      </div>
 
-  <p>
-    Information for general guidance only. Verify rates, fees, and terms with
-    the issuing bank before applying. See our{" "}
-    <a href="/editorial-policy/">editorial policy</a> for our verification
-    standards.
-  </p>
-</ComparisonTableLayout>
+      <!-- Eligibility section -->
+      <div class="dp-compare-row is-section">
+        <span class="k">Eligibility</span>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="dp-compare-row">
+        <span class="k">Annual fee</span>
+        {cards.map((c) => <span class="v">AED {c.card.annualFee.amount.toLocaleString()}</span>)}
+      </div>
+      <div class="dp-compare-row">
+        <span class="k">Minimum salary</span>
+        {cards.map((c) => <span class="v">AED {c.card.eligibility.minSalary.toLocaleString()}/mo</span>)}
+      </div>
+      <div class="dp-compare-row">
+        <span class="k">Network</span>
+        {cards.map((c) => <span class="v" style="font-weight: 500;">{c.card.network}</span>)}
+      </div>
+      <div class="dp-compare-row">
+        <span class="k">Salary transfer</span>
+        {cards.map((c) => (
+          <span class={`v ${c.card.eligibility.salaryTransferRequired ? "warn" : "flag"}`}>
+            {c.card.eligibility.salaryTransferRequired ? "Required" : "Not required"}
+          </span>
+        ))}
+      </div>
+
+      <!-- Earn rates section -->
+      <div class="dp-compare-row is-section">
+        <span class="k">Earn rates</span>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="dp-compare-row">
+        <span class="k">Top category</span>
+        {cards.map((c) => <span class="v">{earnLine(c.card)}</span>)}
+      </div>
+      <div class="dp-compare-row">
+        <span class="k">Welcome bonus</span>
+        {cards.map((c) => <span class="v">{welcomeBonusDisplay(c.card.welcomeBonus) ?? "—"}</span>)}
+      </div>
+      <div class="dp-compare-row">
+        <span class="k">FX markup</span>
+        {cards.map((c) => <span class="v">{c.card.fxFee}%</span>)}
+      </div>
+
+      <!-- Benefits section -->
+      <div class="dp-compare-row is-section">
+        <span class="k">Benefits</span>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="dp-compare-row">
+        <span class="k">Loyalty programme</span>
+        {cards.map((c) => <span class="v" style="font-weight: 500;">{c.card.loyaltyProgram ?? "—"}</span>)}
+      </div>
+      <div class="dp-compare-row">
+        <span class="k">Last verified</span>
+        {cards.map((c) => <span class="v" style="font-weight: 500;">{fmt(c.card.lastVerified)}</span>)}
+      </div>
+
+      <!-- Verdict section -->
+      <div class="dp-compare-row is-section">
+        <span class="k">DP verdict</span>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="dp-compare-row" style="padding: 24px 32px;">
+        <span class="k">Welcome value (AED)</span>
+        {cards.map((c) => (
+          <span style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 24px; color: var(--green);">
+            {c.card.welcomeBonusValue != null ? `AED ${c.card.welcomeBonusValue.toLocaleString()}` : "—"}
+          </span>
+        ))}
+      </div>
+    </>
+  )}
+
+  <div class="dp-tools-actions" style="margin-top: 32px;">
+    <span style="font-size: 13px; color: var(--ink-soft);">
+      Add up to <strong>4</strong> cards. Scores are DubaiPoints internal, recalibrated quarterly.
+    </span>
+    <span><a href="/cards/">All cards →</a></span>
+  </div>
+</BaseLayout>

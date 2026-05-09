@@ -1488,3 +1488,203 @@ img { display: block; max-width: 100%; }
   color: white;
 }
 .dp-spec-card.is-call .compare-link:hover { opacity: 1; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Tools template (Phase C — Claude Design handoff).
+   Used by /salary-transfer/, /valuations/, /cards/compare/.
+   Reference: dubaipoints/project/templates/tools.jsx.
+   pagehead with stats strip → toolbar (search + dropdowns + reset)
+   → sortable table with bank-mark cells + delta indicators →
+   methodology footer.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Pagehead stats strip — counts / refresh / methodology link */
+.dp-tools-stats {
+  margin-top: 20px;
+  display: flex; flex-wrap: wrap; gap: 24px;
+  font-size: 13px; color: var(--ink-soft);
+}
+.dp-tools-stats .lbl { color: var(--muted); }
+.dp-tools-stats strong { color: var(--ink); font-weight: 600; }
+
+/* Toolbar — search + dropdowns + reset */
+.dp-toolbar {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.dp-toolbar-input {
+  flex: 1; min-width: 240px;
+  height: 42px;
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 0 18px;
+  font-size: 13px; background: var(--paper);
+  color: var(--ink-soft);
+  display: flex; align-items: center;
+}
+.dp-toolbar-select {
+  height: 42px; padding: 0 18px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--paper);
+  font-size: 13px;
+  display: flex; align-items: center; gap: 8px;
+  min-width: 160px;
+  color: var(--ink-soft); cursor: pointer;
+}
+.dp-toolbar-select::after { content: "▾"; margin-left: auto; color: var(--muted); }
+.dp-toolbar-reset {
+  height: 42px; padding: 0 16px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--paper); color: var(--ink-soft);
+  font-size: 12px; font-weight: 500;
+  display: inline-flex; align-items: center;
+  cursor: pointer;
+}
+.dp-toolbar-reset:hover { border-color: var(--ink); color: var(--ink); }
+
+/* Sortable table */
+.dp-tools-table-wrap { padding: 0 32px; overflow-x: auto; }
+.dp-tools-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+  min-width: 720px;
+}
+.dp-tools-table th {
+  text-align: left;
+  padding: 14px 16px;
+  background: var(--shade-1);
+  font-size: 10px; font-weight: 700; letter-spacing: 1.8px;
+  text-transform: uppercase; color: var(--ink-soft);
+  border-bottom: 1px solid var(--line);
+}
+.dp-tools-table th.sort-active { color: var(--green); }
+.dp-tools-table td {
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: middle;
+}
+.dp-tools-table tr:hover td { background: var(--shade-1); }
+.dp-tools-table .bank-cell {
+  display: flex; gap: 12px; align-items: center;
+}
+.dp-tools-table .bank-mark {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: var(--shade-2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--ink-soft);
+}
+.dp-tools-table .bank-name { font-weight: 600; color: var(--ink); }
+.dp-tools-table .bank-tier { font-size: 11px; color: var(--muted); }
+.dp-tools-table .num {
+  font-variant-numeric: tabular-nums; font-weight: 600;
+  color: var(--ink);
+}
+.dp-tools-table .delta-up { color: var(--green); font-weight: 600; }
+.dp-tools-table .delta-down { color: var(--red); font-weight: 600; }
+.dp-tools-table .when { color: var(--muted); font-size: 12px; }
+.dp-tools-table .status-active {
+  color: var(--green); font-weight: 600; font-size: 12px;
+}
+.dp-tools-table .status-paused {
+  color: var(--red); font-weight: 600; font-size: 12px;
+}
+.dp-tools-table .details-link {
+  text-align: right;
+  color: var(--link); font-weight: 600; font-size: 12px;
+}
+
+/* Distribution bar — used in valuations table */
+.dp-val-bar {
+  height: 8px;
+  background: var(--shade-1);
+  border-radius: 4px;
+  overflow: hidden; position: relative;
+  min-width: 120px;
+}
+.dp-val-bar > span {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: var(--green);
+  border-radius: 4px;
+}
+
+/* Methodology footer for tools pages */
+.dp-tools-methodology {
+  padding: 40px 32px; background: var(--bg);
+  border-top: 1px solid var(--line);
+  display: grid; gap: 24px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .dp-tools-methodology { grid-template-columns: repeat(3, 1fr); }
+}
+.dp-tools-methodology .col .lbl {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--green);
+  margin-bottom: 10px;
+}
+.dp-tools-methodology .col p {
+  font-size: 13px; color: var(--ink-soft);
+  line-height: 1.55; margin: 0;
+}
+
+/* Tools page-foot strip — links + actions */
+.dp-tools-actions {
+  padding: 24px 32px;
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+.dp-tools-actions a {
+  color: var(--ink-soft); font-weight: 600;
+}
+.dp-tools-actions a:hover { color: var(--green); }
+
+/* Card-compare grid (for /cards/compare/) */
+.dp-compare-head {
+  display: grid;
+  grid-template-columns: 200px repeat(3, 1fr);
+  gap: 24px;
+  padding: 40px 32px;
+  background: var(--shade-1);
+  border-bottom: 1px solid var(--line);
+}
+.dp-compare-row {
+  display: grid;
+  grid-template-columns: 200px repeat(3, 1fr);
+  gap: 24px;
+  padding: 18px 32px;
+  border-bottom: 1px solid var(--line-soft);
+  align-items: center;
+  font-size: 13px;
+}
+.dp-compare-row.is-section {
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  padding-block: 14px;
+}
+.dp-compare-row .k {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.dp-compare-row.is-section .k { color: var(--green); }
+.dp-compare-row .v {
+  font-weight: 600; font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.dp-compare-row .v.flag { color: var(--green); }
+.dp-compare-row .v.warn { color: var(--red); }
+@media (max-width: 1024px) {
+  .dp-compare-head, .dp-compare-row {
+    grid-template-columns: 140px repeat(3, 1fr);
+    gap: 16px;
+    padding-inline: 24px;
+  }
+}
+@media (max-width: 768px) {
+  .dp-compare-head, .dp-compare-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}

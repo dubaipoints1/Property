@@ -1,39 +1,84 @@
 ---
-import SalaryTransferTrackerLayout from "~/layouts/SalaryTransferTrackerLayout.astro";
+// Salary-transfer tracker — Phase C tools template (Claude Design handoff).
+// Reference: dubaipoints/project/templates/tools.jsx::Tracker.
+// Preserves the existing Preact island for live filtering/sorting; wraps
+// it in the new tools chrome (pagehead with stats strip + toolbar + table
+// + methodology footer).
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
 import { getLiveOffers } from "~/lib/offerAdapter";
 
 const offers = await getLiveOffers();
 
 const bands = [
-  { slug: "aed-5000-to-8000", label: "AED 5,000 – 8,000" },
-  { slug: "aed-8000-to-15000", label: "AED 8,000 – 15,000" },
+  { slug: "aed-5000-to-8000",   label: "AED 5,000 – 8,000" },
+  { slug: "aed-8000-to-15000",  label: "AED 8,000 – 15,000" },
   { slug: "aed-15000-to-30000", label: "AED 15,000 – 30,000" },
   { slug: "aed-30000-to-50000", label: "AED 30,000 – 50,000" },
-  { slug: "aed-50000-plus", label: "AED 50,000+" },
+  { slug: "aed-50000-plus",     label: "AED 50,000+" },
 ];
+
+const today = new Date();
+const fmtFull = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 ---
 
-<SalaryTransferTrackerLayout
+<BaseLayout
   title="UAE salary transfer offers — live tracker"
   description="All live UAE salary transfer cash bonuses, voucher offers, and combined card+salary promotions, filterable by salary band and reward type."
-  liveCount={offers.length}
+  fullWidth
 >
-  <div slot="tracker">
-    <SalaryTransferTracker offers={offers} client:load />
+  <div class="dp-pagehead">
+    <div class="crumb">DubaiPoints / Tools / Salary-transfer tracker</div>
+    <h1>Salary-transfer tracker</h1>
+    <p>Every UAE bank's salary-transfer offer in one table. Verified against issuer T&amp;Cs, refreshed daily. Filter by salary band, reward type, or specific bank.</p>
+
+    <div class="dp-tools-stats">
+      <span><span class="lbl">Banks tracked:</span> <strong>{new Set(offers.map((o) => o.bankSlug)).size}</strong></span>
+      <span><span class="lbl">Live offers:</span> <strong>{offers.length}</strong></span>
+      <span><span class="lbl">Last refresh:</span> <strong>{fmtFull(today)}</strong></span>
+    </div>
   </div>
 
-  <Fragment slot="bands">
-    {
-      bands.map((b) => (
-        <a
-          href={`/salary-transfer/${b.slug}/`}
-          class="rounded-md border border-slate-200 bg-white p-4 no-underline hover:border-brand-500"
-        >
-          <p class="text-xs uppercase tracking-wide text-slate-500">Salary band</p>
-          <p class="mt-1 text-base font-semibold text-slate-900">{b.label}</p>
+  <!-- Preact island handles filter UI + sortable table -->
+  <SalaryTransferTracker offers={offers} client:load />
+
+  <!-- Salary-band entry points -->
+  <section class="dp-featured-band" style="padding-top: 56px;">
+    <div class="dp-featured-eyebrow">
+      <span>Per-band landings</span>
+      <span class="rule"></span>
+      <span class="meta">Drill into a specific salary range</span>
+    </div>
+    <div class="dp-dir-grid" style="gap: 12px;">
+      {bands.map((b) => (
+        <a href={`/salary-transfer/${b.slug}/`} class="dp-dir-tile">
+          <span class="eyebrow">Salary band</span>
+          <span class="title">{b.label}</span>
         </a>
-      ))
-    }
-  </Fragment>
-</SalaryTransferTrackerLayout>
+      ))}
+    </div>
+  </section>
+
+  <!-- Methodology footer -->
+  <section class="dp-tools-methodology">
+    <div class="col">
+      <div class="lbl">How we verify</div>
+      <p>Every offer cross-checked against the bank's published Schedule of Charges and current relationship-manager terms. Verification dates stamped per offer.</p>
+    </div>
+    <div class="col">
+      <div class="lbl">How we value vouchers</div>
+      <p>AED-denominated vouchers (Carrefour, noon, Lulu) discounted to 80% of face value to reflect realistic redemption rates for typical UAE residents.</p>
+    </div>
+    <div class="col">
+      <div class="lbl">How we treat clawback</div>
+      <p>Per-bank clawback windows (typically 6–24 months) noted in each offer detail page. Offers are flagged when clawback materially affects net AED value.</p>
+    </div>
+  </section>
+
+  <div class="dp-tools-actions">
+    <span><a href="/editorial-policy/">Methodology</a> · <a href="mailto:info@dubaipoints.ae">Submit a correction</a></span>
+    <span><a href="/rss.xml">Subscribe to changes</a></span>
+  </div>
+</BaseLayout>

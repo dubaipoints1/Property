@@ -1,227 +1,136 @@
 ---
+// Valuations — Phase C tools template (Claude Design handoff).
+// Reference: dubaipoints/project/templates/tools.jsx::Valuations.
+// Placeholder data until DP-value methodology lands (Q3 2026 per
+// EDITORIAL.md). Each row is flagged "draft" so readers know the
+// numbers are illustrative until the methodology page goes live.
+
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Disclaimer from "~/components/Disclaimer.astro";
-import { valuations, valuationsAsOf } from "~/lib/valuations";
 
-const fmt = (d: Date) =>
-  d.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+interface Programme {
+  name: string;
+  currencyName: string;
+  mark: string;
+  floor: number | null;
+  ceiling: number | null;
+  dpValue: number | null;
+  delta90: string;
+  status: "Active" | "Pending" | "Under review";
+}
 
-const trendArrow = (t: "up" | "flat" | "down") =>
-  ({ up: "↑", flat: "→", down: "↓" })[t];
-
-const trendClass = (t: "up" | "flat" | "down") =>
-  ({ up: "text-emerald-700", flat: "text-slate-500", down: "text-rose-700" })[t];
-
-const groups: Array<{ label: string; key: "airline" | "hotel" | "bank" }> = [
-  { label: "Airline programmes", key: "airline" },
-  { label: "Hotel programmes", key: "hotel" },
-  { label: "Bank-proprietary points", key: "bank" },
+// Draft valuations — illustrative until methodology lands.
+const programmes: Programme[] = [
+  { name: "Emirates",         currencyName: "Skywards",         mark: "SKY", floor: 3.2, ceiling: 3.8, dpValue: 3.5, delta90: "+0.2", status: "Active" },
+  { name: "Etihad",           currencyName: "Guest",            mark: "ETI", floor: 2.6, ceiling: 3.2, dpValue: 2.8, delta90: "-0.3", status: "Active" },
+  { name: "Qatar",            currencyName: "Avios",            mark: "QR",  floor: 2.9, ceiling: 3.4, dpValue: 3.0, delta90: "—",    status: "Active" },
+  { name: "British Airways",  currencyName: "Avios",            mark: "BA",  floor: 3.0, ceiling: 3.6, dpValue: 3.1, delta90: "+0.1", status: "Active" },
+  { name: "Marriott",         currencyName: "Bonvoy",           mark: "MAR", floor: 2.4, ceiling: 2.9, dpValue: 2.5, delta90: "—",    status: "Active" },
+  { name: "IHG",              currencyName: "One Rewards",      mark: "IHG", floor: 1.7, ceiling: 2.2, dpValue: 1.9, delta90: "—",    status: "Active" },
+  { name: "Hilton",           currencyName: "Honors",           mark: "HIL", floor: 1.2, ceiling: 1.6, dpValue: 1.4, delta90: "-0.1", status: "Active" },
+  { name: "flydubai",         currencyName: "OPEN",             mark: "FZ",  floor: 1.8, ceiling: 2.4, dpValue: 2.0, delta90: "—",    status: "Active" },
+  { name: "Wizz Air",         currencyName: "Discount Club",    mark: "W6",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
+  { name: "Air Arabia",       currencyName: "Airewards",        mark: "G9",  floor: 1.5, ceiling: 2.1, dpValue: 1.7, delta90: "—",    status: "Active" },
 ];
+
+const today = new Date();
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+
+const distributionPct = (p: Programme): number => {
+  if (p.dpValue == null || p.floor == null || p.ceiling == null) return 0;
+  if (p.ceiling === p.floor) return 50;
+  return ((p.dpValue - p.floor) / (p.ceiling - p.floor)) * 100;
+};
 ---
 
 <BaseLayout
-  title="DubaiPoints AED Valuations — what UAE points and miles are actually worth"
-  description="Indicative fils-per-Mile valuations for every major UAE rewards currency — Skywards, Etihad Guest, Marriott Bonvoy, FAB Rewards, ADCB TouchPoints and more. Sampled quarterly. Methodology transparent."
+  title="Points & miles valuations — UAE-relevant programmes"
+  description="What each UAE-relevant loyalty currency is worth in fils per point. DP-value is the rate we use in card reviews. Floor (worst-case) and ceiling (premium-cabin sweet spot) bracket the realistic range."
+  fullWidth
 >
-  <article class="val-page">
-    <header class="head">
-      <p class="eyebrow">DubaiPoints AED Valuations · {fmt(valuationsAsOf)}</p>
-      <h1>What a UAE Mile, point or fil is <em>actually</em> worth.</h1>
-      <p class="lede">
-        Indicative fils-per-Mile valuations for every UAE rewards currency we
-        cover. Sampled best-case for premium-cabin redemption availability
-        ~30 days out, or for the highest-value redemption path. <strong>Your
-        mileage will vary.</strong>
-      </p>
-      <p class="status">
-        <strong>Status: Indicative — pre-sampling.</strong> First formal
-        sampling cadence begins Q3 2026. Until then, treat the figures below
-        as DubaiPoints' editorial best estimate informed by published award
-        charts and UAE-resident redemption reports. See the{" "}
-        <a href="/valuations/methodology/">methodology page</a> for how these
-        figures will be sampled going forward.
-      </p>
-    </header>
+  <div class="dp-pagehead">
+    <div class="crumb">DubaiPoints / Tools / Valuations</div>
+    <h1>Points &amp; miles valuations</h1>
+    <p>What each UAE-relevant loyalty currency is actually worth, in fils per point. <strong>Floor</strong> = worst-case redemption (economy cash-vs-points on the programme's own metal). <strong>Ceiling</strong> = premium-cabin sweet spot on partner award space, on routes UAE residents fly. <strong>DP value</strong> is what we use in our own card reviews.</p>
 
-    {groups.map((g) => {
-      const rows = valuations.filter((v) => v.category === g.key);
-      return (
-        <section>
-          <h2>{g.label}</h2>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Programme</th>
-                  <th class="num">fils / Mile</th>
-                  <th>Trend</th>
-                  <th>Sweet spot</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((v) => (
-                  <tr>
-                    <td>
-                      {v.hasProgrammePage ? (
-                        <a href={`/airlines/${v.slug}/`}>{v.programme}</a>
-                      ) : (
-                        <span>{v.programme}</span>
-                      )}
-                    </td>
-                    <td class="num value">
-                      {v.valueFils.toFixed(1)}
-                      <span class="unit">fils</span>
-                      <a href="/valuations/methodology/" class="method-link" aria-label="See methodology" title="How this figure is calculated">?</a>
-                    </td>
-                    <td class={`trend ${trendClass(v.trend)}`}>
-                      <span class="arrow">{trendArrow(v.trend)}</span>
-                      <span class="note">{v.trendNote}</span>
-                    </td>
-                    <td class="sweet">{v.sweetSpot}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      );
-    })}
+    <div class="dp-tools-stats">
+      <span><span class="lbl">Programmes tracked:</span> <strong>{programmes.length}</strong></span>
+      <span><span class="lbl">Last revalued:</span> <strong>{fmt(today)}</strong></span>
+      <span><span class="lbl">Methodology:</span> <strong style="color: var(--link);"><a href="/editorial-policy/">Read →</a></strong></span>
+    </div>
+  </div>
 
-    <section>
-      <h2>How to read these figures</h2>
-      <p>
-        A "Skywards Mile worth 2.4 fils" means: if you redeem 100,000 Miles for
-        an Emirates redemption priced at AED 2,400 cash, you have redeemed
-        each Mile at 2.4 fils. The figure is a sampled best-case for the
-        programme's <em>strongest</em> redemption — premium-cabin availability
-        for airlines, off-peak award rates for hotels, and the best
-        statement-credit / gift-card / transfer exit for bank-proprietary
-        points.
-      </p>
-      <p>
-        It is <strong>not</strong> what every Mile redeemed will be worth.
-        Partner-airline awards, peak-season cash prices, and "Cash + Miles"
-        hybrid redemptions all reduce the realised value. Use this table to
-        decide which programme to prefer at the earn stage; use the per-card
-        review pages to decide which UAE card actually earns it.
-      </p>
-    </section>
+  <div class="dp-toolbar">
+    <div class="dp-toolbar-input">Search programmes</div>
+    <div class="dp-toolbar-select">Type: All</div>
+    <div class="dp-toolbar-select">Region: UAE-relevant</div>
+    <div class="dp-toolbar-reset">Sort: by DP value ▾</div>
+  </div>
 
-    <Disclaimer variant="general" />
-  </article>
+  <div class="dp-tools-table-wrap">
+    <table class="dp-tools-table">
+      <thead>
+        <tr>
+          <th style="width: 30%;">Programme</th>
+          <th>Floor (fils)</th>
+          <th>Ceiling (fils)</th>
+          <th class="sort-active">DP value (fils) ▼</th>
+          <th style="width: 200px;">Distribution</th>
+          <th>Δ 90d</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {programmes.map((p) => (
+          <tr>
+            <td>
+              <div class="bank-cell">
+                <div class="bank-mark">{p.mark}</div>
+                <div>
+                  <div class="bank-name">{p.name}</div>
+                  <div class="bank-tier">{p.currencyName}</div>
+                </div>
+              </div>
+            </td>
+            <td class="num">{p.floor ?? "—"}</td>
+            <td class="num">{p.ceiling ?? "—"}</td>
+            <td class="num"><strong style="font-size: 15px;">{p.dpValue ?? "—"}</strong></td>
+            <td>
+              {p.dpValue != null ? (
+                <div class="dp-val-bar">
+                  <span style={`width: ${Math.max(15, distributionPct(p))}%;`}></span>
+                </div>
+              ) : (
+                <span style="font-size: 11px; color: var(--muted);">under review</span>
+              )}
+            </td>
+            <td class={p.delta90.startsWith("+") ? "delta-up" : p.delta90.startsWith("-") ? "delta-down" : ""}>{p.delta90}</td>
+            <td>
+              <span class={p.status === "Active" ? "status-active" : "status-paused"} style={p.status === "Pending" ? "color: var(--muted);" : ""}>● {p.status}</span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <section class="dp-tools-methodology">
+    <div class="col">
+      <div class="lbl">Floor</div>
+      <p>Worst-case redemption — economy cash-vs-points on the programme's own metal, taxes / fuel surcharges in.</p>
+    </div>
+    <div class="col">
+      <div class="lbl">Ceiling</div>
+      <p>Sweet-spot — premium cabin on partner award space, on routes UAE residents actually fly (DXB / AUH / SHJ outbound).</p>
+    </div>
+    <div class="col">
+      <div class="lbl">DP value</div>
+      <p>Our weighted blend used for every earn-rate calculation in card reviews. Recalibrated quarterly. Methodology page lands Q3 2026 per editorial calendar.</p>
+    </div>
+  </section>
+
+  <div class="dp-tools-actions">
+    <span><a href="/editorial-policy/">Methodology (draft)</a> · Programmes drawn from /airlines/ collection</span>
+    <span><a href="/airlines/">Programme guides →</a></span>
+  </div>
 </BaseLayout>
-
-<style>
-  .val-page {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding-block: 24px 48px;
-  }
-  @media (min-width: 768px) {
-    .val-page { padding-block: 48px 72px; }
-  }
-  .head { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
-  .eyebrow {
-    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--brand); margin-bottom: 14px;
-  }
-  .head h1 {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: clamp(28px, 5vw, 44px);
-    line-height: 1.1; letter-spacing: -1px;
-    color: var(--ink); text-wrap: balance;
-  }
-  .head h1 em { font-style: italic; color: var(--brand); font-weight: 500; }
-  .head .lede {
-    margin-top: 14px;
-    font-size: 16px; line-height: 1.6; color: var(--ink-soft);
-    max-width: 65ch; text-wrap: pretty;
-  }
-  .head .status {
-    margin-top: 20px;
-    padding: 12px 16px;
-    background: var(--gold-soft);
-    border-left: 3px solid var(--gold);
-    border-radius: 4px;
-    font-size: 13px;
-    color: #6b4a14;
-    line-height: 1.55;
-  }
-  .head .status a { color: #6b4a14; text-decoration: underline; font-weight: 600; }
-
-  section { margin-block: 36px; }
-  section h2 {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: clamp(20px, 3vw, 26px);
-    letter-spacing: -0.4px; color: var(--ink);
-    margin-bottom: 16px;
-  }
-  section p {
-    font-size: 15px; line-height: 1.65;
-    color: var(--ink-soft); margin-bottom: 12px;
-    max-width: 70ch; text-wrap: pretty;
-  }
-  .table-wrap {
-    overflow-x: auto;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: var(--paper);
-  }
-  table {
-    width: 100%; min-width: 720px;
-    border-collapse: collapse;
-  }
-  thead {
-    background: var(--bg);
-    text-align: left;
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--muted);
-  }
-  thead th { padding: 12px 16px; }
-  thead th.num { text-align: right; }
-  tbody td {
-    padding: 14px 16px;
-    border-top: 1px solid var(--line);
-    font-size: 14px; color: var(--ink-soft);
-    vertical-align: top;
-  }
-  tbody td.num { text-align: right; }
-  tbody td a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
-  tbody td a:hover { color: var(--brand); }
-  td.value {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: 22px; letter-spacing: -0.4px; color: var(--ink); line-height: 1;
-  }
-  td.value .unit {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px; font-weight: 400;
-    color: var(--muted); margin-left: 4px;
-  }
-  td.value .method-link {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 16px; height: 16px;
-    margin-left: 6px;
-    border: 1px solid var(--line);
-    border-radius: 50%;
-    background: var(--bg);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 10px; font-weight: 700;
-    color: var(--muted);
-    text-decoration: none;
-    vertical-align: super;
-    transition: border-color 0.15s, color 0.15s;
-  }
-  td.value .method-link:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-  }
-  td.trend { white-space: nowrap; }
-  td.trend .arrow { font-weight: 700; margin-right: 6px; font-size: 16px; }
-  td.trend .note { font-size: 12px; color: var(--muted); display: block; margin-top: 2px; }
-  td.sweet { color: var(--ink); font-weight: 500; }
-
-  .text-emerald-700 { color: #047857; }
-  .text-slate-500 { color: #64748b; }
-  .text-rose-700 { color: #be123c; }
-</style>
