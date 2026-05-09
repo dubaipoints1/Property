@@ -3,6 +3,7 @@
 // Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import Cover from "~/components/Cover.astro";
 import { getEntry } from "astro:content";
 import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
 
@@ -62,7 +63,7 @@ const filters = [
       <div class="dp-featured-grid">
         {featured[0] && (
           <a href={`/cards/${featured[0].card.slug}/`} class="dp-story-card hero">
-            <div class="cover">Card art · {featured[0].card.network}</div>
+            <Cover title={featured[0].card.name} category="Review" size="hero" />
             <div class="body">
               <div class="meta">
                 <span class="cat">Review</span>
@@ -76,7 +77,7 @@ const filters = [
         )}
         {[featured[1], featured[2]].filter(Boolean).map((f) => (
           <a href={`/cards/${f.card.slug}/`} class="dp-story-card med">
-            <div class="cover">Card · {f.card.network}</div>
+            <Cover title={f.card.name} category="Review" size="med" />
             <div class="body">
               <div class="meta"><span class="cat">Review</span><span>{f.bankName}</span></div>
               <h3>{f.card.name}</h3>
@@ -86,7 +87,7 @@ const filters = [
         ))}
         {featured.slice(3, 7).map((f) => (
           <a href={`/cards/${f.card.slug}/`} class="dp-story-card sm">
-            <div class="cover">Card</div>
+            <Cover title={f.card.name} category="Review" size="sm" />
             <div class="body">
               <div class="meta"><span class="cat">Review</span><span>{f.bankName}</span></div>
               <h3>{f.card.name}</h3>
@@ -128,7 +129,7 @@ const filters = [
                   {f.card.network}
                 </div>
               </div>
-              <div class="thumb">Card · {f.card.network}</div>
+              <Cover category="Review" size="thumb" />
               <div class="when">{fmt(f.card.lastVerified)}</div>
             </a>
           );

@@ -4,6 +4,7 @@
 // /deals/[slug].astro detail route lands in Phase B2 (article template).
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import Cover from "~/components/Cover.astro";
 import { getCollection, getEntry } from "astro:content";
 
 const todayMs = Date.now();
@@ -82,7 +83,7 @@ const formatCategory = (c: string) =>
           <div class="dp-featured-grid">
             {featured[0] && (
               <a href={`/deals/${featured[0].entry.id}/`} class="dp-story-card hero">
-                <div class="cover">{formatCategory(featured[0].entry.data.category)}</div>
+                <Cover title={featured[0].entry.data.title} category="Deal" size="hero" />
                 <div class="body">
                   <div class="meta">
                     <span class="cat">{formatCategory(featured[0].entry.data.category)}</span>
@@ -96,7 +97,7 @@ const formatCategory = (c: string) =>
             )}
             {[featured[1], featured[2]].filter(Boolean).map((d) => (
               <a href={`/deals/${d.entry.id}/`} class="dp-story-card med">
-                <div class="cover">{formatCategory(d.entry.data.category)}</div>
+                <Cover title={d.entry.data.title} category="Deal" size="med" />
                 <div class="body">
                   <div class="meta"><span class="cat">{formatCategory(d.entry.data.category)}</span><span>{d.bankName}</span></div>
                   <h3>{d.entry.data.title}</h3>
@@ -106,7 +107,7 @@ const formatCategory = (c: string) =>
             ))}
             {featured.slice(3, 7).map((d) => (
               <a href={`/deals/${d.entry.id}/`} class="dp-story-card sm">
-                <div class="cover">{formatCategory(d.entry.data.category)}</div>
+                <Cover title={d.entry.data.title} category="Deal" size="sm" />
                 <div class="body">
                   <div class="meta"><span class="cat">{formatCategory(d.entry.data.category)}</span><span>{d.bankName}</span></div>
                   <h3>{d.entry.data.title}</h3>
@@ -144,7 +145,7 @@ const formatCategory = (c: string) =>
                     <h3>{d.entry.data.title}</h3>
                     <div class="summary">{d.bankName} · live until {fmt(d.entry.data.expiresOn)}</div>
                   </div>
-                  <div class="thumb">{formatCategory(d.entry.data.category)}</div>
+                  <Cover category="Deal" size="thumb" />
                   <div class="when">{fmt(d.entry.data.expiresOn)}</div>
                 </a>
               );
