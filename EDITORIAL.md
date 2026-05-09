@@ -69,10 +69,13 @@ language is:
   `--paper`, `--bg`, `--line`, `--brand`, `--brand-deep`, `--brand-soft`,
   `--gold`, `--gold-soft`, `--red`, `--green`, `--muted`. No Tailwind
   slate utilities in layouts or long-form pages.
-- **Two-accent system.** `--brand` (electric blue, `#1e6bd6`) is the
-  primary accent: section eyebrows, italic title accents, hover
-  states, link-hover, focus rings, primary CTAs, directory tile hover
-  borders, "+" bullet markers, and the byline avatar gradient.
+- **Two-accent system.** `--green` (`#2d6a52`, deep editorial green)
+  is the **primary accent**: section eyebrows, italic title accents,
+  hover states, link-hover, focus rings, primary CTAs, directory tile
+  hover borders, "+" bullet markers, kicker copy, and the byline
+  avatar gradient. (Ratified by Chairman 2026-05-09; supersedes the
+  earlier electric-blue `--brand` token, which remains as a fallback
+  alias only.)
   `--gold` (`#b8842a`) is the secondary trust-signal accent: the
   Verified chip on bylines, the "Our take" callout border + soft
   background, the affiliate-link asterisk (`*`), the bank-callout
