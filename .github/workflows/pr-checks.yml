@@ -1,0 +1,59 @@
+# PR validation gate.
+#
+# Runs on every pull request targeting main. Combined with a branch-
+# protection rule on main that requires the `validate` job, this gives
+# us a CI safety net: PRs cannot merge unless astro check, build, and
+# tests pass. Auto-merge waits for this check to go green before
+# squashing.
+#
+# One-time setup the user does after this workflow lands:
+#   Settings → Branches → Add branch protection rule for `main`
+#   ✓ Require status checks to pass before merging
+#   Search and add: validate
+#   Save.
+#
+# After that, every PR I open with auto-merge enabled merges itself
+# the moment this workflow finishes green. No clicks for the user.
+
+name: PR checks
+
+on:
+  pull_request:
+    branches:
+      - main
+  # Also run on push to main so the green check shows on the merged
+  # commit history, useful for spotting silent regressions.
+  push:
+    branches:
+      - main
+
+# Cancel previous runs on the same PR if a new commit lands.
+concurrency:
+  group: pr-checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: npm install
+        run: npm install --no-audit --no-fund
+
+      - name: astro check
+        run: npm run check
+
+      - name: build
+        run: npm run build
+
+      - name: tests
+        run: npm test
