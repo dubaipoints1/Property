@@ -1,0 +1,234 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+
+// Internal style guide. Documents the .dp-* class system + CSS custom
+// properties so future contributors and partner journalists have a single
+// reference. Pagefind-ignored — this is a craft document, not editorial.
+
+const palette = [
+  { name: "--bg",       hex: "#fbfaf6", desc: "Page background — warm paper" },
+  { name: "--paper",    hex: "#fdfcf8", desc: "Card / surface fill" },
+  { name: "--shade-1",  hex: "#f1eee7", desc: "Soft tint band" },
+  { name: "--shade-2",  hex: "#e0dccf", desc: "Stronger tint, hairlines" },
+  { name: "--ink",      hex: "#1f2328", desc: "Primary text" },
+  { name: "--ink-soft", hex: "#3d434d", desc: "Body text" },
+  { name: "--muted",    hex: "#6b7280", desc: "Tertiary text, eyebrows" },
+  { name: "--line",     hex: "#dad6cd", desc: "Border / divider" },
+  { name: "--navy",     hex: "#1f3a4d", desc: "Hero band, accent dark" },
+  { name: "--navy-deep",hex: "#0f1f2e", desc: "Footer, deepest tone" },
+  { name: "--green",    hex: "#2d6a52", desc: "Primary accent — links, success, eyebrows" },
+  { name: "--gold",     hex: "#b8842a", desc: "Trust signal — Verified, asterisks" },
+  { name: "--red",      hex: "#a30016", desc: "Affiliate asterisk, error" },
+];
+
+const typeScale = [
+  { label: "Hero h1",        sample: "What's a UAE Mile actually worth?", style: "font-family:'Fraunces',serif;font-weight:500;font-size:clamp(32px,4.5vw,48px);letter-spacing:-1.2px;color:var(--ink);" },
+  { label: "Section h2",     sample: "How the score works",               style: "font-family:'Fraunces',serif;font-weight:500;font-size:clamp(20px,2.6vw,26px);letter-spacing:-0.4px;color:var(--ink);" },
+  { label: "Italic deck",    sample: "AED-first, source-verified, UAE-resident.", style: "font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:22px;color:var(--ink-soft);" },
+  { label: "Body p",         sample: "DubaiPoints publishes UAE-resident analysis.", style: "font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.65;color:var(--ink-soft);" },
+  { label: "Eyebrow",        sample: "EDITORIAL POLICY",                  style: "font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);" },
+  { label: "Tabular num",    sample: "AED 12,400.00",                     style: "font-family:'DM Sans',sans-serif;font-feature-settings:'tnum';font-size:15px;font-weight:600;color:var(--ink);" },
+];
+
+const components = [
+  { name: ".dp-pagehead",            desc: "Section landing header. Wide variant for index pages." },
+  { name: ".dp-pagehead.is-narrow",  desc: "Narrow gradient variant for article pages — used by ArticleLayout / TrustPageLayout." },
+  { name: ".dp-byline-strip",        desc: "Avatar + filed/verified date strip. Used between pagehead and body on articles." },
+  { name: ".dp-prose",               desc: "Editorial body wrapper. Drop-cap on first paragraph by default; opt-out via container modifier." },
+  { name: ".dp-pullbox",             desc: "Highlighted info block inside prose. Green eyebrow + shaded background." },
+  { name: ".dp-take",                desc: "\"Our take\" callout — green eyebrow + soft-tint background. Used on card reviews." },
+  { name: ".dp-proscons",            desc: "Two-column pros/cons grid with green and red accents." },
+  { name: ".dp-spec-card",           desc: "Sticky-sidebar spec card. is-call variant for the dark Editor's call block." },
+  { name: ".dp-cr-mock",             desc: "Card review hero placeholder card art. Reads data-bank=\"<slug>\" for per-issuer tint." },
+  { name: ".dp-verdict-pill",        desc: "Score pill on card review hero. Score / 5 + Last verified date." },
+  { name: ".dp-tools-stats",         desc: "Inline stats strip below pagehead on tools pages." },
+  { name: ".dp-tools-table",         desc: "Sortable / filterable tools table. Used on /salary-transfer/ and /valuations/." },
+  { name: ".dp-tools-methodology",   desc: "3-column methodology footer for tools pages." },
+  { name: ".dp-megapanel",           desc: "Desktop mega-menu panel. Shown on Cards / Airlines hover or focus." },
+  { name: ".dp-feed",                desc: "Numbered feed list — used on section index pages below the featured grid." },
+  { name: ".dp-story-card",          desc: "Hero / med / sm story card variants for the featured band." },
+  { name: ".dp-trust-meta",          desc: "Compact 'Last updated · Editorial standards' strip below trust-page heads." },
+  { name: ".dp-glossary",            desc: "<dl> styling for glossary terms — Fraunces dt, soft-ink dd, hairline rules." },
+];
+---
+
+<BaseLayout
+  title="Style guide — DubaiPoints"
+  description="Internal reference for the DubaiPoints .dp-* class system, CSS custom properties, and editorial chrome. For contributors and partner journalists."
+  fullWidth
+>
+  <div data-pagefind-ignore>
+  <header class="dp-pagehead is-narrow">
+    <div class="crumb">Internal · Style guide</div>
+    <h1>The chrome, in one page.</h1>
+    <p class="deck">Every CSS custom property, type scale, and `.dp-*` component used on the site, with examples. Maintained alongside the design handoff.</p>
+  </header>
+
+  <div class="sg-body">
+    <section>
+      <h2>Palette</h2>
+      <p>Two-accent system. <strong>Green</strong> is the primary — links, eyebrows, success. <strong>Gold</strong> is the trust-signal accent — Verified chips, affiliate asterisks. Each colour has a single job.</p>
+      <div class="sg-palette">
+        {palette.map((c) => (
+          <div class="sg-swatch">
+            <div class="chip" style={`background: ${c.hex};`}></div>
+            <div class="meta">
+              <code>{c.name}</code>
+              <span class="hex">{c.hex}</span>
+              <span class="desc">{c.desc}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <h2>Type scale</h2>
+      <p>Fraunces (serif) for headlines, eyebrows and the "Our take" labels. DM Sans for body and UI. Italic Fraunces 500 is reserved for the deck under article H1s.</p>
+      <div class="sg-type">
+        {typeScale.map((t) => (
+          <div class="sg-type-row">
+            <div class="lbl">{t.label}</div>
+            <div class="sample" style={t.style}>{t.sample}</div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <h2>Components</h2>
+      <p>The full <code>.dp-*</code> namespace. Each component is documented in <code>src/styles/global.css</code> with section comments.</p>
+      <div class="sg-components">
+        {components.map((c) => (
+          <div class="sg-component-row">
+            <code>{c.name}</code>
+            <span>{c.desc}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section>
+      <h2>Editorial guarantees</h2>
+      <ul>
+        <li><strong>AED-first.</strong> Every monetary figure on the site renders in dirhams unless explicitly noted. No USD defaults.</li>
+        <li><strong>Source-verified.</strong> Every card review and salary-transfer offer carries a <em>Last verified</em> date. Pages with stamps older than 90 days are flagged in UI.</li>
+        <li><strong>Affiliate asterisks.</strong> Any monetary link tied to an affiliate programme renders with a red asterisk and a footnote linking to <a href="/partnership/">/partnership/</a>. The asterisk is identical on cards we recommend and cards we don't.</li>
+        <li><strong>No "Apply Now" CTAs.</strong> Buttons read "Read review", "See details", "Compare". The verdict drives the click, not the marketing.</li>
+        <li><strong>HfP-dry voice.</strong> Evidence-led, AED-numerate, sceptical of programme marketing. Authority through specifics, not adjectives.</li>
+      </ul>
+    </section>
+  </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .sg-body {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 32px 32px 80px;
+  }
+  section { margin-bottom: 48px; }
+  section h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(22px, 2.6vw, 28px);
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    margin: 0 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  section > p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 0 0 20px;
+    max-width: 70ch;
+  }
+  section > p code,
+  .sg-component-row code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    background: var(--shade-1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+  section ul { font-size: 14px; color: var(--ink-soft); line-height: 1.65; max-width: 70ch; }
+  section ul li { margin-bottom: 8px; }
+
+  .sg-palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .sg-swatch {
+    display: flex; gap: 12px;
+    padding: 12px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .sg-swatch .chip {
+    width: 40px; height: 40px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .sg-swatch .meta { display: grid; gap: 2px; min-width: 0; }
+  .sg-swatch code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .sg-swatch .hex { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .sg-swatch .desc { font-size: 11px; color: var(--ink-soft); line-height: 1.4; }
+
+  .sg-type {
+    display: grid; gap: 10px;
+  }
+  .sg-type-row {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 16px;
+    padding: 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    align-items: center;
+  }
+  .sg-type-row .lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .sg-components {
+    display: grid; gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .sg-component-row {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 16px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px;
+    color: var(--ink-soft);
+    align-items: center;
+  }
+  .sg-component-row:last-child { border-bottom: 0; }
+  .sg-component-row code { white-space: nowrap; }
+
+  @media (max-width: 640px) {
+    .sg-type-row,
+    .sg-component-row { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>
