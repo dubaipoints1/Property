@@ -1,17 +1,35 @@
 ---
+// Guides index — section-index template (Phase B1, Claude Design handoff).
+// Reference: dubaipoints/project/templates/chrome.jsx::SectionIndex.
+// Page-head + filter pills + featured grid (1 hero + 2 medium + 4 small) +
+// green-mark pull-quote + numbered feed + pagination.
+
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
 const guides = (await getCollection("guides")).sort(
-  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+  (a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime(),
 );
 
 const fmt = (d: Date) =>
-  d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-// Surface the Expat Starter pillar prominently if present.
+// Pillar treatment: surface the Expat Starter cornerstone if present —
+// it slots into the hero card position. Otherwise top-most by updatedAt.
 const pillar = guides.find((g) => g.id === "expat-starter");
 const others = guides.filter((g) => g.id !== "expat-starter");
+const featured = pillar ? [pillar, ...others.slice(0, 6)] : others.slice(0, 7);
+const remaining = pillar ? others.slice(6) : others.slice(7);
+
+// Filter facets — informal categories until guides schema gains a `category`.
+const filters = [
+  { label: "All", active: true },
+  { label: "Salary transfer" },
+  { label: "Account opening" },
+  { label: "Redemptions" },
+  { label: "Valuations" },
+  { label: "Tax & compliance" },
+];
 ---
 
 <BaseLayout
@@ -19,67 +37,110 @@ const others = guides.filter((g) => g.id !== "expat-starter");
   description="Long-form, AED-first guides to UAE credit-card eligibility, salary-transfer mechanics, miles redemption strategy, and expat-specific friction."
   fullWidth
 >
-  <article class="dp-article is-wide">
-    <header class="dp-article-head">
-      <p class="dp-article-eyebrow">Guides</p>
-      <h1 class="dp-article-title">Deep, evergreen <em>UAE</em> reference content.</h1>
-      <p class="dp-article-lede">Long-form guides built to last — refreshed quarterly, every figure in AED, every figure sourced.</p>
-    </header>
+  <div class="dp-pagehead">
+    <div class="crumb">DubaiPoints / Guides</div>
+    <h1>Guides</h1>
+    <p>Long-form analysis on UAE banking, salary transfer, points valuations and redemption strategy. Updated as products change — not on a schedule.</p>
+  </div>
 
-    {pillar && (
-      <a href={`/guides/${pillar.id}/`} class="dp-pillar-card">
-        <span class="badge">Cornerstone</span>
-        <h2>{pillar.data.title}</h2>
-        <p>{pillar.data.description}</p>
-        <span class="cta">Open the Expat Starter →</span>
-      </a>
-    )}
+  <div class="dp-filters">
+    {filters.map((f) => (
+      <span class={`dp-filter-pill${f.active ? " is-active" : ""}`}>{f.label}</span>
+    ))}
+    <span class="dp-sort">Sort: <strong>Newest</strong> ▾</span>
+  </div>
 
-    <div class="dp-dir-grid">
-      {others.map((g) => (
-        <a href={`/guides/${g.id}/`} class="dp-dir-tile">
-          <span class="eyebrow">Guide</span>
-          <span class="title">{g.data.title}</span>
-          <span class="desc">{g.data.description}</span>
-          <span class="meta">Updated {fmt(g.data.updatedAt)}</span>
-        </a>
-      ))}
-    </div>
-  </article>
+  {featured.length > 0 && (
+    <section class="dp-featured-band">
+      <div class="dp-featured-eyebrow">
+        <span>Featured this week</span>
+        <span class="rule"></span>
+        <span class="meta">Curated by editors · refreshed Mondays</span>
+      </div>
+      <div class="dp-featured-grid">
+        {featured[0] && (
+          <a href={`/guides/${featured[0].id}/`} class="dp-story-card hero">
+            <div class="cover">Cover · Guide</div>
+            <div class="body">
+              <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[0].data.updatedAt)}</span></div>
+              <h3>{featured[0].data.title}</h3>
+              <p>{featured[0].data.description}</p>
+              <div class="by">By DubaiPoints Editorial</div>
+            </div>
+          </a>
+        )}
+        {featured[1] && (
+          <a href={`/guides/${featured[1].id}/`} class="dp-story-card med">
+            <div class="cover">Cover · Guide</div>
+            <div class="body">
+              <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[1].data.updatedAt)}</span></div>
+              <h3>{featured[1].data.title}</h3>
+              <p>{featured[1].data.description}</p>
+            </div>
+          </a>
+        )}
+        {featured[2] && (
+          <a href={`/guides/${featured[2].id}/`} class="dp-story-card med">
+            <div class="cover">Cover · Guide</div>
+            <div class="body">
+              <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[2].data.updatedAt)}</span></div>
+              <h3>{featured[2].data.title}</h3>
+              <p>{featured[2].data.description}</p>
+            </div>
+          </a>
+        )}
+        {featured.slice(3, 7).map((g) => (
+          <a href={`/guides/${g.id}/`} class="dp-story-card sm">
+            <div class="cover">Cover</div>
+            <div class="body">
+              <div class="meta"><span class="cat">Guide</span><span>{fmt(g.data.updatedAt)}</span></div>
+              <h3>{g.data.title}</h3>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <div class="dp-pullquote">
+    <div class="mark">"</div>
+    <blockquote>
+      The only UAE points publication that pays its own annual fees, refuses advertorial, and prints the date next to every verdict.
+    </blockquote>
+    <div class="attr"><span class="rule"></span>Editorial standard · est. 2026</div>
+  </div>
+
+  {remaining.length > 0 && (
+    <>
+      <div class="dp-list-head">
+        <div class="t">All guides</div>
+        <div class="m">Sorted by date · {remaining.length} more below</div>
+      </div>
+      <div class="dp-feed">
+        {remaining.map((g, i) => {
+          const n = i + featured.length + 1;
+          return (
+            <a href={`/guides/${g.id}/`} class="dp-feed-row">
+              <div>
+                <div class="num">{String(n).padStart(2, "0")}</div>
+                <div class="feed-eyebrow">Guide</div>
+              </div>
+              <div>
+                <h3>{g.data.title}</h3>
+                <div class="summary">{g.data.description}</div>
+              </div>
+              <div class="thumb">Cover · Guide</div>
+              <div class="when">{fmt(g.data.updatedAt)}</div>
+            </a>
+          );
+        })}
+      </div>
+    </>
+  )}
+
+  <div class="dp-page-nav">
+    <span style="font-size:12px;color:var(--muted);">
+      Showing all {guides.length} guide{guides.length === 1 ? "" : "s"}
+    </span>
+  </div>
 </BaseLayout>
-
-<style>
-  .dp-pillar-card {
-    display: block;
-    border: 1px solid var(--ink);
-    border-radius: 8px;
-    background: var(--ink);
-    color: white;
-    padding: 24px 28px;
-    margin-bottom: 32px;
-    transition: background 0.15s;
-  }
-  .dp-pillar-card:hover { background: #1c1f27; }
-  .dp-pillar-card .badge {
-    display: inline-block;
-    font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--brand);
-    margin-bottom: 12px;
-  }
-  .dp-pillar-card h2 {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: clamp(20px, 3vw, 26px);
-    letter-spacing: -0.4px; color: white;
-    margin-bottom: 10px; text-wrap: balance;
-  }
-  .dp-pillar-card p {
-    font-size: 14px; line-height: 1.6;
-    color: rgba(255,255,255,0.78);
-    max-width: 65ch; margin-bottom: 14px;
-  }
-  .dp-pillar-card .cta {
-    display: inline-block;
-    font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
-    color: var(--brand);
-  }
-</style>
