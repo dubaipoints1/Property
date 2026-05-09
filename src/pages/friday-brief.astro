@@ -1,0 +1,47 @@
+---
+import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+---
+
+<TrustPageLayout
+  title="The Friday brief — DubaiPoints"
+  description="One email each Friday with the week's UAE salary-transfer changes, new card offers, miles redemptions worth knowing about, and lifestyle deals. AED-first, no fluff."
+  eyebrow="The Friday brief"
+  heading="One email. Friday morning. AED-first."
+  deck="Every Friday at 09:00 GST: the week's UAE salary-transfer changes, new card offers, points-and-miles sweet spots worth a look, and the deals we'd actually take. Per-band RSS feeds for readers who prefer not to be in inboxes."
+  lastUpdated={new Date("2026-05-09")}
+>
+  <section>
+    <h2>What's in it</h2>
+    <ul>
+      <li><strong>Salary-transfer log.</strong> Every UAE bank that changed an offer this week — new tier, raised threshold, expired bonus, voucher swap.</li>
+      <li><strong>Cards in motion.</strong> Annual fee, FX fee, welcome bonus or eligibility changes that landed this week, plus a one-line take.</li>
+      <li><strong>Miles redemption of the week.</strong> One sweet spot we found that's actually bookable, not theoretical.</li>
+      <li><strong>One deal worth your time.</strong> Lifestyle-culture editor's pick — only the ones we'd take ourselves.</li>
+      <li><strong>One number.</strong> A figure from the UAE banking / loyalty world worth thinking about, briefly.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What's not in it</h2>
+    <ul>
+      <li>Affiliate links disguised as picks. The asterisk system is the firewall — it'll be in the brief unchanged.</li>
+      <li>Sponsored slots. The brief is unfunded.</li>
+      <li>Inbox filler. If a Friday has nothing material, it's a short email — not a long one with padding.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Subscribe</h2>
+    <p>Sign-up is being wired up via <a href="https://buttondown.email/" target="_blank" rel="noopener">Buttondown</a>. While the form is pending, email <a href="mailto:info@dubaipoints.ae?subject=Friday+brief">info@dubaipoints.ae</a> with subject "<em>Friday brief</em>" and we'll add you to the holding list. Migration to the live form is automatic.</p>
+    <p>Prefer RSS? The site-wide feed is at <a href="/rss.xml"><code>/rss.xml</code></a>. Per-band salary-transfer feeds will follow once the band landings ship.</p>
+  </section>
+
+  <section class="related">
+    <h3>Related</h3>
+    <ul>
+      <li><a href="/newsletter/">Newsletter (subscribe page)</a></li>
+      <li><a href="/editorial-policy/">Editorial policy</a></li>
+      <li><a href="/about/">About DubaiPoints</a></li>
+    </ul>
+  </section>
+</TrustPageLayout>

@@ -1,0 +1,43 @@
+---
+import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+---
+
+<TrustPageLayout
+  title="Partnerships and affiliates — DubaiPoints"
+  description="How DubaiPoints handles affiliate links, brand partnerships and sponsored content. Independence is non-negotiable; the financial firewall is in writing."
+  eyebrow="Partnerships"
+  heading="Where the money does and doesn't come from."
+  deck="If we ever earn affiliate commission on a card application — we don't yet — every link is marked with an asterisk and a footnote linking here. This page is the firewall, and it stays that way."
+  lastUpdated={new Date("2026-05-09")}
+>
+  <section>
+    <h2>Affiliate links</h2>
+    <p>An affiliate link is a tracked link to a bank's "Apply now" page that pays the publisher a commission if the reader applies and is approved. Many UAE comparison sites are funded almost entirely by these.</p>
+    <p>DubaiPoints does not yet run affiliate links. The architecture is in place — every monetary link in the site renders with a `markedAffiliate` flag — but no affiliate programme is live. When the first one goes live, every affiliate link on the site will be marked with a red asterisk (<span class="ast">*</span>) and a footnote pointing here.</p>
+    <p>Crucially, the asterisk is the same on a card we recommend and on a card we don't. Affiliate eligibility does not influence the verdict. Cards we'd tell you to skip get the asterisk and the same flat treatment as the cards we'd tell you to apply for.</p>
+  </section>
+
+  <section>
+    <h2>Brand partnerships</h2>
+    <p>We do not accept brand-sponsored content. No "presented by" articles, no "in partnership with" deals coverage, no rev-share trip reviews. The editorial team plans the calendar; the only input from the commercial side is whether an affiliate exists for a card we were going to cover anyway.</p>
+  </section>
+
+  <section>
+    <h2>Newsletter</h2>
+    <p>The Friday brief is unfunded. We do not sell sponsorship slots in the email, do not insert ad creative, and do not share the subscriber list with any third party. Cloudflare Web Analytics is the only third-party measurement on the site; it does not use cookies.</p>
+  </section>
+
+  <section>
+    <h2>Conflicts of interest</h2>
+    <p>Editors disclose their own UAE banking relationships annually on the <a href="/team/">team page</a>. If an editor holds a card under review, the byline notes it. If a bank has employed or paid an editor in the past two years, that editor recuses themselves from coverage of the bank.</p>
+  </section>
+
+  <section class="related">
+    <h3>Related</h3>
+    <ul>
+      <li><a href="/how-we-make-money/">How we make money</a></li>
+      <li><a href="/editorial-policy/">Editorial policy</a></li>
+      <li><a href="/corrections/">Corrections log</a></li>
+    </ul>
+  </section>
+</TrustPageLayout>
