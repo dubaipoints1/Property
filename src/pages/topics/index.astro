@@ -1,0 +1,123 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+
+// Topic hub directory. Each entry maps to the closest existing route until
+// dedicated topic pages ship.
+
+const topics = [
+  // Loyalty programmes
+  { group: "Loyalty programmes", entries: [
+    { href: "/airlines/skywards/",     label: "Emirates Skywards",       deck: "Earn, burn and the Saver-vs-Flex split." },
+    { href: "/airlines/etihad-guest/", label: "Etihad Guest",             deck: "Dynamic pricing, Reward Seats, partner sweet spots." },
+    { href: "/airlines/",              label: "Qatar Privilege Club",     deck: "Avios in Doha — what works in 2026." },
+    { href: "/airlines/flydubai-open/",label: "flydubai OPEN",            deck: "OPEN points, Skywards-pegged award rates." },
+    { href: "/airlines/",              label: "Saudia Alfursan",          deck: "GCC awards out of UAE airports." },
+    { href: "/airlines/",              label: "Air Arabia Airewards",     deck: "LCC loyalty done plainly." },
+  ]},
+  // Banks (UAE issuers)
+  { group: "UAE banks", entries: [
+    { href: "/banks/fab/",     label: "FAB",     deck: "Cards, salary transfer, FAB Rewards." },
+    { href: "/banks/enbd/",    label: "Emirates NBD", deck: "Skywards co-brands, ENBD Rewards, Liv. for entry-level." },
+    { href: "/banks/mashreq/", label: "Mashreq",      deck: "Salaam points, Solo digital tier, salary-transfer offers." },
+    { href: "/banks/adcb/",    label: "ADCB",         deck: "TouchPoints, the SimplyLife sub-brand, mortgage tie-ins." },
+    { href: "/banks/hsbc/",    label: "HSBC",         deck: "Premier expectations, Asia-Pac transfer partners." },
+    { href: "/banks/dib/",     label: "DIB",          deck: "Fee-only Sharia cards from Dubai Islamic Bank." },
+    { href: "/banks/adib/",    label: "ADIB",         deck: "Abu Dhabi Islamic Bank — cashback, Etihad Guest co-brand." },
+  ]},
+  // Themes
+  { group: "Themes we cover", entries: [
+    { href: "/salary-transfer/", label: "Salary transfer",     deck: "Live tracker, per-band landing pages, calculator." },
+    { href: "/valuations/",      label: "AED valuations",      deck: "Fils-per-Mile for every UAE rewards currency we cover." },
+    { href: "/cards/cashback/",  label: "Cashback cards",      deck: "Capped vs uncapped, monthly cycles, and the traps." },
+    { href: "/cards/miles/",     label: "Miles cards",         deck: "Co-brand vs transferable, FX markup, lounge access." },
+    { href: "/cards/islamic/",   label: "Islamic (Sharia) cards", deck: "AAOIFI-aligned profit-rate models, fee-only structures." },
+    { href: "/guides/",          label: "Expat starter",       deck: "First card, AECB credit, salary-band realities." },
+    { href: "/deals/",           label: "Deals",               deck: "Time-bound UAE deals only when they're worth the time." },
+    { href: "/news/",            label: "News",                deck: "Bank changes, programme devaluations, regulator notes." },
+  ]},
+];
+---
+
+<BaseLayout
+  title="Topics — every subject DubaiPoints covers"
+  description="Browse DubaiPoints by loyalty programme, UAE bank, or theme. Skywards, Etihad Guest, FAB, ENBD, salary transfer, AED valuations, expat-starter — all in one place."
+  fullWidth
+>
+  <header class="dp-pagehead">
+    <div class="crumb">Topics</div>
+    <h1>Browse by programme, bank or theme.</h1>
+    <p>
+      Every loyalty programme, UAE bank and editorial theme we cover, in a
+      single index. If you remember the name of what you're looking for, this
+      is the fastest route to it.
+    </p>
+  </header>
+
+  <div class="dp-topics-body">
+    {topics.map((g) => (
+      <section class="dp-topics-group">
+        <h2>{g.group}</h2>
+        <div class="dp-topics-grid">
+          {g.entries.map((e) => (
+            <a class="dp-topics-tile" href={e.href}>
+              <span class="t">{e.label}</span>
+              <span class="d">{e.deck}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .dp-topics-body {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 32px 80px;
+  }
+  .dp-topics-group {
+    margin-bottom: 48px;
+  }
+  .dp-topics-group h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(22px, 2.6vw, 28px);
+    letter-spacing: -0.5px;
+    color: var(--ink);
+    margin: 0 0 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .dp-topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .dp-topics-tile {
+    display: grid;
+    gap: 4px;
+    padding: 18px 20px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .dp-topics-tile:hover {
+    border-color: var(--green);
+    transform: translateY(-1px);
+  }
+  .dp-topics-tile .t {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+  }
+  .dp-topics-tile .d {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+</style>

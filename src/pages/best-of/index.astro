@@ -1,0 +1,147 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+
+// Editorial roundup directory. Each entry is a planned or shipped
+// "best-of" page. Until individual roundups land, the eligible cards
+// can be browsed via the linked filter/section page.
+
+const roundups = [
+  {
+    href: "/cards/",
+    label: "Best UAE credit cards for expats",
+    deck: "The cards we'd actually recommend to a friend who just moved to Dubai with an Emirates ID still in the post.",
+    status: "Editor's pick",
+  },
+  {
+    href: "/cards/cashback/",
+    label: "Best cashback cards in the UAE",
+    deck: "Capped vs uncapped, monthly vs statement-credit — and the one trap that costs cashback shoppers the most.",
+    status: "Live",
+  },
+  {
+    href: "/cards/miles/",
+    label: "Best travel cards in the UAE",
+    deck: "Miles, lounge access, FX markup. Why the obvious choice isn't always the right one.",
+    status: "Live",
+  },
+  {
+    href: "/cards/islamic/",
+    label: "Best Islamic (Sharia) cards in the UAE",
+    deck: "Fee-only profit-rate models, the AAOIFI-aligned issuers we trust, and the rewards mechanics that translate.",
+    status: "Live",
+  },
+  {
+    href: "/salary-transfer/",
+    label: "Best salary-transfer offers right now",
+    deck: "The offers we'd take this week, ranked in cash-equivalent AED across all five salary bands.",
+    status: "Live tracker",
+  },
+  {
+    href: "/airlines/",
+    label: "Best UAE points programmes for premium-cabin redemption",
+    deck: "Skywards, Etihad Guest, Avios, Privilege Club — which currency to earn for which trip.",
+    status: "Coming next quarter",
+  },
+  {
+    href: "/cards/",
+    label: "Best entry-level cards (AED 5k–8k salary)",
+    deck: "Cards that don't ignore you for under-15k earners. The bar is lower than the comparison sites suggest.",
+    status: "Coming next quarter",
+  },
+  {
+    href: "/cards/",
+    label: "Best premium cards (AED 30k+ salary)",
+    deck: "Where the annual fee actually pays for itself, and where it's a tax on showing off.",
+    status: "Coming next quarter",
+  },
+];
+---
+
+<BaseLayout
+  title="Best of DubaiPoints — every roundup we publish"
+  description="Editor-led roundups of the best UAE credit cards, salary-transfer offers and points programmes. AED-first, source-verified, and updated quarterly."
+  fullWidth
+>
+  <header class="dp-pagehead">
+    <div class="crumb">Best of DubaiPoints</div>
+    <h1>The roundups, in one place.</h1>
+    <p>
+      Editorial roundups of the best UAE credit cards, salary-transfer offers
+      and points programmes. Each list ranks the eligible products against the
+      <a href="/editorial-policy/">editorial standard</a> and explains the
+      one or two cases where a different choice wins.
+    </p>
+  </header>
+
+  <div class="dp-best-grid">
+    {roundups.map((r) => (
+      <a class="dp-best-tile" href={r.href}>
+        <span class="status">{r.status}</span>
+        <span class="t">{r.label}</span>
+        <span class="d">{r.deck}</span>
+        <span class="cta">Read →</span>
+      </a>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .dp-best-grid {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 32px 80px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .dp-best-tile {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    gap: 8px;
+    padding: 24px 22px 22px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .dp-best-tile:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+  }
+  .dp-best-tile .status {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .dp-best-tile .t {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .dp-best-tile .d {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin-top: 4px;
+  }
+  .dp-best-tile .cta {
+    margin-top: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    transition: color 0.15s ease;
+  }
+  .dp-best-tile:hover .cta { color: var(--green); }
+</style>
