@@ -15,11 +15,8 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 import { getAllCards } from "~/lib/cardsData";
 
-const today = new Date();
-const todayMs = today.getTime();
+const todayMs = Date.now();
 
-const fmtFull = (d: Date) =>
-  d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 const fmtShort = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
@@ -96,19 +93,17 @@ const filters = [
 >
   <!-- ── 1. Masthead hero ─────────────────────────────────────────────── -->
   <header class="dp-pagehead is-hero">
-    <div class="masthead">
-      <span class="eyebrow">DubaiPoints · Issue {today.getFullYear()}</span>
-      <span class="date">{fmtFull(today)} · Dubai</span>
-    </div>
-    <h1>UAE rewards rewarded.</h1>
+    <h1>Points and miles for the&nbsp;UAE.</h1>
     <p>
-      Independent UAE-resident-led analysis of credit cards, salary-transfer
-      bonuses, miles redemptions and lifestyle deals — every figure in AED,
-      every card checked against UAE eligibility rules.
+      Independent analysis of UAE credit cards, salary-transfer bonuses,
+      miles redemptions and lifestyle deals — every figure in AED, every
+      card checked against UAE eligibility.
     </p>
     <div class="meta-strip">
       <span><strong>{cards.length}</strong> cards reviewed</span>
+      <span class="sep" aria-hidden="true"></span>
       <span><strong>{liveDeals.length}</strong> live deals</span>
+      <span class="sep" aria-hidden="true"></span>
       <span><strong>{allGuides.length}</strong> guides</span>
       <a href="/salary-transfer/" class="live-link">
         <span class="dot" aria-hidden="true"></span>
@@ -116,6 +111,13 @@ const filters = [
       </a>
     </div>
   </header>
+
+  <!-- Decorative section divider between hero and featured band -->
+  <div class="dp-section-divider" aria-hidden="true">
+    <span class="rule"></span>
+    <span class="dot"></span>
+    <span class="rule"></span>
+  </div>
 
   <!-- ── 2. Featured band ─────────────────────────────────────────────── -->
   {featured.length > 0 && (
@@ -266,59 +268,57 @@ const filters = [
 
   .dp-pagehead.is-hero {
     background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
-    padding: 64px 32px 48px;
-  }
-  .dp-pagehead.is-hero .masthead {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 16px; flex-wrap: wrap;
-    border-bottom: 1px solid var(--ink);
-    padding-bottom: 14px;
-    margin-bottom: 36px;
-  }
-  .dp-pagehead.is-hero .masthead .eyebrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
-    color: var(--ink);
-  }
-  .dp-pagehead.is-hero .masthead .date {
-    font-size: 11px; font-weight: 500;
-    letter-spacing: 0.4px;
-    color: var(--ink-soft);
+    padding: 88px 32px 64px;
+    text-align: center;
   }
   .dp-pagehead.is-hero h1 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: clamp(40px, 7.8vw, 88px);
-    line-height: 0.98;
-    letter-spacing: -2px;
+    font-size: clamp(36px, 6.2vw, 72px);
+    line-height: 1.02;
+    letter-spacing: -1.6px;
     color: var(--ink);
     text-wrap: balance;
-    margin-bottom: 18px;
+    margin: 0 auto 20px;
+    max-width: 18ch;
   }
   .dp-pagehead.is-hero p {
-    max-width: 60ch;
-    font-size: clamp(16px, 1.6vw, 18px);
-    line-height: 1.55;
+    max-width: 56ch;
+    margin: 0 auto;
+    font-size: clamp(16px, 1.5vw, 18px);
+    line-height: 1.6;
     color: var(--ink-soft);
     text-wrap: pretty;
   }
   .dp-pagehead.is-hero .meta-strip {
-    margin-top: 28px;
-    display: flex; flex-wrap: wrap;
-    gap: 24px;
+    margin: 32px auto 0;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
     align-items: center;
     font-size: 13px;
     color: var(--ink-soft);
+    padding: 10px 20px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: 999px;
   }
   .dp-pagehead.is-hero .meta-strip strong {
     color: var(--ink);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
   }
+  .dp-pagehead.is-hero .meta-strip .sep {
+    width: 1px;
+    height: 14px;
+    background: var(--line);
+  }
   .dp-pagehead.is-hero .meta-strip .live-link {
-    margin-left: auto;
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-left: 6px;
+    padding-left: 14px;
+    border-left: 1px solid var(--line);
     color: var(--green);
     font-weight: 700;
     font-size: 11px;
@@ -336,10 +336,48 @@ const filters = [
     .dp-pagehead.is-hero .meta-strip .live-link .dot { animation: none; }
   }
   @media (max-width: 768px) {
-    .dp-pagehead.is-hero { padding: 40px 20px 32px; }
-    .dp-pagehead.is-hero .masthead { margin-bottom: 24px; }
-    .dp-pagehead.is-hero .meta-strip { gap: 14px; row-gap: 8px; }
-    .dp-pagehead.is-hero .meta-strip .live-link { margin-left: 0; }
+    .dp-pagehead.is-hero { padding: 56px 20px 40px; }
+    .dp-pagehead.is-hero .meta-strip {
+      flex-direction: column;
+      gap: 8px;
+      border-radius: 14px;
+      padding: 14px 18px;
+    }
+    .dp-pagehead.is-hero .meta-strip .sep { display: none; }
+    .dp-pagehead.is-hero .meta-strip .live-link {
+      margin-left: 0;
+      padding-left: 0;
+      border-left: 0;
+      padding-top: 6px;
+      border-top: 1px solid var(--line);
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  /* Decorative section divider — Fraunces-flavoured ornament */
+  .dp-section-divider {
+    display: flex; align-items: center; justify-content: center;
+    gap: 14px;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 32px 0;
+  }
+  .dp-section-divider .rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--line) 40%, var(--line) 60%, transparent);
+    max-width: 280px;
+  }
+  .dp-section-divider .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+  @media (max-width: 768px) {
+    .dp-section-divider { padding: 24px 20px 0; gap: 10px; }
+    .dp-section-divider .rule { max-width: 100px; }
   }
 
   /* "More stories" link styling */
