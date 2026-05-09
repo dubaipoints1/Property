@@ -1,4 +1,19 @@
 ---
+// Trust page layout — Phase D (Claude Design handoff).
+// Used by /editorial-policy/, /how-we-make-money/, /about/, /team/,
+// /newsletter/, /valuations/methodology/.
+//
+// Shape:
+//   pagehead-narrow (eyebrow + h1 + optional deck)
+//   ↓
+//   meta strip (Last updated · Editorial standards link)
+//   ↓
+//   single-column body (max 720px) — slot for sectioned prose
+//
+// No byline (policy docs, not articles).
+// No drop-cap (overridden in scoped style).
+// No sticky aside (single-column reading).
+
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
@@ -6,57 +21,32 @@ interface Props {
   description: string;
   eyebrow: string;
   heading: string;
+  deck?: string;
   lastUpdated: Date;
 }
 
-const { title, description, eyebrow, heading, lastUpdated } = Astro.props;
+const { title, description, eyebrow, heading, deck, lastUpdated } = Astro.props;
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
-  <article class="dp-article is-trust">
-    <header class="dp-article-head">
-      <p class="dp-article-eyebrow">{eyebrow}</p>
-      <h1 class="dp-article-title">{heading}</h1>
-      <p class="dp-article-meta">
-        <span><strong>Last updated</strong> {fmt(lastUpdated)}</span>
-      </p>
-    </header>
+  <header class="dp-pagehead is-narrow">
+    <div class="crumb">{eyebrow}</div>
+    <h1>{heading}</h1>
+    {deck && <p class="deck">{deck}</p>}
+  </header>
 
-    <section class="dp-prose">
+  <div class="dp-trust-meta">
+    <span class="k">Last updated</span>
+    <span class="v">{fmt(lastUpdated)}</span>
+    <span class="dot" aria-hidden="true">·</span>
+    <a href="/editorial-policy/">Editorial standards</a>
+  </div>
+
+  <article class="dp-trust-body">
+    <div class="dp-prose">
       <slot />
-    </section>
+    </div>
   </article>
 </BaseLayout>
-
-<style is:global>
-  /* Trust-page tweaks layered on top of the .dp-* idiom.
-     Narrower reading width than .dp-article default; section blocks for
-     topical grouping; affiliate asterisk in --red (signal); related-links
-     footer with hairline rule. */
-  .dp-article.is-trust { max-width: 720px; }
-  .dp-article.is-trust .dp-prose section { margin-block: 28px; }
-  .dp-article.is-trust .dp-prose section:first-child { margin-top: 0; }
-  .dp-article.is-trust .dp-prose .ast {
-    color: var(--red);
-    font-weight: 700;
-  }
-  .dp-article.is-trust .dp-prose .related {
-    margin-top: 36px;
-    padding-top: 24px;
-    border-top: 1px solid var(--line);
-  }
-  .dp-article.is-trust .dp-prose .related ul {
-    list-style: none;
-    padding: 0;
-  }
-  .dp-article.is-trust .dp-prose .related h3 {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin: 0 0 12px;
-  }
-</style>
