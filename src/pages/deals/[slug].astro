@@ -1,0 +1,45 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import ArticleLayout from "~/layouts/ArticleLayout.astro";
+
+export async function getStaticPaths() {
+  const deals = await getCollection("deals");
+  return deals.map((d) => ({
+    params: { slug: d.id },
+    props: { deal: d },
+  }));
+}
+
+const { deal } = Astro.props;
+const { Content, headings } = await render(deal);
+const bank = await getEntry(deal.data.bank);
+
+const toc = headings
+  .filter((h) => h.depth === 2)
+  .map((h) => ({ id: h.slug, label: h.text }));
+
+const formatCategory = (c: string) =>
+  c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+
+const expiresStr = deal.data.expiresOn.toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+const isLive = deal.data.expiresOn.getTime() >= Date.now();
+const deck = isLive
+  ? `Live until ${expiresStr}.`
+  : `Expired on ${expiresStr}. Kept for archival reference.`;
+---
+
+<ArticleLayout
+  title={deal.data.title}
+  crumb={`DubaiPoints / Deals / ${formatCategory(deal.data.category)}`}
+  deck={deck}
+  publishedAt={deal.data.expiresOn}
+  toc={toc}
+  showHero
+  heroLabel={`Deal · ${bank?.data.name ?? "Issuer"}`}
+>
+  <Content />
+</ArticleLayout>

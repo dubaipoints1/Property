@@ -1,5 +1,5 @@
 ---
-import GuideLayout from "~/layouts/GuideLayout.astro";
+import ArticleLayout from "~/layouts/ArticleLayout.astro";
 import { getCollection, render } from "astro:content";
 
 export async function getStaticPaths() {
@@ -8,14 +8,23 @@ export async function getStaticPaths() {
 }
 
 const { guide } = Astro.props;
-const { Content } = await render(guide);
+const { Content, headings } = await render(guide);
+
+// Surface H2s as TOC entries — already anchored by Astro/MDX.
+const toc = headings
+  .filter((h) => h.depth === 2)
+  .map((h) => ({ id: h.slug, label: h.text }));
 ---
 
-<GuideLayout
+<ArticleLayout
   title={guide.data.title}
   description={guide.data.description}
+  crumb="DubaiPoints / Guides"
   publishedAt={guide.data.publishedAt}
   updatedAt={guide.data.updatedAt}
+  toc={toc}
+  showHero
+  heroLabel="Guide hero · illustration"
 >
   <Content />
-</GuideLayout>
+</ArticleLayout>
