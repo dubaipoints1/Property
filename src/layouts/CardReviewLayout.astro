@@ -1,4 +1,20 @@
 ---
+// Card review layout — Phase B3 (Claude Design handoff).
+// Reference: dubaipoints/project/templates/article.jsx::CardReview.
+// Used by /cards/<slug>/.
+//
+// Shape:
+//   navy hero band: card-art mock (1.586:1 placeholder) + crumb + h1
+//                   + strap + verdict pill (score / denomination /
+//                   verdict label / verified date)
+//   ↓
+//   2-col body grid at >=1024px:
+//     [body] byline + deck + drop-cap prose (slot)
+//     [aside] At-a-glance specs + Earn rates by category +
+//             Editor's call (dark variant)
+//   ↓
+//   sources footer (reuses .dp-article-sources from B2)
+
 import BaseLayout from "./BaseLayout.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
 
@@ -12,13 +28,17 @@ interface Props {
   fxFee: number;
   minSalary: number;
   earnRates: Record<string, number | undefined>;
-  perks: string[];
+  perks?: string[];
   pros?: string[];
   cons?: string[];
   editorTake?: string;
+  category?: string;
+  score?: number;
+  verdictLabel?: string;
   lastVerified: Date;
   verifiedBy?: string;
   sources: string[];
+  deck?: string;
 }
 
 const {
@@ -31,137 +51,186 @@ const {
   fxFee,
   minSalary,
   earnRates,
-  perks,
+  perks = [],
   pros = [],
   cons = [],
   editorTake,
+  category = "Cards",
+  score,
+  verdictLabel,
   lastVerified,
-  verifiedBy,
+  verifiedBy = "DubaiPoints Editorial",
   sources,
+  deck,
 } = Astro.props;
 
 const fmt = (d: Date) =>
-  d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+
+const initials = verifiedBy
+  .split(/\s+/)
+  .map((w) => w[0]?.toUpperCase() ?? "")
+  .slice(0, 2)
+  .join("");
 
 const earnRows = Object.entries(earnRates).filter(
   ([, v]) => typeof v === "number",
 ) as Array<[string, number]>;
 
-const initials = verifiedBy
-  ? verifiedBy
-      .split(/\s+/)
-      .map((w) => w[0]?.toUpperCase() ?? "")
-      .slice(0, 2)
-      .join("")
-  : "";
+const formatEarnKey = (k: string) =>
+  k.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase());
+
+const fmtScore = (s?: number) => {
+  if (s == null) return null;
+  return s.toFixed(1).replace(/\.0$/, "");
+};
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
-  <article class="dp-article">
-    <header class="dp-article-head">
-      <p class="dp-article-eyebrow">{bankName} · {network}</p>
-      <h1 class="dp-article-title">{cardName}</h1>
-      {description && <p class="dp-article-lede">{description}</p>}
-      {verifiedBy && (
-        <p class="dp-byline">
-          <span class="dp-byline-avatar" aria-hidden="true">{initials}</span>
-          <span>By <strong>{verifiedBy}</strong></span>
-          <span class="dp-byline-sep">·</span>
-          <span>Verified {fmt(lastVerified)}</span>
-        </p>
+
+  <!-- Navy hero band: card mock + content -->
+  <header class="dp-cr-hero">
+    <div class="dp-cr-mock" aria-hidden="true">
+      <div class="b">{bankName}</div>
+      <div class="n">{cardName}</div>
+      <div class="b" style="align-self: flex-end;">{network}</div>
+    </div>
+
+    <div>
+      <div class="crumb">Cards / {category} / {bankName}</div>
+      <h1>{title}</h1>
+      {description && <p class="strap">{description}</p>}
+
+      {(score != null || verdictLabel) && (
+        <div class="dp-verdict-pill">
+          {score != null && (
+            <div class="score">
+              {fmtScore(score)}<span class="denom">/5</span>
+            </div>
+          )}
+          <div>
+            <div class="label">DubaiPoints verdict</div>
+            <div class="meta">
+              {verdictLabel ? `${verdictLabel} · ` : ""}
+              Last verified {fmt(lastVerified)}
+            </div>
+          </div>
+        </div>
       )}
-    </header>
+    </div>
+  </header>
 
-    <dl class="dp-stats is-four">
-      <div class="dp-stat">
-        <dt>Annual fee</dt>
-        <dd>AED {annualFee.toLocaleString()}</dd>
-      </div>
-      <div class="dp-stat">
-        <dt>FX fee</dt>
-        <dd>{fxFee}%</dd>
-      </div>
-      <div class="dp-stat">
-        <dt>Min salary</dt>
-        <dd>AED {minSalary.toLocaleString()}<span style="font-size:11px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;"> /mo</span></dd>
-      </div>
-      <div class="dp-stat">
-        <dt>Network</dt>
-        <dd>{network}</dd>
-      </div>
-    </dl>
+  <!-- Body grid: prose + sticky sidebar -->
+  <div class="dp-cr-body-grid">
+    <article class="dp-cr-body">
 
-    {editorTake && (
-      <aside class="dp-take">
-        <p class="label">Our take</p>
-        <p>{editorTake}</p>
-      </aside>
-    )}
+      <!-- Byline -->
+      <div class="dp-byline-strip" style="margin: 0 0 24px;">
+        <div class="av" aria-hidden="true">{initials}</div>
+        <div>
+          <div class="name">{verifiedBy}</div>
+          <div class="when">Filed {fmt(lastVerified)} · Verified against issuer T&Cs</div>
+        </div>
+      </div>
 
-    {(pros.length > 0 || cons.length > 0) && (
-      <section class="dp-proscons">
-        {pros.length > 0 && (
-          <div class="dp-proscons-block is-pros">
-            <h3>Pros</h3>
-            <ul>{pros.map((p) => <li>{p}</li>)}</ul>
-          </div>
-        )}
-        {cons.length > 0 && (
-          <div class="dp-proscons-block is-cons">
-            <h3>Cons</h3>
-            <ul>{cons.map((c) => <li>{c}</li>)}</ul>
-          </div>
-        )}
-      </section>
-    )}
+      {deck && <p class="deck">{deck}</p>}
 
-    {earnRows.length > 0 && (
-      <section class="dp-article-section">
-        <h2>Earn rates</h2>
-        <table class="dp-data-table">
-          <tbody>
-            {earnRows.map(([k, v]) => (
-              <tr>
-                <td>{k.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase())}</td>
-                <td class="num">{v}× per AED 1</td>
-              </tr>
+      <!-- "Our take" callout -->
+      {editorTake && (
+        <aside class="dp-take">
+          <p class="label">Our take</p>
+          <p>{editorTake}</p>
+        </aside>
+      )}
+
+      <!-- Pros / Cons -->
+      {(pros.length > 0 || cons.length > 0) && (
+        <section class="dp-proscons">
+          {pros.length > 0 && (
+            <div class="dp-proscons-block is-pros">
+              <h3>Pros</h3>
+              <ul>{pros.map((p) => <li>{p}</li>)}</ul>
+            </div>
+          )}
+          {cons.length > 0 && (
+            <div class="dp-proscons-block is-cons">
+              <h3>Cons</h3>
+              <ul>{cons.map((c) => <li>{c}</li>)}</ul>
+            </div>
+          )}
+        </section>
+      )}
+
+      <!-- Editorial prose (MDX slot) -->
+      <div class="dp-prose">
+        <slot />
+      </div>
+
+      <Disclaimer variant="card" />
+    </article>
+
+    <!-- Sticky sidebar -->
+    <aside class="dp-cr-aside">
+      <div class="dp-spec-card">
+        <h4>At a glance</h4>
+        <div class="dp-spec-row"><span class="k">Annual fee</span><span class="v">AED {annualFee.toLocaleString()}</span></div>
+        <div class="dp-spec-row"><span class="k">Min salary</span><span class="v">AED {minSalary.toLocaleString()}/mo</span></div>
+        <div class="dp-spec-row"><span class="k">FX markup</span><span class="v">{fxFee}%</span></div>
+        <div class="dp-spec-row"><span class="k">Network</span><span class="v">{network}</span></div>
+      </div>
+
+      {earnRows.length > 0 && (
+        <div class="dp-spec-card">
+          <h4>Earn rates by category</h4>
+          {earnRows.map(([k, v]) => (
+            <div class="dp-spec-row">
+              <span class="k">{formatEarnKey(k)}</span>
+              <span class={`v ${v >= 3 ? "flag" : ""}`}>{v}× per AED 1</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {perks.length > 0 && (
+        <div class="dp-spec-card">
+          <h4>Perks</h4>
+          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+            {perks.slice(0, 6).map((p) => (
+              <li style="font-size: 13px; color: var(--ink-soft); line-height: 1.5; padding-left: 12px; position: relative;">
+                <span style="position: absolute; left: 0; color: var(--green); font-weight: 700;">+</span>
+                {p}
+              </li>
             ))}
-          </tbody>
-        </table>
-      </section>
-    )}
+          </ul>
+        </div>
+      )}
 
-    {perks.length > 0 && (
-      <section class="dp-article-section">
-        <h2>Perks</h2>
-        <ul class="dp-bullet-list">
-          {perks.map((p) => <li>{p}</li>)}
-        </ul>
-      </section>
-    )}
+      {editorTake && (
+        <div class="dp-spec-card is-call">
+          <h4>Editor's call</h4>
+          <div class="verdict-prose">{verdictLabel ?? editorTake.split(".")[0] + "."}</div>
+          <a href="/cards/compare/" class="compare-link">Compare alternatives →</a>
+        </div>
+      )}
+    </aside>
+  </div>
 
-    <section class="dp-prose">
-      <slot />
-    </section>
-
-    <footer class="dp-article-foot">
+  <!-- Sources footer -->
+  {sources.length > 0 && (
+    <footer class="dp-article-sources">
       <p>
         <strong>Last verified:</strong> {fmt(lastVerified)}
-        {verifiedBy && <span class="dp-article-meta" style="margin-left:6px;display:inline-flex;"><span class="verified-chip">By {verifiedBy}</span></span>}
       </p>
-      {sources.length > 0 && (
-        <p>
-          <strong>Sources:</strong>{" "}
-          {sources.map((s, i) => (
-            <>
-              {i > 0 && " · "}
-              <a href={s} target="_blank" rel="noopener noreferrer">{new URL(s).hostname}</a>
-            </>
-          ))}
-        </p>
-      )}
+      <p>
+        <strong>Sources:</strong>{" "}
+        {sources.map((s, i) => (
+          <>
+            {i > 0 && " · "}
+            <a href={s} target="_blank" rel="noopener noreferrer">{new URL(s).hostname}</a>
+          </>
+        ))}
+      </p>
     </footer>
+  )}
 
-    <Disclaimer variant="card" />
-  </article>
 </BaseLayout>

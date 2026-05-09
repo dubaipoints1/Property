@@ -1339,3 +1339,152 @@ img { display: block; max-width: 100%; }
   color: var(--green);
   text-decoration-color: var(--green);
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Card review template (Phase B3 — Claude Design handoff).
+   Used by /cards/<slug>/.
+   Reference: dubaipoints/project/templates/article.jsx::CardReview.
+   Navy hero band with card-art mock + verdict pill, then 2-col grid
+   with prose body + sticky sidebar specs (At-a-glance / Earn rates /
+   Editor's call cards).
+   ════════════════════════════════════════════════════════════════════════ */
+
+.dp-cr-hero {
+  background: var(--navy); color: white;
+  padding: 48px 32px;
+  display: grid; grid-template-columns: 280px 1fr; gap: 40px;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .dp-cr-hero {
+    grid-template-columns: 1fr; gap: 28px; padding: 36px 24px;
+  }
+}
+.dp-cr-mock {
+  aspect-ratio: 1.586 / 1;
+  background: linear-gradient(135deg, #0a2540 0%, #06182d 100%);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  color: white; position: relative; overflow: hidden;
+  max-width: 360px;
+}
+.dp-cr-mock::before {
+  content: ''; position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    135deg, transparent 0 22px, rgba(255,255,255,0.04) 22px 23px
+  );
+  pointer-events: none;
+}
+.dp-cr-mock .b {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  opacity: 0.7; position: relative;
+}
+.dp-cr-mock .n {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: 20px; letter-spacing: -0.3px;
+  position: relative; text-wrap: balance;
+}
+
+.dp-cr-hero .crumb {
+  color: rgba(255,255,255,0.6);
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 12px;
+}
+.dp-cr-hero h1 {
+  font-family: 'Fraunces', serif; font-weight: 700;
+  font-size: clamp(28px, 4.5vw, 42px);
+  letter-spacing: -1px; line-height: 1.05;
+  margin: 0 0 12px; color: white; text-wrap: balance;
+}
+.dp-cr-hero .strap {
+  font-size: 14px; color: rgba(255,255,255,0.78);
+  max-width: 50ch; line-height: 1.55; margin: 0 0 20px;
+}
+
+.dp-verdict-pill {
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 12px 18px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 14px;
+  font-size: 12px; color: white;
+}
+.dp-verdict-pill .score {
+  font-family: 'Fraunces', serif;
+  font-size: 24px; font-weight: 700; line-height: 1;
+}
+.dp-verdict-pill .score .denom {
+  font-size: 13px; opacity: 0.6; font-weight: 500;
+}
+.dp-verdict-pill .label { font-weight: 700; margin-bottom: 2px; }
+.dp-verdict-pill .meta { opacity: 0.7; font-size: 11px; letter-spacing: 0.3px; }
+
+.dp-cr-body-grid {
+  display: grid; grid-template-columns: 1fr; gap: 40px;
+  padding: 56px 32px 80px;
+  max-width: 1180px; margin: 0 auto;
+}
+@media (min-width: 1024px) {
+  .dp-cr-body-grid {
+    grid-template-columns: minmax(0, 1fr) 320px; gap: 64px;
+  }
+}
+.dp-cr-body { max-width: 680px; margin-inline: auto; width: 100%; }
+.dp-cr-body .deck {
+  font-family: 'Fraunces', serif;
+  font-size: 23px; font-style: italic;
+  color: var(--ink-soft); line-height: 1.45;
+  margin: 24px 0 36px; max-width: 48ch; text-wrap: pretty;
+  font-weight: 500;
+}
+
+.dp-cr-aside { display: flex; flex-direction: column; gap: 24px; }
+@media (min-width: 1024px) {
+  .dp-cr-aside { position: sticky; top: 32px; align-self: flex-start; }
+}
+
+.dp-spec-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+}
+.dp-spec-card h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--green);
+  margin: 0 0 16px; font-weight: 700;
+}
+.dp-spec-row {
+  display: flex; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13px;
+}
+.dp-spec-row:last-child { border-bottom: 0; }
+.dp-spec-row .k { color: var(--ink-soft); }
+.dp-spec-row .v {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.dp-spec-row .v.flag { color: var(--green); }
+.dp-spec-row .v.warn { color: var(--red); }
+
+.dp-spec-card.is-call {
+  background: var(--navy); color: white; border: none;
+}
+.dp-spec-card.is-call h4 { color: rgba(155, 177, 164, 1); }
+.dp-spec-card.is-call .verdict-prose {
+  font-family: 'Fraunces', serif;
+  font-size: 18px; line-height: 1.3;
+  margin: 0 0 12px; color: white;
+}
+.dp-spec-card.is-call .compare-link {
+  font-size: 11px; opacity: 0.7;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: white;
+}
+.dp-spec-card.is-call .compare-link:hover { opacity: 1; }
