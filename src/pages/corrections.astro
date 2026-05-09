@@ -1,0 +1,38 @@
+---
+import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+---
+
+<TrustPageLayout
+  title="Corrections — DubaiPoints"
+  description="The DubaiPoints corrections log. Every material correction to a published figure or recommendation is noted here, dated, with the original and corrected values side by side."
+  eyebrow="Corrections"
+  heading="What we got wrong, and when we fixed it."
+  deck="Material corrections to a published figure, fee, eligibility detail or recommendation are logged here permanently. The page corrected, the original value, and the corrected value — every time."
+  lastUpdated={new Date("2026-05-09")}
+>
+  <section>
+    <h2>The standard</h2>
+    <p>If we publish a figure that turns out to be wrong, we fix the page, refresh its <strong>Last verified</strong> stamp, and add an entry to this log. The log is permanent — corrections do not vanish from the record once the page is fixed.</p>
+    <p>Material corrections include: any monetary figure (annual fee, FX fee, welcome bonus value, salary band), any eligibility detail (minimum salary, salary-transfer requirement, residency rule), and any recommendation reversal (e.g. moving a card off our "best of" list because new information surfaced).</p>
+    <p>Typo fixes, layout changes, and routine updates to refresh-stamped figures (where the bank changed the value, not us) are not logged here — those happen continuously and the <a href="/editorial-policy/">editorial policy</a> covers the verification cadence.</p>
+  </section>
+
+  <section>
+    <h2>Recent corrections</h2>
+    <p><em>None yet.</em> The site launched in May 2026; the first formal corrections will appear here as they happen. If you've spotted an error in the meantime, please <a href="mailto:info@dubaipoints.ae?subject=Correction">email us</a> with the page URL and the corrected value.</p>
+  </section>
+
+  <section>
+    <h2>How to report an error</h2>
+    <p>Email <a href="mailto:info@dubaipoints.ae?subject=Correction">info@dubaipoints.ae</a> with the URL of the page, the figure or claim that's wrong, and — where you can — a link to the source that proves it. We aim to acknowledge within one business day and fix within three.</p>
+  </section>
+
+  <section class="related">
+    <h3>Related</h3>
+    <ul>
+      <li><a href="/editorial-policy/">Editorial policy</a></li>
+      <li><a href="/how-we-make-money/">How we make money</a></li>
+      <li><a href="/about/">About DubaiPoints</a></li>
+    </ul>
+  </section>
+</TrustPageLayout>

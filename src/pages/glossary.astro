@@ -1,0 +1,75 @@
+---
+import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+---
+
+<TrustPageLayout
+  title="Glossary — DubaiPoints"
+  description="The terminology of UAE credit cards, salary transfers, points and miles. AECB, salary band, transferable currency, sweet spot — all defined the way we use them on this site."
+  eyebrow="Glossary"
+  heading="Terms, the way we use them."
+  deck="UAE-specific banking terminology and the points-and-miles vocabulary, defined the way we use them on this site. If a term reads ambiguous on a review page, this is where to check."
+  lastUpdated={new Date("2026-05-09")}
+>
+  <section>
+    <h2>Banking</h2>
+    <dl class="dp-glossary">
+      <dt>AECB</dt>
+      <dd>The Al Etihad Credit Bureau — the UAE's federal credit bureau. AECB scores range 300–900; banks typically require 580+ for entry-level cards and 700+ for premium tiers. The credit report itself, distinct from the score, is the document banks actually underwrite against.</dd>
+
+      <dt>Salary transfer</dt>
+      <dd>Routing your monthly payroll through a specific UAE bank in exchange for a one-time cash bonus, voucher, or upgraded eligibility. The transfer is enforced for the salary letter's validity (typically 12–24 months); leaving early triggers clawback.</dd>
+
+      <dt>Salary band</dt>
+      <dd>The minimum monthly salary a card requires, verified against your employer's salary letter. UAE banks are legally required to confirm the band before issuing — a workaround does not exist. Bands cluster at AED 5,000 / 8,000 / 15,000 / 25,000 / 30,000 / 50,000+.</dd>
+
+      <dt>Schedule of charges</dt>
+      <dd>The PDF every UAE bank publishes listing every fee, rate and charge on every product. Where a product page disagrees with the schedule, the schedule is the legal document. We cite both on every card review.</dd>
+
+      <dt>FX markup</dt>
+      <dd>The percentage added to a foreign-currency transaction beyond the network exchange rate. UAE cards range 1.99%–3.99%; cards with under 2.5% are competitive, under 2% are rare. Always charged in addition to any "International transaction fee" the issuer also levies.</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Points and miles</h2>
+    <dl class="dp-glossary">
+      <dt>fils per Mile (DP value)</dt>
+      <dd>Our editorial AED value of one Mile or point in the named programme. A Skywards Mile worth 3.5 fils means 100,000 Miles redeem for an Emirates ticket priced at AED 3,500 cash, give or take. See the <a href="/valuations/">AED valuations</a> page and the <a href="/valuations/methodology/">methodology</a>.</dd>
+
+      <dt>Sweet spot</dt>
+      <dd>A redemption where the value-per-Mile materially beats the programme's average. Examples: Skywards First-class to North America 30 days out; Avios short-haul GCC awards under 8,000 points. Most programmes have one or two; the rest of the chart pays cents.</dd>
+
+      <dt>Transferable currency</dt>
+      <dd>A bank-proprietary point that converts to multiple airline or hotel programmes (FAB Rewards → Skywards, Etihad Guest, others). Transferables are usually more flexible but earn slower than co-branded cards on the same airline.</dd>
+
+      <dt>Co-brand</dt>
+      <dd>A card that earns the airline or hotel currency directly (e.g. an Emirates Skywards Visa earns Skywards Miles, not bank points). Faster to elite status; less flexible if the programme devalues.</dd>
+
+      <dt>Award chart</dt>
+      <dd>The published rate at which Miles convert into a specific cabin on a specific route. Programmes either publish a fixed chart (Skywards) or use dynamic pricing (Etihad Guest as of 2024). Dynamic pricing makes sweet spots harder to find.</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Editorial</h2>
+    <dl class="dp-glossary">
+      <dt>Last verified</dt>
+      <dd>The date our editorial team last checked the figures on a page against the bank's official source. UI flags entries older than 90 days. We aim for under 30 days on card reviews and under 7 days on the salary-transfer tracker.</dd>
+
+      <dt>DP verdict</dt>
+      <dd>A 0–5 score reflecting our editorial judgement on a card. 4.5+ is a recommendation we'd give a friend; 3.5–4.4 is conditional (right card for some readers, wrong for others); below 3.5 we'd tell you to look elsewhere.</dd>
+
+      <dt>"Our take"</dt>
+      <dd>A short editorial verdict box on every card review — what the card is actually for, who the right reader is, and the one or two cases where we'd send you to a different card instead.</dd>
+    </dl>
+  </section>
+
+  <section class="related">
+    <h3>Related</h3>
+    <ul>
+      <li><a href="/editorial-policy/">Editorial policy</a></li>
+      <li><a href="/valuations/methodology/">Valuations methodology</a></li>
+      <li><a href="/cards/">All cards</a></li>
+    </ul>
+  </section>
+</TrustPageLayout>

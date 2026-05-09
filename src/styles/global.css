@@ -1441,6 +1441,32 @@ img { display: block; max-width: 100%; }
   float: none; padding: 0; color: inherit;
 }
 
+/* Glossary <dl> styling — used on /glossary/ */
+.dp-trust-body .dp-prose .dp-glossary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin: 16px 0 0;
+  border-top: 1px solid var(--line);
+}
+.dp-trust-body .dp-prose .dp-glossary dt {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  color: var(--ink);
+  padding: 18px 0 6px;
+}
+.dp-trust-body .dp-prose .dp-glossary dd {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  padding: 0 0 18px;
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+}
+.dp-trust-body .dp-prose .dp-glossary dd:last-of-type { border-bottom: 0; }
+
 /* ════════════════════════════════════════════════════════════════════════
    Card review template (Phase B3 — Claude Design handoff).
    Used by /cards/<slug>/.
