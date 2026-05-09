@@ -2,45 +2,55 @@
 @import "tailwindcss";
 
 :root {
-  /* TPG-adapted palette — adopted 2026-05-08-bis (supersedes Quiet Ledger).
-     Brief: .council/research/2026-05/tpg-redesign-brief.md §"Locked palette".
-     Five-tone section background rotation; emerald is the universal accent;
-     navy is the primary dark identity; link blue is interactive only. */
+  /* Claude Design handoff palette — locked 2026-05-09 (supersedes TPG pivot).
+     Source: Claude Design bundle JVW6dPIKTdYcvhrGrNtGfg, palette A "Editorial green".
+     Session doc: .council/sessions/2026-05-09-design-handoff.md.
+     Warm-paper editorial system: deep ink, deep green accent, teal-navy band,
+     link blue interactive only. Five-tone surface rotation via shade-1 / shade-2
+     / paper / bg / navy. */
 
-  /* Surfaces (rotate across sections to signal section purpose) */
-  --bg:        #ffffff;          /* default page surface */
-  --paper:     #ffffff;          /* cards, callouts on white */
-  --cool:      #f4f5f7;          /* light cool band — valuations */
-  --cream:     #f8f0e0;          /* warm band — optional, low priority */
-  --navy:      #0a2540;          /* primary dark identity — feature card, dark bands */
-  --navy-deep: #06182d;          /* footer / very dark band */
-  --green:     #0c8463;          /* emerald — universal eyebrow + chrome accent */
-  --green-band:#1d6b54;          /* slightly darker emerald — newsletter band */
+  /* Surfaces — warm, layered */
+  --bg:        #fbfaf6;          /* default page surround (warm) */
+  --paper:     #fdfcf8;          /* cards, callouts (slightly warmer cream) */
+  --shade-1:   #f1eee7;          /* hover wash, page-head gradient stop */
+  --shade-2:   #e0dccf;          /* deeper shade, byline avatar bg */
 
-  /* Type */
-  --ink:       #0a2540;          /* body text on white — aligns with --navy */
-  --ink-soft:  #5a6068;          /* meta, secondary copy */
-  --muted:     #8a8f9a;          /* dates, byline timestamps */
+  /* Dark band identity (teal-navy, not royal navy) */
+  --navy:      #1f3a4d;          /* primary dark band — feature card, hero */
+  --navy-deep: #0f1f2e;          /* footer / very dark band */
 
-  /* Lines + chrome */
-  --line:      #e3e3e1;
-  --line-soft: #f1f1ef;
+  /* Type — warm near-black, NOT royal navy */
+  --ink:       #1f2328;          /* body text */
+  --ink-soft:  #56606b;          /* meta, secondary copy */
+  --muted:     #9aa0a6;          /* dates, byline timestamps */
 
-  /* Interactive (link / focus / "Read review" pill — never display type, never eyebrows) */
+  /* Lines — warm hairlines */
+  --line:      #dad6cd;
+  --line-soft: #ece9e1;
+
+  /* Accent — deep editorial green */
+  --green:     #2d6a52;          /* eyebrows, pull-quote mark, accents */
+  --green-band:#1d6b54;          /* legacy from TPG pivot — newsletter band */
+
+  /* Interactive (link / focus / hover only — never display type, never eyebrows) */
   --link:      #1a5fc6;
   --link-deep: #154fa3;
   --link-soft: #eef3fb;
 
-  /* Signal (live indicators, expiry stamps, "Needs reverify" only) */
+  /* Signal (live / expiry / warnings only) */
   --red:       #c8412d;
 
   /* Legacy — defined for backward compat, NOT used in new UI.
-     Quiet Ledger sunsetted gold; TPG pivot does not re-introduce. */
+     Quiet Ledger sunsetted gold; TPG pivot kept it sunsetted; design handoff
+     keeps it sunsetted. The chat-1 navy + gold + Sora system is the v1 brand
+     work superseded by chat-4 iterations. */
   --gold:      #b8842a;
   --gold-soft: #f3ead6;
-  --brand:     #1a5fc6;          /* legacy alias to --link for old rules */
+  --brand:     #1a5fc6;          /* legacy alias to --link */
   --brand-deep:#154fa3;
   --brand-soft:#eef3fb;
+  --cool:      #f4f5f7;          /* legacy from TPG pivot */
+  --cream:     #f8f0e0;          /* legacy from TPG pivot */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
