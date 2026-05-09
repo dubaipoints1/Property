@@ -22,6 +22,8 @@ interface Props {
   title: string;
   description?: string;
   bankName: string;
+  /** bank slug (e.g. "fab", "enbd") — drives per-issuer tint on card-art mock */
+  bankSlug?: string;
   cardName: string;
   network: string;
   annualFee: number;
@@ -45,6 +47,7 @@ const {
   title,
   description,
   bankName,
+  bankSlug,
   cardName,
   network,
   annualFee,
@@ -90,10 +93,14 @@ const fmtScore = (s?: number) => {
 
   <!-- Navy hero band: card mock + content -->
   <header class="dp-cr-hero">
-    <div class="dp-cr-mock" aria-hidden="true">
-      <div class="b">{bankName}</div>
+    <div class="dp-cr-mock" data-bank={bankSlug ?? "default"} aria-hidden="true">
+      <div class="dp-cr-mock-chip"></div>
+      <div class="dp-cr-mock-row">
+        <div class="b">{bankName}</div>
+        <div class="dp-cr-mock-mark">{network.slice(0, 1)}</div>
+      </div>
       <div class="n">{cardName}</div>
-      <div class="b" style="align-self: flex-end;">{network}</div>
+      <div class="b">{network}</div>
     </div>
 
     <div>

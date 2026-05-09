@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="DubaiPoints — UAE rewards, without the marketing">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f3a4d"/>
+      <stop offset="100%" stop-color="#0f1f2e"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2d6a52"/>
+      <stop offset="100%" stop-color="#5fb88a"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Diagonal pattern overlay -->
+  <g opacity="0.06" fill="#fff">
+    <rect x="-100" y="-100" width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="-50"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="0"    width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="50"   width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="100"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="150"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="200"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="250"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="300"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="350"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="400"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="450"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="500"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="550"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="600"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="650"  width="1500" height="2" transform="rotate(15 600 315)"/>
+    <rect x="-100" y="700"  width="1500" height="2" transform="rotate(15 600 315)"/>
+  </g>
+
+  <!-- Eyebrow -->
+  <text x="80" y="140" fill="#5fb88a" font-family="DM Sans, system-ui, sans-serif" font-size="22" font-weight="700" letter-spacing="6">
+    DUBAIPOINTS · UAE REWARDS
+  </text>
+
+  <!-- Wordmark -->
+  <text x="80" y="280" fill="#fff" font-family="DM Sans, system-ui, sans-serif" font-size="86" font-weight="800" letter-spacing="-2">
+    DubaiPoints<tspan fill="#5fb88a">.</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="80" y="400" fill="#fff" font-family="Fraunces, Georgia, serif" font-size="50" font-weight="500" font-style="italic" letter-spacing="-1">
+    UAE rewards,
+  </text>
+  <text x="80" y="465" fill="#fff" font-family="Fraunces, Georgia, serif" font-size="50" font-weight="500" font-style="italic" letter-spacing="-1">
+    without the marketing.
+  </text>
+
+  <!-- Footer strip -->
+  <rect x="0" y="588" width="1200" height="3" fill="url(#accent)"/>
+  <text x="80" y="568" fill="#9bb1a4" font-family="DM Sans, system-ui, sans-serif" font-size="18" font-weight="600" letter-spacing="3">
+    AED-FIRST · SOURCE-VERIFIED · UAE-RESIDENT
+  </text>
+  <text x="1120" y="568" text-anchor="end" fill="#9bb1a4" font-family="DM Sans, system-ui, sans-serif" font-size="18" font-weight="600" letter-spacing="3">
+    DUBAIPOINTS.AE
+  </text>
+</svg>
