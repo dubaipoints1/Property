@@ -1,4 +1,10 @@
 ---
+// Salary-transfer history layout — Phase H2 (Claude Design handoff alignment).
+// Used by /salary-transfer/history/[bank]/.
+//
+// Was Tailwind-utility-driven; now uses the design-handoff narrow pagehead
+// + scoped timeline rendering on .dp-* tokens.
+
 import BaseLayout from "./BaseLayout.astro";
 
 interface TimelineEntry {
@@ -22,48 +28,131 @@ const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 ---
 
-<BaseLayout title={title} description={description}>
-  <header class="border-b border-slate-200 pb-6">
-    <p class="text-xs uppercase tracking-wide text-slate-500">Offer history</p>
-    <h1 class="mt-1 text-3xl font-semibold text-slate-900">{bankName}</h1>
-    <p class="mt-2 text-slate-700">
+<BaseLayout title={title} description={description} fullWidth>
+  <header class="dp-pagehead is-narrow">
+    <div class="crumb">Salary transfer · Offer history</div>
+    <h1>{bankName}</h1>
+    <p class="deck">
       Every salary transfer offer we've tracked from {bankName}, oldest at the
       bottom. We never delete offers — archives are useful for spotting cycles
       and predicting future promotions.
     </p>
   </header>
 
-  <ol class="mt-8 space-y-4 border-l-2 border-slate-200 pl-6">
-    {
-      entries.map((e) => (
-        <li class="relative">
-          <span
-            class={`absolute -left-[31px] top-2 inline-block h-3 w-3 rounded-full ${
-              e.archived ? "bg-slate-300" : "bg-brand-500"
-            }`}
-          />
-          <article class="rounded-md border border-slate-200 bg-white p-4">
-            <header class="flex flex-wrap items-baseline justify-between gap-2">
-              <h3 class="font-semibold text-slate-900">{e.headline}</h3>
-              <span class="text-xs uppercase tracking-wide text-slate-500">
+  <article class="dp-hist-body">
+    <ol class="dp-hist-timeline">
+      {entries.map((e) => (
+        <li class="entry">
+          <span class={`dot ${e.archived ? "is-archived" : "is-live"}`} aria-hidden="true"></span>
+          <div class="card">
+            <header>
+              <h3>{e.headline}</h3>
+              <span class="when">
                 {fmt(e.validFrom)} – {fmt(e.validUntil)}
-                {!e.archived && <span class="ml-1 text-brand-600">· live</span>}
+                {!e.archived && <span class="live-tag"> · live</span>}
               </span>
             </header>
-            <ul class="mt-2 space-y-1 text-sm text-slate-700">
+            <ul class="bands">
               {e.bands.map((b) => (
                 <li>
-                  <span class="text-slate-500">{b.range}:</span> {b.reward}
+                  <span class="range">{b.range}:</span> {b.reward}
                 </li>
               ))}
             </ul>
-          </article>
+          </div>
         </li>
-      ))
-    }
-  </ol>
+      ))}
+    </ol>
 
-  <div class="prose prose-slate mt-10 max-w-none">
-    <slot />
-  </div>
+    <div class="dp-prose dp-hist-prose">
+      <slot />
+    </div>
+  </article>
 </BaseLayout>
+
+<style>
+  .dp-hist-body {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 32px 80px;
+  }
+
+  .dp-hist-timeline {
+    list-style: none;
+    padding: 0 0 0 32px;
+    margin: 0;
+    border-left: 2px solid var(--line);
+    display: flex; flex-direction: column;
+    gap: 16px;
+  }
+  .dp-hist-timeline .entry {
+    position: relative;
+    margin: 0;
+  }
+  .dp-hist-timeline .dot {
+    position: absolute;
+    left: -39px;
+    top: 14px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--paper);
+  }
+  .dp-hist-timeline .dot.is-live { background: var(--green); }
+  .dp-hist-timeline .dot.is-archived { background: var(--shade-2); }
+
+  .dp-hist-timeline .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .dp-hist-timeline header {
+    display: flex; flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .dp-hist-timeline h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+    margin: 0;
+  }
+  .dp-hist-timeline .when {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .dp-hist-timeline .live-tag { color: var(--green); margin-left: 2px; }
+
+  .dp-hist-timeline .bands {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 4px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .dp-hist-timeline .bands .range {
+    font-weight: 600;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+
+  .dp-hist-prose { margin-top: 32px; max-width: 70ch; }
+  .dp-hist-prose p:first-of-type::first-letter {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    float: none;
+    padding: 0;
+    color: inherit;
+  }
+</style>

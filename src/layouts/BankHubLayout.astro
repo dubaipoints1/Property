@@ -1,4 +1,11 @@
 ---
+// Bank hub layout — Phase H2 (Claude Design handoff alignment).
+// Used by /banks/[slug]/.
+//
+// Aligns to the design-handoff narrow pagehead chrome.
+// Body sections use the same dp-prog-body conventions for consistency
+// across hub pages (banks + airlines).
+
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
@@ -17,36 +24,36 @@ const { title, description, bankName, customerService } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
-  <article class="dp-article is-wide">
-    <header class="dp-article-head">
-      <p class="dp-article-eyebrow">UAE bank</p>
-      <h1 class="dp-article-title">{bankName}</h1>
-      {description && <p class="dp-article-lede">{description}</p>}
-    </header>
+  <header class="dp-pagehead is-narrow">
+    <div class="crumb">UAE bank</div>
+    <h1>{bankName}</h1>
+    {description && <p class="deck">{description}</p>}
+  </header>
 
+  <article class="dp-bank-body">
     <section class="dp-bank-callout">
       <p class="label">Current salary transfer offer</p>
       <slot name="salary-transfer" />
     </section>
 
-    <section class="dp-article-section">
+    <section>
       <h2>Reward currencies</h2>
       <slot name="currencies" />
     </section>
 
-    <section class="dp-article-section">
+    <section>
       <h2>Cards from {bankName}</h2>
       <slot name="cards" />
     </section>
 
-    <section class="dp-article-section">
+    <section>
       <h2>Recent articles</h2>
       <slot name="articles" />
     </section>
 
     {customerService && (
-      <section class="dp-article-foot">
-        <p><strong>Customer service</strong></p>
+      <section class="dp-bank-cs">
+        <p class="label">Customer service</p>
         {customerService.phone && <p>Phone: {customerService.phone}</p>}
         {customerService.email && (
           <p>Email: <a href={`mailto:${customerService.email}`}>{customerService.email}</a></p>
@@ -57,24 +64,80 @@ const { title, description, bankName, customerService } = Astro.props;
       </section>
     )}
 
-    <section class="dp-prose" style="margin-top: 32px;">
+    <div class="dp-prose dp-bank-prose">
       <slot />
-    </section>
+    </div>
   </article>
 </BaseLayout>
 
 <style>
+  .dp-bank-body {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+  .dp-bank-body section { margin-bottom: 36px; }
+  .dp-bank-body h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(20px, 2.6vw, 26px);
+    letter-spacing: -0.4px;
+    color: var(--ink);
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
   .dp-bank-callout {
     border: 1px solid var(--gold);
-    border-left-width: 3px;
-    border-radius: 6px;
-    background: var(--gold-soft);
+    border-left: 3px solid var(--gold);
+    border-radius: 8px;
+    background: var(--gold-soft, #faf3e3);
     padding: 18px 20px;
-    margin-bottom: 32px;
   }
   .dp-bank-callout .label {
-    font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-    text-transform: uppercase; color: #6b4a14;
-    margin-bottom: 10px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+  .dp-bank-callout :global(*) { color: var(--ink); }
+
+  .dp-bank-cs {
+    background: var(--shade-1);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .dp-bank-cs .label {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--green);
+    margin: 0 0 8px;
+  }
+  .dp-bank-cs p { margin: 0 0 6px; }
+  .dp-bank-cs p:last-child { margin-bottom: 0; }
+  .dp-bank-cs a {
+    color: var(--ink); font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-color: var(--line);
+  }
+  .dp-bank-cs a:hover { color: var(--green); }
+
+  .dp-bank-prose { margin-top: 24px; }
+  /* Bank-hub prose is reference, not editorial — disable drop-cap. */
+  .dp-bank-prose p:first-of-type::first-letter {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    float: none;
+    padding: 0;
+    color: inherit;
   }
 </style>

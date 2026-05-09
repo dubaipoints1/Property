@@ -1,4 +1,10 @@
 ---
+// Salary-transfer tracker layout — Phase H2 (Claude Design handoff alignment).
+// Used by /salary-transfer/ (master) and /salary-transfer/[slug]/ (per-band).
+//
+// Aligns with Phase C tools template (pagehead + tracker island + bands +
+// calculator CTA). Slot map preserved for backwards compatibility.
+
 import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
@@ -11,86 +17,181 @@ const { title, description, liveCount } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
-  <article class="dp-article is-wide">
-    <header class="dp-article-head">
-      <p class="dp-article-eyebrow is-red">Live tracker · {liveCount} offers</p>
-      <h1 class="dp-article-title">UAE <em>salary transfer</em> offers.</h1>
-      <p class="dp-article-lede">
-        Live offers tracked across UAE banks, updated as promotions change.
-        Filter by salary band, tenure, and reward type.
-      </p>
-    </header>
-
-    <section>
-      <slot name="tracker" />
-    </section>
-
-    <section class="dp-band-grid">
-      <slot name="bands" />
-    </section>
-
-    <section class="dp-calc-cta">
-      <div>
-        <h2>Want a personalised ranking?</h2>
-        <p>Score every live offer against your salary, card spend, and product preferences.</p>
-      </div>
-      <a href="/salary-transfer/calculator/">Open the calculator →</a>
-    </section>
-
-    <div class="dp-prose" style="margin-top: 28px;">
-      <slot />
+  <header class="dp-pagehead is-narrow">
+    <div class="crumb">Tools / Salary transfer</div>
+    <h1>UAE <em>salary transfer</em> offers.</h1>
+    <p class="deck">
+      Live offers tracked across UAE banks, refreshed as promotions
+      change. Filter by salary band, tenure and reward type.
+    </p>
+    <div class="dp-tools-stats">
+      <div><strong class="live"><span class="dot" aria-hidden="true"></span>Live</strong> <span class="lbl">{liveCount} offers</span></div>
+      <div><strong>Refresh</strong> <span class="lbl">daily</span></div>
+      <div><strong>Currency</strong> <span class="lbl">AED-equivalent</span></div>
+      <div><strong>Bands</strong> <span class="lbl">5k–8k · 8k–15k · 15k–30k · 30k–50k · 50k+</span></div>
     </div>
+  </header>
 
-    <slot name="footer" />
-  </article>
+  <section class="dp-st-tracker">
+    <slot name="tracker" />
+  </section>
+
+  <section class="dp-st-bands">
+    <div class="head">
+      <h2>By salary band</h2>
+      <p>Each band lists only the offers a salary at that level qualifies for.</p>
+    </div>
+    <div class="grid">
+      <slot name="bands" />
+    </div>
+  </section>
+
+  <section class="dp-st-cta">
+    <div>
+      <span class="eyebrow">Personalised ranking</span>
+      <h2>Score every offer against your salary, spend and tenure.</h2>
+      <p>Cash and cashback face value; vouchers discounted 20%; points and miles at AED 0.04 per Skywards baseline.</p>
+    </div>
+    <a href="/salary-transfer/calculator/" class="btn">Open the calculator →</a>
+  </section>
+
+  <div class="dp-prose dp-st-prose">
+    <slot />
+  </div>
+
+  <slot name="footer" />
 </BaseLayout>
 
 <style>
-  .dp-band-grid {
-    margin-top: 32px;
-    display: grid; gap: 12px;
+  .dp-st-tracker {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 32px 0;
+  }
+
+  .dp-st-bands {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 40px 32px 0;
+  }
+  .dp-st-bands .head {
+    margin-bottom: 18px;
+  }
+  .dp-st-bands h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(20px, 2.6vw, 26px);
+    letter-spacing: -0.4px;
+    color: var(--ink);
+    margin: 0 0 6px;
+  }
+  .dp-st-bands p {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    max-width: 60ch;
+    margin: 0;
+  }
+  .dp-st-bands .grid {
+    display: grid;
+    gap: 12px;
     grid-template-columns: 1fr;
   }
-  @media (min-width: 640px) { .dp-band-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1024px) { .dp-band-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 640px) {
+    .dp-st-bands .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 1024px) {
+    .dp-st-bands .grid { grid-template-columns: repeat(3, 1fr); }
+  }
 
-  .dp-calc-cta {
-    margin-top: 32px;
-    padding: 22px 24px;
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--ink);
-    background: var(--paper);
-    border-radius: 6px;
-    display: flex; flex-direction: column;
-    gap: 14px;
+  .dp-st-cta {
+    max-width: 1180px;
+    margin: 40px auto 0;
+    padding: 28px 32px;
+    background: var(--shade-1);
+    border-radius: 14px;
+    margin-inline: 32px;
+    display: flex; flex-direction: column; gap: 16px;
   }
   @media (min-width: 768px) {
-    .dp-calc-cta {
+    .dp-st-cta {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
+      gap: 32px;
+      max-width: calc(1180px - 64px);
+      margin-inline: auto;
     }
   }
-  .dp-calc-cta h2 {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: 18px; letter-spacing: -0.3px;
-    color: var(--ink); margin-bottom: 4px;
+  .dp-st-cta .eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    display: block;
+    margin-bottom: 8px;
   }
-  .dp-calc-cta p {
-    font-size: 13px; line-height: 1.55;
-    color: var(--ink-soft); max-width: 60ch;
+  .dp-st-cta h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(18px, 2vw, 22px);
+    letter-spacing: -0.3px;
+    color: var(--ink);
+    margin: 0 0 8px;
+    text-wrap: balance;
   }
-  .dp-calc-cta a {
-    flex-shrink: 0;
-    padding: 12px 18px;
-    background: var(--ink); color: white;
-    border-radius: 5px;
-    font-size: 13px; font-weight: 600;
-    min-height: 44px;
+  .dp-st-cta p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 60ch;
+  }
+  .dp-st-cta .btn {
     display: inline-flex; align-items: center;
-    transition: background 0.15s;
-    align-self: flex-start;
+    flex-shrink: 0;
+    height: 44px;
+    padding: 0 22px;
+    background: var(--ink);
+    color: white;
+    border-radius: 999px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    transition: background 0.15s ease;
   }
-  .dp-calc-cta a:hover { background: var(--brand); }
+  .dp-st-cta .btn:hover { background: var(--green); }
+
+  .dp-st-prose {
+    max-width: 760px;
+    margin: 40px auto;
+    padding: 0 32px;
+  }
+  .dp-st-prose p:first-of-type::first-letter {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    float: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Live dot pulse on Live stats label */
+  .dp-tools-stats .live {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--green);
+  }
+  .dp-tools-stats .live .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green);
+    animation: dp-st-pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes dp-st-pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  @media (prefers-reduced-motion: reduce) {
+    .dp-tools-stats .live .dot { animation: none; }
+  }
 </style>
