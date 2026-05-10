@@ -14,6 +14,7 @@
     "test": "node --import tsx --test tests/**/*.test.ts",
     "scrape:fab": "tsx scripts/scrape/fab.ts",
     "scrape:enbd": "tsx scripts/scrape/enbd.ts",
+    "scrape:adcb": "tsx scripts/scrape/adcb.ts",
     "scrape:propose": "tsx scripts/scrape/propose-changes.ts"
   },
   "dependencies": {

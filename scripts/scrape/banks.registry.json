@@ -2,6 +2,7 @@
   "_doc": "Active bank scrapers. The weekly scrape workflow iterates this list. Add a new bank by appending its slug here AFTER the per-bank scraper module exists at scripts/scrape/<slug>.ts and the URL config exists at scripts/scrape/banks/<slug>.urls.json. Order is execution order; put higher-priority / faster scrapers first so partial failures still surface high-value data.",
   "banks": [
     "fab",
-    "enbd"
+    "enbd",
+    "adcb"
   ]
 }
