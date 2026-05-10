@@ -69,11 +69,28 @@ const WelcomeBonus = z.object({
   unit: REWARD_UNIT,
   spend_threshold_aed: z.number().nonnegative().nullable(),
   qualify_window_days: z.number().int().positive().nullable(),
-  /** Editor-estimated AED equivalent value. Optional. */
+  /** Editor-estimated AED equivalent value. Optional, but build-time
+   * warning fires if absent on structured form (so sorting / comparison
+   * work across cards). Editor backfills via the SOP at
+   * .council/sops/features-typing.md when the cycle catches it. */
   headline_value_aed: z.number().nonnegative().optional(),
   /** Free-text qualifier kept for display, e.g. "first 3 billing statements". */
   notes: z.string().optional(),
 });
+
+/** Bifurcated welcome bonus — for cards that pay different bonuses
+ * with vs without salary transfer. At least one branch must be set;
+ * the matcher renders the relevant branch based on the reader's
+ * salary-transfer filter. */
+const WelcomeBonusBifurcated = z
+  .object({
+    with_salary_transfer: WelcomeBonus.optional(),
+    without_salary_transfer: WelcomeBonus.optional(),
+  })
+  .refine(
+    (v) => v.with_salary_transfer !== undefined || v.without_salary_transfer !== undefined,
+    "Bifurcated welcomeBonus must set at least one of with_salary_transfer / without_salary_transfer",
+  );
 
 const AnnualFeeWaiver = z.object({
   year_one_waived: z.boolean(),
@@ -274,10 +291,21 @@ const CardDataSchema = z.object({
   earnRates: EarnRates,
   earnUnit: z.string().optional(),
 
-  /** Either structured WelcomeBonus, a legacy free-text string, or null (no welcome bonus published). */
-  welcomeBonus: z.union([WelcomeBonus, z.string()]).nullable().optional(),
+  /** Either structured WelcomeBonus, the bifurcated form (different
+   * bonus with vs without salary transfer), a legacy free-text string,
+   * or null (no welcome bonus published). */
+  welcomeBonus: z
+    .union([WelcomeBonus, WelcomeBonusBifurcated, z.string()])
+    .nullable()
+    .optional(),
   /** Legacy: editor-estimated point/mile count. Kept for sort fallback. */
   welcomeBonusValue: z.number().optional(),
+
+  /** Sharia compliance — first-class boolean. Distinct from the `Islamic`
+   * tag in `categories` which is for filtering UI only; this field
+   * captures whether the issuer represents the card as Sharia-compliant
+   * under AAOIFI standards. Editor-confirmed, not scraped. */
+  sharia: z.boolean().optional(),
 
   eligibility: z.object({
     minSalary: z.number().nonnegative(),
@@ -304,7 +332,13 @@ const CardDataSchema = z.object({
   /** Per-field provenance map. Keys mirror dotted paths into the data. */
   _provenance: z.record(z.string(), PROVENANCE).default({}),
   _lastScraped: z.string().nullable().default(null),
-  _lastReviewed: z.string().nullable().default(null),
+  /** ISO date string. Required as of Stage 1 schema hardening (2026-05-10):
+   * every card must have an editorial review date. Future PRs that touch
+   * a card's data without updating _lastReviewed will be flagged in the
+   * council sign-off. */
+  _lastReviewed: z
+    .string()
+    .refine((s) => !Number.isNaN(Date.parse(s)), "_lastReviewed must be an ISO date string"),
   /** Raw scraper output kept verbatim so the editor can author typed
    * fields from it. Optional. */
   _scraped_freetext: ScrapedFreetext.optional(),
@@ -320,6 +354,28 @@ const AllCardsSchema = z.record(z.string(), CardDataSchema);
 
 // Validate at module load — fail fast on any schema drift.
 const validated = AllCardsSchema.parse(cardsJson);
+
+// Build-time warnings — non-fatal, surface drift the editor should fix.
+{
+  const missingHeadlineValue: string[] = [];
+  for (const [slug, card] of Object.entries(validated)) {
+    const wb = card.welcomeBonus;
+    if (
+      wb &&
+      typeof wb === "object" &&
+      "amount" in wb &&
+      "unit" in wb &&
+      wb.headline_value_aed === undefined
+    ) {
+      missingHeadlineValue.push(slug);
+    }
+  }
+  if (missingHeadlineValue.length > 0) {
+    console.warn(
+      `[cardsData] ${missingHeadlineValue.length} card(s) have a structured welcomeBonus without headline_value_aed: ${missingHeadlineValue.join(", ")}. Editor should backfill via the SOP at .council/sops/features-typing.md.`,
+    );
+  }
+}
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -365,6 +421,7 @@ export {
   welcomeBonusDisplay,
   annualFeeWaiverDisplay,
   isStructuredWelcomeBonus,
+  isBifurcatedWelcomeBonus,
   isStructuredAnnualFeeWaiver,
 } from "./cardsDataFormat";
 
