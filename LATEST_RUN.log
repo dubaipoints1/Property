@@ -13,17 +13,27 @@ added 492 packages in 6s
 
 [fab] Scraping 4 card(s)
 [fab] Fetching https://www.bankfab.com/en-ae/personal/credit-cards/cashback-credit-card
+[fab]   ✗ Firecrawl HTTP 402: Payment Required
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
+[fab]   ✗ Firecrawl HTTP 402: Payment Required
 [fab] Fetching https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-infinite
+[fab]   ✗ Firecrawl HTTP 402: Payment Required
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
+[fab]   ✗ Firecrawl HTTP 402: Payment Required
 [fab] Fetching https://www.bankfab.com/en-ae/personal/credit-cards/fab-elite-credit-card
+[fab]   ✗ Firecrawl HTTP 402: Payment Required
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
+[fab]   ✗ Firecrawl HTTP 402: Payment Required
 [fab] Fetching https://www.bankfab.com/en-ae/personal/credit-cards/fab-world-elite
+[fab]   ✗ Firecrawl HTTP 402: Payment Required
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
-[fab] Wrote data/scraped/fab/2026-05-10T16-12-13-563Z.json
-[fab] 2 card(s) had parsing warnings:
-[fab]   fab-elite: No earn-rate categories detected — base rate defaulted to 1
-[fab]   fab-world-elite: Could not parse minimum salary
+[fab]   ✗ Firecrawl HTTP 402: Payment Required
+[fab] Wrote data/scraped/fab/2026-05-10T16-14-12-321Z.json
+[fab] 4 card(s) had parsing warnings:
+[fab]   fab-cashback: https://www.bankfab.com/en-ae/personal/credit-cards/cashback-credit-card: Firecrawl HTTP 402: Payment Required; https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[fab]   fab-etihad-guest-infinite: https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-infinite: Firecrawl HTTP 402: Payment Required; https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[fab]   fab-elite: https://www.bankfab.com/en-ae/personal/credit-cards/fab-elite-credit-card: Firecrawl HTTP 402: Payment Required; https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[fab]   fab-world-elite: https://www.bankfab.com/en-ae/personal/credit-cards/fab-world-elite: Firecrawl HTTP 402: Payment Required; https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
 [fab] exit=0
 
 === npm run scrape:enbd ===
@@ -33,63 +43,91 @@ added 492 packages in 6s
 
 [enbd] Scraping 28 card(s)
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/skywards-infinite-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/skywards-signature-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/darna-visa-infinite-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/darna-visa-signature-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/darna-select-visa-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/priority-banking-visa-infinite-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/visa-infinite-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/visa-flexi-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/mastercard-platinum-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/duo-credit-cards
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/go4it-platinum-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/go4it-gold-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/visa-platinum-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/diners-club-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/webshopper-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/dnata-world-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/dnata-platinum-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-elevate
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-inspire
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/manchester-united-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/lulu-247-platinum-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/lulu-247-titanium-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/marriott-bonvoy-world-elite-mastercard-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/marriott-bonvoy-world-mastercard
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card-for-emiratis
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-family-credit-card
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/noon-one-visa-credit-card
-[enbd] Wrote data/scraped/enbd/2026-05-10T16-12-25-749Z.json
+[enbd]   ✗ Firecrawl HTTP 402: Payment Required
+[enbd] Wrote data/scraped/enbd/2026-05-10T16-14-27-848Z.json
 [enbd] 28 card(s) had parsing warnings:
-[enbd]   emirates-nbd-skywards-infinite: Could not parse FX fee
-[enbd]   emirates-nbd-skywards-signature: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-darna-visa-infinite: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-darna-visa-signature: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-darna-select-visa: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-priority-banking-visa-infinite: Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-visa-infinite: Could not parse FX fee
-[enbd]   emirates-nbd-visa-flexi: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-mastercard-platinum: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-duo: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-go4it-platinum: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-go4it-gold: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-visa-platinum: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-diners-club: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-webshopper: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-dnata-world: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-dnata-platinum: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-etihad-guest-elevate: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-etihad-guest-inspire: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-manchester-united: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-lulu-247-platinum: Could not parse annual fee; Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-lulu-247-titanium: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-marriott-bonvoy-world-elite: Could not parse annual fee; Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-marriott-bonvoy-world: Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-u-by-emaar-infinite: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-u-by-emaar-infinite-emiratis: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-u-by-emaar-family: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-noon-one: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[enbd]   emirates-nbd-skywards-infinite: https://www.emiratesnbd.com/en/cards/credit-cards/skywards-infinite-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-skywards-signature: https://www.emiratesnbd.com/en/cards/credit-cards/skywards-signature-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-darna-visa-infinite: https://www.emiratesnbd.com/en/cards/credit-cards/darna-visa-infinite-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-darna-visa-signature: https://www.emiratesnbd.com/en/cards/credit-cards/darna-visa-signature-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-darna-select-visa: https://www.emiratesnbd.com/en/cards/credit-cards/darna-select-visa-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-priority-banking-visa-infinite: https://www.emiratesnbd.com/en/cards/credit-cards/priority-banking-visa-infinite-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-visa-infinite: https://www.emiratesnbd.com/en/cards/credit-cards/visa-infinite-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-visa-flexi: https://www.emiratesnbd.com/en/cards/credit-cards/visa-flexi-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-mastercard-platinum: https://www.emiratesnbd.com/en/cards/credit-cards/mastercard-platinum-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-duo: https://www.emiratesnbd.com/en/cards/credit-cards/duo-credit-cards: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-go4it-platinum: https://www.emiratesnbd.com/en/cards/credit-cards/go4it-platinum-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-go4it-gold: https://www.emiratesnbd.com/en/cards/credit-cards/go4it-gold-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-visa-platinum: https://www.emiratesnbd.com/en/cards/credit-cards/visa-platinum-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-diners-club: https://www.emiratesnbd.com/en/cards/credit-cards/diners-club-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-webshopper: https://www.emiratesnbd.com/en/cards/credit-cards/webshopper-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-dnata-world: https://www.emiratesnbd.com/en/cards/credit-cards/dnata-world-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-dnata-platinum: https://www.emiratesnbd.com/en/cards/credit-cards/dnata-platinum-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-etihad-guest-elevate: https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-elevate: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-etihad-guest-inspire: https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-inspire: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-manchester-united: https://www.emiratesnbd.com/en/cards/credit-cards/manchester-united-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-lulu-247-platinum: https://www.emiratesnbd.com/en/cards/credit-cards/lulu-247-platinum-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-lulu-247-titanium: https://www.emiratesnbd.com/en/cards/credit-cards/lulu-247-titanium-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-marriott-bonvoy-world-elite: https://www.emiratesnbd.com/en/cards/credit-cards/marriott-bonvoy-world-elite-mastercard-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-marriott-bonvoy-world: https://www.emiratesnbd.com/en/cards/credit-cards/marriott-bonvoy-world-mastercard: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-u-by-emaar-infinite: https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-u-by-emaar-infinite-emiratis: https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card-for-emiratis: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-u-by-emaar-family: https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-family-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-noon-one: https://www.emiratesnbd.com/en/cards/credit-cards/noon-one-visa-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
 [enbd] exit=0
 
 === npm run scrape:adcb ===
@@ -99,37 +137,61 @@ added 492 packages in 6s
 
 [adcb] Scraping 11 card(s)
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/shukran-credit-card
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/traveller-credit-card.aspx
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/365-cashback-card.aspx
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/talabat-credit-card.aspx
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/betaqti-credit-card.aspx
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-credit-card.aspx
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-titanium-gold-credit-card.aspx
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-ic.aspx
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-platinum-cc.aspx
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-tg-cc.aspx
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/essential-cashback-credit-card.aspx
 [adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
 [adcb]   ✗ Firecrawl HTTP 402: Payment Required
-[adcb] Wrote data/scraped/adcb/2026-05-10T16-12-33-074Z.json
-[adcb] 7 card(s) had parsing warnings:
-[adcb]   adcb-shukran: No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[adcb]   adcb-traveller: Could not parse FX fee
-[adcb]   adcb-365-cashback: Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[adcb]   adcb-talabat: No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[adcb]   adcb-betaqti: No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[adcb]   adcb-lulu-titanium-gold: Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb] Wrote data/scraped/adcb/2026-05-10T16-14-30-826Z.json
+[adcb] 11 card(s) had parsing warnings:
+[adcb]   adcb-shukran: https://www.adcb.com/en/personal/cards/credit-cards/shukran-credit-card: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[adcb]   adcb-traveller: https://www.adcb.com/en/personal/cards/credit-cards/traveller-credit-card.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[adcb]   adcb-365-cashback: https://www.adcb.com/en/personal/cards/credit-cards/365-cashback-card.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[adcb]   adcb-talabat: https://www.adcb.com/en/personal/cards/credit-cards/talabat-credit-card.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[adcb]   adcb-betaqti: https://www.adcb.com/en/personal/cards/credit-cards/betaqti-credit-card.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[adcb]   adcb-lulu-platinum: https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-credit-card.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[adcb]   adcb-lulu-titanium-gold: https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-titanium-gold-credit-card.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[adcb]   adcb-touchpoints-infinite: https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-ic.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[adcb]   adcb-touchpoints-platinum: https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-platinum-cc.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
+[adcb]   adcb-touchpoints-titanium-gold: https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-tg-cc.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
 [adcb]   adcb-essential-cashback: https://www.adcb.com/en/personal/cards/credit-cards/essential-cashback-credit-card.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
 [adcb] exit=0
 
@@ -138,8 +200,7 @@ added 492 packages in 6s
 > dubaipoints@0.1.0 scrape:propose
 > tsx scripts/scrape/propose-changes.ts
 
-[propose] Wrote PR_BODY.md: 10 new, 15 changed, 87 warning(s)
+[propose] Wrote PR_BODY.md: 0 new, 0 changed, 230 warning(s)
 
 === git status src/data/cards.json ===
- M src/data/cards.json
 
