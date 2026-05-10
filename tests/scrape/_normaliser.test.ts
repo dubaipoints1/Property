@@ -395,3 +395,159 @@ Annual fee: AED 200. FX fee: 1.99%. Minimum salary AED 8,000.`;
     );
   }
 });
+
+// ── C5: Parser improvements for ADCB-style phrasings ─────────────────────
+// These tests synthesise minimal markdown fragments and feed them through
+// normalise() to verify the parser improvements handle UAE bank phrasings
+// beyond the original FAB-only patterns.
+
+const stubCard = {
+  slug: "stub",
+  name: "Stub",
+  network: "Visa" as const,
+  categories: ["cashback" as const],
+  loyaltyProgram: undefined,
+  salaryTransferRequired: false,
+  urls: { product: "https://example.com/card", kfs: null, welcome: null },
+};
+
+function synth(markdown: string) {
+  return {
+    url: "https://example.com/card",
+    markdown,
+    status: "ok" as const,
+  };
+}
+
+test("C5 parseAnnualFee: tight phrasing 'Annual Fee: AED 314' (ADCB-style)", () => {
+  const draft = normalise("adcb", stubCard, [
+    synth("Annual Fee: AED 314\n\nForeign currency: 2.49%"),
+  ]);
+  assert.equal(draft.annualFee.amount, 314);
+});
+
+test("C5 parseAnnualFee: waiver-clause crosses a period", () => {
+  const draft = normalise("adcb", stubCard, [
+    synth("Annual fee waived for the first year. AED 525 thereafter."),
+  ]);
+  assert.equal(draft.annualFee.amount, 525);
+});
+
+test("C5 parseAnnualFee: 'Annual Card Fee' variant phrasing", () => {
+  const draft = normalise("adcb", stubCard, [
+    synth("| Annual Card Fee | AED 1,200 |\n| FX | 2.49% |"),
+  ]);
+  assert.equal(draft.annualFee.amount, 1200);
+});
+
+test("C5 parseAnnualFee: 'Free' / 'AED 0' returns 0 (not null)", () => {
+  const a = normalise("adcb", stubCard, [synth("Annual Fee: Free")]);
+  assert.equal(a.annualFee.amount, 0);
+
+  const b = normalise("adcb", stubCard, [synth("Annual Fee: AED 0")]);
+  assert.equal(b.annualFee.amount, 0);
+
+  const c = normalise("adcb", stubCard, [synth("Annual Membership Fee: complimentary")]);
+  assert.equal(c.annualFee.amount, 0);
+});
+
+test("C5 parseAnnualFee: rejects implausibly large values", () => {
+  // "Annual fee for spending AED 30,000" — 30000 should NOT be picked up as the fee
+  const draft = normalise("adcb", stubCard, [
+    synth("Annual fee waived if you spend AED 30,000 monthly. Otherwise AED 314."),
+  ]);
+  // First plausible match wins after the waiver phrasing
+  assert.ok(
+    draft.annualFee.amount === 314 || draft.annualFee.amount === 0,
+    `Expected 314 or 0, got ${draft.annualFee.amount}`,
+  );
+});
+
+test("C5 parseFxFee: 'Forex markup: 1.99%' (variant phrasing)", () => {
+  const draft = normalise("adcb", stubCard, [
+    synth("Annual Fee: AED 314\nForex markup: 1.99%\nMin salary AED 5,000"),
+  ]);
+  assert.equal(draft.fxFee, 1.99);
+});
+
+test("C5 parseFxFee: 'International transaction: 2.49%' (variant phrasing)", () => {
+  const draft = normalise("adcb", stubCard, [
+    synth("Annual Fee: AED 314\nInternational transaction fee: 2.49%"),
+  ]);
+  assert.equal(draft.fxFee, 2.49);
+});
+
+test("C5 parseFxFee: trigger after period still matches", () => {
+  const draft = normalise("adcb", stubCard, [
+    synth("Annual Fee: AED 314.\n\nForeign currency. Charged at 2.49%."),
+  ]);
+  assert.equal(draft.fxFee, 2.49);
+});
+
+test("C5 parseFxFee: implausible values rejected", () => {
+  const draft = normalise("adcb", stubCard, [
+    // 99% is way out of UAE FX-fee range — should reject, not capture
+    synth("Annual Fee: AED 314\nForeign currency 99% adventures await"),
+  ]);
+  assert.ok(
+    draft.fxFee === 0 || draft.fxFee === undefined || draft.fxFee === null,
+    `Expected fxFee to be unset, got ${draft.fxFee}`,
+  );
+});
+
+test("C5 parseWelcome: 'Sign-up bonus' trigger (ADCB-style)", () => {
+  // Use FAB Rewards as the unit — ADCB-equivalent (TouchPoints) is also covered
+  const draft = normalise("adcb", { ...stubCard, slug: "stub-touchpoints" }, [
+    synth(
+      "Annual Fee: AED 314.\nSign-up bonus: Earn 5,000 TouchPoints when you spend AED 3,000 in your first 60 days.",
+    ),
+  ]);
+  // Either structured (preferred) or freetext fallback — both prove parseWelcome found the trigger
+  assert.ok(
+    draft.welcomeBonus !== undefined && draft.welcomeBonus !== null,
+    "Welcome bonus should be detected with sign-up trigger",
+  );
+});
+
+test("C5 parseWelcome: 'Joining offer' trigger", () => {
+  const draft = normalise("adcb", stubCard, [
+    synth(
+      "Annual Fee: AED 314.\nJoining offer: Get AED 200 cashback after spending AED 5,000 in 30 days.",
+    ),
+  ]);
+  assert.ok(
+    draft.welcomeBonus !== undefined && draft.welcomeBonus !== null,
+    "Welcome bonus should be detected with joining-offer trigger",
+  );
+});
+
+test("C5 normalise: ADCB-style page produces a complete typed draft", () => {
+  const md = `
+# ADCB TouchPoints Platinum Credit Card
+
+Annual Fee: AED 314 (waived for the first year).
+
+Foreign currency transaction fee: 2.49%
+
+Minimum monthly salary AED 8,000.
+
+Sign-up bonus: Earn 10,000 TouchPoints when you spend AED 3,000 in 60 days.
+
+- 5x TouchPoints on dining
+- 3x TouchPoints on shopping
+- 1x TouchPoints on every spend
+- Complimentary lounge access via DragonPass
+`;
+  const draft = normalise(
+    "adcb",
+    { ...stubCard, slug: "adcb-touchpoints-platinum", loyaltyProgram: "ADCB TouchPoints" },
+    [synth(md)],
+  );
+  assert.equal(draft.annualFee.amount, 314);
+  assert.equal(draft.fxFee, 2.49);
+  assert.equal(draft.eligibility.minSalary, 8000);
+  assert.equal(draft.earnRates.dining, 5);
+  assert.equal(draft.earnRates.shopping, 3);
+  assert.equal(draft.earnRates.everythingElse, 1);
+  assert.ok(draft.welcomeBonus !== undefined, "welcomeBonus should be set");
+});

@@ -90,34 +90,125 @@ function combine(sources: FetchedSource[]): { text: string; errors: string[] } {
   };
 }
 
-/** Best-effort percent parser scoped to "FX fee" or "foreign currency" copy. */
+/** Best-effort percent parser scoped to "FX fee" or "foreign currency" copy.
+ * Tolerated triggers: FX, foreign currency, non-AED, international,
+ * cross-border, forex, foreign exchange, currency conversion. The window
+ * after the trigger uses [\s\S] (not [^.]) so phrasings with periods
+ * between trigger and value still match (e.g. "Foreign currency. Charged
+ * at 2.49%."). */
 function parseFxFee(text: string): number | null {
-  const ctx = text.match(
-    /(?:FX|foreign\s+currency|non-AED)[^.]*?(\d+(?:\.\d+)?)\s*%/i,
+  const trigger =
+    /(?:FX|foreign\s+(?:currency|exchange)|non-AED|international\s+(?:transaction|spend|purchase)|cross-border|forex(?:\s+markup)?|currency\s+conversion)/i;
+  // Tight: trigger then up to 60 chars then digits + % (covers "FX fee 2.49%")
+  let m = text.match(
+    new RegExp(`${trigger.source}[\\s\\S]{0,60}?(\\d+(?:\\.\\d+)?)\\s*%`, "i"),
   );
-  if (ctx) {
-    const n = Number(ctx[1]);
-    return Number.isFinite(n) ? n : null;
+  if (m) {
+    const n = Number(m[1]);
+    if (isPlausibleFxFee(n)) return n;
+  }
+  // Reverse: percent before trigger ("2.49% on foreign currency")
+  m = text.match(
+    new RegExp(`(\\d+(?:\\.\\d+)?)\\s*%[\\s\\S]{0,40}?${trigger.source}`, "i"),
+  );
+  if (m) {
+    const n = Number(m[1]);
+    if (isPlausibleFxFee(n)) return n;
   }
   return null;
 }
 
-/** Best-effort annual-fee parser scoped to "annual fee" copy. */
+/** UAE FX fee plausibility: 0.5%–5%. Reject anything outside this band. */
+function isPlausibleFxFee(n: number): boolean {
+  return Number.isFinite(n) && n >= 0.5 && n <= 5;
+}
+
+/** Best-effort annual-fee parser. Tolerates UAE phrasings:
+ *   "Annual Fee: AED 314"
+ *   "Annual Card Fee AED 314"
+ *   "Annual Membership Fee | AED 314"
+ *   "Annual fee waived for the first year. AED 314 thereafter"
+ *
+ * Strategy:
+ *   1. Tight match — "Annual (Card|Membership)? Fee" + AED <= 30 chars.
+ *   2. Looser match — same trigger, AED within 100 chars (catches multi-line
+ *      and waiver-clause phrasings like "Free for first year. AED 314.").
+ *   3. Plausibility filter — UAE annual fees are AED 0–10,000. Anything else
+ *      is almost certainly a min-spend threshold or other unrelated AED value.
+ *
+ * Returns 0 explicitly when the page says "Free", "AED 0", "no fee", or
+ * "complimentary" near the trigger — different from "couldn't parse".
+ */
 function parseAnnualFee(text: string): number | null {
-  const ctx = text.match(/annual\s+fee[^.]*?AED\s*([\d,]+)/i);
-  if (ctx) {
-    const n = Number(ctx[1].replace(/,/g, ""));
-    return Number.isFinite(n) ? n : null;
+  const trigger =
+    /annual\s+(?:card\s+|membership\s+|account\s+)?fee/i;
+
+  // 0a — explicit "free" / "AED 0" / "no fee" near trigger
+  const freeMatch = text.match(
+    new RegExp(
+      `${trigger.source}[\\s\\S]{0,40}?(?:free|AED\\s*0(?!\\d)|no\\s+fee|complimentary|nil)`,
+      "i",
+    ),
+  );
+  if (freeMatch) return 0;
+
+  // 1 — tight: trigger + AED within 30 chars (handles "Annual Fee: AED 314",
+  // "Annual Fee | AED 314", "Annual Fee\nAED 314")
+  let m = text.match(
+    new RegExp(`${trigger.source}[\\s\\S]{0,30}?AED\\s*([\\d,]+)`, "i"),
+  );
+  if (m) {
+    const n = Number(m[1].replace(/,/g, ""));
+    if (isPlausibleAnnualFee(n)) return n;
   }
+
+  // 2 — looser: trigger + AED within 100 chars (handles waiver clauses)
+  m = text.match(
+    new RegExp(`${trigger.source}[\\s\\S]{0,100}?AED\\s*([\\d,]+)`, "i"),
+  );
+  if (m) {
+    const n = Number(m[1].replace(/,/g, ""));
+    if (isPlausibleAnnualFee(n)) return n;
+  }
+
   return null;
 }
 
-/** Pull "Up to N Skywards Miles" / "AED N cashback" welcome offers. */
+/** UAE annual-fee plausibility: 0–10,000 AED. Reject larger values to avoid
+ * confusing min-spend thresholds, credit limits, or other AED amounts on the
+ * same page. */
+function isPlausibleAnnualFee(n: number): boolean {
+  return Number.isFinite(n) && n >= 0 && n <= 10000;
+}
+
+/** Pull "Up to N Skywards Miles" / "AED N cashback" welcome offers.
+ * Trigger phrases tolerated: welcome bonus, welcome offer, welcome reward,
+ * sign-up bonus, joining bonus, joining offer, sign-on bonus, new card
+ * bonus. Window after trigger uses [\s\S] so multi-line copy matches.
+ *
+ * Match captures up to the first sentence terminator (.!?) or end of
+ * string after the action verb, so downstream parsers (detectAmount,
+ * detectSpendThreshold, detectQualifyWindowDays) get the full
+ * marketing sentence. */
 function parseWelcome(text: string): string | null {
-  const m =
-    text.match(/welcome\s+(?:bonus|offer)[^.]*?\b(?:up\s+to|earn|get)\b[^.]+/i) ||
-    text.match(/up\s+to\s+[\d,]+\s+(?:Skywards\s+Miles|Etihad\s+Guest\s+Miles|FAB\s+Rewards)[^.]*/i);
-  return m ? m[0].replace(/\s+/g, " ").trim() : null;
+  const trigger =
+    /(?:welcome|sign[\s-]?up|sign[\s-]?on|joining|new\s+card|new\s+customer|new\s+to\s+bank)\s+(?:bonus|offer|reward|gift|special|promotion)/i;
+  // Trigger + action verb + greedy run-up to first period
+  let m = text.match(
+    new RegExp(
+      `${trigger.source}[^.]*?\\b(?:up\\s+to|earn|get|receive|enjoy)\\b[^.]+`,
+      "i",
+    ),
+  );
+  if (m) return m[0].replace(/\s+/g, " ").trim();
+
+  // Fallback 1: original FAB-style "Up to N (unit) miles/points"
+  m = text.match(
+    /up\s+to\s+[\d,]+\s+(?:Skywards\s+Miles|Etihad\s+Guest\s+Miles|FAB\s+Rewards|Avios|TouchPoints|Salaam|SHARE|LuLu)[^.]*/i,
+  );
+  if (m) return m[0].replace(/\s+/g, " ").trim();
+
+  return null;
 }
 
 /** Pull a numeric welcome value if recognisable. */

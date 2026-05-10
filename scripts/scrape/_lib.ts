@@ -95,6 +95,27 @@ export async function firecrawlFetch(url: string): Promise<FetchedSource> {
         failReason: data.error ?? "Firecrawl returned no markdown",
       };
     }
+    // Optional fixture capture for parser debugging. Set
+    //   SCRAPE_FIXTURE_DIR=/tmp/firecrawl-fixtures
+    // before running the scrape and each fetched markdown lands at
+    //   <dir>/<url-slug>.md
+    // so the editor can inspect what the parsers actually saw. No-op
+    // when the env var is unset.
+    const fixtureDir = process.env.SCRAPE_FIXTURE_DIR;
+    if (fixtureDir && data.data.markdown) {
+      try {
+        fs.mkdirSync(fixtureDir, { recursive: true });
+        const slug = url
+          .replace(/^https?:\/\//, "")
+          .replace(/[^a-zA-Z0-9]+/g, "-")
+          .replace(/^-|-$/g, "")
+          .slice(0, 120);
+        fs.writeFileSync(path.join(fixtureDir, `${slug}.md`), data.data.markdown);
+      } catch {
+        /* fixture capture is best-effort; never fail the scrape */
+      }
+    }
+
     return {
       url,
       markdown: data.data.markdown,
