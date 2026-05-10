@@ -90,6 +90,61 @@ function combine(sources: FetchedSource[]): { text: string; errors: string[] } {
   };
 }
 
+/** C6 — sources that require multi-tier-aware handling. Typically the
+ *  consolidated PDFs (Schedule-of-Charges / Key-Facts-Statements) that list
+ *  every tier's fees on one page; auto-extracting annualFee or fxFee from
+ *  such a corpus is a coin-flip across tiers. */
+const SOF_URL_RX =
+  /\b(?:sof|consolidated|schedule[-_\s]of[-_\s]charges|key[-_\s]facts[-_\s]statements?)\b/i;
+
+/**
+ * Heuristic: is this corpus a multi-tier consolidated SOF / KFS PDF?
+ *
+ *   (a) URL heuristic — any source URL containing `sof`, `consolidated`,
+ *       `schedule-of-charges`, or `key-facts-statements` is SOF outright.
+ *   (b) Text heuristic — > 3 distinct AED candidates within ±500 chars of
+ *       an "Annual (Membership) Fee" header AND ≥ 3 of those candidates
+ *       appear in the 400-char post-header window. The post-header
+ *       tightening discriminates a real SOF table (multiple tier rows in
+ *       quick succession) from a single-card page that happens to list
+ *       several AED values within ±500 chars (welcome bonus + spend
+ *       threshold + min salary + annual fee).
+ *
+ * When either signal fires, the caller marks annualFee and fxFee as
+ * needs-review and returns null rather than guessing the wrong tier.
+ */
+function looksLikeMultiTierSof(text: string, sourceUrls: string[]): boolean {
+  if (sourceUrls.some((u) => SOF_URL_RX.test(u))) return true;
+
+  const headerRx = /annual\s+(?:membership\s+)?fee/gi;
+  let m: RegExpExecArray | null;
+  while ((m = headerRx.exec(text)) !== null) {
+    const headerEnd = m.index + m[0].length;
+    const wideStart = Math.max(0, m.index - 500);
+    const wideEnd = Math.min(text.length, m.index + 500);
+    const postEnd = Math.min(text.length, headerEnd + 400);
+
+    const wide = text.slice(wideStart, wideEnd);
+    const post = text.slice(headerEnd, postEnd);
+
+    if (collectAedAmounts(wide).size > 3 && collectAedAmounts(post).size >= 3) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function collectAedAmounts(window: string): Set<number> {
+  const amounts = new Set<number>();
+  const aedRx = /AED\s*([\d,]+(?:\.\d+)?)/gi;
+  let a: RegExpExecArray | null;
+  while ((a = aedRx.exec(window)) !== null) {
+    const n = Number(a[1].replace(/,/g, ""));
+    if (Number.isFinite(n) && n > 0) amounts.add(n);
+  }
+  return amounts;
+}
+
 /** Best-effort percent parser scoped to "FX fee" or "foreign currency" copy.
  * Tolerated triggers: FX, foreign currency, non-AED, international,
  * cross-border, forex, foreign exchange, currency conversion. The window
@@ -118,9 +173,11 @@ function parseFxFee(text: string): number | null {
   return null;
 }
 
-/** UAE FX fee plausibility: 0.5%–5%. Reject anything outside this band. */
+/** UAE FX fee plausibility: 1.5%–5%. C6 raised the floor from 0.5% — no UAE
+ *  retail card charges < 1.5% on FX, so a sub-1.5% candidate is almost always
+ *  a VAT-on-FX line or marketing footnote, not the headline fee. */
 function isPlausibleFxFee(n: number): boolean {
-  return Number.isFinite(n) && n >= 0.5 && n <= 5;
+  return Number.isFinite(n) && n >= 1.5 && n <= 5;
 }
 
 /** Best-effort annual-fee parser. Tolerates UAE phrasings:
@@ -142,6 +199,23 @@ function isPlausibleFxFee(n: number): boolean {
 function parseAnnualFee(text: string): number | null {
   const trigger =
     /annual\s+(?:card\s+|membership\s+|account\s+)?fee/i;
+
+  // C6 — year-2 priority. "First year complimentary, AED 2,500 thereafter"
+  // would otherwise trip the freeMatch branch below and return 0 (or a 250
+  // first-year promo number via the tight match). If an explicit
+  // "thereafter / from year 2 / year 2 onwards / second year" anchor is
+  // present anywhere in the corpus, that figure wins.
+  const year2 =
+    text.match(
+      /(?:from\s+year\s*2|year\s*2\s+onwards?|second\s+year(?:\s+onwards?)?|thereafter|year\s+two)\b[^.]*?AED\s*([\d,]+)/i,
+    ) ??
+    text.match(
+      /AED\s*([\d,]+)[^.]{0,80}?(?:from\s+year\s*2|year\s*2\s+onwards?|second\s+year(?:\s+onwards?)?|thereafter|year\s+two)/i,
+    );
+  if (year2) {
+    const n = Number(year2[1].replace(/,/g, ""));
+    if (isPlausibleAnnualFee(n) && n > 0) return n;
+  }
 
   // 0a — explicit "free" / "AED 0" / "no fee" near trigger
   const freeMatch = text.match(
@@ -495,8 +569,17 @@ export function normalise(
   const { text, errors } = combine(sources);
   const today = new Date().toISOString().slice(0, 10);
 
-  const annualFee = parseAnnualFee(text);
-  const fxFee = parseFxFee(text);
+  // C6 — consolidated SOF / KFS PDFs list every tier on one page. Both
+  // annualFee and fxFee become coin-flips across tiers, so we short-circuit
+  // to null and surface a "needs editor confirmation" warning instead of
+  // shipping the wrong tier number.
+  const sourceUrlList = sources
+    .filter((s) => s.status === "ok")
+    .map((s) => s.url);
+  const isMultiTierSof = looksLikeMultiTierSof(text, sourceUrlList);
+
+  const annualFee = isMultiTierSof ? null : parseAnnualFee(text);
+  const fxFee = isMultiTierSof ? null : parseFxFee(text);
   const minSalary = parseMinSalary(text);
 
   // Welcome bonus: prefer the typed StructuredWelcomeBonus shape; fall back
@@ -532,8 +615,17 @@ export function normalise(
   }
 
   const draftErrors: string[] = [...errors];
-  if (annualFee === null) draftErrors.push("Could not parse annual fee");
-  if (fxFee === null) draftErrors.push("Could not parse FX fee");
+  if (isMultiTierSof) {
+    draftErrors.push(
+      "Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation",
+    );
+    draftErrors.push(
+      "Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation",
+    );
+  } else {
+    if (annualFee === null) draftErrors.push("Could not parse annual fee");
+    if (fxFee === null) draftErrors.push("Could not parse FX fee");
+  }
   if (minSalary === null) draftErrors.push("Could not parse minimum salary");
   if (Object.values(earnRates).every((v) => v === undefined || v === 1)) {
     draftErrors.push("No earn-rate categories detected — base rate defaulted to 1");
@@ -544,7 +636,7 @@ export function normalise(
     );
   }
 
-  const sourceUrls = sources.filter((s) => s.status === "ok").map((s) => s.url);
+  const sourceUrls = sourceUrlList;
 
   return {
     bank: bankSlug,

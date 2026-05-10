@@ -10,6 +10,10 @@ import path from "node:path";
 import { loadFixture, parseAED, parsePercent, parseMinSalary, parseEarnRate } from "../../scripts/scrape/_lib.ts";
 import { normalise, parseWelcomeBonus } from "../../scripts/scrape/_normaliser.ts";
 
+// Local mirror of the parser's FX plausibility floor — kept as a
+// literal so the test file doesn't reach into parser internals.
+const FX_PLAUSIBLE_FLOOR_PCT_TEST = 1.5;
+
 test("parseAED extracts dirhams from common phrasings", () => {
   assert.equal(parseAED("Annual fee: AED 525"), 525);
   assert.equal(parseAED("AED1,575/year"), 1575);
@@ -360,6 +364,236 @@ test("Audit-08 normalise emits structured welcomeBonus from fixture", () => {
   // welcomeBonusValue should mirror the structured amount, not the AED
   // spend-threshold figure (this was a regression risk pre-Audit-08).
   assert.equal(draft.welcomeBonusValue, 30000);
+});
+
+// ── C6 — Post-deploy regressions from PR #75 ─────────────────────────────
+//
+// Three parser bugs surfaced when the C5-broadened normaliser ran the
+// weekly scrape. PR #75 was closed without merging; these tests pin the
+// fix shape so a future C5 broadening can't re-introduce the same shape.
+
+test("C6 parseAnnualFee: first-year-waiver returns the year-2 figure (FAB World Elite)", () => {
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "fab-first-year-waiver.md"),
+  );
+  assert.equal(fixture.status, "ok", `Fixture must load: ${fixture.failReason ?? ""}`);
+
+  const draft = normalise(
+    "fab",
+    {
+      slug: "fab-world-elite",
+      name: "FAB World Elite Mastercard",
+      network: "Mastercard",
+      categories: ["travel"],
+      loyaltyProgram: "FAB Rewards",
+      salaryTransferRequired: false,
+      urls: {
+        product: "https://www.bankfab.com/en-ae/personal/credit-cards/world-elite",
+        kfs: null,
+        welcome: null,
+      },
+    },
+    [fixture],
+  );
+
+  // The bug we are pinning: PR #75's broadened parser collapsed the
+  // year-2 figure into a 0/250 first-year-promo number on every FAB
+  // card. The year-2 figure must win.
+  assert.equal(
+    draft.annualFee.amount,
+    2500,
+    "year-2 fee (AED 2,500) should win over the first-year-free promo number",
+  );
+  assert.notEqual(draft.annualFee.amount, 0, "must not return 0");
+  assert.notEqual(draft.annualFee.amount, 250, "must not return 250");
+});
+
+test("C6 parseAnnualFee: lifetime-free without year-2 clause still returns 0", () => {
+  // A genuinely free card (lifetime-free, no annual fee, no
+  // "thereafter" / "from year 2" clause anywhere) should still
+  // resolve to 0 / a sub-100 number — we're not over-correcting.
+  const md = `# ENBD Lifetime Free Card
+
+Lifetime free credit card — no annual fee, ever.
+
+Annual fee: AED 0.
+
+FX fee: 2.49%.
+Minimum salary AED 5,000.`;
+
+  const draft = normalise(
+    "enbd",
+    {
+      slug: "enbd-lifetime-free",
+      name: "ENBD Lifetime Free Card",
+      network: "Visa",
+      categories: ["everyday"],
+      salaryTransferRequired: false,
+      urls: { product: "https://test", kfs: null, welcome: null },
+    },
+    [{ url: "file://test", markdown: md, status: "ok" as const }],
+  );
+
+  assert.equal(
+    draft.annualFee.amount,
+    0,
+    "lifetime-free card with no year-2 clause must still resolve to 0",
+  );
+});
+
+test("C6 parseFxFee: sub-1.5% candidate returns null with parser warning", () => {
+  // The 0.525% VAT-on-FX line on ADCB cards must NOT be picked up
+  // as the headline FX fee. Floor is 1.5% — anything below is a
+  // footnote / VAT line, not the real fee.
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "adcb-fx-low-percent.md"),
+  );
+  assert.equal(fixture.status, "ok", `Fixture must load: ${fixture.failReason ?? ""}`);
+
+  const draft = normalise(
+    "adcb",
+    {
+      slug: "adcb-touchpoints",
+      name: "ADCB TouchPoints Credit Card",
+      network: "Visa",
+      categories: ["everyday"],
+      loyaltyProgram: "ADCB TouchPoints",
+      salaryTransferRequired: false,
+      urls: {
+        product: "https://www.adcb.com/en/personal/cards/touchpoints",
+        kfs: null,
+        welcome: null,
+      },
+    },
+    [fixture],
+  );
+
+  // fxFee defaults to 0 when null (per the draft shape) — the
+  // load-bearing assertion is that 0.525 was rejected.
+  assert.notEqual(
+    draft.fxFee,
+    0.525,
+    "0.525% VAT-on-FX line must not be picked up as the headline FX fee",
+  );
+  assert.ok(
+    draft.fxFee < FX_PLAUSIBLE_FLOOR_PCT_TEST ? draft.fxFee === 0 : true,
+    "below-floor candidates fall through to the 0 default",
+  );
+  assert.ok(
+    draft._errors.some((e) => /FX fee/i.test(e)),
+    "should emit a parser warning when FX fee falls below the plausibility floor",
+  );
+});
+
+test("C6 multi-tier SOF PDF: annualFee + fxFee return null with needs-review warning", () => {
+  // Consolidated SOF / KFS PDFs list every card's tier on one page;
+  // the parser must not guess. Both annualFee and fxFee return null
+  // and the warning surfaces in _errors so propose-changes can flag
+  // it for editor review.
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "adcb-sof-multi-tier.md"),
+  );
+  assert.equal(fixture.status, "ok", `Fixture must load: ${fixture.failReason ?? ""}`);
+
+  const draft = normalise(
+    "adcb",
+    {
+      slug: "adcb-sof",
+      name: "ADCB Consolidated SOF",
+      network: "Visa",
+      categories: ["everyday"],
+      salaryTransferRequired: false,
+      urls: {
+        product: "https://www.adcb.com/en/personal/cards/schedule-of-charges.pdf",
+        kfs: null,
+        welcome: null,
+      },
+    },
+    [fixture],
+  );
+
+  // Both parsed fields fall through to the zero default in the
+  // draft shape; the load-bearing signal is the parser warning.
+  assert.equal(draft.annualFee.amount, 0, "SOF detection must short-circuit annualFee");
+  assert.equal(draft.fxFee, 0, "SOF detection must short-circuit fxFee");
+  assert.ok(
+    draft._errors.some((e) => /Multi-tier SOF/i.test(e) && /annualFee/i.test(e)),
+    "should emit the Multi-tier SOF warning for annualFee",
+  );
+  assert.ok(
+    draft._errors.some((e) => /Multi-tier SOF/i.test(e) && /fxFee/i.test(e)),
+    "should emit the Multi-tier SOF warning for fxFee",
+  );
+});
+
+test("C6 multi-tier SOF detection triggers via URL heuristic alone", () => {
+  // Even without > 3 AED candidates, a URL containing
+  // 'schedule-of-charges' / 'sof' / 'consolidated' / 'key-facts'
+  // forces SOF treatment.
+  const md = `# ADCB Card
+
+Annual fee: AED 525.
+FX fee: 2.49%.
+Minimum salary AED 8,000.`;
+
+  const draft = normalise(
+    "adcb",
+    {
+      slug: "adcb-sof-url",
+      name: "ADCB SOF (URL heuristic)",
+      network: "Visa",
+      categories: ["everyday"],
+      salaryTransferRequired: false,
+      urls: {
+        product: "https://www.adcb.com/key-facts-statements/cards.pdf",
+        kfs: null,
+        welcome: null,
+      },
+    },
+    [
+      {
+        url: "https://www.adcb.com/key-facts-statements/cards.pdf",
+        markdown: md,
+        status: "ok" as const,
+      },
+    ],
+  );
+
+  assert.ok(
+    draft._errors.some((e) => /Multi-tier SOF/i.test(e)),
+    "URL heuristic alone must trigger SOF treatment",
+  );
+});
+
+test("C6 existing C5 behaviour preserved: FAB cashback fixture still parses cleanly", () => {
+  // The Audit-05 fixture asserts annualFee 525 and fxFee 1.99 — both
+  // sit above the new floors and outside the SOF heuristic, so the
+  // C6 hardening must not regress them.
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "fab-cashback.html"),
+  );
+  assert.equal(fixture.status, "ok");
+
+  const draft = normalise(
+    "fab",
+    {
+      slug: "fab-cashback",
+      name: "FAB Cashback Card",
+      network: "Visa",
+      categories: ["cashback"],
+      loyaltyProgram: "FAB Rewards",
+      salaryTransferRequired: false,
+      urls: {
+        product: "https://www.bankfab.com/en-ae/personal/cards/credit-cards/cashback-card",
+        kfs: null,
+        welcome: null,
+      },
+    },
+    [fixture],
+  );
+
+  assert.equal(draft.annualFee.amount, 525, "C5 baseline annualFee preserved");
+  assert.equal(draft.fxFee, 1.99, "C5 baseline fxFee preserved");
 });
 
 test("Audit-08 normalise falls back to free-text when structured parse fails", () => {
