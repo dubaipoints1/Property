@@ -30,6 +30,14 @@ export interface StructuredWelcomeBonus {
   notes?: string;
 }
 
+/** Bifurcated welcome bonus — different bonuses for cards that pay
+ * differently with vs without salary transfer. Schema requires at least
+ * one branch be set. */
+export interface StructuredWelcomeBonusBifurcated {
+  with_salary_transfer?: StructuredWelcomeBonus;
+  without_salary_transfer?: StructuredWelcomeBonus;
+}
+
 export interface StructuredAnnualFeeWaiver {
   year_one_waived: boolean;
   ongoing_threshold_aed: number | null;
@@ -61,17 +69,24 @@ export function isStructuredWelcomeBonus(
   return typeof v === "object" && v !== null && "amount" in v && "unit" in v;
 }
 
+export function isBifurcatedWelcomeBonus(
+  v: unknown,
+): v is StructuredWelcomeBonusBifurcated {
+  return (
+    typeof v === "object" &&
+    v !== null &&
+    !("amount" in v) &&
+    ("with_salary_transfer" in v || "without_salary_transfer" in v)
+  );
+}
+
 export function isStructuredAnnualFeeWaiver(
   v: unknown,
 ): v is StructuredAnnualFeeWaiver {
   return typeof v === "object" && v !== null && "year_one_waived" in v;
 }
 
-export function welcomeBonusDisplay(
-  v: StructuredWelcomeBonus | string | null | undefined,
-): string {
-  if (v === undefined || v === null) return "";
-  if (typeof v === "string") return v;
+function singleWelcomeBonusDisplay(v: StructuredWelcomeBonus): string {
   const amount = v.amount.toLocaleString();
   const unit = REWARD_UNIT_LABELS[v.unit] ?? v.unit;
   let s = `${amount} ${unit}`;
@@ -82,6 +97,31 @@ export function welcomeBonusDisplay(
   }
   if (v.notes) s += ` · ${v.notes}`;
   return s;
+}
+
+export function welcomeBonusDisplay(
+  v:
+    | StructuredWelcomeBonus
+    | StructuredWelcomeBonusBifurcated
+    | string
+    | null
+    | undefined,
+): string {
+  if (v === undefined || v === null) return "";
+  if (typeof v === "string") return v;
+  if (isStructuredWelcomeBonus(v)) {
+    return singleWelcomeBonusDisplay(v);
+  }
+  if (isBifurcatedWelcomeBonus(v)) {
+    // Render with-salary-transfer first if present (the headline path);
+    // fall through to without if that's the only branch set.
+    const primary = v.with_salary_transfer ?? v.without_salary_transfer;
+    const isWith = v.with_salary_transfer !== undefined;
+    if (!primary) return "";
+    const tag = isWith ? "with salary transfer" : "without salary transfer";
+    return `${singleWelcomeBonusDisplay(primary)} · ${tag}`;
+  }
+  return "";
 }
 
 export function annualFeeWaiverDisplay(
