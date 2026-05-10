@@ -15,6 +15,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import Cover from "~/components/Cover.astro";
 import { getCollection } from "astro:content";
 import { getAllCards } from "~/lib/cardsData";
+import { getLiveOffers } from "~/lib/offerAdapter";
 
 const todayMs = Date.now();
 
@@ -37,6 +38,14 @@ const guidesSorted = [...allGuides].sort(
 const cardSpotlights = cards
   .filter((c) => c.welcomeBonus)
   .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0));
+
+// ── Hero "Latest" strip — 3 content-driven rows replacing the nav tiles ───
+const newestCard = [...cards].sort(
+  (a, b) =>
+    new Date(b.lastVerified).getTime() - new Date(a.lastVerified).getTime(),
+)[0];
+const liveOffers = await getLiveOffers();
+const topGuide = guidesSorted[0];
 
 // ── Featured band — top 7 mixed (1 hero + 2 med + 4 sm) ─────────────────
 type Featured = {
@@ -97,41 +106,38 @@ const filters = [
     <span class="kicker">Dubai · Independent · Reader-funded</span>
     <h1>UAE rewards, <em>decoded</em>.</h1>
     <p>
-      Independent analysis of UAE credit cards, salary-transfer bonuses,
-      loyalty programmes and lifestyle deals — every figure in AED, every
-      card checked against UAE eligibility.
+      Independent UAE analysis of credit cards, salary transfer, miles
+      and deals — every figure in dirhams, dated and verified.
     </p>
 
-    <!-- Editor quote / trust signal — Standards Editor approved -->
-    <figure class="hero-quote">
-      <blockquote>
-        DubaiPoints is editorially independent. Every figure is verified
-        against the issuer's published terms, priced in dirhams, dated,
-        and held to the same standard whether the bank is an advertiser
-        or not.
-      </blockquote>
-      <figcaption>— DubaiPoints Editorial</figcaption>
-    </figure>
+    <!-- "Latest" strip — 3 content-driven entry points (replaces nav tiles) -->
+    <div class="hero-latest">
+      {newestCard && (
+        <a href={`/cards/${newestCard.slug}/`} class="hero-latest-row">
+          <span class="cat">Latest review</span>
+          <span class="t">{newestCard.name}</span>
+          <span class="m">verified {fmtShort(new Date(newestCard.lastVerified))}</span>
+        </a>
+      )}
 
-    <!-- Quick-nav tiles — replaces the pill-chip meta strip -->
-    <nav class="hero-nav" aria-label="Start here">
-      <a href="/cards/" class="hero-nav-tile">
-        <span class="t">Cards</span>
-        <span class="c">{cards.length} reviewed</span>
+      <a href="/salary-transfer/" class="hero-latest-row is-live">
+        <span class="cat"><span class="dot" aria-hidden="true"></span>Live tracker</span>
+        <span class="t">
+          {liveOffers.length === 0
+            ? "Salary-transfer offers"
+            : `${liveOffers.length} salary-transfer offer${liveOffers.length === 1 ? "" : "s"} live`}
+        </span>
+        <span class="m">refreshed daily</span>
       </a>
-      <a href="/salary-transfer/" class="hero-nav-tile is-live">
-        <span class="t"><span class="dot" aria-hidden="true"></span>Salary transfer</span>
-        <span class="c">Live tracker</span>
-      </a>
-      <a href="/guides/" class="hero-nav-tile">
-        <span class="t">Guides</span>
-        <span class="c">{allGuides.length} long-form</span>
-      </a>
-      <a href="/deals/" class="hero-nav-tile">
-        <span class="t">Deals</span>
-        <span class="c">{liveDeals.length} live</span>
-      </a>
-    </nav>
+
+      {topGuide && (
+        <a href={`/guides/${topGuide.id}/`} class="hero-latest-row">
+          <span class="cat">Top guide</span>
+          <span class="t">{topGuide.data.title}</span>
+          <span class="m">updated {fmtShort(topGuide.data.updatedAt)}</span>
+        </a>
+      )}
+    </div>
   </header>
 
   <!-- Decorative section divider between hero and featured band -->
@@ -328,99 +334,88 @@ const filters = [
     text-wrap: pretty;
   }
 
-  /* Editor pull-quote — Fraunces italic, no decorative card */
-  .hero-quote {
-    max-width: 60ch;
-    margin: 36px auto 0;
-    padding: 16px 0;
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
+  /* "Latest" strip — 3 content-driven rows replacing the old nav tiles
+     and editor blockquote. Each row links into the actual published
+     surface (review / tracker / guide). Reads as inbox-style entries
+     rather than chrome. */
+  .hero-latest {
+    margin: 32px auto 0;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+    overflow: hidden;
+    text-align: left;
   }
-  .hero-quote blockquote {
-    font-family: 'Fraunces', serif;
-    font-style: italic;
-    font-weight: 500;
-    font-size: clamp(15px, 1.6vw, 17px);
-    line-height: 1.5;
-    color: var(--ink);
-    margin: 0;
-    text-wrap: pretty;
+  .hero-latest-row {
+    display: grid;
+    grid-template-columns: 130px 1fr auto;
+    gap: 16px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line-soft);
+    text-decoration: none;
+    transition: background 0.15s ease;
+    align-items: center;
   }
-  .hero-quote figcaption {
-    margin-top: 10px;
+  .hero-latest-row:last-child { border-bottom: 0; }
+  .hero-latest-row:hover { background: var(--shade-1); }
+  .hero-latest-row .cat {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--muted);
-  }
-
-  /* Quick-nav tiles — 4 entry points to the major sections */
-  .hero-nav {
-    margin: 36px auto 0;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    max-width: 760px;
-  }
-  .hero-nav-tile {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 16px 18px;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    text-align: left;
-    text-decoration: none;
-    transition: border-color 0.15s ease, transform 0.15s ease;
-  }
-  .hero-nav-tile:hover {
-    border-color: var(--green);
-    transform: translateY(-2px);
-  }
-  .hero-nav-tile .t {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--ink);
-    letter-spacing: -0.2px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
   }
-  .hero-nav-tile .c {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .hero-nav-tile.is-live .t .dot {
+  .hero-latest-row.is-live .cat { color: var(--green); }
+  .hero-latest-row.is-live .cat .dot {
     width: 7px; height: 7px;
     border-radius: 50%;
     background: var(--green);
     animation: hp-pulse 2.4s ease-in-out infinite;
   }
-  .hero-nav-tile.is-live .c { color: var(--green); }
+  .hero-latest-row .t {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--ink);
+    letter-spacing: -0.2px;
+    line-height: 1.3;
+    text-wrap: balance;
+  }
+  .hero-latest-row .m {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
 
   @keyframes hp-pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
   @media (prefers-reduced-motion: reduce) {
-    .hero-nav-tile.is-live .t .dot { animation: none; }
+    .hero-latest-row.is-live .cat .dot { animation: none; }
   }
 
   @media (max-width: 768px) {
     .dp-pagehead.is-hero { padding: 52px 20px 36px; }
-    .hero-nav {
-      grid-template-columns: repeat(2, 1fr);
-      max-width: 360px;
+    .hero-latest-row {
+      grid-template-columns: 1fr auto;
+      gap: 4px 12px;
+      padding: 14px 16px;
     }
-  }
-  @media (max-width: 380px) {
-    .hero-nav { grid-template-columns: 1fr; }
+    .hero-latest-row .cat {
+      grid-column: 1 / -1;
+      margin-bottom: 2px;
+    }
+    .hero-latest-row .t { grid-column: 1 / 2; }
+    .hero-latest-row .m { grid-column: 2 / 3; align-self: start; padding-top: 4px; }
   }
 
   /* Decorative section divider — Fraunces-flavoured ornament */
