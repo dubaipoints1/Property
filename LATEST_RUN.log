@@ -4,7 +4,7 @@ v20.20.2
 
 === npm install ===
 
-added 492 packages in 6s
+added 492 packages in 5s
 [install] exit=0
 === npm run scrape:fab ===
 
@@ -28,7 +28,7 @@ added 492 packages in 6s
 [fab]   ✗ Firecrawl HTTP 402: Payment Required
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
 [fab]   ✗ Firecrawl HTTP 402: Payment Required
-[fab] Wrote data/scraped/fab/2026-05-11T06-15-26-454Z.json
+[fab] Wrote data/scraped/fab/2026-05-11T06-19-53-212Z.json
 [fab] 4 card(s) had parsing warnings:
 [fab]   fab-cashback: https://www.bankfab.com/en-ae/personal/credit-cards/cashback-credit-card: Firecrawl HTTP 402: Payment Required; https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
 [fab]   fab-etihad-guest-infinite: https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-infinite: Firecrawl HTTP 402: Payment Required; https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
@@ -98,7 +98,7 @@ added 492 packages in 6s
 [enbd]   ✗ Firecrawl HTTP 402: Payment Required
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/noon-one-visa-credit-card
 [enbd]   ✗ Firecrawl HTTP 402: Payment Required
-[enbd] Wrote data/scraped/enbd/2026-05-11T06-15-31-223Z.json
+[enbd] Wrote data/scraped/enbd/2026-05-11T06-19-58-795Z.json
 [enbd] 28 card(s) had parsing warnings:
 [enbd]   emirates-nbd-skywards-infinite: https://www.emiratesnbd.com/en/cards/credit-cards/skywards-infinite-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-skywards-signature: https://www.emiratesnbd.com/en/cards/credit-cards/skywards-signature-credit-card: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
@@ -180,7 +180,7 @@ added 492 packages in 6s
 [adcb]   ✗ Firecrawl HTTP 402: Payment Required
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
 [adcb]   ✗ Firecrawl HTTP 402: Payment Required
-[adcb] Wrote data/scraped/adcb/2026-05-11T06-15-34-860Z.json
+[adcb] Wrote data/scraped/adcb/2026-05-11T06-20-03-027Z.json
 [adcb] 11 card(s) had parsing warnings:
 [adcb]   adcb-shukran: https://www.adcb.com/en/personal/cards/credit-cards/shukran-credit-card: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
 [adcb]   adcb-traveller: https://www.adcb.com/en/personal/cards/credit-cards/traveller-credit-card.aspx: Firecrawl HTTP 402: Payment Required; https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 402: Payment Required; Could not parse annual fee; Could not parse FX fee; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
@@ -204,4 +204,3 @@ added 492 packages in 6s
 
 === git status src/data/cards.json ===
 
-[scrape] No cards.json changes; skipping PR.
