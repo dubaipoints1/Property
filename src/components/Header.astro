@@ -169,7 +169,13 @@ const trackerItems = [
 
     <!-- Wordmark -->
     <a href="/" class="dp-wordmark" aria-label="DubaiPoints home">
-      DubaiPoints<span class="dot">.</span>
+      <svg class="dp-mark" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
+        <path d="M61.29 15.78c-0.03-0.43-0.08-0.84-0.13-1.24C60.12 7.77 54.17 2.67 47.31 2.67H16.69c-3.37 0-6.63 1.22-9.16 3.42-2.52 2.16-4.19 5.17-4.68 8.44-0.06 0.41-0.11 0.82-0.14 1.25-0.04 0.36-0.04 0.67-0.04 0.91v30.62c0 0.24 0 0.55 0.04 0.91 0.03 0.43 0.08 0.84 0.13 1.23 1.03 6.77 6.98 11.88 13.85 11.88h30.62c3.36 0 6.62-1.22 9.16-3.42 2.53-2.18 4.19-5.18 4.681-8.44 0.06-0.4 0.109-0.82 0.14-1.25 0.04-0.36 0.04-0.67 0.04-0.91V16.69c0-0.24 0-0.55-0.04-0.91zM59.05 47.3c0 0.25 0 0.47-0.03 0.72-0.32 6.17-5.47 11.04-11.72 11.04H16.69c-6.24 0-11.38-4.87-11.72-11.08-0.02-0.21-0.02-0.44-0.02-0.68V16.69c0-0.24 0-0.46 0.03-0.7 0.33-6.18 5.47-11.05 11.71-11.05H47.3c6.25 0 11.4 4.87 11.72 11.09 0.03 0.19 0.03 0.42 0.03 0.66V47.3z"/>
+        <path d="M23.46 5.94v52.12h-6.77c-5.7 0-10.41-4.46-10.72-10.17-0.03-0.2-0.02-0.39-0.02-0.59V16.69c0-0.2-0.01-0.38 0.02-0.61 0.31-5.69 5.02-10.14 10.72-10.14H23.46z"/>
+        <path d="M58.05 16.69v5.95H24.46V5.94H47.3c5.71 0 10.42 4.45 10.73 10.18 0.03 0.2 0.02 0.38 0.02 0.57z"/>
+        <path d="M58.05 41.36v5.94c0 0.2 0.01 0.38-0.03 0.62-0.3 5.69-5.01 10.14-10.72 10.14H24.46v-16.7H58.05z"/>
+      </svg>
+      <span class="dp-wordmark-text">DubaiPoints<span class="dot">.</span></span>
     </a>
 
     <!-- Desktop nav (Cards + Airlines wrap mega panels) -->
@@ -440,10 +446,21 @@ const trackerItems = [
   font-size: 20px;
   letter-spacing: -0.6px;
   color: var(--ink);
-  text-align: center;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  line-height: 1;
+  justify-self: center;
 }
 .dp-wordmark .dot { color: var(--green); }
+.dp-mark {
+  width: 1.05em;
+  height: 1.05em;
+  color: var(--green);
+  flex-shrink: 0;
+  display: block;
+}
 
 /* Desktop-only blocks hidden by default; revealed at ≥768px below. */
 .dp-header-nav,
@@ -538,7 +555,7 @@ const trackerItems = [
     margin: 0 auto;
   }
   .dp-mobile-only { display: none; }
-  .dp-wordmark { text-align: left; font-size: 22px; }
+  .dp-wordmark { font-size: 22px; justify-self: start; }
   .dp-header-nav {
     display: flex;
     gap: 28px;
