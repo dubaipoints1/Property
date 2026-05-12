@@ -1,0 +1,196 @@
+---
+/**
+ * /calculator — Spend-ROI calculator (May 2026 plan, Workstream C, sub-project C3).
+ *
+ * Editorial counter to a competitor that paywalls the same feature.
+ * Ships free, transparent, with methodology visible above the fold of the
+ * results. The calculator reads typed `earnRates` from L2 cards.json via
+ * `getAllCards()` — no LLM, no live scraping (Charter §6).
+ */
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import RewardsCalculator from "~/components/islands/RewardsCalculator";
+import { getAllCards } from "~/lib/cardsData";
+import { AED_PER_UNIT } from "~/components/islands/RewardsCalculator";
+
+const cards = getAllCards();
+const cardCount = cards.length;
+const lastUpdated = new Date().toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+---
+
+<BaseLayout
+  title="Spend-ROI calculator — DubaiPoints"
+  description="A free, transparent calculator: enter your monthly spend across seven categories and see which UAE credit card pays you back the most. AED-first, methodology visible, no email wall."
+  fullWidth
+>
+  <article class="dp-article is-wide">
+    <header class="dp-article-head">
+      <p class="dp-article-eyebrow is-green">Tool · Calculator</p>
+      <h1 class="dp-article-title">
+        Which UAE card pays you back the most on <em>your</em> spend?
+      </h1>
+      <p class="dp-article-lede">
+        Enter your monthly spend across seven categories. We rank every
+        card on the site by AED-equivalent monthly reward at its
+        published earn rate. Methodology is below the calculator, not
+        behind an email wall.
+      </p>
+      <p class="dp-article-meta">
+        <strong>{cardCount}</strong> cards ranked
+        <span class="sep">·</span> Last updated {lastUpdated}
+        <span class="sep">·</span>
+        <a href="#methodology">Methodology</a>
+      </p>
+    </header>
+
+    <div class="dp-take">
+      <p class="label">How to read this</p>
+      <p>
+        We do not promise these rewards. We show what each card's
+        published earn rate works out to on the spend you enter, using
+        the AED conversion benchmarks in the methodology section. Your
+        actual redemption value will differ; rare sweet spots beat
+        these rates, mass-market redemptions sit below them.
+      </p>
+    </div>
+
+    <RewardsCalculator client:load cards={cards} />
+
+    <section id="methodology" class="dp-article-section">
+      <h2>Methodology</h2>
+
+      <p>
+        The calculator joins your stated monthly spend to each card's
+        typed <code>earnRates</code> in our data file
+        (<a href="https://github.com/dubaipoints1/property/blob/main/src/data/cards.json">cards.json</a>),
+        category-by-category. The sliders cover seven categories so
+        the calculator hits feature parity with the dimensions a UAE
+        reader expects — dining, groceries, fuel, travel, online
+        shopping, utilities and entertainment.
+      </p>
+
+      <h3>The per-card formula</h3>
+      <p>
+        Each card's monthly reward is the sum of seven products —
+        spend in each category multiplied by that card's earn rate
+        for the category. Categories the card does not bonus fall
+        through to its base rate (<code>everythingElse</code>).
+        Utilities and telecom bills always use the base rate; UAE
+        cards rarely bonus this category, and we do not want to
+        invent an earn rate that does not exist.
+      </p>
+
+      <h3>Why we ignore caps by default</h3>
+      <p>
+        We apply per-category caps only when the card declares them
+        in typed form (<code>earnRates._caps</code>). Cards that
+        publish caps in marketing prose but not in the schedule of
+        charges get the benefit of the doubt; we surface the cap on
+        the review page so you can read it before applying.
+      </p>
+
+      <h3>The AED conversion table</h3>
+      <p>
+        Each card earns in its own unit — AED cashback, Skywards
+        Miles, FAB Rewards, Darna, and so on. To rank cards against
+        each other we convert into AED equivalents using a single
+        published table. Updating these rates updates both the
+        ranking and this section.
+      </p>
+
+      <table class="dp-data-table">
+        <thead>
+          <tr>
+            <th>Earn unit family</th>
+            <th>AED per native unit</th>
+            <th>Examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AED cashback</td>
+            <td class="num">{AED_PER_UNIT.aed_cashback.toFixed(2)}</td>
+            <td>FAB Cashback, Mashreq Cashback, ENBD Cashback</td>
+          </tr>
+          <tr>
+            <td>Airline miles</td>
+            <td class="num">{AED_PER_UNIT.miles.toFixed(2)}</td>
+            <td>Emirates Skywards, Etihad Guest, Qatar Avios</td>
+          </tr>
+          <tr>
+            <td>Bank-proprietary points</td>
+            <td class="num">{AED_PER_UNIT.bank_points.toFixed(2)}</td>
+            <td>FAB Rewards, ENBD Plus Points, ADCB TouchPoints, U Points, Darna</td>
+          </tr>
+          <tr>
+            <td>Hotel points</td>
+            <td class="num">{AED_PER_UNIT.hotel_points.toFixed(3)}</td>
+            <td>Marriott Bonvoy</td>
+          </tr>
+          <tr>
+            <td>Unknown / no loyalty programme</td>
+            <td class="num">{AED_PER_UNIT.unknown.toFixed(2)}</td>
+            <td>Fallback — flagged on the result tile</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        <em>
+          These are conservative benchmarks; your actual redemption
+          value will differ. Skywards First-class sweet spots reach
+          5–7 fils per Mile; mass-market economy redemptions sit at
+          3 fils. See the <a href="/valuations/methodology/">AED
+          valuations methodology</a> for the underlying work.
+        </em>
+      </p>
+
+      <h3>Annual fee handling</h3>
+      <p>
+        The default view shows monthly reward AED and annual fee
+        separately. Toggle the "show net of annual fee" checkbox to
+        subtract the monthly fee accrual (<code>annualFee / 12</code>)
+        from the reward and re-rank. A fee-free card with a modest
+        earn rate often beats a premium card once the fee lands.
+      </p>
+
+      <h3>Verification dates</h3>
+      <p>
+        Every ranked card carries its <code>lastVerified</code> date.
+        Cards verified more than 90 days ago get a "data drift risk"
+        chip — we do not hide them, but we tell you the figures may
+        have moved.
+      </p>
+
+      <h3>What this calculator does not do</h3>
+      <ul>
+        <li>
+          We do not score welcome bonuses. A card's first-year value
+          can dwarf its earn rate; check the review page.
+        </li>
+        <li>
+          We do not factor in lounge access, cinema BOGO, golf, the
+          Entertainer, or hotel discounts. Use the
+          <a href="/cards/">cards directory</a> filters for those.
+        </li>
+        <li>
+          We do not check your eligibility. Each result tile links
+          to the full card review with salary band and salary-transfer
+          requirements.
+        </li>
+      </ul>
+    </section>
+
+    <footer class="dp-article-foot">
+      <p>
+        Found a card whose earn rate looks wrong? Email
+        <strong>corrections@dubaipoints.ae</strong> or open an issue
+        on the data file. Every fix gets attributed on our
+        <a href="/corrections/">corrections page</a>.
+      </p>
+    </footer>
+  </article>
+</BaseLayout>
