@@ -76,6 +76,11 @@ export const SCRAPED_FIELDS = [
  * always-raw copy) so the editor can audit the structured parse against the
  * raw bank copy. `annualFeeWaiver` and `perks` keep matching keys.
  *
+ * `partnerBrands` (C1, May 2026) captures raw lines from the bank's product
+ * page that mention any of the 22 PartnerBrand clusters. The editor maps
+ * these onto slugs by hand per the C1.1 SOP — Charter §6 forbids LLM
+ * mapping for typed taxonomies.
+ *
  * These land under `_scraped_freetext.<target>` and never overwrite the typed
  * editor versions at the top level.
  */
@@ -83,7 +88,20 @@ export const FREETEXT_FIELDS = {
   welcomeBonus: "welcomeBonusFreetext",
   annualFeeWaiver: "annualFeeWaiver",
   perks: "perks",
+  partnerBrands: "partnerBrands",
 } as const;
+
+/**
+ * Editor-typed-only fields. The scraper never writes these directly — only
+ * to their `_scraped_freetext.<name>` evidence trail. On a fresh scrape we
+ * still mark `_provenance.<name> = "needs-review"` so the audit can detect
+ * unbackfilled cards.
+ *
+ * C1 (May 2026): added `partnerBrands`. `annualFeeWaiver` and `_features`
+ * have always been editor-typed but predate this constant; they continue
+ * to fall through to the existing editor-only flow.
+ */
+export const EDITOR_TYPED_ONLY_FIELDS = ["partnerBrands"] as const;
 
 function latestScrape(bankSlug: string): ScrapeFile | null {
   const dir = path.join(SCRAPED_DIR, bankSlug);
@@ -175,6 +193,26 @@ export function mergeDraft(
   if (Object.keys(newFreetext).length > 0) {
     entry._scraped_freetext = newFreetext;
     // _scraped_freetext provenance is always "scraped" — it's the raw output
+  }
+
+  // ── Editor-typed-only fields (C1): never write the top-level value from
+  //    a scrape, but DO seed `_provenance.<field> = "needs-review"` on a
+  //    fresh scrape if the editor hasn't yet confirmed a value. This makes
+  //    the audit able to count unbackfilled cards by querying provenance.
+  for (const field of EDITOR_TYPED_ONLY_FIELDS) {
+    const currentProv = provenance[field];
+    if (
+      currentProv === "editor-confirmed" ||
+      currentProv === "editor-corrected"
+    ) {
+      // Editor has typed this field — leave it and its provenance alone.
+      preservedFields.push(field);
+      continue;
+    }
+    if (currentProv !== "needs-review") {
+      provenance[field] = "needs-review";
+      changedFields.push(`_provenance.${field}`);
+    }
   }
 
   entry._provenance = provenance;

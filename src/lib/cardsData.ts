@@ -36,6 +36,68 @@ const CARD_CATEGORY = z.enum([
   "Islamic",
 ]);
 
+// ── PartnerBrand enum (C1) ───────────────────────────────────────────────
+//
+// Brand-affinity filter slugs. Codified from the May 2026
+// `uaecreditcardmatch.com` competitor analysis Q5 list (20 slugs) plus two
+// UAE co-brand staples (du, careem) the competitor missed. Each slug names
+// the brand cluster the editor folds together when typing partnerBrands[]
+// (per the C1.1 backfill SOP). New slugs require Chairman approval per
+// Charter §1.
+//
+// The single-line JSDoc per slug is the contract the editor SOP references
+// when deciding which slug a co-brand mention belongs to.
+const PARTNER_BRAND = z.enum([
+  /** Emaar group: Dubai Mall, Address Hotels, Burj Khalifa, U by Emaar. */
+  "emaar",
+  /** Majid Al Futtaim: Carrefour, SHARE, City Centres, MAF malls, VOX. */
+  "majid-al-futtaim",
+  /** LuLu Hypermarket and LuLu rewards. */
+  "lulu",
+  /** noon Group: noon.com, noon Minutes, noon Food, NowNow, Namshi. */
+  "noon",
+  /** Talabat food delivery. */
+  "talabat",
+  /** ADNOC fuel network and Oasis stores. */
+  "adnoc",
+  /** ENOC / EPPCO fuel network plus YES Card loyalty. */
+  "enoc",
+  /** Al-Futtaim Blue Rewards: IKEA, ACE, M&S, Toys R Us, Robinsons. */
+  "al-futtaim",
+  /** Etihad Airways and Etihad Guest miles. */
+  "etihad",
+  /** Emirates Airline and Skywards miles. */
+  "skywards",
+  /** Marriott Bonvoy hotels and rewards. */
+  "marriott",
+  /** Booking.com travel platform. */
+  "booking-com",
+  /** Amazon.ae marketplace. */
+  "amazon-ae",
+  /** Shukran loyalty: Centrepoint, MAX, Splash, Lifestyle, Babyshop,
+   *  Shoemart, Homebox, Styli. */
+  "shukran",
+  /** Aldar properties, Yas Island, Yas Mall (Darna programme). */
+  "aldar",
+  /** GEMS Education: school fees, bus, canteen, uniforms. */
+  "gems",
+  /** dnata Travel and Emirates Leisure Retail. */
+  "dnata",
+  /** Air Arabia airline and AirRewards. */
+  "air-arabia",
+  /** Etisalat: Smiles app, Smiles rewards, elGrocer. */
+  "etisalat",
+  /** Choithrams supermarkets. */
+  "choithrams",
+  /** du telco rewards (not in competitor Q5; UAE-reality addition). */
+  "du",
+  /** Careem rides and Careem Plus (not in competitor Q5; UAE-reality
+   *  addition). */
+  "careem",
+]);
+
+export type PartnerBrand = z.infer<typeof PARTNER_BRAND>;
+
 /** Per-field provenance — used by the matcher to filter unverified fields. */
 const PROVENANCE = z.enum([
   "scraped",
@@ -255,6 +317,10 @@ const ScrapedFreetext = z
     welcomeBonus: z.string().optional(),
     annualFeeWaiver: z.string().optional(),
     perks: z.array(z.string()).default([]),
+    /** C1 — raw evidence trail for partner-brand mentions in the source
+     *  markdown. Editor maps these onto PartnerBrand slugs per the C1.1
+     *  SOP. Joined with "; " separator by the normaliser. */
+    partnerBrands: z.string().optional(),
   })
   .partial();
 
@@ -321,6 +387,20 @@ const CardDataSchema = z.object({
   perks: z.array(z.string()).default([]),
   /** Typed feature array. The matcher reads ONLY this. */
   _features: z.array(Feature).default([]),
+
+  /**
+   * Brand-affinity taxonomy (C1, May 2026). When a card carries a co-brand
+   * relationship or earns boosted points at a specific UAE retailer / airline
+   * / hotel group, that brand slug goes here. Editor-typed only — the
+   * scraper writes raw evidence to `_scraped_freetext.partnerBrands` for
+   * the editor to map onto slugs per the C1.1 backfill SOP. Charter §6:
+   * no LLM mapping from freetext to slugs.
+   *
+   * Optional with no default — absence is meaningful (the audit relies on
+   * `_provenance.partnerBrands === "needs-review"` to detect unbackfilled
+   * cards). Empty array vs undefined are NOT equivalent.
+   */
+  partnerBrands: z.array(PARTNER_BRAND).optional(),
 
   transferPartners: z.array(z.string()).default([]),
 

@@ -56,6 +56,16 @@ export interface CardDraft {
    */
   welcomeBonusFreetext?: string;
 
+  /**
+   * C1 — raw evidence trail of co-brand / partner mentions found in the
+   * source markdown. Every line of the corpus mentioning one of the 22
+   * PartnerBrand clusters is captured (case-insensitive substring match),
+   * joined with "; ". The editor maps these onto PartnerBrand slugs by
+   * hand per the C1.1 SOP — Charter §6 forbids LLM extraction for typed
+   * taxonomies.
+   */
+  partnerBrands?: string;
+
   eligibility: {
     minSalary: number;
     salaryTransferRequired: boolean;
@@ -541,6 +551,94 @@ function parsePerks(text: string, bankSlug: string): string[] {
 }
 
 /**
+ * C1 — Partner-brand mention strings, in natural-language form.
+ *
+ * Each entry pairs a PartnerBrand slug (see `src/lib/cardsData.ts`) with the
+ * surface phrases the bank's marketing copy uses to name members of that
+ * cluster. We capture lines that mention any phrase below (case-insensitive
+ * substring) and stash them under `_scraped_freetext.partnerBrands` so the
+ * editor can map them onto slugs by hand per the C1.1 SOP. Charter §6
+ * forbids LLM mapping from freetext to typed slugs.
+ *
+ * Synced by hand with PARTNER_BRAND in `src/lib/cardsData.ts`. New cluster
+ * → add a row here AND a slug there, and update the test fixture.
+ *
+ * Phrasing rules:
+ *   - Anchor on distinctive tokens (e.g. "carrefour", not "MAF" which could
+ *     hit acronyms in unrelated copy).
+ *   - Multi-token brand names ("dubai mall", "yas mall") use a word-tight
+ *     test in `containsPartnerBrandMention()` below.
+ *   - Phrases are lower-cased here; the matcher lower-cases the source.
+ */
+const PARTNER_BRAND_PHRASES: Array<{ slug: string; phrases: string[] }> = [
+  { slug: "emaar", phrases: ["emaar", "dubai mall", "address hotels", "burj khalifa", "u by emaar"] },
+  { slug: "majid-al-futtaim", phrases: ["majid al futtaim", "carrefour", "city centre", "share rewards", "vox cinemas", "magic planet", "ski dubai"] },
+  { slug: "lulu", phrases: ["lulu hypermarket", "lulu group", "lulu money"] },
+  { slug: "noon", phrases: ["noon.com", "noon minutes", "noon food", "nownow", "namshi"] },
+  { slug: "talabat", phrases: ["talabat"] },
+  { slug: "adnoc", phrases: ["adnoc"] },
+  { slug: "enoc", phrases: ["enoc", "eppco", "yes card"] },
+  { slug: "al-futtaim", phrases: ["al-futtaim", "al futtaim", "blue rewards", "ikea", "marks & spencer", "toys r us", "ace hardware", "robinsons"] },
+  { slug: "etihad", phrases: ["etihad airways", "etihad guest"] },
+  { slug: "skywards", phrases: ["emirates skywards", "skywards miles", "skywards"] },
+  { slug: "marriott", phrases: ["marriott", "bonvoy", "ritz-carlton", "st. regis", "st regis", "w hotels", "sheraton"] },
+  { slug: "booking-com", phrases: ["booking.com"] },
+  { slug: "amazon-ae", phrases: ["amazon.ae", "amazon uae"] },
+  { slug: "shukran", phrases: ["shukran", "centrepoint", "babyshop", "splash", "lifestyle stores", "shoemart", "homebox", "styli", "max fashion"] },
+  { slug: "aldar", phrases: ["aldar", "yas island", "yas mall", "darna"] },
+  { slug: "gems", phrases: ["gems education", "gems schools"] },
+  { slug: "dnata", phrases: ["dnata travel", "dnata"] },
+  { slug: "air-arabia", phrases: ["air arabia", "airrewards"] },
+  { slug: "etisalat", phrases: ["etisalat", "smiles app", "smiles by etisalat", "elgrocer"] },
+  { slug: "choithrams", phrases: ["choithrams"] },
+  { slug: "du", phrases: ["du telecom", "du rewards"] },
+  { slug: "careem", phrases: ["careem"] },
+];
+
+/**
+ * C1 — Scan the source markdown for any line that mentions any
+ * PartnerBrand cluster's surface phrase. Returns a "; "-joined string for
+ * the editor's review trail (`_scraped_freetext.partnerBrands`), or
+ * `undefined` when no mentions are found.
+ *
+ * No slug mapping is done here — the editor types `partnerBrands[]` by
+ * hand per the C1.1 SOP. Charter §6.
+ *
+ * Filtering rules (matched to `parsePerks` plumbing):
+ *   - Strip leading bullet markers / leading nav-link gunk so the evidence
+ *     trail is readable.
+ *   - Skip lines under 8 chars or over 200 chars (same window as perks).
+ *   - De-duplicate identical lines.
+ *   - Cap at 20 lines so the freetext stays auditable.
+ */
+export function parsePartnerBrandMentions(text: string): string | undefined {
+  const lines = text.split(/\n/).map((l) => l.trim());
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of lines) {
+    const line = raw.replace(/^[-*•]\s+/, "").trim();
+    if (line.length < 8 || line.length > 200) continue;
+    const lower = line.toLowerCase();
+    let matched = false;
+    for (const { phrases } of PARTNER_BRAND_PHRASES) {
+      for (const phrase of phrases) {
+        if (lower.includes(phrase)) {
+          matched = true;
+          break;
+        }
+      }
+      if (matched) break;
+    }
+    if (!matched) continue;
+    if (seen.has(line)) continue;
+    seen.add(line);
+    out.push(line);
+    if (out.length >= 20) break;
+  }
+  return out.length > 0 ? out.join("; ") : undefined;
+}
+
+/**
  * Plausible UAE card earn rate. Anything above the cap is almost always
  * welcome-bonus contamination ("Earn 40,000 Etihad Guest Miles" → 40 mistaken
  * for 40%). Real rates on UAE cards top out around 8% (cashback) or 8 miles
@@ -656,6 +754,8 @@ export function normalise(
     welcomeBonus: welcomeBonus,
     welcomeBonusFreetext: welcomeFreetext ?? undefined,
     welcomeBonusValue: welcomeBonusValue ?? undefined,
+
+    partnerBrands: parsePartnerBrandMentions(text),
 
     eligibility: {
       minSalary: minSalary ?? 0,
