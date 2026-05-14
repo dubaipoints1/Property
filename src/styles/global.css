@@ -47,6 +47,8 @@
   /* Accent — deep editorial green */
   --green:     #2d6a52;          /* eyebrows, pull-quote mark, accents */
   --green-band:#1d6b54;          /* legacy from TPG pivot — newsletter band */
+  --mint:      #5fb88a;          /* secondary green — .dp-callout-tip border + chips */
+  --mint-soft: #e6f1ea;          /* wash for callout backgrounds (derived from mint) */
 
   /* Interactive (link / focus / hover only — never display type, never eyebrows) */
   --link:      #1a5fc6;
@@ -362,6 +364,33 @@ img { display: block; max-width: 100%; }
   text-wrap: pretty;
   margin: 0; max-width: 56ch;
 }
+
+/* Pro-tip callout — image-forward editorial pattern (Phase A, May 2026).
+   Used inside MDX article bodies for sidebar-style asides that belong
+   inline rather than in the sticky aside. Mint left rail keeps it
+   distinct from the .dp-take "editor's take" pattern (red label, ink
+   border) so the two callouts don't fight each other in the same article. */
+.dp-callout-tip {
+  border-left: 4px solid var(--mint);
+  background: var(--mint-soft);
+  padding: 16px 20px 18px;
+  margin: 24px 0 32px;
+  border-radius: 0 4px 4px 0;
+}
+.dp-callout-tip .label {
+  font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--green);
+  margin-bottom: 6px;
+  display: block;
+}
+.dp-callout-tip p {
+  font-family: 'DM Sans', system-ui, sans-serif; font-weight: 400;
+  font-size: 15px; line-height: 1.55;
+  color: var(--ink);
+  margin: 0; max-width: 60ch;
+}
+.dp-callout-tip p + p { margin-top: 10px; }
+.dp-callout-tip strong { font-weight: 600; color: var(--ink); }
 
 /* Pros / Cons — Quiet Ledger: drop the green/red top borders;
    pros use a `+` glyph, cons use a `−` glyph; everything flat ink. */
