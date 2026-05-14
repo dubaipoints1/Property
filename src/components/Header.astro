@@ -417,6 +417,33 @@ const trackerItems = [
   position: sticky; top: 0; z-index: 50;
   background: var(--paper);
   border-bottom: 1px solid var(--line);
+  /* Phase A5 — frosted-glass on scroll via scroll-driven animation.
+     Honours the header's "no JS" design rule. The keyframe fades the
+     solid paper background into a translucent + blurred state over the
+     first 64px of scroll. Browsers without animation-timeline support
+     stay on the solid-paper baseline (graceful degradation, no
+     regression). prefers-reduced-motion users: the property change is
+     instantaneous over 0px of scroll, not technically "motion", but
+     the @supports clause makes the upgrade opt-in by browser anyway. */
+}
+@supports (animation-timeline: scroll()) {
+  .dp-header {
+    animation: dp-header-scrolled both linear;
+    animation-timeline: scroll(root);
+    animation-range: 0 64px;
+  }
+  @keyframes dp-header-scrolled {
+    0% {
+      background-color: var(--paper);
+      backdrop-filter: none;
+      box-shadow: none;
+    }
+    100% {
+      background-color: rgba(253, 252, 248, 0.72);
+      backdrop-filter: blur(12px) saturate(1.2);
+      box-shadow: 0 1px 0 rgba(15, 31, 46, 0.04);
+    }
+  }
 }
 .dp-header-inner {
   display: grid;
