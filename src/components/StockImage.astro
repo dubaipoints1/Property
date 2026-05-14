@@ -1,0 +1,62 @@
+---
+// StockImage — renders a manifest-tracked photograph with attribution
+// metadata baked into the markup. Falls back to Cover.astro SVG when
+// the slug is not in the manifest yet (e.g. before `npm run fetch:stock`
+// has been run, or for slugs the editor has not chosen a photo for).
+//
+// Per Charter §"Editorial guarantees" — every image must have a
+// `lastVerified`-equivalent provenance trail. The manifest entry is
+// that trail; <ImageCredit> renders the visible attribution.
+//
+// Usage:
+//   <StockImage
+//     slug="homepage-hero-cabin"
+//     coverTitle="UAE rewards, decoded."   // fallback Cover title
+//     coverCategory="Editorial"             // fallback Cover category
+//     coverSize="hero"                      // fallback Cover size
+//     class="hp-hero-image"                 // wrapper class
+//     loading="eager"                       // <img> attr (default lazy)
+//   />
+
+import { getStockEntry } from "../lib/stockManifest";
+import Cover from "./Cover.astro";
+
+interface Props {
+  slug: string;
+  coverTitle?: string;
+  coverCategory?: string;
+  coverSize?: "hero" | "med" | "sm" | "thumb";
+  class?: string;
+  loading?: "eager" | "lazy";
+  sizes?: string;
+}
+
+const {
+  slug,
+  coverTitle = "",
+  coverCategory = "Editorial",
+  coverSize = "med",
+  class: className,
+  loading = "lazy",
+  sizes,
+} = Astro.props;
+
+const entry = getStockEntry(slug);
+---
+
+{entry ? (
+  <img
+    src={`/${entry.file}`}
+    alt={entry.alt}
+    width={entry.width}
+    height={entry.height}
+    loading={loading}
+    decoding="async"
+    sizes={sizes}
+    class={className}
+    data-stock-slug={entry.slug}
+    data-stock-source={entry.source}
+  />
+) : (
+  <Cover title={coverTitle} category={coverCategory} size={coverSize} />
+)}
