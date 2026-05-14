@@ -15,7 +15,8 @@
     "scrape:fab": "tsx scripts/scrape/fab.ts",
     "scrape:enbd": "tsx scripts/scrape/enbd.ts",
     "scrape:adcb": "tsx scripts/scrape/adcb.ts",
-    "scrape:propose": "tsx scripts/scrape/propose-changes.ts"
+    "scrape:propose": "tsx scripts/scrape/propose-changes.ts",
+    "fetch:stock": "tsx scripts/images/fetch-stock.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",

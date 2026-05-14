@@ -1,0 +1,78 @@
+---
+// ImageCredit — renders attribution microcopy for one or more stock
+// images on a page. Pexels licence does not require attribution, but
+// the publication credits photographers as a trust signal (Charter
+// §"No advertorial-driven recommendations" — transparency on every
+// surface, sources visible).
+//
+// Two usage modes:
+//   1. Single slug:  <ImageCredit slug="homepage-hero-cabin" />
+//   2. Multiple:     <ImageCredit slugs={["a", "b", "c"]} />
+//
+// Renders nothing if no slug resolves to a manifest entry (silent
+// fallback so pages with Cover.astro SVG fallbacks don't show a
+// dangling "Photo by undefined" line).
+
+import { getStockEntry } from "../lib/stockManifest";
+
+interface Props {
+  slug?: string;
+  slugs?: string[];
+  class?: string;
+}
+
+const { slug, slugs, class: className } = Astro.props;
+
+const allSlugs = slug ? [slug] : (slugs ?? []);
+const entries = allSlugs
+  .map((s) => getStockEntry(s))
+  .filter((e): e is NonNullable<typeof e> => Boolean(e));
+
+const sourceLabel: Record<string, string> = {
+  pexels: "Pexels",
+  unsplash: "Unsplash",
+  editorial: "Editorial",
+};
+---
+
+{entries.length > 0 && (
+  <p class={`dp-image-credit ${className ?? ""}`}>
+    {entries.length === 1 ? "Photo" : "Photos"}:
+    {entries.map((entry, i) => (
+      <>
+        {i > 0 ? "; " : " "}
+        {entry.photographer_url ? (
+          <a href={entry.photographer_url} rel="noopener noreferrer">{entry.photographer}</a>
+        ) : (
+          <span>{entry.photographer}</span>
+        )}
+        {" "}via{" "}
+        {entry.source_url ? (
+          <a href={entry.source_url} rel="noopener noreferrer">{sourceLabel[entry.source]}</a>
+        ) : (
+          <span>{sourceLabel[entry.source]}</span>
+        )}
+      </>
+    ))}
+  </p>
+)}
+
+<style>
+  .dp-image-credit {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 8px 0 0;
+    line-height: 1.4;
+  }
+  .dp-image-credit a {
+    color: var(--ink-soft);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 2px;
+  }
+  .dp-image-credit a:hover {
+    color: var(--ink);
+    text-decoration-color: var(--ink-soft);
+  }
+</style>
