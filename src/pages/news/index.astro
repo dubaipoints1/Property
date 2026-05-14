@@ -4,7 +4,7 @@
 // Replaces the empty-state implementation from PR #28 with the full pattern.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Cover from "~/components/Cover.astro";
+import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 
 const posts = (await getCollection("news"))
@@ -76,7 +76,7 @@ const formatCategory = (c: string) =>
           <div class="dp-featured-grid">
             {featured[0] && (
               <a href={`/news/${featured[0].id}/`} class="dp-story-card hero">
-                <Cover title={featured[0].data.title} category="News" size="hero" />
+                <StockImage slug={`news-${featured[0].id}`} coverTitle={featured[0].data.title} coverCategory="News" coverSize="hero" loading="eager" sizes="(max-width: 900px) 100vw, 60vw" />
                 <div class="body">
                   <div class="meta">
                     <span class="cat">{formatCategory(featured[0].data.category)}</span>
@@ -90,7 +90,7 @@ const formatCategory = (c: string) =>
             )}
             {[featured[1], featured[2]].filter(Boolean).map((p) => (
               <a href={`/news/${p.id}/`} class="dp-story-card med">
-                <Cover title={p.data.title} category="News" size="med" />
+                <StockImage slug={`news-${p.id}`} coverTitle={p.data.title} coverCategory="News" coverSize="med" sizes="(max-width: 900px) 100vw, 40vw" />
                 <div class="body">
                   <div class="meta"><span class="cat">{formatCategory(p.data.category)}</span><span>{fmt(p.data.publishedAt)}</span></div>
                   <h3>{p.data.title}</h3>
@@ -100,7 +100,7 @@ const formatCategory = (c: string) =>
             ))}
             {featured.slice(3, 7).map((p) => (
               <a href={`/news/${p.id}/`} class="dp-story-card sm">
-                <Cover title={p.data.title} category="News" size="sm" />
+                <StockImage slug={`news-${p.id}`} coverTitle={p.data.title} coverCategory="News" coverSize="sm" sizes="(max-width: 900px) 50vw, 25vw" />
                 <div class="body">
                   <div class="meta"><span class="cat">{formatCategory(p.data.category)}</span><span>{fmt(p.data.publishedAt)}</span></div>
                   <h3>{p.data.title}</h3>
@@ -138,7 +138,7 @@ const formatCategory = (c: string) =>
                     <h3>{p.data.title}</h3>
                     <div class="summary">{p.data.description}</div>
                   </div>
-                  <Cover category="News" size="thumb" />
+                  <StockImage slug={`news-thumb-${p.id}`} coverCategory="News" coverSize="thumb" sizes="240px" />
                   <div class="when">{fmt(p.data.publishedAt)}</div>
                 </a>
               );

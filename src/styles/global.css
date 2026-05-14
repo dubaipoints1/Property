@@ -1388,6 +1388,190 @@ img { display: block; max-width: 100%; }
 }
 .dp-toc-card a:hover { color: var(--green); }
 
+/* Trending guides — Phase D4, sibling to .dp-toc-card in the article aside.
+   Same shell, numbered list of off-article guides. Reuses the .dp-toc-card
+   class tokens for visual consistency; semantic role differs (nav, not toc). */
+.dp-trending-card {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+}
+.dp-trending-card h4 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--green);
+  margin: 0 0 12px; font-weight: 700;
+}
+.dp-trending-card ol {
+  list-style: none; padding: 0; margin: 0;
+}
+.dp-trending-card li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13px; color: var(--ink-soft);
+  display: flex; gap: 10px;
+  line-height: 1.4;
+}
+.dp-trending-card li:last-child { border-bottom: 0; }
+.dp-trending-card .num {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 11px;
+  min-width: 18px;
+  flex-shrink: 0;
+}
+.dp-trending-card a {
+  color: var(--ink);
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+}
+.dp-trending-card a:hover { color: var(--green); }
+
+/* Aside newsletter card — Phase D4 "Insider Intel" CTA in the article rail. */
+.dp-aside-newsletter {
+  background: var(--green);
+  color: white;
+  border-radius: 16px;
+  padding: 22px;
+  display: grid;
+  gap: 8px;
+}
+.dp-aside-newsletter .eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+}
+.dp-aside-newsletter h4 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+  color: white;
+  margin: 0;
+  text-wrap: balance;
+}
+.dp-aside-newsletter p {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+  margin: 4px 0 6px;
+}
+.dp-aside-newsletter .cta {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 16px;
+  background: white;
+  color: var(--green);
+  border-radius: 999px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-decoration: none;
+  align-self: start;
+  transition: opacity 0.15s ease;
+}
+.dp-aside-newsletter .cta:hover { opacity: 0.88; }
+
+/* Related guides — Phase D2 footer-band, sits between article-body-grid
+   and .dp-article-sources. 3-column grid on desktop, stacks on mobile. */
+.dp-article-related {
+  max-width: 1180px;
+  margin: 32px auto 24px;
+  padding: 40px 32px 8px;
+  border-top: 1px solid var(--line);
+}
+.dp-article-related-head {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+.dp-article-related-head .eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--green);
+}
+.dp-article-related-head h2 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: clamp(22px, 2.6vw, 30px);
+  letter-spacing: -0.6px;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: balance;
+}
+.dp-article-related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.dp-article-related-card {
+  display: grid;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.dp-article-related-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--ink-soft);
+  box-shadow: 0 12px 28px -16px rgba(15, 31, 46, 0.18);
+}
+.dp-article-related-card > .dp-cover,
+.dp-article-related-card > img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-bottom: 1px solid var(--line);
+}
+.dp-article-related-card > img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+.dp-article-related-card .body {
+  padding: 18px 18px 20px;
+  display: grid;
+  gap: 8px;
+}
+.dp-article-related-card .cat {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--green);
+}
+.dp-article-related-card h3 {
+  font-family: 'Fraunces', serif;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+  color: var(--ink);
+  margin: 0;
+  text-wrap: balance;
+}
+.dp-article-related-card:hover h3 { color: var(--green); }
+.dp-article-related-card p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .dp-article-related-grid { grid-template-columns: 1fr; gap: 16px; }
+  .dp-article-related { padding: 32px 20px 8px; }
+}
+
 /* Sources footer for articles */
 .dp-article-sources {
   max-width: 760px;
