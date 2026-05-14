@@ -1,8 +1,21 @@
 ---
-// Guides index — section-index template (Phase B1, Claude Design handoff).
-// Reference: dubaipoints/project/templates/chrome.jsx::SectionIndex.
-// Page-head + filter pills + featured grid (1 hero + 2 medium + 4 small) +
-// green-mark pull-quote + numbered feed + pagination.
+// Guides index — Phase F.3 (May 2026 mockup-fidelity rebuild).
+// Reference: Replit Canvas mockup, page 03 (Articles & Guides / "All Intel").
+//
+// Composition mirrors the mockup top-to-bottom:
+//   1. Page header — "All intel" h1 + subtitle + category tabs + search input
+//   2. 2-column layout (≥1024px): main feed (left 2fr) + sticky sidebar (right 1fr)
+//      Main feed:
+//        a. Featured guide — full-width hero card with FEATURED GUIDE eyebrow
+//        b. Grid of guide cards (2-column at ≥640px, 1-column below)
+//      Sidebar:
+//        a. Trending Now — numbered list of top 5 guides by updatedAt
+//        b. Insider Intel newsletter card (green block)
+//
+// Dropped from prior layout (Chairman directive 2026-05-14):
+//   - .dp-featured-band 7-card mosaic (1 hero + 2 med + 4 small)
+//   - .dp-pullquote editorial-standard quote
+//   - .dp-feed numbered list
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
@@ -15,133 +28,498 @@ const guides = (await getCollection("guides")).sort(
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-// Pillar treatment: surface the Expat Starter cornerstone if present —
-// it slots into the hero card position. Otherwise top-most by updatedAt.
-const pillar = guides.find((g) => g.id === "expat-starter");
-const others = guides.filter((g) => g.id !== "expat-starter");
-const featured = pillar ? [pillar, ...others.slice(0, 6)] : others.slice(0, 7);
-const remaining = pillar ? others.slice(6) : others.slice(7);
+// Featured guide — pillar Expat Starter cornerstone if present,
+// otherwise the freshest by updatedAt.
+const featured = guides.find((g) => g.id === "expat-starter") ?? guides[0];
+const others = guides.filter((g) => g.id !== featured?.id);
 
-// Filter facets — informal categories until guides schema gains a `category`.
-const filters = [
-  { label: "All", active: true },
-  { label: "Salary transfer" },
-  { label: "Account opening" },
-  { label: "Redemptions" },
-  { label: "Valuations" },
-  { label: "Tax & compliance" },
+// Sidebar Trending — top 5 most-recently-updated, excluding the featured.
+const trending = others.slice(0, 5);
+
+// Informal category tabs — pulled from the publication's existing taxonomy
+// (.council/04_content_taxonomy.md). Each tab pre-pops a search query so the
+// filter is clickable rather than fictional.
+const tabs = [
+  { label: "All", active: true, href: "/guides/" },
+  { label: "Salary transfer", href: "/salary-transfer/" },
+  { label: "Account opening", href: "/banks/" },
+  { label: "Eligibility", href: "/guides/uae-credit-card-eligibility-2026/" },
+  { label: "Redemptions", href: "/airlines/" },
 ];
 ---
 
 <BaseLayout
-  title="Guides — UAE points and miles"
+  title="All Intel — UAE points, miles, banking guides"
   description="Long-form, AED-first guides to UAE credit-card eligibility, salary-transfer mechanics, miles redemption strategy, and expat-specific friction."
   fullWidth
 >
-  <div class="dp-pagehead">
-    <div class="crumb">DubaiPoints / Guides</div>
-    <h1>Guides</h1>
-    <p>Long-form analysis on UAE banking, salary transfer, points valuations and redemption strategy. Updated as products change — not on a schedule.</p>
-  </div>
+  <!-- ── 1. Page header ─────────────────────────────────────────────── -->
+  <header class="intel-pagehead">
+    <div class="intel-pagehead-inner">
+      <div class="crumb">DubaiPoints / Guides</div>
+      <h1>All intel.</h1>
+      <p>The latest strategies, reviews, sweet spots and banking moves — every claim sourced, every figure in AED.</p>
 
-  <div class="dp-filters">
-    {filters.map((f) => (
-      <span class={`dp-filter-pill${f.active ? " is-active" : ""}`}>{f.label}</span>
-    ))}
-    <span class="dp-sort">Sort: <strong>Newest</strong> ▾</span>
-  </div>
-
-  {featured.length > 0 && (
-    <section class="dp-featured-band">
-      <div class="dp-featured-eyebrow">
-        <span>Featured this week</span>
-        <span class="rule"></span>
-        <span class="meta">Curated by editors · refreshed Mondays</span>
+      <div class="intel-tools">
+        <div class="intel-tabs" role="tablist">
+          {tabs.map((t) => (
+            t.active
+              ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
+              : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
+          ))}
+        </div>
+        <form class="intel-search" action="/" method="get" role="search">
+          <label class="intel-search-label" for="intel-search-input">Search</label>
+          <input
+            id="intel-search-input"
+            type="search"
+            name="q"
+            placeholder="Search articles…"
+            autocomplete="off"
+          />
+        </form>
       </div>
-      <div class="dp-featured-grid">
-        {featured[0] && (
-          <a href={`/guides/${featured[0].id}/`} class="dp-story-card hero">
-            <StockImage slug={`guide-${featured[0].id}`} coverTitle={featured[0].data.title} coverCategory="Guide" coverSize="hero" loading="eager" sizes="(max-width: 900px) 100vw, 60vw" />
-            <div class="body">
-              <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[0].data.updatedAt)}</span></div>
-              <h3>{featured[0].data.title}</h3>
-              <p>{featured[0].data.description}</p>
-              <div class="by">By DubaiPoints Editorial</div>
-            </div>
-          </a>
-        )}
-        {featured[1] && (
-          <a href={`/guides/${featured[1].id}/`} class="dp-story-card med">
-            <StockImage slug={`guide-${featured[1].id}`} coverTitle={featured[1].data.title} coverCategory="Guide" coverSize="med" sizes="(max-width: 900px) 100vw, 40vw" />
-            <div class="body">
-              <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[1].data.updatedAt)}</span></div>
-              <h3>{featured[1].data.title}</h3>
-              <p>{featured[1].data.description}</p>
-            </div>
-          </a>
-        )}
-        {featured[2] && (
-          <a href={`/guides/${featured[2].id}/`} class="dp-story-card med">
-            <StockImage slug={`guide-${featured[2].id}`} coverTitle={featured[2].data.title} coverCategory="Guide" coverSize="med" sizes="(max-width: 900px) 100vw, 40vw" />
-            <div class="body">
-              <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[2].data.updatedAt)}</span></div>
-              <h3>{featured[2].data.title}</h3>
-              <p>{featured[2].data.description}</p>
-            </div>
-          </a>
-        )}
-        {featured.slice(3, 7).map((g) => (
-          <a href={`/guides/${g.id}/`} class="dp-story-card sm">
-            <StockImage slug={`guide-${g.id}`} coverTitle={g.data.title} coverCategory="Guide" coverSize="sm" sizes="(max-width: 900px) 50vw, 25vw" />
-            <div class="body">
-              <div class="meta"><span class="cat">Guide</span><span>{fmt(g.data.updatedAt)}</span></div>
-              <h3>{g.data.title}</h3>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
+    </div>
+  </header>
 
-  <div class="dp-pullquote">
-    <div class="mark">"</div>
-    <blockquote>
-      Independent UAE rewards reporting. Every verdict dated, every figure in dirhams, every recommendation held to the same standard whether the bank is an advertiser or not.
-    </blockquote>
-    <div class="attr"><span class="rule"></span>Editorial standard · est. 2026</div>
-  </div>
+  <!-- ── 2. Main grid ───────────────────────────────────────────────── -->
+  <div class="intel-grid">
+    <main class="intel-main">
+      {featured && (
+        <a href={`/guides/${featured.id}/`} class="intel-featured">
+          <StockImage
+            slug={`guide-${featured.id}`}
+            coverTitle={featured.data.title}
+            coverCategory="Guide"
+            coverSize="hero"
+            class="intel-featured-image"
+            loading="eager"
+            sizes="(max-width: 900px) 100vw, 66vw"
+          />
+          <div class="intel-featured-body">
+            <span class="intel-featured-eyebrow">★ Featured guide</span>
+            <h2>{featured.data.title}</h2>
+            <p>{featured.data.description}</p>
+            <span class="intel-featured-meta">
+              Updated {fmt(featured.data.updatedAt)} · Read full guide →
+            </span>
+          </div>
+        </a>
+      )}
 
-  {remaining.length > 0 && (
-    <>
-      <div class="dp-list-head">
-        <div class="t">All guides</div>
-        <div class="m">Sorted by date · {remaining.length} more below</div>
-      </div>
-      <div class="dp-feed">
-        {remaining.map((g, i) => {
-          const n = i + featured.length + 1;
-          return (
-            <a href={`/guides/${g.id}/`} class="dp-feed-row">
-              <div>
-                <div class="num">{String(n).padStart(2, "0")}</div>
-                <div class="feed-eyebrow">Guide</div>
-              </div>
-              <div>
-                <h3>{g.data.title}</h3>
-                <div class="summary">{g.data.description}</div>
-              </div>
-              <StockImage slug={`guide-thumb-${g.id}`} coverCategory="Guide" coverSize="thumb" sizes="240px" />
-              <div class="when">{fmt(g.data.updatedAt)}</div>
-            </a>
-          );
-        })}
-      </div>
-    </>
-  )}
+      {others.length > 0 && (
+        <ul class="intel-card-grid">
+          {others.map((g) => (
+            <li class="intel-card-item">
+              <a href={`/guides/${g.id}/`} class="intel-card">
+                <StockImage
+                  slug={`guide-${g.id}`}
+                  coverTitle={g.data.title}
+                  coverCategory="Guide"
+                  coverSize="med"
+                  class="intel-card-image"
+                  sizes="(max-width: 900px) 100vw, 33vw"
+                />
+                <div class="intel-card-body">
+                  <span class="intel-card-cat">Guide</span>
+                  <h3>{g.data.title}</h3>
+                  <p>{g.data.description}</p>
+                  <span class="intel-card-meta">Updated {fmt(g.data.updatedAt)}</span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </main>
 
-  <div class="dp-page-nav">
-    <span style="font-size:12px;color:var(--muted);">
-      Showing all {guides.length} guide{guides.length === 1 ? "" : "s"}
-    </span>
+    <aside class="intel-aside">
+      {trending.length > 0 && (
+        <nav class="intel-trending" aria-label="Trending guides">
+          <h4>Trending now</h4>
+          <ol>
+            {trending.map((g, i) => (
+              <li>
+                <span class="num">{String(i + 1).padStart(2, "0")}</span>
+                <a href={`/guides/${g.id}/`}>{g.data.title}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
+      <div class="intel-insider">
+        <span class="eyebrow">Insider Intel</span>
+        <h4>Friday morning, in your inbox.</h4>
+        <p>One email each Friday — salary-transfer changes, new card offers, miles redemptions worth knowing about.</p>
+        <a href="/newsletter/" class="cta">Subscribe →</a>
+      </div>
+    </aside>
   </div>
 </BaseLayout>
+
+<style>
+  /* ── Page header ─────────────────────────────────────────────────── */
+  .intel-pagehead {
+    background: var(--paper);
+    padding: 48px 32px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-pagehead-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+  .intel-pagehead .crumb {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+  .intel-pagehead h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(38px, 5.6vw, 58px);
+    letter-spacing: -1.6px;
+    line-height: 1.04;
+    color: var(--green);
+    margin: 0 0 14px;
+  }
+  .intel-pagehead p {
+    max-width: 62ch;
+    font-size: 15px; line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+  }
+  .intel-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .intel-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .intel-tab {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    cursor: pointer;
+  }
+  .intel-tab:hover {
+    background: var(--shade-1);
+    color: var(--ink);
+  }
+  .intel-tab.is-active {
+    background: var(--ink);
+    color: var(--paper);
+    cursor: default;
+  }
+  .intel-search {
+    display: flex;
+    align-items: center;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0 14px;
+    height: 36px;
+    min-width: 220px;
+    transition: border-color 0.15s ease;
+  }
+  .intel-search:focus-within { border-color: var(--ink-soft); }
+  .intel-search-label {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+  }
+  .intel-search input[type="search"] {
+    border: 0;
+    background: transparent;
+    outline: none;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    width: 100%;
+  }
+  .intel-search input[type="search"]::placeholder { color: var(--muted); }
+
+  /* ── 2-column grid ──────────────────────────────────────────────── */
+  .intel-grid {
+    max-width: 1180px;
+    margin: 32px auto 56px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+  .intel-main { display: grid; gap: 28px; }
+
+  /* ── Featured guide ─────────────────────────────────────────────── */
+  .intel-featured {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .intel-featured:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 20px 40px -20px rgba(15, 31, 46, 0.22);
+  }
+  .intel-featured :global(.intel-featured-image) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-featured :global(svg.dp-cover) {
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-featured-body {
+    padding: 24px 28px 28px;
+    display: grid;
+    gap: 10px;
+  }
+  .intel-featured-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .intel-featured-body h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3.4vw, 34px);
+    letter-spacing: -0.9px;
+    line-height: 1.12;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intel-featured:hover h2 { color: var(--green); }
+  .intel-featured-body p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 64ch;
+  }
+  .intel-featured-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    margin-top: 4px;
+  }
+
+  /* ── Card grid ──────────────────────────────────────────────────── */
+  .intel-card-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .intel-card-item { display: block; }
+  .intel-card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .intel-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
+  }
+  .intel-card :global(.intel-card-image) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-card :global(svg.dp-cover) {
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-card-body {
+    padding: 18px 20px 20px;
+    display: grid;
+    gap: 8px;
+  }
+  .intel-card-cat {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .intel-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intel-card:hover h3 { color: var(--green); }
+  .intel-card-body p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .intel-card-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.2px;
+    margin-top: 2px;
+  }
+
+  /* ── Sidebar ────────────────────────────────────────────────────── */
+  .intel-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  @media (min-width: 1024px) {
+    .intel-aside { position: sticky; top: 32px; align-self: flex-start; }
+  }
+  .intel-trending {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .intel-trending h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--green);
+    margin: 0 0 14px; font-weight: 700;
+  }
+  .intel-trending ol {
+    list-style: none; padding: 0; margin: 0;
+  }
+  .intel-trending li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px; color: var(--ink-soft);
+    display: flex; gap: 12px;
+    line-height: 1.35;
+  }
+  .intel-trending li:last-child { border-bottom: 0; }
+  .intel-trending .num {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 11px;
+    min-width: 20px;
+    flex-shrink: 0;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .intel-trending a {
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    letter-spacing: -0.2px;
+    text-decoration: none;
+  }
+  .intel-trending a:hover { color: var(--green); }
+
+  .intel-insider {
+    background: var(--green);
+    color: white;
+    border-radius: 16px;
+    padding: 22px;
+    display: grid;
+    gap: 8px;
+  }
+  .intel-insider .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .intel-insider h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+    color: white;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intel-insider p {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.88);
+    margin: 4px 0 6px;
+  }
+  .intel-insider .cta {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 16px;
+    background: white;
+    color: var(--green);
+    border-radius: 999px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-decoration: none;
+    align-self: start;
+    transition: opacity 0.15s ease;
+  }
+  .intel-insider .cta:hover { opacity: 0.88; }
+
+  /* ── Responsive ─────────────────────────────────────────────────── */
+  @media (max-width: 1023px) {
+    .intel-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .intel-pagehead { padding: 32px 20px 24px; }
+    .intel-grid { padding: 0 20px; margin-top: 24px; gap: 28px; }
+    .intel-card-grid { grid-template-columns: 1fr; }
+    .intel-search { min-width: 0; flex: 1; }
+    .intel-tools { flex-direction: column; align-items: stretch; }
+  }
+</style>
