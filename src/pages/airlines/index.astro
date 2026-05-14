@@ -3,7 +3,7 @@
 // Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Cover from "~/components/Cover.astro";
+import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 
 const programs = (await getCollection("programs")).sort((a, b) =>
@@ -51,7 +51,7 @@ const filters = [
       <div class="dp-featured-grid">
         {featured[0] && (
           <a href={`/airlines/${featured[0].id}/`} class="dp-story-card hero">
-            <Cover title={featured[0].data.name} category="Programme" size="hero" />
+            <StockImage slug={`programme-${featured[0].id}`} coverTitle={featured[0].data.name} coverCategory="Programme" coverSize="hero" loading="eager" sizes="(max-width: 900px) 100vw, 60vw" />
             <div class="body">
               <div class="meta"><span class="cat">{featured[0].data.region}</span><span>{featured[0].data.currencyName}</span></div>
               <h3>{featured[0].data.name}</h3>
@@ -62,7 +62,7 @@ const filters = [
         )}
         {[featured[1], featured[2]].filter(Boolean).map((p) => (
           <a href={`/airlines/${p.id}/`} class="dp-story-card med">
-            <Cover title={p.data.name} category="Programme" size="med" />
+            <StockImage slug={`programme-${p.id}`} coverTitle={p.data.name} coverCategory="Programme" coverSize="med" sizes="(max-width: 900px) 100vw, 40vw" />
             <div class="body">
               <div class="meta"><span class="cat">{p.data.region}</span><span>{p.data.currencyName}</span></div>
               <h3>{p.data.name}</h3>
@@ -72,7 +72,7 @@ const filters = [
         ))}
         {featured.slice(3, 7).map((p) => (
           <a href={`/airlines/${p.id}/`} class="dp-story-card sm">
-            <Cover title={p.data.name} category="Programme" size="sm" />
+            <StockImage slug={`programme-${p.id}`} coverTitle={p.data.name} coverCategory="Programme" coverSize="sm" sizes="(max-width: 900px) 50vw, 25vw" />
             <div class="body">
               <div class="meta"><span class="cat">{p.data.region}</span></div>
               <h3>{p.data.name}</h3>
@@ -110,7 +110,7 @@ const filters = [
                 <h3>{p.data.name}</h3>
                 <div class="summary">{p.data.currencyName}</div>
               </div>
-              <Cover category="Programme" size="thumb" />
+              <StockImage slug={`programme-thumb-${p.id}`} coverCategory="Programme" coverSize="thumb" sizes="240px" />
               <div class="when">Programme →</div>
             </a>
           );
