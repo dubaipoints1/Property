@@ -58,7 +58,5 @@ const entry = getStockEntry(slug);
     data-stock-source={entry.source}
   />
 ) : (
-  <div class={className} data-stock-fallback={slug}>
-    <Cover title={coverTitle} category={coverCategory} size={coverSize} />
-  </div>
+  <Cover title={coverTitle} category={coverCategory} size={coverSize} />
 )}

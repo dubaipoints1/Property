@@ -1050,15 +1050,23 @@ img { display: block; max-width: 100%; }
   box-shadow: 0 12px 32px -16px rgba(15,31,46,0.18);
 }
 .dp-story-card:hover h3 { color: var(--green); }
-/* Cover SVG (Cover.astro) — sits inside .dp-story-card. The SVG carries
-   its own intrinsic aspect-ratio, so we only need to add the hairline
-   separator and clip behaviour from the old .cover wrapper. */
-.dp-story-card > .dp-cover {
+/* Cover SVG (Cover.astro) OR photographed <img> via StockImage — sits
+   inside .dp-story-card. The SVG carries its own intrinsic aspect-ratio;
+   the <img> uses size attributes for the same purpose. Both render
+   full-width with a hairline separator below. */
+.dp-story-card > .dp-cover,
+.dp-story-card > img {
   border-bottom: 1px solid var(--line);
   width: 100%;
   height: auto;
   display: block;
 }
+.dp-story-card > img {
+  object-fit: cover;
+}
+.dp-story-card.hero > img { aspect-ratio: 16 / 9; }
+.dp-story-card.med  > img { aspect-ratio: 3 / 2; }
+.dp-story-card.sm   > img { aspect-ratio: 1 / 1; }
 .dp-story-card .body {
   padding: 22px 22px 24px;
   display: flex; flex-direction: column; gap: 10px;
@@ -1184,14 +1192,20 @@ img { display: block; max-width: 100%; }
 .dp-feed-row .summary {
   font-size: 13px; color: var(--ink-soft); line-height: 1.5;
 }
-/* Feed-row thumb is a Cover SVG (size="thumb"). Wrap with a border + radius
-   to match the design from before the placeholder swap. */
-.dp-feed-row > .dp-cover {
+/* Feed-row thumb is a Cover SVG (size="thumb") or a photographed <img>
+   via StockImage. Both wrap with the same border + radius. */
+.dp-feed-row > .dp-cover,
+.dp-feed-row > img {
   border: 1px solid var(--line);
   border-radius: 14px;
   overflow: hidden;
   display: block;
   height: auto;
+}
+.dp-feed-row > img {
+  width: 100%;
+  object-fit: cover;
+  aspect-ratio: 4 / 3;
 }
 .dp-feed-row .when {
   text-align: right;

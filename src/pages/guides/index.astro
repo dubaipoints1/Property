@@ -5,7 +5,7 @@
 // green-mark pull-quote + numbered feed + pagination.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Cover from "~/components/Cover.astro";
+import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 
 const guides = (await getCollection("guides")).sort(
@@ -61,7 +61,7 @@ const filters = [
       <div class="dp-featured-grid">
         {featured[0] && (
           <a href={`/guides/${featured[0].id}/`} class="dp-story-card hero">
-            <Cover title={featured[0].data.title} category="Guide" size="hero" />
+            <StockImage slug={`guide-${featured[0].id}`} coverTitle={featured[0].data.title} coverCategory="Guide" coverSize="hero" loading="eager" sizes="(max-width: 900px) 100vw, 60vw" />
             <div class="body">
               <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[0].data.updatedAt)}</span></div>
               <h3>{featured[0].data.title}</h3>
@@ -72,7 +72,7 @@ const filters = [
         )}
         {featured[1] && (
           <a href={`/guides/${featured[1].id}/`} class="dp-story-card med">
-            <Cover title={featured[1].data.title} category="Guide" size="med" />
+            <StockImage slug={`guide-${featured[1].id}`} coverTitle={featured[1].data.title} coverCategory="Guide" coverSize="med" sizes="(max-width: 900px) 100vw, 40vw" />
             <div class="body">
               <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[1].data.updatedAt)}</span></div>
               <h3>{featured[1].data.title}</h3>
@@ -82,7 +82,7 @@ const filters = [
         )}
         {featured[2] && (
           <a href={`/guides/${featured[2].id}/`} class="dp-story-card med">
-            <Cover title={featured[2].data.title} category="Guide" size="med" />
+            <StockImage slug={`guide-${featured[2].id}`} coverTitle={featured[2].data.title} coverCategory="Guide" coverSize="med" sizes="(max-width: 900px) 100vw, 40vw" />
             <div class="body">
               <div class="meta"><span class="cat">Guide</span><span>{fmt(featured[2].data.updatedAt)}</span></div>
               <h3>{featured[2].data.title}</h3>
@@ -92,7 +92,7 @@ const filters = [
         )}
         {featured.slice(3, 7).map((g) => (
           <a href={`/guides/${g.id}/`} class="dp-story-card sm">
-            <Cover title={g.data.title} category="Guide" size="sm" />
+            <StockImage slug={`guide-${g.id}`} coverTitle={g.data.title} coverCategory="Guide" coverSize="sm" sizes="(max-width: 900px) 50vw, 25vw" />
             <div class="body">
               <div class="meta"><span class="cat">Guide</span><span>{fmt(g.data.updatedAt)}</span></div>
               <h3>{g.data.title}</h3>
@@ -130,7 +130,7 @@ const filters = [
                 <h3>{g.data.title}</h3>
                 <div class="summary">{g.data.description}</div>
               </div>
-              <Cover category="Guide" size="thumb" />
+              <StockImage slug={`guide-thumb-${g.id}`} coverCategory="Guide" coverSize="thumb" sizes="240px" />
               <div class="when">{fmt(g.data.updatedAt)}</div>
             </a>
           );
