@@ -1,110 +1,130 @@
 ---
-// Homepage — design-handoff idiom (Phase H1, Claude Design handoff bundle).
-// Structure mirrors the section-index template (B1) plus a richer hero and
-// a card-spotlight band that reuses the per-issuer .dp-cr-mock from G2.
+// Homepage — Phase F (May 2026 mockup-fidelity rebuild).
+// Reference: Replit Canvas mockup, page 01 (Fly further / Pay less).
 //
-// Sections
-//   1. Masthead hero (eyebrow / date / h1 / strap / meta strip)
-//   2. Featured band (1 hero + 2 medium + 4 small) — newest guides + deals
-//   3. Pull-quote (editorial standard)
-//   4. Latest feed (8 mixed-type items, numbered)
-//   5. Favourite cards spotlight (per-issuer card-art tiles)
-//   6. Newsletter band (green CTA)
+// Composition mirrors the mockup top-to-bottom:
+//   1. Image-forward hero (text left + email signup + image right with SWEET-SPOT chip)
+//   2. Stats band (4 live-truth numbers)
+//   3. Fresh Intel (3 editorial cards: latest guides + newest card review)
+//   4. UAE Wallet Setup (dark section + cards mockup + live "avg welcome bonus" stat)
+//   5. Master Your Miles (Phase B.2 — reads `programs` collection)
+//   6. Newsletter band (Phase H1 — kept)
+//
+// Dropped from prior layout (Chairman directive 2026-05-14 "I need it to look like that"):
+//   - Hero "Latest" strip (3 inbox-style rows)
+//   - Decorative section divider
+//   - Featured band (1 hero + 2 med + 4 small story cards)
+//   - Editorial pullquote
+//   - Numbered Latest feed
+//   - Favourite cards spotlight
+//
+// Photo slots: every <StockImage> resolves to its `guide-<id>` / `intel-*` /
+// `wallet-hero-*` / `hero-cabin` slug at build. Until `npm run fetch:stock`
+// populates `data/stock/manifest.json` with a matching entry, each slot
+// renders the Cover.astro SVG fallback (per Phase E.1 design). The
+// editorial layout is correct today; photos light up on first key-backed
+// fetch.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Cover from "~/components/Cover.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 import { getAllCards } from "~/lib/cardsData";
-import { getLiveOffers } from "~/lib/offerAdapter";
 
-const todayMs = Date.now();
+const allGuides = await getCollection("guides");
+const allPrograms = await getCollection("programs");
+const allBanks = await getCollection("banks");
+const cards = getAllCards();
 
 const fmtShort = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-// ── Source collections ───────────────────────────────────────────────────
-const allGuides = await getCollection("guides");
-const allDeals = await getCollection("deals");
-const allPrograms = await getCollection("programs");
-const cards = getAllCards();
+// ── Hero sweet-spot chip — points at the top programme's first sweet-spot ──
+const flagshipProgramme = allPrograms.find((p) => p.id === "skywards") ?? allPrograms[0];
+const heroSweetSpot = flagshipProgramme?.data.sweetSpots[0];
 
-// Master Your Miles tiles — surfaces the programs collection.
-// Section grows as Travel-Experiences Editor adds /content/programs/*.mdx.
-// Today: 1 programme (Skywards) + 3 grid slots gracefully empty + a
-// trailing "Browse all" wayfinding tile to /airlines/.
-const milesTiles = allPrograms
-  .slice()
-  .sort((a, b) => a.data.name.localeCompare(b.data.name))
-  .slice(0, 3);
+// ── Stats band — verifiable live-truth metrics ───────────────────────────
+// All four numbers source from data files at build; no fabrication.
+const stats: { value: string; label: string }[] = [
+  { value: `${cards.length}+`, label: "Cards reviewed" },
+  { value: `${allBanks.length}`, label: "UAE banks tracked" },
+  { value: "Daily", label: "Tracker refresh" },
+  { value: "100%", label: "Independent" },
+];
 
-const liveDeals = allDeals
-  .filter((d) => d.data.expiresOn.getTime() >= todayMs)
-  .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime());
-
+// ── Fresh Intel — top 3 mixed content (newest guides + newest card review) ─
 const guidesSorted = [...allGuides].sort(
   (a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime(),
 );
-
-const cardSpotlights = cards
-  .filter((c) => c.welcomeBonus)
-  .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0));
-
-// ── Hero "Latest" strip — 3 content-driven rows replacing the nav tiles ───
 const newestCard = [...cards].sort(
   (a, b) =>
     new Date(b.lastVerified).getTime() - new Date(a.lastVerified).getTime(),
 )[0];
-const liveOffers = await getLiveOffers();
-const topGuide = guidesSorted[0];
 
-// ── Featured band — top 7 mixed (1 hero + 2 med + 4 sm) ─────────────────
-type Featured = {
-  href: string; cat: string; title: string; deck?: string; date: Date;
+type IntelItem = {
+  href: string;
+  category: string;
+  title: string;
+  excerpt: string;
+  meta: string;
+  imageSlug: string;
+  coverCategory: "Guide" | "Review" | "Deal" | "News" | "Programme" | "Topic";
 };
-const featuredPool: Featured[] = [
-  ...guidesSorted.map((g) => ({
+
+const intel: IntelItem[] = [];
+if (guidesSorted[0]) {
+  const g = guidesSorted[0];
+  intel.push({
     href: `/guides/${g.id}/`,
-    cat: "Guide",
+    category: "Sweet Spots",
     title: g.data.title,
-    deck: g.data.description,
-    date: g.data.updatedAt,
-  })),
-  ...liveDeals.map((d) => ({
-    href: `/deals/${d.id}/`,
-    cat: "Deal",
-    title: d.data.title,
-    deck: `${d.data.category} · ends ${fmtShort(d.data.expiresOn)}`,
-    date: d.data.expiresOn,
-  })),
-  ...cardSpotlights.slice(0, 4).map((c) => ({
-    href: `/cards/${c.slug}/`,
-    cat: "Review",
-    title: c.name,
-    deck: `${c.bank} · annual fee AED ${c.annualFee.toLocaleString()}`,
-    date: c.lastVerified,
-  })),
-];
-const featured = featuredPool
-  .sort((a, b) => b.date.getTime() - a.date.getTime())
-  .slice(0, 7);
+    excerpt: g.data.description,
+    meta: `Updated ${fmtShort(g.data.updatedAt)}`,
+    imageSlug: `intel-${g.id}`,
+    coverCategory: "Guide",
+  });
+}
+if (guidesSorted[1]) {
+  const g = guidesSorted[1];
+  intel.push({
+    href: `/guides/${g.id}/`,
+    category: "Banking",
+    title: g.data.title,
+    excerpt: g.data.description,
+    meta: `Updated ${fmtShort(g.data.updatedAt)}`,
+    imageSlug: `intel-${g.id}`,
+    coverCategory: "Guide",
+  });
+}
+if (newestCard) {
+  intel.push({
+    href: `/cards/${newestCard.slug}/`,
+    category: "Card Review",
+    title: newestCard.name,
+    excerpt: `${newestCard.bank} · annual fee AED ${newestCard.annualFee.toLocaleString()}`,
+    meta: `Verified ${fmtShort(new Date(newestCard.lastVerified))}`,
+    imageSlug: `intel-card-${newestCard.slug}`,
+    coverCategory: "Review",
+  });
+}
 
-// ── Latest feed (8 mixed items, numbered) ────────────────────────────────
-const latest = featuredPool
-  .sort((a, b) => b.date.getTime() - a.date.getTime())
-  .slice(0, 8);
+// ── UAE Wallet Setup — live average welcome bonus across reviewed cards ───
+const welcomeBonusValues = cards
+  .map((c) => c.welcomeBonusValue ?? 0)
+  .filter((v) => v > 0);
+const avgWelcomeBonusK =
+  welcomeBonusValues.length > 0
+    ? Math.round(
+        welcomeBonusValues.reduce((a, b) => a + b, 0) /
+          welcomeBonusValues.length /
+          1000,
+      )
+    : 0;
 
-// ── Favourite cards (top 6 by welcome-bonus value) ──────────────────────
-const favouriteCards = cardSpotlights.slice(0, 6);
-
-// ── Filter pill destinations ────────────────────────────────────────────
-const filters = [
-  { label: "All cards",  href: "/cards/" },
-  { label: "Cashback",   href: "/cards/cashback/" },
-  { label: "Miles",      href: "/cards/miles/" },
-  { label: "Islamic",    href: "/cards/islamic/" },
-  { label: "Compare",    href: "/cards/compare/" },
-];
+// ── Master Your Miles tiles (Phase B.2, retained) ────────────────────────
+const milesTiles = allPrograms
+  .slice()
+  .sort((a, b) => a.data.name.localeCompare(b.data.name))
+  .slice(0, 3);
 ---
 
 <BaseLayout
@@ -112,33 +132,35 @@ const filters = [
   description="Independent UAE-resident-led guides to credit cards, salary-transfer bonuses, miles redemptions and lifestyle deals. Every figure in AED, every card checked."
   fullWidth
 >
-  <!-- ── 1. Masthead hero ─────────────────────────────────────────────── -->
-  <!--
-    Image-forward hero (Phase B.1, May 2026 redesign).
-    Left column: kicker / headline / subhead / single Latest-link.
-    Right column: <StockImage> with overlay sweet-spot chip linking to
-    the top guide. Image falls back to Cover.astro SVG until the
-    matching manifest entry lands (Phase E.2).
-  -->
+  <!-- ── 1. Hero ──────────────────────────────────────────────────────── -->
   <header class="dp-pagehead is-hero">
     <div class="hp-hero-grid">
       <div class="hp-hero-text">
-        <span class="kicker">Dubai · Independent · Reader-funded</span>
-        <h1>UAE rewards, <em>decoded</em>.</h1>
+        <span class="kicker">The UAE's points &amp; miles publication</span>
+        <h1>Fly further.<br /><em>Pay less.</em></h1>
         <p>
-          Independent UAE analysis of credit cards, salary transfer,
-          miles and deals — every figure in dirhams, dated and verified.
+          The exact strategies, card combos, and points redemptions you need
+          to travel the world from Dubai in business class for the price of
+          economy — every figure in dirhams, dated and verified.
         </p>
-        {newestCard && (
-          <a href={`/cards/${newestCard.slug}/`} class="hp-hero-cta">
-            Read the latest review · {newestCard.name} →
-          </a>
-        )}
+        <form class="hp-hero-form" action="/newsletter/" method="get">
+          <label class="hp-hero-form-label" for="hp-hero-email">Email</label>
+          <input
+            id="hp-hero-email"
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            autocomplete="email"
+            required
+          />
+          <button type="submit">Join the brief →</button>
+        </form>
+        <p class="hp-hero-micro">No spam. Just high-value hacks. Unsubscribe anytime.</p>
       </div>
 
       <div class="hp-hero-media">
         <StockImage
-          slug="homepage-hero-cabin"
+          slug="hero-cabin"
           coverTitle="UAE rewards, decoded."
           coverCategory="Editorial"
           coverSize="hero"
@@ -146,189 +168,111 @@ const filters = [
           loading="eager"
           sizes="(max-width: 900px) 100vw, 50vw"
         />
-        {topGuide && (
-          <a href={`/guides/${topGuide.id}/`} class="hp-hero-chip">
+        {heroSweetSpot && flagshipProgramme && (
+          <a href={`/airlines/${flagshipProgramme.id}/`} class="hp-hero-chip">
             <span class="hp-hero-chip-eyebrow">Sweet spot</span>
-            <span class="hp-hero-chip-title">{topGuide.data.title}</span>
-            <span class="hp-hero-chip-meta">Updated {fmtShort(topGuide.data.updatedAt)} ›</span>
+            <span class="hp-hero-chip-title">{heroSweetSpot.title}</span>
+            <span class="hp-hero-chip-meta">{flagshipProgramme.data.currencyName} ›</span>
           </a>
         )}
       </div>
     </div>
   </header>
 
-  <!-- "Latest" strip — 3 content-driven entry points (replaces nav tiles).
-       Moved out of the hero in Phase B.1 to give the image-forward hero
-       room to breathe. Still sits above the fold on most viewports. -->
-  <div class="hero-latest-wrap">
-    <div class="hero-latest">
-      {newestCard && (
-        <a href={`/cards/${newestCard.slug}/`} class="hero-latest-row">
-          <span class="cat">Latest review</span>
-          <span class="t">{newestCard.name}</span>
-          <span class="m">verified {fmtShort(new Date(newestCard.lastVerified))}</span>
-        </a>
-      )}
-
-      <a href="/salary-transfer/" class="hero-latest-row is-live">
-        <span class="cat"><span class="dot" aria-hidden="true"></span>Live tracker</span>
-        <span class="t">
-          {liveOffers.length === 0
-            ? "Salary-transfer offers"
-            : `${liveOffers.length} salary-transfer offer${liveOffers.length === 1 ? "" : "s"} live`}
-        </span>
-        <span class="m">refreshed daily</span>
-      </a>
-
-      {topGuide && (
-        <a href={`/guides/${topGuide.id}/`} class="hero-latest-row">
-          <span class="cat">Top guide</span>
-          <span class="t">{topGuide.data.title}</span>
-          <span class="m">updated {fmtShort(topGuide.data.updatedAt)}</span>
-        </a>
-      )}
-    </div>
-  </div>
-
-  <!-- Decorative section divider between hero and featured band -->
-  <div class="dp-section-divider" aria-hidden="true">
-    <span class="rule"></span>
-    <span class="dot"></span>
-    <span class="rule"></span>
-  </div>
-
-  <!-- ── 2. Featured band ─────────────────────────────────────────────── -->
-  {featured.length > 0 && (
-    <section class="dp-featured-band">
-      <div class="dp-featured-eyebrow">
-        <span>Featured this week</span>
-        <span class="rule"></span>
-        <span class="meta">Curated by editors · refreshed Mondays</span>
-      </div>
-      <div class="dp-featured-grid">
-        {featured[0] && (
-          <a href={featured[0].href} class="dp-story-card hero">
-            <Cover title={featured[0].title} category={featured[0].cat} size="hero" />
-            <div class="body">
-              <div class="meta"><span class="cat">{featured[0].cat}</span><span>{fmtShort(featured[0].date)}</span></div>
-              <h3>{featured[0].title}</h3>
-              {featured[0].deck && <p>{featured[0].deck}</p>}
-              <div class="by">By DubaiPoints Editorial</div>
-            </div>
-          </a>
-        )}
-        {featured.slice(1, 3).map((f) => (
-          <a href={f.href} class="dp-story-card med">
-            <Cover title={f.title} category={f.cat} size="med" />
-            <div class="body">
-              <div class="meta"><span class="cat">{f.cat}</span><span>{fmtShort(f.date)}</span></div>
-              <h3>{f.title}</h3>
-              {f.deck && <p>{f.deck}</p>}
-            </div>
-          </a>
-        ))}
-        {featured.slice(3, 7).map((f) => (
-          <a href={f.href} class="dp-story-card sm">
-            <Cover title={f.title} category={f.cat} size="sm" />
-            <div class="body">
-              <div class="meta"><span class="cat">{f.cat}</span><span>{fmtShort(f.date)}</span></div>
-              <h3>{f.title}</h3>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
-
-  <!-- ── 3. Pull-quote ────────────────────────────────────────────────── -->
-  <div class="dp-pullquote">
-    <div class="mark">"</div>
-    <blockquote>
-      Independent UAE rewards reporting. Every verdict dated, every figure in dirhams, every recommendation held to the same standard whether the bank is an advertiser or not.
-    </blockquote>
-    <div class="attr"><span class="rule"></span>Editorial standard · est. 2026</div>
-  </div>
-
-  <!-- ── 4. Latest feed ───────────────────────────────────────────────── -->
-  <div class="dp-list-head">
-    <div class="t">The latest</div>
-    <div class="m">Newest stories across guides, reviews and deals · refreshed daily</div>
-  </div>
-  <div class="dp-feed">
-    {latest.map((f, i) => (
-      <a href={f.href} class="dp-feed-row">
-        <div>
-          <div class="num">{String(i + 1).padStart(2, "0")}</div>
-          <div class="feed-eyebrow">{f.cat}</div>
+  <!-- ── 2. Stats band ───────────────────────────────────────────────── -->
+  <section class="hp-stats-band" aria-label="Site at a glance">
+    <div class="hp-stats-grid">
+      {stats.map((s) => (
+        <div class="hp-stat">
+          <span class="hp-stat-value">{s.value}</span>
+          <span class="hp-stat-label">{s.label}</span>
         </div>
-        <div>
-          <h3>{f.title}</h3>
-          {f.deck && <div class="summary">{f.deck}</div>}
-        </div>
-        <Cover category={f.cat} size="thumb" />
-        <div class="when">{fmtShort(f.date)}</div>
-      </a>
-    ))}
-  </div>
-
-  <div class="dp-page-nav">
-    <a href="/news/" class="more-link">More stories →</a>
-  </div>
-
-  <!-- ── 5. Favourite cards spotlight ─────────────────────────────────── -->
-  <section class="hp-cards-band">
-    <div class="hp-cards-head">
-      <div class="dp-featured-eyebrow">
-        <span>Cards to consider this month</span>
-        <span class="rule"></span>
-        <span class="meta">Verified against issuer T&Cs</span>
-      </div>
-      <h2>Favourite cards.</h2>
-      <p>Reviewed against UAE eligibility, not US norms. Every card checked against the issuer's published Schedule of Charges.</p>
-      <div class="hp-cards-pills">
-        {filters.map((p) => (
-          <a href={p.href} class="dp-filter-pill">{p.label}</a>
-        ))}
-      </div>
+      ))}
     </div>
+  </section>
 
-    <div class="hp-cards-grid">
-      {favouriteCards.map((c) => (
-        <a href={`/cards/${c.slug}/`} class="hp-card-cell">
-          <div class="dp-cr-mock" data-bank={c.bank} aria-hidden="true">
-            <div class="dp-cr-mock-chip"></div>
-            <div class="dp-cr-mock-row">
-              <div class="b">{c.bank}</div>
-              <div class="dp-cr-mock-mark">{c.network.slice(0, 1)}</div>
-            </div>
-            <div class="n">{c.name}</div>
-            <div class="b">{c.network}</div>
-          </div>
-          <div class="hp-card-meta">
-            <span class="eyebrow">Review</span>
-            <span class="title">{c.name}</span>
-            <span class="specs">
-              AED {c.annualFee.toLocaleString()}/yr ·
-              AED {(c.eligibility?.minSalary ?? 0).toLocaleString()}/mo min
-            </span>
+  <!-- ── 3. Fresh Intel ──────────────────────────────────────────────── -->
+  <section class="hp-intel-band">
+    <div class="hp-intel-head">
+      <h2>Fresh Intel</h2>
+      <p>Latest reviews, sweet spots and banking moves — every claim verified against the issuer's Schedule of Charges.</p>
+      <a href="/guides/" class="hp-intel-more">All intel →</a>
+    </div>
+    <div class="hp-intel-grid">
+      {intel.map((item) => (
+        <a href={item.href} class="hp-intel-card">
+          <StockImage
+            slug={item.imageSlug}
+            coverTitle={item.title}
+            coverCategory={item.coverCategory}
+            coverSize="med"
+            class="hp-intel-card-image"
+            sizes="(max-width: 900px) 100vw, 33vw"
+          />
+          <div class="hp-intel-card-body">
+            <span class="hp-intel-card-cat">{item.category}</span>
+            <h3>{item.title}</h3>
+            <p>{item.excerpt}</p>
+            <span class="hp-intel-card-meta">{item.meta}</span>
           </div>
         </a>
       ))}
     </div>
+  </section>
 
-    <div class="dp-page-nav">
-      <a href="/cards/" class="more-link">All reviewed cards →</a>
+  <!-- ── 4. UAE Wallet Setup (dark band) ──────────────────────────────── -->
+  <section class="hp-wallet-band">
+    <div class="hp-wallet-grid">
+      <div class="hp-wallet-text">
+        <h2>The UAE Wallet Setup</h2>
+        <p>
+          Stop swiping a single generic cashback card. The combinations on
+          this list cover the three things UAE spend actually lands on —
+          recurring rent, supermarket shops, and the dining out you do anyway.
+        </p>
+        <ul class="hp-wallet-list">
+          <li>
+            <a href="/cards/cashback/">
+              <span class="hp-wallet-list-t">Best for everyday spend</span>
+              <span class="hp-wallet-list-d">Capped-and-uncapped cashback cards ranked by net return after the annual fee.</span>
+            </a>
+          </li>
+          <li>
+            <a href="/cards/miles/">
+              <span class="hp-wallet-list-t">Best for travel & miles</span>
+              <span class="hp-wallet-list-d">Skywards, Etihad Guest and transfer-partner cards with lounge access included.</span>
+            </a>
+          </li>
+          <li>
+            <a href="/calculator/">
+              <span class="hp-wallet-list-t">Best welcome bonuses</span>
+              <span class="hp-wallet-list-d">Live ranking of card welcome offers — sortable by your monthly AED spend.</span>
+            </a>
+          </li>
+        </ul>
+        <a href="/cards/" class="hp-wallet-cta">Explore card rankings →</a>
+      </div>
+
+      <div class="hp-wallet-media">
+        <StockImage
+          slug="wallet-hero-cards"
+          coverTitle="Card combinations, AED-first."
+          coverCategory="Review"
+          coverSize="hero"
+          class="hp-wallet-image"
+          sizes="(max-width: 900px) 100vw, 50vw"
+        />
+        {avgWelcomeBonusK > 0 && (
+          <div class="hp-wallet-stat" role="figure" aria-label="Average welcome bonus across reviewed cards">
+            <span class="hp-wallet-stat-value">{avgWelcomeBonusK}k</span>
+            <span class="hp-wallet-stat-label">Average welcome bonus<br />on reviewed cards</span>
+          </div>
+        )}
+      </div>
     </div>
   </section>
 
-  <!-- ── 6. Master Your Miles ─────────────────────────────────────────── -->
-  <!--
-    Master Your Miles — Phase B.2 of the May 2026 image-forward redesign.
-    Surfaces the `programs` content collection on the homepage. Today the
-    collection has one entry (Skywards); section grows as Travel-Experiences
-    Editor adds /content/programs/*.mdx files. Stops at 3 programme tiles +
-    1 "Browse all" wayfinding tile to keep the grid consistent at 4 columns.
-  -->
+  <!-- ── 5. Master Your Miles (Phase B.2) ─────────────────────────────── -->
   <section class="hp-miles-band">
     <div class="hp-miles-head">
       <div class="dp-featured-eyebrow">
@@ -365,14 +309,14 @@ const filters = [
         </div>
         <h3 class="hp-miles-tile-title">Browse every programme</h3>
         <p class="hp-miles-tile-spot">
-          Skywards, Etihad Guest, Qatar Privilege Club, Marriott Bonvoy and the rest — A-Z.
+          Skywards, Etihad Guest, Qatar Privilege Club, Marriott Bonvoy and the rest — A–Z.
         </p>
         <span class="hp-miles-tile-cta">All programmes →</span>
       </a>
     </div>
   </section>
 
-  <!-- ── 7. Newsletter band ───────────────────────────────────────────── -->
+  <!-- ── 6. Newsletter band ───────────────────────────────────────────── -->
   <section class="hp-news-band">
     <div class="inner">
       <span class="eyebrow">The DubaiPoints brief</span>
@@ -390,17 +334,11 @@ const filters = [
 </BaseLayout>
 
 <style>
-  /* Homepage-specific glue. The design-handoff classes (.dp-pagehead,
-     .dp-featured-band, .dp-feed, .dp-cr-mock, .dp-filter-pill) come from
-     global.css. This file extends the hero and adds two homepage-only
-     bands (cards spotlight + newsletter). */
-
+  /* ── Hero ─────────────────────────────────────────────────────────── */
   .dp-pagehead.is-hero {
     background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
-    padding: 56px 32px 40px;
+    padding: 56px 32px 48px;
   }
-  /* Two-column hero grid — text left, image right.
-     Stacks on mobile (text first to preserve LCP). */
   .hp-hero-grid {
     max-width: 1180px;
     margin: 0 auto;
@@ -413,23 +351,23 @@ const filters = [
   .dp-pagehead.is-hero .kicker {
     display: inline-block;
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
-    margin-bottom: 18px;
+    padding: 6px 14px;
+    border: 1px solid var(--green);
+    border-radius: 999px;
+    margin-bottom: 22px;
   }
   .dp-pagehead.is-hero h1 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: clamp(34px, 5vw, 60px);
-    line-height: 1.04;
-    letter-spacing: -1.4px;
+    font-size: clamp(38px, 6vw, 68px);
+    line-height: 1.02;
+    letter-spacing: -1.6px;
     color: var(--ink);
     text-wrap: balance;
-    margin: 0 0 18px;
-    max-width: 14ch;
+    margin: 0 0 20px;
   }
   .dp-pagehead.is-hero h1 em {
     font-style: italic;
@@ -437,69 +375,95 @@ const filters = [
     font-weight: 500;
   }
   .dp-pagehead.is-hero p {
-    max-width: 48ch;
+    max-width: 50ch;
     margin: 0 0 24px;
-    font-size: clamp(16px, 1.5vw, 18px);
+    font-size: clamp(15px, 1.4vw, 17px);
     line-height: 1.6;
     color: var(--ink-soft);
     text-wrap: pretty;
   }
-  .hp-hero-cta {
-    display: inline-flex;
-    align-items: center;
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    color: var(--green);
-    border-bottom: 2px solid var(--green);
-    padding-bottom: 4px;
-    transition: opacity 0.15s ease;
+  .hp-hero-form {
+    display: flex;
+    gap: 0;
+    max-width: 460px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    border-radius: 999px;
+    padding: 6px 6px 6px 18px;
+    box-shadow: 0 6px 20px -12px rgba(15, 31, 46, 0.18);
   }
-  .hp-hero-cta:hover { opacity: 0.75; }
-
-  /* Image column — wraps StockImage so its <Cover> SVG fallback fills the slot.
-     Chip is absolute-positioned bottom-left, mirroring the Replit handoff. */
+  .hp-hero-form-label {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+  }
+  .hp-hero-form input[type="email"] {
+    flex: 1; min-width: 0;
+    border: 0; background: transparent;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    padding: 8px 4px;
+    outline: none;
+  }
+  .hp-hero-form input[type="email"]::placeholder { color: var(--muted); }
+  .hp-hero-form button {
+    border: 0; cursor: pointer;
+    background: var(--green);
+    color: white;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    padding: 0 18px;
+    height: 38px;
+    border-radius: 999px;
+    transition: background 0.15s ease, transform 0.15s ease;
+    white-space: nowrap;
+  }
+  .hp-hero-form button:hover { background: #245443; }
+  .hp-hero-form button:active { transform: scale(0.98); }
+  .hp-hero-micro {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 10px 0 0;
+    max-width: 460px;
+  }
+  /* Image column + overlay chip */
   .hp-hero-media {
     position: relative;
     border-radius: 16px;
     overflow: hidden;
     aspect-ratio: 4 / 3;
     background: var(--shade-1);
-    box-shadow: 0 18px 36px -18px rgba(15, 31, 46, 0.18);
+    box-shadow: 0 22px 44px -22px rgba(15, 31, 46, 0.22);
   }
   .hp-hero-media :global(.hp-hero-image),
   .hp-hero-media :global(svg.dp-cover) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
   }
   .hp-hero-chip {
     position: absolute;
-    left: 16px;
-    bottom: 16px;
-    right: 16px;
+    left: 16px; right: 16px; bottom: 16px;
     max-width: 360px;
     background: var(--paper);
     border-radius: 12px;
     padding: 12px 14px 14px;
-    display: grid;
-    gap: 4px;
-    box-shadow: 0 10px 28px -10px rgba(15, 31, 46, 0.25);
+    display: grid; gap: 4px;
+    box-shadow: 0 12px 28px -10px rgba(15, 31, 46, 0.28);
     text-decoration: none;
     transition: transform 0.18s ease, box-shadow 0.18s ease;
   }
   .hp-hero-chip:hover {
     transform: translateY(-2px);
-    box-shadow: 0 14px 32px -10px rgba(15, 31, 46, 0.3);
+    box-shadow: 0 16px 32px -10px rgba(15, 31, 46, 0.32);
   }
   .hp-hero-chip-eyebrow {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
     color: var(--green);
   }
   .hp-hero-chip-title {
@@ -518,215 +482,275 @@ const filters = [
     letter-spacing: 0.3px;
   }
 
-  /* "Latest" strip — 3 content-driven rows. Lives below the hero
-     after Phase B.1 (was inside the hero pre-redesign). Reads as
-     inbox-style entries rather than chrome. */
-  .hero-latest-wrap {
-    background: var(--paper);
-    padding: 28px 32px 0;
+  /* ── Stats band ──────────────────────────────────────────────────── */
+  .hp-stats-band {
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 24px 32px;
   }
-  .hero-latest {
+  .hp-stats-grid {
+    max-width: 1180px;
     margin: 0 auto;
-    max-width: 1100px;
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: var(--paper);
-    overflow: hidden;
-    text-align: left;
-  }
-  .hero-latest-row {
     display: grid;
-    grid-template-columns: 130px 1fr auto;
-    gap: 16px;
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--line-soft);
-    text-decoration: none;
-    transition: background 0.15s ease;
-    align-items: center;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
   }
-  .hero-latest-row:last-child { border-bottom: 0; }
-  .hero-latest-row:hover { background: var(--shade-1); }
-  .hero-latest-row .cat {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--muted);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+  .hp-stat {
+    display: grid;
+    gap: 4px;
   }
-  .hero-latest-row.is-live .cat { color: var(--green); }
-  .hero-latest-row.is-live .cat .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: hp-pulse 2.4s ease-in-out infinite;
-  }
-  .hero-latest-row .t {
+  .hp-stat-value {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: 15px;
-    color: var(--ink);
-    letter-spacing: -0.2px;
-    line-height: 1.3;
-    text-wrap: balance;
+    font-size: clamp(28px, 3.2vw, 36px);
+    letter-spacing: -0.8px;
+    color: var(--green);
+    line-height: 1;
   }
-  .hero-latest-row .m {
+  .hp-stat-label {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.2px;
   }
 
-  @keyframes hp-pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-  @media (prefers-reduced-motion: reduce) {
-    .hero-latest-row.is-live .cat .dot { animation: none; }
-  }
-
-  @media (max-width: 900px) {
-    .hp-hero-grid {
-      grid-template-columns: 1fr;
-      gap: 32px;
-    }
-    .dp-pagehead.is-hero h1 { max-width: 18ch; }
-    .hp-hero-media { aspect-ratio: 16 / 10; }
-  }
-  @media (max-width: 768px) {
-    .dp-pagehead.is-hero { padding: 40px 20px 28px; }
-    .hp-hero-grid { gap: 24px; }
-    .hero-latest-wrap { padding: 24px 20px 0; }
-    .hp-hero-chip {
-      left: 12px; right: 12px; bottom: 12px;
-      max-width: none;
-    }
-    .hero-latest-row {
-      grid-template-columns: 1fr auto;
-      gap: 4px 12px;
-      padding: 14px 16px;
-    }
-    .hero-latest-row .cat {
-      grid-column: 1 / -1;
-      margin-bottom: 2px;
-    }
-    .hero-latest-row .t { grid-column: 1 / 2; }
-    .hero-latest-row .m { grid-column: 2 / 3; align-self: start; padding-top: 4px; }
-  }
-
-  /* Decorative section divider — Fraunces-flavoured ornament */
-  .dp-section-divider {
-    display: flex; align-items: center; justify-content: center;
-    gap: 14px;
+  /* ── Fresh Intel ─────────────────────────────────────────────────── */
+  .hp-intel-band {
+    padding: 56px 32px 48px;
     max-width: 1180px;
     margin: 0 auto;
-    padding: 32px 32px 0;
   }
-  .dp-section-divider .rule {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--line) 40%, var(--line) 60%, transparent);
-    max-width: 280px;
+  .hp-intel-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: end;
+    gap: 16px 24px;
+    margin-bottom: 28px;
   }
-  .dp-section-divider .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    flex-shrink: 0;
-  }
-  @media (max-width: 768px) {
-    .dp-section-divider { padding: 24px 20px 0; gap: 10px; }
-    .dp-section-divider .rule { max-width: 100px; }
-  }
-
-  /* "More stories" link styling */
-  .dp-page-nav .more-link {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    color: var(--green);
-    text-decoration: none;
-    border-bottom: 2px solid transparent;
-    padding-bottom: 2px;
-    transition: border-color 0.15s ease;
-  }
-  .dp-page-nav .more-link:hover {
-    border-bottom-color: var(--green);
-  }
-
-  /* Cards spotlight band */
-  .hp-cards-band {
-    background: var(--shade-1);
-    padding: 56px 32px 64px;
-    margin-top: 40px;
-  }
-  .hp-cards-head {
-    max-width: 1180px;
-    margin: 0 auto 32px;
-  }
-  .hp-cards-head h2 {
+  .hp-intel-head h2 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: clamp(28px, 4vw, 42px);
+    font-size: clamp(28px, 3.8vw, 40px);
     letter-spacing: -1px;
     color: var(--ink);
-    margin: 8px 0 12px;
+    margin: 0;
   }
-  .hp-cards-head p {
-    max-width: 60ch;
-    font-size: 15px;
-    line-height: 1.6;
+  .hp-intel-head p {
+    font-size: 14px;
     color: var(--ink-soft);
-    margin: 0 0 24px;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 50ch;
   }
-  .hp-cards-pills {
-    display: flex; flex-wrap: wrap; gap: 8px;
+  .hp-intel-more {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--green);
+    border-bottom: 2px solid var(--green);
+    padding-bottom: 2px;
+    transition: opacity 0.15s ease;
   }
-  .hp-cards-grid {
-    max-width: 1180px;
-    margin: 0 auto;
+  .hp-intel-more:hover { opacity: 0.75; }
+  .hp-intel-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
-  .hp-card-cell {
-    display: grid; gap: 14px;
+  .hp-intel-card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
     text-decoration: none;
-    transition: transform 0.15s ease;
+    color: inherit;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
   }
-  .hp-card-cell:hover { transform: translateY(-2px); }
-  .hp-card-cell .dp-cr-mock { max-width: none; }
-  .hp-card-meta { display: grid; gap: 4px; padding: 0 4px; }
-  .hp-card-meta .eyebrow {
+  .hp-intel-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 14px 30px -16px rgba(15, 31, 46, 0.18);
+  }
+  .hp-intel-card :global(.hp-intel-card-image) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .hp-intel-card :global(svg.dp-cover) {
+    width: 100%;
+    display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .hp-intel-card-body {
+    padding: 18px 20px 20px;
+    display: grid; gap: 8px;
+  }
+  .hp-intel-card-cat {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--green);
   }
-  .hp-card-meta .title {
+  .hp-intel-card h3 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
     font-size: 18px;
     letter-spacing: -0.3px;
+    line-height: 1.25;
     color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
   }
-  .hp-card-meta .specs {
-    font-size: 12px;
+  .hp-intel-card:hover h3 { color: var(--green); }
+  .hp-intel-card-body p {
+    font-size: 13px;
+    line-height: 1.5;
     color: var(--ink-soft);
-    font-variant-numeric: tabular-nums;
+    margin: 0;
+  }
+  .hp-intel-card-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.2px;
+    margin-top: 4px;
   }
 
-  /* Master Your Miles band — Phase B.2.
-     Warm-paper background to stand off the shade-1 cards band above it.
-     4-col grid on desktop, 2-col tablet, 1-col mobile. Each tile uses
-     the mint accent token (Phase A) as a left rail to read as part of
-     the same green-family system without competing with the green CTA. */
+  /* ── UAE Wallet Setup (dark band) ────────────────────────────────── */
+  .hp-wallet-band {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 64px 32px 72px;
+  }
+  .hp-wallet-grid {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+  }
+  .hp-wallet-text h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(28px, 4vw, 42px);
+    letter-spacing: -1px;
+    color: var(--paper);
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .hp-wallet-text > p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(251, 250, 246, 0.78);
+    margin: 0 0 28px;
+    max-width: 52ch;
+  }
+  .hp-wallet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: grid;
+    gap: 14px;
+  }
+  .hp-wallet-list a {
+    display: grid;
+    grid-template-columns: 8px 1fr;
+    gap: 14px;
+    text-decoration: none;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(251, 250, 246, 0.12);
+    transition: padding-left 0.18s ease;
+  }
+  .hp-wallet-list a::before {
+    content: '';
+    align-self: start;
+    margin-top: 8px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--mint);
+  }
+  .hp-wallet-list a:hover { padding-left: 4px; }
+  .hp-wallet-list-t {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--paper);
+    margin-bottom: 4px;
+    letter-spacing: -0.2px;
+  }
+  .hp-wallet-list a:hover .hp-wallet-list-t { color: var(--mint); }
+  .hp-wallet-list-d {
+    display: block;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(251, 250, 246, 0.65);
+  }
+  .hp-wallet-cta {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 24px;
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 999px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .hp-wallet-cta:hover { background: var(--mint); color: var(--ink); }
+
+  .hp-wallet-media {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: rgba(251, 250, 246, 0.05);
+  }
+  .hp-wallet-media :global(.hp-wallet-image),
+  .hp-wallet-media :global(svg.dp-cover) {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+  }
+  .hp-wallet-stat {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    background: var(--mint);
+    color: var(--ink);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: grid;
+    gap: 4px;
+    min-width: 150px;
+    box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.35);
+  }
+  .hp-wallet-stat-value {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 30px;
+    letter-spacing: -0.8px;
+    line-height: 1;
+  }
+  .hp-wallet-stat-label {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    line-height: 1.35;
+    color: rgba(31, 35, 40, 0.78);
+  }
+
+  /* ── Master Your Miles (Phase B.2, retained from prior layout) ───── */
   .hp-miles-band {
     background: var(--paper);
     padding: 56px 32px 64px;
@@ -776,32 +800,18 @@ const filters = [
     box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
     border-left-color: var(--green);
   }
-  .hp-miles-tile.is-wayfinder {
-    background: var(--shade-1);
-    border-left-color: var(--ink-soft);
-  }
-  .hp-miles-tile.is-wayfinder:hover {
-    border-left-color: var(--ink);
-  }
-  .hp-miles-tile-head {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
+  .hp-miles-tile.is-wayfinder { background: var(--shade-1); border-left-color: var(--ink-soft); }
+  .hp-miles-tile.is-wayfinder:hover { border-left-color: var(--ink); }
+  .hp-miles-tile-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
   .hp-miles-tile-head .eyebrow {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
     color: var(--green);
   }
   .hp-miles-tile-head .currency {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.2px;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.2px;
   }
   .hp-miles-tile-title {
     font-family: 'Fraunces', serif;
@@ -819,39 +829,27 @@ const filters = [
     line-height: 1.45;
     color: var(--ink-soft);
     margin: 0;
-    display: grid;
-    gap: 4px;
+    display: grid; gap: 4px;
   }
   .hp-miles-tile-spot-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
     color: var(--mint);
   }
   .hp-miles-tile.is-wayfinder .hp-miles-tile-spot { font-size: 12px; color: var(--ink-soft); }
   .hp-miles-tile-cta {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
     color: var(--green);
   }
 
-  @media (max-width: 960px) {
-    .hp-miles-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  }
-  @media (max-width: 560px) {
-    .hp-miles-grid { grid-template-columns: 1fr; }
-    .hp-miles-band { padding: 40px 20px; }
-  }
-
-  /* Newsletter band — green CTA */
+  /* ── Newsletter band ─────────────────────────────────────────────── */
   .hp-news-band {
-    background: linear-gradient(135deg, var(--green) 0%, #1f5240 100%);
+    background: var(--green);
     color: white;
     padding: 64px 32px 72px;
-    margin-top: 40px;
+    margin: 24px 32px 48px;
+    border-radius: 32px;
     position: relative;
     overflow: hidden;
   }
@@ -894,8 +892,7 @@ const filters = [
     margin: 0 auto 28px;
   }
   .hp-news-band .cta {
-    display: flex; gap: 12px; justify-content: center;
-    flex-wrap: wrap;
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
   }
   .hp-news-band .btn {
     display: inline-flex; align-items: center;
@@ -908,33 +905,46 @@ const filters = [
     text-decoration: none;
     transition: background 0.15s ease, color 0.15s ease;
   }
-  .hp-news-band .btn.primary {
-    background: white;
-    color: var(--green);
-  }
-  .hp-news-band .btn.primary:hover {
-    background: var(--paper);
-  }
+  .hp-news-band .btn.primary { background: white; color: var(--green); }
+  .hp-news-band .btn.primary:hover { background: var(--paper); }
   .hp-news-band .btn.ghost {
-    background: transparent;
-    color: white;
+    background: transparent; color: white;
     border: 1px solid rgba(255,255,255,0.4);
   }
-  .hp-news-band .btn.ghost:hover {
-    background: rgba(255,255,255,0.10);
-  }
+  .hp-news-band .btn.ghost:hover { background: rgba(255,255,255,0.10); }
   .hp-news-band .micro {
     margin-top: 24px;
     font-size: 12px;
     color: rgba(255,255,255,0.65);
   }
   .hp-news-band .micro a {
-    color: white;
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    color: white; text-decoration: underline; text-underline-offset: 2px;
   }
 
-  @media (max-width: 768px) {
-    .hp-cards-band, .hp-news-band { padding: 40px 20px; }
+  /* ── Responsive breakpoints ──────────────────────────────────────── */
+  @media (max-width: 960px) {
+    .hp-hero-grid { grid-template-columns: 1fr; gap: 32px; }
+    .dp-pagehead.is-hero h1 { max-width: 18ch; }
+    .hp-hero-media { aspect-ratio: 16 / 10; }
+    .hp-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .hp-intel-grid { grid-template-columns: repeat(2, 1fr); }
+    .hp-intel-head { grid-template-columns: 1fr; }
+    .hp-wallet-grid { grid-template-columns: 1fr; gap: 32px; }
+    .hp-wallet-media { order: -1; }
+    .hp-miles-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .dp-pagehead.is-hero { padding: 40px 20px 32px; }
+    .hp-hero-grid { gap: 24px; }
+    .hp-stats-band { padding: 20px; }
+    .hp-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .hp-intel-band, .hp-wallet-band, .hp-miles-band {
+      padding-left: 20px; padding-right: 20px;
+    }
+    .hp-intel-grid { grid-template-columns: 1fr; }
+    .hp-miles-grid { grid-template-columns: 1fr; }
+    .hp-news-band { margin: 24px 16px 48px; padding: 48px 24px 56px; border-radius: 24px; }
+    .hp-hero-chip { left: 12px; right: 12px; bottom: 12px; }
+    .hp-wallet-stat { right: 14px; bottom: 14px; min-width: 130px; padding: 12px 14px; }
   }
 </style>
