@@ -1,144 +1,625 @@
 ---
-// Cards index — section-index template (Phase B1 cascade).
-// Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
+// Cards index — Phase F (May 2026 mockup-fidelity rebuild).
+// Reference: Replit Canvas mockup, page 02 (Credit Cards).
+//
+// Composition mirrors the mockup top-to-bottom:
+//   1. Page header (title + subtitle)
+//   2. Top Picks — 2 featured cards side-by-side (image + welcome-bonus
+//      highlighted in green + annual fee + Read review CTA)
+//   3. Compare All Cards header + filter pills + Sort
+//   4. Card rows — list view: image | bank+name | welcome bonus | annual
+//      fee | earn rate | perks | Read review
+//   5. Editorial callout (dark band): "Not sure which card is right?"
+//      + 2 secondary CTAs into existing /guides/
+//   6. Newsletter strip (deferred — site-wide footer chrome carries it)
+//
+// Charter notes
+// ─────────────
+//   - No "Apply Now" CTAs anywhere. STATUS.md 2026-05-08-bis ruling.
+//     Mockup shows "Apply Now"; we ship "Read review" (Top Picks) and
+//     "Compare →" (list rows).
+//   - Filter taxonomy preserved: All / Cashback / Miles / Islamic /
+//     Compare. Mockup adds "Hotel Points" — we don't have a Hotel Points
+//     content collection or matching filter route, so we don't fabricate
+//     one. The Charter §"slug rename" gate covers fictional category
+//     additions too.
+//   - Welcome bonus highlighted via `--green` token (Charter §"two-accent
+//     system"); annual fee uses `--ink`. No new colour utilities.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Cover from "~/components/Cover.astro";
+import StockImage from "~/components/StockImage.astro";
 import { getEntry } from "astro:content";
 import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
 
-// Resolve bank entry per card so the eyebrow / metadata can use the
-// human-readable bank name.
 const cards = await Promise.all(
   getAllCards()
-    .sort((a, b) => b.lastVerified.getTime() - a.lastVerified.getTime())
+    .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
     .map(async (card) => {
       const bank = await getEntry("banks", card.bank);
       return { card, bankName: bank?.data.name ?? card.bank };
     }),
 );
 
+const topPicks = cards.slice(0, 2);
+const compareList = cards.slice(2);
+
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-const featured = cards.slice(0, 7);
-const remaining = cards.slice(7);
-
 const filters = [
-  { label: "All", active: true },
-  { label: "Cashback", href: "/cards/cashback/" },
-  { label: "Miles", href: "/cards/miles/" },
-  { label: "Islamic", href: "/cards/islamic/" },
-  { label: "Compare", href: "/cards/compare/" },
+  { label: "All cards", active: true, href: "/cards/" },
+  { label: "Miles", active: false, href: "/cards/miles/" },
+  { label: "Cashback", active: false, href: "/cards/cashback/" },
+  { label: "Islamic", active: false, href: "/cards/islamic/" },
+  { label: "Compare", active: false, href: "/cards/compare/" },
 ];
+
+// Headline earn-rate string per card — pulls the top non-default tier.
+function topEarnRate(card: typeof cards[number]["card"]): string | null {
+  const rates = card.earnRates;
+  if (!rates) return null;
+  const entries = Object.entries(rates).filter(([k]) => k !== "_caps");
+  if (entries.length === 0) return null;
+  // Highest numeric value across categories; descriptive label paired.
+  let best: { label: string; value: number } | null = null;
+  for (const [label, raw] of entries) {
+    const value = typeof raw === "number" ? raw : (raw as { rate?: number } | null)?.rate;
+    if (typeof value === "number" && (!best || value > best.value)) {
+      best = { label, value };
+    }
+  }
+  if (!best) return null;
+  return `${best.value}× on ${best.label}`;
+}
+
+// Perk chips — up to 2, free-text fallback to the typed _features list.
+function perkChips(card: typeof cards[number]["card"]): string[] {
+  const out: string[] = [];
+  for (const p of card.perks ?? []) {
+    if (out.length >= 2) break;
+    // Trim verbose perks to under ~28 chars so the chip stays a chip.
+    out.push(p.length > 28 ? `${p.slice(0, 25)}…` : p);
+  }
+  return out;
+}
 ---
 
 <BaseLayout
-  title="UAE credit cards — directory"
-  description="Every UAE credit card we cover, sorted by latest verification. Browse the directory or filter by category."
+  title="The best UAE credit cards — DubaiPoints"
+  description="Every UAE credit card we cover, sorted by welcome-bonus value. Annual fees and earn rates checked against the issuer's Schedule of Charges."
   fullWidth
 >
-  <div class="dp-pagehead">
-    <div class="crumb">DubaiPoints / Cards</div>
-    <h1>Credit cards</h1>
-    <p>Every UAE credit card we cover, sorted by latest verification. Filter by category, or open any card for the full review and verdict.</p>
-  </div>
+  <!-- ── 1. Page header ─────────────────────────────────────────────── -->
+  <header class="cards-pagehead">
+    <div class="cards-pagehead-inner">
+      <div class="crumb">DubaiPoints / Cards</div>
+      <h1>The best travel credit cards in the UAE.</h1>
+      <p>
+        We've reviewed every active UAE credit card against its issuer's
+        published Schedule of Charges. Browse the picks, compare welcome
+        bonuses and earn rates, then open any card for the full verdict.
+      </p>
+    </div>
+  </header>
 
-  <div class="dp-filters">
-    {filters.map((f) => (
-      f.active
-        ? <span class="dp-filter-pill is-active">{f.label}</span>
-        : <a href={f.href} class="dp-filter-pill">{f.label}</a>
-    ))}
-    <span class="dp-sort">Sort: <strong>Last verified</strong> ▾</span>
-  </div>
-
-  {featured.length > 0 && (
-    <section class="dp-featured-band">
-      <div class="dp-featured-eyebrow">
-        <span>Latest reviews</span>
-        <span class="rule"></span>
-        <span class="meta">{cards.length} cards covered · refreshed monthly</span>
+  <!-- ── 2. Top Picks ─────────────────────────────────────────────────── -->
+  {topPicks.length > 0 && (
+    <section class="cards-top-picks">
+      <div class="cards-section-head">
+        <span class="cards-section-eyebrow">★ Top picks this month</span>
+        <h2>The two cards we'd open first.</h2>
       </div>
-      <div class="dp-featured-grid">
-        {featured[0] && (
-          <a href={`/cards/${featured[0].card.slug}/`} class="dp-story-card hero">
-            <Cover title={featured[0].card.name} category="Review" size="hero" />
-            <div class="body">
-              <div class="meta">
-                <span class="cat">Review</span>
-                <span>{featured[0].bankName}</span>
-              </div>
-              <h3>{featured[0].card.name}</h3>
-              <p>{welcomeBonusDisplay(featured[0].card.welcomeBonus) || `Annual fee AED ${featured[0].card.annualFee.amount.toLocaleString()} · min salary AED ${featured[0].card.eligibility.minSalary.toLocaleString()}/mo.`}</p>
-              <div class="by">Verified {fmt(featured[0].card.lastVerified)}</div>
-            </div>
-          </a>
-        )}
-        {[featured[1], featured[2]].filter(Boolean).map((f) => (
-          <a href={`/cards/${f.card.slug}/`} class="dp-story-card med">
-            <Cover title={f.card.name} category="Review" size="med" />
-            <div class="body">
-              <div class="meta"><span class="cat">Review</span><span>{f.bankName}</span></div>
+      <div class="cards-top-grid">
+        {topPicks.map((f) => (
+          <article class="cards-top-card">
+            <StockImage
+              slug={`card-${f.card.slug}`}
+              coverTitle={f.card.name}
+              coverCategory="Review"
+              coverSize="med"
+              class="cards-top-card-image"
+              sizes="(max-width: 900px) 100vw, 50vw"
+            />
+            <div class="cards-top-card-body">
+              <span class="cards-top-card-bank">{f.bankName}</span>
               <h3>{f.card.name}</h3>
-              <p>AED {f.card.annualFee.amount.toLocaleString()}/yr · AED {f.card.eligibility.minSalary.toLocaleString()}/mo min</p>
+              <dl class="cards-top-card-stats">
+                <div>
+                  <dt>Welcome bonus</dt>
+                  <dd class="is-bonus">{welcomeBonusDisplay(f.card.welcomeBonus) ?? "—"}</dd>
+                </div>
+                <div>
+                  <dt>Annual fee</dt>
+                  <dd>AED {f.card.annualFee.amount.toLocaleString()}</dd>
+                </div>
+              </dl>
+              <a href={`/cards/${f.card.slug}/`} class="cards-top-card-cta">Read review →</a>
             </div>
-          </a>
-        ))}
-        {featured.slice(3, 7).map((f) => (
-          <a href={`/cards/${f.card.slug}/`} class="dp-story-card sm">
-            <Cover title={f.card.name} category="Review" size="sm" />
-            <div class="body">
-              <div class="meta"><span class="cat">Review</span><span>{f.bankName}</span></div>
-              <h3>{f.card.name}</h3>
-            </div>
-          </a>
+          </article>
         ))}
       </div>
     </section>
   )}
 
-  <div class="dp-pullquote">
-    <div class="mark">"</div>
-    <blockquote>
-      Every figure in AED. Every card checked against the issuer's published Schedule of Charges. No advertorial-driven rankings.
-    </blockquote>
-    <div class="attr"><span class="rule"></span>Editorial standard · est. 2026</div>
-  </div>
-
-  {remaining.length > 0 && (
-    <>
-      <div class="dp-list-head">
-        <div class="t">All cards</div>
-        <div class="m">Sorted by last verification · {remaining.length} more below</div>
+  <!-- ── 3. Compare All Cards header ─────────────────────────────────── -->
+  <section class="cards-compare-section">
+    <div class="cards-compare-head">
+      <h2>Compare all cards.</h2>
+      <div class="cards-compare-tools">
+        <div class="cards-compare-pills">
+          {filters.map((f) => (
+            f.active
+              ? <span class="dp-filter-pill is-active">{f.label}</span>
+              : <a href={f.href} class="dp-filter-pill">{f.label}</a>
+          ))}
+        </div>
+        <span class="cards-compare-sort">Sort: <strong>Welcome bonus</strong> ▾</span>
       </div>
-      <div class="dp-feed">
-        {remaining.map((f, i) => {
-          const n = i + featured.length + 1;
-          return (
-            <a href={`/cards/${f.card.slug}/`} class="dp-feed-row">
-              <div>
-                <div class="num">{String(n).padStart(2, "0")}</div>
-                <div class="feed-eyebrow">{f.bankName}</div>
-              </div>
-              <div>
-                <h3>{f.card.name}</h3>
-                <div class="summary">
-                  AED {f.card.annualFee.amount.toLocaleString()}/yr ·
-                  AED {f.card.eligibility.minSalary.toLocaleString()}/mo min ·
-                  {f.card.network}
+    </div>
+
+    <!-- ── 4. Card rows ────────────────────────────────────────────── -->
+    <ul class="cards-row-list">
+      {compareList.map((f) => {
+        const earn = topEarnRate(f.card);
+        const chips = perkChips(f.card);
+        return (
+          <li class="cards-row">
+            <a href={`/cards/${f.card.slug}/`} class="cards-row-link">
+              <div class="cards-row-art">
+                <div class="dp-cr-mock" data-bank={f.card.bank} aria-hidden="true">
+                  <div class="dp-cr-mock-chip"></div>
+                  <div class="dp-cr-mock-row">
+                    <div class="b">{f.bankName}</div>
+                    <div class="dp-cr-mock-mark">{f.card.network.slice(0, 1)}</div>
+                  </div>
+                  <div class="n">{f.card.name}</div>
+                  <div class="b">{f.card.network}</div>
                 </div>
               </div>
-              <Cover category="Review" size="thumb" />
-              <div class="when">{fmt(f.card.lastVerified)}</div>
+              <div class="cards-row-id">
+                <span class="cards-row-bank">{f.bankName}</span>
+                <span class="cards-row-name">{f.card.name}</span>
+                {chips.length > 0 && (
+                  <div class="cards-row-chips">
+                    {chips.map((c) => <span class="cards-row-chip">{c}</span>)}
+                  </div>
+                )}
+              </div>
+              <div class="cards-row-bonus">
+                <span class="cards-row-label">Welcome bonus</span>
+                <span class="cards-row-value is-bonus">{welcomeBonusDisplay(f.card.welcomeBonus) ?? "—"}</span>
+              </div>
+              <div class="cards-row-fee">
+                <span class="cards-row-label">Annual fee</span>
+                <span class="cards-row-value">AED {f.card.annualFee.amount.toLocaleString()}</span>
+              </div>
+              <div class="cards-row-earn">
+                <span class="cards-row-label">Top earn rate</span>
+                <span class="cards-row-value">{earn ?? "—"}</span>
+              </div>
+              <div class="cards-row-cta">
+                <span class="cards-row-cta-pill">Compare →</span>
+                <span class="cards-row-verified">Verified {fmt(f.card.lastVerified)}</span>
+              </div>
             </a>
-          );
-        })}
-      </div>
-    </>
-  )}
+          </li>
+        );
+      })}
+    </ul>
+  </section>
 
-  <div class="dp-page-nav">
-    <span style="font-size:12px;color:var(--muted);">Showing all {cards.length} cards</span>
-  </div>
+  <!-- ── 5. Editorial callout (dark) ─────────────────────────────────── -->
+  <section class="cards-callout">
+    <div class="cards-callout-grid">
+      <div class="cards-callout-text">
+        <h2>Not sure which card is right for you?</h2>
+        <p>The right card depends on your AED salary band, the bank you transfer to, and what you actually spend on each month. These two guides cut the noise.</p>
+      </div>
+      <div class="cards-callout-ctas">
+        <a href="/guides/expat-starter-first-credit-card/" class="cards-callout-cta">
+          <span class="cards-callout-cta-eyebrow">Start here</span>
+          <span class="cards-callout-cta-title">Your first UAE credit card</span>
+          <span class="cards-callout-cta-arrow">→</span>
+        </a>
+        <a href="/guides/uae-credit-card-eligibility-2026/" class="cards-callout-cta">
+          <span class="cards-callout-cta-eyebrow">Eligibility</span>
+          <span class="cards-callout-cta-title">Salary bands & AECB score</span>
+          <span class="cards-callout-cta-arrow">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  /* ── Page header ─────────────────────────────────────────────────── */
+  .cards-pagehead {
+    background: var(--paper);
+    padding: 48px 32px 32px;
+  }
+  .cards-pagehead-inner {
+    max-width: 880px; margin: 0 auto;
+    text-align: center;
+  }
+  .cards-pagehead .crumb {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 18px;
+  }
+  .cards-pagehead h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(32px, 5vw, 56px);
+    letter-spacing: -1.4px;
+    line-height: 1.06;
+    color: var(--ink);
+    margin: 0 auto 16px;
+    text-wrap: balance;
+    max-width: 22ch;
+  }
+  .cards-pagehead p {
+    max-width: 60ch; margin: 0 auto;
+    font-size: 15px; line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  /* ── Top Picks ──────────────────────────────────────────────────── */
+  .cards-top-picks {
+    max-width: 1180px; margin: 32px auto;
+    padding: 0 32px;
+  }
+  .cards-section-head {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .cards-section-eyebrow {
+    display: inline-block;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 12px;
+  }
+  .cards-section-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3.5vw, 36px);
+    letter-spacing: -0.9px;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .cards-top-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .cards-top-card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .cards-top-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 18px 36px -20px rgba(15, 31, 46, 0.22);
+  }
+  .cards-top-card :global(.cards-top-card-image) {
+    width: 100%; aspect-ratio: 16 / 9;
+    object-fit: cover; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .cards-top-card :global(svg.dp-cover) {
+    width: 100%; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .cards-top-card-body {
+    padding: 22px 24px 24px;
+    display: grid; gap: 14px;
+  }
+  .cards-top-card-bank {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .cards-top-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: -0.6px;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.18;
+    text-wrap: balance;
+  }
+  .cards-top-card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 4px 0 0;
+  }
+  .cards-top-card-stats > div { display: grid; gap: 2px; }
+  .cards-top-card-stats dt {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cards-top-card-stats dd {
+    margin: 0;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .cards-top-card-stats dd.is-bonus { color: var(--green); }
+  .cards-top-card-cta {
+    align-self: start;
+    display: inline-flex; align-items: center;
+    height: 40px; padding: 0 18px;
+    margin-top: 6px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 999px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .cards-top-card-cta:hover { background: var(--green); }
+
+  /* ── Compare section ────────────────────────────────────────────── */
+  .cards-compare-section {
+    max-width: 1180px; margin: 48px auto 56px;
+    padding: 0 32px;
+  }
+  .cards-compare-head {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 16px 24px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .cards-compare-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3vw, 34px);
+    letter-spacing: -0.8px;
+    color: var(--ink);
+    margin: 0;
+  }
+  .cards-compare-tools {
+    display: flex; flex-wrap: wrap;
+    gap: 16px 24px;
+    align-items: center;
+  }
+  .cards-compare-pills {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .cards-compare-sort {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .cards-compare-sort strong { color: var(--ink); font-weight: 600; }
+
+  /* ── Card rows ──────────────────────────────────────────────────── */
+  .cards-row-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid; gap: 12px;
+  }
+  .cards-row {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .cards-row:hover {
+    border-color: var(--ink-soft);
+    box-shadow: 0 10px 22px -16px rgba(15, 31, 46, 0.16);
+  }
+  .cards-row-link {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1.4fr) repeat(3, minmax(0, 1fr)) auto;
+    gap: 20px;
+    align-items: center;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .cards-row-art .dp-cr-mock {
+    transform: scale(0.55);
+    transform-origin: left center;
+    width: 250px;
+    margin: -28px -90px -28px 0;
+  }
+  .cards-row-id { display: grid; gap: 4px; }
+  .cards-row-bank {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .cards-row-name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+  .cards-row:hover .cards-row-name { color: var(--green); }
+  .cards-row-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .cards-row-chip {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--ink-soft);
+    background: var(--shade-1);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+  .cards-row-bonus,
+  .cards-row-fee,
+  .cards-row-earn { display: grid; gap: 2px; }
+  .cards-row-label {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cards-row-value {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .cards-row-value.is-bonus { color: var(--green); }
+  .cards-row-cta {
+    display: grid; gap: 4px; justify-items: end;
+  }
+  .cards-row-cta-pill {
+    display: inline-flex; align-items: center;
+    height: 32px; padding: 0 14px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.3px;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .cards-row:hover .cards-row-cta-pill {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+  .cards-row-verified {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+  }
+
+  /* ── Editorial callout (dark band) ──────────────────────────────── */
+  .cards-callout {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 56px 32px 64px;
+    margin: 32px 0 48px;
+  }
+  .cards-callout-grid {
+    max-width: 1180px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 48px;
+    align-items: center;
+  }
+  .cards-callout-text h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(26px, 3.4vw, 36px);
+    letter-spacing: -0.9px;
+    color: var(--paper);
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .cards-callout-text p {
+    font-size: 15px; line-height: 1.6;
+    color: rgba(251, 250, 246, 0.78);
+    margin: 0;
+    max-width: 50ch;
+  }
+  .cards-callout-ctas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .cards-callout-cta {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 4px;
+    padding: 18px 18px 20px;
+    background: rgba(251, 250, 246, 0.06);
+    border: 1px solid rgba(251, 250, 246, 0.12);
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--paper);
+    transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  }
+  .cards-callout-cta:hover {
+    background: rgba(251, 250, 246, 0.10);
+    border-color: var(--mint);
+    transform: translateY(-2px);
+  }
+  .cards-callout-cta-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--mint);
+  }
+  .cards-callout-cta-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: -0.2px;
+    line-height: 1.3;
+    color: var(--paper);
+    text-wrap: balance;
+  }
+  .cards-callout-cta-arrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 18px;
+    color: var(--mint);
+    justify-self: end;
+    margin-top: 4px;
+  }
+
+  /* ── Responsive ─────────────────────────────────────────────────── */
+  @media (max-width: 960px) {
+    .cards-top-grid { grid-template-columns: 1fr; }
+    .cards-compare-head {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .cards-row-link {
+      grid-template-columns: 100px minmax(0, 1fr);
+      gap: 14px;
+    }
+    .cards-row-art .dp-cr-mock { width: 180px; margin: -20px -55px -20px 0; transform: scale(0.5); }
+    .cards-row-bonus,
+    .cards-row-fee,
+    .cards-row-earn,
+    .cards-row-cta {
+      grid-column: 1 / -1;
+      padding-left: 0;
+    }
+    .cards-row-cta { justify-items: start; }
+    .cards-callout-grid { grid-template-columns: 1fr; gap: 32px; }
+    .cards-callout-ctas { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .cards-pagehead { padding: 32px 20px 24px; }
+    .cards-top-picks, .cards-compare-section { padding-inline: 20px; }
+    .cards-callout { padding: 40px 20px 48px; }
+    .cards-row-link { padding: 14px; }
+  }
+</style>
