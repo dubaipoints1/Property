@@ -1,5 +1,5 @@
 ---
-// Article layout — Phase B2 (Claude Design handoff).
+// Article layout — Phase B2 + Phase D2/D4 (May 2026 image-forward redesign).
 // Reference: dubaipoints/project/templates/article.jsx::Article.
 // Used by /guides/<slug>/, /news/<slug>/, /deals/<slug>/.
 //
@@ -10,11 +10,16 @@
 //   ↓
 //   2-col grid at ≥1024px:
 //     [body] hero placeholder + drop-cap prose (slot)
-//     [aside] sticky TOC + Related (slot name="related")
+//     [aside] sticky TOC + Trending Now + Insider Intel newsletter card +
+//             optional consumer-provided <slot name="related">
+//   ↓
+//   Related Guides footer (D2) — auto-populated, 3 cards
 //   ↓
 //   sources footer
 
 import BaseLayout from "./BaseLayout.astro";
+import StockImage from "~/components/StockImage.astro";
+import { getCollection } from "astro:content";
 
 interface Props {
   title: string;
@@ -64,6 +69,21 @@ const initials = author
   .map((w) => w[0]?.toUpperCase() ?? "")
   .slice(0, 2)
   .join("");
+
+// Phase D2 / D4 — auto-populated Trending Now sidebar + Related Guides footer.
+// The current article is identified by URL prefix-match against guide IDs;
+// works whether the consumer is /guides/<slug>/, /news/<slug>/, or /deals/<slug>/.
+// News and deals don't match any guide ID so no exclusion happens — correct.
+const currentPath = Astro.url.pathname;
+const allGuidesForRail = (await getCollection("guides"))
+  .filter((g) => !currentPath.endsWith(`/${g.id}/`))
+  .sort((a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime());
+
+const trendingGuides = allGuidesForRail.slice(0, 4);
+const relatedGuides = allGuidesForRail.slice(0, 3);
+
+const fmtShort = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
@@ -112,9 +132,52 @@ const initials = author
           </ol>
         </nav>
       )}
+
+      {trendingGuides.length > 0 && (
+        <nav class="dp-trending-card" aria-label="Trending guides">
+          <h4>Trending guides</h4>
+          <ol>
+            {trendingGuides.map((g, i) => (
+              <li>
+                <span class="num">{String(i + 1).padStart(2, "0")}</span>
+                <a href={`/guides/${g.id}/`}>{g.data.title}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
+      <aside class="dp-aside-newsletter">
+        <span class="eyebrow">Insider Intel</span>
+        <h4>Friday morning, in your inbox.</h4>
+        <p>One email each Friday — salary-transfer changes, new card offers, miles redemptions worth knowing about.</p>
+        <a href="/newsletter/" class="cta">Subscribe →</a>
+      </aside>
+
       <slot name="related" />
     </aside>
   </div>
+
+  {relatedGuides.length > 0 && (
+    <section class="dp-article-related" aria-label="Related guides">
+      <div class="dp-article-related-head">
+        <span class="eyebrow">Related</span>
+        <h2>More from the guides desk</h2>
+      </div>
+      <div class="dp-article-related-grid">
+        {relatedGuides.map((g) => (
+          <a href={`/guides/${g.id}/`} class="dp-article-related-card">
+            <StockImage slug={`guide-${g.id}`} coverTitle={g.data.title} coverCategory="Guide" coverSize="med" sizes="(max-width: 900px) 100vw, 33vw" />
+            <div class="body">
+              <span class="cat">Guide · {fmtShort(g.data.updatedAt)}</span>
+              <h3>{g.data.title}</h3>
+              <p>{g.data.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   {sources.length > 0 && (
     <footer class="dp-article-sources">
