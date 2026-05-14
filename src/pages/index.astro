@@ -13,6 +13,7 @@
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import Cover from "~/components/Cover.astro";
+import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 import { getAllCards } from "~/lib/cardsData";
 import { getLiveOffers } from "~/lib/offerAdapter";
@@ -102,15 +103,54 @@ const filters = [
   fullWidth
 >
   <!-- ── 1. Masthead hero ─────────────────────────────────────────────── -->
+  <!--
+    Image-forward hero (Phase B.1, May 2026 redesign).
+    Left column: kicker / headline / subhead / single Latest-link.
+    Right column: <StockImage> with overlay sweet-spot chip linking to
+    the top guide. Image falls back to Cover.astro SVG until the
+    matching manifest entry lands (Phase E.2).
+  -->
   <header class="dp-pagehead is-hero">
-    <span class="kicker">Dubai · Independent · Reader-funded</span>
-    <h1>UAE rewards, <em>decoded</em>.</h1>
-    <p>
-      Independent UAE analysis of credit cards, salary transfer, miles
-      and deals — every figure in dirhams, dated and verified.
-    </p>
+    <div class="hp-hero-grid">
+      <div class="hp-hero-text">
+        <span class="kicker">Dubai · Independent · Reader-funded</span>
+        <h1>UAE rewards, <em>decoded</em>.</h1>
+        <p>
+          Independent UAE analysis of credit cards, salary transfer,
+          miles and deals — every figure in dirhams, dated and verified.
+        </p>
+        {newestCard && (
+          <a href={`/cards/${newestCard.slug}/`} class="hp-hero-cta">
+            Read the latest review · {newestCard.name} →
+          </a>
+        )}
+      </div>
 
-    <!-- "Latest" strip — 3 content-driven entry points (replaces nav tiles) -->
+      <div class="hp-hero-media">
+        <StockImage
+          slug="homepage-hero-cabin"
+          coverTitle="UAE rewards, decoded."
+          coverCategory="Editorial"
+          coverSize="hero"
+          class="hp-hero-image"
+          loading="eager"
+          sizes="(max-width: 900px) 100vw, 50vw"
+        />
+        {topGuide && (
+          <a href={`/guides/${topGuide.id}/`} class="hp-hero-chip">
+            <span class="hp-hero-chip-eyebrow">Sweet spot</span>
+            <span class="hp-hero-chip-title">{topGuide.data.title}</span>
+            <span class="hp-hero-chip-meta">Updated {fmtShort(topGuide.data.updatedAt)} ›</span>
+          </a>
+        )}
+      </div>
+    </div>
+  </header>
+
+  <!-- "Latest" strip — 3 content-driven entry points (replaces nav tiles).
+       Moved out of the hero in Phase B.1 to give the image-forward hero
+       room to breathe. Still sits above the fold on most viewports. -->
+  <div class="hero-latest-wrap">
     <div class="hero-latest">
       {newestCard && (
         <a href={`/cards/${newestCard.slug}/`} class="hero-latest-row">
@@ -138,7 +178,7 @@ const filters = [
         </a>
       )}
     </div>
-  </header>
+  </div>
 
   <!-- Decorative section divider between hero and featured band -->
   <div class="dp-section-divider" aria-hidden="true">
@@ -296,9 +336,19 @@ const filters = [
 
   .dp-pagehead.is-hero {
     background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
-    padding: 72px 32px 56px;
-    text-align: center;
+    padding: 56px 32px 40px;
   }
+  /* Two-column hero grid — text left, image right.
+     Stacks on mobile (text first to preserve LCP). */
+  .hp-hero-grid {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 48px;
+    align-items: center;
+  }
+  .hp-hero-text { text-align: left; }
   .dp-pagehead.is-hero .kicker {
     display: inline-block;
     font-family: 'DM Sans', system-ui, sans-serif;
@@ -312,13 +362,13 @@ const filters = [
   .dp-pagehead.is-hero h1 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: clamp(34px, 5.8vw, 64px);
+    font-size: clamp(34px, 5vw, 60px);
     line-height: 1.04;
     letter-spacing: -1.4px;
     color: var(--ink);
     text-wrap: balance;
-    margin: 0 auto 18px;
-    max-width: 16ch;
+    margin: 0 0 18px;
+    max-width: 14ch;
   }
   .dp-pagehead.is-hero h1 em {
     font-style: italic;
@@ -326,21 +376,97 @@ const filters = [
     font-weight: 500;
   }
   .dp-pagehead.is-hero p {
-    max-width: 56ch;
-    margin: 0 auto;
+    max-width: 48ch;
+    margin: 0 0 24px;
     font-size: clamp(16px, 1.5vw, 18px);
     line-height: 1.6;
     color: var(--ink-soft);
     text-wrap: pretty;
   }
+  .hp-hero-cta {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--green);
+    border-bottom: 2px solid var(--green);
+    padding-bottom: 4px;
+    transition: opacity 0.15s ease;
+  }
+  .hp-hero-cta:hover { opacity: 0.75; }
 
-  /* "Latest" strip — 3 content-driven rows replacing the old nav tiles
-     and editor blockquote. Each row links into the actual published
-     surface (review / tracker / guide). Reads as inbox-style entries
-     rather than chrome. */
+  /* Image column — wraps StockImage so its <Cover> SVG fallback fills the slot.
+     Chip is absolute-positioned bottom-left, mirroring the Replit handoff. */
+  .hp-hero-media {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--shade-1);
+    box-shadow: 0 18px 36px -18px rgba(15, 31, 46, 0.18);
+  }
+  .hp-hero-media :global(.hp-hero-image),
+  .hp-hero-media :global(svg.dp-cover) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .hp-hero-chip {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    right: 16px;
+    max-width: 360px;
+    background: var(--paper);
+    border-radius: 12px;
+    padding: 12px 14px 14px;
+    display: grid;
+    gap: 4px;
+    box-shadow: 0 10px 28px -10px rgba(15, 31, 46, 0.25);
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .hp-hero-chip:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px -10px rgba(15, 31, 46, 0.3);
+  }
+  .hp-hero-chip-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .hp-hero-chip-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 1.3;
+    letter-spacing: -0.2px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .hp-hero-chip-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+  }
+
+  /* "Latest" strip — 3 content-driven rows. Lives below the hero
+     after Phase B.1 (was inside the hero pre-redesign). Reads as
+     inbox-style entries rather than chrome. */
+  .hero-latest-wrap {
+    background: var(--paper);
+    padding: 28px 32px 0;
+  }
   .hero-latest {
-    margin: 32px auto 0;
-    max-width: 720px;
+    margin: 0 auto;
+    max-width: 1100px;
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -403,8 +529,22 @@ const filters = [
     .hero-latest-row.is-live .cat .dot { animation: none; }
   }
 
+  @media (max-width: 900px) {
+    .hp-hero-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .dp-pagehead.is-hero h1 { max-width: 18ch; }
+    .hp-hero-media { aspect-ratio: 16 / 10; }
+  }
   @media (max-width: 768px) {
-    .dp-pagehead.is-hero { padding: 52px 20px 36px; }
+    .dp-pagehead.is-hero { padding: 40px 20px 28px; }
+    .hp-hero-grid { gap: 24px; }
+    .hero-latest-wrap { padding: 24px 20px 0; }
+    .hp-hero-chip {
+      left: 12px; right: 12px; bottom: 12px;
+      max-width: none;
+    }
     .hero-latest-row {
       grid-template-columns: 1fr auto;
       gap: 4px 12px;
