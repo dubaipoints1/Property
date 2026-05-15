@@ -1,7 +1,22 @@
 ---
-// News index — section-index template (Phase B1 cascade).
-// Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
-// Replaces the empty-state implementation from PR #28 with the full pattern.
+// News index — Phase F.4 (May 2026 mockup-fidelity rebuild).
+// Mirrors the /guides/ "All Intel" composition (Phase F.3) so the two
+// article surfaces read as one publication, not two. Layout-for-layout
+// match: page header with tabs + search, 2-col grid (main feed + sticky
+// sidebar), featured post + card grid + Trending list + Insider Intel
+// newsletter card.
+//
+// Differences vs /guides/:
+//   - Empty-state copy when the news collection has 0 entries (it does
+//     today; STATUS.md flags the newsroom as "being assembled").
+//   - Tabs point at the news category facets that already exist in the
+//     publication: deal-update / card-launch / programme-change /
+//     regulation. Each links to /news/?cat=<facet> for future Pagefind-
+//     filtered queries — today they're discoverability hooks, not faceted
+//     filters (Charter §"slug rename" — no fictional category routes).
+//   - Sidebar shares the Trending Now + Insider Intel pattern but
+//     trending pulls from guides (cross-section promo) since news has
+//     no entries yet. Falls back gracefully when news lands.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
@@ -10,19 +25,26 @@ import { getCollection } from "astro:content";
 const posts = (await getCollection("news"))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
+const guides = (await getCollection("guides"))
+  .sort((a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime());
+
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-const featured = posts.slice(0, 7);
-const remaining = posts.slice(7);
+const featured = posts[0];
+const others = posts.slice(1);
 
-const filters = [
-  { label: "All", active: true },
-  { label: "News" },
-  { label: "Deal updates" },
-  { label: "Card launches" },
-  { label: "Programme changes" },
-  { label: "Regulation" },
+// Cross-section trending — when no news exists, point readers at the
+// freshest guides instead of an empty rail.
+const trending = posts.length > 0 ? posts.slice(0, 5) : guides.slice(0, 5);
+const trendingLinkBase = posts.length > 0 ? "/news" : "/guides";
+
+const tabs = [
+  { label: "All", active: true, href: "/news/" },
+  { label: "Deal updates", href: "/deals/" },
+  { label: "Card launches", href: "/cards/" },
+  { label: "Programme changes", href: "/airlines/" },
+  { label: "Regulation", href: "/guides/uae-credit-card-eligibility-2026/" },
 ];
 
 const formatCategory = (c: string) =>
@@ -30,130 +52,493 @@ const formatCategory = (c: string) =>
 ---
 
 <BaseLayout
-  title="News — UAE points and rewards"
-  description="UAE points-and-miles news: salary-transfer offer updates, card launches, programme changes, and regulatory shifts that affect UAE residents."
+  title="News — UAE points, miles, banking moves"
+  description="UAE points-and-miles news: salary-transfer changes, card launches, programme shifts, and regulatory updates — every figure in AED, every claim sourced."
   fullWidth
 >
-  <div class="dp-pagehead">
-    <div class="crumb">DubaiPoints / News</div>
-    <h1>News</h1>
-    <p>Salary-transfer changes, card launches, programme shifts, and the regulatory updates that affect UAE residents — every figure in AED, every claim sourced.</p>
-  </div>
+  <header class="intel-pagehead">
+    <div class="intel-pagehead-inner">
+      <div class="crumb">DubaiPoints / News</div>
+      <h1>The news desk.</h1>
+      <p>Salary-transfer changes, card launches, programme shifts and the regulatory updates that affect UAE residents — every figure in AED, every claim sourced.</p>
 
-  <div class="dp-filters">
-    {filters.map((f) => (
-      <span class={`dp-filter-pill${f.active ? " is-active" : ""}`}>{f.label}</span>
-    ))}
-    <span class="dp-sort">Sort: <strong>Newest</strong> ▾</span>
-  </div>
-
-  {posts.length === 0 ? (
-    <section class="dp-featured-band">
-      <div class="dp-featured-eyebrow">
-        <span>The newsroom is being assembled</span>
-        <span class="rule"></span>
-        <span class="meta">No posts yet</span>
+      <div class="intel-tools">
+        <div class="intel-tabs" role="tablist">
+          {tabs.map((t) => (
+            t.active
+              ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
+              : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
+          ))}
+        </div>
+        <form class="intel-search" action="/" method="get" role="search">
+          <label class="intel-search-label" for="news-search-input">Search</label>
+          <input
+            id="news-search-input"
+            type="search"
+            name="q"
+            placeholder="Search news…"
+            autocomplete="off"
+          />
+        </form>
       </div>
-      <p style="padding: 32px; color: var(--ink-soft); font-size: 15px; line-height: 1.6;">
-        When stories land, they appear here in reverse-chronological order
-        and on the homepage feed. Follow the <a href="/rss.xml" style="color: var(--link); font-weight: 600;">site-wide
-        RSS feed</a> to get every post as it ships, or subscribe to
-        <a href="/newsletter/" style="color: var(--link); font-weight: 600;">the Friday brief</a> for the weekly recap.
-      </p>
-      <p style="padding: 0 32px 32px; color: var(--ink-soft); font-size: 14px;">
-        Have a tip? <a href="mailto:info@dubaipoints.ae" style="color: var(--link); font-weight: 600;">Email us</a>.
-      </p>
-    </section>
-  ) : (
-    <>
-      {featured.length > 0 && (
-        <section class="dp-featured-band">
-          <div class="dp-featured-eyebrow">
-            <span>Latest news</span>
-            <span class="rule"></span>
-            <span class="meta">{posts.length} post{posts.length === 1 ? "" : "s"} filed</span>
-          </div>
-          <div class="dp-featured-grid">
-            {featured[0] && (
-              <a href={`/news/${featured[0].id}/`} class="dp-story-card hero">
-                <StockImage slug={`news-${featured[0].id}`} coverTitle={featured[0].data.title} coverCategory="News" coverSize="hero" loading="eager" sizes="(max-width: 900px) 100vw, 60vw" />
-                <div class="body">
-                  <div class="meta">
-                    <span class="cat">{formatCategory(featured[0].data.category)}</span>
-                    <span>{fmt(featured[0].data.publishedAt)}</span>
-                  </div>
-                  <h3>{featured[0].data.title}</h3>
-                  <p>{featured[0].data.description}</p>
-                  <div class="by">By DubaiPoints Editorial</div>
-                </div>
-              </a>
-            )}
-            {[featured[1], featured[2]].filter(Boolean).map((p) => (
-              <a href={`/news/${p.id}/`} class="dp-story-card med">
-                <StockImage slug={`news-${p.id}`} coverTitle={p.data.title} coverCategory="News" coverSize="med" sizes="(max-width: 900px) 100vw, 40vw" />
-                <div class="body">
-                  <div class="meta"><span class="cat">{formatCategory(p.data.category)}</span><span>{fmt(p.data.publishedAt)}</span></div>
-                  <h3>{p.data.title}</h3>
-                  <p>{p.data.description}</p>
-                </div>
-              </a>
-            ))}
-            {featured.slice(3, 7).map((p) => (
-              <a href={`/news/${p.id}/`} class="dp-story-card sm">
-                <StockImage slug={`news-${p.id}`} coverTitle={p.data.title} coverCategory="News" coverSize="sm" sizes="(max-width: 900px) 50vw, 25vw" />
-                <div class="body">
-                  <div class="meta"><span class="cat">{formatCategory(p.data.category)}</span><span>{fmt(p.data.publishedAt)}</span></div>
-                  <h3>{p.data.title}</h3>
-                </div>
-              </a>
-            ))}
+    </div>
+  </header>
+
+  <div class="intel-grid">
+    <main class="intel-main">
+      {posts.length === 0 ? (
+        <section class="news-empty">
+          <span class="news-empty-eyebrow">Newsroom · being assembled</span>
+          <h2>The wire is quiet — for now.</h2>
+          <p>
+            When the next salary-transfer change, card launch or programme
+            shift lands, it'll appear here first. Until then, the
+            <a href="/guides/">guides desk</a> covers the structural pieces
+            that matter year-round, and the <a href="/salary-transfer/">live
+            tracker</a> watches every active offer.
+          </p>
+          <div class="news-empty-ctas">
+            <a href="/newsletter/" class="news-empty-cta">Subscribe to the Friday brief →</a>
+            <a href="/rss.xml" class="news-empty-cta is-ghost">RSS feed →</a>
           </div>
         </section>
-      )}
-
-      <div class="dp-pullquote">
-        <div class="mark">"</div>
-        <blockquote>
-          UAE-specific news, written for UAE residents — not US-norms parachuted into AED-language. Every regulatory citation traces to a primary source.
-        </blockquote>
-        <div class="attr"><span class="rule"></span>Editorial standard · est. 2026</div>
-      </div>
-
-      {remaining.length > 0 && (
+      ) : (
         <>
-          <div class="dp-list-head">
-            <div class="t">All news</div>
-            <div class="m">Sorted by date · {remaining.length} more below</div>
-          </div>
-          <div class="dp-feed">
-            {remaining.map((p, i) => {
-              const n = i + featured.length + 1;
-              return (
-                <a href={`/news/${p.id}/`} class="dp-feed-row">
-                  <div>
-                    <div class="num">{String(n).padStart(2, "0")}</div>
-                    <div class="feed-eyebrow">{formatCategory(p.data.category)}</div>
-                  </div>
-                  <div>
-                    <h3>{p.data.title}</h3>
-                    <div class="summary">{p.data.description}</div>
-                  </div>
-                  <StockImage slug={`news-thumb-${p.id}`} coverCategory="News" coverSize="thumb" sizes="240px" />
-                  <div class="when">{fmt(p.data.publishedAt)}</div>
-                </a>
-              );
-            })}
-          </div>
+          {featured && (
+            <a href={`/news/${featured.id}/`} class="intel-featured">
+              <StockImage
+                slug={`news-${featured.id}`}
+                coverTitle={featured.data.title}
+                coverCategory="News"
+                coverSize="hero"
+                class="intel-featured-image"
+                loading="eager"
+                sizes="(max-width: 900px) 100vw, 66vw"
+              />
+              <div class="intel-featured-body">
+                <span class="intel-featured-eyebrow">★ {formatCategory(featured.data.category)}</span>
+                <h2>{featured.data.title}</h2>
+                <p>{featured.data.description}</p>
+                <span class="intel-featured-meta">
+                  Filed {fmt(featured.data.publishedAt)} · Read full story →
+                </span>
+              </div>
+            </a>
+          )}
+
+          {others.length > 0 && (
+            <ul class="intel-card-grid">
+              {others.map((p) => (
+                <li class="intel-card-item">
+                  <a href={`/news/${p.id}/`} class="intel-card">
+                    <StockImage
+                      slug={`news-${p.id}`}
+                      coverTitle={p.data.title}
+                      coverCategory="News"
+                      coverSize="med"
+                      class="intel-card-image"
+                      sizes="(max-width: 900px) 100vw, 33vw"
+                    />
+                    <div class="intel-card-body">
+                      <span class="intel-card-cat">{formatCategory(p.data.category)}</span>
+                      <h3>{p.data.title}</h3>
+                      <p>{p.data.description}</p>
+                      <span class="intel-card-meta">Filed {fmt(p.data.publishedAt)}</span>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </>
       )}
-    </>
-  )}
+    </main>
 
-  <div class="dp-page-nav">
-    <span style="font-size:12px;color:var(--muted);">
-      {posts.length === 0
-        ? "Newsroom is being assembled"
-        : `Showing all ${posts.length} post${posts.length === 1 ? "" : "s"}`}
-    </span>
+    <aside class="intel-aside">
+      {trending.length > 0 && (
+        <nav class="intel-trending" aria-label="Trending stories">
+          <h4>{posts.length > 0 ? "Trending now" : "From the guides desk"}</h4>
+          <ol>
+            {trending.map((item, i) => (
+              <li>
+                <span class="num">{String(i + 1).padStart(2, "0")}</span>
+                <a href={`${trendingLinkBase}/${item.id}/`}>{item.data.title}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+
+      <div class="intel-insider">
+        <span class="eyebrow">Insider Intel</span>
+        <h4>Friday morning, in your inbox.</h4>
+        <p>One email each Friday — salary-transfer changes, new card offers, miles redemptions worth knowing about.</p>
+        <a href="/newsletter/" class="cta">Subscribe →</a>
+      </div>
+    </aside>
   </div>
 </BaseLayout>
+
+<style>
+  /* Shared with /guides/index.astro (Phase F.3). Reproduced here scoped
+     to the news page so the two siblings can evolve independently. If
+     either drifts, a future refactor lifts these into a shared
+     ArticleIndexLayout component. */
+  .intel-pagehead {
+    background: var(--paper);
+    padding: 48px 32px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-pagehead-inner { max-width: 1180px; margin: 0 auto; }
+  .intel-pagehead .crumb {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+  .intel-pagehead h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(38px, 5.6vw, 58px);
+    letter-spacing: -1.6px;
+    line-height: 1.04;
+    color: var(--green);
+    margin: 0 0 14px;
+  }
+  .intel-pagehead p {
+    max-width: 62ch;
+    font-size: 15px; line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+  }
+  .intel-tools {
+    display: flex; flex-wrap: wrap;
+    gap: 16px 24px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .intel-tab {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+  }
+  .intel-tab:hover { background: var(--shade-1); color: var(--ink); }
+  .intel-tab.is-active { background: var(--ink); color: var(--paper); cursor: default; }
+
+  .intel-search {
+    display: flex; align-items: center;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0 14px;
+    height: 36px;
+    min-width: 220px;
+    transition: border-color 0.15s ease;
+  }
+  .intel-search:focus-within { border-color: var(--ink-soft); }
+  .intel-search-label {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+  }
+  .intel-search input[type="search"] {
+    border: 0; background: transparent; outline: none;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    width: 100%;
+  }
+  .intel-search input[type="search"]::placeholder { color: var(--muted); }
+
+  .intel-grid {
+    max-width: 1180px;
+    margin: 32px auto 56px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+  .intel-main { display: grid; gap: 28px; }
+
+  /* Featured + grid cards — same shape as /guides/ for visual rhyme. */
+  .intel-featured {
+    display: grid; grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    text-decoration: none; color: inherit;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .intel-featured:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 20px 40px -20px rgba(15, 31, 46, 0.22);
+  }
+  .intel-featured :global(.intel-featured-image) {
+    width: 100%; aspect-ratio: 16 / 9;
+    object-fit: cover; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-featured :global(svg.dp-cover) {
+    width: 100%; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-featured-body { padding: 24px 28px 28px; display: grid; gap: 10px; }
+  .intel-featured-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .intel-featured-body h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3.4vw, 34px);
+    letter-spacing: -0.9px;
+    line-height: 1.12;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intel-featured:hover h2 { color: var(--green); }
+  .intel-featured-body p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 64ch;
+  }
+  .intel-featured-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    margin-top: 4px;
+  }
+
+  .intel-card-grid {
+    list-style: none; padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .intel-card-item { display: block; }
+  .intel-card {
+    display: grid; grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none; color: inherit;
+    height: 100%;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .intel-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
+  }
+  .intel-card :global(.intel-card-image) {
+    width: 100%; aspect-ratio: 3 / 2;
+    object-fit: cover; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-card :global(svg.dp-cover) {
+    width: 100%; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-card-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
+  .intel-card-cat {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .intel-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intel-card:hover h3 { color: var(--green); }
+  .intel-card-body p {
+    font-size: 13px; line-height: 1.5;
+    color: var(--ink-soft); margin: 0;
+  }
+  .intel-card-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.2px; margin-top: 2px;
+  }
+
+  /* Empty state — only the news index uses this today. */
+  .news-empty {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 40px 36px 36px;
+    display: grid;
+    gap: 14px;
+  }
+  .news-empty-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .news-empty h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(26px, 3.4vw, 36px);
+    letter-spacing: -0.9px;
+    line-height: 1.12;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .news-empty p {
+    font-size: 15px; line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 60ch;
+  }
+  .news-empty p a {
+    color: var(--green);
+    border-bottom: 1px solid currentColor;
+    text-decoration: none;
+  }
+  .news-empty-ctas {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 8px;
+  }
+  .news-empty-cta {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 18px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 999px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .news-empty-cta:hover { background: var(--green); }
+  .news-empty-cta.is-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .news-empty-cta.is-ghost:hover {
+    border-color: var(--ink-soft);
+    background: var(--shade-1);
+  }
+
+  /* Sidebar — Trending + Insider Intel (same shape as /guides/) */
+  .intel-aside { display: flex; flex-direction: column; gap: 20px; }
+  @media (min-width: 1024px) {
+    .intel-aside { position: sticky; top: 32px; align-self: flex-start; }
+  }
+  .intel-trending {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .intel-trending h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--green);
+    margin: 0 0 14px; font-weight: 700;
+  }
+  .intel-trending ol { list-style: none; padding: 0; margin: 0; }
+  .intel-trending li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px; color: var(--ink-soft);
+    display: flex; gap: 12px;
+    line-height: 1.35;
+  }
+  .intel-trending li:last-child { border-bottom: 0; }
+  .intel-trending .num {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 11px; min-width: 20px;
+    flex-shrink: 0; font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .intel-trending a {
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-weight: 500; letter-spacing: -0.2px;
+    text-decoration: none;
+  }
+  .intel-trending a:hover { color: var(--green); }
+
+  .intel-insider {
+    background: var(--green);
+    color: white;
+    border-radius: 16px;
+    padding: 22px;
+    display: grid; gap: 8px;
+  }
+  .intel-insider .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .intel-insider h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500; font-size: 19px;
+    line-height: 1.2; letter-spacing: -0.4px;
+    color: white; margin: 0;
+    text-wrap: balance;
+  }
+  .intel-insider p {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px; line-height: 1.5;
+    color: rgba(255, 255, 255, 0.88);
+    margin: 4px 0 6px;
+  }
+  .intel-insider .cta {
+    display: inline-flex; align-items: center;
+    height: 36px; padding: 0 16px;
+    background: white; color: var(--green);
+    border-radius: 999px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.4px;
+    text-decoration: none; align-self: start;
+    transition: opacity 0.15s ease;
+  }
+  .intel-insider .cta:hover { opacity: 0.88; }
+
+  @media (max-width: 1023px) {
+    .intel-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .intel-pagehead { padding: 32px 20px 24px; }
+    .intel-grid { padding: 0 20px; margin-top: 24px; gap: 28px; }
+    .intel-card-grid { grid-template-columns: 1fr; }
+    .intel-search { min-width: 0; flex: 1; }
+    .intel-tools { flex-direction: column; align-items: stretch; }
+    .news-empty { padding: 28px 22px; }
+  }
+</style>
