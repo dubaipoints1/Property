@@ -1,125 +1,499 @@
 ---
-// Airlines index — section-index template (Phase B1 cascade).
-// Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
+// Airlines & loyalty programmes index — Phase F.5 (May 2026 mockup
+// continuation). Same "All Intel" composition as /guides/ (F.3) and
+// /news/ (F.4) — featured hero + 2-col grid + sticky Trending / Insider
+// Intel sidebar — so the publication's content-feed surfaces read as
+// one family.
+//
+// Today the programmes collection has one entry (Skywards). The
+// featured slot carries it; the card grid is gracefully empty until
+// Travel-Experiences Editor adds etihad-guest / qatar-privilege-club /
+// marriott-bonvoy etc. The Trending sidebar cross-promotes /guides/ so
+// the rail isn't empty.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 
-const programs = (await getCollection("programs")).sort((a, b) =>
+const programmes = (await getCollection("programs")).sort((a, b) =>
   a.data.name.localeCompare(b.data.name),
 );
 
-const featured = programs.slice(0, 7);
-const remaining = programs.slice(7);
+const guides = (await getCollection("guides")).sort(
+  (a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime(),
+);
 
-const filters = [
-  { label: "All", active: true },
+// Featured programme — Skywards if present (UAE-flag carrier),
+// otherwise the first A–Z.
+const featured = programmes.find((p) => p.id === "skywards") ?? programmes[0];
+const others = programmes.filter((p) => p.id !== featured?.id);
+
+// Trending rail — cross-section guides today (programmes collection is
+// thin). Falls back to programmes once the section has ≥ 6 entries.
+const trending =
+  programmes.length >= 6 ? others.slice(0, 5) : guides.slice(0, 5);
+const trendingLinkBase = programmes.length >= 6 ? "/airlines" : "/guides";
+
+const tabs = [
+  { label: "All programmes", active: true, href: "/airlines/" },
   { label: "Skywards", href: "/airlines/skywards/" },
-  { label: "Etihad Guest", href: "/airlines/etihad-guest/" },
   { label: "Valuations", href: "/valuations/" },
+  { label: "Transfer partners", href: "/guides/" },
 ];
 ---
 
 <BaseLayout
-  title="Airline & loyalty programmes — UAE-relevant"
-  description="Skywards, Etihad Guest, Qatar Privilege Club, Saudia Alfursan and the hotel programmes UAE residents earn and redeem in. Each programme covered for tiers, sweet spots, transfer partners, and expiry policy."
+  title="Airlines & loyalty programmes — UAE-relevant"
+  description="Skywards, Etihad Guest, Qatar Privilege Club, Saudia Alfursan and the hotel programmes UAE residents earn and redeem in. Tiers, sweet spots, transfer partners and expiry policy."
   fullWidth
 >
-  <div class="dp-pagehead">
-    <div class="crumb">DubaiPoints / Airlines</div>
-    <h1>Airlines &amp; loyalty programmes</h1>
-    <p>Each programme page covers tiers, sweet spots, transfer partners, and expiry policy — the things that determine whether the Miles you earn are worth what you think they are.</p>
-  </div>
+  <header class="intel-pagehead">
+    <div class="intel-pagehead-inner">
+      <div class="crumb">DubaiPoints / Airlines</div>
+      <h1>Airlines &amp; loyalty.</h1>
+      <p>Each programme page covers tiers, sweet spots, transfer partners and expiry policy — the bits that decide whether the Miles you earn are worth what you think they are.</p>
 
-  <div class="dp-filters">
-    {filters.map((f) => (
-      f.active
-        ? <span class="dp-filter-pill is-active">{f.label}</span>
-        : <a href={f.href} class="dp-filter-pill">{f.label}</a>
-    ))}
-    <span class="dp-sort">Sort: <strong>A–Z</strong> ▾</span>
-  </div>
-
-  {featured.length > 0 && (
-    <section class="dp-featured-band">
-      <div class="dp-featured-eyebrow">
-        <span>UAE-relevant programmes</span>
-        <span class="rule"></span>
-        <span class="meta">{programs.length} programme{programs.length === 1 ? "" : "s"} covered</span>
+      <div class="intel-tools">
+        <div class="intel-tabs" role="tablist">
+          {tabs.map((t) => (
+            t.active
+              ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
+              : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
+          ))}
+        </div>
+        <form class="intel-search" action="/" method="get" role="search">
+          <label class="intel-search-label" for="airlines-search-input">Search</label>
+          <input
+            id="airlines-search-input"
+            type="search"
+            name="q"
+            placeholder="Search programmes…"
+            autocomplete="off"
+          />
+        </form>
       </div>
-      <div class="dp-featured-grid">
-        {featured[0] && (
-          <a href={`/airlines/${featured[0].id}/`} class="dp-story-card hero">
-            <StockImage slug={`programme-${featured[0].id}`} coverTitle={featured[0].data.name} coverCategory="Programme" coverSize="hero" loading="eager" sizes="(max-width: 900px) 100vw, 60vw" />
-            <div class="body">
-              <div class="meta"><span class="cat">{featured[0].data.region}</span><span>{featured[0].data.currencyName}</span></div>
-              <h3>{featured[0].data.name}</h3>
-              <p>Tiers, sweet spots, transfer partners and expiry policy for {featured[0].data.currencyName} earned in the UAE.</p>
-              <div class="by">Programme guide</div>
-            </div>
-          </a>
-        )}
-        {[featured[1], featured[2]].filter(Boolean).map((p) => (
-          <a href={`/airlines/${p.id}/`} class="dp-story-card med">
-            <StockImage slug={`programme-${p.id}`} coverTitle={p.data.name} coverCategory="Programme" coverSize="med" sizes="(max-width: 900px) 100vw, 40vw" />
-            <div class="body">
-              <div class="meta"><span class="cat">{p.data.region}</span><span>{p.data.currencyName}</span></div>
-              <h3>{p.data.name}</h3>
-              <p>Programme guide.</p>
-            </div>
-          </a>
-        ))}
-        {featured.slice(3, 7).map((p) => (
-          <a href={`/airlines/${p.id}/`} class="dp-story-card sm">
-            <StockImage slug={`programme-${p.id}`} coverTitle={p.data.name} coverCategory="Programme" coverSize="sm" sizes="(max-width: 900px) 50vw, 25vw" />
-            <div class="body">
-              <div class="meta"><span class="cat">{p.data.region}</span></div>
-              <h3>{p.data.name}</h3>
-            </div>
-          </a>
-        ))}
-      </div>
-    </section>
-  )}
+    </div>
+  </header>
 
-  <div class="dp-pullquote">
-    <div class="mark">"</div>
-    <blockquote>
-      A Mile is only worth what you can redeem it for. Every valuation here is the rate we use in our own card reviews.
-    </blockquote>
-    <div class="attr"><span class="rule"></span>DP-value methodology</div>
-  </div>
+  <div class="intel-grid">
+    <main class="intel-main">
+      {featured && (
+        <a href={`/airlines/${featured.id}/`} class="intel-featured">
+          <StockImage
+            slug={`programme-${featured.id}`}
+            coverTitle={featured.data.name}
+            coverCategory="Programme"
+            coverSize="hero"
+            class="intel-featured-image"
+            loading="eager"
+            sizes="(max-width: 900px) 100vw, 66vw"
+          />
+          <div class="intel-featured-body">
+            <span class="intel-featured-eyebrow">★ Flagship programme · {featured.data.region}</span>
+            <h2>{featured.data.name}</h2>
+            <p>Tiers, sweet spots, transfer partners and expiry policy for {featured.data.currencyName} earned and redeemed from the UAE.</p>
+            <span class="intel-featured-meta">
+              {featured.data.currencyName} · Read programme guide →
+            </span>
+          </div>
+        </a>
+      )}
 
-  {remaining.length > 0 && (
-    <>
-      <div class="dp-list-head">
-        <div class="t">All programmes</div>
-        <div class="m">A–Z · {remaining.length} more</div>
-      </div>
-      <div class="dp-feed">
-        {remaining.map((p, i) => {
-          const n = i + featured.length + 1;
-          return (
-            <a href={`/airlines/${p.id}/`} class="dp-feed-row">
-              <div>
-                <div class="num">{String(n).padStart(2, "0")}</div>
-                <div class="feed-eyebrow">{p.data.region}</div>
-              </div>
-              <div>
-                <h3>{p.data.name}</h3>
-                <div class="summary">{p.data.currencyName}</div>
-              </div>
-              <StockImage slug={`programme-thumb-${p.id}`} coverCategory="Programme" coverSize="thumb" sizes="240px" />
-              <div class="when">Programme →</div>
-            </a>
-          );
-        })}
-      </div>
-    </>
-  )}
+      {others.length > 0 ? (
+        <ul class="intel-card-grid">
+          {others.map((p) => (
+            <li class="intel-card-item">
+              <a href={`/airlines/${p.id}/`} class="intel-card">
+                <StockImage
+                  slug={`programme-${p.id}`}
+                  coverTitle={p.data.name}
+                  coverCategory="Programme"
+                  coverSize="med"
+                  class="intel-card-image"
+                  sizes="(max-width: 900px) 100vw, 33vw"
+                />
+                <div class="intel-card-body">
+                  <span class="intel-card-cat">{p.data.region}</span>
+                  <h3>{p.data.name}</h3>
+                  <p>{p.data.currencyName} · {p.data.sweetSpots[0]?.title ?? "Programme guide"}</p>
+                  <span class="intel-card-meta">{p.data.transferPartners.length} transfer partner{p.data.transferPartners.length === 1 ? "" : "s"}</span>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <section class="airlines-roster">
+          <span class="airlines-roster-eyebrow">More programmes coming</span>
+          <h2>The desk is filling in the rest.</h2>
+          <p>
+            Etihad Guest, Qatar Privilege Club, Saudia Alfursan and the major
+            hotel programmes (Marriott Bonvoy, Hilton Honors, Hyatt, Accor
+            ALL) all get their own programme page as the Travel-Experiences
+            Editor publishes them.
+          </p>
+          <p>
+            Until they land, the <a href={`/airlines/${featured?.id ?? "skywards"}/`}>flagship Skywards guide</a> covers the programme most UAE residents earn into by default, and the <a href="/guides/">guides desk</a> covers cross-programme strategy (transfers, sweet spots, redemption mechanics).
+          </p>
+        </section>
+      )}
+    </main>
 
-  <div class="dp-page-nav">
-    <span style="font-size:12px;color:var(--muted);">Showing all {programs.length} programme{programs.length === 1 ? "" : "s"}</span>
+    <aside class="intel-aside">
+      {trending.length > 0 && (
+        <nav class="intel-trending" aria-label="Trending content">
+          <h4>{programmes.length >= 6 ? "More programmes" : "From the guides desk"}</h4>
+          <ol>
+            {trending.map((item, i) => {
+              const title = "title" in item.data ? item.data.title : item.data.name;
+              return (
+                <li>
+                  <span class="num">{String(i + 1).padStart(2, "0")}</span>
+                  <a href={`${trendingLinkBase}/${item.id}/`}>{title}</a>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      )}
+
+      <div class="intel-insider">
+        <span class="eyebrow">Insider Intel</span>
+        <h4>Friday morning, in your inbox.</h4>
+        <p>One email each Friday — salary-transfer changes, new card offers, miles redemptions worth knowing about.</p>
+        <a href="/newsletter/" class="cta">Subscribe →</a>
+      </div>
+    </aside>
   </div>
 </BaseLayout>
+
+<style>
+  /* Inherits the same .intel-* idiom as /guides/ and /news/.
+     Reproduced scoped to /airlines/ so the three siblings can evolve
+     independently. If they stay locked, a future refactor lifts these
+     into a shared `ArticleIndexLayout`. */
+  .intel-pagehead {
+    background: var(--paper);
+    padding: 48px 32px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-pagehead-inner { max-width: 1180px; margin: 0 auto; }
+  .intel-pagehead .crumb {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+  .intel-pagehead h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(38px, 5.6vw, 58px);
+    letter-spacing: -1.6px;
+    line-height: 1.04;
+    color: var(--green);
+    margin: 0 0 14px;
+  }
+  .intel-pagehead p {
+    max-width: 62ch;
+    font-size: 15px; line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+  }
+  .intel-tools {
+    display: flex; flex-wrap: wrap;
+    gap: 16px 24px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .intel-tab {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+  }
+  .intel-tab:hover { background: var(--shade-1); color: var(--ink); }
+  .intel-tab.is-active { background: var(--ink); color: var(--paper); cursor: default; }
+
+  .intel-search {
+    display: flex; align-items: center;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0 14px;
+    height: 36px;
+    min-width: 220px;
+    transition: border-color 0.15s ease;
+  }
+  .intel-search:focus-within { border-color: var(--ink-soft); }
+  .intel-search-label {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+  }
+  .intel-search input[type="search"] {
+    border: 0; background: transparent; outline: none;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    width: 100%;
+  }
+  .intel-search input[type="search"]::placeholder { color: var(--muted); }
+
+  .intel-grid {
+    max-width: 1180px;
+    margin: 32px auto 56px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+  .intel-main { display: grid; gap: 28px; }
+
+  .intel-featured {
+    display: grid; grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    text-decoration: none; color: inherit;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .intel-featured:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 20px 40px -20px rgba(15, 31, 46, 0.22);
+  }
+  .intel-featured :global(.intel-featured-image) {
+    width: 100%; aspect-ratio: 16 / 9;
+    object-fit: cover; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-featured :global(svg.dp-cover) {
+    width: 100%; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-featured-body { padding: 24px 28px 28px; display: grid; gap: 10px; }
+  .intel-featured-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .intel-featured-body h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3.4vw, 34px);
+    letter-spacing: -0.9px;
+    line-height: 1.12;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intel-featured:hover h2 { color: var(--green); }
+  .intel-featured-body p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 64ch;
+  }
+  .intel-featured-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    margin-top: 4px;
+  }
+
+  .intel-card-grid {
+    list-style: none; padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .intel-card-item { display: block; }
+  .intel-card {
+    display: grid; grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none; color: inherit;
+    height: 100%;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .intel-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
+  }
+  .intel-card :global(.intel-card-image) {
+    width: 100%; aspect-ratio: 3 / 2;
+    object-fit: cover; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-card :global(svg.dp-cover) {
+    width: 100%; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-card-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
+  .intel-card-cat {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .intel-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intel-card:hover h3 { color: var(--green); }
+  .intel-card-body p {
+    font-size: 13px; line-height: 1.5;
+    color: var(--ink-soft); margin: 0;
+  }
+  .intel-card-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.2px; margin-top: 2px;
+  }
+
+  .airlines-roster {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 32px 32px 36px;
+    display: grid; gap: 12px;
+  }
+  .airlines-roster-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .airlines-roster h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(22px, 3vw, 30px);
+    letter-spacing: -0.7px;
+    line-height: 1.18;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .airlines-roster p {
+    font-size: 14px; line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 60ch;
+  }
+  .airlines-roster a {
+    color: var(--green);
+    border-bottom: 1px solid currentColor;
+    text-decoration: none;
+  }
+
+  .intel-aside { display: flex; flex-direction: column; gap: 20px; }
+  @media (min-width: 1024px) {
+    .intel-aside { position: sticky; top: 32px; align-self: flex-start; }
+  }
+  .intel-trending {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .intel-trending h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--green);
+    margin: 0 0 14px; font-weight: 700;
+  }
+  .intel-trending ol { list-style: none; padding: 0; margin: 0; }
+  .intel-trending li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px; color: var(--ink-soft);
+    display: flex; gap: 12px;
+    line-height: 1.35;
+  }
+  .intel-trending li:last-child { border-bottom: 0; }
+  .intel-trending .num {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 11px; min-width: 20px;
+    flex-shrink: 0; font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .intel-trending a {
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-weight: 500; letter-spacing: -0.2px;
+    text-decoration: none;
+  }
+  .intel-trending a:hover { color: var(--green); }
+
+  .intel-insider {
+    background: var(--green);
+    color: white;
+    border-radius: 16px;
+    padding: 22px;
+    display: grid; gap: 8px;
+  }
+  .intel-insider .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .intel-insider h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500; font-size: 19px;
+    line-height: 1.2; letter-spacing: -0.4px;
+    color: white; margin: 0;
+    text-wrap: balance;
+  }
+  .intel-insider p {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px; line-height: 1.5;
+    color: rgba(255, 255, 255, 0.88);
+    margin: 4px 0 6px;
+  }
+  .intel-insider .cta {
+    display: inline-flex; align-items: center;
+    height: 36px; padding: 0 16px;
+    background: white; color: var(--green);
+    border-radius: 999px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.4px;
+    text-decoration: none; align-self: start;
+    transition: opacity 0.15s ease;
+  }
+  .intel-insider .cta:hover { opacity: 0.88; }
+
+  @media (max-width: 1023px) {
+    .intel-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .intel-pagehead { padding: 32px 20px 24px; }
+    .intel-grid { padding: 0 20px; margin-top: 24px; gap: 28px; }
+    .intel-card-grid { grid-template-columns: 1fr; }
+    .intel-search { min-width: 0; flex: 1; }
+    .intel-tools { flex-direction: column; align-items: stretch; }
+    .airlines-roster { padding: 24px 22px 28px; }
+  }
+</style>
