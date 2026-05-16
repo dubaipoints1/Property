@@ -167,19 +167,24 @@ const trackerItems = [
       </svg>
     </label>
 
-    <!-- Wordmark — Burj Khalifa silhouette + DubaiPoints text.
-         The silhouette is Dubai-specific but unmistakably a building,
-         not a flag (per UAE Penal Code §173 + Federal Law No 2/2017,
-         flag-compositions are off-limits commercially). -->
+    <!-- Wordmark — "DubaiPoints" + plane swoosh.
+         The plane silhouette + dashed trail emerge from the final "s",
+         suggesting flight. Plain typographic mark with a single
+         decorative beat — no flag, no building, no risk. -->
     <a href="/" class="dp-wordmark" aria-label="DubaiPoints home">
-      <svg class="dp-wordmark-mark" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
-        <path d="M32 4 L32.8 22 L31.2 22 Z" />
-        <path d="M30 22 L34 22 L36 33 L28 33 Z" />
-        <path d="M27 33 L37 33 L40 45 L24 45 Z" />
-        <path d="M23 45 L41 45 L45 56 L19 56 Z" />
-        <path d="M18 56 L46 56 L50 60 L14 60 Z" />
-      </svg>
       <span class="dp-wordmark-text">DubaiPoints</span>
+      <svg class="dp-wordmark-swoosh" viewBox="0 0 48 28" fill="none" aria-hidden="true">
+        <!-- Dashed trail curving up-right from the S -->
+        <path d="M 1 20 Q 12 20, 22 12 T 38 4"
+              stroke="currentColor"
+              stroke-width="1.4"
+              stroke-dasharray="1.6 2.4"
+              stroke-linecap="round" />
+        <!-- Paper-plane silhouette at the end of the trail -->
+        <g transform="translate(38 4) rotate(-18)" fill="currentColor">
+          <path d="M 0 0 L -10 3.5 L -6 4 L -8 8 L -2 5 Z" />
+        </g>
+      </svg>
     </a>
 
     <!-- Desktop nav (Cards + Airlines wrap mega panels) -->
@@ -473,19 +478,12 @@ const trackerItems = [
 
 .dp-wordmark {
   display: inline-flex;
-  align-items: center;
-  gap: 9px;
+  align-items: flex-end;
+  gap: 2px;
   color: var(--ink);
   text-decoration: none;
   line-height: 1;
   justify-self: center;
-}
-.dp-wordmark-mark {
-  width: 22px;
-  height: 22px;
-  color: var(--green);
-  flex-shrink: 0;
-  display: block;
 }
 .dp-wordmark-text {
   font-family: 'Fraunces', Georgia, serif;
@@ -496,13 +494,25 @@ const trackerItems = [
   color: var(--ink);
   white-space: nowrap;
 }
+/* Plane + swoosh — anchored to the bottom of the wordmark so the
+   plane lifts off from the top of the final "s", trail curving up. */
+.dp-wordmark-swoosh {
+  width: 30px;
+  height: 18px;
+  margin-bottom: 2px;
+  margin-left: -4px;
+  color: var(--green);
+  flex-shrink: 0;
+  display: block;
+  overflow: visible;
+}
 @media (min-width: 768px) {
-  .dp-wordmark-mark { width: 24px; height: 24px; }
   .dp-wordmark-text { font-size: 24px; letter-spacing: -0.9px; }
+  .dp-wordmark-swoosh { width: 34px; height: 20px; }
 }
 @media (min-width: 1024px) {
-  .dp-wordmark-mark { width: 26px; height: 26px; }
   .dp-wordmark-text { font-size: 26px; letter-spacing: -1px; }
+  .dp-wordmark-swoosh { width: 38px; height: 22px; }
 }
 .dp-mark {
   width: 1.05em;
