@@ -1,0 +1,109 @@
+# One-off image re-fetch — Phase E.3 enabler.
+#
+# Use this when a Pexels result for an existing slug looks wrong for
+# its context. Triggered from the Actions UI; takes 4 inputs (slug,
+# query, alt, optional orientation/pick). Passes --replace to the
+# fetcher so the manifest entry + downloaded file are overwritten.
+#
+# How to use:
+#   1. Actions tab → refetch-image → Run workflow
+#   2. Branch: claude/check-latest-updates-GkRze (or wherever)
+#   3. Slug: existing slug from data/stock/manifest.json
+#      (e.g. programme-skywards)
+#   4. Query: refined Pexels search (e.g. "Emirates A380 aircraft")
+#   5. Alt: new descriptive alt text
+#   6. Run.
+#
+# The workflow refuses unknown slugs (the fetcher will fail because
+# the slug needs to exist with --replace logic). Use seed-images.yml
+# instead for NEW slugs.
+
+name: refetch-image
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+      slug:
+        description: "Existing manifest slug to re-fetch (e.g. programme-skywards)"
+        required: true
+        type: string
+      query:
+        description: "Pexels search query"
+        required: true
+        type: string
+      alt:
+        description: "New alt text"
+        required: true
+        type: string
+      orientation:
+        description: "Image orientation"
+        required: false
+        default: "landscape"
+        type: choice
+        options:
+          - landscape
+          - portrait
+          - square
+      pick:
+        description: "Result index to pick (0 = top result, 1 = second, etc.)"
+        required: false
+        default: "0"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  refetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Re-fetch single image
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug "${{ inputs.slug }}" \
+            --query "${{ inputs.query }}" \
+            --orientation "${{ inputs.orientation }}" \
+            --alt "${{ inputs.alt }}" \
+            --pick "${{ inputs.pick }}" \
+            --replace
+
+      - name: Validate
+        run: |
+          npm run check
+          npm test
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "data/stock/manifest.json" "public/images/stock/${{ inputs.slug }}.jpg"
+          if git diff --staged --quiet; then
+            echo "No change to commit."
+            exit 0
+          fi
+          git commit \
+            -m "feat(images): re-fetch ${{ inputs.slug }} — \"${{ inputs.query }}\"" \
+            -m "Replaces the previous Pexels result with a refined query. Re-run via .github/workflows/refetch-image.yml."
+          git push origin HEAD:${{ inputs.branch }}
