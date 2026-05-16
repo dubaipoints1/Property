@@ -1,0 +1,108 @@
+# Phase E.5 — targeted fix of two E.4 misses.
+#
+# Problems with E.4:
+#   1. card-emirates-nbd-etihad-guest-elevate landed on a "cartoon-design
+#      airplane" — not Etihad. Query was "Etihad Airways aircraft cabin
+#      Abu Dhabi" but Pexels' Etihad library is thin so it dropped
+#      "Etihad" from the ranking.
+#   2. wallet-hero-cards landed on the same photographer + likely same
+#      photo as card-fab-elite (Jonathan Borba "xp invest"). The query
+#      "Dubai luxury credit card black marble" reduced to "credit card
+#      black" and pulled Borba's flat-lay again.
+#
+# Fixes:
+#   - For Etihad: query without "Etihad" (since the library is thin),
+#     pick a wide-body in-flight shot instead. Use --pick 2 to avoid
+#     the cartoon plane.
+#   - For wallet-hero-cards: query for a TABLE / DINING-context shot
+#     instead of a black-on-marble flat-lay so it visually differs from
+#     card-fab-elite.
+
+name: seed-images-e5
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e5.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Replace card-emirates-nbd-etihad-guest-elevate (wide-body aircraft)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-etihad-guest-elevate \
+            --query "wide body airliner flying clouds" \
+            --orientation landscape \
+            --pick 1 \
+            --alt "Wide-body airliner in flight above the clouds" \
+            --replace
+
+      - name: Replace wallet-hero-cards (table context, not black flat-lay)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug wallet-hero-cards \
+            --query "wallet credit cards coffee shop table" \
+            --orientation landscape \
+            --pick 0 \
+            --alt "Wallet and credit cards on a cafe table in Dubai" \
+            --usage "homepage UAE Wallet" \
+            --replace
+
+      - name: Validate
+        run: |
+          npm run check
+          npm test
+
+      - name: Show E.5 results
+        run: |
+          echo "E.5 swapped:"
+          node -e "
+          const m=require('./data/stock/manifest.json');
+          ['card-emirates-nbd-etihad-guest-elevate','wallet-hero-cards'].forEach(s => {
+            const e = m.entries.find(x => x.slug === s);
+            if (e) console.log('  '+e.slug+' → '+e.query+' (by '+e.photographer+') '+e.source_url);
+          });"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then
+            echo "No new images."
+            exit 0
+          fi
+          git commit \
+            -m "feat(images): Phase E.5 — fix 2 E.4 misses (Etihad cartoon, wallet duplicate)" \
+            -m "card-etihad-guest-elevate: was a cartoon-livery plane; replaced with a wide-body in-flight shot (--pick 1 to skip the top result). wallet-hero-cards: was the same Jonathan Borba photo as card-fab-elite; replaced with a wallet+cards-on-table shot for visual variety."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}

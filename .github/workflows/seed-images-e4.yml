@@ -1,0 +1,140 @@
+# Phase E.4 — UAE-tagged photo refetches.
+#
+# Chairman direction 2026-05-16: "Pictures either related to UAE,
+# DUBAI ... it is dubaipoints." This pass re-fetches 4 slots that
+# came back too generic in E.2/E.3, with queries that explicitly
+# tag Dubai / UAE / Emirates / Etihad / DIFC. Pexels' UAE-specific
+# stock library is thin for some subjects (bank interiors, ATMs);
+# where it fails, the slot keeps the E.3 result rather than degrade.
+#
+# Auto-triggers on push to this file. Each step uses --replace.
+
+name: seed-images-e4
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e4.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ── Hero — Emirates / wide-body cabin ─────────────────────────
+
+      - name: Replace hero-cabin (Emirates / wide-body cabin)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug hero-cabin \
+            --query "Emirates airline cabin window sunset" \
+            --orientation landscape \
+            --alt "Premium-cabin window seat at golden hour on a wide-body aircraft" \
+            --usage "homepage hero" \
+            --replace
+
+      # ── Cards — Etihad cabin shot ─────────────────────────────────
+
+      - name: Replace card-emirates-nbd-etihad-guest-elevate (Etihad cabin)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-etihad-guest-elevate \
+            --query "Etihad Airways aircraft cabin Abu Dhabi" \
+            --orientation landscape \
+            --alt "Etihad Airways aircraft cabin interior" \
+            --replace
+
+      # ── Banking guide — Dubai DIFC business district ──────────────
+
+      - name: Replace guide-expat-starter-banking-basics (DIFC skyscraper)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-expat-starter-banking-basics \
+            --query "Dubai DIFC skyscraper business district sunset" \
+            --orientation landscape \
+            --alt "Dubai International Financial Centre skyscrapers at sunset" \
+            --replace
+
+      # ── Eligibility guide — Dubai office paperwork ────────────────
+
+      - name: Replace guide-uae-credit-card-eligibility-2026 (Dubai office)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-uae-credit-card-eligibility-2026 \
+            --query "Dubai office laptop paperwork desk" \
+            --orientation landscape \
+            --alt "Office desk in Dubai with laptop and paperwork" \
+            --replace
+
+      # ── Wallet hero — Dubai-tagged card flat-lay ──────────────────
+
+      - name: Replace wallet-hero-cards (Dubai-tagged card flat-lay)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug wallet-hero-cards \
+            --query "Dubai luxury credit card black marble" \
+            --orientation landscape \
+            --alt "Premium credit cards on a dark marble surface in a luxury Dubai setting" \
+            --usage "homepage UAE Wallet" \
+            --replace
+
+      - name: Validate
+        run: |
+          npm run check
+          npm test
+
+      - name: Show manifest summary
+        run: |
+          echo "Manifest entries after E.4:"
+          node -e "const m=require('./data/stock/manifest.json'); console.log(m.entries.length+' entries'); m.entries.forEach(e => console.log('  '+e.slug+' ('+e.width+'×'+e.height+') by '+e.photographer));"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then
+            echo "No new images to commit."
+            exit 0
+          fi
+          git commit \
+            -m "feat(images): Phase E.4 — UAE-tagged refetch (5 swaps)" \
+            -m "Re-fetches 5 slots with queries explicitly tagged Dubai/UAE/Emirates/Etihad/DIFC: hero-cabin, card-etihad-guest-elevate, guide-banking-basics (DIFC skyscraper), guide-eligibility (Dubai office), wallet-hero-cards (Dubai-tagged flat-lay)." \
+            -m "Pexels' UAE stock library is thin; results may still read generic for slots where no UAE-specific match exists. If any slot lands wrong, use refetch-image.yml with a refined query."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}

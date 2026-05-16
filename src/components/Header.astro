@@ -169,10 +169,7 @@ const trackerItems = [
 
     <!-- Wordmark -->
     <a href="/" class="dp-wordmark" aria-label="DubaiPoints home">
-      <svg class="dp-mark" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
-        <path d="M10 8 H30 C44 8 56 18.5 56 32 C56 45.5 44 56 30 56 H10 V8 Z M20 18 V46 H30 C38.5 46 46 40 46 32 C46 24 38.5 18 30 18 H20 Z" fill-rule="evenodd"/>
-      </svg>
-      <span class="dp-wordmark-text">DubaiPoints<span class="dot">.</span></span>
+      <img src="/logo.svg" alt="DubaiPoints" class="dp-wordmark-img" width="180" height="42" />
     </a>
 
     <!-- Desktop nav (Cards + Airlines wrap mega panels) -->
@@ -465,19 +462,25 @@ const trackerItems = [
 .dp-icon-btn:hover { background: var(--cool, #f4f5f7); }
 
 .dp-wordmark {
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-weight: 800;
-  font-size: 20px;
-  letter-spacing: -0.6px;
-  color: var(--ink);
-  text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  color: var(--ink);
+  text-decoration: none;
   line-height: 1;
   justify-self: center;
 }
-.dp-wordmark .dot { color: var(--green); }
+.dp-wordmark-img {
+  display: block;
+  height: 26px;
+  width: auto;
+  max-width: 200px;
+}
+@media (min-width: 768px) {
+  .dp-wordmark-img { height: 30px; }
+}
+@media (min-width: 1024px) {
+  .dp-wordmark-img { height: 34px; }
+}
 .dp-mark {
   width: 1.05em;
   height: 1.05em;
