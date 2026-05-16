@@ -35,6 +35,7 @@ const deck = isLive
 <ArticleLayout
   title={deal.data.title}
   crumb={`DubaiPoints / Deals / ${formatCategory(deal.data.category)}`}
+  eyebrow={`DEAL · ${formatCategory(deal.data.category).toUpperCase()}`}
   deck={deck}
   publishedAt={deal.data.expiresOn}
   toc={toc}
