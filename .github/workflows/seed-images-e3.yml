@@ -1,0 +1,157 @@
+# Phase E.3 — second batch of stock images.
+#
+# Two jobs:
+#   1. Re-fetch slugs from the E.2 seed that came back off-context
+#      (banking-basics, points-101, programme-skywards) and the
+#      etihad-guest co-brand card with an aircraft-themed query.
+#   2. Fetch new slugs for the 3 programme stubs added in F.8
+#      (etihad-guest, qatar-privilege-club, marriott-bonvoy).
+#
+# Triggered on push to this file or via the Actions UI. Re-runnable;
+# every step uses --replace where slugs already exist, so a second
+# run is idempotent (it just re-downloads the same Pexels results).
+#
+# Editorial direction (Chairman 2026-05-16): "Aircraft and use mix
+# of pictures across the site." Each query below picks for visual
+# diversity — no repeated aerial Dubai shots.
+
+name: seed-images-e3
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e3.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ── Re-fetches (existing slugs, --replace) ─────────────────────
+
+      - name: Replace programme-skywards (Emirates aircraft)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug programme-skywards \
+            --query "Emirates airline aircraft" \
+            --orientation landscape \
+            --alt "Emirates wide-body aircraft at the gate" \
+            --usage "Skywards programme card" \
+            --replace
+
+      - name: Replace card-emirates-nbd-etihad-guest-elevate (Etihad cabin)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-etihad-guest-elevate \
+            --query "airplane business class cabin interior" \
+            --orientation landscape \
+            --alt "Business-class cabin interior on a wide-body aircraft" \
+            --replace
+
+      - name: Replace guide-expat-starter-banking-basics (modern office)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-expat-starter-banking-basics \
+            --query "modern office building glass facade" \
+            --orientation landscape \
+            --alt "Modern office tower with glass facade in a business district" \
+            --replace
+
+      - name: Replace guide-expat-starter-points-101 (passport closeup)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-expat-starter-points-101 \
+            --query "passport boarding pass on table" \
+            --orientation landscape \
+            --alt "Passport and boarding pass on a wooden table" \
+            --replace
+
+      # ── New slugs (3 programme stubs from F.8) ────────────────────
+
+      - name: Fetch programme-etihad-guest
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug programme-etihad-guest \
+            --query "Etihad airways aircraft Abu Dhabi" \
+            --orientation landscape \
+            --alt "Etihad Airways aircraft on the apron at Abu Dhabi"
+
+      - name: Fetch programme-qatar-privilege-club
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug programme-qatar-privilege-club \
+            --query "Qatar Airways aircraft Doha" \
+            --orientation landscape \
+            --alt "Qatar Airways wide-body aircraft"
+
+      - name: Fetch programme-marriott-bonvoy
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug programme-marriott-bonvoy \
+            --query "luxury hotel lobby Dubai" \
+            --orientation landscape \
+            --alt "Luxury hotel lobby with marble and warm lighting"
+
+      - name: Validate
+        run: |
+          npm run check
+          npm test
+
+      - name: Show manifest summary
+        run: |
+          echo "Manifest entries after E.3:"
+          node -e "const m=require('./data/stock/manifest.json'); console.log(m.entries.length+' entries'); m.entries.forEach(e => console.log('  '+e.slug+' ('+e.width+'×'+e.height+') by '+e.photographer));"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then
+            echo "No new images to commit."
+            exit 0
+          fi
+          git commit \
+            -m "feat(images): Phase E.3 — aircraft + variety swap (4 replace + 3 new)" \
+            -m "Replaces 4 off-context E.2 photos (programme-skywards now Emirates aircraft; etihad co-brand card now business cabin; banking-basics now modern office; points-101 now passport+boarding pass) and adds 3 new programme photos (programme-etihad-guest, programme-qatar-privilege-club, programme-marriott-bonvoy). Each manifest entry carries full provenance."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}
