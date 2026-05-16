@@ -40,6 +40,17 @@ on:
         required: true
         default: "claude/check-latest-updates-GkRze"
         type: string
+  # Push trigger — re-running this workflow on a checked-in branch when
+  # the file changes lets the Chairman re-fetch without clicking through
+  # the Actions UI. The workflow checks out the branch the push came in
+  # on (github.ref_name) when no workflow_dispatch input is provided.
+  # GITHUB_TOKEN-authored pushes never re-trigger by default, so the
+  # workflow's own commit at the end won't cause a loop.
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images.yml"
 
 permissions:
   contents: write
@@ -51,7 +62,7 @@ jobs:
       - name: Checkout target branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ inputs.branch || github.ref_name }}
           fetch-depth: 1
 
       - name: Setup Node
@@ -211,4 +222,4 @@ carries full provenance (photographer / source URL / Pexels ID /
 licence) in data/stock/manifest.json. <StockImage> slots on the
 rebuilt homepage, /cards/, /guides/, /news/, and /airlines/ pages
 now resolve to real photography."
-          git push origin HEAD:${{ inputs.branch }}
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}
