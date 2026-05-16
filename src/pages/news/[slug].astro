@@ -30,6 +30,8 @@ const formatCategory = (c: string) =>
   toc={toc}
   sources={post.data.sources}
   showHero
+  heroSlug={`news-${post.id}`}
+  heroCategory="News"
   heroLabel={`News · ${formatCategory(post.data.category)}`}
 >
   <Content />
