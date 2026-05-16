@@ -1,16 +1,25 @@
 ---
-// Deals index — section-index template (Phase B1 cascade).
-// Reference: PR #34 + dubaipoints/project/templates/chrome.jsx::SectionIndex.
-// /deals/[slug].astro detail route lands in Phase B2 (article template).
+// Deals index — Phase F.11 (May 2026 mockup-fidelity rebuild).
+// Same composition as /guides/ (F.3), /news/ (F.4), /airlines/ (F.5):
+// page header with tabs + search, 2-col grid (main feed + sticky
+// sidebar), featured deal + card grid + Trending Now + Insider Intel.
+//
+// Differences vs the other surfaces:
+//   - Deals are time-limited. Each card carries a status pill (Live /
+//     Expires-in-N-days) and a countdown line.
+//   - Live deals only. Expired entries don't render here (kept under
+//     /content/salaryTransferOfferHistory/ for archival).
+//   - Tabs use the DEAL_CATEGORY enum from content.config.ts.
+//   - Empty-state band when zero live deals — points readers at the
+//     newsletter + RSS for notification.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import Cover from "~/components/Cover.astro";
+import StockImage from "~/components/StockImage.astro";
 import { getCollection, getEntry } from "astro:content";
 
 const todayMs = Date.now();
 
-const allDeals = await getCollection("deals");
-const liveDeals = allDeals
+const liveDeals = (await getCollection("deals"))
   .filter((d) => d.data.expiresOn.getTime() >= todayMs)
   .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime());
 
@@ -21,146 +30,541 @@ const dealsWithBank = await Promise.all(
   }),
 );
 
+const guides = (await getCollection("guides"))
+  .sort((a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime());
+
+const featured = dealsWithBank[0];
+const others = dealsWithBank.slice(1);
+
+const trending = dealsWithBank.length >= 6 ? others.slice(0, 5) : guides.slice(0, 5);
+const trendingLinkBase = dealsWithBank.length >= 6 ? "/deals" : "/guides";
+
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-const featured = dealsWithBank.slice(0, 7);
-const remaining = dealsWithBank.slice(7);
-
-const filters = [
-  { label: "All live", active: true },
-  { label: "Welcome bonus" },
-  { label: "Transfer bonus" },
-  { label: "Spend promo" },
-  { label: "Fee waiver" },
-];
-
 const formatCategory = (c: string) =>
   c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+
+const daysUntil = (d: Date) =>
+  Math.max(0, Math.ceil((d.getTime() - todayMs) / (1000 * 60 * 60 * 24)));
+
+const tabs = [
+  { label: "All live", active: true, href: "/deals/" },
+  { label: "Welcome bonus", href: "/cards/" },
+  { label: "Salary transfer", href: "/salary-transfer/" },
+  { label: "Fee waiver", href: "/cards/" },
+];
 ---
 
 <BaseLayout
-  title="UAE deals — live offers from banks and merchants"
+  title="Deals — live UAE bank and card offers"
   description="Live UAE deals: welcome bonuses, salary-transfer top-ups, spend promos and fee waivers. Every offer dated and sourced — expired deals are removed, not buried."
   fullWidth
 >
-  <div class="dp-pagehead">
-    <div class="crumb">DubaiPoints / Deals</div>
-    <h1>Deals</h1>
-    <p>Live UAE offers from banks and merchants — sorted by expiry. Welcome bonuses, salary-transfer top-ups, spend promos and fee waivers, dated and sourced.</p>
-  </div>
+  <header class="intel-pagehead">
+    <div class="intel-pagehead-inner">
+      <div class="crumb">DubaiPoints / Deals</div>
+      <h1>Live deals.</h1>
+      <p>Welcome bonuses, salary-transfer top-ups, spend promos and fee waivers — every offer dated, sourced, and removed the day it expires.</p>
 
-  <div class="dp-filters">
-    {filters.map((f) => (
-      <span class={`dp-filter-pill${f.active ? " is-active" : ""}`}>{f.label}</span>
-    ))}
-    <span class="dp-sort">Sort: <strong>Expiring soonest</strong> ▾</span>
-  </div>
-
-  {dealsWithBank.length === 0 ? (
-    <section class="dp-featured-band">
-      <div class="dp-featured-eyebrow">
-        <span>No live deals right now</span>
-        <span class="rule"></span>
-        <span class="meta">Refreshed daily</span>
+      <div class="intel-tools">
+        <div class="intel-tabs" role="tablist">
+          {tabs.map((t) => (
+            t.active
+              ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
+              : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
+          ))}
+        </div>
+        <form class="intel-search" action="/" method="get" role="search">
+          <label class="intel-search-label" for="deals-search-input">Search</label>
+          <input
+            id="deals-search-input"
+            type="search"
+            name="q"
+            placeholder="Search deals…"
+            autocomplete="off"
+          />
+        </form>
       </div>
-      <p style="padding: 32px; color: var(--ink-soft); font-size: 15px; line-height: 1.6;">
-        We only list deals that are <em>live</em> on the day you visit. Expired
-        deals don't sit in the archive pretending to be available.
-        Subscribe to the <a href="/newsletter/" style="color: var(--link); font-weight: 600;">Friday brief</a>
-        for new deals as they land, or follow the <a href="/rss.xml" style="color: var(--link); font-weight: 600;">RSS feed</a>.
-      </p>
-    </section>
-  ) : (
-    <>
-      {featured.length > 0 && (
-        <section class="dp-featured-band">
-          <div class="dp-featured-eyebrow">
-            <span>Live this week</span>
-            <span class="rule"></span>
-            <span class="meta">{dealsWithBank.length} live deal{dealsWithBank.length === 1 ? "" : "s"}</span>
-          </div>
-          <div class="dp-featured-grid">
-            {featured[0] && (
-              <a href={`/deals/${featured[0].entry.id}/`} class="dp-story-card hero">
-                <Cover title={featured[0].entry.data.title} category="Deal" size="hero" />
-                <div class="body">
-                  <div class="meta">
-                    <span class="cat">{formatCategory(featured[0].entry.data.category)}</span>
-                    <span>{featured[0].bankName}</span>
-                  </div>
-                  <h3>{featured[0].entry.data.title}</h3>
-                  <p>Live until {fmt(featured[0].entry.data.expiresOn)}.</p>
-                  <div class="by">Source: issuer page · verified at publish</div>
-                </div>
-              </a>
-            )}
-            {[featured[1], featured[2]].filter(Boolean).map((d) => (
-              <a href={`/deals/${d.entry.id}/`} class="dp-story-card med">
-                <Cover title={d.entry.data.title} category="Deal" size="med" />
-                <div class="body">
-                  <div class="meta"><span class="cat">{formatCategory(d.entry.data.category)}</span><span>{d.bankName}</span></div>
-                  <h3>{d.entry.data.title}</h3>
-                  <p>Live until {fmt(d.entry.data.expiresOn)}.</p>
-                </div>
-              </a>
-            ))}
-            {featured.slice(3, 7).map((d) => (
-              <a href={`/deals/${d.entry.id}/`} class="dp-story-card sm">
-                <Cover title={d.entry.data.title} category="Deal" size="sm" />
-                <div class="body">
-                  <div class="meta"><span class="cat">{formatCategory(d.entry.data.category)}</span><span>{d.bankName}</span></div>
-                  <h3>{d.entry.data.title}</h3>
-                </div>
-              </a>
-            ))}
+    </div>
+  </header>
+
+  <div class="intel-grid">
+    <main class="intel-main">
+      {dealsWithBank.length === 0 ? (
+        <section class="news-empty">
+          <span class="news-empty-eyebrow">No live deals right now</span>
+          <h2>The deal desk is between offers.</h2>
+          <p>
+            We only list deals that are <em>live</em> on the day you visit — expired
+            offers don't sit in the archive pretending to be available. Watch the
+            <a href="/salary-transfer/">salary-transfer tracker</a> for live offers
+            from every UAE bank, or subscribe to <a href="/newsletter/">the Friday brief</a>
+            to be notified the moment something lands.
+          </p>
+          <div class="news-empty-ctas">
+            <a href="/newsletter/" class="news-empty-cta">Subscribe to the Friday brief →</a>
+            <a href="/rss.xml" class="news-empty-cta is-ghost">RSS feed →</a>
           </div>
         </section>
-      )}
-
-      <div class="dp-pullquote">
-        <div class="mark">"</div>
-        <blockquote>
-          Live deals only. Expired offers are removed from this page on the day they expire — never archived under "still available" copy.
-        </blockquote>
-        <div class="attr"><span class="rule"></span>Editorial standard · est. 2026</div>
-      </div>
-
-      {remaining.length > 0 && (
+      ) : (
         <>
-          <div class="dp-list-head">
-            <div class="t">All live deals</div>
-            <div class="m">Sorted by expiry · {remaining.length} more</div>
-          </div>
-          <div class="dp-feed">
-            {remaining.map((d, i) => {
-              const n = i + featured.length + 1;
-              return (
-                <a href={`/deals/${d.entry.id}/`} class="dp-feed-row">
-                  <div>
-                    <div class="num">{String(n).padStart(2, "0")}</div>
-                    <div class="feed-eyebrow">{formatCategory(d.entry.data.category)}</div>
-                  </div>
-                  <div>
-                    <h3>{d.entry.data.title}</h3>
-                    <div class="summary">{d.bankName} · live until {fmt(d.entry.data.expiresOn)}</div>
-                  </div>
-                  <Cover category="Deal" size="thumb" />
-                  <div class="when">{fmt(d.entry.data.expiresOn)}</div>
-                </a>
-              );
-            })}
-          </div>
+          {featured && (
+            <a href={`/deals/${featured.entry.id}/`} class="intel-featured">
+              <StockImage
+                slug={`deal-${featured.entry.id}`}
+                coverTitle={featured.entry.data.title}
+                coverCategory="Deal"
+                coverSize="hero"
+                class="intel-featured-image"
+                loading="eager"
+                sizes="(max-width: 900px) 100vw, 66vw"
+              />
+              <div class="intel-featured-body">
+                <span class="intel-featured-eyebrow">★ {formatCategory(featured.entry.data.category)} · {featured.bankName}</span>
+                <h2>{featured.entry.data.title}</h2>
+                <p>Live until {fmt(featured.entry.data.expiresOn)} — {daysUntil(featured.entry.data.expiresOn)} {daysUntil(featured.entry.data.expiresOn) === 1 ? "day" : "days"} remaining.</p>
+                <span class="intel-featured-meta">
+                  Filed at publish · Read the full deal →
+                </span>
+              </div>
+            </a>
+          )}
+
+          {others.length > 0 && (
+            <ul class="intel-card-grid">
+              {others.map((d) => {
+                const daysLeft = daysUntil(d.entry.data.expiresOn);
+                const isExpiringSoon = 7 >= daysLeft;
+                return (
+                  <li class="intel-card-item">
+                    <a href={`/deals/${d.entry.id}/`} class="intel-card">
+                      <StockImage
+                        slug={`deal-${d.entry.id}`}
+                        coverTitle={d.entry.data.title}
+                        coverCategory="Deal"
+                        coverSize="med"
+                        class="intel-card-image"
+                        sizes="(max-width: 900px) 100vw, 33vw"
+                      />
+                      <div class="intel-card-body">
+                        <span class="intel-card-cat">
+                          {formatCategory(d.entry.data.category)} · {d.bankName}
+                        </span>
+                        <h3>{d.entry.data.title}</h3>
+                        <p>Live until {fmt(d.entry.data.expiresOn)}.</p>
+                        <span class={`intel-card-meta deals-countdown${isExpiringSoon ? " is-soon" : ""}`}>
+                          {daysLeft} day{daysLeft === 1 ? "" : "s"} remaining
+                        </span>
+                      </div>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </>
       )}
-    </>
-  )}
+    </main>
 
-  <div class="dp-page-nav">
-    <span style="font-size:12px;color:var(--muted);">
-      {dealsWithBank.length === 0
-        ? "No live deals · subscribe to be notified"
-        : `Showing all ${dealsWithBank.length} live deal${dealsWithBank.length === 1 ? "" : "s"}`}
-    </span>
+    <aside class="intel-aside">
+      {trending.length > 0 && (
+        <nav class="intel-trending" aria-label="More content">
+          <h4>{dealsWithBank.length >= 6 ? "Other live deals" : "From the guides desk"}</h4>
+          <ol>
+            {trending.map((item, i) => {
+              const title = "entry" in item ? item.entry.data.title : item.data.title;
+              const id = "entry" in item ? item.entry.id : item.id;
+              return (
+                <li>
+                  <span class="num">{String(i + 1).padStart(2, "0")}</span>
+                  <a href={`${trendingLinkBase}/${id}/`}>{title}</a>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      )}
+
+      <div class="intel-insider">
+        <span class="eyebrow">Insider Intel</span>
+        <h4>Friday morning, in your inbox.</h4>
+        <p>One email each Friday — salary-transfer changes, new card offers, miles redemptions worth knowing about.</p>
+        <a href="/newsletter/" class="cta">Subscribe →</a>
+      </div>
+    </aside>
   </div>
 </BaseLayout>
+
+<style>
+  /* Inherits the .intel-* idiom from /guides/, /news/, /airlines/.
+     Inlined here scoped to /deals/ for evolution independence; a
+     shared layout component covers the four once they stabilise. */
+  .intel-pagehead {
+    background: var(--paper);
+    padding: 48px 32px 32px;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-pagehead-inner { max-width: 1180px; margin: 0 auto; }
+  .intel-pagehead .crumb {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 16px;
+  }
+  .intel-pagehead h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(38px, 5.6vw, 58px);
+    letter-spacing: -1.6px;
+    line-height: 1.04;
+    color: var(--green);
+    margin: 0 0 14px;
+  }
+  .intel-pagehead p {
+    max-width: 62ch;
+    font-size: 15px; line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0 0 28px;
+  }
+  .intel-tools {
+    display: flex; flex-wrap: wrap;
+    gap: 16px 24px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .intel-tab {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
+    color: var(--ink-soft);
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+    cursor: pointer;
+  }
+  .intel-tab:hover { background: var(--shade-1); color: var(--ink); }
+  .intel-tab.is-active { background: var(--ink); color: var(--paper); cursor: default; }
+
+  .intel-search {
+    display: flex; align-items: center;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0 14px;
+    height: 36px;
+    min-width: 220px;
+    transition: border-color 0.15s ease;
+  }
+  .intel-search:focus-within { border-color: var(--ink-soft); }
+  .intel-search-label {
+    position: absolute; width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+  }
+  .intel-search input[type="search"] {
+    border: 0; background: transparent; outline: none;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    width: 100%;
+  }
+  .intel-search input[type="search"]::placeholder { color: var(--muted); }
+
+  .intel-grid {
+    max-width: 1180px;
+    margin: 32px auto 56px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+  .intel-main { display: grid; gap: 28px; }
+
+  .intel-featured {
+    display: grid; grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    overflow: hidden;
+    text-decoration: none; color: inherit;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  .intel-featured:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 20px 40px -20px rgba(15, 31, 46, 0.22);
+  }
+  .intel-featured :global(.intel-featured-image) {
+    width: 100%; aspect-ratio: 16 / 9;
+    object-fit: cover; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-featured :global(svg.dp-cover) {
+    width: 100%; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-featured-body { padding: 24px 28px 28px; display: grid; gap: 10px; }
+  .intel-featured-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .intel-featured-body h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3.4vw, 34px);
+    letter-spacing: -0.9px;
+    line-height: 1.12;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intel-featured:hover h2 { color: var(--green); }
+  .intel-featured-body p {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 64ch;
+  }
+  .intel-featured-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+    margin-top: 4px;
+  }
+
+  .intel-card-grid {
+    list-style: none; padding: 0; margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+  .intel-card-item { display: block; }
+  .intel-card {
+    display: grid; grid-template-rows: auto 1fr;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    text-decoration: none; color: inherit;
+    height: 100%;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .intel-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink-soft);
+    box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
+  }
+  .intel-card :global(.intel-card-image) {
+    width: 100%; aspect-ratio: 3 / 2;
+    object-fit: cover; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-card :global(svg.dp-cover) {
+    width: 100%; display: block;
+    border-bottom: 1px solid var(--line);
+  }
+  .intel-card-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
+  .intel-card-cat {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .intel-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.3px;
+    line-height: 1.25;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .intel-card:hover h3 { color: var(--green); }
+  .intel-card-body p {
+    font-size: 13px; line-height: 1.5;
+    color: var(--ink-soft); margin: 0;
+  }
+  .intel-card-meta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.2px; margin-top: 2px;
+  }
+  /* Deals-specific countdown pill — turns gold when ≤ 7 days */
+  .deals-countdown {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--shade-1);
+    font-weight: 700;
+    align-self: start;
+  }
+  .deals-countdown.is-soon {
+    border-color: var(--gold);
+    background: var(--gold-soft, #fff6e7);
+    color: #6c4a18;
+  }
+
+  /* Empty state — same shape as /news/. */
+  .news-empty {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 40px 36px 36px;
+    display: grid; gap: 14px;
+  }
+  .news-empty-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .news-empty h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(26px, 3.4vw, 36px);
+    letter-spacing: -0.9px;
+    line-height: 1.12;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .news-empty p {
+    font-size: 15px; line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 60ch;
+  }
+  .news-empty p a {
+    color: var(--green);
+    border-bottom: 1px solid currentColor;
+    text-decoration: none;
+  }
+  .news-empty-ctas {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 8px;
+  }
+  .news-empty-cta {
+    display: inline-flex; align-items: center;
+    height: 40px; padding: 0 18px;
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 999px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .news-empty-cta:hover { background: var(--green); }
+  .news-empty-cta.is-ghost {
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .news-empty-cta.is-ghost:hover {
+    border-color: var(--ink-soft); background: var(--shade-1);
+  }
+
+  /* Sidebar */
+  .intel-aside { display: flex; flex-direction: column; gap: 20px; }
+  @media (min-width: 1024px) {
+    .intel-aside { position: sticky; top: 32px; align-self: flex-start; }
+  }
+  .intel-trending {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .intel-trending h4 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--green);
+    margin: 0 0 14px; font-weight: 700;
+  }
+  .intel-trending ol { list-style: none; padding: 0; margin: 0; }
+  .intel-trending li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 13px; color: var(--ink-soft);
+    display: flex; gap: 12px;
+    line-height: 1.35;
+  }
+  .intel-trending li:last-child { border-bottom: 0; }
+  .intel-trending .num {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    font-size: 11px; min-width: 20px;
+    flex-shrink: 0; font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .intel-trending a {
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-weight: 500; letter-spacing: -0.2px;
+    text-decoration: none;
+  }
+  .intel-trending a:hover { color: var(--green); }
+
+  .intel-insider {
+    background: var(--green);
+    color: white;
+    border-radius: 16px;
+    padding: 22px;
+    display: grid; gap: 8px;
+  }
+  .intel-insider .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.75);
+  }
+  .intel-insider h4 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500; font-size: 19px;
+    line-height: 1.2; letter-spacing: -0.4px;
+    color: white; margin: 0;
+    text-wrap: balance;
+  }
+  .intel-insider p {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px; line-height: 1.5;
+    color: rgba(255, 255, 255, 0.88);
+    margin: 4px 0 6px;
+  }
+  .intel-insider .cta {
+    display: inline-flex; align-items: center;
+    height: 36px; padding: 0 16px;
+    background: white; color: var(--green);
+    border-radius: 999px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.4px;
+    text-decoration: none; align-self: start;
+    transition: opacity 0.15s ease;
+  }
+  .intel-insider .cta:hover { opacity: 0.88; }
+
+  @media (max-width: 1023px) {
+    .intel-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .intel-pagehead { padding: 32px 20px 24px; }
+    .intel-grid { padding: 0 20px; margin-top: 24px; gap: 28px; }
+    .intel-card-grid { grid-template-columns: 1fr; }
+    .intel-search { min-width: 0; flex: 1; }
+    .intel-tools { flex-direction: column; align-items: stretch; }
+    .news-empty { padding: 28px 22px; }
+  }
+</style>
