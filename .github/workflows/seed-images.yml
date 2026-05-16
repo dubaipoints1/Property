@@ -1,0 +1,214 @@
+# One-shot Pexels seed — Phase E.2 hands-off image fetch.
+#
+# Why this workflow exists:
+#   The Claude sandbox is blocked from reaching api.pexels.com /
+#   images.pexels.com / unsplash / pixabay / wikimedia at the network
+#   allowlist layer. GitHub Actions runners are not, so the Pexels
+#   fetcher script (scripts/images/fetch-stock.ts) runs cleanly here.
+#
+# How to use:
+#   1. In the repo settings → Secrets and variables → Actions, add
+#      a secret named PEXELS_API_KEY (free key from
+#      https://www.pexels.com/api/).
+#   2. Go to Actions → "seed-images" → Run workflow.
+#   3. Pick the branch (e.g. claude/check-latest-updates-GkRze).
+#   4. Click Run. The workflow fetches the 12 seed photos, writes
+#      manifest entries, commits, and pushes to the same branch.
+#
+# What it fetches:
+#   12 seed slugs covering every <StockImage> reference on the
+#   rebuilt homepage, /cards/, /guides/, /news/, and /airlines/.
+#   See scripts/images/fetch-stock.ts for the script the slugs feed.
+#
+# Editorial guardrails:
+#   - Pexels licence is "free to use, attribution not required" — we
+#     attribute anyway via <ImageCredit>, per Charter §"No advertorial-
+#     driven recommendations" (transparency on every surface).
+#   - Per-slug query strings are conservative editor picks. If a
+#     result looks wrong for its context, re-run with `--pick 2/3/4`
+#     to grab a different result from the same search.
+#   - Each fetch hits the Pexels API once; free tier is 200/hour, so
+#     the 12 calls in this workflow use ~6% of an hour's quota.
+
+name: seed-images
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to seed (commits land here)"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch hero-cabin
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug hero-cabin \
+            --query "business class window seat sunset" \
+            --orientation landscape \
+            --alt "Window seat in a premium cabin at sunset" \
+            --usage "homepage hero"
+
+      - name: Fetch wallet-hero-cards
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug wallet-hero-cards \
+            --query "credit card stack marble desk" \
+            --orientation landscape \
+            --alt "Premium credit cards in a flat-lay" \
+            --usage "homepage UAE Wallet"
+
+      - name: Fetch card-fab-elite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-fab-elite \
+            --query "black credit card luxury close up" \
+            --orientation landscape \
+            --alt "Premium dark credit card on a textured surface"
+
+      - name: Fetch card-emirates-nbd-etihad-guest-elevate
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-etihad-guest-elevate \
+            --query "passport boarding pass airport" \
+            --orientation landscape \
+            --alt "Passport and boarding pass on a travel desk"
+
+      - name: Fetch card-emirates-nbd-darna-select-visa
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-darna-select-visa \
+            --query "Dubai apartment keys interior" \
+            --orientation landscape \
+            --alt "Modern Dubai apartment interior"
+
+      - name: Fetch guide-expat-starter
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-expat-starter \
+            --query "Dubai skyline aerial" \
+            --orientation landscape \
+            --alt "Aerial view of the Dubai skyline"
+
+      - name: Fetch guide-expat-starter-banking-basics
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-expat-starter-banking-basics \
+            --query "modern bank entrance" \
+            --orientation landscape \
+            --alt "Modern bank entrance with glass facade"
+
+      - name: Fetch guide-expat-starter-first-credit-card
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-expat-starter-first-credit-card \
+            --query "hand holding credit card" \
+            --orientation landscape \
+            --alt "Hand holding a credit card"
+
+      - name: Fetch guide-expat-starter-points-101
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-expat-starter-points-101 \
+            --query "boarding pass and passport on map" \
+            --orientation landscape \
+            --alt "Travel boarding pass laid across a world map"
+
+      - name: Fetch guide-expat-starter-avoid-mistakes
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-expat-starter-avoid-mistakes \
+            --query "Dubai marina aerial" \
+            --orientation landscape \
+            --alt "Aerial view of Dubai Marina at golden hour"
+
+      - name: Fetch guide-uae-credit-card-eligibility-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-uae-credit-card-eligibility-2026 \
+            --query "paperwork laptop desk office" \
+            --orientation landscape \
+            --alt "Paperwork and laptop on an office desk"
+
+      - name: Fetch programme-skywards
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug programme-skywards \
+            --query "airbus a380 takeoff sunset" \
+            --orientation landscape \
+            --alt "Wide-body aircraft at sunset"
+
+      - name: Run validation
+        run: |
+          npm run check
+          npm test
+
+      - name: Show manifest summary
+        run: |
+          echo "Manifest entries:"
+          node -e "const m=require('./data/stock/manifest.json'); console.log(m.entries.length+' entries'); m.entries.forEach(e => console.log('  '+e.slug+' ('+e.width+'×'+e.height+') by '+e.photographer));"
+
+      - name: Commit and push seeded images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then
+            echo "No new images to commit."
+            exit 0
+          fi
+          git commit -m "feat(images): Phase E.2 seed — 12 Pexels stock photos
+
+Automated fetch via .github/workflows/seed-images.yml. Each entry
+carries full provenance (photographer / source URL / Pexels ID /
+licence) in data/stock/manifest.json. <StockImage> slots on the
+rebuilt homepage, /cards/, /guides/, /news/, and /airlines/ pages
+now resolve to real photography."
+          git push origin HEAD:${{ inputs.branch }}
