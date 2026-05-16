@@ -167,11 +167,18 @@ const trackerItems = [
       </svg>
     </label>
 
-    <!-- Wordmark — text only, no symbol. Flag-derived symbol removed
-         per UAE Federal Law No 2/2017 (commercial use of state-symbol
-         compositions). Editorial register: NYT / Economist / Bloomberg
-         masthead style. -->
+    <!-- Wordmark — Burj Khalifa silhouette + DubaiPoints text.
+         The silhouette is Dubai-specific but unmistakably a building,
+         not a flag (per UAE Penal Code §173 + Federal Law No 2/2017,
+         flag-compositions are off-limits commercially). -->
     <a href="/" class="dp-wordmark" aria-label="DubaiPoints home">
+      <svg class="dp-wordmark-mark" viewBox="0 0 64 64" fill="currentColor" aria-hidden="true">
+        <path d="M32 4 L32.8 22 L31.2 22 Z" />
+        <path d="M30 22 L34 22 L36 33 L28 33 Z" />
+        <path d="M27 33 L37 33 L40 45 L24 45 Z" />
+        <path d="M23 45 L41 45 L45 56 L19 56 Z" />
+        <path d="M18 56 L46 56 L50 60 L14 60 Z" />
+      </svg>
       <span class="dp-wordmark-text">DubaiPoints</span>
     </a>
 
@@ -467,10 +474,18 @@ const trackerItems = [
 .dp-wordmark {
   display: inline-flex;
   align-items: center;
+  gap: 9px;
   color: var(--ink);
   text-decoration: none;
   line-height: 1;
   justify-self: center;
+}
+.dp-wordmark-mark {
+  width: 22px;
+  height: 22px;
+  color: var(--green);
+  flex-shrink: 0;
+  display: block;
 }
 .dp-wordmark-text {
   font-family: 'Fraunces', Georgia, serif;
@@ -482,9 +497,11 @@ const trackerItems = [
   white-space: nowrap;
 }
 @media (min-width: 768px) {
+  .dp-wordmark-mark { width: 24px; height: 24px; }
   .dp-wordmark-text { font-size: 24px; letter-spacing: -0.9px; }
 }
 @media (min-width: 1024px) {
+  .dp-wordmark-mark { width: 26px; height: 26px; }
   .dp-wordmark-text { font-size: 26px; letter-spacing: -1px; }
 }
 .dp-mark {
