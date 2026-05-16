@@ -1256,6 +1256,39 @@ img { display: block; max-width: 100%; }
   padding: 56px 32px 32px;
   background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
 }
+/* Eyebrow row above the h1 — "SWEET SPOTS · 14 May · 8 min read"
+   pattern from mockup page 04. Phase F.8. The .dp-article-eyebrow
+   inside resets its own margin so it sits flush. */
+.dp-article-eyebrow-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.dp-article-eyebrow-row .dp-article-eyebrow {
+  margin-bottom: 0;
+}
+.dp-article-eyebrow-sep {
+  color: var(--line);
+  font-weight: 400;
+}
+.dp-article-eyebrow-date,
+.dp-article-eyebrow-read {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.dp-article-eyebrow-read {
+  background: var(--shade-1);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-weight: 700;
+}
 .dp-pagehead.is-narrow h1 {
   font-size: clamp(32px, 4.5vw, 48px);
   letter-spacing: -1.2px;

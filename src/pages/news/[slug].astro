@@ -25,6 +25,7 @@ const formatCategory = (c: string) =>
   title={post.data.title}
   description={post.data.description}
   crumb={`DubaiPoints / News / ${formatCategory(post.data.category)}`}
+  eyebrow={formatCategory(post.data.category).toUpperCase()}
   publishedAt={post.data.publishedAt}
   updatedAt={post.data.updatedAt}
   toc={toc}

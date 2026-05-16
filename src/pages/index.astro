@@ -120,11 +120,19 @@ const avgWelcomeBonusK =
       )
     : 0;
 
-// ── Master Your Miles tiles (Phase B.2, retained) ────────────────────────
+// ── Master Your Miles tiles ─────────────────────────────────────────────
+// Order: Skywards (UAE flag carrier) first, then alpha by name. Pages
+// past the 4th tile fall off — the section is a curated showcase, not
+// the full /airlines/ index. The "Browse all programmes" link below
+// the grid covers discovery for the tail.
 const milesTiles = allPrograms
   .slice()
-  .sort((a, b) => a.data.name.localeCompare(b.data.name))
-  .slice(0, 3);
+  .sort((a, b) => {
+    if (a.id === "skywards") return -1;
+    if (b.id === "skywards") return 1;
+    return a.data.name.localeCompare(b.data.name);
+  })
+  .slice(0, 4);
 ---
 
 <BaseLayout
@@ -301,18 +309,10 @@ const milesTiles = allPrograms
           <span class="hp-miles-tile-cta">Programme guide →</span>
         </a>
       ))}
+    </div>
 
-      <a href="/airlines/" class="hp-miles-tile is-wayfinder">
-        <div class="hp-miles-tile-head">
-          <span class="eyebrow">Index</span>
-          <span class="currency">All programmes</span>
-        </div>
-        <h3 class="hp-miles-tile-title">Browse every programme</h3>
-        <p class="hp-miles-tile-spot">
-          Skywards, Etihad Guest, Qatar Privilege Club, Marriott Bonvoy and the rest — A–Z.
-        </p>
-        <span class="hp-miles-tile-cta">All programmes →</span>
-      </a>
+    <div class="hp-miles-foot">
+      <a href="/airlines/" class="hp-miles-more">Browse every programme →</a>
     </div>
   </section>
 
@@ -842,6 +842,22 @@ const milesTiles = allPrograms
     font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
     color: var(--green);
   }
+  .hp-miles-foot {
+    max-width: 1180px;
+    margin: 28px auto 0;
+    text-align: center;
+  }
+  .hp-miles-more {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--green);
+    border-bottom: 2px solid var(--green);
+    padding-bottom: 2px;
+    transition: opacity 0.15s ease;
+  }
+  .hp-miles-more:hover { opacity: 0.75; }
 
   /* ── Newsletter band ─────────────────────────────────────────────── */
   .hp-news-band {

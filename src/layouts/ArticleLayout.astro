@@ -25,7 +25,20 @@ interface Props {
   title: string;
   description?: string;
   crumb?: string;
+  /**
+   * Green-pill kicker rendered above the h1 (mockup page 04 "SWEET SPOTS"
+   * pattern). Already wired into news/[slug] via `category`. Optional —
+   * articles with no natural category leave it undefined and the row
+   * doesn't render.
+   */
   eyebrow?: string;
+  /**
+   * Estimated read time in minutes. Optional — when supplied, renders as
+   * a meta pill next to the eyebrow + date in the article head row.
+   * Editorial judgement per piece; no auto-compute (avoid the "this
+   * article is 12 min read" vs a 4-paragraph reality mismatch).
+   */
+  readMinutes?: number;
   deck?: string;
   author?: string;
   authorRole?: string;
@@ -51,6 +64,8 @@ const {
   title,
   description,
   crumb,
+  eyebrow,
+  readMinutes,
   deck,
   author = "DubaiPoints Editorial",
   authorRole,
@@ -101,6 +116,15 @@ const fmtShort = (d: Date) =>
 <BaseLayout title={title} description={description} fullWidth>
   <header class="dp-pagehead is-narrow">
     {crumb && <div class="crumb">{crumb}</div>}
+    {(eyebrow || publishedAt || readMinutes) && (
+      <div class="dp-article-eyebrow-row">
+        {eyebrow && <span class="dp-article-eyebrow">{eyebrow}</span>}
+        {publishedAt && <span class="dp-article-eyebrow-sep">·</span>}
+        {publishedAt && <span class="dp-article-eyebrow-date">{fmt(publishedAt)}</span>}
+        {readMinutes && <span class="dp-article-eyebrow-sep">·</span>}
+        {readMinutes && <span class="dp-article-eyebrow-read">{readMinutes} min read</span>}
+      </div>
+    )}
     <h1>{title}</h1>
     {(deck || description) && <p class="deck">{deck ?? description}</p>}
   </header>
