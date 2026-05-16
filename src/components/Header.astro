@@ -167,9 +167,12 @@ const trackerItems = [
       </svg>
     </label>
 
-    <!-- Wordmark -->
+    <!-- Wordmark — text only, no symbol. Flag-derived symbol removed
+         per UAE Federal Law No 2/2017 (commercial use of state-symbol
+         compositions). Editorial register: NYT / Economist / Bloomberg
+         masthead style. -->
     <a href="/" class="dp-wordmark" aria-label="DubaiPoints home">
-      <img src="/logo.svg" alt="DubaiPoints" class="dp-wordmark-img" width="180" height="42" />
+      <span class="dp-wordmark-text">DubaiPoints</span>
     </a>
 
     <!-- Desktop nav (Cards + Airlines wrap mega panels) -->
@@ -469,17 +472,20 @@ const trackerItems = [
   line-height: 1;
   justify-self: center;
 }
-.dp-wordmark-img {
-  display: block;
-  height: 26px;
-  width: auto;
-  max-width: 200px;
+.dp-wordmark-text {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: -0.8px;
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
 }
 @media (min-width: 768px) {
-  .dp-wordmark-img { height: 30px; }
+  .dp-wordmark-text { font-size: 24px; letter-spacing: -0.9px; }
 }
 @media (min-width: 1024px) {
-  .dp-wordmark-img { height: 34px; }
+  .dp-wordmark-text { font-size: 26px; letter-spacing: -1px; }
 }
 .dp-mark {
   width: 1.05em;
