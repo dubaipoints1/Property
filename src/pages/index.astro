@@ -79,7 +79,7 @@ if (guidesSorted[0]) {
     title: g.data.title,
     excerpt: g.data.description,
     meta: `Updated ${fmtShort(g.data.updatedAt)}`,
-    imageSlug: `intel-${g.id}`,
+    imageSlug: `guide-${g.id}`,
     coverCategory: "Guide",
   });
 }
@@ -91,7 +91,7 @@ if (guidesSorted[1]) {
     title: g.data.title,
     excerpt: g.data.description,
     meta: `Updated ${fmtShort(g.data.updatedAt)}`,
-    imageSlug: `intel-${g.id}`,
+    imageSlug: `guide-${g.id}`,
     coverCategory: "Guide",
   });
 }
@@ -102,7 +102,7 @@ if (newestCard) {
     title: newestCard.name,
     excerpt: `${newestCard.bank} · annual fee AED ${newestCard.annualFee.toLocaleString()}`,
     meta: `Verified ${fmtShort(new Date(newestCard.lastVerified))}`,
-    imageSlug: `intel-card-${newestCard.slug}`,
+    imageSlug: `card-${newestCard.slug}`,
     coverCategory: "Review",
   });
 }
