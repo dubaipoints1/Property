@@ -39,6 +39,8 @@ const deck = isLive
   publishedAt={deal.data.expiresOn}
   toc={toc}
   showHero
+  heroSlug={`deal-${deal.id}`}
+  heroCategory="Deal"
   heroLabel={`Deal · ${bank?.data.name ?? "Issuer"}`}
 >
   <Content />

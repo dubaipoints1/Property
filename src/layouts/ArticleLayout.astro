@@ -35,6 +35,16 @@ interface Props {
   sources?: string[];
   showHero?: boolean;
   heroLabel?: string;
+  /**
+   * Stock-image slug for the article hero. Resolves via the manifest
+   * loader (data/stock/manifest.json) — falls back to Cover.astro SVG
+   * when no entry exists yet. Per Phase F.6 (May 2026 image-forward
+   * redesign), every article gets a real hero once the editor runs
+   * `npm run fetch:stock --slug <heroSlug>`.
+   */
+  heroSlug?: string;
+  /** Cover.astro category for the fallback SVG. Defaults to "Guide". */
+  heroCategory?: "Guide" | "Review" | "Deal" | "News" | "Programme" | "Topic";
 }
 
 const {
@@ -50,6 +60,8 @@ const {
   sources = [],
   showHero = false,
   heroLabel = "Hero illustration · 2:1",
+  heroSlug,
+  heroCategory = "Guide",
 } = Astro.props;
 
 const fmt = (d?: Date) =>
@@ -112,7 +124,21 @@ const fmtShort = (d: Date) =>
 
   <div class="dp-article-body-grid">
     <article class="dp-article-body">
-      {showHero && <div class="hero-img">{heroLabel}</div>}
+      {showHero && (
+        heroSlug ? (
+          <StockImage
+            slug={heroSlug}
+            coverTitle={title}
+            coverCategory={heroCategory}
+            coverSize="hero"
+            class="article-hero-image"
+            loading="eager"
+            sizes="(max-width: 900px) 100vw, 65vw"
+          />
+        ) : (
+          <div class="hero-img">{heroLabel}</div>
+        )
+      )}
       <div class="dp-prose">
         <slot />
       </div>
