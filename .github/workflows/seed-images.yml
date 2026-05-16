@@ -215,11 +215,8 @@ jobs:
             echo "No new images to commit."
             exit 0
           fi
-          git commit -m "feat(images): Phase E.2 seed — 12 Pexels stock photos
-
-Automated fetch via .github/workflows/seed-images.yml. Each entry
-carries full provenance (photographer / source URL / Pexels ID /
-licence) in data/stock/manifest.json. <StockImage> slots on the
-rebuilt homepage, /cards/, /guides/, /news/, and /airlines/ pages
-now resolve to real photography."
+          git commit \
+            -m "feat(images): Phase E.2 seed — 12 Pexels stock photos" \
+            -m "Automated fetch via .github/workflows/seed-images.yml. Stock photographs covering hero-cabin, wallet-hero-cards, programme-skywards, two top-card heroes, and six per-guide heroes. Every <StockImage> slot on the rebuilt homepage, /cards/, /guides/, /news/, and /airlines/ pages now resolves to real photography." \
+            -m "Each manifest entry carries full provenance (photographer name + URL, Pexels photo ID, source URL, Pexels licence). Per Charter §'No advertorial-driven recommendations', attribution renders via <ImageCredit> on every consumer page."
           git push origin HEAD:${{ inputs.branch || github.ref_name }}
