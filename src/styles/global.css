@@ -45,8 +45,14 @@
   --line-soft: #ece9e1;
 
   /* Accent — deep editorial green */
-  --green:     #2d6a52;          /* eyebrows, pull-quote mark, accents */
-  --green-band:#1d6b54;          /* legacy from TPG pivot — newsletter band */
+  /* Brand accent — navy. The 2026-05-16 Chairman directive moved the
+     primary accent off green (2026-05-09 amendment) to deep navy. The
+     `--green` and `--green-band` token NAMES are kept to avoid a full-
+     repo rename in one commit; future cleanup may rename them to
+     `--brand`. Every `var(--green)` reference across the site now
+     resolves to navy. */
+  --green:     #1f3a4d;          /* eyebrows, pull-quote mark, accents (navy after F.9) */
+  --green-band:#15293a;          /* newsletter band — slightly darker navy for depth */
   --mint:      #5fb88a;          /* secondary green — .dp-callout-tip border + chips */
   --mint-soft: #e6f1ea;          /* wash for callout backgrounds (derived from mint) */
 
