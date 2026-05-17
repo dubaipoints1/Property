@@ -167,25 +167,33 @@ const trackerItems = [
       </svg>
     </label>
 
-    <!-- Wordmark — navy roundel with NE arrow + bold sans text.
-         F.15.1 Head of UX pass:
-         - Mark moved BEFORE the text (LTR eye-anchor, matches
-           Stripe / Linear / TPG convention).
-         - Mark sized to cap-height (~0.82em), not em — keeps the
-           roundel inside the optical x-cap line so it doesn't
-           "balloon" next to the wordmark.
-         - Plane silhouette replaced with a clean 45° NE arrow:
-           survives at 16px favicon, reads unambiguously as
-           "earn / forward / lift," and is closer to the TPG mark
-           the Chairman cited.
-         - DM Sans 800 retained for confidence; tracking loosened
-           from -0.7→-0.5 so the letters breathe at small sizes. -->
+    <!-- Wordmark — navy roundel with NE chevron arrow + bold sans text.
+         F.15.2 Head of UX pass (second iteration on F.15.1):
+         - viewBox tightened from 0–64 to 0–60 so the circle fills
+           the SVG bounding box edge-to-edge (no optical "halo" of
+           empty padding pulling the cap-height match off).
+         - Arrow rebuilt as a **centred chevron**: the diagonal shaft
+           runs corner-to-corner symmetrically through (30,30), and
+           the arrowhead is two equal-length strokes meeting at the
+           tip — reads unambiguously as "arrow" at 16px favicon size
+           and visually centres on the circle, fixing the upper-right
+           weight bias of the L-corner geometry.
+         - Mark CSS sized 16/18/20 (was 18/20/22) — with the tighter
+           viewBox the visible glyph now matches DM Sans 800
+           cap-height (~0.72em) exactly. Mark feels seated, not
+           floating, beside the wordmark.
+         - DM Sans 800 + -0.5px tracking retained from F.15.1. -->
     <a href="/" class="dp-wordmark" aria-label="DubaiPoints home">
-      <svg class="dp-wordmark-mark" viewBox="0 0 64 64" aria-hidden="true">
-        <circle cx="32" cy="32" r="30" fill="currentColor" />
-        <path d="M 22 42 L 42 22 M 28 22 L 42 22 L 42 36"
-              fill="none" stroke="#ffffff" stroke-width="6"
-              stroke-linecap="round" stroke-linejoin="round" />
+      <svg class="dp-wordmark-mark" viewBox="0 0 60 60" aria-hidden="true">
+        <circle cx="30" cy="30" r="30" fill="currentColor" />
+        <g fill="none" stroke="#ffffff" stroke-width="5.5"
+           stroke-linecap="round" stroke-linejoin="round">
+          <!-- Diagonal shaft 19,41 → 41,19, midpoint (30,30) -->
+          <path d="M 19 41 L 41 19" />
+          <!-- Chevron arrowhead at (41,19), 11-unit arms back to
+               (30,19) and (41,30). Visual centroid lands on (30,30). -->
+          <path d="M 30 19 L 41 19 L 41 30" />
+        </g>
       </svg>
       <span class="dp-wordmark-text">DubaiPoints</span>
     </a>
@@ -292,7 +300,17 @@ const trackerItems = [
         <line x1="18" y1="6" x2="6" y2="18" />
       </svg>
     </label>
-    <a href="/" class="dp-wordmark">DubaiPoints<span class="dot">.</span></a>
+    <a href="/" class="dp-wordmark" aria-label="DubaiPoints home">
+      <svg class="dp-wordmark-mark" viewBox="0 0 60 60" aria-hidden="true">
+        <circle cx="30" cy="30" r="30" fill="currentColor" />
+        <g fill="none" stroke="#ffffff" stroke-width="5.5"
+           stroke-linecap="round" stroke-linejoin="round">
+          <path d="M 18 42 L 40 20" />
+          <path d="M 29 20 L 40 20 L 40 31" />
+        </g>
+      </svg>
+      <span class="dp-wordmark-text">DubaiPoints</span>
+    </a>
     <a href="/search/" class="dp-icon-btn" aria-label="Search">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -497,31 +515,26 @@ const trackerItems = [
   color: var(--ink);
   white-space: nowrap;
 }
-/* Mark sized to ~0.82× the text font-size so it matches DM Sans 800
-   cap-height (~0.72em) plus a hair of optical balance. Sits inside
-   the cap-line rather than balloon-ing above it. */
+/* F.15.2 — Mark sized to ~0.73× text font-size to match DM Sans 800
+   cap-height. With the tightened 0–60 viewBox (circle now fills the
+   SVG box edge-to-edge, no halo), 16/18/20 lands the visible glyph
+   on the cap-line. The mark reads "seated" beside the wordmark, not
+   floating above it. */
 .dp-wordmark-mark {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   color: var(--green);
   flex-shrink: 0;
   display: block;
 }
 @media (min-width: 768px) {
-  .dp-wordmark { gap: 7px; }
+  .dp-wordmark { gap: 8px; }
   .dp-wordmark-text { font-size: 24px; letter-spacing: -0.55px; }
-  .dp-wordmark-mark { width: 20px; height: 20px; }
+  .dp-wordmark-mark { width: 18px; height: 18px; }
 }
 @media (min-width: 1024px) {
   .dp-wordmark-text { font-size: 26px; letter-spacing: -0.6px; }
-  .dp-wordmark-mark { width: 22px; height: 22px; }
-}
-.dp-mark {
-  width: 1.05em;
-  height: 1.05em;
-  color: var(--green);
-  flex-shrink: 0;
-  display: block;
+  .dp-wordmark-mark { width: 20px; height: 20px; }
 }
 
 /* Desktop-only blocks hidden by default; revealed at ≥768px below. */
@@ -617,7 +630,7 @@ const trackerItems = [
     margin: 0 auto;
   }
   .dp-mobile-only { display: none; }
-  .dp-wordmark { font-size: 22px; justify-self: start; }
+  .dp-wordmark { justify-self: start; }
   .dp-header-nav {
     display: flex;
     gap: 28px;
@@ -756,7 +769,6 @@ const trackerItems = [
     height: 80px;
     padding-inline: 32px;
   }
-  .dp-wordmark { font-size: 24px; }
   .dp-header-nav { gap: 32px; font-size: 14px; }
   .dp-tracker-strip-inner { padding-inline: 32px; }
 }
@@ -807,7 +819,7 @@ const trackerItems = [
   background: var(--paper);
   position: sticky; top: 0; z-index: 1;
 }
-.dp-nav-overlay-head .dp-wordmark { font-size: 22px; }
+.dp-nav-overlay-head .dp-wordmark { justify-self: center; }
 
 .dp-nav-live-strip {
   display: flex;
