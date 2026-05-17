@@ -1,8 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="DubaiPoints mark">
-  <!-- Navy roundel with paper-plane silhouette. Matches the header
-       wordmark mark; sized for a 16×16 / 32×32 favicon. -->
-  <circle cx="32" cy="32" r="30" fill="currentColor" />
-  <g transform="translate(32 33) rotate(-20)" fill="#ffffff">
-    <path d="M -14 0 L 16 -2 L 12 2 L 16 6 L -10 4 Z" />
-  </g>
+  <!-- Navy roundel with NE arrow. F.15.1 — replaces the paper-plane
+       silhouette which read as mush at favicon size. Pure geometry
+       (line + corner) survives the 16×16 round-trip. -->
+  <circle cx="32" cy="32" r="30" fill="#1f3a4d" />
+  <path d="M 22 42 L 42 22 M 28 22 L 42 22 L 42 36"
+        fill="none" stroke="#ffffff" stroke-width="6"
+        stroke-linecap="round" stroke-linejoin="round" />
 </svg>
