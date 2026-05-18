@@ -47,21 +47,18 @@ const cardsPanel: Group[] = [
     { label: "All cards",               href: "/cards/" },
   ]},
   { title: "By bank issuer", rows: [
-    { label: "FAB cards",         href: "/banks/fab/" },
-    { label: "Emirates NBD cards",href: "/banks/enbd/" },
-    { label: "Mashreq cards",     href: "/banks/mashreq/" },
-    { label: "ADCB cards",        href: "/banks/adcb/" },
-    { label: "HSBC cards",        href: "/banks/hsbc/" },
-    { label: "DIB cards",         href: "/banks/dib/", sub: "Islamic" },
-    { label: "ADIB cards",        href: "/banks/adib/", sub: "Islamic" },
-    { label: "All issuers",       href: "/banks/" },
+    { label: "FAB cards",                 href: "/banks/fab/" },
+    { label: "Emirates NBD cards",        href: "/banks/emirates-nbd/" },
+    { label: "ADCB cards",                href: "/banks/adcb/" },
+    { label: "RAKBANK cards",             href: "/banks/rakbank/" },
+    { label: "Emirates Islamic cards",    href: "/banks/emirates-islamic/", sub: "Islamic" },
+    { label: "All issuers",               href: "/banks/" },
   ]},
   { title: "Co-branded cards", rows: [
-    { label: "Emirates Skywards cards", href: "/airlines/skywards/" },
-    { label: "Etihad Guest cards",       href: "/airlines/etihad-guest/" },
-    { label: "flydubai OPEN cards",      href: "/airlines/flydubai-open/" },
-    { label: "Marriott Bonvoy cards",    href: "/cards/" },
-    { label: "All co-branded cards",     href: "/cards/" },
+    { label: "Emirates Skywards cards",   href: "/airlines/skywards/" },
+    { label: "Etihad Guest cards",        href: "/airlines/etihad-guest/" },
+    { label: "Marriott Bonvoy cards",     href: "/airlines/marriott-bonvoy/" },
+    { label: "All co-branded cards",      href: "/cards/" },
   ]},
   { title: "Learn about UAE cards", rows: [
     { label: "Beginner's guide",          href: "/guides/" },
@@ -73,25 +70,20 @@ const cardsPanel: Group[] = [
 
 const pointsPanel: Group[] = [
   { title: "UAE bank programmes", rows: [
-    { label: "ENBD Rewards",        href: "/banks/enbd/" },
-    { label: "FAB Rewards",         href: "/banks/fab/" },
-    { label: "Mashreq Salaam",      href: "/banks/mashreq/" },
-    { label: "ADCB TouchPoints",    href: "/banks/adcb/" },
-    { label: "All bank programmes", href: "/banks/" },
+    { label: "Emirates NBD Rewards", href: "/banks/emirates-nbd/" },
+    { label: "FAB Rewards",          href: "/banks/fab/" },
+    { label: "ADCB TouchPoints",     href: "/banks/adcb/" },
+    { label: "RAKBANK Rewards",      href: "/banks/rakbank/" },
+    { label: "All bank programmes",  href: "/banks/" },
   ]},
   { title: "Airline programmes", rows: [
-    { label: "Emirates Skywards",     href: "/airlines/skywards/", sub: "3.5 fils · DP value" },
+    { label: "Emirates Skywards",      href: "/airlines/skywards/", sub: "3.5 fils · DP value" },
     { label: "Etihad Guest",           href: "/airlines/etihad-guest/", sub: "2.8 fils · DP value" },
-    { label: "Qatar Avios",            href: "/airlines/", sub: "3.0 fils · DP value" },
-    { label: "flydubai OPEN",          href: "/airlines/flydubai-open/", sub: "2.0 fils · DP value" },
-    { label: "Air Arabia Airewards",   href: "/airlines/", sub: "1.7 fils · DP value" },
+    { label: "Qatar Privilege Club",   href: "/airlines/qatar-privilege-club/" },
     { label: "All airline programmes", href: "/airlines/" },
   ]},
   { title: "Hotel programmes", rows: [
-    { label: "Marriott Bonvoy",      href: "/airlines/" },
-    { label: "Hilton Honors",        href: "/airlines/" },
-    { label: "World of Hyatt",       href: "/airlines/" },
-    { label: "IHG One Rewards",      href: "/airlines/" },
+    { label: "Marriott Bonvoy",      href: "/airlines/marriott-bonvoy/" },
     { label: "All hotel programmes", href: "/airlines/" },
   ]},
   { title: "Learn", rows: [
@@ -140,12 +132,6 @@ const publicationRows: SubRow[] = [
   { label: "Glossary",             href: "/glossary/" },
 ];
 
-// Tracker headline rotation — same items as the homepage masthead.
-const trackerItems = [
-  "FAB raised tier-2 to AED 1,200 · 2 days ago",
-  "ENBD added an AED 25,000 tier · 5 days ago",
-  "14 banks tracked · refreshed daily",
-];
 ---
 
 <!-- Hidden checkbox controls drawer state (no JS) -->
@@ -273,17 +259,14 @@ const trackerItems = [
     </a>
   </div>
 
-  <!-- ── Tracker strip ────────────────────────────────────────────── -->
+  <!-- ── Quick-links strip (static, 3 anchor links) ─────────────────── -->
   <div class="dp-tracker-strip">
     <div class="dp-tracker-strip-inner">
-      <a href="/salary-transfer/" class="dp-tracker-live">
-        Live · Salary-transfer tracker
-      </a>
-      <span class="dp-tracker-meta" aria-live="polite">
-        <span class="dp-tracker-ticker">
-          {trackerItems.map((t) => (<span class="dp-tracker-item">{t}</span>))}
-        </span>
-      </span>
+      <a href="/salary-transfer/" class="dp-quicklink">Salary-transfer tracker</a>
+      <span class="dp-quicklink-sep" aria-hidden="true">·</span>
+      <a href="/cards/" class="dp-quicklink">Top card deals</a>
+      <span class="dp-quicklink-sep" aria-hidden="true">·</span>
+      <a href="/newsletter/" class="dp-quicklink">Subscribe</a>
     </div>
   </div>
 </div>
@@ -541,7 +524,7 @@ const trackerItems = [
 .dp-header-nav,
 .dp-header-actions { display: none; }
 
-/* Tracker strip (always visible) */
+/* Quick-links strip (always visible). Thin static row of 3 anchors. */
 .dp-tracker-strip {
   border-top: 1px solid var(--line-soft);
   background: var(--paper);
@@ -551,72 +534,40 @@ const trackerItems = [
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 14px;
   height: 32px;
   padding-inline: 16px;
   font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2.5px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
   text-transform: uppercase;
 }
-.dp-tracker-live {
-  color: var(--green);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.dp-quicklink {
+  color: var(--ink-soft);
   text-decoration: none;
-}
-.dp-tracker-live::before {
-  content: ""; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--green);
-  animation: dp-pulse 2.4s ease-in-out infinite;
-}
-@keyframes dp-pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
-
-.dp-tracker-meta {
-  color: var(--muted);
-  letter-spacing: 1.5px;
-  font-weight: 500;
-  text-transform: none;
-  flex: 1;
-  min-width: 0;
-  margin-left: 16px;
-  text-align: right;
-  overflow: hidden;
-}
-.dp-tracker-ticker {
-  position: relative;
-  display: inline-block;
-  height: 14px;
-  width: 100%;
-  max-width: 38ch;
-}
-.dp-tracker-item {
-  position: absolute;
-  inset: 0;
   white-space: nowrap;
-  text-align: right;
-  opacity: 0;
-  animation: dp-tracker-rotate 12s linear infinite;
+  transition: color 0.15s;
 }
-.dp-tracker-item:nth-child(1) { animation-delay: 0s; }
-.dp-tracker-item:nth-child(2) { animation-delay: 4s; }
-.dp-tracker-item:nth-child(3) { animation-delay: 8s; }
-@keyframes dp-tracker-rotate {
-  0%, 2%   { opacity: 0; transform: translateY(6px); }
-  6%, 30%  { opacity: 1; transform: translateY(0); }
-  33%, 100% { opacity: 0; transform: translateY(-6px); }
+.dp-quicklink:hover,
+.dp-quicklink:focus-visible { color: var(--green); }
+.dp-quicklink:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
-@media (prefers-reduced-motion: reduce) {
-  .dp-tracker-item { animation: none; }
-  .dp-tracker-item:nth-child(1) { opacity: 1; }
-  .dp-tracker-item:not(:nth-child(1)) { display: none; }
-  .dp-tracker-live::before { animation: none; }
+.dp-quicklink-sep {
+  color: var(--line);
+  font-weight: 400;
 }
 
-/* Hide truncation on very narrow viewports */
-@media (max-width: 480px) {
-  .dp-tracker-meta { display: none; }
+/* Very narrow viewports — keep all three but tighten gap. */
+@media (max-width: 380px) {
+  .dp-tracker-strip-inner {
+    gap: 8px;
+    letter-spacing: 0.8px;
+    font-size: 10px;
+  }
 }
 
 /* ─── DESKTOP ≥768px ─────────────────────────────────────────────── */
