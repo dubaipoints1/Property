@@ -104,7 +104,13 @@ const fmtScore = (s?: number) => {
     </div>
 
     <div class="dp-cr-text">
-      <div class="crumb">Cards / {category} / {bankName}</div>
+      <div class="crumb">{
+        // Avoid the "Cards / Cards / FAB" double when no specific category is
+        // passed — collapse "Cards / Cards" to just "Cards".
+        category === "Cards"
+          ? `Cards / ${bankName}`
+          : `Cards / ${category} / ${bankName}`
+      }</div>
       <h1>{title}</h1>
 
       {(score != null || verdictLabel) && (
@@ -124,7 +130,12 @@ const fmtScore = (s?: number) => {
         </div>
       )}
 
-      {description && <p class="strap">{description}</p>}
+      {description && (
+        <p class="strap">
+          <span class="strap-label">Welcome bonus</span>
+          <span class="strap-value">{description}</span>
+        </p>
+      )}
     </div>
   </header>
 
