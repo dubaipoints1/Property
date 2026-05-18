@@ -39,13 +39,12 @@ const others = posts.slice(1);
 const trending = posts.length > 0 ? posts.slice(0, 5) : guides.slice(0, 5);
 const trendingLinkBase = posts.length > 0 ? "/news" : "/guides";
 
-const tabs = [
-  { label: "All", active: true, href: "/news/" },
-  { label: "Deal updates", href: "/deals/" },
-  { label: "Card launches", href: "/cards/" },
-  { label: "Programme changes", href: "/airlines/" },
-  { label: "Regulation", href: "/guides/uae-credit-card-eligibility-2026/" },
-];
+// Tabs on /news/ used to pivot the reader off-section (one tab per
+// content collection). That's misleading nav — the tab labels read
+// like "filter this view" but actually leave /news/ entirely. Until
+// the newsroom has enough entries to support real facet filtering,
+// the tabs stay out and the search input carries discoverability.
+const tabs: Array<{ label: string; active?: boolean; href: string }> = [];
 
 const formatCategory = (c: string) =>
   c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
@@ -63,13 +62,15 @@ const formatCategory = (c: string) =>
       <p>Salary-transfer changes, card launches, programme shifts and the regulatory updates that affect UAE residents — every figure in AED, every claim sourced.</p>
 
       <div class="intel-tools">
-        <div class="intel-tabs" role="tablist">
-          {tabs.map((t) => (
-            t.active
-              ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
-              : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
-          ))}
-        </div>
+        {tabs.length > 0 && (
+          <div class="intel-tabs" role="tablist">
+            {tabs.map((t) => (
+              t.active
+                ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
+                : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
+            ))}
+          </div>
+        )}
         <form class="intel-search" action="/" method="get" role="search">
           <label class="intel-search-label" for="news-search-input">Search</label>
           <input

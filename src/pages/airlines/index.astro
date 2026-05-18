@@ -34,11 +34,13 @@ const trending =
   programmes.length >= 6 ? others.slice(0, 5) : guides.slice(0, 5);
 const trendingLinkBase = programmes.length >= 6 ? "/airlines" : "/guides";
 
+// Sibling reads (not category filters) — keep these honest: each pivot
+// goes to a real, distinct surface the reader will recognise. Generic
+// /guides/ "transfer partners" tab dropped (it leaked off-section and
+// the guides index isn't filtered to transfer-partner content).
 const tabs = [
   { label: "All programmes", active: true, href: "/airlines/" },
-  { label: "Skywards", href: "/airlines/skywards/" },
-  { label: "Valuations", href: "/valuations/" },
-  { label: "Transfer partners", href: "/guides/" },
+  { label: "Valuations method", href: "/valuations/" },
 ];
 ---
 

@@ -1901,6 +1901,17 @@ img { display: block; max-width: 100%; }
 .dp-cr-hero .strap {
   font-size: 14px; color: rgba(255,255,255,0.78);
   max-width: 50ch; line-height: 1.55; margin: 0 0 20px;
+  display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 10px;
+}
+.dp-cr-hero .strap-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,255,255,0.55);
+}
+.dp-cr-hero .strap-value {
+  font-family: 'Fraunces', serif;
+  font-size: 18px; font-weight: 500;
+  color: white;
 }
 
 .dp-verdict-pill {
