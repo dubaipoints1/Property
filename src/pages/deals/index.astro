@@ -48,11 +48,12 @@ const formatCategory = (c: string) =>
 const daysUntil = (d: Date) =>
   Math.max(0, Math.ceil((d.getTime() - todayMs) / (1000 * 60 * 60 * 24)));
 
+// Sibling pivots — kept honest. "Welcome bonus" and "Fee waiver" used
+// to both point at /cards/ which is misleading (two tabs, same
+// destination, neither filtered). Replaced with one real cross-link.
 const tabs = [
-  { label: "All live", active: true, href: "/deals/" },
-  { label: "Welcome bonus", href: "/cards/" },
-  { label: "Salary transfer", href: "/salary-transfer/" },
-  { label: "Fee waiver", href: "/cards/" },
+  { label: "All live deals", active: true, href: "/deals/" },
+  { label: "Salary-transfer tracker", href: "/salary-transfer/" },
 ];
 ---
 
