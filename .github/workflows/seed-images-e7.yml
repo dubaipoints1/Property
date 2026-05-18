@@ -1,0 +1,104 @@
+# Phase E.7 — fix 3 weak E.6 results.
+#
+# E.6's Pexels searches landed weakly on three slugs:
+#   - skywards-business-class: returned "flying airplane behind man head"
+#     (man's head in foreground, not what an Emirates Business
+#     redemption guide hero should show)
+#   - salary-transfer-mechanics: generic "person writing on paper"
+#   - uae-corporate-tax: generic "white book on wooden table"
+#
+# Refining each query for a more on-topic result.
+
+name: seed-images-e7
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e7.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Replace guide-skywards-business-class-redemptions-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-skywards-business-class-redemptions-2026 \
+            --query "airplane wing sunset clouds altitude" \
+            --orientation landscape \
+            --pick 1 \
+            --alt "View from a wide-body aircraft window at altitude" \
+            --replace
+
+      - name: Replace guide-salary-transfer-mechanics-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-salary-transfer-mechanics-2026 \
+            --query "banking documents Dubai office" \
+            --orientation landscape \
+            --pick 0 \
+            --alt "Banking paperwork on a Dubai office desk" \
+            --replace
+
+      - name: Replace guide-uae-corporate-tax-overview
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-uae-corporate-tax-overview \
+            --query "Dubai skyscraper office tower DIFC" \
+            --orientation landscape \
+            --pick 0 \
+            --alt "Dubai DIFC office tower exterior" \
+            --replace
+
+      - name: Validate
+        run: |
+          npm run check
+          npm test
+
+      - name: Show E.7 results
+        run: |
+          node -e "const m=require('./data/stock/manifest.json'); ['guide-skywards-business-class-redemptions-2026','guide-salary-transfer-mechanics-2026','guide-uae-corporate-tax-overview'].forEach(s=>{const e=m.entries.find(x=>x.slug===s); if(e) console.log('  '+e.slug+' → '+e.query+' ('+e.source_url+')');});"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then
+            echo "No new images."
+            exit 0
+          fi
+          git commit \
+            -m "feat(images): Phase E.7 — fix 3 weak E.6 results" \
+            -m "Refines queries for skywards-business-class (was a person's head in foreground), salary-transfer-mechanics (was generic paperwork), and corporate-tax-overview (was a generic book). All three now use --replace with tighter UAE-tagged queries."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}
