@@ -1,0 +1,176 @@
+# Phase E.6 — fetch images for the content-sprint guides + news post.
+#
+# Section editors filed 9 new guides + 1 news post during the sprint.
+# Each carries a <StockImage slug="..."> reference that currently
+# resolves to the Cover.astro SVG fallback because the manifest
+# doesn't have entries for them yet. This workflow fetches all 10
+# with UAE-tagged queries.
+#
+# Auto-triggers on push. Each step is a new slug (no --replace).
+
+name: seed-images-e6
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e6.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - run: npm ci
+
+      # ── Business-Realestate sprint guides (5) ───────────────────────
+
+      - name: Fetch guide-salary-transfer-mechanics-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-salary-transfer-mechanics-2026 \
+            --query "Dubai bank counter document signing" \
+            --orientation landscape \
+            --alt "Salary-transfer paperwork on a bank desk in Dubai"
+
+      - name: Fetch guide-aecb-credit-report-walkthrough
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-aecb-credit-report-walkthrough \
+            --query "credit report document chart desk" \
+            --orientation landscape \
+            --alt "Credit report and chart on a desk"
+
+      - name: Fetch guide-choosing-first-uae-bank
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-choosing-first-uae-bank \
+            --query "Dubai modern bank lobby glass" \
+            --orientation landscape \
+            --alt "Modern bank lobby interior in Dubai"
+
+      - name: Fetch guide-golden-visa-cards
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-golden-visa-cards \
+            --query "UAE passport visa stamp Dubai" \
+            --orientation landscape \
+            --alt "UAE passport with residence visa stamp"
+
+      - name: Fetch guide-uae-corporate-tax-overview
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-uae-corporate-tax-overview \
+            --query "Dubai office meeting boardroom skyline" \
+            --orientation landscape \
+            --alt "Boardroom meeting with Dubai skyline behind"
+
+      # ── Travel-Experiences sprint guide (1) ─────────────────────────
+
+      - name: Fetch guide-skywards-business-class-redemptions-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-skywards-business-class-redemptions-2026 \
+            --query "Emirates A380 business class cabin window" \
+            --orientation landscape \
+            --alt "Wide-body Business-class cabin at altitude"
+
+      # ── Lifestyle-Culture sprint guides (3) ─────────────────────────
+
+      - name: Fetch guide-ramadan-iftars-on-points
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-ramadan-iftars-on-points \
+            --query "Ramadan iftar table dates lanterns Dubai" \
+            --orientation landscape \
+            --alt "Iftar table set with dates and lanterns"
+
+      - name: Fetch guide-dubai-shopping-festival-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-dubai-shopping-festival-2026 \
+            --query "Dubai Mall shopping illuminated night" \
+            --orientation landscape \
+            --alt "Dubai shopping mall illuminated at night"
+
+      - name: Fetch guide-dubai-brunch-on-credit-card-discounts
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-dubai-brunch-on-credit-card-discounts \
+            --query "Dubai brunch buffet champagne hotel" \
+            --orientation landscape \
+            --alt "Friday brunch buffet spread at a Dubai hotel"
+
+      # ── News post (1) ───────────────────────────────────────────────
+
+      - name: Fetch news-dubaipoints-newsroom-launch
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug news-dubaipoints-newsroom-launch \
+            --query "newspaper press conference editorial desk" \
+            --orientation landscape \
+            --alt "Editorial desk with newspaper and notebook"
+
+      - name: Validate
+        run: |
+          npm run check
+          npm test
+
+      - name: Show E.6 results
+        run: |
+          echo "Manifest entries after E.6:"
+          node -e "const m=require('./data/stock/manifest.json'); console.log(m.entries.length+' entries total'); m.entries.slice(-10).forEach(e => console.log('  '+e.slug+' → '+e.query+' (by '+e.photographer+')'));"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then
+            echo "No new images."
+            exit 0
+          fi
+          git commit \
+            -m "feat(images): Phase E.6 — content-sprint photos (9 guides + 1 news)" \
+            -m "Fetches Pexels photos for the new guides filed during the content sprint (Business-Realestate / Travel-Experiences / Lifestyle-Culture beats) plus the newsroom-launch news post. UAE-tagged queries where possible. Each manifest entry carries full provenance."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}
