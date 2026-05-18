@@ -1,0 +1,72 @@
+# Phase E.8 — fix duplicate image on corporate-tax guide.
+#
+# E.7 brought corporate-tax to the same Pexels photo as
+# banking-basics (Denys Gromov, "city buildings during night time",
+# photo 4561006). Different query, same result — Pexels' ranking
+# converged. Switching corporate-tax to a documents/ledger angle so
+# the two guides don't share a visual.
+
+name: seed-images-e8
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e8.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Replace guide-uae-corporate-tax-overview
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-uae-corporate-tax-overview \
+            --query "calculator financial documents ledger" \
+            --orientation landscape \
+            --pick 0 \
+            --alt "Calculator and financial documents on a desk" \
+            --replace
+
+      - name: Validate
+        run: npm run check
+
+      - name: Show result
+        run: node -e "const m=require('./data/stock/manifest.json'); const e=m.entries.find(x=>x.slug==='guide-uae-corporate-tax-overview'); console.log(e.slug+' → '+e.source_url+' (by '+e.photographer+')');"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then
+            echo "No change."
+            exit 0
+          fi
+          git commit \
+            -m "feat(images): Phase E.8 — break corporate-tax/banking-basics duplicate" \
+            -m "E.7 brought corporate-tax to the same Pexels photo 4561006 as banking-basics. Switched query to a calculator/ledger angle so the two guides don't share a visual."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}
