@@ -73,6 +73,15 @@ const formatCategory = (c: string) =>
         )}
         <form class="intel-search" action="/" method="get" role="search">
           <label class="intel-search-label" for="news-search-input">Search</label>
+          {/* Visible magnifier — sits inside the pill so taps on it
+              focus the input (F-UX-4 mobile collapse). At <480px the
+              pill becomes a 36×36 icon-only affordance until focused. */}
+          <label for="news-search-input" class="intel-search-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="9" r="6"/>
+              <line x1="13.5" y1="13.5" x2="17.5" y2="17.5" stroke-linecap="round"/>
+            </svg>
+          </label>
           <input
             id="news-search-input"
             type="search"
@@ -258,6 +267,13 @@ const formatCategory = (c: string) =>
     width: 100%;
   }
   .intel-search input[type="search"]::placeholder { color: var(--muted); }
+  .intel-search-icon {
+    display: none;
+    align-items: center; justify-content: center;
+    color: var(--ink-soft);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
 
   .intel-grid {
     max-width: 1180px;
@@ -538,8 +554,45 @@ const formatCategory = (c: string) =>
     .intel-pagehead { padding: 32px 20px 24px; }
     .intel-grid { padding: 0 20px; margin-top: 24px; gap: 28px; }
     .intel-card-grid { grid-template-columns: 1fr; }
-    .intel-search { min-width: 0; flex: 1; }
-    .intel-tools { flex-direction: column; align-items: stretch; }
     .news-empty { padding: 28px 22px; }
+    /* F-UX-4: collapse the tab/search stack so the first content
+       card surfaces sooner. Tabs and icon-only search share a row;
+       search expands to a full-width pill only when focused. */
+    .intel-tools {
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .intel-tabs { flex: 1 1 auto; min-width: 0; gap: 4px; }
+    .intel-tab { padding: 6px 10px; font-size: 12px; }
+    /* When tabs sit alongside, collapse search to a 36px icon
+       button until focused. When search is the only child of
+       .intel-tools (news, current state), leave it full-width. */
+    .intel-search:not(:only-child) {
+      min-width: 36px;
+      width: 36px;
+      flex: 0 0 36px;
+      height: 36px;
+      padding: 0;
+      justify-content: center;
+      transition: width 0.18s ease, flex-basis 0.18s ease, padding 0.18s ease;
+    }
+    .intel-search:not(:only-child) .intel-search-icon {
+      display: inline-flex; width: 36px; height: 36px;
+    }
+    .intel-search:not(:only-child) input[type="search"] {
+      width: 0;
+      padding: 0;
+      transition: width 0.18s ease, padding 0.18s ease;
+    }
+    .intel-search:not(:only-child):focus-within {
+      width: 100%;
+      flex: 1 1 100%;
+      padding: 0 14px;
+    }
+    .intel-search:not(:only-child):focus-within .intel-search-icon { display: none; }
+    .intel-search:not(:only-child):focus-within input[type="search"] { width: 100%; }
+    .intel-search:only-child { width: 100%; min-width: 0; flex: 1 1 100%; }
   }
 </style>
