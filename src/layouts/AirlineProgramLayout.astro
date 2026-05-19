@@ -1,12 +1,25 @@
 ---
-// Airline programme layout — Phase H2 (Claude Design handoff alignment).
+// Airline programme layout — Phase H2 + F.16 (post-audit restructure).
 // Used by /airlines/[slug]/.
 //
-// Page head uses the design-handoff narrow pagehead chrome
-// (matches /guides/[slug]/, /news/[slug]/, /deals/[slug]/, trust pages).
-// Body sections use .dp-prose for typography consistency.
+// Restructure (F.16):
+//   - MDX body prose renders FIRST — the editorial content (Tier
+//     structure / Who Bonvoy suits / How to earn / What to watch) is
+//     what the reader came for.
+//   - Reference data (Sweet spots, Transfer partners, Expiry policy)
+//     renders below as a structured "Programme reference" block.
+//   - Related cards auto-populates from cards.json filtered by
+//     loyaltyProgram match. Empty "tiers" / "earning" / "related-cards"
+//     slots dropped — they were never filled by the [slug] consumer.
 
 import BaseLayout from "./BaseLayout.astro";
+
+interface RelatedCard {
+  slug: string;
+  name: string;
+  bankName: string;
+  annualFeeAed: number;
+}
 
 interface Props {
   title: string;
@@ -17,6 +30,7 @@ interface Props {
   expiryPolicy: string;
   sweetSpots: { title: string; description: string }[];
   transferPartners: string[];
+  relatedCards?: RelatedCard[];
 }
 
 const {
@@ -28,6 +42,7 @@ const {
   expiryPolicy,
   sweetSpots,
   transferPartners,
+  relatedCards = [],
 } = Astro.props;
 ---
 
@@ -39,16 +54,16 @@ const {
 
     <div class="dp-metric-strip">
       <div class="metric">
-        <span class="v">{currencyName}</span>
-        <span class="l">Currency</span>
-      </div>
-      <div class="metric">
         <span class="v">{sweetSpots.length}<span class="sub">documented</span></span>
         <span class="l">Sweet spots</span>
       </div>
       <div class="metric">
         <span class="v">{transferPartners.length}<span class="sub">programmes</span></span>
         <span class="l">Transfer partners</span>
+      </div>
+      <div class="metric">
+        <span class="v">{relatedCards.length}<span class="sub">UAE cards</span></span>
+        <span class="l">Earn into this</span>
       </div>
       <div class="metric">
         <span class="v">{region}</span>
@@ -58,52 +73,63 @@ const {
   </header>
 
   <article class="dp-prog-body">
-    <section>
-      <h2>Tier table</h2>
-      <slot name="tiers" />
+    <!-- Editorial prose first — this is what the reader came for. -->
+    <div class="dp-prose dp-prog-prose">
+      <slot />
+    </div>
+
+    <!-- Programme reference block: structured data the reader can scan. -->
+    <section class="dp-prog-reference">
+      <h2>Programme reference</h2>
+
+      {sweetSpots.length > 0 && (
+        <div class="dp-prog-ref-block">
+          <h3>Redemption sweet spots</h3>
+          <ul class="dp-sweet-list">
+            {sweetSpots.map((s) => (
+              <li>
+                <p class="title">{s.title}</p>
+                <p class="desc">{s.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {transferPartners.length > 0 && (
+        <div class="dp-prog-ref-block">
+          <h3>Transfer partners</h3>
+          <ul class="dp-tag-list">
+            {transferPartners.map((p) => <li>{p}</li>)}
+          </ul>
+        </div>
+      )}
+
+      <div class="dp-prog-ref-block">
+        <div class="dp-expiry-block">
+          <p class="label">Expiry policy</p>
+          <p class="body">{expiryPolicy}</p>
+        </div>
+      </div>
     </section>
 
-    <section>
-      <h2>How to earn</h2>
-      <slot name="earning" />
-    </section>
-
-    {sweetSpots.length > 0 && (
-      <section>
-        <h2>Redemption sweet spots</h2>
-        <ul class="dp-sweet-list">
-          {sweetSpots.map((s) => (
+    <!-- Related cards: auto-populated from cards.json by loyaltyProgram. -->
+    {relatedCards.length > 0 && (
+      <section class="dp-prog-related">
+        <h2>UAE cards that earn into {currencyName}</h2>
+        <ul class="dp-prog-related-list">
+          {relatedCards.map((c) => (
             <li>
-              <p class="title">{s.title}</p>
-              <p class="desc">{s.description}</p>
+              <a href={`/cards/${c.slug}/`}>
+                <span class="bank">{c.bankName}</span>
+                <span class="name">{c.name}</span>
+                <span class="fee">AED {c.annualFeeAed.toLocaleString()}/yr</span>
+              </a>
             </li>
           ))}
         </ul>
       </section>
     )}
-
-    {transferPartners.length > 0 && (
-      <section>
-        <h2>Transfer partners</h2>
-        <ul class="dp-tag-list">
-          {transferPartners.map((p) => <li>{p}</li>)}
-        </ul>
-      </section>
-    )}
-
-    <section class="dp-expiry-block">
-      <p class="label">Expiry policy</p>
-      <p class="body">{expiryPolicy}</p>
-    </section>
-
-    <section>
-      <h2>Related cards</h2>
-      <slot name="related-cards" />
-    </section>
-
-    <div class="dp-prose dp-prog-prose">
-      <slot />
-    </div>
   </article>
 </BaseLayout>
 
@@ -115,38 +141,68 @@ const {
   }
   @media (max-width: 640px) {
     .dp-prog-body { padding: 28px 20px 56px; }
-    .dp-prog-body section { margin-bottom: 28px; }
   }
-  .dp-prog-body section { margin-bottom: 36px; }
-  .dp-prog-body h2 {
+
+  .dp-prog-prose { margin-bottom: 48px; }
+  .dp-prog-prose p:first-of-type::first-letter {
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    float: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Programme reference: light grey band with structured data */
+  .dp-prog-reference {
+    background: var(--shade-1);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 28px 32px;
+    margin-bottom: 40px;
+  }
+  @media (max-width: 640px) {
+    .dp-prog-reference { padding: 20px 18px 24px; }
+  }
+  .dp-prog-reference h2 {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    margin: 0 0 18px;
+    padding: 0;
+    border: 0;
+  }
+  .dp-prog-ref-block { margin-bottom: 24px; }
+  .dp-prog-ref-block:last-child { margin-bottom: 0; }
+  .dp-prog-ref-block h3 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: clamp(20px, 2.6vw, 26px);
-    letter-spacing: -0.4px;
+    font-size: 18px;
+    letter-spacing: -0.3px;
     color: var(--ink);
-    margin: 0 0 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--line);
+    margin: 0 0 12px;
   }
 
   .dp-sweet-list {
     list-style: none; padding: 0; margin: 0;
-    display: flex; flex-direction: column; gap: 12px;
+    display: flex; flex-direction: column; gap: 10px;
   }
   .dp-sweet-list li {
+    background: var(--paper);
     border: 1px solid var(--line);
     border-left: 3px solid var(--green);
     border-radius: 8px;
-    background: var(--paper);
-    padding: 14px 16px;
+    padding: 12px 14px;
   }
   .dp-sweet-list .title {
     font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: 17px; letter-spacing: -0.2px;
+    font-size: 15px; letter-spacing: -0.2px;
     color: var(--ink); margin: 0 0 4px;
   }
   .dp-sweet-list .desc {
-    font-size: 14px; line-height: 1.55;
+    font-size: 13px; line-height: 1.5;
     color: var(--ink-soft); margin: 0;
   }
 
@@ -157,44 +213,96 @@ const {
   .dp-tag-list li {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 11px; font-weight: 600;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
     padding: 6px 12px;
-    background: var(--shade-1);
+    background: var(--paper);
     border: 1px solid var(--line);
     border-radius: 999px;
     color: var(--ink-soft);
   }
 
   .dp-expiry-block {
-    background: var(--shade-1);
+    background: var(--paper);
+    border: 1px solid var(--line);
     border-left: 3px solid var(--gold);
     border-radius: 8px;
-    padding: 16px 20px;
+    padding: 14px 16px;
   }
   .dp-expiry-block .label {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px; font-weight: 700;
+    font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--gold);
-    margin: 0 0 8px;
+    margin: 0 0 6px;
   }
   .dp-expiry-block .body {
-    font-size: 14px;
+    font-size: 13px;
     line-height: 1.55;
     color: var(--ink-soft);
     margin: 0;
   }
 
-  .dp-prog-prose { margin-top: 24px; }
-  /* Drop-cap should not apply to programme prose — these are
-     reference docs, not editorial features. */
-  .dp-prog-prose p:first-of-type::first-letter {
-    font-family: inherit;
-    font-weight: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    float: none;
-    padding: 0;
-    color: inherit;
+  /* Related cards — actual card tiles, not empty slot */
+  .dp-prog-related h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(20px, 2.6vw, 26px);
+    letter-spacing: -0.4px;
+    color: var(--ink);
+    margin: 0 0 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .dp-prog-related-list {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .dp-prog-related-list a {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+  }
+  .dp-prog-related-list a:hover {
+    border-color: var(--green);
+    background: var(--shade-1);
+    transform: translateY(-1px);
+  }
+  .dp-prog-related-list .bank {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--green);
+    white-space: nowrap;
+  }
+  .dp-prog-related-list .name {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: -0.2px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .dp-prog-related-list .fee {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  @media (max-width: 640px) {
+    .dp-prog-related-list a {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .dp-prog-related-list .fee {
+      margin-top: 4px;
+    }
   }
 </style>

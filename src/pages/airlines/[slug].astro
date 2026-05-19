@@ -1,6 +1,7 @@
 ---
 import AirlineProgramLayout from "~/layouts/AirlineProgramLayout.astro";
-import { getCollection, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
+import { getAllCards } from "~/lib/cardsData";
 
 export async function getStaticPaths() {
   const programs = await getCollection("programs");
@@ -9,6 +10,42 @@ export async function getStaticPaths() {
 
 const { program } = Astro.props;
 const { Content } = await render(program);
+
+// Match a card's loyaltyProgram string to this programme. Loose match:
+// strip the trailing "Miles"/"Points" suffix on both sides and compare.
+// Handles "Etihad Guest" vs "Etihad Guest Miles", "Marriott Bonvoy"
+// vs "Marriott Bonvoy Points", etc.
+function normalise(s: string): string {
+  return s
+    .toLowerCase()
+    .replace(/\s+(miles|points)\b/g, "")
+    .trim();
+}
+
+const programmeNeedle = normalise(program.data.name);
+const currencyNeedle = normalise(program.data.currencyName);
+
+const relatedRaw = getAllCards().filter((c) => {
+  const lp = c.loyaltyProgram;
+  if (!lp || lp === "scraped" || lp === "editor-confirmed") return false;
+  const card = normalise(lp);
+  return card === programmeNeedle || card === currencyNeedle;
+});
+
+const relatedCards = await Promise.all(
+  relatedRaw
+    .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
+    .slice(0, 8)
+    .map(async (c) => {
+      const bank = await getEntry("banks", c.bank);
+      return {
+        slug: c.slug,
+        name: c.name,
+        bankName: bank?.data.name ?? c.bank,
+        annualFeeAed: c.annualFee.amount,
+      };
+    }),
+);
 ---
 
 <AirlineProgramLayout
@@ -20,6 +57,7 @@ const { Content } = await render(program);
   expiryPolicy={program.data.expiryPolicy}
   sweetSpots={program.data.sweetSpots}
   transferPartners={program.data.transferPartners}
+  relatedCards={relatedCards}
 >
   <Content />
 </AirlineProgramLayout>
