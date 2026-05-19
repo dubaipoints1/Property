@@ -17,7 +17,7 @@ const allCards = getAllCards()
   .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
   .slice(0, 3);
 
-const cards = await Promise.all(
+const cardsRaw = await Promise.all(
   allCards.map(async (card) => {
     const bank = await getEntry("banks", card.bank);
     return { card, bankName: bank?.data.name ?? card.bank };
@@ -26,6 +26,69 @@ const cards = await Promise.all(
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+// F-UX-6: short label used as the mobile prefix on each value cell
+// (via the data-card attribute that .dp-compare-row .v[data-card]
+// echoes in a ::before). Full card names ("Emirates NBD Etihad
+// Guest Visa Inspire", 38 chars) overflow the column. Aim ≤ 18
+// chars: bank short alias + card identifier with network/tier
+// suffixes stripped. Section editors will supply proper aliases
+// via a future schema field; this is the sensible default.
+const BANK_ALIAS: Record<string, string> = {
+  "emirates-nbd": "ENBD",
+  "fab": "FAB",
+  "adcb": "ADCB",
+  "mashreq": "Mashreq",
+  "hsbc": "HSBC",
+  "dib": "DIB",
+  "adib": "ADIB",
+  "liv": "Liv",
+  "rakbank": "RAKBANK",
+  "cbd": "CBD",
+  "standard-chartered": "SCB",
+  "citi": "Citi",
+  "citibank": "Citi",
+  "emirates-islamic": "EI",
+};
+const STRIP_SUFFIXES = [
+  // Order matters: longest/most-specific first.
+  /\s+Mastercard\s+World\b/i,
+  /\s+World\s+Mastercard\b/i,
+  /\s+Visa\s+Infinite\b/i,
+  /\s+Visa\s+Signature\b/i,
+  /\s+Visa\s+Platinum\b/i,
+  /\s+Visa\s+Elite\b/i,
+  /\s+Visa\b/i,
+  /\s+Mastercard\b/i,
+  /\s+World\b/i,
+  /\s+Credit\s+Cards?\b/i,
+  /\s+Platinum\b/i,
+  /\s+Titanium\b/i,
+  /\s+Signature\b/i,
+];
+function shortCardLabel(bankSlug: string, bankName: string, cardName: string): string {
+  const bankShort = BANK_ALIAS[bankSlug] ?? bankName.split(/\s+/).slice(0, 2).join(" ");
+  // Strip the bank's name from the front of the card name if present,
+  // then strip network/tier suffixes that don't differentiate.
+  let id = cardName;
+  if (id.toLowerCase().startsWith(bankName.toLowerCase())) {
+    id = id.slice(bankName.length).trim();
+  }
+  for (const re of STRIP_SUFFIXES) id = id.replace(re, "").trim();
+  id = id.replace(/\s+/g, " ").trim();
+  // Final assembly. If the stripped id is empty (card name was only
+  // bank + network), fall back to the bank short alone.
+  const out = id ? `${bankShort} ${id}` : bankShort;
+  // Hard cap at 22 chars with an ellipsis so we never blow the cell.
+  return out.length > 22 ? out.slice(0, 20).trimEnd() + "…" : out;
+}
+
+// Attach the precomputed short label so the markup can reference
+// c.shortLabel directly instead of recomputing per value cell.
+const cards = cardsRaw.map((c) => ({
+  ...c,
+  shortLabel: shortCardLabel(c.card.bank, c.bankName, c.card.name),
+}));
 
 // Pick a representative earn-rate metric per card.
 const earnLine = (card: typeof cards[number]["card"]) => {
@@ -93,20 +156,20 @@ const earnLine = (card: typeof cards[number]["card"]) => {
       </div>
       <div class="dp-compare-row">
         <span class="k">Annual fee</span>
-        {cards.map((c) => <span class="v" data-card={c.card.name}>AED {c.card.annualFee.amount.toLocaleString()}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.shortLabel}>AED {c.card.annualFee.amount.toLocaleString()}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Minimum salary</span>
-        {cards.map((c) => <span class="v" data-card={c.card.name}>AED {c.card.eligibility.minSalary.toLocaleString()}/mo</span>)}
+        {cards.map((c) => <span class="v" data-card={c.shortLabel}>AED {c.card.eligibility.minSalary.toLocaleString()}/mo</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Network</span>
-        {cards.map((c) => <span class="v" data-card={c.card.name} style="font-weight: 500;">{c.card.network}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.shortLabel} style="font-weight: 500;">{c.card.network}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Salary transfer</span>
         {cards.map((c) => (
-          <span class={`v ${c.card.eligibility.salaryTransferRequired ? "warn" : "flag"}`} data-card={c.card.name}>
+          <span class={`v ${c.card.eligibility.salaryTransferRequired ? "warn" : "flag"}`} data-card={c.shortLabel}>
             {c.card.eligibility.salaryTransferRequired ? "Required" : "Not required"}
           </span>
         ))}
@@ -118,15 +181,15 @@ const earnLine = (card: typeof cards[number]["card"]) => {
       </div>
       <div class="dp-compare-row">
         <span class="k">Top category</span>
-        {cards.map((c) => <span class="v" data-card={c.card.name}>{earnLine(c.card)}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.shortLabel}>{earnLine(c.card)}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Welcome bonus</span>
-        {cards.map((c) => <span class="v" data-card={c.card.name}>{welcomeBonusDisplay(c.card.welcomeBonus) ?? "—"}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.shortLabel}>{welcomeBonusDisplay(c.card.welcomeBonus) ?? "—"}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">FX markup</span>
-        {cards.map((c) => <span class="v" data-card={c.card.name}>{c.card.fxFee}%</span>)}
+        {cards.map((c) => <span class="v" data-card={c.shortLabel}>{c.card.fxFee}%</span>)}
       </div>
 
       <!-- Benefits section -->
@@ -135,11 +198,11 @@ const earnLine = (card: typeof cards[number]["card"]) => {
       </div>
       <div class="dp-compare-row">
         <span class="k">Loyalty programme</span>
-        {cards.map((c) => <span class="v" data-card={c.card.name} style="font-weight: 500;">{c.card.loyaltyProgram ?? "—"}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.shortLabel} style="font-weight: 500;">{c.card.loyaltyProgram ?? "—"}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Last verified</span>
-        {cards.map((c) => <span class="v" data-card={c.card.name} style="font-weight: 500;">{fmt(c.card.lastVerified)}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.shortLabel} style="font-weight: 500;">{fmt(c.card.lastVerified)}</span>)}
       </div>
 
       <!-- Verdict section -->
@@ -149,7 +212,7 @@ const earnLine = (card: typeof cards[number]["card"]) => {
       <div class="dp-compare-row is-verdict">
         <span class="k">Welcome value (AED)</span>
         {cards.map((c) => (
-          <span class="v is-welcome-value" data-card={c.card.name}>
+          <span class="v is-welcome-value" data-card={c.shortLabel}>
             {c.card.welcomeBonusValue != null ? `AED ${c.card.welcomeBonusValue.toLocaleString()}` : "—"}
           </span>
         ))}
