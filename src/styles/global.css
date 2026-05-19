@@ -1964,6 +1964,9 @@ img { display: block; max-width: 100%; }
     grid-template-columns: minmax(0, 1fr) 320px; gap: 64px;
   }
 }
+@media (max-width: 640px) {
+  .dp-cr-body-grid { padding: 32px 16px 56px; gap: 28px; }
+}
 .dp-cr-body { max-width: 680px; margin-inline: auto; width: 100%; }
 .dp-cr-body .deck {
   font-family: 'Fraunces', serif;
