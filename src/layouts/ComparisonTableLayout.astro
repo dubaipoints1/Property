@@ -42,11 +42,11 @@ const { title, description, columns, rows } = Astro.props;
         <tbody>
           {rows.map((r) => (
             <tr>
-              <td class="dp-compare-card">
+              <td class="dp-compare-card" data-label="Card">
                 <a href={r.href}>{r.cardName}</a>
                 <span class="dp-compare-bank">{r.bankName}</span>
               </td>
-              {r.values.map((v) => <td>{v}</td>)}
+              {r.values.map((v, i) => <td data-label={columns[i]}>{v}</td>)}
             </tr>
           ))}
         </tbody>
@@ -130,5 +130,73 @@ const { title, description, columns, rows } = Astro.props;
     float: none;
     padding: 0;
     color: inherit;
+  }
+
+  /* Mobile: collapse the table into stacked cards. Each row becomes a
+     vertical card with key:value pairs; the column header gets injected
+     as a label via the data-label attribute. Fixes the "one word per
+     line" wrapping that happens when the table can't reach min-width on
+     a 375px viewport. */
+  @media (max-width: 640px) {
+    .dp-cmp-body { padding: 20px 16px 60px; }
+    .dp-compare-wrap {
+      overflow: visible;
+      border: 0;
+      background: transparent;
+      border-radius: 0;
+    }
+    .dp-compare-table {
+      min-width: 0;
+      display: block;
+    }
+    .dp-compare-table thead { display: none; }
+    .dp-compare-table tbody { display: block; }
+    .dp-compare-table tr {
+      display: block;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      padding: 18px 18px 4px;
+    }
+    .dp-compare-table tbody tr:hover td { background: transparent; }
+    .dp-compare-table td {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      border-top: 0;
+      border-bottom: 1px solid var(--line-soft);
+      padding: 10px 0;
+      font-size: 14px;
+    }
+    .dp-compare-table td:last-child { border-bottom: 0; }
+    /* Label injected from data-label attribute on each td */
+    .dp-compare-table td[data-label]::before {
+      content: attr(data-label);
+      flex-shrink: 0;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--muted);
+      align-self: center;
+    }
+    /* Card cell renders as a header — full width, no label prefix,
+       larger card name + bank below */
+    .dp-compare-card {
+      display: block !important;
+      position: static !important;
+      background: transparent !important;
+      border-right: 0;
+      border-bottom: 1px solid var(--line) !important;
+      padding-bottom: 12px !important;
+      margin-bottom: 6px;
+    }
+    .dp-compare-card::before { display: none; }
+    .dp-compare-card a {
+      font-size: 17px;
+    }
   }
 </style>
