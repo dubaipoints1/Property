@@ -166,6 +166,9 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
           <li class="cards-row">
             <a href={`/cards/${f.card.slug}/`} class="cards-row-link">
               <div class="cards-row-art">
+                {/* Scaled card mock — used at >=640px. Below 640px the
+                    0.5× scale + negative margins read as a decorative
+                    chip rather than a card preview (F-UX-2). */}
                 <div class="dp-cr-mock" data-bank={f.card.bank} aria-hidden="true">
                   <div class="dp-cr-mock-chip"></div>
                   <div class="dp-cr-mock-row">
@@ -174,6 +177,22 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
                   </div>
                   <div class="n">{f.card.name}</div>
                   <div class="b">{f.card.network}</div>
+                </div>
+                {/* Mobile thumbnail — 64×40 with bank logo (or initial
+                    fallback) on a navy-tinted square. Shown at <640px. */}
+                <div class="cards-row-thumb" data-bank={f.card.bank} aria-hidden="true">
+                  <img
+                    src={`/logos/banks/${f.card.bank}.svg`}
+                    alt=""
+                    width="40"
+                    height="24"
+                    loading="lazy"
+                    decoding="async"
+                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                  />
+                  <span class="cards-row-thumb-fallback">
+                    {f.bankName.split(/\s+/).map((w) => w[0]?.toUpperCase() ?? "").slice(0, 3).join("")}
+                  </span>
                 </div>
               </div>
               <div class="cards-row-id">
@@ -447,6 +466,11 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     width: 250px;
     margin: -28px -90px -28px 0;
   }
+  /* Mobile thumbnail — hidden until <640px, where it replaces the
+     scaled mock (F-UX-2). 64×40 navy-tinted square + bank logo
+     (or initials fallback when /logos/banks/<slug>.svg is missing). */
+  .cards-row-thumb { display: none; }
+  .cards-row-thumb-fallback { display: none; }
   .cards-row-id { display: grid; gap: 4px; }
   .cards-row-bank {
     font-family: 'DM Sans', system-ui, sans-serif;
@@ -620,6 +644,45 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     .cards-pagehead { padding: 32px 20px 24px; }
     .cards-top-picks, .cards-compare-section { padding-inline: 20px; }
     .cards-callout { padding: 40px 20px 48px; }
-    .cards-row-link { padding: 14px; }
+    .cards-row-link {
+      padding: 14px;
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 12px;
+    }
+    /* Hide the scaled mock and show a clean 64×40 thumbnail with the
+       bank logo (F-UX-2). The mock at scale(0.5) inside a 100px col
+       with negative margins reads as a decorative chip. */
+    .cards-row-art .dp-cr-mock { display: none; }
+    .cards-row-thumb {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 40px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #0d3b6c 0%, #1a1a2e 100%);
+      overflow: hidden;
+      padding: 4px;
+    }
+    .cards-row-thumb img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      /* Bank SVGs are usually dark — tint to paper on the navy chip. */
+      filter: brightness(0) invert(1);
+      opacity: 0.92;
+    }
+    .cards-row-thumb-fallback {
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      color: var(--paper);
+      font-family: 'Fraunces', serif;
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.4px;
+      line-height: 1;
+    }
   }
 </style>
