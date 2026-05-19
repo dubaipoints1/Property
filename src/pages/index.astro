@@ -662,7 +662,9 @@ const milesTiles = allPrograms
   .hp-wallet-list a {
     display: grid;
     grid-template-columns: 8px 1fr;
-    gap: 14px;
+    grid-template-rows: auto auto;
+    column-gap: 14px;
+    row-gap: 2px;
     text-decoration: none;
     padding: 8px 0;
     border-bottom: 1px solid rgba(251, 250, 246, 0.12);
@@ -670,6 +672,8 @@ const milesTiles = allPrograms
   }
   .hp-wallet-list a::before {
     content: '';
+    grid-row: 1 / span 2;
+    grid-column: 1;
     align-self: start;
     margin-top: 8px;
     width: 8px; height: 8px;
