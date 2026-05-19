@@ -1,0 +1,112 @@
+# Phase E.9 — bank index photos.
+#
+# /banks/ index uses <StockImage slug="bank-<id>"> per bank tile but
+# the manifest has zero bank entries, so every tile renders the green
+# Cover.astro SVG. Five banks need photos, each with a distinct UAE
+# theme so the tiles don't look interchangeable.
+
+name: seed-images-e9
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e9.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Fetch bank-emirates-nbd (Dubai banking district)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-emirates-nbd \
+            --query "Dubai DIFC banking district aerial sunset" \
+            --orientation landscape \
+            --alt "Dubai International Financial Centre at sunset"
+
+      - name: Fetch bank-fab (Abu Dhabi skyline)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-fab \
+            --query "Abu Dhabi corniche skyline towers" \
+            --orientation landscape \
+            --alt "Abu Dhabi corniche skyline at golden hour"
+
+      - name: Fetch bank-adcb (corporate office)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-adcb \
+            --query "modern office tower glass facade Abu Dhabi" \
+            --orientation landscape \
+            --alt "Modern office tower glass facade in Abu Dhabi"
+
+      - name: Fetch bank-emirates-islamic (Islamic geometric pattern)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-emirates-islamic \
+            --query "Islamic geometric pattern mosque architecture" \
+            --orientation landscape \
+            --alt "Islamic geometric architectural pattern detail"
+
+      - name: Fetch bank-rakbank (Ras Al Khaimah)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-rakbank \
+            --query "Ras Al Khaimah mountains Jebel Jais landscape" \
+            --orientation landscape \
+            --alt "Mountain landscape in Ras Al Khaimah"
+
+      - name: Validate
+        run: |
+          npm run check
+          npm test
+
+      - name: Show results
+        run: |
+          node -e "const m=require('./data/stock/manifest.json'); ['bank-emirates-nbd','bank-fab','bank-adcb','bank-emirates-islamic','bank-rakbank'].forEach(s=>{const e=m.entries.find(x=>x.slug===s); if(e) console.log('  '+e.slug+' → '+e.source_url+' (by '+e.photographer+')');});"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then
+            echo "No new images."
+            exit 0
+          fi
+          git commit \
+            -m "feat(images): Phase E.9 — bank index photos (5 banks)" \
+            -m "Each bank gets a distinct UAE-themed photo so the /banks/ tiles don't look interchangeable: ENBD → Dubai DIFC; FAB → Abu Dhabi corniche; ADCB → corporate office; Emirates Islamic → Islamic geometric pattern; RAKBANK → Ras Al Khaimah landscape."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}

@@ -210,18 +210,41 @@ const fmtScore = (s?: number) => {
         </div>
       )}
 
-      {perks.length > 0 && (
-        <div class="dp-spec-card">
-          <h4>Perks</h4>
-          <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
-            {perks.slice(0, 6).map((p) => (
-              <li style="font-size: 13px; color: var(--ink-soft); line-height: 1.5; padding-left: 12px; position: relative;">
-                <span style="position: absolute; left: 0; color: var(--green); font-weight: 700;">+</span>
-                {p}
-              </li>
-            ))}
-          </ul>
-        </div>
+      {perks.length > 0 && (() => {
+        // Filter junk perks bleeding from the scrape — Arabic-toggle UI
+        // strings (`[العربية...`), Markdown image references
+        // (`![icon...](http...)`), and other source-HTML artefacts that
+        // the scrape normaliser hasn't been taught to strip yet.
+        // Permanent fix lives in scripts/scrape/_normaliser.ts (BRE editor
+        // + scrape pipeline pass); this is a display-time defence so
+        // readers never see the garbage.
+        const cleanPerks = perks.filter((p) => {
+          const s = (p ?? "").trim();
+          if (!s) return false;
+          if (s.length < 4) return false;
+          if (s.startsWith("[") || s.startsWith("![")) return false;
+          if (s.startsWith("(") && s.includes("](")) return false;
+          if (/^\\+$/.test(s)) return false;
+          if (/^https?:\/\//i.test(s)) return false;
+          if (/العربية/.test(s)) return false;
+          if (/^icon\./i.test(s)) return false;
+          if (/\.alt\]/.test(s)) return false;
+          return true;
+        });
+        return cleanPerks.length > 0 ? (
+          <div class="dp-spec-card">
+            <h4>Perks</h4>
+            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+              {cleanPerks.slice(0, 6).map((p) => (
+                <li style="font-size: 13px; color: var(--ink-soft); line-height: 1.5; padding-left: 12px; position: relative;">
+                  <span style="position: absolute; left: 0; color: var(--green); font-weight: 700;">+</span>
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null;
+      })()}
       )}
 
       {editorTake && (

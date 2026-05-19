@@ -1,0 +1,68 @@
+# Phase E.10 — fix RAKBANK photo (E.9 landed on Oman).
+#
+# E.9's `Ras Al Khaimah mountains Jebel Jais` query returned a
+# hairpin road in Oman — neighbouring country, wrong location.
+# Pexels' RAK-specific stock is thin. Switching to a UAE-northern-
+# emirates angle that's more likely to return a UAE-tagged photo.
+
+name: seed-images-e10
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e10.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Replace bank-rakbank (UAE coastline, not Oman)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-rakbank \
+            --query "United Arab Emirates desert coast Persian Gulf" \
+            --orientation landscape \
+            --pick 0 \
+            --alt "United Arab Emirates coastline" \
+            --replace
+
+      - name: Validate
+        run: npm run check
+
+      - name: Show result
+        run: node -e "const m=require('./data/stock/manifest.json'); const e=m.entries.find(x=>x.slug==='bank-rakbank'); console.log(e.slug+' → '+e.source_url+' (by '+e.photographer+')');"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then echo "No change."; exit 0; fi
+          git commit \
+            -m "feat(images): Phase E.10 — fix RAKBANK (E.9 returned Oman)" \
+            -m "E.9's Ras Al Khaimah / Jebel Jais query returned a hairpin road in Oman. Switched to UAE-coast angle to bias toward an in-country photo."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}
