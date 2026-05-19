@@ -17,13 +17,17 @@
 
 import BaseLayout from "./BaseLayout.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
+import StockImage from "~/components/StockImage.astro";
+import { hasStockEntry } from "~/lib/stockManifest";
 
 interface Props {
   title: string;
   description?: string;
   bankName: string;
-  /** bank slug (e.g. "fab", "enbd") — drives per-issuer tint on card-art mock */
+  /** bank slug (e.g. "fab", "emirates-nbd") — drives per-issuer tint on card-art mock */
   bankSlug?: string;
+  /** card slug — used to look up a per-card photograph in the stock manifest. */
+  slug?: string;
   cardName: string;
   network: string;
   annualFee: number;
@@ -48,6 +52,7 @@ const {
   description,
   bankName,
   bankSlug,
+  slug,
   cardName,
   network,
   annualFee,
@@ -87,21 +92,48 @@ const fmtScore = (s?: number) => {
   if (s == null) return null;
   return s.toFixed(1).replace(/\.0$/, "");
 };
+
+// Stock photograph lookup. Each card may have an editorial photograph
+// registered in data/stock/manifest.json under `card-<slug>` (e.g.
+// `card-emirates-nbd-skywards-infinite`). When present, the hero band
+// renders the photo instead of the CSS-only mock. The mock remains the
+// fallback for every card that doesn't yet have a curated photograph.
+const stockSlug = slug ? `card-${slug}` : null;
+const hasPhoto = stockSlug ? hasStockEntry(stockSlug) : false;
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
 
-  <!-- Navy hero band: card mock + content -->
+  <!-- Navy hero band: card photograph (when registered) or CSS mock fallback -->
   <header class="dp-cr-hero">
-    <div class="dp-cr-mock" data-bank={bankSlug ?? "default"} aria-hidden="true">
-      <div class="dp-cr-mock-chip"></div>
-      <div class="dp-cr-mock-row">
-        <div class="b">{bankName}</div>
-        <div class="dp-cr-mock-mark">{network.slice(0, 1)}</div>
+    {hasPhoto && stockSlug ? (
+      <figure class="dp-cr-photo" data-bank={bankSlug ?? "default"}>
+        <StockImage
+          slug={stockSlug}
+          coverTitle={cardName}
+          coverCategory="Card review"
+          coverSize="med"
+          class="dp-cr-photo-img"
+          loading="eager"
+          sizes="(max-width: 720px) 100vw, 360px"
+        />
+        <figcaption class="dp-cr-photo-cap">
+          <span class="b">{bankName}</span>
+          <span class="dp-cr-photo-name">{cardName}</span>
+          <span class="b">{network}</span>
+        </figcaption>
+      </figure>
+    ) : (
+      <div class="dp-cr-mock" data-bank={bankSlug ?? "default"} aria-hidden="true">
+        <div class="dp-cr-mock-chip"></div>
+        <div class="dp-cr-mock-row">
+          <div class="b">{bankName}</div>
+          <div class="dp-cr-mock-mark">{network.slice(0, 1)}</div>
+        </div>
+        <div class="n">{cardName}</div>
+        <div class="b">{network}</div>
       </div>
-      <div class="n">{cardName}</div>
-      <div class="b">{network}</div>
-    </div>
+    )}
 
     <div class="dp-cr-text">
       <div class="crumb">{
