@@ -74,8 +74,8 @@ const earnLine = (card: typeof cards[number]["card"]) => {
       <div class="dp-compare-head">
         <div class="dp-compare-head-spacer" aria-hidden="true"></div>
         {cards.map((c) => (
-          <div style="display: flex; flex-direction: column; gap: 12px;">
-            <div class="dp-cr-mock" style="aspect-ratio: 1.586/1; max-width: 100%;">
+          <div class="dp-compare-head-cell">
+            <div class="dp-cr-mock dp-compare-head-mock">
               <div class="b">{c.bankName}</div>
               <div class="n">{c.card.name}</div>
               <div class="b" style="align-self: flex-end;">{c.card.network}</div>
