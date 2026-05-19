@@ -454,6 +454,15 @@ img { display: block; max-width: 100%; }
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 12px;
+  /* Allow narrow tables (e.g. calculator AED conversion) to scroll
+     horizontally inside their wrapper at very small viewports rather
+     than collapsing rows into one-word-per-line stacks. */
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (min-width: 640px) {
+  .dp-data-table { display: table; overflow: visible; }
 }
 .dp-data-table thead {
   background: var(--bg);
