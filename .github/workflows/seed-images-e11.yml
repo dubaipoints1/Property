@@ -1,0 +1,67 @@
+# Phase E.11 — RAKBANK: actual Ras Al Khaimah this time.
+#
+# E.9 returned Oman (wrong country). E.10 returned Abu Dhabi (wrong
+# emirate). Trying Al Marjan Island — RAK's flagship development,
+# which has measurable Pexels coverage.
+
+name: seed-images-e11
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch"
+        required: true
+        default: "claude/check-latest-updates-GkRze"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e11.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Refetch bank-rakbank (Al Marjan Island, RAK)
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-rakbank \
+            --query "Al Marjan Island Ras Al Khaimah resort aerial" \
+            --orientation landscape \
+            --pick 0 \
+            --alt "Aerial view of Al Marjan Island, Ras Al Khaimah" \
+            --replace
+
+      - name: Validate
+        run: npm run check
+
+      - name: Show result
+        run: node -e "const m=require('./data/stock/manifest.json'); const e=m.entries.find(x=>x.slug==='bank-rakbank'); console.log(e.slug+' → '+e.source_url+' (by '+e.photographer+')');"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then echo "No change."; exit 0; fi
+          git commit \
+            -m "feat(images): Phase E.11 — RAKBANK Al Marjan Island (third attempt)" \
+            -m "E.9 returned Oman; E.10 returned Abu Dhabi. RAKBANK is in Ras Al Khaimah — trying Al Marjan Island, RAK's signature waterfront development."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}

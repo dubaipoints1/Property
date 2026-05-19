@@ -56,6 +56,9 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     margin: 0 auto;
     padding: 32px 32px 80px;
   }
+  @media (max-width: 640px) {
+    .dp-search-body { padding: 24px 16px 56px; }
+  }
   #search { margin-bottom: 24px; }
   /* Override Pagefind UI defaults to match design idiom */
   :global(.pagefind-ui) {

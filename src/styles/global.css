@@ -454,6 +454,15 @@ img { display: block; max-width: 100%; }
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 12px;
+  /* Allow narrow tables (e.g. calculator AED conversion) to scroll
+     horizontally inside their wrapper at very small viewports rather
+     than collapsing rows into one-word-per-line stacks. */
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (min-width: 640px) {
+  .dp-data-table { display: table; overflow: visible; }
 }
 .dp-data-table thead {
   background: var(--bg);
@@ -1262,6 +1271,9 @@ img { display: block; max-width: 100%; }
   padding: 56px 32px 32px;
   background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
 }
+@media (max-width: 640px) {
+  .dp-pagehead.is-narrow { padding: 36px 20px 24px; }
+}
 /* Eyebrow row above the h1 — "SWEET SPOTS · 14 May · 8 min read"
    pattern from mockup page 04. Phase F.8. The .dp-article-eyebrow
    inside resets its own margin so it sits flush. */
@@ -1337,6 +1349,18 @@ img { display: block; max-width: 100%; }
   font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
   color: var(--muted); font-weight: 600;
 }
+/* Mobile: tighten margins so the row doesn't overflow a 375px viewport,
+   and hide the Share/Save/Print row (they're inert placeholder spans
+   today, not functional buttons — they wrap and look broken when
+   crammed against the byline at narrow widths). */
+@media (max-width: 640px) {
+  .dp-byline-strip {
+    padding: 14px 20px;
+    margin: 0 16px 24px;
+    gap: 12px;
+  }
+  .dp-byline-strip .actions { display: none; }
+}
 
 /* Article body grid (1fr + 240px sidebar at >=1024px) */
 .dp-article-body-grid {
@@ -1352,6 +1376,9 @@ img { display: block; max-width: 100%; }
     grid-template-columns: minmax(0, 1fr) 240px;
     gap: 64px;
   }
+}
+@media (max-width: 640px) {
+  .dp-article-body-grid { padding: 0 16px 64px; gap: 24px; }
 }
 
 .dp-article-body { max-width: 680px; margin-inline: auto; }
@@ -1697,6 +1724,10 @@ img { display: block; max-width: 100%; }
   margin: 0 auto;
   padding: 40px 32px 80px;
 }
+@media (max-width: 640px) {
+  .dp-trust-meta { padding: 12px 20px; }
+  .dp-trust-body { padding: 28px 20px 56px; }
+}
 .dp-trust-body .dp-prose section { margin-block: 32px; }
 .dp-trust-body .dp-prose section:first-child { margin-top: 0; }
 .dp-trust-body .dp-prose section h2 {
@@ -1941,6 +1972,9 @@ img { display: block; max-width: 100%; }
   .dp-cr-body-grid {
     grid-template-columns: minmax(0, 1fr) 320px; gap: 64px;
   }
+}
+@media (max-width: 640px) {
+  .dp-cr-body-grid { padding: 32px 16px 56px; gap: 28px; }
 }
 .dp-cr-body { max-width: 680px; margin-inline: auto; width: 100%; }
 .dp-cr-body .deck {
@@ -2221,6 +2255,12 @@ img { display: block; max-width: 100%; }
   display: flex; justify-content: space-between;
   font-size: 12px; color: var(--muted);
   border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+@media (max-width: 640px) {
+  .dp-tools-methodology { padding: 28px 20px; gap: 20px; }
+  .dp-tools-actions { padding: 20px; }
 }
 .dp-tools-actions a {
   color: var(--ink-soft); font-weight: 600;
@@ -2274,6 +2314,42 @@ img { display: block; max-width: 100%; }
     grid-template-columns: 1fr;
     gap: 8px;
   }
+  /* Mobile: hide the empty spacer cell in the head row so the mocks
+     don't sit below an empty stripe. */
+  .dp-compare-head-spacer { display: none; }
+  /* Mobile: prefix each value with the card name so the reader can tell
+     which card's value they're reading. Without this, the page collapses
+     to a stack of unlabelled numbers below the row label. */
+  .dp-compare-row .v[data-card]::before {
+    content: attr(data-card);
+    display: block;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+    word-break: break-word;
+  }
+  /* Verdict row: keep the figure large but stack each card's value with
+     its prefix so the reader still sees the AED amount as the hero. */
+  .dp-compare-row.is-verdict .v.is-welcome-value {
+    padding-top: 4px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .dp-compare-row.is-verdict .v.is-welcome-value:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+/* Verdict row — desktop styling for the welcome-value pills */
+.dp-compare-row.is-verdict { padding: 24px 32px; }
+.dp-compare-row .v.is-welcome-value {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--green);
 }
 
 /* ════════════════════════════════════════════════════════════════════════
