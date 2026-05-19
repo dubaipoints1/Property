@@ -1832,7 +1832,41 @@ img { display: block; max-width: 100%; }
      before the card-art mock on mobile so the verdict surfaces in the
      first viewport. UX kill-list rule 2 (buried verdicts). */
   .dp-cr-hero .dp-cr-text { order: 0; }
-  .dp-cr-hero .dp-cr-mock { order: 1; max-width: 100%; }
+  .dp-cr-hero .dp-cr-mock,
+  .dp-cr-hero .dp-cr-photo { order: 1; max-width: 100%; }
+}
+
+/* Card-review hero photograph — wraps a manifest-tracked Pexels image
+   in the same 1.586:1 frame the CSS mock uses. The caption row below
+   echoes the mock's bank / card-name / network typography so the band's
+   information hierarchy is identical whether or not a photo exists. */
+.dp-cr-photo {
+  margin: 0;
+  display: flex; flex-direction: column; gap: 12px;
+  max-width: 360px;
+}
+.dp-cr-photo-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.586 / 1;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.06) inset,
+    0 12px 32px rgba(0,0,0,0.18);
+}
+.dp-cr-photo-cap {
+  display: flex; flex-direction: column; gap: 4px;
+  color: white;
+}
+.dp-cr-photo-cap .b {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  opacity: 0.72;
+}
+.dp-cr-photo-cap .dp-cr-photo-name {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: 18px; letter-spacing: -0.3px; line-height: 1.2;
 }
 .dp-cr-mock {
   aspect-ratio: 1.586 / 1;
@@ -1902,21 +1936,29 @@ img { display: block; max-width: 100%; }
 }
 
 /* Per-issuer tints — applied via [data-bank] selector. Default falls back
-   to the navy gradient set on .dp-cr-mock. */
-.dp-cr-mock[data-bank="fab"]      { background: linear-gradient(135deg, #0d3b6c 0%, #1a1a2e 100%); }
-.dp-cr-mock[data-bank="enbd"]     { background: linear-gradient(135deg, #a30016 0%, #1a1a1e 100%); }
-.dp-cr-mock[data-bank="mashreq"]  { background: linear-gradient(135deg, #e36d12 0%, #1c1310 100%); }
-.dp-cr-mock[data-bank="adcb"]     { background: linear-gradient(135deg, #a90b15 0%, #2a1f1a 100%); }
-.dp-cr-mock[data-bank="hsbc"]     { background: linear-gradient(135deg, #db0011 0%, #1a0405 100%); }
-.dp-cr-mock[data-bank="dib"]      { background: linear-gradient(135deg, #0d6a35 0%, #0a1a14 100%); }
-.dp-cr-mock[data-bank="adib"]     { background: linear-gradient(135deg, #13513a 0%, #0a1a14 100%); }
-.dp-cr-mock[data-bank="liv"]      { background: linear-gradient(135deg, #00bfb3 0%, #002a2a 100%); }
-.dp-cr-mock[data-bank="rakbank"]  { background: linear-gradient(135deg, #b9051a 0%, #1c0a0d 100%); }
-.dp-cr-mock[data-bank="cbd"]      { background: linear-gradient(135deg, #003d7a 0%, #1a1a2e 100%); }
+   to the navy gradient set on .dp-cr-mock. Slugs match cards.json (`bank`
+   field): today that's `emirates-nbd` and `fab`. Short-form aliases
+   (`enbd`, `scb`, etc.) are kept for forward compatibility with any
+   future short-slug migration. */
+.dp-cr-mock[data-bank="fab"],
+.dp-cr-mock[data-bank="first-abu-dhabi-bank"]      { background: linear-gradient(135deg, #0d3b6c 0%, #1a1a2e 100%); }
+.dp-cr-mock[data-bank="enbd"],
+.dp-cr-mock[data-bank="emirates-nbd"]              { background: linear-gradient(135deg, #a30016 0%, #1a1a1e 100%); }
+.dp-cr-mock[data-bank="mashreq"]                   { background: linear-gradient(135deg, #e36d12 0%, #1c1310 100%); }
+.dp-cr-mock[data-bank="adcb"]                      { background: linear-gradient(135deg, #a90b15 0%, #2a1f1a 100%); }
+.dp-cr-mock[data-bank="hsbc"]                      { background: linear-gradient(135deg, #db0011 0%, #1a0405 100%); }
+.dp-cr-mock[data-bank="dib"],
+.dp-cr-mock[data-bank="dubai-islamic-bank"]        { background: linear-gradient(135deg, #0d6a35 0%, #0a1a14 100%); }
+.dp-cr-mock[data-bank="adib"],
+.dp-cr-mock[data-bank="abu-dhabi-islamic-bank"]    { background: linear-gradient(135deg, #13513a 0%, #0a1a14 100%); }
+.dp-cr-mock[data-bank="liv"]                       { background: linear-gradient(135deg, #00bfb3 0%, #002a2a 100%); }
+.dp-cr-mock[data-bank="rakbank"]                   { background: linear-gradient(135deg, #b9051a 0%, #1c0a0d 100%); }
+.dp-cr-mock[data-bank="cbd"],
+.dp-cr-mock[data-bank="commercial-bank-of-dubai"]  { background: linear-gradient(135deg, #003d7a 0%, #1a1a2e 100%); }
 .dp-cr-mock[data-bank="standard-chartered"],
-.dp-cr-mock[data-bank="scb"]      { background: linear-gradient(135deg, #0e7a47 0%, #0a1a14 100%); }
+.dp-cr-mock[data-bank="scb"]                       { background: linear-gradient(135deg, #0e7a47 0%, #0a1a14 100%); }
 .dp-cr-mock[data-bank="citi"],
-.dp-cr-mock[data-bank="citibank"] { background: linear-gradient(135deg, #056dae 0%, #0a1a2e 100%); }
+.dp-cr-mock[data-bank="citibank"]                  { background: linear-gradient(135deg, #056dae 0%, #0a1a2e 100%); }
 
 .dp-cr-hero .crumb {
   color: rgba(255,255,255,0.6);
