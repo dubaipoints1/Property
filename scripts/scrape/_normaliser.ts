@@ -529,6 +529,46 @@ const BANK_NAV_OVERRIDES: Record<string, RegExp> = {
   enbd: /\b(?:liv\.?\s+by\s+(?:emirates\s+nbd|enbd)|enbd\s+x\b|smartbusiness|smarttrade|wealthline)\b/i,
 };
 
+/**
+ * Phase A1.1 — strip Markdown-source artefacts that bleed through the bullet
+ * scrape. Mirrors the defence in `src/layouts/CardReviewLayout.astro` so the
+ * data file stays clean at the source rather than relying on the display
+ * filter as the only line of defence.
+ *
+ * Drops:
+ *   - empty / under-4-char lines
+ *   - lines beginning with `[` (Arabic-toggle anchors like `[العربية...`)
+ *     or `![` (Markdown image references like `![icon.foo.alt](...)`)
+ *   - lines starting `(...)` that contain `](` (orphaned link tails)
+ *   - pure backslash runs
+ *   - bare URLs
+ *   - any line mentioning `العربية` (Arabic language-toggle UI)
+ *   - lines starting `icon.` (bullet-icon `alt` text leaks)
+ *   - lines matching `.alt]` (Markdown image `alt` attribute fragments)
+ */
+function isPerkArtefact(line: string): boolean {
+  const s = (line ?? "").trim();
+  if (!s) return true;
+  if (s.length < 4) return true;
+  if (s.startsWith("[") || s.startsWith("![")) return true;
+  if (s.startsWith("(") && s.includes("](")) return true;
+  if (/^\\+$/.test(s)) return true;
+  if (/^https?:\/\//i.test(s)) return true;
+  if (/العربية/.test(s)) return true;
+  if (/^icon\./i.test(s)) return true;
+  if (/\.alt\]/.test(s)) return true;
+  return false;
+}
+
+/**
+ * Exported for unit-test coverage and reuse by `propose-changes.ts` when it
+ * mirrors a bullet list into `_scraped_freetext.perks`. Keeping a single
+ * filter implementation prevents drift between extraction sites.
+ */
+export function filterPerkArtefacts(lines: string[]): string[] {
+  return lines.filter((l) => !isPerkArtefact(l));
+}
+
 function parsePerks(text: string, bankSlug: string): string[] {
   const bankNavRx = BANK_NAV_OVERRIDES[bankSlug];
   const ONLY_LINK_RX = /^\[[^\]]+\]\(https?:[^)]+\)\s*\.?$/;
@@ -543,6 +583,10 @@ function parsePerks(text: string, bankSlug: string): string[] {
     if (ONLY_LINK_RX.test(line)) continue;
     if (GENERIC_NAV_RX.test(line)) continue;
     if (bankNavRx?.test(line)) continue;
+    // Phase A1.1 — drop Markdown-source artefacts (Arabic-toggle anchors,
+    // bullet-icon image refs, etc.) at extraction time so they never reach
+    // _scraped_freetext.perks or cards.json.
+    if (isPerkArtefact(line)) continue;
     if (seen.has(line)) continue;
     seen.add(line);
     out.push(line);

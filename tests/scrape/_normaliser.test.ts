@@ -8,7 +8,11 @@ import assert from "node:assert/strict";
 import path from "node:path";
 
 import { loadFixture, parseAED, parsePercent, parseMinSalary, parseEarnRate } from "../../scripts/scrape/_lib.ts";
-import { normalise, parseWelcomeBonus } from "../../scripts/scrape/_normaliser.ts";
+import {
+  normalise,
+  parseWelcomeBonus,
+  filterPerkArtefacts,
+} from "../../scripts/scrape/_normaliser.ts";
 
 // Local mirror of the parser's FX plausibility floor — kept as a
 // literal so the test file doesn't reach into parser internals.
@@ -784,4 +788,116 @@ Sign-up bonus: Earn 10,000 TouchPoints when you spend AED 3,000 in 60 days.
   assert.equal(draft.earnRates.shopping, 3);
   assert.equal(draft.earnRates.everythingElse, 1);
   assert.ok(draft.welcomeBonus !== undefined, "welcomeBonus should be set");
+});
+
+// ── Phase A1.1 — Markdown-source artefact filter for perks ────────────────
+//
+// The FAB scrape was bleeding language-toggle anchors (`[العربية\\`),
+// bullet-icon image refs (`![icon.node-minus.alt](...)`) and other
+// markdown gunk into `perks[]` and `_scraped_freetext.perks`. A display-
+// time filter shipped in CardReviewLayout.astro as defence-in-depth; the
+// root-cause fix lives here in the normaliser.
+
+test("Phase A1.1 filterPerkArtefacts drops markdown artefacts but keeps real perks", () => {
+  const input = [
+    "[العربية\\\\",
+    "![icon.node-minus.alt](https://www.bankfab.com/-/jssmedia/icons/node-minus.svg)",
+    "icon.node-plus.alt",
+    "image.alt]",
+    "https://www.bankfab.com/en-ae/personal/credit-cards/cashback",
+    "(https://example.com/foo)](bar)",
+    "\\\\",
+    "   ",
+    "abc",
+    "Complimentary access to 25 airport lounges via DragonPass",
+    "Buy 1 Get 1 cinema tickets at VOX",
+    "5% cashback on LuLu groceries",
+  ];
+  const kept = filterPerkArtefacts(input);
+
+  // Real perks survive.
+  assert.ok(
+    kept.some((p) => p.includes("DragonPass")),
+    "lounge perk kept",
+  );
+  assert.ok(
+    kept.some((p) => p.includes("VOX")),
+    "cinema perk kept",
+  );
+  assert.ok(
+    kept.some((p) => p.includes("LuLu")),
+    "groceries perk kept",
+  );
+
+  // Artefacts dropped.
+  for (const bad of [
+    "[العربية",
+    "icon.node-minus",
+    "icon.node-plus",
+    "image.alt]",
+    "https://",
+    "(https://example.com/foo)",
+    "\\\\",
+  ]) {
+    assert.ok(
+      !kept.some((p) => p.includes(bad)),
+      `should drop artefact containing "${bad}"`,
+    );
+  }
+
+  // Empty / too-short / pure-backslash lines dropped.
+  assert.ok(!kept.includes("   "), "empty-after-trim dropped");
+  assert.ok(!kept.includes("abc"), "under-4-char line dropped");
+});
+
+test("Phase A1.1 parsePerks drops FAB Arabic-toggle + icon artefacts end-to-end", () => {
+  // Reproduces the exact strings seen in cards.json before the cleanup
+  // (fab-cashback, fab-elite, fab-etihad-guest-infinite, fab-world-elite).
+  const fakeMd = `# FAB Card
+
+- [العربية\\\\](https://www.bankfab.com/ar-ae/personal/credit-cards)
+- ![icon.node-minus.alt](https://www.bankfab.com/-/jssmedia/Project/FAB2/Fab2/data/media/svgs/icons/node-minus.svg)
+- ![icon.node-plus.alt](https://www.bankfab.com/-/jssmedia/Project/FAB2/Fab2/data/media/svgs/icons/node-plus.svg)
+- icon.tick.alt
+- 24/7 concierge service
+- Worldwide airport lounge access for you and a guest
+- Half-board (breakfast and dinner) at the resort
+
+Annual fee: AED 2,500.
+Minimum salary AED 25,000.
+FX fee: 2.49%.`;
+
+  const draft = normalise(
+    "fab",
+    {
+      slug: "fab-test",
+      name: "FAB Test Card",
+      network: "Visa",
+      categories: ["lifestyle"],
+      loyaltyProgram: "FAB Rewards",
+      salaryTransferRequired: false,
+      urls: { product: "https://test", kfs: null, welcome: null },
+    },
+    [{ url: "file://test", markdown: fakeMd, status: "ok" as const }],
+  );
+
+  // Real perks survive.
+  assert.ok(
+    draft.perks.some((p) => p.includes("concierge")),
+    "concierge perk kept",
+  );
+  assert.ok(
+    draft.perks.some((p) => p.includes("lounge")),
+    "lounge perk kept",
+  );
+
+  // No artefact escapes into the perks array.
+  for (const p of draft.perks) {
+    assert.ok(!p.includes("العربية"), `must not include Arabic-toggle: ${p}`);
+    assert.ok(!/^\[/.test(p), `must not start with [: ${p}`);
+    assert.ok(!/^!\[/.test(p), `must not start with ![: ${p}`);
+    assert.ok(!/^icon\./i.test(p), `must not start with icon.: ${p}`);
+    assert.ok(!/\.alt\]/.test(p), `must not contain .alt]: ${p}`);
+    assert.ok(!/^https?:\/\//i.test(p), `must not be a bare URL: ${p}`);
+  }
 });
