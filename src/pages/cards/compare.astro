@@ -72,7 +72,7 @@ const earnLine = (card: typeof cards[number]["card"]) => {
     <>
       <!-- Card mocks across the top -->
       <div class="dp-compare-head">
-        <div></div>
+        <div class="dp-compare-head-spacer" aria-hidden="true"></div>
         {cards.map((c) => (
           <div style="display: flex; flex-direction: column; gap: 12px;">
             <div class="dp-cr-mock" style="aspect-ratio: 1.586/1; max-width: 100%;">
@@ -90,24 +90,23 @@ const earnLine = (card: typeof cards[number]["card"]) => {
       <!-- Eligibility section -->
       <div class="dp-compare-row is-section">
         <span class="k">Eligibility</span>
-        <span></span><span></span><span></span>
       </div>
       <div class="dp-compare-row">
         <span class="k">Annual fee</span>
-        {cards.map((c) => <span class="v">AED {c.card.annualFee.amount.toLocaleString()}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.card.name}>AED {c.card.annualFee.amount.toLocaleString()}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Minimum salary</span>
-        {cards.map((c) => <span class="v">AED {c.card.eligibility.minSalary.toLocaleString()}/mo</span>)}
+        {cards.map((c) => <span class="v" data-card={c.card.name}>AED {c.card.eligibility.minSalary.toLocaleString()}/mo</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Network</span>
-        {cards.map((c) => <span class="v" style="font-weight: 500;">{c.card.network}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.card.name} style="font-weight: 500;">{c.card.network}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Salary transfer</span>
         {cards.map((c) => (
-          <span class={`v ${c.card.eligibility.salaryTransferRequired ? "warn" : "flag"}`}>
+          <span class={`v ${c.card.eligibility.salaryTransferRequired ? "warn" : "flag"}`} data-card={c.card.name}>
             {c.card.eligibility.salaryTransferRequired ? "Required" : "Not required"}
           </span>
         ))}
@@ -116,44 +115,41 @@ const earnLine = (card: typeof cards[number]["card"]) => {
       <!-- Earn rates section -->
       <div class="dp-compare-row is-section">
         <span class="k">Earn rates</span>
-        <span></span><span></span><span></span>
       </div>
       <div class="dp-compare-row">
         <span class="k">Top category</span>
-        {cards.map((c) => <span class="v">{earnLine(c.card)}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.card.name}>{earnLine(c.card)}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Welcome bonus</span>
-        {cards.map((c) => <span class="v">{welcomeBonusDisplay(c.card.welcomeBonus) ?? "—"}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.card.name}>{welcomeBonusDisplay(c.card.welcomeBonus) ?? "—"}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">FX markup</span>
-        {cards.map((c) => <span class="v">{c.card.fxFee}%</span>)}
+        {cards.map((c) => <span class="v" data-card={c.card.name}>{c.card.fxFee}%</span>)}
       </div>
 
       <!-- Benefits section -->
       <div class="dp-compare-row is-section">
         <span class="k">Benefits</span>
-        <span></span><span></span><span></span>
       </div>
       <div class="dp-compare-row">
         <span class="k">Loyalty programme</span>
-        {cards.map((c) => <span class="v" style="font-weight: 500;">{c.card.loyaltyProgram ?? "—"}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.card.name} style="font-weight: 500;">{c.card.loyaltyProgram ?? "—"}</span>)}
       </div>
       <div class="dp-compare-row">
         <span class="k">Last verified</span>
-        {cards.map((c) => <span class="v" style="font-weight: 500;">{fmt(c.card.lastVerified)}</span>)}
+        {cards.map((c) => <span class="v" data-card={c.card.name} style="font-weight: 500;">{fmt(c.card.lastVerified)}</span>)}
       </div>
 
       <!-- Verdict section -->
       <div class="dp-compare-row is-section">
         <span class="k">DP verdict</span>
-        <span></span><span></span><span></span>
       </div>
-      <div class="dp-compare-row" style="padding: 24px 32px;">
+      <div class="dp-compare-row is-verdict">
         <span class="k">Welcome value (AED)</span>
         {cards.map((c) => (
-          <span style="font-family: 'Fraunces', serif; font-weight: 700; font-size: 24px; color: var(--green);">
+          <span class="v is-welcome-value" data-card={c.card.name}>
             {c.card.welcomeBonusValue != null ? `AED ${c.card.welcomeBonusValue.toLocaleString()}` : "—"}
           </span>
         ))}

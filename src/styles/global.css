@@ -2274,6 +2274,42 @@ img { display: block; max-width: 100%; }
     grid-template-columns: 1fr;
     gap: 8px;
   }
+  /* Mobile: hide the empty spacer cell in the head row so the mocks
+     don't sit below an empty stripe. */
+  .dp-compare-head-spacer { display: none; }
+  /* Mobile: prefix each value with the card name so the reader can tell
+     which card's value they're reading. Without this, the page collapses
+     to a stack of unlabelled numbers below the row label. */
+  .dp-compare-row .v[data-card]::before {
+    content: attr(data-card);
+    display: block;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+    word-break: break-word;
+  }
+  /* Verdict row: keep the figure large but stack each card's value with
+     its prefix so the reader still sees the AED amount as the hero. */
+  .dp-compare-row.is-verdict .v.is-welcome-value {
+    padding-top: 4px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .dp-compare-row.is-verdict .v.is-welcome-value:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+/* Verdict row — desktop styling for the welcome-value pills */
+.dp-compare-row.is-verdict { padding: 24px 32px; }
+.dp-compare-row .v.is-welcome-value {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--green);
 }
 
 /* ════════════════════════════════════════════════════════════════════════
