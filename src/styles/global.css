@@ -2127,6 +2127,29 @@ img { display: block; max-width: 100%; }
   .dp-metric-strip .metric:nth-child(2n) { border-right: 0; }
   .dp-metric-strip .metric:first-child { padding-left: 0; }
 }
+/* Below 480px: collapse to a single-column stacked strip. Long
+   currency-name values (e.g. "Etihad Guest Miles", 18 chars) wrap to
+   two Fraunces lines in a ~165px 2-col cell and crush the typography.
+   A stacked row gives each metric its own line and lets the .v value
+   sit on a single line at the strip's full width. Follow-up F-UX-1. */
+@media (max-width: 480px) {
+  .dp-metric-strip {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 4px 0;
+  }
+  .dp-metric-strip .metric {
+    padding: 12px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dp-metric-strip .metric:last-child { border-bottom: 0; }
+  .dp-metric-strip .metric .v {
+    font-size: 20px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
 
 /* Toolbar — search + dropdowns + reset */
 .dp-toolbar {
