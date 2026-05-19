@@ -1262,6 +1262,9 @@ img { display: block; max-width: 100%; }
   padding: 56px 32px 32px;
   background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
 }
+@media (max-width: 640px) {
+  .dp-pagehead.is-narrow { padding: 36px 20px 24px; }
+}
 /* Eyebrow row above the h1 — "SWEET SPOTS · 14 May · 8 min read"
    pattern from mockup page 04. Phase F.8. The .dp-article-eyebrow
    inside resets its own margin so it sits flush. */
@@ -1337,6 +1340,18 @@ img { display: block; max-width: 100%; }
   font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
   color: var(--muted); font-weight: 600;
 }
+/* Mobile: tighten margins so the row doesn't overflow a 375px viewport,
+   and hide the Share/Save/Print row (they're inert placeholder spans
+   today, not functional buttons — they wrap and look broken when
+   crammed against the byline at narrow widths). */
+@media (max-width: 640px) {
+  .dp-byline-strip {
+    padding: 14px 20px;
+    margin: 0 16px 24px;
+    gap: 12px;
+  }
+  .dp-byline-strip .actions { display: none; }
+}
 
 /* Article body grid (1fr + 240px sidebar at >=1024px) */
 .dp-article-body-grid {
@@ -1352,6 +1367,9 @@ img { display: block; max-width: 100%; }
     grid-template-columns: minmax(0, 1fr) 240px;
     gap: 64px;
   }
+}
+@media (max-width: 640px) {
+  .dp-article-body-grid { padding: 0 16px 64px; gap: 24px; }
 }
 
 .dp-article-body { max-width: 680px; margin-inline: auto; }
@@ -1696,6 +1714,10 @@ img { display: block; max-width: 100%; }
   max-width: 720px;
   margin: 0 auto;
   padding: 40px 32px 80px;
+}
+@media (max-width: 640px) {
+  .dp-trust-meta { padding: 12px 20px; }
+  .dp-trust-body { padding: 28px 20px 56px; }
 }
 .dp-trust-body .dp-prose section { margin-block: 32px; }
 .dp-trust-body .dp-prose section:first-child { margin-top: 0; }
@@ -2221,6 +2243,12 @@ img { display: block; max-width: 100%; }
   display: flex; justify-content: space-between;
   font-size: 12px; color: var(--muted);
   border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+@media (max-width: 640px) {
+  .dp-tools-methodology { padding: 28px 20px; gap: 20px; }
+  .dp-tools-actions { padding: 20px; }
 }
 .dp-tools-actions a {
   color: var(--ink-soft); font-weight: 600;
