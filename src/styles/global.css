@@ -2127,6 +2127,29 @@ img { display: block; max-width: 100%; }
   .dp-metric-strip .metric:nth-child(2n) { border-right: 0; }
   .dp-metric-strip .metric:first-child { padding-left: 0; }
 }
+/* Below 480px: collapse to a single-column stacked strip. Long
+   currency-name values (e.g. "Etihad Guest Miles", 18 chars) wrap to
+   two Fraunces lines in a ~165px 2-col cell and crush the typography.
+   A stacked row gives each metric its own line and lets the .v value
+   sit on a single line at the strip's full width. Follow-up F-UX-1. */
+@media (max-width: 480px) {
+  .dp-metric-strip {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 4px 0;
+  }
+  .dp-metric-strip .metric {
+    padding: 12px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dp-metric-strip .metric:last-child { border-bottom: 0; }
+  .dp-metric-strip .metric .v {
+    font-size: 20px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
 
 /* Toolbar — search + dropdowns + reset */
 .dp-toolbar {
@@ -2276,6 +2299,15 @@ img { display: block; max-width: 100%; }
   background: var(--shade-1);
   border-bottom: 1px solid var(--line);
 }
+.dp-compare-head-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.dp-compare-head-mock {
+  aspect-ratio: 1.586 / 1;
+  max-width: 100%;
+}
 .dp-compare-row {
   display: grid;
   grid-template-columns: 200px repeat(3, 1fr);
@@ -2310,9 +2342,41 @@ img { display: block; max-width: 100%; }
   }
 }
 @media (max-width: 768px) {
-  .dp-compare-head, .dp-compare-row {
+  .dp-compare-row {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+  /* F-UX-5: keep the head row as a 3-col mock grid below 768px so
+     all three cards stay visible in the first viewport instead of
+     each rendering at full viewport width (~600vh of card art
+     before any specs). Each mock shrinks to ~100-140px. The label
+     under each mock still anchors the column. */
+  .dp-compare-head {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 20px 16px;
+  }
+  .dp-compare-head-mock {
+    /* At <768px we cap the mock so the head row stays within the
+       first viewport and the typography inside the mock stays
+       readable rather than ballooning. */
+    max-width: 140px;
+    margin: 0 auto;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  .dp-compare-head-mock .n {
+    font-size: 11px;
+    line-height: 1.2;
+  }
+  .dp-compare-head-mock .b {
+    font-size: 8px;
+    letter-spacing: 1.2px;
+  }
+  .dp-compare-head-cell { gap: 6px; }
+  .dp-compare-head-cell a {
+    font-size: 9px !important;
+    letter-spacing: 1px !important;
   }
   /* Mobile: hide the empty spacer cell in the head row so the mocks
      don't sit below an empty stripe. */
