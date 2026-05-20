@@ -1,0 +1,136 @@
+---
+// ProsCons — at-a-glance pros/cons grid for the card-review MDX body.
+//
+// Phase 2a.2.0 (2026-05-20). Reads `pros[]` and `cons[]` from the card's
+// editorial MDX frontmatter via the `cards` content collection.
+//
+// Spec: `.council/briefs/2026-05-20-phase-2a-2-0-pros-cons-verdict-amendment.md`.
+// Stage 5.5 (Head of UX): two-column grid on desktop (≥720px), stacked on
+// mobile with pros block first. ✓ icon uses --positive token, ✗ uses
+// --negative — both reserved single-use tokens scoped to this component.
+//
+// Token-only. No JS hydration. Pure SSR markup + scoped CSS.
+
+import { getEntry } from "astro:content";
+
+interface Props {
+  /** Card slug — must match an entry in the `cards` content collection. */
+  card: string;
+}
+
+const { card } = Astro.props;
+
+const entry = await getEntry("cards", card);
+const pros = entry?.data?.pros ?? [];
+const cons = entry?.data?.cons ?? [];
+
+const hasPros = pros.length > 0;
+const hasCons = cons.length > 0;
+const render = hasPros || hasCons;
+---
+
+{render && (
+  <section class="dp-proscons-v2" aria-label="Pros and cons">
+    {hasPros && (
+      <div class="dp-proscons-v2-col is-pros">
+        <h3 class="eyebrow">Pros</h3>
+        <ul role="list">
+          {pros.map((p) => (
+            <li>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="16" height="16">
+                  <circle cx="8" cy="8" r="8" fill="var(--positive)" />
+                  <path d="M4.5 8.2 L7 10.5 L11.5 5.8"
+                        stroke="#fff" stroke-width="1.75"
+                        stroke-linecap="round" stroke-linejoin="round"
+                        fill="none" />
+                </svg>
+              </span>
+              <span class="text">{p}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+    {hasCons && (
+      <div class="dp-proscons-v2-col is-cons">
+        <h3 class="eyebrow">Cons</h3>
+        <ul role="list">
+          {cons.map((c) => (
+            <li>
+              <span class="icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" width="16" height="16">
+                  <circle cx="8" cy="8" r="8" fill="var(--negative)" />
+                  <path d="M5.5 5.5 L10.5 10.5 M10.5 5.5 L5.5 10.5"
+                        stroke="#fff" stroke-width="1.75"
+                        stroke-linecap="round" fill="none" />
+                </svg>
+              </span>
+              <span class="text">{c}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </section>
+)}
+
+<style>
+  .dp-proscons-v2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 24px 0 32px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .dp-proscons-v2-col { padding: 16px 20px 18px; }
+  .dp-proscons-v2-col.is-pros { border-right: 1px solid var(--line); }
+  .dp-proscons-v2-col .eyebrow {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ink);
+    line-height: 1.2;
+    margin: 0 0 12px;
+  }
+  .dp-proscons-v2-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dp-proscons-v2-col li {
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: 10px;
+    align-items: start;
+  }
+  .dp-proscons-v2-col .icon {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+  .dp-proscons-v2-col .icon svg { display: block; width: 16px; height: 16px; }
+  .dp-proscons-v2-col .text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  @media (max-width: 719.98px) {
+    .dp-proscons-v2 { grid-template-columns: 1fr; }
+    .dp-proscons-v2-col.is-pros {
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+    }
+    .dp-proscons-v2-col { padding: 14px 16px 16px; }
+  }
+</style>

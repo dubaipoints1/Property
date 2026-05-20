@@ -1,0 +1,73 @@
+---
+// EditorVerdict — "Our take" callout for the card-review MDX body.
+//
+// Phase 2a.2.0 (2026-05-20). Reads `editorTake` from the card's editorial
+// MDX frontmatter via the `cards` content collection. Renders null when
+// missing or empty after trim.
+//
+// Spec: `.council/briefs/2026-05-20-phase-2a-2-0-pros-cons-verdict-amendment.md`.
+// Stage 5.5 (Head of UX): navy left-rule callout, eyebrow + Fraunces italic
+// body. Body is 19px (one step ABOVE WelcomeBonusCallout's 18px) — deliberate,
+// so the editor's voice reads louder than the welcome offer in the hierarchy.
+//
+// Token-only. No JS hydration. Pure SSR markup + scoped CSS.
+
+import { getEntry } from "astro:content";
+
+interface Props {
+  /** Card slug — must match an entry in the `cards` content collection. */
+  card: string;
+}
+
+const { card } = Astro.props;
+
+const entry = await getEntry("cards", card);
+const raw = entry?.data?.editorTake;
+const editorTake = typeof raw === "string" ? raw.trim() : "";
+const render = editorTake.length > 0;
+---
+
+{render && (
+  <aside class="dp-editor-verdict" aria-label="Our take on this card">
+    <div class="eyebrow">Our take</div>
+    <p class="body">{editorTake}</p>
+  </aside>
+)}
+
+<style>
+  .dp-editor-verdict {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    padding: 16px 20px 18px;
+    margin: 8px 0 24px;
+    display: grid;
+    gap: 10px;
+  }
+  .dp-editor-verdict .eyebrow {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .dp-editor-verdict .body {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 19px;
+    letter-spacing: -0.2px;
+    color: var(--ink);
+    line-height: 1.45;
+    max-width: 52ch;
+    text-wrap: balance;
+    margin: 0;
+  }
+  @media (max-width: 719.98px) {
+    .dp-editor-verdict { padding: 14px 16px 16px; margin: 8px 0 20px; }
+    .dp-editor-verdict .body { font-size: 18px; line-height: 1.4; }
+  }
+</style>

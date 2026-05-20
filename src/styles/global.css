@@ -64,6 +64,17 @@
   /* Signal (live / expiry / warnings only) */
   --red:       #c8412d;
 
+  /* Single-use feedback tokens — Chairman-scoped 2026-05-20.
+     Reserved to `ProsCons` ✓ / ✗ icons on card-review pages.
+     Do not use anywhere else — no chrome, no chips, no copy.
+     If you find yourself reaching for these outside ProsCons.astro,
+     stop and check with the Standards Editor / Chairman first.
+     `--positive` is tuned warmer than the old `--green` (#2d6a52)
+     so it holds at 16px icon size; `--negative` is muted brick
+     (not the flag-red `--red` reserved for live/expiry signals). */
+  --positive: #2f6a4f;          /* ProsCons ✓ icon fill */
+  --negative: #b54a2c;          /* ProsCons ✗ icon fill */
+
   /* Legacy — defined for backward compat, NOT used in new UI.
      Quiet Ledger sunsetted gold; TPG pivot kept it sunsetted; design handoff
      keeps it sunsetted. The chat-1 navy + gold + Sora system is the v1 brand
@@ -422,42 +433,11 @@ img { display: block; max-width: 100%; }
 .dp-callout-tip p + p { margin-top: 10px; }
 .dp-callout-tip strong { font-weight: 600; color: var(--ink); }
 
-/* Pros / Cons — Quiet Ledger: drop the green/red top borders;
-   pros use a `+` glyph, cons use a `−` glyph; everything flat ink. */
-.dp-proscons { display: grid; gap: 14px; margin-bottom: 32px; }
-@media (min-width: 640px) {
-  .dp-proscons { grid-template-columns: 1fr 1fr; }
-}
-.dp-proscons-block {
-  border: 1px solid var(--line);
-  border-radius: 0;
-  padding: 16px 18px;
-  background: var(--paper);
-}
-.dp-proscons-block h3 {
-  font-size: 11px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--ink);
-  margin-bottom: 10px;
-}
-.dp-proscons-block ul {
-  list-style: none; padding: 0; margin: 0;
-  display: flex; flex-direction: column; gap: 8px;
-}
-.dp-proscons-block li {
-  font-size: 14px; line-height: 1.55;
-  color: var(--ink-soft);
-  display: flex; gap: 8px; align-items: flex-start;
-}
-.dp-proscons-block li::before {
-  font-weight: 700;
-  color: var(--ink);
-  flex-shrink: 0;
-  font-family: 'DM Sans', sans-serif;
-  line-height: 1.55;
-}
-.dp-proscons-block.is-pros li::before { content: '+'; }
-.dp-proscons-block.is-cons li::before { content: '−'; }
+/* Pros / Cons — Phase 2a.2.0 (2026-05-20): the legacy `.dp-proscons`
+   layout-chrome rules were removed when the pros/cons block migrated to
+   the `<ProsCons />` component in `~/components/cards/ProsCons.astro`,
+   which carries its own scoped `.dp-proscons-v2` styles. Search for
+   `dp-proscons-v2` to find the component's CSS. */
 
 /* Section heading inside an article */
 .dp-article-section { margin-block: 32px; }

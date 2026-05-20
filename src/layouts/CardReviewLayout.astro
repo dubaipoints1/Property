@@ -60,8 +60,10 @@ const {
   minSalary,
   earnRates,
   perks = [],
-  pros = [],
-  cons = [],
+  // pros + cons are accepted on the props interface for backward
+  // compatibility with existing call sites in src/pages/cards/[slug].astro,
+  // but no longer consumed by the layout — see Phase 2a.2.0 (2026-05-20):
+  // they are rendered by the MDX-invoked `<ProsCons />` component instead.
   editorTake,
   category = "Cards",
   score,
@@ -186,31 +188,15 @@ const hasPhoto = stockSlug ? hasStockEntry(stockSlug) : false;
 
       {deck && <p class="deck">{deck}</p>}
 
-      <!-- "Our take" callout -->
-      {editorTake && (
-        <aside class="dp-take">
-          <p class="label">Our take</p>
-          <p>{editorTake}</p>
-        </aside>
-      )}
-
-      <!-- Pros / Cons -->
-      {(pros.length > 0 || cons.length > 0) && (
-        <section class="dp-proscons">
-          {pros.length > 0 && (
-            <div class="dp-proscons-block is-pros">
-              <h3>Pros</h3>
-              <ul>{pros.map((p) => <li>{p}</li>)}</ul>
-            </div>
-          )}
-          {cons.length > 0 && (
-            <div class="dp-proscons-block is-cons">
-              <h3>Cons</h3>
-              <ul>{cons.map((c) => <li>{c}</li>)}</ul>
-            </div>
-          )}
-        </section>
-      )}
+      <!--
+        Phase 2a.2.0 (2026-05-20): the "Our take" callout and the
+        pros/cons block were removed from the layout chrome and migrated
+        to MDX-invoked components — `<EditorVerdict card="…" />` and
+        `<ProsCons card="…" />` in `~/components/cards/`. Layout-side
+        rendering would double-render the same content on every page.
+        See `.council/briefs/2026-05-20-phase-2a-2-0-pros-cons-verdict-
+        amendment.md`.
+      -->
 
       <!-- Editorial prose (MDX slot) -->
       <div class="dp-prose">
