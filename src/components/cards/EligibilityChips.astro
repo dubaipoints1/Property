@@ -1,10 +1,15 @@
 ---
-// EligibilityChips — inline pill row summarising who can apply.
+// EligibilityChips — promoted block: salary band as the primary value
+// (dt/dd, Fraunces 18px), constraints + employment-type as a quiet
+// chip row underneath.
 //
-// Renders: salary band, salary-transfer required (if true), residency
-// required (if true), employment-type chips (salaried / self-employed /
-// business-owner / any). Uses the new `.dp-card-chip` class added to
-// global.css.
+// Stage 5.5 UX review (2026-05-20, Fix #2): the previous flat row of
+// equal-weight chips made the salary band look like a sibling fact to
+// "Salary transfer required" and "UAE residents". Salary is the gate;
+// the rest is qualifier. The `is-warn` modifier on "Salary transfer
+// required" is also dropped — it's a constraint, not an error, and
+// dressing it as a warning told readers something was wrong with the
+// card. Constraints are now quiet qualifiers.
 
 import type { CardData } from "~/lib/cardsData";
 
@@ -26,33 +31,74 @@ const EMPLOYMENT_LABELS: Record<string, string> = {
   "business-owner": "Business owner",
   any: "Any employment",
 };
+
+const qualifiers: string[] = [];
+if (eligibility.salaryTransferRequired) qualifiers.push("Salary transfer");
+if (eligibility.residencyRequired) qualifiers.push("UAE residents");
+for (const t of eligibility.employmentTypes ?? []) {
+  qualifiers.push(EMPLOYMENT_LABELS[t] ?? t);
+}
 ---
 
-<ul class="dp-card-chips" role="list">
-  <li>
-    <span class="dp-card-chip">
-      {aedFormatter.format(eligibility.minSalary)}+ salary
-    </span>
-  </li>
-  {eligibility.salaryTransferRequired && (
-    <li>
-      <span class="dp-card-chip is-warn">Salary transfer required</span>
-    </li>
+<div class="dp-eligibility">
+  <dl class="dp-eligibility-primary">
+    <dt>Minimum salary</dt>
+    <dd>
+      {aedFormatter.format(eligibility.minSalary)}<span class="per">/mo</span>
+    </dd>
+  </dl>
+  {qualifiers.length > 0 && (
+    <ul class="dp-eligibility-qualifiers" role="list">
+      {qualifiers.map((q) => (
+        <li>
+          <span class="dp-card-chip">{q}</span>
+        </li>
+      ))}
+    </ul>
   )}
-  {eligibility.residencyRequired && (
-    <li>
-      <span class="dp-card-chip">UAE residents</span>
-    </li>
-  )}
-  {(eligibility.employmentTypes ?? []).map((t) => (
-    <li>
-      <span class="dp-card-chip">{EMPLOYMENT_LABELS[t] ?? t}</span>
-    </li>
-  ))}
-</ul>
+</div>
 
 <style>
-  .dp-card-chips {
+  .dp-eligibility {
+    display: grid;
+    gap: 10px;
+  }
+  .dp-eligibility-primary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid var(--line-soft);
+    padding-bottom: 8px;
+  }
+  .dp-eligibility-primary dt {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    line-height: 1.2;
+  }
+  .dp-eligibility-primary dd {
+    margin: 0;
+    font-family: "Fraunces", serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.1;
+    letter-spacing: -0.2px;
+  }
+  .dp-eligibility-primary .per {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-left: 2px;
+  }
+  .dp-eligibility-qualifiers {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -60,7 +106,7 @@ const EMPLOYMENT_LABELS: Record<string, string> = {
     flex-wrap: wrap;
     gap: 8px;
   }
-  .dp-card-chips > li {
+  .dp-eligibility-qualifiers > li {
     display: inline-flex;
   }
 </style>

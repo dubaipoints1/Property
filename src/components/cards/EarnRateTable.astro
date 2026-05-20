@@ -43,6 +43,15 @@ for (const key of Object.keys(CATEGORY_LABELS)) {
 const onlyEverythingElse =
   allEntries.length === 1 && allEntries[0]?.key === "everythingElse";
 
+// Stage 5.5 UX Fix #3: precompute the top earn-rate row server-side so
+// the reader's eye lands on "Dining 5×" in one glance instead of
+// reading every row. `everythingElse` cannot be the top (it's the base
+// rate by definition); ties are broken by category-definition order.
+const candidateEntries = allEntries.filter((e) => e.key !== "everythingElse");
+const topKey = candidateEntries.length > 0
+  ? candidateEntries.reduce((a, b) => (b.value > a.value ? b : a)).key
+  : null;
+
 const unitLabel = earnUnit ?? "per AED 1 spent";
 ---
 
@@ -54,7 +63,9 @@ const unitLabel = earnUnit ?? "per AED 1 spent";
 ) : (
   <dl class="dp-earn-table">
     {allEntries.map(({ key, label, value }) => (
-      <div class={`row${key === "everythingElse" ? " is-default" : ""}`}>
+      <div
+        class={`row${key === "everythingElse" ? " is-default" : ""}${key === topKey ? " is-top" : ""}`}
+      >
         <dt>{label}</dt>
         <dd>{value}×</dd>
       </div>
@@ -112,5 +123,12 @@ const unitLabel = earnUnit ?? "per AED 1 spent";
   .dp-earn-table .row.is-default dt,
   .dp-earn-table .row.is-default dd {
     color: var(--ink-soft);
+  }
+  /* Top earn-rate row — drawn in navy + 700-weight so the reader's eye
+     lands on the highest rate in one glance. Stage 5.5 UX Fix #3. */
+  .dp-earn-table .row.is-top dt,
+  .dp-earn-table .row.is-top dd {
+    color: var(--green);
+    font-weight: 700;
   }
 </style>
