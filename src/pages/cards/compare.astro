@@ -1,229 +1,547 @@
 ---
-// Card compare — Phase C tools template (Claude Design handoff).
-// Reference: dubaipoints/project/templates/tools.jsx::Compare.
-// Side-by-side spec comparison grouped by section (Eligibility /
-// Earn rates / Benefits / DP verdict / Score). Defaults to top-3
-// cards by welcomeBonusValue; future iteration adds a picker.
+// Card compare — Phase F picker (2026-05-20).
+// Accepts ?cards=slug1,slug2,slug3,slug4 (max 4). With no param, the
+// page falls back to the static top-3-by-welcome-bonus default that
+// shipped in Phase C (and preserves that as the no-params view).
+//
+// The picker is a <details> + GET form — no client-side JS required.
+// The URL the form posts to is the comparison itself, which makes
+// the comparison shareable.
+//
+// All side-by-side surfaces use the new src/components/cards/* set
+// (FeeBlock, EarnRateTable, EligibilityChips, WelcomeBonusCallout,
+// VerifiedStamp) so the comparison renders the same data tokens the
+// hubs and finder render.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
 import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import EligibilityChips from "~/components/cards/EligibilityChips.astro";
+import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
+import VerifiedStamp from "~/components/cards/VerifiedStamp.astro";
 
-// Default to top-3 cards by welcome-bonus value (the comparison-picker
-// from the design's Phase F lands later — for now this is a static
-// curated comparison).
-const allCards = getAllCards()
-  .filter((c) => c.welcomeBonus)
-  .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
-  .slice(0, 3);
+const MAX_CARDS = 4;
 
-const cardsRaw = await Promise.all(
-  allCards.map(async (card) => {
-    const bank = await getEntry("banks", card.bank);
-    return { card, bankName: bank?.data.name ?? card.bank };
-  }),
-);
+const allCards = getAllCards();
+const allBySlug = new Map(allCards.map((c) => [c.slug, c]));
 
-const fmt = (d: Date) =>
-  d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+// ── Read ?cards=... ─────────────────────────────────────────────────
+const rawParam = Astro.url.searchParams.get("cards") ?? "";
+const requestedSlugs = rawParam
+  .split(",")
+  .map((s) => s.trim())
+  .filter((s) => s.length > 0)
+  .filter((s) => allBySlug.has(s));
 
-// F-UX-6: short label used as the mobile prefix on each value cell
-// (via the data-card attribute that .dp-compare-row .v[data-card]
-// echoes in a ::before). Full card names ("Emirates NBD Etihad
-// Guest Visa Inspire", 38 chars) overflow the column. Aim ≤ 18
-// chars: bank short alias + card identifier with network/tier
-// suffixes stripped. Section editors will supply proper aliases
-// via a future schema field; this is the sensible default.
-const BANK_ALIAS: Record<string, string> = {
-  "emirates-nbd": "ENBD",
-  "fab": "FAB",
-  "adcb": "ADCB",
-  "mashreq": "Mashreq",
-  "hsbc": "HSBC",
-  "dib": "DIB",
-  "adib": "ADIB",
-  "liv": "Liv",
-  "rakbank": "RAKBANK",
-  "cbd": "CBD",
-  "standard-chartered": "SCB",
-  "citi": "Citi",
-  "citibank": "Citi",
-  "emirates-islamic": "EI",
-};
-const STRIP_SUFFIXES = [
-  // Order matters: longest/most-specific first.
-  /\s+Mastercard\s+World\b/i,
-  /\s+World\s+Mastercard\b/i,
-  /\s+Visa\s+Infinite\b/i,
-  /\s+Visa\s+Signature\b/i,
-  /\s+Visa\s+Platinum\b/i,
-  /\s+Visa\s+Elite\b/i,
-  /\s+Visa\b/i,
-  /\s+Mastercard\b/i,
-  /\s+World\b/i,
-  /\s+Credit\s+Cards?\b/i,
-  /\s+Platinum\b/i,
-  /\s+Titanium\b/i,
-  /\s+Signature\b/i,
-];
-function shortCardLabel(bankSlug: string, bankName: string, cardName: string): string {
-  const bankShort = BANK_ALIAS[bankSlug] ?? bankName.split(/\s+/).slice(0, 2).join(" ");
-  // Strip the bank's name from the front of the card name if present,
-  // then strip network/tier suffixes that don't differentiate.
-  let id = cardName;
-  if (id.toLowerCase().startsWith(bankName.toLowerCase())) {
-    id = id.slice(bankName.length).trim();
-  }
-  for (const re of STRIP_SUFFIXES) id = id.replace(re, "").trim();
-  id = id.replace(/\s+/g, " ").trim();
-  // Final assembly. If the stripped id is empty (card name was only
-  // bank + network), fall back to the bank short alone.
-  const out = id ? `${bankShort} ${id}` : bankShort;
-  // Hard cap at 22 chars with an ellipsis so we never blow the cell.
-  return out.length > 22 ? out.slice(0, 20).trimEnd() + "…" : out;
+// De-dupe while preserving order, cap at MAX_CARDS.
+const seen = new Set<string>();
+const selectedSlugs: string[] = [];
+for (const slug of requestedSlugs) {
+  if (seen.has(slug)) continue;
+  seen.add(slug);
+  selectedSlugs.push(slug);
+  if (selectedSlugs.length >= MAX_CARDS) break;
 }
 
-// Attach the precomputed short label so the markup can reference
-// c.shortLabel directly instead of recomputing per value cell.
-const cards = cardsRaw.map((c) => ({
-  ...c,
-  shortLabel: shortCardLabel(c.card.bank, c.bankName, c.card.name),
-}));
+// Default — top-3 by welcomeBonusValue when no ?cards= present.
+const isDefault = selectedSlugs.length === 0;
+const defaultSlugs = isDefault
+  ? allCards
+      .filter((c) => c.welcomeBonus)
+      .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
+      .slice(0, 3)
+      .map((c) => c.slug)
+  : [];
 
-// Pick a representative earn-rate metric per card.
-const earnLine = (card: typeof cards[number]["card"]) => {
+const finalSlugs = isDefault ? defaultSlugs : selectedSlugs;
+
+const cardsRaw = await Promise.all(
+  finalSlugs
+    .map((slug) => allBySlug.get(slug))
+    .filter((c): c is NonNullable<typeof c> => Boolean(c))
+    .map(async (card) => {
+      const bank = await getEntry("banks", card.bank);
+      return { card, bankName: bank?.data.name ?? card.bank };
+    }),
+);
+
+// ── Picker data — all cards grouped by bank for the <details> form ──
+const allByBank: Map<string, Array<typeof cardsRaw[number]>> = new Map();
+for (const card of allCards) {
+  const bank = await getEntry("banks", card.bank);
+  const bankName = bank?.data.name ?? card.bank;
+  if (!allByBank.has(bankName)) allByBank.set(bankName, []);
+  allByBank.get(bankName)!.push({ card, bankName });
+}
+const bankGroups = [...allByBank.entries()].sort(([a], [b]) =>
+  a.localeCompare(b),
+);
+
+const selectedSet = new Set(finalSlugs);
+
+// Pick a representative earn-rate metric per card (used in the top
+// header strip; the EarnRateTable component carries the detail).
+const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   const r = card.earnRates;
   const max = Math.max(
-    ...[r.dining, r.groceries, r.shopping, r.travel, r.fuel, r.online].filter(
-      (v): v is number => typeof v === "number",
-    ),
+    ...[
+      r.dining,
+      r.groceries,
+      r.shopping,
+      r.travel,
+      r.fuel,
+      r.online,
+    ].filter((v): v is number => typeof v === "number"),
     r.everythingElse,
   );
   if (max === r.everythingElse) return `${max}× per AED 1`;
   const cat =
-    r.travel === max ? "travel" :
-    r.dining === max ? "dining" :
-    r.groceries === max ? "groceries" :
-    r.shopping === max ? "shopping" :
-    r.fuel === max ? "fuel" : "category";
+    r.travel === max
+      ? "travel"
+      : r.dining === max
+        ? "dining"
+        : r.groceries === max
+          ? "groceries"
+          : r.shopping === max
+            ? "shopping"
+            : r.fuel === max
+              ? "fuel"
+              : "category";
   return `${max}× ${cat}, ${r.everythingElse}× rest`;
 };
 ---
 
 <BaseLayout
   title="Compare UAE credit cards — side-by-side specs"
-  description="Side-by-side comparison of UAE credit cards across eligibility, earn rates, benefits, and DubaiPoints verdict. Top welcome-bonus cards by default."
+  description="Pick up to four UAE credit cards and compare them side by side across eligibility, earn rates, welcome bonuses, and verified-on date."
   fullWidth
 >
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Tools / Compare</div>
     <h1>Compare cards</h1>
-    <p>Side-by-side spec comparison. Defaults to the three highest welcome-bonus cards we cover. A picker lands in a future release; for now the comparison is curated.</p>
+    <p>
+      Side-by-side spec comparison. Pick up to four cards to compare; with no
+      selection we default to the three highest welcome-bonus cards we cover.
+      The URL is shareable.
+    </p>
 
     <div class="dp-tools-stats">
-      <span><span class="lbl">Cards covered:</span> <strong>{getAllCards().length}</strong></span>
-      <span><span class="lbl">Showing:</span> <strong>{cards.length} top welcome-bonus</strong></span>
-      <span><span class="lbl">Methodology:</span> <strong style="color: var(--link);"><a href="/editorial-policy/">Read →</a></strong></span>
+      <span>
+        <span class="lbl">Cards covered:</span>
+        <strong>{allCards.length}</strong>
+      </span>
+      <span>
+        <span class="lbl">Showing:</span>
+        <strong>
+          {cardsRaw.length} {isDefault ? "top welcome-bonus" : "selected"}
+        </strong>
+      </span>
+      <span>
+        <span class="lbl">Methodology:</span>
+        <strong style="color: var(--link);">
+          <a href="/editorial-policy/">Read →</a>
+        </strong>
+      </span>
     </div>
   </div>
 
-  {cards.length === 0 ? (
-    <div style="padding: 64px 32px; text-align: center; color: var(--ink-soft);">
-      <p style="font-size: 16px;">No cards available to compare.</p>
+  <!-- ── Picker ───────────────────────────────────────────────────── -->
+  <section class="dp-compare-picker">
+    <details>
+      <summary>
+        <span class="dp-compare-picker-title">Pick cards to compare</span>
+        <span class="dp-compare-picker-hint">
+          Up to {MAX_CARDS} cards · grouped by bank
+        </span>
+      </summary>
+      <form method="get" action="/cards/compare/" class="dp-compare-picker-form">
+        <fieldset>
+          <legend class="sr-only">Select up to {MAX_CARDS} cards</legend>
+          {bankGroups.map(([bankName, items]) => (
+            <div class="dp-compare-picker-group">
+              <h3>{bankName}</h3>
+              <ul>
+                {items.map(({ card }) => (
+                  <li>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="cards"
+                        value={card.slug}
+                        checked={selectedSet.has(card.slug)}
+                      />
+                      <span>{card.name}</span>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </fieldset>
+        <div class="dp-compare-picker-actions">
+          <button type="submit">Update comparison</button>
+          <a href="/cards/compare/" class="reset">Reset to defaults</a>
+          <span class="caveat">
+            We'll keep the first {MAX_CARDS} you tick.
+          </span>
+        </div>
+      </form>
+    </details>
+  </section>
+
+  {cardsRaw.length === 0 ? (
+    <div
+      style="padding: 64px 32px; text-align: center; color: var(--ink-soft);"
+    >
+      <p style="font-size: 16px;">
+        None of the requested cards match a card in our database.
+      </p>
+      <p style="font-size: 14px; margin-top: 8px;">
+        <a href="/cards/compare/" style="color: var(--link);">
+          Reset to defaults →
+        </a>
+      </p>
     </div>
   ) : (
-    <>
-      <!-- Card mocks across the top -->
-      <div class="dp-compare-head">
-        <div class="dp-compare-head-spacer" aria-hidden="true"></div>
-        {cards.map((c) => (
-          <div class="dp-compare-head-cell">
-            <div class="dp-cr-mock dp-compare-head-mock">
-              <div class="b">{c.bankName}</div>
-              <div class="n">{c.card.name}</div>
-              <div class="b" style="align-self: flex-end;">{c.card.network}</div>
+    <section class="dp-compare-grid" aria-label="Card comparison">
+      {cardsRaw.map(({ card, bankName }) => {
+        const wbDisplay = card.welcomeBonus
+          ? welcomeBonusDisplay(card.welcomeBonus)
+          : "";
+        const showWelcome =
+          card.welcomeBonus !== undefined &&
+          card.welcomeBonus !== null &&
+          wbDisplay.length > 0;
+        return (
+          <article class="dp-compare-col" data-bank={card.bank}>
+            <header class="dp-compare-col-head">
+              <span class="bank">{bankName}</span>
+              <h2>
+                <a href={`/cards/${card.slug}/`}>{card.name}</a>
+              </h2>
+              <span class="network">{card.network}</span>
+            </header>
+
+            <div class="dp-compare-col-section">
+              <h4>Annual fee</h4>
+              <FeeBlock
+                annualFee={card.annualFee}
+                fxFee={card.fxFee}
+                waiver={card.annualFeeWaiver}
+              />
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <a href={`/cards/${c.card.slug}/`} style="font-size: 11px; color: var(--ink-soft); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600;">Read review →</a>
+
+            <div class="dp-compare-col-section">
+              <h4>Top category</h4>
+              <p class="line">{earnLine(card)}</p>
             </div>
-          </div>
-        ))}
-      </div>
 
-      <!-- Eligibility section -->
-      <div class="dp-compare-row is-section">
-        <span class="k">Eligibility</span>
-      </div>
-      <div class="dp-compare-row">
-        <span class="k">Annual fee</span>
-        {cards.map((c) => <span class="v" data-card={c.shortLabel}>AED {c.card.annualFee.amount.toLocaleString()}</span>)}
-      </div>
-      <div class="dp-compare-row">
-        <span class="k">Minimum salary</span>
-        {cards.map((c) => <span class="v" data-card={c.shortLabel}>AED {c.card.eligibility.minSalary.toLocaleString()}/mo</span>)}
-      </div>
-      <div class="dp-compare-row">
-        <span class="k">Network</span>
-        {cards.map((c) => <span class="v" data-card={c.shortLabel} style="font-weight: 500;">{c.card.network}</span>)}
-      </div>
-      <div class="dp-compare-row">
-        <span class="k">Salary transfer</span>
-        {cards.map((c) => (
-          <span class={`v ${c.card.eligibility.salaryTransferRequired ? "warn" : "flag"}`} data-card={c.shortLabel}>
-            {c.card.eligibility.salaryTransferRequired ? "Required" : "Not required"}
-          </span>
-        ))}
-      </div>
+            <div class="dp-compare-col-section">
+              <h4>Earn rates</h4>
+              <EarnRateTable
+                earnRates={card.earnRates}
+                earnUnit={card.earnUnit}
+              />
+            </div>
 
-      <!-- Earn rates section -->
-      <div class="dp-compare-row is-section">
-        <span class="k">Earn rates</span>
-      </div>
-      <div class="dp-compare-row">
-        <span class="k">Top category</span>
-        {cards.map((c) => <span class="v" data-card={c.shortLabel}>{earnLine(c.card)}</span>)}
-      </div>
-      <div class="dp-compare-row">
-        <span class="k">Welcome bonus</span>
-        {cards.map((c) => <span class="v" data-card={c.shortLabel}>{welcomeBonusDisplay(c.card.welcomeBonus) ?? "—"}</span>)}
-      </div>
-      <div class="dp-compare-row">
-        <span class="k">FX markup</span>
-        {cards.map((c) => <span class="v" data-card={c.shortLabel}>{c.card.fxFee}%</span>)}
-      </div>
+            {showWelcome && card.welcomeBonus && (
+              <div class="dp-compare-col-section">
+                <h4>Welcome</h4>
+                <WelcomeBonusCallout
+                  welcomeBonus={card.welcomeBonus}
+                  welcomeBonusDisplay={wbDisplay}
+                />
+              </div>
+            )}
 
-      <!-- Benefits section -->
-      <div class="dp-compare-row is-section">
-        <span class="k">Benefits</span>
-      </div>
-      <div class="dp-compare-row">
-        <span class="k">Loyalty programme</span>
-        {cards.map((c) => <span class="v" data-card={c.shortLabel} style="font-weight: 500;">{c.card.loyaltyProgram ?? "—"}</span>)}
-      </div>
-      <div class="dp-compare-row">
-        <span class="k">Last verified</span>
-        {cards.map((c) => <span class="v" data-card={c.shortLabel} style="font-weight: 500;">{fmt(c.card.lastVerified)}</span>)}
-      </div>
+            <div class="dp-compare-col-section">
+              <h4>Eligibility</h4>
+              <EligibilityChips eligibility={card.eligibility} />
+            </div>
 
-      <!-- Verdict section -->
-      <div class="dp-compare-row is-section">
-        <span class="k">DP verdict</span>
-      </div>
-      <div class="dp-compare-row is-verdict">
-        <span class="k">Welcome value (AED)</span>
-        {cards.map((c) => (
-          <span class="v is-welcome-value" data-card={c.shortLabel}>
-            {c.card.welcomeBonusValue != null ? `AED ${c.card.welcomeBonusValue.toLocaleString()}` : "—"}
-          </span>
-        ))}
-      </div>
-    </>
+            <div class="dp-compare-col-section">
+              <h4>Loyalty programme</h4>
+              <p class="line">{card.loyaltyProgram ?? "—"}</p>
+            </div>
+
+            <footer class="dp-compare-col-foot">
+              <VerifiedStamp lastVerified={card.lastVerified} />
+              <a href={`/cards/${card.slug}/`} class="cta">
+                Read review →
+              </a>
+            </footer>
+          </article>
+        );
+      })}
+    </section>
   )}
 
   <div class="dp-tools-actions" style="margin-top: 32px;">
     <span style="font-size: 13px; color: var(--ink-soft);">
-      Add up to <strong>4</strong> cards. Scores are DubaiPoints internal, recalibrated quarterly.
+      Up to <strong>{MAX_CARDS}</strong> cards. Scores are DubaiPoints
+      internal, recalibrated quarterly.
     </span>
     <span><a href="/cards/">All cards →</a></span>
   </div>
 </BaseLayout>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* ── Picker ───────────────────────────────────────────────────── */
+  .dp-compare-picker {
+    max-width: 1180px;
+    margin: 24px auto 0;
+    padding: 0 32px;
+  }
+  .dp-compare-picker details {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    overflow: hidden;
+  }
+  .dp-compare-picker summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 24px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .dp-compare-picker summary::-webkit-details-marker {
+    display: none;
+  }
+  .dp-compare-picker summary::after {
+    content: "▾";
+    color: var(--ink-soft);
+    font-size: 12px;
+    transition: transform 0.18s ease;
+  }
+  .dp-compare-picker details[open] summary::after {
+    transform: rotate(180deg);
+  }
+  .dp-compare-picker-title {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .dp-compare-picker-hint {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-left: auto;
+  }
+  .dp-compare-picker-form {
+    padding: 16px 24px 24px;
+    border-top: 1px solid var(--line);
+  }
+  .dp-compare-picker-form fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+  }
+  .dp-compare-picker-group h3 {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin: 0 0 8px;
+  }
+  .dp-compare-picker-group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 4px;
+  }
+  .dp-compare-picker-group label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--ink);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .dp-compare-picker-group input {
+    accent-color: var(--ink);
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+  .dp-compare-picker-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .dp-compare-picker-actions button {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 10px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .dp-compare-picker-actions button:hover {
+    background: var(--green);
+  }
+  .dp-compare-picker-actions .reset {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+  }
+  .dp-compare-picker-actions .reset:hover {
+    color: var(--green);
+  }
+  .dp-compare-picker-actions .caveat {
+    font-size: 12px;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ── Comparison grid ──────────────────────────────────────────── */
+  .dp-compare-grid {
+    max-width: 1180px;
+    margin: 24px auto 0;
+    padding: 0 32px;
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    align-items: start;
+  }
+  .dp-compare-col {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px;
+    display: grid;
+    gap: 16px;
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+  .dp-compare-col-head {
+    display: grid;
+    gap: 4px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dp-compare-col-head .bank {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .dp-compare-col-head h2 {
+    margin: 0;
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .dp-compare-col-head h2 a {
+    color: inherit;
+  }
+  .dp-compare-col-head h2 a:hover {
+    color: var(--green);
+  }
+  .dp-compare-col-head .network {
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.3px;
+    margin-top: 4px;
+  }
+  .dp-compare-col-section h4 {
+    margin: 0 0 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dp-compare-col-section .line {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .dp-compare-col-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .dp-compare-col-foot .cta {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: var(--ink);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+    transition: color 0.15s ease;
+  }
+  .dp-compare-col-foot .cta:hover {
+    color: var(--green);
+  }
+
+  @media (max-width: 720px) {
+    .dp-compare-picker,
+    .dp-compare-grid {
+      padding-inline: 20px;
+    }
+    .dp-compare-picker summary {
+      padding: 14px 16px;
+      flex-wrap: wrap;
+    }
+    .dp-compare-picker-hint {
+      width: 100%;
+      margin-left: 0;
+    }
+    .dp-compare-picker-form {
+      padding: 16px;
+    }
+    .dp-compare-picker-actions .caveat {
+      margin-left: 0;
+      width: 100%;
+    }
+    .dp-compare-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

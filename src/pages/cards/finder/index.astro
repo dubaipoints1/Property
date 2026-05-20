@@ -1,0 +1,574 @@
+---
+// Card finder — filter-driven chooser for the 34 UAE cards we cover.
+//
+// Stage 4–7 (Tech) workstream of the card-data-audit-and-ui-programme.
+// The form is a GET form posting back to itself; the URL is the
+// shareable state. Because this site builds with `output: "static"`,
+// the actual ranking + filtering executes in a small inline script
+// on page load. All 34 cards render at build time with data-*
+// attributes; the script reorders + hides DOM nodes.
+//
+// Score formula (deterministic, mirrored in the inline script):
+//   1. Filter cards where eligibility.minSalary > userSalary (if salary set).
+//   2. Filter by network (if set + not "any").
+//   3. Filter by fee bucket (if set + not "any").
+//   4. Filter by salary-transfer flag if the user set salary explicitly.
+//   5. Score each remaining card:
+//        - +earnRate for the chosen spend category (or everythingElse).
+//        - +preference bonus:
+//            cashback → +earnRate again if loyaltyProgram is AED-cashback.
+//            miles    → +2 if loyaltyProgram is a miles programme.
+//            points   → +2 if loyaltyProgram is a points programme.
+//            lounges  → +2 if _features has lounge_access.
+//            status   → +2 if _features has status_match.
+//            none     → no preference bonus.
+//   6. Sort by score desc; ties broken by lower annualFee.
+//
+// Top 6 cards displayed as SpecCard variant="full".
+
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getEntry } from "astro:content";
+import { getAllCards } from "~/lib/cardsData";
+import SpecCard from "~/components/cards/SpecCard.astro";
+
+const allCards = getAllCards();
+
+// Resolve bank-collection display names up-front so the SpecCards
+// don't need to await inside the .map (which works in Astro but is
+// noisier).
+const cardsWithBanks = await Promise.all(
+  allCards.map(async (card) => {
+    const bank = await getEntry("banks", card.bank);
+    return { card, bankName: bank?.data.name ?? card.bank };
+  }),
+);
+
+// Read URL params for initial form state (works in dev / SSR; static
+// build emits defaults — the inline script re-reads at runtime).
+const params = Astro.url.searchParams;
+const salaryInit = params.get("salary") ?? "";
+const spendInit = params.get("spend") ?? "general";
+const preferInit = params.get("prefer") ?? "none";
+const networkInit = params.get("network") ?? "any";
+const feeInit = params.get("fee") ?? "any";
+
+// Serialise card data for the client-side ranker.
+const cardIndex = cardsWithBanks.map(({ card }) => ({
+  slug: card.slug,
+  bank: card.bank,
+  network: card.network,
+  annualFee: card.annualFee.amount,
+  minSalary: card.eligibility.minSalary,
+  salaryTransferRequired: card.eligibility.salaryTransferRequired,
+  loyaltyProgram: card.loyaltyProgram ?? "",
+  earnRates: card.earnRates,
+  hasLounge: card._features.some((f) => f.type === "lounge_access"),
+  hasStatus: card._features.some((f) => f.type === "status_match"),
+}));
+
+const SPEND_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: "dining", label: "Dining" },
+  { value: "groceries", label: "Groceries" },
+  { value: "travel", label: "Travel" },
+  { value: "fuel", label: "Fuel" },
+  { value: "online", label: "Online shopping" },
+  { value: "general", label: "General / mixed" },
+];
+const PREFER_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: "cashback", label: "AED cashback" },
+  { value: "miles", label: "Airline miles" },
+  { value: "points", label: "Bank points" },
+  { value: "lounges", label: "Airport lounges" },
+  { value: "status", label: "Hotel / airline status" },
+  { value: "none", label: "No preference" },
+];
+const NETWORK_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: "any", label: "Any" },
+  { value: "Visa", label: "Visa" },
+  { value: "Mastercard", label: "Mastercard" },
+  { value: "Amex", label: "Amex" },
+];
+const FEE_OPTIONS: Array<{ value: string; label: string }> = [
+  { value: "any", label: "Any" },
+  { value: "free", label: "Free only" },
+  { value: "under-500", label: "Under AED 500" },
+  { value: "under-1000", label: "Under AED 1,000" },
+];
+
+// Initial render order — by min salary ascending (mirrors getAllCards()).
+// The inline script reorders on page-load based on URL params.
+const initialOrder = cardsWithBanks;
+---
+
+<BaseLayout
+  title="Find your UAE credit card — DubaiPoints"
+  description="Tell us your AED salary, primary spend category, and what you're optimising for. We'll rank the 34 UAE cards in our database against your profile."
+  fullWidth
+>
+  <div class="dp-pagehead">
+    <div class="crumb">DubaiPoints / Cards / Finder</div>
+    <h1>Find your card</h1>
+    <p>
+      Tell us what you spend on and we'll rank the {allCards.length} UAE
+      credit cards in our database against your profile. The URL is
+      shareable; send it to someone who's asked you which card to open.
+    </p>
+  </div>
+
+  <section class="dp-finder">
+    <form method="get" action="/cards/finder/" class="dp-finder-form">
+      <fieldset class="dp-finder-fs is-salary">
+        <legend>Your monthly salary (AED)</legend>
+        <input
+          type="number"
+          name="salary"
+          inputmode="numeric"
+          placeholder="e.g. 15000"
+          min="0"
+          step="500"
+          value={salaryInit}
+        />
+        <p class="hint">
+          Leave blank to include every card. We use this to filter out
+          cards you wouldn't qualify for.
+        </p>
+      </fieldset>
+
+      <fieldset class="dp-finder-fs">
+        <legend>Primary spend category</legend>
+        <div class="dp-finder-radios">
+          {SPEND_OPTIONS.map((opt) => (
+            <label>
+              <input
+                type="radio"
+                name="spend"
+                value={opt.value}
+                checked={spendInit === opt.value}
+              />
+              <span>{opt.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset class="dp-finder-fs">
+        <legend>What you'd prefer to earn</legend>
+        <div class="dp-finder-radios">
+          {PREFER_OPTIONS.map((opt) => (
+            <label>
+              <input
+                type="radio"
+                name="prefer"
+                value={opt.value}
+                checked={preferInit === opt.value}
+              />
+              <span>{opt.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset class="dp-finder-fs">
+        <legend>Card network</legend>
+        <div class="dp-finder-radios is-inline">
+          {NETWORK_OPTIONS.map((opt) => (
+            <label>
+              <input
+                type="radio"
+                name="network"
+                value={opt.value}
+                checked={networkInit === opt.value}
+              />
+              <span>{opt.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <fieldset class="dp-finder-fs">
+        <legend>Annual fee</legend>
+        <div class="dp-finder-radios is-inline">
+          {FEE_OPTIONS.map((opt) => (
+            <label>
+              <input
+                type="radio"
+                name="fee"
+                value={opt.value}
+                checked={feeInit === opt.value}
+              />
+              <span>{opt.label}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <div class="dp-finder-actions">
+        <button type="submit">Rank cards</button>
+        <a href="/cards/finder/" class="reset">Reset filters</a>
+      </div>
+    </form>
+
+    <div class="dp-finder-results" id="finder-results">
+      <div class="dp-finder-results-head">
+        <h2>Matching cards</h2>
+        <p class="count">
+          <strong id="finder-count">{cardsWithBanks.length}</strong> of
+          {cardsWithBanks.length} cards match —
+          <span id="finder-mode">showing all</span>
+        </p>
+      </div>
+
+      <div class="dp-finder-empty" id="finder-empty" hidden>
+        <p>
+          No cards match your filters. Try widening salary, switching
+          off the salary-transfer constraint, or picking a more general
+          spend category.
+        </p>
+        <p>
+          <a href="/cards/finder/" class="reset">Reset filters →</a>
+        </p>
+      </div>
+
+      <div class="dp-finder-grid" id="finder-grid">
+        {initialOrder.map(({ card }) => (
+          <div class="dp-finder-tile" data-slug={card.slug}>
+            <SpecCard card={card} variant="full" />
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <footer class="dp-finder-foot">
+      <p>
+        DubaiPoints earns no commission on these recommendations.
+        Affiliate disclosure is governed by our
+        <a href="/editorial-policy/">editorial policy</a>.
+      </p>
+    </footer>
+  </section>
+</BaseLayout>
+
+<script is:inline type="application/json" id="finder-card-index" set:html={JSON.stringify(cardIndex)}></script>
+
+<script is:inline>
+  // ── Client-side ranker — runs on page load and re-reads on form submit.
+  // Mirrors the server-side score formula documented at the top of the file.
+  (function () {
+    var idxEl = document.getElementById("finder-card-index");
+    if (!idxEl) return;
+    var CARDS = JSON.parse(idxEl.textContent || "[]");
+
+    var grid = document.getElementById("finder-grid");
+    var count = document.getElementById("finder-count");
+    var mode = document.getElementById("finder-mode");
+    var empty = document.getElementById("finder-empty");
+    if (!grid || !count || !mode || !empty) return;
+
+    function readParams() {
+      var p = new URLSearchParams(window.location.search);
+      return {
+        salary: parseInt(p.get("salary") || "", 10),
+        spend: p.get("spend") || "general",
+        prefer: p.get("prefer") || "none",
+        network: p.get("network") || "any",
+        fee: p.get("fee") || "any",
+      };
+    }
+
+    function loyaltyTag(loyalty) {
+      var l = (loyalty || "").toLowerCase();
+      if (
+        l.indexOf("cashback") >= 0 ||
+        l.indexOf("aed") >= 0 ||
+        l === ""
+      )
+        return "cashback";
+      if (
+        l.indexOf("skywards") >= 0 ||
+        l.indexOf("etihad") >= 0 ||
+        l.indexOf("avios") >= 0 ||
+        l.indexOf("alfursan") >= 0 ||
+        l.indexOf("miles") >= 0
+      )
+        return "miles";
+      return "points";
+    }
+
+    function feeMatches(annualFee, bucket) {
+      if (bucket === "any") return true;
+      if (bucket === "free") return annualFee === 0;
+      if (bucket === "under-500") return annualFee < 500;
+      if (bucket === "under-1000") return annualFee < 1000;
+      return true;
+    }
+
+    function spendRate(rates, key) {
+      if (key === "general") return rates.everythingElse || 0;
+      var v = rates[key];
+      return typeof v === "number" ? v : rates.everythingElse || 0;
+    }
+
+    function score(card, p) {
+      var s = spendRate(card.earnRates, p.spend);
+      var tag = loyaltyTag(card.loyaltyProgram);
+      if (p.prefer === "cashback" && tag === "cashback") s += s;
+      else if (p.prefer === "miles" && tag === "miles") s += 2;
+      else if (p.prefer === "points" && tag === "points") s += 2;
+      else if (p.prefer === "lounges" && card.hasLounge) s += 2;
+      else if (p.prefer === "status" && card.hasStatus) s += 2;
+      return s;
+    }
+
+    function apply() {
+      var p = readParams();
+      var hasSalary = !isNaN(p.salary) && p.salary > 0;
+
+      var ranked = CARDS.filter(function (c) {
+        if (hasSalary && c.minSalary > p.salary) return false;
+        if (p.network !== "any" && c.network !== p.network) return false;
+        if (!feeMatches(c.annualFee, p.fee)) return false;
+        return true;
+      })
+        .map(function (c) {
+          return { slug: c.slug, score: score(c, p), annualFee: c.annualFee };
+        })
+        .sort(function (a, b) {
+          if (b.score !== a.score) return b.score - a.score;
+          return a.annualFee - b.annualFee;
+        });
+
+      var topSlugs = ranked.slice(0, 6).map(function (r) {
+        return r.slug;
+      });
+      var orderMap = {};
+      topSlugs.forEach(function (slug, i) {
+        orderMap[slug] = i;
+      });
+
+      var tiles = grid.querySelectorAll("[data-slug]");
+      var visibleCount = 0;
+      tiles.forEach(function (tile) {
+        var slug = tile.getAttribute("data-slug");
+        if (orderMap.hasOwnProperty(slug)) {
+          tile.style.order = String(orderMap[slug]);
+          tile.hidden = false;
+          visibleCount++;
+        } else {
+          tile.style.order = "999";
+          tile.hidden = true;
+        }
+      });
+
+      count.textContent = String(visibleCount);
+      if (hasSalary || p.prefer !== "none" || p.spend !== "general" || p.network !== "any" || p.fee !== "any") {
+        mode.textContent = "ranked by best fit";
+      } else {
+        mode.textContent = "ranked by best fit (no filters set)";
+      }
+
+      if (visibleCount === 0) {
+        empty.hidden = false;
+        grid.hidden = true;
+      } else {
+        empty.hidden = true;
+        grid.hidden = false;
+      }
+    }
+
+    apply();
+  })();
+</script>
+
+<style>
+  .dp-finder {
+    max-width: 1180px;
+    margin: 32px auto 56px;
+    padding: 0 32px;
+    display: grid;
+    grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+
+  /* ── Form ─────────────────────────────────────────────────────── */
+  .dp-finder-form {
+    position: sticky;
+    top: 24px;
+    display: grid;
+    gap: 24px;
+    padding: 24px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+  .dp-finder-fs {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .dp-finder-fs legend {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0;
+    margin-bottom: 4px;
+  }
+  .dp-finder-fs input[type="number"] {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 16px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--ink);
+    width: 100%;
+  }
+  .dp-finder-fs input[type="number"]:focus {
+    outline: 2px solid var(--green);
+    outline-offset: 1px;
+  }
+  .dp-finder-fs .hint {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    margin: 0;
+  }
+  .dp-finder-radios {
+    display: grid;
+    gap: 4px;
+  }
+  .dp-finder-radios.is-inline {
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    gap: 4px 8px;
+  }
+  .dp-finder-radios label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .dp-finder-radios input {
+    accent-color: var(--ink);
+  }
+  .dp-finder-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-soft);
+  }
+  .dp-finder-actions button {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 12px 20px;
+    background: var(--ink);
+    color: var(--paper);
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .dp-finder-actions button:hover {
+    background: var(--green);
+  }
+  .dp-finder-actions .reset {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+  }
+  .dp-finder-actions .reset:hover {
+    color: var(--green);
+  }
+
+  /* ── Results ──────────────────────────────────────────────────── */
+  .dp-finder-results-head {
+    margin-bottom: 16px;
+  }
+  .dp-finder-results-head h2 {
+    margin: 0 0 4px;
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: -0.6px;
+    color: var(--ink);
+  }
+  .dp-finder-results-head .count {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .dp-finder-results-head .count strong {
+    color: var(--ink);
+  }
+  .dp-finder-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
+  .dp-finder-tile {
+    display: block;
+    min-width: 0;
+  }
+  .dp-finder-tile[hidden] {
+    display: none;
+  }
+  .dp-finder-empty {
+    padding: 32px 24px;
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    color: var(--ink-soft);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .dp-finder-empty p {
+    margin: 0 0 8px;
+  }
+  .dp-finder-empty p:last-child {
+    margin-bottom: 0;
+  }
+  .dp-finder-empty .reset {
+    color: var(--link);
+    font-weight: 600;
+  }
+
+  .dp-finder-foot {
+    grid-column: 1 / -1;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line-soft);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .dp-finder-foot a {
+    color: var(--link);
+  }
+
+  @media (max-width: 720px) {
+    .dp-finder {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding-inline: 20px;
+    }
+    .dp-finder-form {
+      position: static;
+    }
+    .dp-finder-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,89 @@
+---
+// FeeBlock — two-line fee surface (annual fee + optional FX + waiver).
+//
+// Renders the headline AED annual figure in display type, a small
+// "FX +X.XX%" line below, and a conditional waiver line where the
+// structured form is present.
+//
+// Token-only. Annual fee uses --ink (per /cards/ index.astro); FX
+// uses --ink-soft. Waiver line uses --green to signal "good news"
+// in keeping with the two-accent system.
+
+import type {
+  CardData,
+  StructuredAnnualFeeWaiver,
+} from "~/lib/cardsData";
+import {
+  annualFeeWaiverDisplay,
+  isStructuredAnnualFeeWaiver,
+} from "~/lib/cardsData";
+
+interface Props {
+  annualFee: CardData["annualFee"];
+  fxFee?: number;
+  waiver?: CardData["annualFeeWaiver"];
+}
+
+const { annualFee, fxFee, waiver } = Astro.props;
+
+const aedFormatter = new Intl.NumberFormat("en-AE", {
+  style: "currency",
+  currency: "AED",
+  maximumFractionDigits: 0,
+});
+
+const feeLabel =
+  annualFee.amount === 0
+    ? "Free"
+    : aedFormatter.format(annualFee.amount);
+
+const waiverString = annualFeeWaiverDisplay(
+  waiver as StructuredAnnualFeeWaiver | string | null | undefined,
+);
+const showWaiver =
+  waiverString.length > 0 &&
+  (isStructuredAnnualFeeWaiver(waiver) || typeof waiver === "string");
+---
+
+<div class="dp-fee-block">
+  <div class="amt">{feeLabel}</div>
+  <div class="lbl">Annual fee</div>
+  {fxFee !== undefined && fxFee !== null && (
+    <div class="fx">FX +{fxFee.toFixed(2)}%</div>
+  )}
+  {showWaiver && <div class="waiver">{waiverString}</div>}
+</div>
+
+<style>
+  .dp-fee-block {
+    display: grid;
+    gap: 4px;
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+  .dp-fee-block .amt {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: -0.6px;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .dp-fee-block .lbl {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dp-fee-block .fx {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+  .dp-fee-block .waiver {
+    font-size: 12px;
+    line-height: 1.4;
+    color: var(--green);
+    margin-top: 4px;
+  }
+</style>
