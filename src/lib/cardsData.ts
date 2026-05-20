@@ -19,7 +19,16 @@
 import { z } from "astro:content";
 import cardsJson from "../data/cards.json";
 
-const NETWORK = z.enum(["Visa", "Mastercard", "Amex"]);
+const NETWORK = z.enum([
+  "Visa",
+  "Mastercard",
+  "Amex",
+  // 2026-05-20 audit: ENBD Diners Club Credit Card is its own network
+  // (was incorrectly tagged as Mastercard in the original scrape).
+  "Diners Club",
+  // Duo Credit Card carries both Diners Club and Mastercard physical cards.
+  "Diners Club + Mastercard",
+]);
 const EMPLOYMENT_TYPE = z.enum([
   "salaried",
   "self-employed",
@@ -124,6 +133,15 @@ const REWARD_UNIT = z.enum([
   "aed_cashback",
   "aed_voucher",
   "aed_credit",
+  // ─── 2026-05-20 audit additions (Phase 1 closeout) ───────────────────────
+  // Formal recognition of programmes that already exist in cards.json but
+  // weren't enumerated. Additive — backwards compatible. Pending Chairman
+  // sign-off as a Charter operating-doc amendment.
+  "darna_points",
+  "dnata_points",
+  "marriott_bonvoy_points",
+  "noon_credits",
+  "red_points",
 ]);
 
 const WelcomeBonus = z.object({

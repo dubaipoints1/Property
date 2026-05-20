@@ -19,7 +19,13 @@ export type RewardUnit =
   | "mashreq_salaam"
   | "aed_cashback"
   | "aed_voucher"
-  | "aed_credit";
+  | "aed_credit"
+  // 2026-05-20 audit additions — mirror REWARD_UNIT in cardsData.ts.
+  | "darna_points"
+  | "dnata_points"
+  | "marriott_bonvoy_points"
+  | "noon_credits"
+  | "red_points";
 
 export interface StructuredWelcomeBonus {
   amount: number;
@@ -61,6 +67,12 @@ const REWARD_UNIT_LABELS: Record<RewardUnit, string> = {
   aed_cashback: "AED cashback",
   aed_voucher: "AED voucher",
   aed_credit: "AED statement credit",
+  // 2026-05-20 audit additions
+  darna_points: "Darna Points",
+  dnata_points: "dnata Points",
+  marriott_bonvoy_points: "Marriott Bonvoy Points",
+  noon_credits: "noon credits",
+  red_points: "RED Points",
 };
 
 export function isStructuredWelcomeBonus(

@@ -69,8 +69,8 @@
       "amount": 250,
       "unit": "aed_voucher",
       "spend_threshold_aed": 0,
-      "qualify_window_days": 0,
-      "note": "YOUGotaGift HappyYOU Card AED 250 on online application + Darna Silver tier status."
+      "qualify_window_days": null,
+      "notes": "YOUGotaGift HappyYOU Card AED 250 on online application + Darna Silver tier status."
     }
   },
   "emirates-nbd-darna-visa-infinite": {
@@ -115,7 +115,7 @@
       "unit": "darna_points",
       "spend_threshold_aed": 20000,
       "qualify_window_days": 90,
-      "note": "7,500 Darna Points on joining + 7,500 on AED 20,000 spend in 3 months. Darna Platinum tier. Plus AED 500 YOUGotaGift HappyYOU Card on online application."
+      "notes": "7,500 Darna Points on joining + 7,500 on AED 20,000 spend in 3 months. Darna Platinum tier. Plus AED 500 YOUGotaGift HappyYOU Card on online application."
     },
     "eligibility": {
       "minSalary": 30000,
@@ -191,7 +191,7 @@
       "unit": "darna_points",
       "spend_threshold_aed": 15000,
       "qualify_window_days": 90,
-      "note": "3,000 Darna Points on AED 15,000 spend in 3 months. Darna Gold tier. Plus AED 350 YOUGotaGift HappyYOU Card on online application."
+      "notes": "3,000 Darna Points on AED 15,000 spend in 3 months. Darna Gold tier. Plus AED 350 YOUGotaGift HappyYOU Card on online application."
     },
     "eligibility": {
       "minSalary": 12000,
@@ -226,8 +226,7 @@
     "annualFeeWaiver": {
       "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "threshold_period": null,
-      "note": "Promotional waiver — fee waived for life as a time-limited offer (May 2026). Standard fee per SoC is AED 315."
+      "notes": "Promotional waiver — fee waived for life as a time-limited offer (May 2026). Standard fee per SoC is AED 315."
     }
   },
   "emirates-nbd-diners-club": {
@@ -303,11 +302,11 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-corrected",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-confirmed",
-      "loyaltyProgram": "scraped",
+      "loyaltyProgram": "editor-corrected",
       "earnRates": "scraped",
       "earnUnit": "scraped",
       "eligibility": "scraped",
@@ -333,7 +332,7 @@
       "currency": "AED"
     },
     "fxFee": 0,
-    "loyaltyProgram": "dnata Travel Points",
+    "loyaltyProgram": "dnata Points",
     "earnRates": {
       "shopping": 5,
       "travel": 10,
@@ -374,18 +373,19 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-corrected",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-confirmed",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-corrected",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-corrected",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "welcomeBonus": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-20",
@@ -401,11 +401,13 @@
       "currency": "AED"
     },
     "fxFee": 0,
-    "loyaltyProgram": "dnata Travel Points",
+    "loyaltyProgram": "dnata Points",
     "earnRates": {
-      "everythingElse": 1
+      "partnerBrands": 15,
+      "travel": 10,
+      "everythingElse": 1.5
     },
-    "earnUnit": "dnata Travel Points per AED 1 spent",
+    "earnUnit": "% as dnata Points",
     "eligibility": {
       "minSalary": 20000,
       "salaryTransferRequired": true,
@@ -434,43 +436,55 @@
         "**Valet Parking** at selected locations in Abu Dhabi",
         "Interest rate: 3.25% per month; minimum payment: 5% of the outstanding or  100, whichever is higher"
       ]
+    },
+    "welcomeBonus": {
+      "amount": 2500,
+      "unit": "dnata_points",
+      "spend_threshold_aed": 25000,
+      "qualify_window_days": 90,
+      "notes": "1,000 dnata points on joining-fee payment + 1,500 dnata points on AED 25,000 retail spend in first 3 statements. AED 1,048.95 joining + 1,048.95 renewal. Mastercard Travel Pass lounge access. 0% forex fee."
     }
   },
   "emirates-nbd-duo": {
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-corrected",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-confirmed",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-20",
     "bank": "emirates-nbd",
     "name": "Emirates NBD Duo Credit Cards",
-    "network": "Visa",
+    "network": "Diners Club + Mastercard",
     "categories": [
       "lifestyle"
     ],
     "annualFee": {
-      "amount": 840,
+      "amount": 0,
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "Emirates NBD Plus Points",
+    "loyaltyProgram": "ENBD Plus Points",
     "earnRates": {
-      "everythingElse": 1
+      "groceries": 5,
+      "fuel": 5,
+      "utilities": 5,
+      "partnerBrands": 5,
+      "everythingElse": 0.5
     },
-    "earnUnit": "Emirates NBD Plus Points per AED 1 spent",
+    "earnUnit": "% as ENBD Plus Points (5% on grocery/electronics/utilities/education/fuel **requires AED 5,000 minimum monthly spend** — otherwise 1.5%; max 500 Plus Points per statement)",
     "eligibility": {
       "minSalary": 12000,
       "salaryTransferRequired": false,
@@ -499,6 +513,11 @@
         "For all other categories, 0.5% Plus Points will continue to remain applicable.",
         "Maximum Plus Points per statement will be capped at 500."
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 840. **Exclusive for Abu Dhabi residents only**."
     }
   },
   "emirates-nbd-etihad-guest-elevate": {
@@ -626,7 +645,7 @@
       "unit": "etihad_guest_miles",
       "spend_threshold_aed": null,
       "qualify_window_days": 90,
-      "note": "Up to 60,000 Etihad Guest Miles. AED 1,575 joining fee (year 1); AED 735 renewal (year 2+). Earn 2.5 Tier Miles per AED 10 (max 20,000 Tier Miles/year). 25% miles redemption voucher per AED 100,000 spend (max 2/year). Fast-track to Silver Tier on 1 return flight."
+      "notes": "Up to 60,000 Etihad Guest Miles. AED 1,575 joining fee (year 1); AED 735 renewal (year 2+). Earn 2.5 Tier Miles per AED 10 (max 20,000 Tier Miles/year). 25% miles redemption voucher per AED 100,000 spend (max 2/year). Fast-track to Silver Tier on 1 return flight."
     },
     "welcomeBonusValue": 60000,
     "eligibility": {
@@ -687,7 +706,7 @@
       "entertainment": 0.0125,
       "everythingElse": 0.01
     },
-    "loyaltyProgram": "Emirates NBD Plus Points",
+    "loyaltyProgram": "ENBD Plus Points",
     "transferPartners": [],
     "annualFee": {
       "amount": 103.95,
@@ -723,9 +742,9 @@
       "eligibility": "editor-confirmed",
       "lastVerified": "editor-confirmed",
       "earnRates": "editor-confirmed",
-      "loyaltyProgram": "editor-confirmed",
+      "loyaltyProgram": "editor-corrected",
       "transferPartners": "editor-confirmed",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "network": "editor-confirmed",
       "sources": "editor-confirmed",
       "fxFee": "editor-confirmed",
@@ -788,7 +807,7 @@
   },
   "emirates-nbd-go4it-platinum": {
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
-    "earnUnit": "Plus Points per AED 1 spent (weekend entertainment: 0.025; standard: 0.01)",
+    "earnUnit": "% as ENBD Plus Points (Nol-card integrated; weekend 2.5% / RTA 2% / weekday 0.5%)",
     "eligibility": {
       "minSalary": 12000,
       "salaryTransferRequired": false,
@@ -810,13 +829,14 @@
     },
     "lastVerified": "2026-05-20",
     "earnRates": {
-      "entertainment": 0.025,
-      "everythingElse": 0.01
+      "everythingElse": 0.5,
+      "travel": 2,
+      "partnerBrands": 2.5
     },
-    "loyaltyProgram": "Emirates NBD Plus Points",
+    "loyaltyProgram": "ENBD Plus Points",
     "transferPartners": [],
     "annualFee": {
-      "amount": 208.95,
+      "amount": 0,
       "currency": "AED"
     },
     "network": "Visa",
@@ -848,13 +868,13 @@
     ],
     "_provenance": {
       "kfsUrl": "editor-confirmed",
-      "earnUnit": "editor-confirmed",
+      "earnUnit": "editor-corrected",
       "eligibility": "editor-confirmed",
       "lastVerified": "editor-confirmed",
-      "earnRates": "editor-confirmed",
-      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-corrected",
+      "loyaltyProgram": "editor-corrected",
       "transferPartners": "editor-confirmed",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "network": "editor-confirmed",
       "sources": "editor-confirmed",
       "fxFee": "editor-confirmed",
@@ -864,7 +884,7 @@
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
       "perks": "editor-confirmed",
-      "annualFeeWaiver": "editor-confirmed",
+      "annualFeeWaiver": "editor-corrected",
       "_features": "editor-confirmed",
       "partnerBrands": "needs-review"
     },
@@ -888,10 +908,9 @@
       ]
     },
     "annualFeeWaiver": {
-      "year_one_waived": false,
+      "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "threshold_period": "annual",
-      "notes": "AED 209 annual fee; no published waiver."
+      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 208.95."
     },
     "_features": [
       {
@@ -925,15 +944,16 @@
         "courses_count": 100,
         "scope": "global"
       }
-    ]
+    ],
+    "welcomeBonus": null
   },
   "emirates-nbd-lulu-247-platinum": {
     "welcomeBonus": {
       "amount": 500,
       "unit": "lulu_points",
       "spend_threshold_aed": 0,
-      "qualify_window_days": 0,
-      "note": "500 LuLu Points + 0% balance transfer with no processing fee. AED 525 joining + AED 262.50 renewal."
+      "qualify_window_days": null,
+      "notes": "500 LuLu Points + 0% balance transfer with no processing fee. AED 525 joining + AED 262.50 renewal."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "% as LuLu Points (redeemable at 70+ LuLu stores)",
@@ -1213,18 +1233,20 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-corrected",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-corrected",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-confirmed",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected",
+      "welcomeBonus": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-20",
@@ -1236,17 +1258,18 @@
       "co-brand"
     ],
     "annualFee": {
-      "amount": 262.5,
+      "amount": 0,
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "Red Points",
+    "loyaltyProgram": "RED Points",
     "earnRates": {
-      "dining": 10,
-      "international": 5,
+      "partnerBrands": 10,
+      "dining": 5,
+      "international": 2,
       "everythingElse": 1
     },
-    "earnUnit": "Red Points per AED 1 spent",
+    "earnUnit": "RED Points (multiplier on base earn rate)",
     "eligibility": {
       "minSalary": 5000,
       "salaryTransferRequired": false,
@@ -1275,7 +1298,13 @@
         "Utility Bill Payments Facility",
         "Dully filled credit card application"
       ]
-    }
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 262.50. **DISCONTINUED for new applications effective 1 June 2025** — existing cardholders retain benefits."
+    },
+    "welcomeBonus": "AED 2,000 spend in first 30 days → Manchester United Home Jersey. AED 6,000 spend in 3 months → Manchester United RED Box of official merchandise. Monthly/quarterly/yearly top-spender rewards + chance to win Old Trafford match tickets. **CARD DISCONTINUED: new applications closed effective 1 June 2025.**"
   },
   "emirates-nbd-marriott-bonvoy-world": {
     "_provenance": {
@@ -1356,15 +1385,14 @@
     "annualFeeWaiver": {
       "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "threshold_period": null,
-      "note": "Currently advertised 'Free for life'. KFS/SoC standard renewal: AED 315."
+      "notes": "Currently advertised 'Free for life'. KFS/SoC standard renewal: AED 315."
     },
     "welcomeBonus": {
       "amount": 70000,
       "unit": "marriott_bonvoy_points",
       "spend_threshold_aed": 22000,
       "qualify_window_days": 90,
-      "note": "2 Free Night Awards (35,000 points each, can be topped up by 15k points) on cumulative US$6,000 retail spend in first 3 billing statements. Automatic Silver Elite status + fast track to Gold. 10 Elite Night Credits/year. 1 additional Free Night Award on anniversary."
+      "notes": "2 Free Night Awards (35,000 points each, can be topped up by 15k points) on cumulative US$6,000 retail spend in first 3 billing statements. Automatic Silver Elite status + fast track to Gold. 10 Elite Night Credits/year. 1 additional Free Night Award on anniversary."
     }
   },
   "emirates-nbd-marriott-bonvoy-world-elite": {
@@ -1416,7 +1444,7 @@
       "unit": "marriott_bonvoy_points",
       "spend_threshold_aed": 55000,
       "qualify_window_days": 90,
-      "note": "100,000 Marriott Bonvoy points on activation + joining fee payment, plus 100,000 bonus on USD$15,000 spend in first 3 billing statements. Automatic Gold Elite status + fast track to Platinum. 15 Elite Night Credits/year. 1 Free Night Award (50,000-point value) on anniversary."
+      "notes": "100,000 Marriott Bonvoy points on activation + joining fee payment, plus 100,000 bonus on USD$15,000 spend in first 3 billing statements. Automatic Gold Elite status + fast track to Platinum. 15 Elite Night Credits/year. 1 Free Night Award (50,000-point value) on anniversary."
     },
     "eligibility": {
       "minSalary": 25000,
@@ -1521,8 +1549,7 @@
     "annualFeeWaiver": {
       "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "threshold_period": null,
-      "note": "Current promo: no annual fees. Standard fee per Schedule of Charges not explicitly listed for this product — verify with bank if waiver ends."
+      "notes": "Current promo: no annual fees. Standard fee per Schedule of Charges not explicitly listed for this product — verify with bank if waiver ends."
     }
   },
   "emirates-nbd-noon-one": {
@@ -1570,7 +1597,7 @@
       "unit": "noon_credits",
       "spend_threshold_aed": 5000,
       "qualify_window_days": 60,
-      "note": "AED 500 noon credits on AED 5,000 spend in first 2 months (new-to-card only). Plus AED 250 YOUGotaGift HappyYOU Card. 1-year free noon One membership; 50% off thereafter. Earn rates: 20% on noon Food; 10% on NowNow; 5% on noon Minutes/noon/Namshi/supermall; 1% on all other."
+      "notes": "AED 500 noon credits on AED 5,000 spend in first 2 months (new-to-card only). Plus AED 250 YOUGotaGift HappyYOU Card. 1-year free noon One membership; 50% off thereafter. Earn rates: 20% on noon Food; 10% on NowNow; 5% on noon Minutes/noon/Namshi/supermall; 1% on all other."
     },
     "eligibility": {
       "minSalary": 5000,
@@ -1674,7 +1701,7 @@
       "unit": "share_points",
       "spend_threshold_aed": 40000,
       "qualify_window_days": 90,
-      "note": "10,000 SHARE Points (= AED 1,000) on AED 40,000 spend in first 3 months. Joining fee refunded on same threshold. Plus AED 500 YOUGotaGift HappyYOU Card on online application."
+      "notes": "10,000 SHARE Points (= AED 1,000) on AED 40,000 spend in first 3 months. Joining fee refunded on same threshold. Plus AED 500 YOUGotaGift HappyYOU Card on online application."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "% as SHARE Points (10 pts = AED 1; EU/UK at 0.375%)",
@@ -1822,11 +1849,10 @@
       "unit": "share_points",
       "spend_threshold_aed": 25000,
       "qualify_window_days": 90,
-      "headline_value_aed": 500,
-      "notes": "Cumulative spend within first 3 billing statements."
+      "notes": "5,000 SHARE Points (= AED 500) on AED 25,000 spend in 3 months. Free for life. Plus AED 350 YOUGotaGift HappyYOU Card."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
-    "earnUnit": "% back as SHARE Points",
+    "earnUnit": "% as SHARE Points (10 pts = AED 1; EU/UK at 0.25%)",
     "eligibility": {
       "minSalary": 12000,
       "salaryTransferRequired": false,
@@ -1849,11 +1875,12 @@
     },
     "lastVerified": "2026-05-20",
     "earnRates": {
-      "dining": 6,
-      "shopping": 6,
-      "groceries": 6,
-      "entertainment": 6,
-      "everythingElse": 1
+      "partnerBrands": 6,
+      "everythingElse": 1,
+      "groceries": 0.25,
+      "insurance": 0.25,
+      "fuel": 0.1,
+      "utilities": 0.1
     },
     "annualFeeWaiver": {
       "year_one_waived": true,
@@ -1861,7 +1888,7 @@
       "threshold_period": "annual",
       "notes": "Free for life — no annual or joining fee."
     },
-    "loyaltyProgram": "SHARE Points (Majid Al Futtaim)",
+    "loyaltyProgram": "SHARE",
     "transferPartners": [],
     "annualFee": {
       "amount": 0,
@@ -1899,14 +1926,14 @@
       "Apple Pay, Samsung Pay, Google Pay"
     ],
     "_provenance": {
-      "welcomeBonus": "editor-confirmed",
+      "welcomeBonus": "editor-corrected",
       "kfsUrl": "editor-confirmed",
-      "earnUnit": "editor-confirmed",
+      "earnUnit": "editor-corrected",
       "eligibility": "editor-confirmed",
       "lastVerified": "editor-confirmed",
-      "earnRates": "editor-confirmed",
+      "earnRates": "editor-corrected",
       "annualFeeWaiver": "editor-confirmed",
-      "loyaltyProgram": "editor-confirmed",
+      "loyaltyProgram": "editor-corrected",
       "transferPartners": "editor-confirmed",
       "annualFee": "editor-confirmed",
       "network": "editor-confirmed",
@@ -1958,7 +1985,7 @@
       "unit": "skywards_miles",
       "spend_threshold_aed": null,
       "qualify_window_days": 90,
-      "note": "Up to 100,000 bonus Skywards Miles + complimentary 1-year Rotana Rewards Exclusive membership + Emirates Skywards Silver tier upgrade. Joining fee AED 3,148.95 applies year 1; AED 1,575 from year 2."
+      "notes": "Up to 100,000 bonus Skywards Miles + complimentary 1-year Rotana Rewards Exclusive membership + Emirates Skywards Silver tier upgrade. Joining fee AED 3,148.95 applies year 1; AED 1,575 from year 2."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "Skywards Miles per USD 1 spent (EU/UK at 50%)",
@@ -2097,7 +2124,7 @@
       "unit": "skywards_miles",
       "spend_threshold_aed": null,
       "qualify_window_days": 90,
-      "note": "Up to 40,000 bonus Skywards Miles. AED 1,573.95 joining fee year 1; AED 735 renewal year 2+. Unlimited Visa lounge access (cardholder only). Golf privileges UAE."
+      "notes": "Up to 40,000 bonus Skywards Miles. AED 1,573.95 joining fee year 1; AED 735 renewal year 2+. Unlimited Visa lounge access (cardholder only). Golf privileges UAE."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "Skywards Miles per USD 1 spent (EU/UK at 0.37 miles per USD)",
@@ -2242,14 +2269,14 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-confirmed",
       "categories": "scraped",
       "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-confirmed",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
@@ -2269,14 +2296,15 @@
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "U Points",
+    "loyaltyProgram": "U by Emaar",
     "earnRates": {
-      "dining": 5,
-      "shopping": 5,
-      "fuel": 10,
-      "everythingElse": 1
+      "partnerBrands": 5,
+      "everythingElse": 1,
+      "groceries": 0.25,
+      "fuel": 0.1,
+      "utilities": 0.1
     },
-    "earnUnit": "U Points per AED 1 spent",
+    "earnUnit": "% as UPoints (Emaar 5% / base 1%)",
     "eligibility": {
       "minSalary": 5000,
       "salaryTransferRequired": false,
@@ -2310,10 +2338,10 @@
   "emirates-nbd-u-by-emaar-infinite": {
     "welcomeBonus": {
       "amount": 25000,
-      "unit": "u_points",
+      "unit": "upoints",
       "spend_threshold_aed": null,
       "qualify_window_days": null,
-      "note": "Up to 25,000 UPoints + automatic U by Emaar Platinum status. AED 2,625 joining + AED 1,575 renewal. 20% off F&B at Emaar Hospitality Group hotels, suite upgrade on stays, BOGO at Reel Cinemas with free soft drinks/popcorn (min AED 5k/mo spend), up to 30% off Emaar Entertainment, complimentary Grand Drive valet (Dubai Mall — Galeries Lafayette + The Souk)."
+      "notes": "Up to 25,000 UPoints + automatic U by Emaar Platinum status. AED 2,625 joining + AED 1,575 renewal. 20% off F&B at Emaar Hospitality Group hotels, suite upgrade on stays, BOGO at Reel Cinemas with free soft drinks/popcorn (min AED 5k/mo spend), up to 30% off Emaar Entertainment, complimentary Grand Drive valet (Dubai Mall — Galeries Lafayette + The Souk)."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "% as UPoints (redeemable at 2,500+ stores)",
@@ -2595,18 +2623,19 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-confirmed",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-corrected",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-confirmed",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-20",
@@ -2618,19 +2647,19 @@
       "lifestyle"
     ],
     "annualFee": {
-      "amount": 735,
+      "amount": 0,
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "Emirates NBD Plus Points",
+    "loyaltyProgram": "ENBD Plus Points",
     "earnRates": {
-      "groceries": 4,
-      "travel": 3,
-      "fuel": 2,
-      "entertainment": 1,
-      "everythingElse": 1
+      "everythingElse": 1.5,
+      "groceries": 0.4,
+      "insurance": 0.4,
+      "fuel": 0.2,
+      "utilities": 0.2
     },
-    "earnUnit": "Emirates NBD Plus Points per AED 1 spent",
+    "earnUnit": "% as ENBD Plus Points (subject to per-statement cap)",
     "eligibility": {
       "minSalary": 12000,
       "salaryTransferRequired": false,
@@ -2659,6 +2688,11 @@
         "Latest 3-month original bank statements (or mini ATM statements)",
         "Security cheque"
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 735."
     }
   },
   "emirates-nbd-visa-infinite": {
@@ -2734,18 +2768,19 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-confirmed",
       "categories": "scraped",
-      "annualFee": "scraped",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-corrected",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-confirmed",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-20",
@@ -2760,13 +2795,15 @@
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "Emirates NBD Plus Points",
+    "loyaltyProgram": "ENBD Plus Points",
     "earnRates": {
-      "groceries": 4,
-      "fuel": 2,
-      "everythingElse": 1
+      "everythingElse": 1.5,
+      "groceries": 0.4,
+      "insurance": 0.4,
+      "fuel": 0.2,
+      "utilities": 0.2
     },
-    "earnUnit": "Emirates NBD Plus Points per AED 1 spent",
+    "earnUnit": "% as ENBD Plus Points (subject to per-statement cap)",
     "eligibility": {
       "minSalary": 12000,
       "salaryTransferRequired": false,
@@ -2795,17 +2832,22 @@
         "Latest 3-month original bank statements (or mini ATM statements)",
         "Security cheque"
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 735."
     }
   },
   "emirates-nbd-webshopper": {
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-confirmed",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
+      "loyaltyProgram": "editor-confirmed",
       "earnRates": "scraped",
       "earnUnit": "scraped",
       "eligibility": "scraped",
@@ -2828,7 +2870,7 @@
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "Emirates NBD Plus Points",
+    "loyaltyProgram": "ENBD Plus Points",
     "earnRates": {
       "everythingElse": 1
     },
@@ -2942,7 +2984,7 @@
       "unit": "aed_voucher",
       "spend_threshold_aed": 10000,
       "qualify_window_days": 30,
-      "note": "Amazon Gift Card. Tiered: AED 500 voucher for AED 5,000 spend. Promo expires 31 May 2026; first-year fee waived."
+      "notes": "Amazon Gift Card. Tiered: AED 500 voucher for AED 5,000 spend. Promo expires 31 May 2026; first-year fee waived."
     }
   },
   "fab-elite": {
