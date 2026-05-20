@@ -3,90 +3,128 @@ slug: phase-2a-uae-banks-expansion
 vertical: business-realestate
 assigned-editor: business-realestate-editor
 predecessor-brief: card-data-audit-and-ui-programme
-research-status: pending
-seo-status: pending
-draft-status: pending
-factcheck-status: pending
-tech-status: pending
-ux-stage-5-5-status: pending
-standards-status: pending
-chairman-status: pending
-target-publish: 2026-06-10
+gate-cleared: phase-1-chairman-approval (2026-05-20)
+type: programme-overview
+research-status: pending (per-bank)
+chairman-status: directives-set
+target-publish: 2026-06-10 (final bank)
 sources-required: ~70 cards across 6 new banks
-tier: T3
-gate: phase-1-chairman-approval
+tier: T3 (programme); each child brief is T3 in its own right
 ---
 
-# Phase 2a — UAE banks expansion (Mashreq, ADIB, DIB, RAKBank, Emirates Islamic, ADCB)
+# Phase 2a — UAE banks expansion programme overview
+
+> This is a **programme overview**, not a single executable brief. Phase 2a
+> ships as **one brief per bank** plus one upfront **schema-additions** brief
+> (Phase 2a.0) — per the Chairman's 2026-05-20 directive
+> (`.council/sessions/2026-05-20-chairman-gate-phase-1.md`).
 
 ## The reader question
 
-A reader on `/cards/finder/` today sees 34 cards across 2 banks. The operator's bar is "all UAE banks, big or small." Until our database covers Mashreq, ADIB, DIB, RAKBank, Emirates Islamic, and ADCB — the six largest UAE consumer-banking issuers we don't yet carry — the finder cannot answer the real reader question ("which UAE card pays me back the most on what I spend") because three quarters of the relevant supply is missing from the result set.
+A reader on `/cards/finder/` today sees 34 cards across 2 banks. The operator's bar — set on 2026-05-20 — is "all UAE banks, big or small." Until our database covers the next six banks (Mashreq, ADIB, DIB, RAKBank, Emirates Islamic, ADCB), the finder cannot answer the actual reader question because three quarters of the relevant card supply is missing from the result set.
 
-Phase 2a adds the **next six banks**, picked because every URL pattern in `.council/research/2026-05/firecrawl-bank-urls.md` is rated **friendly** or **friendly–medium** for Firecrawl (no SPA / no auth wall on product pages). This is the highest-conversion sprint we can run.
+## Programme structure (per Chairman directive)
 
-## Why now
+| # | Brief slug | Bank | Target open | Estimated cards | Firecrawl rating |
+|---|---|---|---|---|---|
+| 0 | `phase-2a-0-schema-additions` | (data layer) | 2026-05-21 | 0 (schema-only) | n/a |
+| 1 | `phase-2a-mashreq` | Mashreq | 2026-05-27 | ~14 | medium (SPA wait) |
+| 2 | `phase-2a-adib` | ADIB | 2026-05-30 | ~12 | friendly |
+| 3 | `phase-2a-dib` | DIB | 2026-06-02 | ~11 | friendly |
+| 4 | `phase-2a-rakbank` | RAKBank | 2026-06-04 | ~10 | medium |
+| 5 | `phase-2a-emirates-islamic` | Emirates Islamic | 2026-06-06 | ~10 | friendly |
+| 6 | `phase-2a-adcb` | ADCB | 2026-06-09 | ~14 | friendly |
 
-1. **Phase 1 closed clean** (chairman-gate `approved`, 95.5% editor-handled on 34 cards, zero `provenance: scraped` on audited fields). The pipeline is proven.
-2. **Firecrawl Hobby plan budget** — the Phase 1 pass burned ~80 credits on 43 URLs + 3 PDFs. Phase 2a's estimated ~70 cards across 6 banks needs ~200 credits + 6 schedule-of-charges PDFs ≈ 230 credits total. Well within the 4,000-credit monthly cap.
-3. **The L2 schema is hardened**: `REWARD_UNIT` enum extended (Darna / dnata / Marriott Bonvoy / noon / RED Points); `NETWORK` enum extended (Diners Club + dual-network); `annualFeeWaiver` supports promo waivers with SoC-standard notes. New banks plug in without schema churn.
-4. **The Component library and Finder + Compare pages are in production**. Adding cards is now a data-only operation — no new UI required.
+Phase 2a.0 must land first — the four schema additions affect every card's data shape, so adding them once before the bank passes start saves rework on ~70 cards.
 
-## Out of scope (Phase 2a)
+## Phase 2a.0 — Schema additions (lands first)
 
-- **Phase 2b banks** (CBD, HSBC, Standard Chartered, Citi) are deferred to the next sprint — they need Firecrawl `actions: ["wait_for_selector"]` for client-side card lists, plus geofencing fallbacks. Separate brief.
-- **Phase 2c banks** (Liv, Mashreq Neo, Wio, UAB, SIB, Ajman, NBF) are mobile-app-first or business-banking-only; data may need to come from bank press releases. Separate brief.
-- **MDX editorial layer** for the ~70 new cards. The L2 data + structured welcomeBonus + perks lists ship in this phase. The section editor's prose layer (the `editorTake` field used by the SpecCard tagline) is a follow-up Phase 2a.1.
-- **Schema additions** flagged in the Phase 1 dossier (typed `joiningFee`, `eligibility.invitationOnly`, `earnRates._caps.min_monthly_spend`, `discontinuedForNewApplicants`) are deferred to Phase 2a.0 — a single focused brief that lands those schema fields before the new banks' data starts importing.
+Per Chairman ruling (2026-05-20), the L2 schema gains four typed fields. Each is additive; none breaks existing data. Each opens with a Council sign-off by Tech Lead + Chairman.
 
-## Done when
+### 1. `joiningFee`
 
-1. **Six new banks present** in `src/content/banks/`: Mashreq, ADIB, DIB, RAKBank, Emirates Islamic, ADCB. Bank MDX cites the issuer's regulator (CBUAE), branch count, founding year, and salary-transfer policy.
-2. **~70 new cards** in `src/data/cards.json`, every field with `_provenance: editor-confirmed` or `editor-corrected`. `lastVerified: 2026-MM-DD` matches the audit date. Zero `scraped` provenance.
-3. **Per-bank scrape entry points** at `scripts/scrape/<bank>.ts`, each referencing a `banks/<bank>.urls.json` URL config + the bank's Schedule of Charges PDF as authoritative cross-reference.
-4. **Per-card source citations** in `cards.json` — each card carries the live product-page URL + the bank's SoC/KFS PDF URL (`kfsUrl` field).
-5. **Audit dossier** at `.council/research/2026-06/phase-2a-audit-dossier.md` mirrors the Phase 1 template (banner findings, T&C gotchas table, schema gaps, per-bank summary).
-6. **Finder and compare** unchanged in code, but render 100+ cards instead of 34 — no UI regression.
-7. **Council sign-off block** in the merge PR shows Stage 3 / 5.5 / 6 / 6.5 / 7 statuses all passed.
+```typescript
+joiningFee: z.object({
+  amount: z.number().nonnegative(),
+  currency: z.literal("AED").default("AED"),
+}).optional(),
+```
 
-## Per-bank URL handoff (from `.council/research/2026-05/firecrawl-bank-urls.md`)
+Phase 1 surfaced six cards with one-time joining fees that differ from year-2+ annual fees (Skywards Infinite AED 3,148.95, Marriott Bonvoy World Elite AED 1,575, U By Emaar Infinite AED 2,625, dnata World AED 1,048.95, Etihad Inspire AED 1,575, SHARE Visa Infinite AED 1,500). Currently captured in `annualFeeWaiver.notes`; promoting to a typed field unlocks finder UI sort-by-first-year-cost.
 
-| Bank | Slug | Card list URL | Schedule of charges | Firecrawl rating |
-|---|---|---|---|---|
-| Mashreq | `mashreq` | `mashreq.com/en/uae/personal/cards/credit-cards/` | (PDF link from forms page) | medium (SPA wait) |
-| ADCB | `adcb` | `adcb.com/en/personal/credit-cards/` | (PDF link in product footer) | friendly |
-| ADIB | `adib` | `adib.ae/en/personal/cards/credit-cards` | (PDF link) | friendly |
-| DIB | `dib` | `dib.ae/personal/cards/credit-cards` | (PDF link) | friendly |
-| RAKBank | `rakbank` | `rakbank.ae/personal-banking/credit-cards/` | (PDF link) | medium |
-| Emirates Islamic | `emirates-islamic` | `emiratesislamic.ae/en/personal-banking/cards/credit-cards` | (PDF link) | friendly |
+### 2. `eligibility.invitationOnly`
 
-The `adcb.urls.json` and `enbd.urls.json` files already exist in `scripts/scrape/banks/`. Three more URL JSONs need writing.
+```typescript
+eligibility: z.object({
+  // … existing fields …
+  invitationOnly: z.boolean().default(false),
+}),
+```
 
-## Stage routing
+Phase 1 reclassified FAB World Elite as Private Banking invitation-only (set `minSalary: 250,000` as a finder-UI sentinel). The flag retires that workaround and lets the finder filter cleanly. Also applies to ENBD Priority Banking Visa Infinite (AUM-gated).
 
-- **Stage 2 (Managing Editor)** opens this brief once Chairman approves Phase 1.
-- **Stage 3 (Research)** runs in two passes per bank: (a) Firecrawl-map the card list URL to discover the slugs that bank offers; (b) Firecrawl-scrape each slug + the SoC PDF. Budget: 40 credits/bank × 6 = 240 credits.
-- **Stage 4 (SEO)** — net new for Phase 2a: each of the six new banks gets a hub page (`/banks/<slug>/`) with the same template as `/banks/emirates-nbd/`. SEO Strategist sets primary keyword + meta for each.
-- **Stage 5 (Business & Real Estate Editor)** — the section editor for this beat. Drafts each card's MDX with `editorTake` (one-paragraph publication voice; the tagline regex will pull the first sentence).
-- **Stage 5.5 (Head of UX)** — light pass on the 6 new bank hub pages only (the SpecCard surface is unchanged).
-- **Stage 6 (Fact-check)** — same gating as Phase 1: kill-list checks per `.council/01_editorial_standards.md §10`; provenance hygiene sweep; T&C gotcha capture.
-- **Stage 6.5 (Standards Editor)** — house-voice pass on the new bank MDX + the new card MDX.
-- **Stage 7 (Chairman)** — publish gate.
+### 3. `discontinuedForNewApplicants`
 
-## Acceptance for the Chairman gate
+```typescript
+discontinuedForNewApplicants: z.object({
+  date: z.string(),            // ISO date the bank stopped accepting applications
+  note: z.string().optional(), // brief explanation for the editor surface
+}).optional(),
+```
 
-The Chairman will refuse the gate if:
+ENBD Manchester United is closed to new applicants since 2025-06-01 but existing cardholders retain benefits. Phase 1 captured this in `annualFeeWaiver.notes`; promoting to a typed field lets the finder hide / badge the card.
 
-- Any new card carries `_provenance: scraped` on audited fields.
-- Any AED figure disagrees with the bank's SoC/KFS PDF.
-- Any new card lacks a `kfsUrl` field pointing at a primary source.
-- The schema additions deferred to Phase 2a.0 land mid-pass without a separate brief.
-- The finder page's first-paint time exceeds the Phase 1 baseline (Lighthouse Performance score regresses).
+### 4. `welcomeBonus.headline` (≤90 chars)
 
-## Open from Phase 1 (carry-over for the section editor)
+```typescript
+const WelcomeBonus = z.object({
+  // … existing fields …
+  headline: z.string().max(90).optional(),  // ≤90 char display headline
+});
+```
 
-The four open questions from the Phase 1 Chairman gate — tagline regex tightening, "we" voice on tool pages, "Any employment" chip handling, stats-strip label parity — should be resolved before the new bank pages render with the same patterns. Either the Chairman ruled on them at the Phase 1 gate (in which case implement during Phase 2a) or they remain ambiguous (in which case the section editor surfaces them in the Phase 2a dossier for re-ruling).
+The Marriott Bonvoy World Elite `welcomeBonus.notes` is 261 characters and overflows the SpecCard surface. The Chairman ruled: introduce a separate `headline` field (≤90 chars) for display; keep `notes` as the long-form footnote. UI components prefer `headline` and fall back to `notes` truncated.
+
+### Explicitly deferred
+
+- **`earnRates._caps.min_monthly_spend_to_qualify_aed`** typing → Phase 2b. Currently encoded in `earnUnit` strings (Duo, FAB Elite). Acceptable interim.
+- **`network` as a tuple** (for Duo's "Diners Club + Mastercard") → indefinite. The current string-with-plus convention works.
+
+## Out of scope (Phase 2a programme)
+
+- **Phase 2b banks** (CBD, HSBC, Standard Chartered, Citi). Need Firecrawl `actions` for SPAs and geofencing fallbacks. Separate programme.
+- **Phase 2c banks** (Liv, Mashreq Neo, Wio, UAB, SIB, Ajman, NBF). Mobile-app-first or business-banking-only. Separate programme.
+- **MDX editorial layer** for the ~70 new cards. Each per-bank brief ships the L2 data; the section editor's prose layer (`editorTake`) is Phase 2a.1.
+- **Affiliate links** — Charter §non-negotiable #5 holds; no affiliate work in Phase 2.
+
+## Per-bank brief template
+
+Each child brief (`phase-2a-<bank>`) mirrors the Phase 1 brief structure with these adjustments:
+
+- **Done-when #1**: "Every card in `cards.json` from `<bank>` has `lastVerified: 2026-MM-DD` ≥ brief open date." (provenance hygiene per Phase 1's standard).
+- **Done-when #2**: "Audit dossier at `.council/research/2026-MM/<bank>-audit-dossier.md` follows the Phase 1 template (banner findings, T&C gotchas table, schema gaps, per-card breakdown)."
+- **Done-when #3**: "Bank MDX at `src/content/banks/<slug>.mdx` cites CBUAE regulator, branch count, founding year, salary-transfer policy."
+- **Done-when #4**: "Per-card source citations in `cards.json` include live `applyUrl` + bank's KFS PDF (`kfsUrl`)."
+- **Done-when #5**: "Finder + compare render with the new cards in place — no UI regression. Lighthouse Performance score doesn't drop more than 3 points vs. Phase 1 baseline."
+
+## Phase 1 carry-over (already implemented in this branch)
+
+The Chairman's T1 follow-ups from the Phase 1 gate are implemented in the same PR as this brief:
+
+- Tagline regex tightened to `/^[^.!?]+[.!?](?:\s|$)/` (decimal-clip risk).
+- `EligibilityChips` omits the chip when `employmentTypes` contains `"any"`.
+- `/cards/finder/` stats-strip label standardised on **"Cards covered"** (was "Cards in database").
+- First-person "we" voice on tool-page leads — **kept** per Chairman. Standards Editor to log the register clarification in the next `01_editorial_standards.md` amendment.
+
+## Acceptance for the Chairman gate (each child brief)
+
+Each child brief inherits Phase 1's four refusal triggers verbatim:
+
+1. Any `_provenance` entry on audited fields still `scraped`.
+2. UX Stage 5.5 fail on any new bank hub page (mobile-first, ≤5-sec scannability).
+3. Any AED figure disagrees with the bank's SoC/KFS PDF.
+4. Council sign-off block missing or incomplete in the merge PR.
 
 ---
 
-_Brief drafted 2026-05-20 by the orchestrator, queued behind the Phase 1 Chairman gate. Open this brief via the Managing Editor (`/brief phase-2a-uae-banks-expansion`) the moment Phase 1 receives `chairman-status: approved`._
+_Phase 2a opens 2026-05-21 with the schema-additions brief; the first per-bank brief (Mashreq) opens on or after 2026-05-27. Managing Editor routes each per-bank brief through the standard 10-stage workflow._

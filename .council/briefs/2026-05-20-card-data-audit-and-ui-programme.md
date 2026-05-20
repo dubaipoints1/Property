@@ -9,7 +9,9 @@ factcheck-status: pass (post-redline; all blockers closed)
 tech-status: complete (components shipped + Stage 5.5 fixes #1-#8 landed)
 ux-stage-5-5-status: pass-with-edits (#9 SSR-rank deferred; #10 no-action)
 standards-status: pass-with-edits (10 copy edits applied; 4 open questions for Chairman)
-chairman-status: ready-for-gate
+chairman-status: approved
+chairman-date: 2026-05-20
+chairman-note: Phase 1 ships. All four refusal triggers clean on spot-check; UX P0/P1 fixes landed; Standards open questions ruled in .council/sessions/2026-05-20-chairman-gate-phase-1.md. Phase 2a brief track opens 2026-05-27 with named schema additions sequenced.
 target-publish: 2026-05-27
 sources-required: 34
 sources-verified: 34

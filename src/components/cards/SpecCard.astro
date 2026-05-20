@@ -100,11 +100,14 @@ if (variant === "full") {
     const editorial = await getEntry("cards", card.slug);
     const editorTake = editorial?.data?.editorTake;
     if (typeof editorTake === "string" && editorTake.trim().length > 0) {
+      // Chairman ruling Q1 (2026-05-20): require terminating punctuation
+      // to be followed by whitespace or end-of-string so decimal numerals
+      // ("earn 2.5x on…") in the first sentence don't clip mid-word.
       const firstSentence = editorTake
         .trim()
         .replace(/\s+/g, " ")
-        .match(/^[^.!?]+[.!?]/);
-      tagline = firstSentence ? firstSentence[0] : null;
+        .match(/^[^.!?]+[.!?](?:\s|$)/);
+      tagline = firstSentence ? firstSentence[0].trim() : null;
     }
   } catch {
     // Editorial MDX may not exist for every L2 card — fall through to the
