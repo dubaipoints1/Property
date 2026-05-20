@@ -303,11 +303,11 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-corrected",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-confirmed",
-      "loyaltyProgram": "scraped",
+      "loyaltyProgram": "editor-corrected",
       "earnRates": "scraped",
       "earnUnit": "scraped",
       "eligibility": "scraped",
@@ -333,7 +333,7 @@
       "currency": "AED"
     },
     "fxFee": 0,
-    "loyaltyProgram": "dnata Travel Points",
+    "loyaltyProgram": "dnata Points",
     "earnRates": {
       "shopping": 5,
       "travel": 10,
@@ -374,18 +374,19 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-corrected",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-confirmed",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-corrected",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-corrected",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "welcomeBonus": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-20",
@@ -401,11 +402,13 @@
       "currency": "AED"
     },
     "fxFee": 0,
-    "loyaltyProgram": "dnata Travel Points",
+    "loyaltyProgram": "dnata Points",
     "earnRates": {
-      "everythingElse": 1
+      "partnerBrands": 15,
+      "travel": 10,
+      "everythingElse": 1.5
     },
-    "earnUnit": "dnata Travel Points per AED 1 spent",
+    "earnUnit": "% as dnata Points",
     "eligibility": {
       "minSalary": 20000,
       "salaryTransferRequired": true,
@@ -434,6 +437,13 @@
         "**Valet Parking** at selected locations in Abu Dhabi",
         "Interest rate: 3.25% per month; minimum payment: 5% of the outstanding or  100, whichever is higher"
       ]
+    },
+    "welcomeBonus": {
+      "amount": 2500,
+      "unit": "dnata_points",
+      "spend_threshold_aed": 25000,
+      "qualify_window_days": 90,
+      "note": "1,000 dnata points on joining-fee payment + 1,500 dnata points on AED 25,000 retail spend in first 3 statements. AED 1,048.95 joining + 1,048.95 renewal. Mastercard Travel Pass lounge access. 0% forex fee."
     }
   },
   "emirates-nbd-duo": {
@@ -1213,18 +1223,20 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-corrected",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-corrected",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-confirmed",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected",
+      "welcomeBonus": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-20",
@@ -1236,17 +1248,18 @@
       "co-brand"
     ],
     "annualFee": {
-      "amount": 262.5,
+      "amount": 0,
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "Red Points",
+    "loyaltyProgram": "RED Points",
     "earnRates": {
-      "dining": 10,
-      "international": 5,
+      "partnerBrands": 10,
+      "dining": 5,
+      "international": 2,
       "everythingElse": 1
     },
-    "earnUnit": "Red Points per AED 1 spent",
+    "earnUnit": "RED Points (multiplier on base earn rate)",
     "eligibility": {
       "minSalary": 5000,
       "salaryTransferRequired": false,
@@ -1275,6 +1288,19 @@
         "Utility Bill Payments Facility",
         "Dully filled credit card application"
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": null,
+      "note": "Current promo: No Annual Fees. SoC standard renewal: AED 262.50. **DISCONTINUED for new applications effective 1 June 2025** — existing cardholders retain benefits."
+    },
+    "welcomeBonus": {
+      "amount": 0,
+      "unit": "merchandise",
+      "spend_threshold_aed": 6000,
+      "qualify_window_days": 90,
+      "note": "AED 2,000 spend in first 30 days → Manchester United Home Jersey. AED 6,000 spend in 3 months → Manchester United RED Box of official merchandise. Monthly/quarterly/yearly top-spender rewards + chance to win Old Trafford match tickets. **CARD DISCONTINUED: new applications closed effective 1 June 2025.**"
     }
   },
   "emirates-nbd-marriott-bonvoy-world": {
@@ -1822,11 +1848,10 @@
       "unit": "share_points",
       "spend_threshold_aed": 25000,
       "qualify_window_days": 90,
-      "headline_value_aed": 500,
-      "notes": "Cumulative spend within first 3 billing statements."
+      "note": "5,000 SHARE Points (= AED 500) on AED 25,000 spend in 3 months. Free for life. Plus AED 350 YOUGotaGift HappyYOU Card."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
-    "earnUnit": "% back as SHARE Points",
+    "earnUnit": "% as SHARE Points (10 pts = AED 1; EU/UK at 0.25%)",
     "eligibility": {
       "minSalary": 12000,
       "salaryTransferRequired": false,
@@ -1849,11 +1874,12 @@
     },
     "lastVerified": "2026-05-20",
     "earnRates": {
-      "dining": 6,
-      "shopping": 6,
-      "groceries": 6,
-      "entertainment": 6,
-      "everythingElse": 1
+      "partnerBrands": 6,
+      "everythingElse": 1,
+      "groceries": 0.25,
+      "insurance": 0.25,
+      "fuel": 0.1,
+      "utilities": 0.1
     },
     "annualFeeWaiver": {
       "year_one_waived": true,
@@ -1861,7 +1887,7 @@
       "threshold_period": "annual",
       "notes": "Free for life — no annual or joining fee."
     },
-    "loyaltyProgram": "SHARE Points (Majid Al Futtaim)",
+    "loyaltyProgram": "SHARE",
     "transferPartners": [],
     "annualFee": {
       "amount": 0,
@@ -1899,14 +1925,14 @@
       "Apple Pay, Samsung Pay, Google Pay"
     ],
     "_provenance": {
-      "welcomeBonus": "editor-confirmed",
+      "welcomeBonus": "editor-corrected",
       "kfsUrl": "editor-confirmed",
-      "earnUnit": "editor-confirmed",
+      "earnUnit": "editor-corrected",
       "eligibility": "editor-confirmed",
       "lastVerified": "editor-confirmed",
-      "earnRates": "editor-confirmed",
+      "earnRates": "editor-corrected",
       "annualFeeWaiver": "editor-confirmed",
-      "loyaltyProgram": "editor-confirmed",
+      "loyaltyProgram": "editor-corrected",
       "transferPartners": "editor-confirmed",
       "annualFee": "editor-confirmed",
       "network": "editor-confirmed",
@@ -2595,18 +2621,19 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-confirmed",
       "categories": "scraped",
-      "annualFee": "editor-corrected",
+      "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-corrected",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-confirmed",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-20",
@@ -2618,19 +2645,19 @@
       "lifestyle"
     ],
     "annualFee": {
-      "amount": 735,
+      "amount": 0,
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "Emirates NBD Plus Points",
+    "loyaltyProgram": "ENBD Plus Points",
     "earnRates": {
-      "groceries": 4,
-      "travel": 3,
-      "fuel": 2,
-      "entertainment": 1,
-      "everythingElse": 1
+      "everythingElse": 1.5,
+      "groceries": 0.4,
+      "insurance": 0.4,
+      "fuel": 0.2,
+      "utilities": 0.2
     },
-    "earnUnit": "Emirates NBD Plus Points per AED 1 spent",
+    "earnUnit": "% as ENBD Plus Points (subject to per-statement cap)",
     "eligibility": {
       "minSalary": 12000,
       "salaryTransferRequired": false,
@@ -2659,6 +2686,12 @@
         "Latest 3-month original bank statements (or mini ATM statements)",
         "Security cheque"
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": null,
+      "note": "Current promo: No Annual Fees. SoC standard renewal: AED 735."
     }
   },
   "emirates-nbd-visa-infinite": {
