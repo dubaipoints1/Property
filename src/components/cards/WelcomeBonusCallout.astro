@@ -18,14 +18,38 @@ import type { CardData } from "~/lib/cardsData";
 import {
   isStructuredWelcomeBonus,
   isBifurcatedWelcomeBonus,
+  getCardData,
+  welcomeBonusDisplay as toDisplay,
 } from "~/lib/cardsData";
 
 interface Props {
-  welcomeBonus: NonNullable<CardData["welcomeBonus"]>;
-  welcomeBonusDisplay: string;
+  /** Phase 2a.2: when set, the component resolves welcomeBonus from
+   * `getCardData(card)`. Keeps the MDX call site at one line. */
+  card?: string;
+  welcomeBonus?: NonNullable<CardData["welcomeBonus"]>;
+  welcomeBonusDisplay?: string;
 }
 
-const { welcomeBonus, welcomeBonusDisplay } = Astro.props;
+const {
+  card,
+  welcomeBonus: welcomeBonusProp,
+  welcomeBonusDisplay: displayProp,
+} = Astro.props;
+
+const resolved = card ? getCardData(card) : undefined;
+if (card && !resolved) {
+  throw new Error(`WelcomeBonusCallout: unknown card slug "${card}"`);
+}
+
+const welcomeBonus = (resolved?.welcomeBonus ?? welcomeBonusProp) as
+  | NonNullable<CardData["welcomeBonus"]>
+  | undefined;
+if (!welcomeBonus) {
+  throw new Error(
+    "WelcomeBonusCallout: requires `card` or inline `welcomeBonus` prop, and the resolved card must carry a welcomeBonus",
+  );
+}
+const welcomeBonusDisplay = displayProp ?? toDisplay(welcomeBonus);
 
 const aedFormatter = new Intl.NumberFormat("en-AE", {
   style: "currency",
@@ -47,6 +71,15 @@ if (isStructuredWelcomeBonus(welcomeBonus)) {
     null;
 }
 
+// Phase 2a.0 (2026-05-20): prefer the structured `headline` (≤90 chars,
+// editor-written one-liner) over the verbose derived display string
+// from notes. Falls through to the existing display pipeline when
+// `headline` is absent (cards that don't yet carry one).
+const bodyText =
+  structured && structured.headline
+    ? structured.headline
+    : welcomeBonusDisplay;
+
 const thresholdLine =
   structured && structured.spend_threshold_aed
     ? structured.qualify_window_days
@@ -57,7 +90,7 @@ const thresholdLine =
 
 <aside class="dp-welcome-callout" aria-label="Welcome offer">
   <div class="eyebrow">Welcome offer</div>
-  <div class="body">{welcomeBonusDisplay}</div>
+  <div class={`body${structured && structured.headline ? " is-headline" : ""}`}>{bodyText}</div>
   {thresholdLine && <div class="threshold">{thresholdLine}</div>}
 </aside>
 
@@ -88,6 +121,14 @@ const thresholdLine =
     color: var(--ink);
     line-height: 1.35;
     text-wrap: balance;
+  }
+  /* Phase 2a.0: when a structured `headline` is present we render the
+     editor's one-liner (≤90 chars) in Fraunces 18px italic, balanced
+     to 52ch. The italic + cap distinguishes the headline pipeline from
+     the legacy derived-display fallback. */
+  .dp-welcome-callout .body.is-headline {
+    font-style: italic;
+    max-width: 52ch;
   }
   .dp-welcome-callout .threshold {
     font-family: "DM Sans", system-ui, sans-serif;

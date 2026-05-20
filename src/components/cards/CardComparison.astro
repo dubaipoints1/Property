@@ -1,0 +1,260 @@
+---
+// CardComparison — 2-card vs-table for the card-review MDX body.
+//
+// Phase 2a.2 (2026-05-20). Replaces the markdown vs-table at the bottom
+// of every card-review MDX. Spec: `.council/research/2026-05/card-
+// review-page-visual-audit.md` §2.
+//
+// Props: `cards: string[]` — exactly two slugs. The component reads
+// L2 data via `getCardData(slug)` and renders the canonical 6-row spec
+// computed by `cardComparisonRows(left, right)` in cardsDataFormat.ts.
+//
+// Token-only. No JS hydration. Pure SSR markup + CSS.
+//
+// The 2-column table is preserved at all viewport widths — stacking
+// to single-column would defeat the side-by-side comparison the
+// reader came for. The mobile rule is type + padding compression and
+// shorter row labels, not layout change.
+
+import {
+  getCardData,
+  cardComparisonRows,
+  shortCardLabel,
+} from "~/lib/cardsData";
+
+interface Props {
+  /** Exactly two card slugs. Left-to-right on desktop, both columns
+   * on mobile (no stacking). The reference card (the page this
+   * comparison appears on) is conventionally the first slug. */
+  cards: string[];
+}
+
+const { cards } = Astro.props;
+
+if (!Array.isArray(cards) || cards.length !== 2) {
+  throw new Error(
+    `CardComparison: expected exactly 2 card slugs, got ${cards?.length ?? 0}`,
+  );
+}
+
+const [leftSlug, rightSlug] = cards as [string, string];
+const left = getCardData(leftSlug);
+const right = getCardData(rightSlug);
+
+if (!left || !right) {
+  // Surface the missing slug to the editor at build time. Falling back
+  // to a partial render would silently mis-inform the reader.
+  const missing = [!left ? leftSlug : null, !right ? rightSlug : null]
+    .filter(Boolean)
+    .join(", ");
+  throw new Error(`CardComparison: unknown card slug(s): ${missing}`);
+}
+
+const leftLabel = shortCardLabel(left);
+const rightLabel = shortCardLabel(right);
+const rows = cardComparisonRows(left, right);
+---
+
+<table class="dp-card-comparison">
+  <thead>
+    <tr>
+      <th class="row-label" scope="col" aria-hidden="true"></th>
+      <th class="card-head" scope="col">
+        {leftLabel.acronym && (
+          <span class="bank-eyebrow">{leftLabel.acronym}</span>
+        )}
+        <a class="card-name" href={`/cards/${leftSlug}/`}>{leftLabel.shortName}</a>
+      </th>
+      <th class="card-head" scope="col">
+        {rightLabel.acronym && (
+          <span class="bank-eyebrow">{rightLabel.acronym}</span>
+        )}
+        <a class="card-name" href={`/cards/${rightSlug}/`}>{rightLabel.shortName}</a>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {rows.map((row) => (
+      <tr>
+        <th class="row-label" scope="row">
+          <span class="label-desktop">{row.label}</span>
+          <span class="label-mobile">{row.mobileLabel ?? row.label}</span>
+          {row.subtext && row.mobileLabel && (
+            <span class="label-subtext">{row.subtext}</span>
+          )}
+        </th>
+        <td
+          class={`value${row.winner === "left" ? " is-winner" : ""}${row.winner === "right" ? " is-loser" : ""}${row.winner === "tie" ? " is-tie" : ""}`}
+        >
+          <span class="val">{row.leftValue}</span>
+          {row.winner === "left" && (
+            <span class="glyph" aria-label="Better on this dimension">↗</span>
+          )}
+        </td>
+        <td
+          class={`value${row.winner === "right" ? " is-winner" : ""}${row.winner === "left" ? " is-loser" : ""}${row.winner === "tie" ? " is-tie" : ""}`}
+        >
+          <span class="val">{row.rightValue}</span>
+          {row.winner === "right" && (
+            <span class="glyph" aria-label="Better on this dimension">↗</span>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+<style>
+  .dp-card-comparison {
+    width: 100%;
+    max-width: 720px;
+    margin: 24px 0;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--paper);
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+
+  /* Header row — bank eyebrow + card name. The left-most column in
+     the header carries no label; the row labels below are self-evident. */
+  .dp-card-comparison thead th {
+    text-align: left;
+    vertical-align: bottom;
+    padding: 12px 8px;
+    border-bottom: 1px solid var(--line);
+    font-weight: 500;
+  }
+  .dp-card-comparison thead .row-label {
+    width: 32%;
+    border-right: none;
+  }
+  .dp-card-comparison thead .card-head {
+    width: 34%;
+  }
+  .dp-card-comparison .bank-eyebrow {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .dp-card-comparison .card-name {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+    color: var(--ink);
+    text-decoration: underline;
+    text-decoration-color: var(--line);
+    text-underline-offset: 3px;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    text-wrap: balance;
+  }
+  .dp-card-comparison .card-name:hover {
+    color: var(--green);
+    text-decoration-color: var(--green);
+  }
+
+  /* Data rows */
+  .dp-card-comparison tbody tr {
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dp-card-comparison tbody tr:last-child {
+    border-bottom: none;
+  }
+  .dp-card-comparison tbody .row-label,
+  .dp-card-comparison tbody .value {
+    padding: 10px 8px;
+    vertical-align: top;
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+  .dp-card-comparison tbody .row-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.35;
+    text-align: left;
+  }
+  .dp-card-comparison .label-desktop {
+    display: none;
+  }
+  .dp-card-comparison .label-mobile {
+    display: block;
+  }
+  .dp-card-comparison .label-subtext {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: 0.4px;
+    margin-top: 2px;
+  }
+
+  .dp-card-comparison tbody .value {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .dp-card-comparison tbody .value.is-winner {
+    color: var(--green);
+    font-weight: 700;
+  }
+  .dp-card-comparison tbody .value.is-tie {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  /* `.is-loser` is implicit (default styling). Kept as an explicit
+     class for any future restyle that wants to dim the loser further. */
+  .dp-card-comparison .glyph {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+    margin-left: 4px;
+    vertical-align: baseline;
+  }
+
+  /* ≥720px — desktop rendering. Larger type, fuller labels, more
+     breathing padding. Switches from the mobile short label to the
+     full label and hides the mobile subtext (which only exists to
+     disambiguate the short label). */
+  @media (min-width: 720px) {
+    .dp-card-comparison {
+      margin: 32px 0;
+    }
+    .dp-card-comparison thead th {
+      padding: 14px 16px;
+    }
+    .dp-card-comparison .card-name {
+      font-size: 18px;
+    }
+    .dp-card-comparison tbody .row-label,
+    .dp-card-comparison tbody .value {
+      padding: 14px 16px;
+    }
+    .dp-card-comparison tbody .row-label {
+      font-size: 13px;
+    }
+    .dp-card-comparison tbody .value {
+      font-size: 14px;
+    }
+    .dp-card-comparison .label-mobile {
+      display: none;
+    }
+    .dp-card-comparison .label-desktop {
+      display: block;
+    }
+    .dp-card-comparison .label-subtext {
+      display: none;
+    }
+  }
+</style>

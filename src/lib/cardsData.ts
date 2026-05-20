@@ -154,6 +154,10 @@ const WelcomeBonus = z.object({
    * work across cards). Editor backfills via the SOP at
    * .council/sops/features-typing.md when the cycle catches it. */
   headline_value_aed: z.number().nonnegative().optional(),
+  /** Phase 2a.0 (2026-05-20): publication's one-line summary, ≤90 chars,
+   * AED-first, no marketing language. The matcher prefers this over the
+   * derived display string when present. Notes remain the full footnote. */
+  headline: z.string().max(90).optional(),
   /** Free-text qualifier kept for display, e.g. "first 3 billing statements". */
   notes: z.string().optional(),
 });
@@ -399,7 +403,27 @@ const CardDataSchema = z.object({
     minAge: z.number().optional(),
     nationalities: z.string().optional(),
     documents: z.array(z.string()).default([]),
+    /** Phase 2a.0 (2026-05-20): when true, the card is issued by
+     * invitation only (Priority Banking AUM gate, World Elite tier
+     * gate, etc). UI hides the minSalary block and renders a single
+     * "Invitation only" qualifier chip. Retires the `minSalary: 250000`
+     * sentinel that Phase 1 used as a workaround. */
+    invitationOnly: z.boolean().default(false),
   }),
+
+  /** Phase 2a.0 (2026-05-20): structured discontinuation marker.
+   * Retires the `annualFeeWaiver.notes` workaround Phase 1 used.
+   * UI: SpecCard renders a gold "No longer accepting applications"
+   * chip in the head row; the finder filters discontinued cards out
+   * of the ranked top-6 unless the reader opts in. */
+  discontinuedForNewApplicants: z
+    .object({
+      /** ISO date the bank stopped accepting applications. */
+      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      /** Short reader-facing explanation, ≤200 chars. */
+      note: z.string().max(200).optional(),
+    })
+    .optional(),
 
   /** Free-text perks. Kept as fallback for benefits not yet in _features. */
   perks: z.array(z.string()).default([]),
@@ -521,6 +545,14 @@ export {
   isStructuredWelcomeBonus,
   isBifurcatedWelcomeBonus,
   isStructuredAnnualFeeWaiver,
+  shortCardLabel,
+  cardComparisonRows,
+} from "./cardsDataFormat";
+export type {
+  ShortCardLabel,
+  ComparisonRow,
+  ComparisonWinner,
+  CardForComparison,
 } from "./cardsDataFormat";
 
 /**

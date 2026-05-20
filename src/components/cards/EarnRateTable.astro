@@ -9,15 +9,40 @@
 // out so only numeric per-category fields render.
 
 import type { CardData } from "~/lib/cardsData";
+import { getCardData } from "~/lib/cardsData";
 
 interface Props {
-  earnRates: CardData["earnRates"];
+  /** Phase 2a.2: when set, the component resolves earnRates + earnUnit
+   * from `getCardData(card)`. Keeps the MDX call site at one line. */
+  card?: string;
+  earnRates?: CardData["earnRates"];
   earnUnit?: string;
 }
 
-const { earnRates, earnUnit } = Astro.props;
+const {
+  card,
+  earnRates: earnRatesProp,
+  earnUnit: earnUnitProp,
+} = Astro.props;
+
+const resolved = card ? getCardData(card) : undefined;
+if (card && !resolved) {
+  throw new Error(`EarnRateTable: unknown card slug "${card}"`);
+}
+
+const earnRates = resolved?.earnRates ?? earnRatesProp;
+if (!earnRates) {
+  throw new Error("EarnRateTable: requires `card` or inline `earnRates` prop");
+}
+const earnUnit = resolved?.earnUnit ?? earnUnitProp;
 
 const CATEGORY_LABELS: Record<string, string> = {
+  // Phase 2a.2 (2026-05-20): `partnerBrands` rendered as the first row so the
+  // bank's headline partner-rate (e.g. Skywards Infinite's 2× on Emirates /
+  // flydubai / duty free / food-delivery / ride-hailing apps) doesn't silently
+  // drop from the table. The specific partner list lives in the MDX prose
+  // above; the row label is intentionally generic so it works across cards.
+  partnerBrands: "Partner brands",
   dining: "Dining",
   groceries: "Groceries",
   shopping: "Shopping",
@@ -26,6 +51,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   entertainment: "Entertainment",
   online: "Online",
   international: "International spend",
+  utilities: "Utilities",
+  insurance: "Insurance",
   everythingElse: "Everything else",
 };
 

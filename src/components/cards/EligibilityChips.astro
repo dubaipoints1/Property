@@ -32,7 +32,15 @@ const EMPLOYMENT_LABELS: Record<string, string> = {
   any: "Any employment",
 };
 
+// Phase 2a.0 (2026-05-20): when the card is invitation-only, the salary
+// band is meaningless (the gate is AUM or a separate tier qualification).
+// Hide the primary dt/dd block and render a single "Invitation only"
+// qualifier instead. Retires the `minSalary: 250000` sentinel ENBD
+// Priority Banking / FAB World Elite used in Phase 1.
+const isInviteOnly = eligibility.invitationOnly === true;
+
 const qualifiers: string[] = [];
+if (isInviteOnly) qualifiers.push("Invitation only");
 if (eligibility.salaryTransferRequired) qualifiers.push("Salary transfer required");
 if (eligibility.residencyRequired) qualifiers.push("UAE residents");
 // Chairman ruling Q3 (2026-05-20): omit the chip when employmentTypes
@@ -45,17 +53,19 @@ for (const t of eligibility.employmentTypes ?? []) {
 ---
 
 <div class="dp-eligibility">
-  <dl class="dp-eligibility-primary">
-    <dt>Minimum salary</dt>
-    <dd>
-      {aedFormatter.format(eligibility.minSalary)}<span class="per">/mo</span>
-    </dd>
-  </dl>
+  {!isInviteOnly && (
+    <dl class="dp-eligibility-primary">
+      <dt>Minimum salary</dt>
+      <dd>
+        {aedFormatter.format(eligibility.minSalary)}<span class="per">/mo</span>
+      </dd>
+    </dl>
+  )}
   {qualifiers.length > 0 && (
     <ul class="dp-eligibility-qualifiers" role="list">
       {qualifiers.map((q) => (
         <li>
-          <span class="dp-card-chip">{q}</span>
+          <span class={`dp-card-chip${q === "Invitation only" ? " is-invite" : ""}`}>{q}</span>
         </li>
       ))}
     </ul>
@@ -112,5 +122,14 @@ for (const t of eligibility.employmentTypes ?? []) {
   }
   .dp-eligibility-qualifiers > li {
     display: inline-flex;
+  }
+  /* Phase 2a.0: navy-styled chip for invitation-only cards. Sits inside
+     the same .dp-card-chip pattern; the modifier inverts so the chip
+     reads as a stronger constraint than the soft qualifier chips
+     beside it. */
+  .dp-eligibility-qualifiers .dp-card-chip.is-invite {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
   }
 </style>

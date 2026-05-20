@@ -51,6 +51,13 @@ const spendInit = params.get("spend") ?? "general";
 const preferInit = params.get("prefer") ?? "none";
 const networkInit = params.get("network") ?? "any";
 const feeInit = params.get("fee") ?? "any";
+// Phase 2a.0 (2026-05-20): two new toggles introduced when the schema
+// gained `eligibility.invitationOnly` and `discontinuedForNewApplicants`.
+// Both default to "true" (include) so a first-time visitor sees the
+// same set of cards they did under the Phase 1 finder. The script
+// reads these on every form submit.
+const includeInviteOnlyInit = params.get("include_invite_only") ?? "true";
+const includeLegacyInit = params.get("include_legacy") ?? "false";
 
 // Serialise card data for the client-side ranker.
 const cardIndex = cardsWithBanks.map(({ card }) => ({
@@ -60,6 +67,8 @@ const cardIndex = cardsWithBanks.map(({ card }) => ({
   annualFee: card.annualFee.amount,
   minSalary: card.eligibility.minSalary,
   salaryTransferRequired: card.eligibility.salaryTransferRequired,
+  invitationOnly: card.eligibility.invitationOnly === true,
+  discontinued: card.discontinuedForNewApplicants !== undefined,
   loyaltyProgram: card.loyaltyProgram ?? "",
   earnRates: card.earnRates,
   hasLounge: card._features.some((f) => f.type === "lounge_access"),
@@ -235,6 +244,39 @@ const initialOrder = cardsWithBanks;
           </fieldset>
         </div>
 
+        {/* Phase 2a.0 (2026-05-20): two include/exclude toggles for
+            invitation-only and discontinued cards. Default state mirrors
+            the Phase 1 result-set — invitation-only included, legacy
+            cards excluded. Lives in a .dp-finder-fs-row so the two
+            checkboxes share a single visual row beneath network/fee. */}
+        <div class="dp-finder-fs-row">
+          <fieldset class="dp-finder-fs">
+            <legend>Invitation-only cards</legend>
+            <label class="dp-finder-checkbox">
+              <input
+                type="checkbox"
+                name="include_invite_only"
+                value="true"
+                checked={includeInviteOnlyInit !== "false"}
+              />
+              <span>Include invitation-only</span>
+            </label>
+          </fieldset>
+
+          <fieldset class="dp-finder-fs">
+            <legend>Legacy cards</legend>
+            <label class="dp-finder-checkbox">
+              <input
+                type="checkbox"
+                name="include_legacy"
+                value="true"
+                checked={includeLegacyInit === "true"}
+              />
+              <span>Include legacy cards</span>
+            </label>
+          </fieldset>
+        </div>
+
         <div class="dp-finder-actions">
           <button type="submit">Rank cards</button>
           <a href="/cards/finder/" class="reset">Reset filters</a>
@@ -306,6 +348,12 @@ const initialOrder = cardsWithBanks;
         prefer: p.get("prefer") || "none",
         network: p.get("network") || "any",
         fee: p.get("fee") || "any",
+        // Phase 2a.0: default "include invitation-only" = true so a
+        // first-time visitor sees the Phase 1 set; "include legacy" =
+        // false so discontinued cards are filtered out of the top 6
+        // unless the reader explicitly opts in.
+        includeInviteOnly: (p.get("include_invite_only") || "true") !== "false",
+        includeLegacy: (p.get("include_legacy") || "false") === "true",
       };
     }
 
@@ -361,6 +409,11 @@ const initialOrder = cardsWithBanks;
         if (hasSalary && c.minSalary > p.salary) return false;
         if (p.network !== "any" && c.network !== p.network) return false;
         if (!feeMatches(c.annualFee, p.fee)) return false;
+        // Phase 2a.0: invitation-only filter — opt-out toggle.
+        if (!p.includeInviteOnly && c.invitationOnly) return false;
+        // Phase 2a.0: discontinued cards filtered out by default; reader
+        // opts in via the "Include legacy cards" checkbox.
+        if (!p.includeLegacy && c.discontinued) return false;
         return true;
       })
         .map(function (c) {
@@ -510,6 +563,20 @@ const initialOrder = cardsWithBanks;
     padding: 4px 0;
   }
   .dp-finder-radios input {
+    accent-color: var(--ink);
+  }
+  /* Phase 2a.0: include/exclude checkboxes for invitation-only +
+     discontinued. Renders inline with the other inline-radios. */
+  .dp-finder-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .dp-finder-checkbox input {
     accent-color: var(--ink);
   }
   .dp-finder-actions {
