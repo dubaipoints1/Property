@@ -1,0 +1,92 @@
+---
+// WelcomeBonusCallout — gold-tinted callout box for a card's welcome
+// offer. Used on hubs, finder, compare, and individual card pages.
+//
+// Per Charter §"Editorial guarantees" + amendment 2026-05-09: gold is
+// the SECONDARY trust-signal accent. The welcome bonus is a trust
+// signal (it's the headline you compare cards on); the gold callout is
+// the visual anchor.
+//
+// Reads structured welcomeBonus where available so the spend-threshold
+// line is precise. Falls back to the editor's display string for
+// legacy free-text entries.
+
+import type { CardData } from "~/lib/cardsData";
+import {
+  isStructuredWelcomeBonus,
+  isBifurcatedWelcomeBonus,
+} from "~/lib/cardsData";
+
+interface Props {
+  welcomeBonus: NonNullable<CardData["welcomeBonus"]>;
+  welcomeBonusDisplay: string;
+}
+
+const { welcomeBonus, welcomeBonusDisplay } = Astro.props;
+
+const aedFormatter = new Intl.NumberFormat("en-AE", {
+  style: "currency",
+  currency: "AED",
+  maximumFractionDigits: 0,
+});
+
+// Pull the structured branch we want to render the threshold line from.
+// For bifurcated bonuses, prefer the with-salary-transfer branch (the
+// editorial default; the salary-transfer-required filter on the finder
+// is the path that selects bifurcated cards).
+let structured: import("~/lib/cardsData").StructuredWelcomeBonus | null = null;
+if (isStructuredWelcomeBonus(welcomeBonus)) {
+  structured = welcomeBonus;
+} else if (isBifurcatedWelcomeBonus(welcomeBonus)) {
+  structured =
+    welcomeBonus.with_salary_transfer ??
+    welcomeBonus.without_salary_transfer ??
+    null;
+}
+
+const thresholdLine =
+  structured && structured.spend_threshold_aed
+    ? structured.qualify_window_days
+      ? `on ${aedFormatter.format(structured.spend_threshold_aed)} cumulative spend within ${structured.qualify_window_days} days`
+      : `on ${aedFormatter.format(structured.spend_threshold_aed)} cumulative spend`
+    : null;
+---
+
+<aside class="dp-welcome-callout" aria-label="Welcome offer">
+  <div class="eyebrow">Welcome offer</div>
+  <div class="body">{welcomeBonusDisplay}</div>
+  {thresholdLine && <div class="threshold">{thresholdLine}</div>}
+</aside>
+
+<style>
+  .dp-welcome-callout {
+    background: var(--gold-soft);
+    border-left: 3px solid var(--gold);
+    border-radius: 4px;
+    padding: 12px 16px;
+    display: grid;
+    gap: 4px;
+  }
+  .dp-welcome-callout .eyebrow {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    line-height: 1.2;
+  }
+  .dp-welcome-callout .body {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .dp-welcome-callout .threshold {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+</style>

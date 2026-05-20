@@ -1,0 +1,116 @@
+---
+// EarnRateTable — compact two-column grid of earn-rate categories.
+//
+// Categories rendered with sentence-case labels. Numbers right-aligned.
+// If only `everythingElse` is set, collapses to a single line
+// ("X per AED 1 spent").
+//
+// Reads the EarnRates shape directly; the _caps sub-object is filtered
+// out so only numeric per-category fields render.
+
+import type { CardData } from "~/lib/cardsData";
+
+interface Props {
+  earnRates: CardData["earnRates"];
+  earnUnit?: string;
+}
+
+const { earnRates, earnUnit } = Astro.props;
+
+const CATEGORY_LABELS: Record<string, string> = {
+  dining: "Dining",
+  groceries: "Groceries",
+  shopping: "Shopping",
+  travel: "Travel",
+  fuel: "Fuel",
+  entertainment: "Entertainment",
+  online: "Online",
+  international: "International (FX)",
+  everythingElse: "Everything else",
+};
+
+// Pull every numeric category, preserving definition order from
+// CATEGORY_LABELS for deterministic rendering.
+const allEntries: Array<{ key: string; label: string; value: number }> = [];
+for (const key of Object.keys(CATEGORY_LABELS)) {
+  const v = (earnRates as Record<string, unknown>)[key];
+  if (typeof v === "number") {
+    allEntries.push({ key, label: CATEGORY_LABELS[key], value: v });
+  }
+}
+
+// "Everything else" pulled out for the collapsed single-line case.
+const onlyEverythingElse =
+  allEntries.length === 1 && allEntries[0]?.key === "everythingElse";
+
+const unitLabel = earnUnit ?? "per AED 1 spent";
+---
+
+{onlyEverythingElse && allEntries[0] ? (
+  <div class="dp-earn-collapsed">
+    <span class="rate">{allEntries[0].value}×</span>
+    <span class="unit">{unitLabel}</span>
+  </div>
+) : (
+  <dl class="dp-earn-table">
+    {allEntries.map(({ key, label, value }) => (
+      <div class={`row${key === "everythingElse" ? " is-default" : ""}`}>
+        <dt>{label}</dt>
+        <dd>{value}×</dd>
+      </div>
+    ))}
+  </dl>
+)}
+
+<style>
+  .dp-earn-collapsed {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+  .dp-earn-collapsed .rate {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: -0.4px;
+  }
+  .dp-earn-collapsed .unit {
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .dp-earn-table {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--line-soft);
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+  .dp-earn-table .row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .dp-earn-table dt {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .dp-earn-table dd {
+    margin: 0;
+    text-align: right;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .dp-earn-table .row.is-default dt,
+  .dp-earn-table .row.is-default dd {
+    color: var(--ink-soft);
+  }
+</style>

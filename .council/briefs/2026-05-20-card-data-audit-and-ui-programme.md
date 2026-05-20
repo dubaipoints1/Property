@@ -2,7 +2,7 @@
 slug: card-data-audit-and-ui-programme
 vertical: business-realestate
 assigned-editor: business-realestate-editor
-research-status: in-progress
+research-status: complete
 seo-status: pending
 draft-status: pending
 factcheck-status: pending
@@ -108,3 +108,20 @@ The Chairman will refuse the publish gate if any of:
 _Brief opened 2026-05-20 by the orchestrator on operator request.
 Managing Editor logging is implicit: this is a T3 programme that
 spans Research + Tech + UX + Standards + section-editor + Chairman._
+
+## Stage 3 (Research) — handoff note 2026-05-20
+
+Dossier delivered at `.council/research/2026-05/full-card-audit-dossier.md`
+with `research-status: complete` flipped above. **Critical caveat**: the
+session's `WebFetch` tool was blocked at HTTP 403 by both `bankfab.com`
+and `emiratesnbd.com` edge security on every one of the 43 audit URLs,
+including the FAB consolidated KFS PDF. The Firecrawl MCP toolset
+(reserved to Head of Research per Charter) was not exposed in this
+session's tool list. The dossier therefore covers (a) the tooling
+diagnosis, (b) the per-card baseline values from `cards.json` with my
+internal-consistency flags (11 high-priority data anomalies identified
+without needing the live pages — see Open Questions §1–6 in the
+dossier), and (c) the Firecrawl backfill plan the orchestrator must
+commission before the editor can patch `cards.json`. Budget impact for
+the backfill: ~35 product-page calls + 1 PDF + 1–2 map calls, well
+under the 200-credit ceiling.

@@ -132,6 +132,30 @@ img { display: block; max-width: 100%; }
 }
 .dp-tracker-chip.is-muted:hover { color: var(--ink-soft); border-color: var(--ink-soft); }
 
+/* Card-spec chip — mirrors the tracker-chip padding so the chip system
+   reads as one family across tracker + cards. Used by EligibilityChips
+   and SpecCard's data-drift warning. */
+.dp-card-chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.2px;
+  padding: 7px 12px;
+  background: var(--paper);
+  color: var(--ink-soft);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.dp-card-chip.is-warn {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: var(--gold-soft);
+}
+.dp-card-chip.is-active {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+
 .dp-tracker-filters {
   display: flex; flex-wrap: wrap; gap: 12px 18px;
   align-items: center;

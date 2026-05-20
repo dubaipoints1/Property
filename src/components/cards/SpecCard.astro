@@ -1,0 +1,348 @@
+---
+// SpecCard — the canonical card surface used across hubs, finder,
+// compare, and individual card pages.
+//
+// Variants:
+//   - "compact": dense, for grids and finder results.
+//   - "full":    full surface with welcome bonus + earn-rate table +
+//                eligibility chips. Used on finder ranked results
+//                and compare full-detail mode.
+//   - "row":     horizontal layout for list views (compare default).
+//
+// All three variants pull from the same Card object so the data
+// surface is consistent. Pixel discipline: spacing on an 8-px grid,
+// type from the existing scale (12, 14, 16, 18, 22, 28).
+//
+// Reads:
+//   - card.bank             → bank slug for BankLogo
+//   - card.name, network, annualFee, fxFee
+//   - card.welcomeBonus     → optional callout
+//   - card.earnRates        → only on "full" variant
+//   - card.eligibility      → eligibility chips
+//   - card.lastVerified     → VerifiedStamp + 90-day stale warning chip
+
+import { getEntry } from "astro:content";
+import type { CardData } from "~/lib/cardsData";
+import { welcomeBonusDisplay as toDisplay } from "~/lib/cardsData";
+import BankLogo from "../BankLogo.astro";
+import FeeBlock from "./FeeBlock.astro";
+import EarnRateTable from "./EarnRateTable.astro";
+import EligibilityChips from "./EligibilityChips.astro";
+import WelcomeBonusCallout from "./WelcomeBonusCallout.astro";
+import VerifiedStamp from "./VerifiedStamp.astro";
+
+interface Props {
+  card: CardData & { slug: string };
+  variant?: "compact" | "full" | "row";
+  showVerified?: boolean;
+}
+
+const { card, variant = "compact", showVerified = true } = Astro.props;
+
+// Resolve bank-collection display name (graceful fallback to the slug).
+const bankEntry = await getEntry("banks", card.bank);
+const bankName = bankEntry?.data.name ?? card.bank;
+
+// Headline earn-rate string — used in compact + row variants.
+function topEarnRate(c: CardData): { label: string; value: number } | null {
+  const r = c.earnRates;
+  const entries = Object.entries(r).filter(
+    ([k, v]) => k !== "_caps" && typeof v === "number",
+  ) as Array<[string, number]>;
+  if (entries.length === 0) return null;
+  let best: { label: string; value: number } | null = null;
+  for (const [label, value] of entries) {
+    if (!best || value > best.value) best = { label, value };
+  }
+  return best;
+}
+
+const CATEGORY_LABELS: Record<string, string> = {
+  dining: "dining",
+  groceries: "groceries",
+  shopping: "shopping",
+  travel: "travel",
+  fuel: "fuel",
+  entertainment: "entertainment",
+  online: "online",
+  international: "FX",
+  everythingElse: "everything",
+};
+
+const top = topEarnRate(card);
+const earnLine = top
+  ? `${top.value}× ${CATEGORY_LABELS[top.label] ?? top.label}`
+  : null;
+
+// 90-day stale check — reused for the warning chip on the card head.
+const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
+const verifiedAt =
+  card.lastVerified instanceof Date
+    ? card.lastVerified
+    : new Date(card.lastVerified);
+const isStale = Date.now() - verifiedAt.getTime() > NINETY_DAYS_MS;
+
+const wbDisplay = card.welcomeBonus ? toDisplay(card.welcomeBonus) : "";
+const showWelcome =
+  card.welcomeBonus !== undefined &&
+  card.welcomeBonus !== null &&
+  wbDisplay.length > 0 &&
+  (variant === "full");
+---
+
+<article class={`dp-spec-card is-${variant}`} data-bank={card.bank}>
+  <header class="head">
+    <div class="brand">
+      <BankLogo slug={card.bank} name={bankName} size="sm" />
+      <span class="bank">{bankName}</span>
+    </div>
+    <span class="network">{card.network}</span>
+  </header>
+
+  <div class="title">
+    <h3>
+      <a href={`/cards/${card.slug}/`}>{card.name}</a>
+    </h3>
+    {isStale && showVerified && (
+      <span class="dp-card-chip is-warn" title="Last verified more than 90 days ago">
+        Data drift &gt; 90d
+      </span>
+    )}
+  </div>
+
+  {variant === "full" && (
+    <div class="grid">
+      <div class="cell cell-fee">
+        <FeeBlock
+          annualFee={card.annualFee}
+          fxFee={card.fxFee}
+          waiver={card.annualFeeWaiver}
+        />
+      </div>
+      <div class="cell cell-earn">
+        <div class="lbl">Earn rates</div>
+        <EarnRateTable
+          earnRates={card.earnRates}
+          earnUnit={card.earnUnit}
+        />
+      </div>
+    </div>
+  )}
+
+  {(variant === "compact" || variant === "row") && (
+    <dl class="mini-stats">
+      <div>
+        <dt>Annual fee</dt>
+        <dd>
+          {card.annualFee.amount === 0
+            ? "Free"
+            : `AED ${card.annualFee.amount.toLocaleString()}`}
+        </dd>
+      </div>
+      {earnLine && (
+        <div>
+          <dt>Top earn rate</dt>
+          <dd>{earnLine}</dd>
+        </div>
+      )}
+      <div>
+        <dt>Min salary</dt>
+        <dd>AED {card.eligibility.minSalary.toLocaleString()}/mo</dd>
+      </div>
+    </dl>
+  )}
+
+  {showWelcome && card.welcomeBonus && (
+    <WelcomeBonusCallout
+      welcomeBonus={card.welcomeBonus}
+      welcomeBonusDisplay={wbDisplay}
+    />
+  )}
+
+  {variant === "full" && (
+    <div class="eligibility">
+      <div class="lbl">Eligibility</div>
+      <EligibilityChips eligibility={card.eligibility} />
+    </div>
+  )}
+
+  <footer class="foot">
+    {showVerified && <VerifiedStamp lastVerified={card.lastVerified} />}
+    <a class="cta" href={`/cards/${card.slug}/`}>
+      Read review <span aria-hidden="true">→</span>
+    </a>
+  </footer>
+</article>
+
+<style>
+  .dp-spec-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    display: grid;
+    gap: 12px;
+    font-family: "DM Sans", system-ui, sans-serif;
+    color: var(--ink);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .dp-spec-card:hover {
+    border-color: var(--ink-soft);
+    box-shadow: 0 8px 16px -12px rgba(15, 31, 46, 0.18);
+  }
+  .dp-spec-card.is-full {
+    padding: 24px;
+    gap: 16px;
+  }
+  .dp-spec-card.is-row {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 16px 24px;
+    align-items: start;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .head .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .head .bank {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--green);
+  }
+  .head .network {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 4px 8px;
+    background: var(--paper);
+  }
+
+  .title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .title h3 {
+    margin: 0;
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .is-full .title h3 {
+    font-size: 22px;
+    letter-spacing: -0.4px;
+  }
+  .title h3 a {
+    color: inherit;
+  }
+  .title h3 a:hover {
+    color: var(--green);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 16px 24px;
+    padding: 16px 0;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .cell .lbl {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .mini-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px 16px;
+    margin: 0;
+    padding: 12px 0;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .mini-stats > div {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .mini-stats dt {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .mini-stats dd {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .eligibility .lbl {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .foot .cta {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: var(--ink);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 2px;
+    transition: color 0.15s ease;
+  }
+  .foot .cta:hover {
+    color: var(--green);
+  }
+
+  @media (max-width: 720px) {
+    .dp-spec-card.is-row {
+      grid-template-columns: 1fr;
+    }
+    .dp-spec-card.is-full {
+      padding: 16px;
+    }
+    .grid {
+      grid-template-columns: 1fr;
+    }
+    .mini-stats {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+// VerifiedStamp — small caption indicating when a card's data was last
+// verified, with an amber drift flag when older than 90 days.
+//
+// Charter §"Editorial guarantees": every card has a `lastVerified` date;
+// UI flags entries older than 90 days. The 90-day threshold is the same
+// one used by RewardsCalculator (NINETY_DAYS_MS) and the calculator-page
+// drift-risk warning.
+//
+// Tokens only — no Tailwind utilities. Green dot when fresh, amber dot
+// (using --gold) when stale.
+
+interface Props {
+  lastVerified: Date | string;
+  /** Reference "now" — injectable for testing. Defaults to new Date(). */
+  now?: Date;
+}
+
+const { lastVerified, now } = Astro.props;
+
+const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
+const verifiedAt =
+  lastVerified instanceof Date ? lastVerified : new Date(lastVerified);
+const refTime = (now ?? new Date()).getTime();
+const isStale = refTime - verifiedAt.getTime() > NINETY_DAYS_MS;
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+---
+
+<span
+  class={`dp-card-verified${isStale ? " is-stale" : ""}`}
+  title={isStale
+    ? "Last verified more than 90 days ago — pending re-audit"
+    : "Verified within the last 90 days"}
+>
+  <span class="dot" aria-hidden="true"></span>
+  {isStale ? (
+    <span class="lbl">Last verified {fmt(verifiedAt)} — pending re-audit</span>
+  ) : (
+    <span class="lbl">Verified {fmt(verifiedAt)}</span>
+  )}
+</span>
+
+<style>
+  .dp-card-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--ink-soft);
+  }
+  .dp-card-verified .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+  }
+  .dp-card-verified.is-stale .dot {
+    background: var(--gold);
+  }
+  .dp-card-verified.is-stale .lbl {
+    color: var(--gold);
+  }
+</style>

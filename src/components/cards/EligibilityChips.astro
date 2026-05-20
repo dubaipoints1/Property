@@ -1,0 +1,66 @@
+---
+// EligibilityChips — inline pill row summarising who can apply.
+//
+// Renders: salary band, salary-transfer required (if true), residency
+// required (if true), employment-type chips (salaried / self-employed /
+// business-owner / any). Uses the new `.dp-card-chip` class added to
+// global.css.
+
+import type { CardData } from "~/lib/cardsData";
+
+interface Props {
+  eligibility: CardData["eligibility"];
+}
+
+const { eligibility } = Astro.props;
+
+const aedFormatter = new Intl.NumberFormat("en-AE", {
+  style: "currency",
+  currency: "AED",
+  maximumFractionDigits: 0,
+});
+
+const EMPLOYMENT_LABELS: Record<string, string> = {
+  salaried: "Salaried",
+  "self-employed": "Self-employed",
+  "business-owner": "Business owner",
+  any: "Any employment",
+};
+---
+
+<ul class="dp-card-chips" role="list">
+  <li>
+    <span class="dp-card-chip">
+      {aedFormatter.format(eligibility.minSalary)}+ salary
+    </span>
+  </li>
+  {eligibility.salaryTransferRequired && (
+    <li>
+      <span class="dp-card-chip is-warn">Salary transfer required</span>
+    </li>
+  )}
+  {eligibility.residencyRequired && (
+    <li>
+      <span class="dp-card-chip">UAE residents</span>
+    </li>
+  )}
+  {(eligibility.employmentTypes ?? []).map((t) => (
+    <li>
+      <span class="dp-card-chip">{EMPLOYMENT_LABELS[t] ?? t}</span>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .dp-card-chips {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .dp-card-chips > li {
+    display: inline-flex;
+  }
+</style>
