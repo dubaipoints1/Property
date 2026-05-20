@@ -22,6 +22,11 @@ editorTake: If you fly Emirates more than twice a year out of DXB and your spend
   bonus and a single Y-to-J upgrade.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
+import CardComparison from "~/components/cards/CardComparison.astro";
+
 The Skywards Infinite is Emirates NBD's flagship co-branded Visa Infinite card with
 Emirates Skywards. Built for frequent Emirates flyers based in the UAE: 2 Skywards
 Miles per USD on Emirates, flydubai, duty free, and online food delivery and ride-hailing
@@ -32,12 +37,7 @@ that's only defensible if you'll genuinely use the miles.
 
 Earn rates are credited as **Skywards Miles per USD 1** of eligible spend:
 
-| Spend category | Miles per USD 1 |
-|---|---|
-| Emirates, flydubai, duty free, food delivery, ride-hailing apps | **2** |
-| International spend (non-AED) | **1.5** |
-| Domestic UAE spend | **1** |
-| EU and UK spend | **0.5** |
+<EarnRateTable card="emirates-nbd-skywards-infinite" />
 
 The bank denominates earn in USD across the entire Skywards-co-brand range. At a working
 rate of USD 1 ≈ AED 3.67, 2 miles per USD on partner categories is roughly 0.54 miles
@@ -49,22 +49,17 @@ no transfer ratio loss.
 
 ## Fee summary
 
-| Fee | Amount |
-|---|---|
-| Joining fee (year one) | AED 3,148.95 |
-| Annual fee, year one | AED 0 (waived for first-year applicants) |
-| Annual fee, year two onwards | AED 1,575 |
-| Year-two waiver threshold | AED 100,000 annual spend |
-| Interest rate | 3.25% per month |
-| FX fee | 1.99% |
-| Minimum monthly salary | AED 30,000 |
-| Salary transfer | Not strictly required (improves approval odds) |
+<FeeBlock card="emirates-nbd-skywards-infinite" />
 
 The year-two waiver is reversible — fall below AED 100,000 of annual spend and the
 fee returns the following year. Plan for AED 1,575 unless your card is genuinely
 your primary spend vehicle.
 
+Interest accrues at **3.25% per month** on unpaid balances.
+
 ## Welcome bonus breakdown
+
+<WelcomeBonusCallout card="emirates-nbd-skywards-infinite" />
 
 - **Up to 100,000 bonus Skywards Miles** — the headline offer on activation
 - **Complimentary 1-year Rotana Rewards Exclusive membership** — bundled with activation
@@ -108,14 +103,7 @@ you upgrade rather than redeem at the Skywards economy chart.
 
 ## Skywards Infinite vs Skywards Signature
 
-| Dimension | Infinite | [Signature](/cards/emirates-nbd-skywards-signature/) |
-|---|---|---|
-| Annual fee (year 2+) | AED 1,575 | AED 735 |
-| Joining fee (year 1) | AED 3,148.95 | AED 1,573.95 |
-| Minimum salary | AED 30,000 | AED 12,000 |
-| Top earn rate | 2 miles / USD (partner) | 1.5 miles / USD (partner) |
-| Lounge access | Visa Airport Companion (1,000+ lounges, + 1 guest) | Visa Airport Companion (cardholder only) |
-| Welcome bonus | Up to 100,000 miles + 1-year Rotana Rewards | Up to 40,000 miles |
+<CardComparison cards={["emirates-nbd-skywards-infinite", "emirates-nbd-skywards-signature"]} />
 
 The Infinite makes the most sense if both conditions hold: you'll trigger the
 year-one bonus quickly **and** you'll spend AED 100,000+ a year on the card

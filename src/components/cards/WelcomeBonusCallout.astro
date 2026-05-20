@@ -18,14 +18,38 @@ import type { CardData } from "~/lib/cardsData";
 import {
   isStructuredWelcomeBonus,
   isBifurcatedWelcomeBonus,
+  getCardData,
+  welcomeBonusDisplay as toDisplay,
 } from "~/lib/cardsData";
 
 interface Props {
-  welcomeBonus: NonNullable<CardData["welcomeBonus"]>;
-  welcomeBonusDisplay: string;
+  /** Phase 2a.2: when set, the component resolves welcomeBonus from
+   * `getCardData(card)`. Keeps the MDX call site at one line. */
+  card?: string;
+  welcomeBonus?: NonNullable<CardData["welcomeBonus"]>;
+  welcomeBonusDisplay?: string;
 }
 
-const { welcomeBonus, welcomeBonusDisplay } = Astro.props;
+const {
+  card,
+  welcomeBonus: welcomeBonusProp,
+  welcomeBonusDisplay: displayProp,
+} = Astro.props;
+
+const resolved = card ? getCardData(card) : undefined;
+if (card && !resolved) {
+  throw new Error(`WelcomeBonusCallout: unknown card slug "${card}"`);
+}
+
+const welcomeBonus = (resolved?.welcomeBonus ?? welcomeBonusProp) as
+  | NonNullable<CardData["welcomeBonus"]>
+  | undefined;
+if (!welcomeBonus) {
+  throw new Error(
+    "WelcomeBonusCallout: requires `card` or inline `welcomeBonus` prop, and the resolved card must carry a welcomeBonus",
+  );
+}
+const welcomeBonusDisplay = displayProp ?? toDisplay(welcomeBonus);
 
 const aedFormatter = new Intl.NumberFormat("en-AE", {
   style: "currency",

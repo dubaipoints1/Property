@@ -147,6 +147,338 @@ export function welcomeBonusDisplay(
   return "";
 }
 
+// ── Phase 2a.2: CardComparison helpers ───────────────────────────────────
+//
+// Pure helpers consumed by `src/components/cards/CardComparison.astro`
+// and tested in `tests/cards/card-comparison.test.ts`. Live here (not
+// in `cardsData.ts`) so the test runner doesn't have to resolve the
+// `astro:content` virtual module — same separation rationale as
+// `welcomeBonusDisplay` above.
+
+/** Known issuer-name prefixes the comparison header strips so the
+ * card name reads as "Skywards Infinite" rather than "Emirates NBD
+ * Skywards Infinite" in the cramped header row. Order matters: longest
+ * prefix first so "Emirates NBD" matches before "Emirates" would.
+ * Each entry is a `[prefix, acronym]` pair — the acronym is rendered
+ * as the small eyebrow above the short card name. */
+const BANK_PREFIXES: ReadonlyArray<readonly [string, string]> = [
+  ["Emirates NBD ", "ENBD"],
+  ["Standard Chartered ", "SC"],
+  ["First Abu Dhabi Bank ", "FAB"],
+  ["Commercial Bank of Dubai ", "CBD"],
+  ["Dubai Islamic Bank ", "DIB"],
+  ["Abu Dhabi Islamic Bank ", "ADIB"],
+  ["Abu Dhabi Commercial Bank ", "ADCB"],
+  ["Mashreq ", "Mashreq"],
+  ["RAKBANK ", "RAKBANK"],
+  ["HSBC ", "HSBC"],
+  ["Citibank ", "Citi"],
+  ["Citi ", "Citi"],
+  ["FAB ", "FAB"],
+  ["ADCB ", "ADCB"],
+  ["CBD ", "CBD"],
+  ["DIB ", "DIB"],
+  ["ENBD ", "ENBD"],
+];
+
+export interface ShortCardLabel {
+  /** Card name with the known issuer prefix stripped. */
+  shortName: string;
+  /** Uppercase issuer acronym ("ENBD", "FAB", "ADCB", "Mashreq", …).
+   * Empty string when no known prefix matched — caller decides whether
+   * to render the eyebrow row in that case. */
+  acronym: string;
+}
+
+/** Strip a known bank-name prefix from `card.name` so the comparison
+ * header reads as the card-only label ("Skywards Infinite") with the
+ * bank as a separate eyebrow ("ENBD"). When the name doesn't carry a
+ * recognised prefix, returns the full name and an empty acronym. */
+export function shortCardLabel(card: { name: string }): ShortCardLabel {
+  const name = card.name;
+  for (const [prefix, acronym] of BANK_PREFIXES) {
+    if (name.startsWith(prefix)) {
+      return { shortName: name.slice(prefix.length), acronym };
+    }
+  }
+  return { shortName: name, acronym: "" };
+}
+
+// ── Comparison row spec ──────────────────────────────────────────────────
+
+const CATEGORY_LABELS_FOR_TOP: Record<string, string> = {
+  dining: "Dining",
+  groceries: "Groceries",
+  shopping: "Shopping",
+  travel: "Travel",
+  fuel: "Fuel",
+  entertainment: "Entertainment",
+  online: "Online",
+  international: "International",
+  everythingElse: "Everything",
+  partnerBrands: "Partner",
+};
+
+const AED_INT_FMT = new Intl.NumberFormat("en-AE", {
+  style: "currency",
+  currency: "AED",
+  maximumFractionDigits: 0,
+});
+const AED_DEC_FMT = new Intl.NumberFormat("en-AE", {
+  style: "currency",
+  currency: "AED",
+  maximumFractionDigits: 2,
+});
+
+function formatAED(amount: number): string {
+  return Number.isInteger(amount) ? AED_INT_FMT.format(amount) : AED_DEC_FMT.format(amount);
+}
+
+/** Minimal shape of a card object needed by `cardComparisonRows`.
+ * Kept structural so tests don't need to import the full CardData. */
+export interface CardForComparison {
+  name: string;
+  annualFee: { amount: number };
+  joiningFee?: { amount: number } | null;
+  eligibility: { minSalary: number; invitationOnly?: boolean };
+  earnRates: Record<string, number | unknown | undefined>;
+  welcomeBonus?:
+    | StructuredWelcomeBonus
+    | StructuredWelcomeBonusBifurcated
+    | string
+    | null;
+  _features?: ReadonlyArray<Record<string, unknown>>;
+}
+
+export type ComparisonWinner = "left" | "right" | "tie" | "none";
+
+export interface ComparisonRow {
+  /** Row key — stable for test snapshots. */
+  key:
+    | "annualFee"
+    | "joiningFee"
+    | "minSalary"
+    | "topEarn"
+    | "welcome"
+    | "lounge";
+  /** Full label (desktop). */
+  label: string;
+  /** Short label for <720px rendering. Falls through to `label` when
+   * the desktop and mobile labels are identical. */
+  mobileLabel?: string;
+  /** Optional subtext shown beneath the label on mobile only. */
+  subtext?: string;
+  /** Display string per side. */
+  leftValue: string;
+  rightValue: string;
+  /** Which side wins this row. `"none"` for rows that deliberately
+   * carry no winner highlight (welcome bonus). `"tie"` when both
+   * sides match on the dimension that drives the winner rule. */
+  winner: ComparisonWinner;
+}
+
+// ── Per-row data extraction ──────────────────────────────────────────────
+
+// Fixed category-iteration order — mirrors EarnRateTable's CATEGORY_LABELS
+// so the "winning" category on a tie is deterministic across (a) the
+// component reading Zod-parsed data and (b) tests reading raw JSON.
+// Without this, a card with dining 2× and travel 2× would surface
+// "Dining 2×" when read via Zod and "Travel 2×" when read from JSON
+// in different key order — same outcome, different label.
+const TOP_EARN_ITERATION_ORDER = [
+  "dining",
+  "groceries",
+  "shopping",
+  "travel",
+  "fuel",
+  "entertainment",
+  "online",
+  "international",
+  "partnerBrands",
+];
+
+function topEarnEntry(earnRates: Record<string, unknown>):
+  | { key: string; label: string; value: number }
+  | null {
+  let best: { key: string; label: string; value: number } | null = null;
+  for (const key of TOP_EARN_ITERATION_ORDER) {
+    if (!(key in earnRates)) continue;
+    const val = earnRates[key];
+    if (typeof val !== "number") continue;
+    if (!best || val > best.value) {
+      best = {
+        key,
+        label: CATEGORY_LABELS_FOR_TOP[key] ?? key,
+        value: val,
+      };
+    }
+  }
+  return best;
+}
+
+interface LoungeFeature {
+  type: "lounge_access";
+  network: string;
+  scope: "unlimited" | { visits_per_year: number };
+}
+
+function loungeFeatureOf(card: CardForComparison): LoungeFeature | null {
+  const features = card._features ?? [];
+  for (const f of features) {
+    if ((f as { type?: string }).type === "lounge_access") {
+      return f as unknown as LoungeFeature;
+    }
+  }
+  return null;
+}
+
+function loungeDisplay(f: LoungeFeature | null): string {
+  if (!f) return "None";
+  if (f.scope === "unlimited") return `${f.network} — unlimited`;
+  if (typeof f.scope === "object" && "visits_per_year" in f.scope) {
+    return `${f.network} — ${f.scope.visits_per_year} visits/yr`;
+  }
+  return f.network;
+}
+
+function loungeScore(f: LoungeFeature | null): number {
+  if (!f) return 0;
+  if (f.scope === "unlimited") return Number.POSITIVE_INFINITY;
+  if (typeof f.scope === "object" && "visits_per_year" in f.scope) {
+    return f.scope.visits_per_year;
+  }
+  return 1;
+}
+
+function welcomeHeadlineFor(card: CardForComparison): string {
+  const wb = card.welcomeBonus;
+  if (!wb) return "—";
+  if (typeof wb === "string") return wb;
+  if (isStructuredWelcomeBonus(wb)) {
+    return wb.headline ?? welcomeBonusDisplay(wb);
+  }
+  if (isBifurcatedWelcomeBonus(wb)) {
+    return welcomeBonusDisplay(wb);
+  }
+  return "—";
+}
+
+/** Pick a winner where lower is better (fees, minimum salary). */
+function lowerWins(a: number | null, b: number | null): ComparisonWinner {
+  if (a === null && b === null) return "none";
+  if (a === null) return "right";
+  if (b === null) return "left";
+  if (a === b) return "tie";
+  return a < b ? "left" : "right";
+}
+
+/** Pick a winner where higher is better (earn rate, lounge generosity). */
+function higherWins(a: number, b: number): ComparisonWinner {
+  if (a === b) return "tie";
+  return a > b ? "left" : "right";
+}
+
+/** Build the canonical 6-row comparison spec for two cards. Pure: the
+ * Astro component does no number-crunching beyond rendering this. */
+export function cardComparisonRows(
+  left: CardForComparison,
+  right: CardForComparison,
+): ComparisonRow[] {
+  const rows: ComparisonRow[] = [];
+
+  // 1. Annual fee (year 2+)
+  {
+    const lFee = left.annualFee.amount;
+    const rFee = right.annualFee.amount;
+    rows.push({
+      key: "annualFee",
+      label: "Annual fee (year 2+)",
+      mobileLabel: "Annual fee",
+      subtext: "year 2+",
+      leftValue: lFee === 0 ? "Free" : formatAED(lFee),
+      rightValue: rFee === 0 ? "Free" : formatAED(rFee),
+      winner: lowerWins(lFee, rFee),
+    });
+  }
+
+  // 2. Joining fee (year 1)
+  {
+    const lJoin = left.joiningFee?.amount ?? null;
+    const rJoin = right.joiningFee?.amount ?? null;
+    rows.push({
+      key: "joiningFee",
+      label: "Joining fee (year 1)",
+      mobileLabel: "Joining fee",
+      subtext: "year 1",
+      leftValue: lJoin === null ? "—" : formatAED(lJoin),
+      rightValue: rJoin === null ? "—" : formatAED(rJoin),
+      winner: lowerWins(lJoin, rJoin),
+    });
+  }
+
+  // 3. Minimum salary
+  {
+    const lInvite = left.eligibility.invitationOnly === true;
+    const rInvite = right.eligibility.invitationOnly === true;
+    const lSalary = lInvite ? null : left.eligibility.minSalary;
+    const rSalary = rInvite ? null : right.eligibility.minSalary;
+    rows.push({
+      key: "minSalary",
+      label: "Minimum salary",
+      mobileLabel: "Min salary",
+      leftValue: lInvite ? "Invitation only" : `${formatAED(lSalary ?? 0)}/mo`,
+      rightValue: rInvite ? "Invitation only" : `${formatAED(rSalary ?? 0)}/mo`,
+      winner: lowerWins(lSalary, rSalary),
+    });
+  }
+
+  // 4. Top earn rate (single highest non-base category)
+  {
+    const lTop = topEarnEntry(left.earnRates as Record<string, unknown>);
+    const rTop = topEarnEntry(right.earnRates as Record<string, unknown>);
+    const lValue = lTop ? `${lTop.label} ${lTop.value}×` : "—";
+    const rValue = rTop ? `${rTop.label} ${rTop.value}×` : "—";
+    let winner: ComparisonWinner;
+    if (!lTop && !rTop) winner = "none";
+    else if (!lTop) winner = "right";
+    else if (!rTop) winner = "left";
+    else winner = higherWins(lTop.value, rTop.value);
+    rows.push({
+      key: "topEarn",
+      label: "Top earn rate",
+      leftValue: lValue,
+      rightValue: rValue,
+      winner,
+    });
+  }
+
+  // 5. Welcome bonus — never highlighted (temporal + bundled)
+  {
+    rows.push({
+      key: "welcome",
+      label: "Welcome bonus",
+      leftValue: welcomeHeadlineFor(left),
+      rightValue: welcomeHeadlineFor(right),
+      winner: "none",
+    });
+  }
+
+  // 6. Lounge access
+  {
+    const lF = loungeFeatureOf(left);
+    const rF = loungeFeatureOf(right);
+    rows.push({
+      key: "lounge",
+      label: "Lounge access",
+      leftValue: loungeDisplay(lF),
+      rightValue: loungeDisplay(rF),
+      winner: !lF && !rF ? "none" : higherWins(loungeScore(lF), loungeScore(rF)),
+    });
+  }
+
+  return rows;
+}
+
 export function annualFeeWaiverDisplay(
   v: StructuredAnnualFeeWaiver | string | null | undefined,
 ): string {

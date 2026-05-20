@@ -16,10 +16,15 @@ import type {
 import {
   annualFeeWaiverDisplay,
   isStructuredAnnualFeeWaiver,
+  getCardData,
 } from "~/lib/cardsData";
 
 interface Props {
-  annualFee: CardData["annualFee"];
+  /** Phase 2a.2: when set, the component resolves all inline props
+   * from `getCardData(card)`. Keeps the MDX call site at one line:
+   * `<FeeBlock card="emirates-nbd-skywards-infinite" />`. */
+  card?: string;
+  annualFee?: CardData["annualFee"];
   fxFee?: number;
   waiver?: CardData["annualFeeWaiver"];
   /** Phase 2a.0 (2026-05-20): year-1 joining fee. Rendered as a small
@@ -29,7 +34,26 @@ interface Props {
   joiningFee?: CardData["joiningFee"];
 }
 
-const { annualFee, fxFee, waiver, joiningFee } = Astro.props;
+const {
+  card,
+  annualFee: annualFeeProp,
+  fxFee: fxFeeProp,
+  waiver: waiverProp,
+  joiningFee: joiningFeeProp,
+} = Astro.props;
+
+const resolved = card ? getCardData(card) : undefined;
+if (card && !resolved) {
+  throw new Error(`FeeBlock: unknown card slug "${card}"`);
+}
+
+const annualFee = resolved?.annualFee ?? annualFeeProp;
+if (!annualFee) {
+  throw new Error("FeeBlock: requires `card` or inline `annualFee` prop");
+}
+const fxFee = resolved?.fxFee ?? fxFeeProp;
+const waiver = resolved?.annualFeeWaiver ?? waiverProp;
+const joiningFee = resolved?.joiningFee ?? joiningFeeProp;
 
 const aedFormatter = new Intl.NumberFormat("en-AE", {
   style: "currency",

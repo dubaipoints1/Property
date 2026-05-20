@@ -545,6 +545,14 @@ export {
   isStructuredWelcomeBonus,
   isBifurcatedWelcomeBonus,
   isStructuredAnnualFeeWaiver,
+  shortCardLabel,
+  cardComparisonRows,
+} from "./cardsDataFormat";
+export type {
+  ShortCardLabel,
+  ComparisonRow,
+  ComparisonWinner,
+  CardForComparison,
 } from "./cardsDataFormat";
 
 /**
