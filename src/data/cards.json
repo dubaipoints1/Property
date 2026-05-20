@@ -931,15 +931,14 @@
     "welcomeBonus": {
       "amount": 500,
       "unit": "lulu_points",
-      "spend_threshold_aed": null,
-      "qualify_window_days": null,
-      "headline_value_aed": 5,
-      "notes": "On card activation."
+      "spend_threshold_aed": 0,
+      "qualify_window_days": 0,
+      "note": "500 LuLu Points + 0% balance transfer with no processing fee. AED 525 joining + AED 262.50 renewal."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
-    "earnUnit": "% back as LuLu Points",
+    "earnUnit": "% as LuLu Points (redeemable at 70+ LuLu stores)",
     "eligibility": {
-      "minSalary": 15000,
+      "minSalary": 12000,
       "salaryTransferRequired": false,
       "residencyRequired": true,
       "employmentTypes": [
@@ -960,13 +959,10 @@
     },
     "lastVerified": "2026-05-20",
     "earnRates": {
-      "groceries": 7,
+      "partnerBrands": 7,
       "fuel": 4,
-      "everythingElse": 1,
-      "_caps": {
-        "monthly_max_aed": null,
-        "min_monthly_spend_to_qualify_aed": null
-      }
+      "utilities": 2,
+      "everythingElse": 0.7
     },
     "annualFeeWaiver": {
       "year_one_waived": true,
@@ -1012,17 +1008,17 @@
       "Apple Pay, Samsung Pay, Google Pay"
     ],
     "_provenance": {
-      "welcomeBonus": "editor-confirmed",
+      "welcomeBonus": "editor-corrected",
       "kfsUrl": "editor-confirmed",
-      "earnUnit": "editor-confirmed",
+      "earnUnit": "editor-corrected",
       "eligibility": "editor-confirmed",
       "lastVerified": "editor-confirmed",
-      "earnRates": "editor-confirmed",
+      "earnRates": "editor-corrected",
       "annualFeeWaiver": "editor-confirmed",
       "loyaltyProgram": "editor-confirmed",
       "transferPartners": "editor-confirmed",
-      "annualFee": "editor-corrected",
-      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "network": "editor-corrected",
       "sources": "editor-confirmed",
       "welcomeBonusValue": "editor-confirmed",
       "fxFee": "editor-confirmed",
@@ -1533,15 +1529,15 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-confirmed",
       "categories": "scraped",
       "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
-      "welcomeBonus": "scraped",
-      "eligibility": "scraped",
+      "loyaltyProgram": "editor-corrected",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
+      "welcomeBonus": "editor-corrected",
+      "eligibility": "editor-confirmed",
       "applyUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
@@ -1562,12 +1558,20 @@
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "Noon Loyalty",
+    "loyaltyProgram": "noon credits",
     "earnRates": {
+      "dining": 20,
+      "partnerBrands": 10,
       "everythingElse": 1
     },
-    "earnUnit": "Noon Loyalty per AED 1 spent",
-    "welcomeBonus": "Welcome bonus #### Get a welcome bonus\\* of ** 500** when you spend ** 5,000** on the card in the first two months \\*Applicable only for new to bank/new to card customers",
+    "earnUnit": "% back as noon credits (cap AED 2,000/month on noon platforms)",
+    "welcomeBonus": {
+      "amount": 500,
+      "unit": "noon_credits",
+      "spend_threshold_aed": 5000,
+      "qualify_window_days": 60,
+      "note": "AED 500 noon credits on AED 5,000 spend in first 2 months (new-to-card only). Plus AED 250 YOUGotaGift HappyYOU Card. 1-year free noon One membership; 50% off thereafter. Earn rates: 20% on noon Food; 10% on NowNow; 5% on noon Minutes/noon/Namshi/supermall; 1% on all other."
+    },
     "eligibility": {
       "minSalary": 5000,
       "salaryTransferRequired": false,
@@ -1666,15 +1670,14 @@
   },
   "emirates-nbd-share-visa-infinite": {
     "welcomeBonus": {
-      "amount": 1500,
-      "unit": "aed_credit",
+      "amount": 10000,
+      "unit": "share_points",
       "spend_threshold_aed": 40000,
       "qualify_window_days": 90,
-      "headline_value_aed": 1500,
-      "notes": "Joining fee refunded on AED 40,000 cumulative spend in 90 days."
+      "note": "10,000 SHARE Points (= AED 1,000) on AED 40,000 spend in first 3 months. Joining fee refunded on same threshold. Plus AED 500 YOUGotaGift HappyYOU Card on online application."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
-    "earnUnit": "% back as SHARE Points",
+    "earnUnit": "% as SHARE Points (10 pts = AED 1; EU/UK at 0.375%)",
     "eligibility": {
       "minSalary": 30000,
       "salaryTransferRequired": false,
@@ -1697,15 +1700,12 @@
     },
     "lastVerified": "2026-05-20",
     "earnRates": {
-      "dining": 8,
-      "shopping": 8,
-      "groceries": 8,
-      "entertainment": 8,
-      "everythingElse": 1,
-      "_caps": {
-        "monthly_max_aed": null,
-        "min_monthly_spend_to_qualify_aed": null
-      }
+      "partnerBrands": 8,
+      "everythingElse": 1.5,
+      "groceries": 0.375,
+      "insurance": 0.375,
+      "fuel": 0.15,
+      "utilities": 0.15
     },
     "annualFeeWaiver": {
       "year_one_waived": false,
@@ -1713,14 +1713,14 @@
       "threshold_period": "annual",
       "notes": "AED 1,500 joining and AED 1,500 annual; joining fee refundable; annual fee not waived."
     },
-    "loyaltyProgram": "SHARE Points (Majid Al Futtaim)",
+    "loyaltyProgram": "SHARE",
     "joiningFee": {
       "amount": 1500,
       "currency": "AED"
     },
     "transferPartners": [],
     "annualFee": {
-      "amount": 1575,
+      "amount": 1500,
       "currency": "AED"
     },
     "network": "Visa",
@@ -1759,14 +1759,14 @@
       "Apple Pay, Samsung Pay, Google Pay"
     ],
     "_provenance": {
-      "welcomeBonus": "editor-confirmed",
+      "welcomeBonus": "editor-corrected",
       "kfsUrl": "editor-confirmed",
-      "earnUnit": "editor-confirmed",
-      "eligibility": "editor-confirmed",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-corrected",
       "lastVerified": "editor-confirmed",
-      "earnRates": "editor-confirmed",
+      "earnRates": "editor-corrected",
       "annualFeeWaiver": "editor-confirmed",
-      "loyaltyProgram": "editor-confirmed",
+      "loyaltyProgram": "editor-corrected",
       "joiningFee": "editor-confirmed",
       "transferPartners": "editor-confirmed",
       "annualFee": "editor-corrected",
@@ -2310,14 +2310,13 @@
   "emirates-nbd-u-by-emaar-infinite": {
     "welcomeBonus": {
       "amount": 25000,
-      "unit": "upoints",
-      "spend_threshold_aed": 36750,
-      "qualify_window_days": 90,
-      "headline_value_aed": 2500,
-      "notes": "15,000 on activation + 10,000 on USD 10,000 retail spend"
+      "unit": "u_points",
+      "spend_threshold_aed": null,
+      "qualify_window_days": null,
+      "note": "Up to 25,000 UPoints + automatic U by Emaar Platinum status. AED 2,625 joining + AED 1,575 renewal. 20% off F&B at Emaar Hospitality Group hotels, suite upgrade on stays, BOGO at Reel Cinemas with free soft drinks/popcorn (min AED 5k/mo spend), up to 30% off Emaar Entertainment, complimentary Grand Drive valet (Dubai Mall — Galeries Lafayette + The Souk)."
     },
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
-    "earnUnit": "% back as UPoints",
+    "earnUnit": "% as UPoints (redeemable at 2,500+ stores)",
     "eligibility": {
       "minSalary": 30000,
       "salaryTransferRequired": false,
@@ -2341,16 +2340,10 @@
     "lastVerified": "2026-05-20",
     "minPayment": "5% of outstanding balance or AED 100, whichever is higher",
     "earnRates": {
-      "dining": 7.5,
-      "travel": 7.5,
-      "groceries": 1.5,
-      "everythingElse": 1.5,
-      "_caps": {
-        "monthly_max_aed": null,
-        "min_monthly_spend_to_qualify_aed": null
-      }
+      "partnerBrands": 7.5,
+      "everythingElse": 1.5
     },
-    "loyaltyProgram": "UPoints",
+    "loyaltyProgram": "U by Emaar",
     "joiningFee": {
       "amount": 2625,
       "currency": "AED"
@@ -2402,13 +2395,13 @@
       "Apple Pay, Samsung Pay, Google Pay, Garmin Pay"
     ],
     "_provenance": {
-      "welcomeBonus": "editor-confirmed",
+      "welcomeBonus": "editor-corrected",
       "kfsUrl": "editor-confirmed",
-      "earnUnit": "editor-confirmed",
-      "eligibility": "editor-confirmed",
+      "earnUnit": "editor-corrected",
+      "eligibility": "editor-corrected",
       "lastVerified": "editor-confirmed",
       "minPayment": "editor-confirmed",
-      "earnRates": "editor-confirmed",
+      "earnRates": "editor-corrected",
       "loyaltyProgram": "editor-confirmed",
       "joiningFee": "editor-confirmed",
       "transferPartners": "editor-confirmed",
@@ -2525,13 +2518,13 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-confirmed",
       "categories": "scraped",
       "annualFee": "editor-confirmed",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
       "welcomeBonus": "scraped",
       "welcomeBonusValue": "scraped",
       "eligibility": "scraped",
@@ -2554,11 +2547,12 @@
       "currency": "AED"
     },
     "fxFee": 1.99,
-    "loyaltyProgram": "U Points",
+    "loyaltyProgram": "U by Emaar",
     "earnRates": {
-      "everythingElse": 1
+      "partnerBrands": 7.5,
+      "everythingElse": 1.5
     },
-    "earnUnit": "U Points per AED 1 spent",
+    "earnUnit": "% as UPoints (redeemable at 2,500+ stores)",
     "welcomeBonus": {
       "amount": 25000,
       "unit": "upoints",
