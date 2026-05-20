@@ -6,7 +6,7 @@ predecessor-brief: card-data-audit-and-ui-programme
 gate-cleared: phase-1-chairman-approval (2026-05-20)
 parent-brief: phase-2a-uae-banks-expansion
 research-status: complete (Phase 1 dossier already named the four additions)
-tech-status: pending
+tech-status: complete
 factcheck-status: pending
 standards-status: n/a (no copy-facing changes)
 chairman-status: pending

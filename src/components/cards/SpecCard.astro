@@ -130,6 +130,18 @@ if (variant === "full") {
       <BankLogo slug={card.bank} name={bankName} size="sm" />
       <span class="bank">{bankName}</span>
     </div>
+    {/* Phase 2a.0 (2026-05-20): gold "No longer accepting applications"
+        chip sits between the bank eyebrow and the network pill. Second
+        legitimate gold use site-wide (alongside VerifiedStamp.is-stale).
+        Render only when discontinuedForNewApplicants is present. */}
+    {card.discontinuedForNewApplicants && (
+      <span
+        class="discontinued"
+        title={card.discontinuedForNewApplicants.note ?? "Closed to new applications"}
+      >
+        No longer accepting applications
+      </span>
+    )}
     <span class="network">{card.network}</span>
   </header>
 
@@ -144,6 +156,7 @@ if (variant === "full") {
         annualFee={card.annualFee}
         fxFee={card.fxFee}
         waiver={card.annualFeeWaiver}
+        joiningFee={card.joiningFee}
       />
     </div>
   )}
@@ -272,6 +285,22 @@ if (variant === "full") {
     border-radius: 4px;
     padding: 4px 8px;
     background: var(--paper);
+  }
+  /* Phase 2a.0: gold chip for discontinued cards. Sits between the
+     bank eyebrow and the network pill in the .head row. Uses --gold
+     + --gold-soft — second legitimate gold use site-wide alongside
+     VerifiedStamp.is-stale. */
+  .head .discontinued {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 4px 8px;
+    background: var(--gold-soft);
+    line-height: 1.2;
   }
 
   .title {

@@ -33,7 +33,18 @@ export interface StructuredWelcomeBonus {
   spend_threshold_aed: number | null;
   qualify_window_days: number | null;
   headline_value_aed?: number;
+  /** Phase 2a.0 (2026-05-20): ≤90-char publication one-liner. Matcher
+   * prefers this over the derived display string when present. */
+  headline?: string;
   notes?: string;
+}
+
+/** Phase 2a.0 (2026-05-20): structured discontinuation marker.
+ * Mirrors `discontinuedForNewApplicants` on the Zod schema in cardsData.ts.
+ * `date` must be a YYYY-MM-DD ISO string. */
+export interface DiscontinuedForNewApplicants {
+  date: string;
+  note?: string;
 }
 
 /** Bifurcated welcome bonus — different bonuses for cards that pay

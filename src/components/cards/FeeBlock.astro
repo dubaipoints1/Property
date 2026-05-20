@@ -22,9 +22,14 @@ interface Props {
   annualFee: CardData["annualFee"];
   fxFee?: number;
   waiver?: CardData["annualFeeWaiver"];
+  /** Phase 2a.0 (2026-05-20): year-1 joining fee. Rendered as a small
+   * line beneath the annual figure only when present AND ≠ annualFee.
+   * When equal, the joining-fee line is suppressed (year-1 and year-2+
+   * are the same number, so the annual figure already conveys it). */
+  joiningFee?: CardData["joiningFee"];
 }
 
-const { annualFee, fxFee, waiver } = Astro.props;
+const { annualFee, fxFee, waiver, joiningFee } = Astro.props;
 
 const aedFormatter = new Intl.NumberFormat("en-AE", {
   style: "currency",
@@ -32,10 +37,24 @@ const aedFormatter = new Intl.NumberFormat("en-AE", {
   maximumFractionDigits: 0,
 });
 
+// AED amounts may carry decimals (joining fees like 3,148.95 / 1,573.95).
+// Use a separate formatter so we keep the precision when present.
+const aedDecimalFormatter = new Intl.NumberFormat("en-AE", {
+  style: "currency",
+  currency: "AED",
+  maximumFractionDigits: 2,
+});
+
+function formatAED(amount: number): string {
+  return Number.isInteger(amount)
+    ? aedFormatter.format(amount)
+    : aedDecimalFormatter.format(amount);
+}
+
 const feeLabel =
   annualFee.amount === 0
     ? "Free"
-    : aedFormatter.format(annualFee.amount);
+    : formatAED(annualFee.amount);
 
 const waiverString = annualFeeWaiverDisplay(
   waiver as StructuredAnnualFeeWaiver | string | null | undefined,
@@ -43,11 +62,25 @@ const waiverString = annualFeeWaiverDisplay(
 const showWaiver =
   waiverString.length > 0 &&
   (isStructuredAnnualFeeWaiver(waiver) || typeof waiver === "string");
+
+// Phase 2a.0: only show the joining-fee line when the year-1 figure
+// differs from the year-2+ annual fee. When they're equal (LuLu 247
+// Platinum is the inverse: year-1 525, year-2 262.50, so they differ;
+// dnata World is 1048.95 / 1048.95, so equal and suppressed).
+const showJoiningFee =
+  joiningFee !== undefined &&
+  joiningFee !== null &&
+  joiningFee.amount !== annualFee.amount;
 ---
 
 <div class="dp-fee-block">
   <div class="amt">{feeLabel}</div>
   <div class="lbl">Annual fee</div>
+  {showJoiningFee && joiningFee && (
+    <div class="joining">
+      Joining fee {formatAED(joiningFee.amount)} (year 1)
+    </div>
+  )}
   {fxFee !== undefined && fxFee !== null && (
     <div class="fx">FX +{fxFee.toFixed(2)}%</div>
   )}
@@ -74,6 +107,12 @@ const showWaiver =
     letter-spacing: 1.8px;
     text-transform: uppercase;
     color: var(--muted);
+  }
+  .dp-fee-block .joining {
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+    margin-top: 4px;
   }
   .dp-fee-block .fx {
     font-size: 12px;
