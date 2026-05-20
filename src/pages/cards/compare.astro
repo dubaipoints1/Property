@@ -135,7 +135,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       <span>
         <span class="lbl">Showing:</span>
         <strong>
-          {cardsRaw.length} {isDefault ? "top welcome-bonus" : "selected"}
+          {cardsRaw.length} {isDefault ? "top welcome-bonus cards" : "selected"}
         </strong>
       </span>
       <span>
@@ -196,7 +196,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       style="padding: 64px 32px; text-align: center; color: var(--ink-soft);"
     >
       <p style="font-size: 16px;">
-        None of the requested cards match a card in our database.
+        None of the requested cards are in our database.
       </p>
       <p style="font-size: 14px; margin-top: 8px;">
         <a href="/cards/compare/" style="color: var(--link);">
@@ -248,7 +248,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
 
             {showWelcome && card.welcomeBonus && (
               <div class="dp-compare-col-section">
-                <h4>Welcome</h4>
+                <h4>Welcome offer</h4>
                 <WelcomeBonusCallout
                   welcomeBonus={card.welcomeBonus}
                   welcomeBonusDisplay={wbDisplay}
@@ -280,8 +280,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
 
   <div class="dp-tools-actions" style="margin-top: 32px;">
     <span style="font-size: 13px; color: var(--ink-soft);">
-      Up to <strong>{MAX_CARDS}</strong> cards. Scores are DubaiPoints
-      internal, recalibrated quarterly.
+      Up to <strong>{MAX_CARDS}</strong> cards per comparison. Data is
+      audited quarterly; each card's last-verified date sits in its footer.
     </span>
     <span><a href="/cards/">All cards →</a></span>
   </div>

@@ -8,7 +8,7 @@ draft-status: complete (data patches landed; MDX prose refresh deferred)
 factcheck-status: in-progress
 tech-status: complete (components shipped; UX review in flight)
 ux-stage-5-5-status: in-progress
-standards-status: pending
+standards-status: pass-with-edits
 chairman-status: pending
 target-publish: 2026-05-27
 sources-required: 34
