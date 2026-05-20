@@ -35,7 +35,11 @@ const EMPLOYMENT_LABELS: Record<string, string> = {
 const qualifiers: string[] = [];
 if (eligibility.salaryTransferRequired) qualifiers.push("Salary transfer required");
 if (eligibility.residencyRequired) qualifiers.push("UAE residents");
+// Chairman ruling Q3 (2026-05-20): omit the chip when employmentTypes
+// includes "any" — "Any employment" reads as a constraint when it's
+// the absence of one. Only emit chips for actual restrictions.
 for (const t of eligibility.employmentTypes ?? []) {
+  if (t === "any") continue;
   qualifiers.push(EMPLOYMENT_LABELS[t] ?? t);
 }
 ---
