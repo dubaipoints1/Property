@@ -2519,3 +2519,38 @@ img { display: block; max-width: 100%; }
     right: 16px;
   }
 }
+
+/* Key conditions to know — compact <dl> render used in card-review
+   MDX bodies. Phase 2a.2.2 (2026-05-20): collapses the legacy
+   5-subsection × 2–3-bullet block into 5 dt/dd paragraph-style pairs.
+   Tokens only: --ink, --ink (body), --green (link). */
+.dp-conditions {
+  margin: 16px 0 24px;
+  display: grid;
+  gap: 14px;
+  font-family: "DM Sans", system-ui, sans-serif;
+}
+.dp-conditions dt {
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  color: var(--ink);
+  margin: 0;
+  line-height: 1.3;
+}
+.dp-conditions dd {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.dp-conditions dd a {
+  color: var(--green);
+  border-bottom: 1px solid currentColor;
+}
+@media (max-width: 719.98px) {
+  .dp-conditions { gap: 12px; }
+  .dp-conditions dt { font-size: 12px; }
+  .dp-conditions dd { font-size: 13.5px; line-height: 1.5; }
+}

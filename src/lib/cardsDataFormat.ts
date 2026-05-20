@@ -206,7 +206,10 @@ export function shortCardLabel(card: { name: string }): ShortCardLabel {
 
 // ── Comparison row spec ──────────────────────────────────────────────────
 
-const CATEGORY_LABELS_FOR_TOP: Record<string, string> = {
+/** Canonical "what's the headline earn rate" label map — used by
+ * EarnRateTable.is-top, CardComparison, and AtAGlance. Keep one
+ * implementation. */
+export const CATEGORY_LABELS_FOR_TOP: Record<string, string> = {
   dining: "Dining",
   groceries: "Groceries",
   shopping: "Shopping",
@@ -230,7 +233,11 @@ const AED_DEC_FMT = new Intl.NumberFormat("en-AE", {
   maximumFractionDigits: 2,
 });
 
-function formatAED(amount: number): string {
+/** Canonical AED formatter — integer-precision when the amount has no
+ * fractional part (annual fees: "AED 1,575"), 2dp when it does
+ * (joining fees: "AED 3,148.95"). Lifted from FeeBlock so AtAGlance,
+ * CardComparison and any future card surface format identically. */
+export function formatAED(amount: number): string {
   return Number.isInteger(amount) ? AED_INT_FMT.format(amount) : AED_DEC_FMT.format(amount);
 }
 
@@ -297,7 +304,11 @@ const TOP_EARN_ITERATION_ORDER = [
   "partnerBrands",
 ];
 
-function topEarnEntry(earnRates: Record<string, unknown>):
+/** Canonical "what's the headline earn rate" source — used by
+ * EarnRateTable.is-top, CardComparison, and AtAGlance. Keep one
+ * implementation. Iterates a fixed key order so ties resolve
+ * deterministically across Zod-parsed data and raw JSON. */
+export function topEarnEntry(earnRates: Record<string, unknown>):
   | { key: string; label: string; value: number }
   | null {
   let best: { key: string; label: string; value: number } | null = null;
