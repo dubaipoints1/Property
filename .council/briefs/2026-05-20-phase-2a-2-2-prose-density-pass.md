@@ -7,10 +7,10 @@ gate-cleared: phase-1-chairman-approval (2026-05-20)
 parent-programme: phase-2a-uae-banks-expansion
 research-status: in-progress (UX spec for AtAGlance dispatched 2026-05-20)
 seo-status: n/a
-draft-status: in-progress
+draft-status: complete (lead + Best for folded; Key conditions collapsed)
 tech-status: pending (AtAGlance component queued behind UX spec)
 factcheck-status: n/a (no data changes)
-standards-status: in-progress
+standards-status: complete (Skywards reference pair trimmed)
 chairman-status: pending
 target-publish: 2026-05-23
 tier: T2
