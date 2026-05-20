@@ -5,11 +5,11 @@ assigned-editor: business-realestate-editor
 research-status: complete
 seo-status: deferred
 draft-status: complete (data patches landed; MDX prose refresh deferred)
-factcheck-status: in-progress
-tech-status: complete (components shipped; UX review in flight)
-ux-stage-5-5-status: in-progress
-standards-status: pending
-chairman-status: pending
+factcheck-status: pass (post-redline; all blockers closed)
+tech-status: complete (components shipped + Stage 5.5 fixes #1-#8 landed)
+ux-stage-5-5-status: pass-with-edits (#9 SSR-rank deferred; #10 no-action)
+standards-status: pass-with-edits (10 copy edits applied; 4 open questions for Chairman)
+chairman-status: ready-for-gate
 target-publish: 2026-05-27
 sources-required: 34
 sources-verified: 34
