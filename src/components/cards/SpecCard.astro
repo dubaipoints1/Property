@@ -88,6 +88,37 @@ const showWelcome =
   card.welcomeBonus !== null &&
   wbDisplay.length > 0 &&
   (variant === "full");
+
+// Stage 5.5 UX Fix #5: editorial tagline on the full-variant SpecCard.
+// Pulls the first sentence of the MDX editorTake when available;
+// otherwise composes a deterministic one-liner from the top earn rate
+// + annual fee. This is the line that converts the surface from a data
+// tile to a publication artefact.
+let tagline: string | null = null;
+if (variant === "full") {
+  try {
+    const editorial = await getEntry("cards", card.slug);
+    const editorTake = editorial?.data?.editorTake;
+    if (typeof editorTake === "string" && editorTake.trim().length > 0) {
+      const firstSentence = editorTake
+        .trim()
+        .replace(/\s+/g, " ")
+        .match(/^[^.!?]+[.!?]/);
+      tagline = firstSentence ? firstSentence[0] : null;
+    }
+  } catch {
+    // Editorial MDX may not exist for every L2 card — fall through to the
+    // computed tagline below.
+  }
+  if (!tagline && top) {
+    const lbl = CATEGORY_LABELS[top.label] ?? top.label;
+    const feeStr =
+      card.annualFee.amount === 0
+        ? "free for life"
+        : `AED ${card.annualFee.amount.toLocaleString()} a year`;
+    tagline = `${top.value}× on ${lbl} — ${feeStr}.`;
+  }
+}
 ---
 
 <article class={`dp-spec-card is-${variant}`} data-bank={card.bank}>
@@ -98,6 +129,21 @@ const showWelcome =
     </div>
     <span class="network">{card.network}</span>
   </header>
+
+  {/* Stage 5.5 UX Fix #4: on `is-full`, the loudest reader signal (the
+      AED annual fee in 28px Fraunces) comes immediately under the head.
+      The card name follows. Reader meets the price before the bank
+      acronym dominates their attention. Compact + row variants keep
+      the title-first reading order they were designed for. */}
+  {variant === "full" && (
+    <div class="hero-fee">
+      <FeeBlock
+        annualFee={card.annualFee}
+        fxFee={card.fxFee}
+        waiver={card.annualFeeWaiver}
+      />
+    </div>
+  )}
 
   <div class="title">
     <h3>
@@ -110,22 +156,24 @@ const showWelcome =
     )}
   </div>
 
+  {variant === "full" && tagline && (
+    <p class="tagline">{tagline}</p>
+  )}
+
+  {showWelcome && card.welcomeBonus && (
+    <WelcomeBonusCallout
+      welcomeBonus={card.welcomeBonus}
+      welcomeBonusDisplay={wbDisplay}
+    />
+  )}
+
   {variant === "full" && (
-    <div class="grid">
-      <div class="cell cell-fee">
-        <FeeBlock
-          annualFee={card.annualFee}
-          fxFee={card.fxFee}
-          waiver={card.annualFeeWaiver}
-        />
-      </div>
-      <div class="cell cell-earn">
-        <div class="lbl">Earn rates</div>
-        <EarnRateTable
-          earnRates={card.earnRates}
-          earnUnit={card.earnUnit}
-        />
-      </div>
+    <div class="cell cell-earn">
+      <div class="lbl">Earn rates</div>
+      <EarnRateTable
+        earnRates={card.earnRates}
+        earnUnit={card.earnUnit}
+      />
     </div>
   )}
 
@@ -150,13 +198,6 @@ const showWelcome =
         <dd>AED {card.eligibility.minSalary.toLocaleString()}/mo</dd>
       </div>
     </dl>
-  )}
-
-  {showWelcome && card.welcomeBonus && (
-    <WelcomeBonusCallout
-      welcomeBonus={card.welcomeBonus}
-      welcomeBonusDisplay={wbDisplay}
-    />
   )}
 
   {variant === "full" && (
@@ -257,14 +298,29 @@ const showWelcome =
     color: var(--green);
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
-    gap: 16px 24px;
-    padding: 16px 0;
-    border-top: 1px solid var(--line-soft);
+  /* Hero fee block — sits between the head eyebrow row and the title
+     on `is-full`. Pulled out of the old two-column .grid; the earn
+     table now lives as its own section below the welcome callout. */
+  .hero-fee {
+    padding: 8px 0 16px 0;
     border-bottom: 1px solid var(--line-soft);
   }
+
+  /* Stage 5.5 UX Fix #5: one-line editorial tagline in Fraunces italic.
+     Sits between the card name and the welcome callout, giving every
+     full-variant card a single line of publication voice. */
+  .tagline {
+    margin: 0;
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    text-wrap: balance;
+    max-width: 52ch;
+  }
+
   .cell .lbl {
     font-size: 10px;
     font-weight: 700;

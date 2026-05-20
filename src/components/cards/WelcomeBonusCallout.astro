@@ -1,11 +1,14 @@
 ---
-// WelcomeBonusCallout — gold-tinted callout box for a card's welcome
-// offer. Used on hubs, finder, compare, and individual card pages.
+// WelcomeBonusCallout — navy-rule callout for a card's welcome offer.
+// Used on hubs, finder, compare, and individual card pages.
 //
-// Per Charter §"Editorial guarantees" + amendment 2026-05-09: gold is
-// the SECONDARY trust-signal accent. The welcome bonus is a trust
-// signal (it's the headline you compare cards on); the gold callout is
-// the visual anchor.
+// Per Stage 5.5 UX review (2026-05-20), gold is sunsetted per the
+// Quiet Ledger amendment and the 2026-05-09 Charter amendment ratifying
+// navy as the only primary accent. The welcome bonus is still the
+// headline trust signal — rendered as navy-rule on paper, with the
+// body promoted to Fraunces display type. Mirrors the .dp-take editorial-
+// verdict idiom so the welcome offer reads as the publication's
+// headline figure rather than a promotional callout.
 //
 // Reads structured welcomeBonus where available so the spend-threshold
 // line is precise. Falls back to the editor's display string for
@@ -60,28 +63,31 @@ const thresholdLine =
 
 <style>
   .dp-welcome-callout {
-    background: var(--gold-soft);
-    border-left: 3px solid var(--gold);
-    border-radius: 4px;
-    padding: 12px 16px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    padding: 14px 18px;
     display: grid;
-    gap: 4px;
+    gap: 6px;
   }
   .dp-welcome-callout .eyebrow {
-    font-family: "Fraunces", serif;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 1.5px;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--ink);
     line-height: 1.2;
   }
   .dp-welcome-callout .body {
-    font-family: "DM Sans", system-ui, sans-serif;
-    font-size: 16px;
+    font-family: "Fraunces", serif;
     font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.2px;
     color: var(--ink);
-    line-height: 1.4;
+    line-height: 1.35;
+    text-wrap: balance;
   }
   .dp-welcome-callout .threshold {
     font-family: "DM Sans", system-ui, sans-serif;

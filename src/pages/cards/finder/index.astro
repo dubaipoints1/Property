@@ -113,6 +113,23 @@ const initialOrder = cardsWithBanks;
       credit cards in our database against your profile. The URL is
       shareable; send it to someone who's asked you which card to open.
     </p>
+    {/* Stage 5.5 UX Fix #6: visual anchor above the fold. Matches the
+        stats-strip pattern used on the compare page so the two tool
+        pages read as one publication. */}
+    <div class="dp-tools-stats">
+      <span>
+        <span class="lbl">Cards in database</span>
+        <strong>{allCards.length}</strong>
+      </span>
+      <span>
+        <span class="lbl">Last refreshed</span>
+        <strong>20 May 2026</strong>
+      </span>
+      <span>
+        <span class="lbl">Methodology</span>
+        <strong><a href="/editorial-policy/">Read &rarr;</a></strong>
+      </span>
+    </div>
   </div>
 
   <section class="dp-finder">
