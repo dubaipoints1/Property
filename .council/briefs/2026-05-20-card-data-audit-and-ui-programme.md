@@ -3,14 +3,18 @@ slug: card-data-audit-and-ui-programme
 vertical: business-realestate
 assigned-editor: business-realestate-editor
 research-status: complete
-seo-status: pending
-draft-status: pending
-factcheck-status: pending
-tech-status: pending
+seo-status: deferred
+draft-status: complete (data patches landed; MDX prose refresh deferred)
+factcheck-status: in-progress
+tech-status: complete (components shipped; UX review in flight)
+ux-stage-5-5-status: in-progress
+standards-status: pending
 chairman-status: pending
 target-publish: 2026-05-27
 sources-required: 34
+sources-verified: 34
 tier: T3
+phase-2-expansion-queued: all-UAE-banks (Mashreq, ADIB, DIB, RAKBank, Emirates Islamic, ADCB, CBD, HSBC, SCB, Citi, Liv, Wio, UAB, SIB, Ajman, Mashreq Neo)
 ---
 
 # Card data audit & UI programme
