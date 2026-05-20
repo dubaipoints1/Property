@@ -133,97 +133,114 @@ const initialOrder = cardsWithBanks;
   </div>
 
   <section class="dp-finder">
-    <form method="get" action="/cards/finder/" class="dp-finder-form">
-      <fieldset class="dp-finder-fs is-salary">
-        <legend>Your monthly salary (AED)</legend>
-        <input
-          type="number"
-          name="salary"
-          inputmode="numeric"
-          placeholder="e.g. 15000"
-          min="0"
-          step="500"
-          value={salaryInit}
-        />
-        <p class="hint">
-          Leave blank to include every card. We use this to filter out
-          cards you wouldn't qualify for.
-        </p>
-      </fieldset>
+    {/* Stage 5.5 UX Fix #7: wrap the form in a <details> so that on
+        narrow viewports the 5-fieldset form can collapse, letting the
+        results breathe. The default-open state keeps desktop behaviour
+        intact. CSS forces details[open] all the time at >=720px so
+        the disclosure-affordance only appears on mobile. */}
+    <details class="dp-finder-formwrap" open>
+      <summary class="dp-finder-formwrap-summary">
+        <span class="dp-finder-formwrap-title">Filter cards</span>
+        <span class="dp-finder-formwrap-hint">Salary, spend, preference</span>
+      </summary>
+      <form method="get" action="/cards/finder/" class="dp-finder-form">
+        <fieldset class="dp-finder-fs is-salary">
+          <legend>Your monthly salary (AED)</legend>
+          <input
+            type="number"
+            name="salary"
+            inputmode="numeric"
+            placeholder="e.g. 15000"
+            min="0"
+            step="500"
+            value={salaryInit}
+          />
+          <p class="hint">
+            Leave blank to include every card. We use this to filter out
+            cards you wouldn't qualify for.
+          </p>
+        </fieldset>
 
-      <fieldset class="dp-finder-fs">
-        <legend>Primary spend category</legend>
-        <div class="dp-finder-radios">
-          {SPEND_OPTIONS.map((opt) => (
-            <label>
-              <input
-                type="radio"
-                name="spend"
-                value={opt.value}
-                checked={spendInit === opt.value}
-              />
-              <span>{opt.label}</span>
-            </label>
-          ))}
+        <fieldset class="dp-finder-fs">
+          <legend>Primary spend category</legend>
+          <div class="dp-finder-radios">
+            {SPEND_OPTIONS.map((opt) => (
+              <label>
+                <input
+                  type="radio"
+                  name="spend"
+                  value={opt.value}
+                  checked={spendInit === opt.value}
+                />
+                <span>{opt.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="dp-finder-fs">
+          <legend>What you'd prefer to earn</legend>
+          <div class="dp-finder-radios">
+            {PREFER_OPTIONS.map((opt) => (
+              <label>
+                <input
+                  type="radio"
+                  name="prefer"
+                  value={opt.value}
+                  checked={preferInit === opt.value}
+                />
+                <span>{opt.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        {/* Stage 5.5 UX Fix #8: combine "Card network" + "Annual fee" into
+            a single .dp-finder-fs-row. Reduces the form from 5 sections
+            to 4. Both are narrow inline-radio fieldsets serving the
+            secondary-filter role. */}
+        <div class="dp-finder-fs-row">
+          <fieldset class="dp-finder-fs">
+            <legend>Card network</legend>
+            <div class="dp-finder-radios is-inline">
+              {NETWORK_OPTIONS.map((opt) => (
+                <label>
+                  <input
+                    type="radio"
+                    name="network"
+                    value={opt.value}
+                    checked={networkInit === opt.value}
+                  />
+                  <span>{opt.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset class="dp-finder-fs">
+            <legend>Annual fee</legend>
+            <div class="dp-finder-radios is-inline">
+              {FEE_OPTIONS.map((opt) => (
+                <label>
+                  <input
+                    type="radio"
+                    name="fee"
+                    value={opt.value}
+                    checked={feeInit === opt.value}
+                  />
+                  <span>{opt.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
         </div>
-      </fieldset>
 
-      <fieldset class="dp-finder-fs">
-        <legend>What you'd prefer to earn</legend>
-        <div class="dp-finder-radios">
-          {PREFER_OPTIONS.map((opt) => (
-            <label>
-              <input
-                type="radio"
-                name="prefer"
-                value={opt.value}
-                checked={preferInit === opt.value}
-              />
-              <span>{opt.label}</span>
-            </label>
-          ))}
+        <div class="dp-finder-actions">
+          <button type="submit">Rank cards</button>
+          <a href="/cards/finder/" class="reset">Reset filters</a>
         </div>
-      </fieldset>
-
-      <fieldset class="dp-finder-fs">
-        <legend>Card network</legend>
-        <div class="dp-finder-radios is-inline">
-          {NETWORK_OPTIONS.map((opt) => (
-            <label>
-              <input
-                type="radio"
-                name="network"
-                value={opt.value}
-                checked={networkInit === opt.value}
-              />
-              <span>{opt.label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <fieldset class="dp-finder-fs">
-        <legend>Annual fee</legend>
-        <div class="dp-finder-radios is-inline">
-          {FEE_OPTIONS.map((opt) => (
-            <label>
-              <input
-                type="radio"
-                name="fee"
-                value={opt.value}
-                checked={feeInit === opt.value}
-              />
-              <span>{opt.label}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <div class="dp-finder-actions">
-        <button type="submit">Rank cards</button>
-        <a href="/cards/finder/" class="reset">Reset filters</a>
-      </div>
-    </form>
+      </form>
+    </details>
 
     <div class="dp-finder-results" id="finder-results">
       <div class="dp-finder-results-head">
@@ -407,6 +424,20 @@ const initialOrder = cardsWithBanks;
     align-items: start;
   }
 
+  /* ── Form wrapper (mobile <details> collapse) ─────────────────── */
+  /* Stage 5.5 UX Fix #7: the <details> wrapper only renders its
+     summary affordance below 720px. On desktop the form behaves
+     identically to before — sticky sidebar, always open. */
+  .dp-finder-formwrap {
+    /* Reset default details styling on desktop. */
+  }
+  .dp-finder-formwrap-summary {
+    display: none;
+  }
+  .dp-finder-formwrap > .dp-finder-form {
+    /* On desktop the form fills the wrapper without any wrapper chrome. */
+  }
+
   /* ── Form ─────────────────────────────────────────────────────── */
   .dp-finder-form {
     position: sticky;
@@ -418,6 +449,12 @@ const initialOrder = cardsWithBanks;
     border: 1px solid var(--line);
     border-radius: 8px;
     font-family: "DM Sans", system-ui, sans-serif;
+  }
+  /* Stage 5.5 UX Fix #8: combined network + fee fieldsets share a row. */
+  .dp-finder-fs-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
   }
   .dp-finder-fs {
     border: 0;
@@ -583,9 +620,69 @@ const initialOrder = cardsWithBanks;
     }
     .dp-finder-form {
       position: static;
+      padding: 16px;
+      gap: 16px;
     }
     .dp-finder-grid {
       grid-template-columns: 1fr;
+    }
+    /* Stage 5.5 UX Fix #7: surface the <details> disclosure on mobile.
+       The form starts open (per <details open>) so first-load readers
+       see the filters; once they've ranked once, tapping the summary
+       collapses the form and gives the results full screen. */
+    .dp-finder-formwrap-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      font-family: "DM Sans", system-ui, sans-serif;
+    }
+    .dp-finder-formwrap-summary::-webkit-details-marker {
+      display: none;
+    }
+    .dp-finder-formwrap[open] > .dp-finder-formwrap-summary {
+      border-radius: 8px 8px 0 0;
+      border-bottom: 0;
+    }
+    .dp-finder-formwrap-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .dp-finder-formwrap-hint {
+      font-size: 12px;
+      color: var(--ink-soft);
+    }
+    .dp-finder-formwrap[open] .dp-finder-formwrap-summary::after {
+      content: "Hide";
+    }
+    .dp-finder-formwrap:not([open]) .dp-finder-formwrap-summary::after {
+      content: "Show";
+    }
+    .dp-finder-formwrap-summary::after {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--green);
+    }
+    .dp-finder-formwrap[open] > .dp-finder-form {
+      border-radius: 0 0 8px 8px;
+      border-top: 0;
+    }
+    /* Stack the combined row on mobile so each fieldset gets full width. */
+    .dp-finder-fs-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
     }
   }
 </style>

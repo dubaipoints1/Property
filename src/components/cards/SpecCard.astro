@@ -114,7 +114,7 @@ if (variant === "full") {
     const lbl = CATEGORY_LABELS[top.label] ?? top.label;
     const feeStr =
       card.annualFee.amount === 0
-        ? "free for life"
+        ? "no annual fee"
         : `AED ${card.annualFee.amount.toLocaleString()} a year`;
     tagline = `${top.value}× on ${lbl} — ${feeStr}.`;
   }
