@@ -279,6 +279,31 @@ The workflow is currently **hard-coded to `npm run scrape:fab`**.
 Scaling to the other 10 priority banks is the explicit subject of
 `.council/research/2026-05/scrape-accuracy-brief.md`.
 
+### Firecrawl credentials — three separate channels
+
+The same Firecrawl Hobby subscription (5,000 credits/month, refreshed
+on the 20th) is consumed through three independent credential channels.
+Setting one does not set the others.
+
+| Channel | Used by | Where to configure |
+|---|---|---|
+| GitHub Actions secret | Monthly cron in `.github/workflows/scrape.yml` | Repo settings → Secrets → Actions → `FIRECRAWL_API_KEY` |
+| Claude Code on the web MCP server | Firecrawl tools inside a Claude Code session (Head of Research) | Environment config → env var `FIRECRAWL_API_KEY` (read at container boot — new sessions only) |
+| Local dev shell | `npm run scrape:fab` from a workstation | `.env` or shell export |
+
+If a Claude Code session reports "Unauthorized: Invalid token" or the
+Firecrawl MCP tools disappear, the session's MCP credential is the
+problem — not the GitHub Actions secret. Fix is to set the env var in
+the environment configuration and **start a new session**; MCP servers
+read credentials at container boot.
+
+> Status (2026-05-20): Hobby plan subscribed. GitHub Actions secret
+> provisioned. **MCP server token in Claude Code on the web environment:
+> to be verified in next session** — last attempt returned Unauthorized,
+> the MCP server subsequently disconnected. First session that
+> successfully scrapes a card page should overwrite this note with
+> "verified" and the date.
+
 ## Content collections
 
 Eight collections are declared in `src/content.config.ts` using the
