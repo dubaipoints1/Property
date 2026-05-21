@@ -24,6 +24,10 @@ scores:
   access: 2
 applyIf: You fly Emirates twice a year or more out of DXB and spend AED 100,000 or more annually.
 skipIf: Your Emirates spend runs under AED 30,000 a year — the Signature carries less fee risk for similar earning.
+keyTakeaways:
+- Direct Skywards earning at 2 miles per USD on Emirates, flydubai, duty free, food delivery and ride-hailing — rare on a UAE Visa
+- Welcome bonus up to 100,000 miles + 1 year Rotana Rewards Exclusive is enough to cover joining + year-two fees with room to spare
+- Renewal fee AED 1,575 (incl. VAT) waives only at AED 100,000 annual spend — below that, the Signature is the better call
 editorTake: If you fly Emirates more than twice a year out of DXB and your spend is heavily
   weighted toward Emirates, flydubai, duty free, or online food delivery, this is the
   strongest pure-miles card in the UAE — but only because direct Skywards earning at
@@ -47,9 +51,23 @@ import ProsCons from "~/components/cards/ProsCons.astro";
 import AtAGlance from "~/components/cards/AtAGlance.astro";
 import EditorScorecard from "~/components/cards/EditorScorecard.astro";
 import SectionBreak from "~/components/cards/SectionBreak.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
+
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "welcome-bonus-breakdown", label: "Welcome bonus" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "skywards-infinite-vs-skywards-signature", label: "Infinite vs Signature" },
+  { id: "watch-out-for", label: "Watch out for" },
+]} />
 
 The Skywards Infinite is Emirates NBD's flagship co-branded Visa Infinite — a direct-earn
 Skywards card built for frequent DXB flyers.
+
+<KeyTakeaways card="emirates-nbd-skywards-infinite" />
 
 <AtAGlance card="emirates-nbd-skywards-infinite" />
 
@@ -66,6 +84,13 @@ Earn rates are credited as **Skywards Miles per USD 1** of eligible spend (USD 1
 
 Miles post directly to your Emirates Skywards account — no transfer step.
 
+<HotTip>
+ENBD's marketing quotes miles per **USD**, not per AED. The 2× partner rate
+works out to ~0.54 miles per AED 1 spent — competitive but not as eye-catching
+as "2 miles per dollar" reads on the first scan. Compare like-for-like by
+converting other cards' AED-quoted rates to USD before benchmarking.
+</HotTip>
+
 ## Fee summary
 
 <FeeBlock card="emirates-nbd-skywards-infinite" />
@@ -76,6 +101,13 @@ Miles post directly to your Emirates Skywards account — no transfer step.
 
 Headline value sits around AED 2,000 at our [2 fils-per-mile baseline](/airlines/skywards/);
 a single Y-to-J upgrade on a regional sector lifts the effective rate higher.
+
+<HotTip label="Hot tip — best use">
+The clearest way to break even on year one is a Y-to-J upgrade on a regional sector
+(DXB–MAA, DXB–COK, DXB–BLR are usually 30k–50k miles each way at the saver rate).
+Two of these on the welcome bonus and you've covered the joining fee + year-two
+renewal before any earn-rate spend.
+</HotTip>
 
 <SectionBreak
   image="emirates-cabin-business.jpg"
