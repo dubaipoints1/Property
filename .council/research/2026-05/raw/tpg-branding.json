@@ -1,0 +1,46 @@
+{
+  "_source": "Firecrawl /scrape branding format",
+  "_url": "https://thepointsguy.com",
+  "_dateSourced": "2026-05-21",
+  "_indexId": "ec4f52be-25e8-4793-b322-8a9741174df4",
+  "branding": {
+    "colorScheme": "light",
+    "fonts": [
+      { "family": "Poppins", "role": "body" },
+      { "family": "Sora", "role": "heading" },
+      { "family": "Roboto", "role": "unknown" }
+    ],
+    "colors": {
+      "primary": "#146AFF",
+      "secondary": "#29836B",
+      "accent": "#146AFF",
+      "background": "#FFFFFF",
+      "textPrimary": "#162433",
+      "link": "#162433"
+    },
+    "typography": {
+      "fontFamilies": { "primary": "Poppins", "heading": "Sora" },
+      "fontStacks": {
+        "heading": ["Lexend"],
+        "body": ["ui-sans-serif", "system-ui", "sans-serif"],
+        "paragraph": ["Sora"]
+      },
+      "fontSizes": { "h1": "56px", "h2": "12px", "body": "12px" }
+    },
+    "spacing": { "baseUnit": 4, "borderRadius": "16px" },
+    "components": {
+      "buttonPrimary": {
+        "background": "#146AFF",
+        "textColor": "#FFFFFF",
+        "borderRadius": "9999px"
+      },
+      "buttonSecondary": {
+        "background": "#FFFFFF",
+        "textColor": "#162433",
+        "borderRadius": "9999px"
+      }
+    },
+    "personality": { "tone": "professional", "energy": "medium", "targetAudience": "travel enthusiasts" },
+    "designSystem": { "framework": "tailwind" }
+  }
+}
