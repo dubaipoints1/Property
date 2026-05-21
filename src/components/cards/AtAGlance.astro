@@ -1,0 +1,159 @@
+---
+// AtAGlance — three-tile data strip surfacing annual fee, min salary,
+// and top earn rate above the EditorVerdict on every card-review
+// page. Reader gets the headline numbers in 3 seconds before any
+// prose. Pure SSR; no JS hydration.
+//
+// Reads from the L2 layer via getCardData(slug); shares topEarnEntry
+// + CATEGORY_LABELS_FOR_TOP with EarnRateTable.is-top + CardComparison
+// so the "Top earn rate" tile matches the navy-bold row in
+// EarnRateTable on the same page.
+//
+// Spec source: .council/briefs/2026-05-20-phase-2a-2-2-prose-density-pass.md
+
+import { getCardData } from "~/lib/cardsData";
+import {
+  topEarnEntry,
+  CATEGORY_LABELS_FOR_TOP,
+  formatAED,
+} from "~/lib/cardsDataFormat";
+
+interface Props {
+  card: string;
+}
+
+const { card: slug } = Astro.props;
+const card = getCardData(slug);
+if (!card) throw new Error(`AtAGlance: unknown card slug "${slug}"`);
+
+const annualFeeAmount = card.annualFee.amount;
+const minSalary = card.eligibility.minSalary;
+const invitationOnly = card.eligibility.invitationOnly === true;
+const top = topEarnEntry(card.earnRates as Record<string, unknown>);
+
+const annualFeeLabel =
+  annualFeeAmount === 0 ? "Free" : formatAED(annualFeeAmount);
+
+const minSalaryEyebrow = "Min salary";
+let minSalaryLabel: string;
+if (invitationOnly) {
+  minSalaryLabel = "Invitation only";
+} else if (minSalary === 0) {
+  minSalaryLabel = "No minimum";
+} else {
+  minSalaryLabel = `${formatAED(minSalary)}/mo`;
+}
+---
+
+<dl class="dp-at-a-glance" aria-label="Card at a glance">
+  <div class="tile">
+    <dt class="eyebrow">Annual fee</dt>
+    <dd class="value">{annualFeeLabel}</dd>
+  </div>
+  <div class="tile">
+    <dt class="eyebrow">{minSalaryEyebrow}</dt>
+    <dd class="value">{minSalaryLabel}</dd>
+  </div>
+  {top && (
+    <div class="tile">
+      <dt class="eyebrow">Top earn rate</dt>
+      <dd class="value">
+        <span class="num">{top.value}×</span>
+        <span class="qual">{CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key}</span>
+      </dd>
+    </div>
+  )}
+</dl>
+
+<style>
+  .dp-at-a-glance {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin: 16px 0 20px;
+    padding: 0;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+  .dp-at-a-glance:has(.tile:nth-child(2):last-child) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dp-at-a-glance .tile {
+    padding: 14px 16px 16px;
+    display: grid;
+    gap: 6px;
+    border-right: 1px solid var(--line);
+    min-width: 0;
+  }
+  .dp-at-a-glance .tile:last-child {
+    border-right: none;
+  }
+  .dp-at-a-glance .eyebrow {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.2;
+    margin: 0;
+  }
+  .dp-at-a-glance .value {
+    margin: 0;
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: -0.4px;
+    color: var(--ink);
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+  .dp-at-a-glance .value .num {
+    display: block;
+    font-family: "Fraunces", serif;
+    font-size: 24px;
+    letter-spacing: -0.4px;
+    color: var(--ink);
+  }
+  .dp-at-a-glance .value .qual {
+    display: block;
+    margin-top: 2px;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+    text-transform: none;
+    white-space: normal;
+    line-height: 1.3;
+  }
+  @media (max-width: 719.98px) {
+    .dp-at-a-glance {
+      grid-template-columns: repeat(3, 1fr);
+      margin: 12px 0 16px;
+    }
+    .dp-at-a-glance:has(.tile:nth-child(2):last-child) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .dp-at-a-glance .tile {
+      padding: 10px 10px 12px;
+      gap: 4px;
+    }
+    .dp-at-a-glance .eyebrow {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+    }
+    .dp-at-a-glance .value,
+    .dp-at-a-glance .value .num {
+      font-size: 20px;
+      letter-spacing: -0.3px;
+    }
+    .dp-at-a-glance .value .qual {
+      font-size: 11px;
+      margin-top: 1px;
+    }
+  }
+</style>

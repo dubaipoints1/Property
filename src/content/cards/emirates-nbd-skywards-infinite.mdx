@@ -19,7 +19,8 @@ editorTake: If you fly Emirates more than twice a year out of DXB and your spend
   strongest pure-miles card in the UAE — but only because direct Skywards earning at
   2 miles per USD on those partner categories is rare on a UAE-issued Visa. The AED 3,149
   joining fee + AED 1,575 year-two renewal is steep; recover it with the 100,000-mile welcome
-  bonus and a single Y-to-J upgrade.
+  bonus and a single Y-to-J upgrade. The card pays back most clearly above AED 100,000
+  of annual spend — below that, the Signature carries lower fee risk.
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
@@ -28,12 +29,12 @@ import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
 import CardComparison from "~/components/cards/CardComparison.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
 import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
 
-The Skywards Infinite is Emirates NBD's flagship co-branded Visa Infinite card with
-Emirates Skywards. Built for frequent Emirates flyers based in the UAE: 2 Skywards
-Miles per USD on Emirates, flydubai, duty free, and online food delivery and ride-hailing
-apps; direct Skywards earning with no transfer step; and an AED 1,575 year-two fee
-that's only defensible if you'll genuinely use the miles.
+The Skywards Infinite is Emirates NBD's flagship co-branded Visa Infinite — a direct-earn
+Skywards card built for frequent DXB flyers.
+
+<AtAGlance card="emirates-nbd-skywards-infinite" />
 
 <EditorVerdict card="emirates-nbd-skywards-infinite" />
 
@@ -41,71 +42,42 @@ that's only defensible if you'll genuinely use the miles.
 
 ## Earn rates
 
-Earn rates are credited as **Skywards Miles per USD 1** of eligible spend:
+Earn rates are credited as **Skywards Miles per USD 1** of eligible spend (USD 1 ≈ AED 3.67;
+2 miles per USD on partner categories works out to roughly 0.54 miles per AED 1):
 
 <EarnRateTable card="emirates-nbd-skywards-infinite" />
 
-The bank denominates earn in USD across the entire Skywards-co-brand range. At a working
-rate of USD 1 ≈ AED 3.67, 2 miles per USD on partner categories is roughly 0.54 miles
-per AED 1 (or 5.4 miles per AED 10) — useful for back-of-envelope, but the bank's earn
-statements always use the USD figure.
-
-Miles post directly to your Emirates Skywards account — no monthly conversion step and
-no transfer ratio loss.
+Miles post directly to your Emirates Skywards account — no transfer step.
 
 ## Fee summary
 
 <FeeBlock card="emirates-nbd-skywards-infinite" />
 
-The year-two waiver is reversible — fall below AED 100,000 of annual spend and the
-fee returns the following year. Plan for AED 1,575 unless your card is genuinely
-your primary spend vehicle.
-
-Interest accrues at **3.25% per month** on unpaid balances.
-
 ## Welcome bonus breakdown
 
 <WelcomeBonusCallout card="emirates-nbd-skywards-infinite" />
 
-- **Up to 100,000 bonus Skywards Miles** — the headline offer on activation
-- **Complimentary 1-year Rotana Rewards Exclusive membership** — bundled with activation
-- **Automatic Emirates Skywards Silver tier upgrade** — for the bonus qualification window
-- Headline value: ~AED 2,000 at our 2 fils-per-mile baseline (see our
-  [Skywards valuation](/airlines/skywards/) — we use 2 fils as the conservative
-  redemption floor; one well-priced Y-to-J upgrade on a regional sector lifts the
-  effective rate higher)
-
-The bonus alone covers the year-two fee with substantial room to spare, provided
-you upgrade rather than redeem at the Skywards economy chart.
+Headline value sits around AED 2,000 at our [2 fils-per-mile baseline](/airlines/skywards/);
+a single Y-to-J upgrade on a regional sector lifts the effective rate higher.
 
 ## Key conditions to know
 
-**Lounge access:**
-- **Visa Airport Companion App**, not Priority Pass. Unlimited complimentary visits
-  for the cardholder plus one guest at 1,000+ lounges worldwide
-- Includes DXB, AUH, and major hub airports
+<dl class="dp-conditions">
+  <dt>Lounge access</dt>
+  <dd>Visa Airport Companion App, not Priority Pass. Unlimited at 1,000+ lounges worldwide for cardholder + 1 guest; includes DXB, AUH, major hubs.</dd>
 
-**Skywards status match:**
-- **Skywards Silver** tier upgrade for the welcome window
-- Silver buys priority check-in, extra baggage, and tier miles toward Gold
-- Lost from year two unless you re-qualify on flown tier miles
+  <dt>Skywards status</dt>
+  <dd>Silver tier upgrade for the welcome window — priority check-in, extra baggage, tier miles toward Gold. Lost from year two unless you re-qualify on flown tier miles.</dd>
 
-**Express Miles add-on:**
-- Optional AED 250 + 5% VAT per month
-- Earns 50% more miles on all non-Emirates purchases
-- Replaces the annual fee in the months it's active
+  <dt>Express Miles add-on</dt>
+  <dd>Optional AED 250 + 5% VAT/month earns 50% more miles on non-Emirates spend and replaces the annual fee in months it's active.</dd>
 
-**Salary transfer:**
-- Not strictly required, but improves approval odds at AED 30,000/month
-- ENBD typically asks for 3 months of payslips and a stamped salary
-  certificate — the [salary-transfer tracker](/salary-transfer/) covers the
-  current waiver mechanics
+  <dt>Salary transfer</dt>
+  <dd>Not strictly required at AED 30,000/month, but improves approval odds. ENBD typically asks for 3 months of payslips + a stamped salary certificate — see the <a href="/salary-transfer/">salary-transfer tracker</a>.</dd>
 
-**Annual fee waiver mechanics:**
-- AED 100,000 spend is **cumulative annual**, not per statement
-- Resets each card anniversary
-- ENBD applies the waiver retroactively — the fee posts and is reversed,
-  rather than being skipped at the threshold
+  <dt>Fee waiver mechanics</dt>
+  <dd>AED 100,000 is cumulative annual, not per statement. Resets each card anniversary. ENBD applies the waiver retroactively — the fee posts and is reversed, not skipped at the threshold.</dd>
+</dl>
 
 ## Skywards Infinite vs Skywards Signature
 
@@ -115,14 +87,6 @@ The Infinite makes the most sense if both conditions hold: you'll trigger the
 year-one bonus quickly **and** you'll spend AED 100,000+ a year on the card
 ongoing. Otherwise the Signature carries lower fee risk for a similar earn
 profile.
-
-## Best for
-
-UAE-based Emirates flyers who already book two or more long-haul sectors a year
-out of DXB, want direct Skywards earning, and run AED 100,000+ of card spend a
-year. The card pays for itself most clearly when the welcome bonus funds a
-single Y-to-J upgrade — that one redemption alone typically exceeds the
-two-year fee burden.
 
 ## Watch out for
 
