@@ -39,6 +39,22 @@ const banks = defineCollection({
 // Card attributes (fees, earn rates, eligibility, perks, sources) live in
 // `src/data/cards.json` and load via `src/lib/cardsData.ts`. The MDX file
 // here is for editorial prose + per-card editor verdict.
+
+// ── Phase 2a.2.3 (2026-05-20) — Editor scorecard schema ─────────────────
+// Tier badge, five dimension scores (0–5 in 0.5 steps), and one-line
+// Apply / Skip qualifiers. Surfaced by <EditorScorecard /> at the end
+// of the article body; replaces the layout's old `.dp-spec-card.is-call`
+// repetition. Rubric documented at /editorial-policy/how-we-score/.
+const TIER = z.enum(["editors-pick", "strong", "solid", "niche", "skip"]);
+
+const ScoreDimensions = z.object({
+  welcomeValue: z.number().min(0).max(5).multipleOf(0.5).optional(),
+  earnRate: z.number().min(0).max(5).multipleOf(0.5).optional(),
+  perks: z.number().min(0).max(5).multipleOf(0.5).optional(),
+  feeValue: z.number().min(0).max(5).multipleOf(0.5).optional(),
+  access: z.number().min(0).max(5).multipleOf(0.5).optional(),
+});
+
 const cards = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/cards" }),
   schema: z.object({
@@ -50,6 +66,18 @@ const cards = defineCollection({
     cons: z.array(z.string()).optional(),
     editorTake: z.string().optional(),
     verifiedBy: z.string().optional(),
+
+    // ── Phase 2a.2.3 (2026-05-20) — Editor scorecard ────────────────────
+    /** 1–2 sentence, ≤30-word kicker. Surfaced by <EditorVerdict /> when
+     * present; otherwise falls back to the first sentence of editorTake.
+     * Cap raised from 160 → 200 chars in implementation to fit the
+     * Standards-Editor-locked Skywards Infinite reference copy (177ch /
+     * 30 words). Still meaningful as a marketing-prose guard. */
+    kicker: z.string().max(200).optional(),
+    tier: TIER.optional(),
+    scores: ScoreDimensions.optional(),
+    applyIf: z.string().max(120).optional(),
+    skipIf: z.string().max(120).optional(),
   }),
 });
 
