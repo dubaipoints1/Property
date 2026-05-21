@@ -1,0 +1,43 @@
+{
+  "_source": "Firecrawl /scrape branding format",
+  "_url": "https://upgradedpoints.com",
+  "_dateSourced": "2026-05-21",
+  "_indexId": "6a70bca5-2133-49a5-940d-f43cc26d0841",
+  "branding": {
+    "colorScheme": "light",
+    "fonts": [{ "family": "Sofia Pro", "role": "body" }],
+    "colors": {
+      "primary": "#003458",
+      "secondary": "#33434E",
+      "accent": "#25A773",
+      "background": "#FFFFFF",
+      "textPrimary": "#083865",
+      "link": "#083865"
+    },
+    "typography": {
+      "fontFamilies": { "primary": "Sofia Pro", "heading": "Sofia Pro" },
+      "fontStacks": {
+        "heading": ["Sofia Pro", "Helvetica", "Arial", "sans-serif"],
+        "body": ["Sofia Pro", "Helvetica", "Arial", "sans-serif"]
+      },
+      "fontSizes": { "h1": "36px", "h2": "30px", "body": "16px" }
+    },
+    "spacing": { "baseUnit": 4, "borderRadius": "10px" },
+    "components": {
+      "buttonPrimary": {
+        "background": "#25A773",
+        "textColor": "#FFFFFF",
+        "borderRadius": "5px"
+      },
+      "buttonSecondary": {
+        "background": "transparent",
+        "textColor": "#003458",
+        "borderColor": "#F7941E",
+        "borderRadius": "9999px",
+        "shadow": "rgba(247, 148, 30, 0.15) 0px 10px 20px 1px"
+      }
+    },
+    "personality": { "tone": "professional", "energy": "medium", "targetAudience": "travel enthusiasts and credit card users" },
+    "designSystem": { "framework": "Gatsby (custom)" }
+  }
+}
