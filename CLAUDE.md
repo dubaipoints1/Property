@@ -383,4 +383,39 @@ would be a cosmetic rollback for no reader benefit.
 
 — Chairman, 9 May 2026.
 
+### 2026-05-21 — Editorial image-licensing clarification
+
+The §10 kill-list previously read as "no issuer / airline marketing
+creative without written permission" — a stricter standard than the
+operating practice of every comparable publication (TPG, OMAAT,
+Upgraded Points, Head for Points), all of which use issuer press-
+library imagery under standard editorial-publication interpretation
+with a visible credit line.
+
+Amended §10 recognises a public press / media library on the
+issuer's own website (e.g. `emirates.com/media-centre/media-library/`,
+Etihad / Qatar / Saudia / flydubai press centres, bank press kits
+published on issuer websites) as licensed for editorial use,
+provided:
+
+- the rendered page carries a clear credit line ("Image courtesy of
+  Emirates Media Centre" or the issuer equivalent);
+- LIBRARY.md records the source URL + credit-line string + the date
+  the image was sourced;
+- where an issuer publishes terms-of-use that explicitly restrict
+  editorial use, those terms override;
+- takedown requests are honoured within 24 hours.
+
+AI-generated photography remains banned without exception. The
+"no payment for recommendations" affiliate posture is unchanged.
+
+Reasoning: the prior wording exposed the publication to a permission-
+email bottleneck that delayed publication of factually-correct,
+properly-attributed editorial coverage of products whose own issuers
+publish photography precisely for this use. The amendment aligns
+policy with industry-standard practice without weakening the
+no-AI-photography or visible-credit-line guarantees.
+
+— Chairman, 21 May 2026.
+
 End.
