@@ -1,0 +1,89 @@
+---
+// HeroImage — Phase 2a.2.4 (2026-05-21).
+// Wraps Astro's <Image> from `astro:assets` to render a licensed
+// editorial photograph above the card-review body grid. The component
+// resolves the filename against `src/assets/cards/library/` so the
+// optimiser can fingerprint + responsive-resize at build time.
+//
+// Library policy + per-image licensing live in
+// `src/assets/cards/library/LIBRARY.md`. Standards Editor approves
+// every entry before it ships.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  credit?: string;
+}
+
+const { src, alt, caption, credit } = Astro.props;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/cards/library/*.{jpg,jpeg,png,webp,avif}",
+);
+const importer = images[`/src/assets/cards/library/${src}`];
+if (!importer) {
+  throw new Error(
+    `<HeroImage />: ${src} not found in /src/assets/cards/library/. ` +
+      `Add the file to the library or check the filename.`,
+  );
+}
+const { default: resolved } = await importer();
+---
+
+<figure class="dp-cr-hero-photo">
+  <Image
+    src={resolved}
+    alt={alt}
+    widths={[480, 720, 1080, 1440, 1800]}
+    sizes="(max-width: 720px) 100vw, (max-width: 1180px) 100vw, 1180px"
+    loading="eager"
+    decoding="async"
+    class="dp-cr-hero-photo-img"
+  />
+  {(caption || credit) && (
+    <figcaption class="dp-cr-photo-attr">
+      {caption && <span class="cap">{caption}</span>}
+      {caption && credit && <span class="sep" aria-hidden="true">·</span>}
+      {credit && <span class="cred">{credit}</span>}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .dp-cr-hero-photo {
+    max-width: 1180px;
+    margin: 0 auto 8px;
+    padding: 0 32px;
+  }
+  .dp-cr-hero-photo-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 0;
+  }
+  .dp-cr-photo-attr {
+    margin-top: 10px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    text-wrap: balance;
+  }
+  .dp-cr-photo-attr .cap { font-weight: 500; }
+  .dp-cr-photo-attr .sep { padding: 0 6px; color: var(--line); }
+  .dp-cr-photo-attr .cred {
+    font-weight: 400;
+    color: var(--muted);
+    font-style: italic;
+  }
+  @media (max-width: 719.98px) {
+    .dp-cr-hero-photo { padding: 0 16px; margin-bottom: 4px; }
+    .dp-cr-photo-attr { font-size: 10px; }
+    .dp-cr-photo-attr .cred { font-size: 9px; }
+  }
+</style>

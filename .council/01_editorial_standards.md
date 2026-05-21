@@ -180,5 +180,12 @@ Meta title patterns:
   inclusive figure at the data layer before display; the inclusive
   figure carries an "(incl. VAT)" tag on the card review, AtAGlance
   tile, and comparison table.
+- **An image without a verifiable license.** No AI-generated photography
+  under any circumstances. No bank or airline marketing creative without
+  written permission referenced in
+  `src/assets/cards/library/LIBRARY.md`. Every published image carries
+  a visible credit line on the page. License type, source URL, and
+  confirmation date live in LIBRARY.md — not in JSDoc, not in
+  frontmatter, not in commit messages.
 
 End.
