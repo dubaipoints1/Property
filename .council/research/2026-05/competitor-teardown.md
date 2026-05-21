@@ -1,250 +1,262 @@
 # Competitor Teardown — TPG / Upgraded Points / HfP / OMAAT
 
-_Dossier opened 2026-05-21 by Head of Research, executed in parent session due to Firecrawl-MCP tool-inheritance gap in sub-agent runtime (see Status section). First-pass scope: ~1.5 of 4 sites scraped with primary-source rigor; remaining 2.5 flagged for next pass._
+_Dossier v2 — opened 2026-05-21 by Head of Research, executed in parent session due to Firecrawl-MCP tool-inheritance gap in sub-agent runtime (see Status section). v2 closes the OMAAT + card-review gaps left open in v1._
 
 **Brief source:** `.council/handoff/2026-05-21-session-end.md` priority 2 (after image-binary swap).
 
 **Deliverable purpose:** Inform every subsequent UX brief, the homepage rebuild, Phase 2a.2.5 (Hot Tips + Jump-to-Section sticky nav), and the card-review template propagation across the remaining 29 MDX files. The user has been explicit that prior Council work made editorial corrections without grounding in real competitor research, and this document is the foundation that should change that.
 
-**Method:** Firecrawl `/scrape` in `markdown` and `branding` formats. Raw scrapes archived at `.council/research/2026-05/raw/` with source URL, scrape ID, and date sourced in each file's frontmatter. All branding observations are deterministic CSS-extraction; all editorial observations are quoted from the markdown scrape. No `[recall]` inference in this dossier.
+**Method:** Firecrawl `/scrape` in `markdown` and `branding` formats; Firecrawl `/map` for URL discovery on UP. Raw scrapes archived at `.council/research/2026-05/raw/` with source URL, scrape ID, and date sourced in each file's frontmatter. All branding observations are deterministic CSS-extraction; all editorial observations are quoted from the markdown scrape. No `[recall]` inference in this dossier.
+
+**Quota used:** 14 Firecrawl credits (4 homepages + 4 brandings + 4 card reviews + 1 map + 2 404 retries on UP).
 
 ---
 
-## Status
+## Status — coverage matrix
 
-| Site | Homepage scraped | Card review scraped | Branding scraped | Coverage |
+| Site | Homepage | Card review (Chase Sapphire Preferred/Reserve) | Branding tokens | Coverage |
 |---|---|---|---|---|
-| Head for Points (HfP) | ✅ markdown | ✅ Amex Platinum review | ❌ (not run) | **Full** — richest data |
-| The Points Guy (TPG) | ✅ markdown | ❌ | ✅ branding | **Partial** — structure + design tokens |
-| Upgraded Points (UP) | ✅ markdown | ❌ | ✅ branding | **Partial** — structure + design tokens |
-| One Mile at a Time (OMAAT) | ❌ | ❌ | ❌ | **Not scraped** — next pass |
+| Head for Points (HfP) | ✅ markdown | ✅ Amex Platinum review | ❌ (skipped — Charter already names HfP as voice ref) | **Full** |
+| The Points Guy (TPG) | ✅ markdown | ✅ Chase Sapphire Preferred | ✅ | **Full** |
+| Upgraded Points (UP) | ✅ markdown | ✅ Chase Sapphire Preferred | ✅ | **Full** |
+| One Mile at a Time (OMAAT) | ✅ markdown | ✅ Chase Sapphire Reserve | ✅ | **Full** |
 
-**Remaining work for the next session:** OMAAT homepage + one OMAAT card review; one TPG card review (e.g. Chase Sapphire Preferred); one UP card review (their flagship comparison piece). Estimated cost: 5 Firecrawl scrapes. Quota usage so far: 6 credits.
-
-**Tool-inheritance gap noted:** The `head-of-research` sub-agent was dispatched with explicit Firecrawl access in its Charter mandate but the MCP tools were not present in its runtime tool inventory; the Read/Write/WebFetch/Glob/Grep subset that did load could not reach the four target sites because all four sit behind Cloudflare bot-protection that rejects WebFetch. The parent session has Firecrawl MCP tools available, so the scrapes were executed in the parent context. Worth a separate engineering ticket — agent runtimes should inherit MCP servers their Charter requires.
+**Tool-inheritance gap noted in v1:** The `head-of-research` sub-agent was dispatched with explicit Firecrawl access in its Charter mandate but the MCP tools were not present in its runtime tool inventory. v2 was executed in the parent session, with a sub-agent dispatched only to extract patterns from the OMAAT review (66 KB Firecrawl output too large for the parent context). Worth a separate engineering ticket — agent runtimes should inherit MCP servers their Charter requires.
 
 ---
 
-## Head for Points (HfP) — full teardown
+## Brand design tokens — four-site comparison
 
-HfP is the most directly relevant competitor for dubaipoints.ae. The Charter already names it as the voice/tone reference and the operating model is the closest analog: independent, points-and-miles-literate audience, regulated-financial-advice disclaimer (UK FCA equivalent of UAE SCA), single named founder voice (Rob Burgess at HfP, equivalent role at dubaipoints.ae yet to be filled).
+| Token | TPG | UP | HfP | OMAAT |
+|---|---|---|---|---|
+| **Body font** | Poppins | Sofia Pro | _(not scraped)_ | SharpGrotesk Book 19 |
+| **Heading font** | Sora / Lexend | Sofia Pro | _(not scraped)_ | SharpGrotesk Book 23 |
+| **Primary colour** | `#146AFF` electric blue | `#003458` deep navy | _(not scraped)_ | `#FFB71B` gold-orange |
+| **Text primary** | `#162433` near-black navy | `#083865` deep navy | _(not scraped)_ | `#021D49` near-black navy |
+| **Accent / CTA** | `#146AFF` blue | `#25A773` CTA green | _(not scraped)_ | `#FFB71B` gold-orange |
+| **Background** | `#FFFFFF` | `#FFFFFF` | _(not scraped)_ | `#F4F6F8` cool off-white |
+| **Border-radius (button)** | 9999px (full pill) | 5px (primary), 9999px (secondary) | _(not scraped)_ | **0px (sharp)** |
+| **Border-radius (card)** | 16px | 10px | _(not scraped)_ | _(no card border-radius)_ |
+| **CSS framework** | Tailwind | Custom (Gatsby) | _(not scraped)_ | Bootstrap |
+| **H1 size** | 56px (clamped) | 36px | _(not scraped)_ | 36px |
+| **H2 size** | _(extraction artefact)_ | 30px | _(not scraped)_ | 30px |
 
-### Homepage architecture
+**Three brand archetypes are visible:**
 
-HfP's homepage is a **news-led river with product-anchored clusters embedded mid-stream**. Sequence observed at 2026-05-21:
+- **TPG = consumer-tech / vibrant.** Electric blue, pill buttons, Tailwind, 16px-radius card chrome. Reads like a fintech app.
+- **UP / HfP = points-publication / corporate-trust.** Navy as primary, modest border-radius, CTA green or amber. Reads like a finance trade publication.
+- **OMAAT = journalism / editorial-magazine.** Off-white background, sharp 0px corners, gold-orange accent, premium-print typeface (SharpGrotesk). Reads like a print magazine moved to web.
 
-1. **Three lead news posts** — large square thumbnail (325×215 webp) above a bold linked headline, two-sentence deck, byline + date + comment-count link.
-2. **Subsection header: "The Platinum Card®"** — a four-card grid of related Amex Plat coverage. These are content clusters, not editorial categories.
-3. **More news posts** — same lead-news pattern.
-4. **Subsection header: "American Express® Preferred Rewards Gold Credit Card"** — another four-card cluster.
-5. **More news posts.**
-6. **Subsection header: "Which card is best for you?"** — four-card grid of comparison guides.
+Dubaipoints.ae's current palette (`--green` editorial green `#2d6a52` + `--gold` `#b8842a`) sits closest to **OMAAT's editorial-magazine archetype** — deep accent, no neon, AED-numerate-finance register. Validated by competitive set. The 2026-05-09 Charter amendment ratifying green is consistent with this archetype.
 
-Key observation: there is no above-the-fold hero, no static editor's-pick block, no rotating carousel. The homepage **rewards return visits** because the lead news posts roll over daily. Product clusters are interleaved between news blocks rather than gated to a separate section.
+---
 
-### Card-review template
+## Homepage architecture — four-site comparison
 
-From the Amex Platinum review (live 2026-05-19, 109 comments):
+### TPG — quick-link strip + sponsored placements
 
-1. **Date + byline + comment count + category + share button** — top of article, single horizontal row.
-2. **Lede paragraph** — bolded one-sentence thesis (`The Platinum Card from American Express is probably the most divisive credit card on the UK market.`).
-3. **Devil's-advocate paragraph** — one-sentence counter that names the cost objection and pivots to the value proposition.
-4. **Special-offer callout** — entire paragraph bolded, ends with CTA link. No special visual box, just typography. Repeated at top AND end of article.
-5. **Photo** — full-width, 500×333 webp, no caption.
-6. **H2 sections phrased as questions** — "What are the benefits of American Express Platinum?", "What is the sign up bonus?", "What is the annual fee?", "Can I get the sign-up bonus if I have a British Airways American Express card?" Every H2 is a verbatim search query. SEO-led editorial.
-7. **APR disclosure** — bold inline, no special box. Treated as factual, not decorative.
-8. **H2: "Here are the American Express Platinum core benefits (for me)"** — signals personal POV.
-9. **H3 benefit blocks** — each one followed by **`Value to me: £X`** with explicit reasoning. See "Value to me pattern" below — this is HfP's signature move.
-10. **Conclusion** — does the math. `Looking at the maths above, I get £1,500 of 'value' per year from The Platinum Card, which is double the £650 annual fee.`
-11. **Special offer callout repeated.**
-12. **FCA disclaimer** — italic, single paragraph, regulatory.
-13. **Category tag.**
-14. **Comments section** — fully expanded WordPress threaded comments with Gravatar avatars. Author replies inline. **109 comments** on a single review is a substantial engagement signal.
+Opens with a **horizontal row of quick-link tiles** (icon + label, 160×160 thumbnails) linking to tools and campaigns:
 
-### The "Value to me" pattern
+- "Explore businesses worth the trip" (Capital One Business campaign — **sponsored, unlabelled**)
+- "TSA wait times" (live tool)
+- "Join us on Substack"
+- "Protect your points" (advocacy)
+- "Top credit cards" (card finder)
+- "The Business Brief"
 
-This is the most copyable HfP innovation. After each H3 benefit description (1–3 short paragraphs), a line reads `Value to me: £X` with the author's reasoning. Sample:
+This **pre-content navigation strip** is the strongest single TPG idea. It gives high-intent users a one-click path to their destination before any editorial loads. The first tile being sponsored content visually indistinguishable from editorial is the **cautionary** part — Charter §5 forbids this, but the **pattern** (icon tile strip, not the sponsorship) is adoptable.
 
-> ### £200 of UK dining credit:
-> **You will receive £200 cashback per year when eating at 160+ UK restaurants listed here.**
-> This is split into £100 per half year. There is no small print – you don't need to book via any special link or quote any code. You simply register for the offer and then pay on The Platinum Card when you dine.
-> **Value to me:** £200. We eat in some of the participating restaurants on a regular basis so this is essentially free money for me.
+### UP — claim → proof → coverage → trust footer
 
-The conclusion sums them: `I get £1,500 of 'value' per year`. The reader can do the same math with their own inputs. **Editorial honesty signal** — the author explicitly discounts benefits he doesn't use (`I rarely use the Priority Pass benefit as I have British Airways status…`).
+Sequence:
 
-For dubaipoints.ae: this pattern adapts directly. Replace `Value to me: £X` with `Value to me: AED X` and the framework works for any UAE card. The math at the conclusion becomes the most-shareable element of the review.
+1. Advertiser-disclosure modal banner (dismissable)
+2. Hero — "Our Readers Travel Like They Never Thought Possible…" — three positioning bullets + three rotating photos
+3. Upgrade Your Travel (guide categories)
+4. Latest News
+5. Latest Credit Card Guides
+6. Travel Hub
+7. Explore Our Top Content
+8. **As seen in** (press-logo strip)
+9. **Meet the Team**
+10. **How We Work**
+11. **Editorial Disclosure**
+12. Disclaimer
 
-### Affiliate / regulatory disclosure
+Three of the last four sections are trust-scaffolding. By the time a reader scrolls to the footer, they've been shown the press strip, the byline faces, the methodology, and the legal language. **This is UP's biggest single differentiator.** Dubaipoints.ae has trust language only on the trust page; surfacing it on the homepage is a Tier-A, low-engineering win.
 
-End of article, italic, single paragraph:
+### HfP — news-led river with product-anchored clusters
 
-> _Disclaimer: Head for Points is a journalistic website. Nothing here should be construed as financial advice, and it is your own responsibility to ensure that any product is right for your circumstances. Recommendations are based primarily on the ability to earn miles and points. The site discusses products offered by lenders but is not a lender itself. Robert Burgess, trading as Head for Points, is regulated and authorised by the Financial Conduct Authority to act as an independent credit broker._
+Sequence:
 
-Two operating principles encoded here, both transferable:
-1. **Regulatory line** — UK FCA. UAE equivalent: SCA / CBUAE registration when affiliate is introduced.
-2. **Editorial line** — `Recommendations are based primarily on the ability to earn miles and points.` This is the "no advertorial-driven recommendations" guarantee in compliance-grade prose. Charter §10 already commits to this; we have model wording.
+1. Three lead news posts (thumbnail + bold headline + 2-line deck + byline/date/comment-count)
+2. **Subsection header: "The Platinum Card®"** — 4-card grid of related Amex Plat coverage
+3. More news posts
+4. **Subsection header: "American Express® Preferred Rewards Gold Credit Card"** — 4-card grid
+5. More news posts
+6. **Subsection header: "Which card is best for you?"** — 4-card grid of comparison guides
 
-### Voice and tone
+No above-the-fold hero, no carousel. The homepage **rewards return visits** because the lead news rolls daily. Product clusters interleave between news blocks rather than sitting in a separate section. This is HfP's strongest pattern for return-visit retention.
 
-First person, conversational, capitalises full words for emphasis (`SOLELY`, `VERY generous`), discloses personal circumstances to ground analysis (`we usually fly Business Class`, `as non car-owning Londoners`). Assumes literacy in points-and-miles culture — does not lecture, does not over-define. The closest existing dubaipoints.ae piece in tone is the Skywards Infinite review; this is the intended voice and we have a live anchor.
+### OMAAT — single-voice news river with stats-brag footer
+
+Sequence:
+
+1. Lede paragraph (publication description, not brand statement)
+2. Top-nav strip: News · Guides · Deals · Insights · Reviews (5 categories)
+3. Hero image + H1 (H1 is a category description, not a brand statement)
+4. **Featured Posts** — 3 bullets of currently-hot deal posts (not evergreen)
+5. Recent OMAAT Articles — main news river, ~10 cards, **all bylined Ben Schlappig**
+6. **Featured Credit Card** mid-river block (product cluster, similar to HfP idea)
+7. Latest Trip Reports — separate H2 river of long-form trip reports
+8. Credit-card sidebar — 4 cards stacked
+9. Browse the Archives — `<select>` dropdown of every airline / airport / aircraft / bank / country / hotel / programme
+10. **"Meet Ben, OMAAT Founder" stats block** — `5,883,136 Miles Traveled · 43,914,800 Words Written · 47,187 Posts Published`
+11. Newsletter signup (Daily / Weekly / Promotions picker)
+12. YouTube channel embed
+
+Notable headline tone:
+
+> "Is The Amex Business Gold Worth $375? Probably Not For Me — Here's Why"
+> "Review: Rosewood Bangkok, Thailand (Solid, Second Tier Luxury City Hotel)"
+
+**Opinion in the headline.** Opposite of HfP's neutral-question SEO headlines. Trades search discovery for click-confidence.
+
+### "No ghostwriters or AI" footer line
+
+OMAAT's footer carries:
+
+> 43,914,800 Words Written — **I write all my own content; there are no ghostwriters or AI at OMAAT!**
+
+This is a brand-positioning statement worth flagging. Dubaipoints.ae's Charter bans AI-generated photography but is silent on AI-prose. Worth a Council discussion: as the AI-content question grows, OMAAT's loud "no ghostwriters or AI" stance becomes a stronger trust signal. The Standards Editor could draft an equivalent line.
+
+---
+
+## Card-review template — four-site comparison
+
+### Master spine (in document order, by site)
+
+| Stage | HfP | UP | TPG | OMAAT |
+|---|---|---|---|---|
+| **Pre-prose chrome** | Date + byline + comment-count + category + share | Advertiser banner + card art + Welcome offer + Apply CTA + U.P. star rating + 4 fact tiles | Ad strip + breadcrumb + H1 + **3-author panel with headshots + bios** + date + read-time + 4 fact tiles + Jump-to-section | **Card-spec hero card** (name, bonus, fee, 3 earn-rate bullets, star rating, comment-count, share row) |
+| **Lede** | Bolded thesis + devil's advocate counter + repeated special-offer callout | Two-paragraph summary | Single-paragraph use-case intro | Two-paragraph thesis ("**no-brainer, if eligible**") + tiny TOC |
+| **H2 style** | **Question form** ("What is the annual fee?") | **Question form** (`Is It Worth It?`) + statements (`Pros & Cons`) | **Statement form** (`Welcome offer`, `Earning points`) | **Statement form** with card name repeated each time + final flip to question (`Is the Chase Sapphire Reserve worth it?`) |
+| **Pros/cons** | 2-column markdown table | Two H3-led bulleted lists side-by-side | 2-column markdown table | **None — uses "Showdown:" prose-bullet comparisons** |
+| **"Value to me" pattern** | **Per-benefit `Value to me: £X` line** with explicit reasoning | Specific dollar values inline per benefit (not personal valuation) | Inline editor-voice with TPG points-valuation data hub linked | **Personal valuation + per-category % return** ("I value points at 1.7 cents, so 8x = 13.6% return") |
+| **Bottom line** | `## Conclusion` with math sum | `## [Card] — Is It Worth It?` H2 | `## Bottom line` H2 | `## Is the Chase Sapphire Reserve worth it?` then `## Bottom line` |
+| **Affiliate disclosure** | FCA paragraph, italic, end of article | Banner modal + inline "Compensation may impact placement…" paragraph above the rating | Multi-paragraph disclosure under fact tiles + per-link tooltip | **Indirectly via "Learn about OMAAT Star Ratings" link** — disclosure URL referenced only, no inline FTC paragraph above the fold |
+| **Comments** | **109 threaded WordPress comments with Gravatar avatars**, author replies inline | None visible (reCAPTCHA at bottom) | **Beta comments** + structured cardholder-survey ratings (`4.7/5 from 19 reviews` with sub-ratings) | **23 threaded comments** with Most Recent / Oldest / Most Helpful sort + Helpful voting per comment |
+
+### Signature patterns — one per site
+
+#### HfP — "Value to me: £X"
+Every H3 benefit ends with `Value to me: £X` and explicit reasoning. Conclusion sums them to a single number. Reader can re-do the math with their own inputs. Voice: editorial-honest, admits "I rarely use Priority Pass because I have BA status." See `raw/hfp-amex-platinum-review.md`.
+
+#### UP — Inline editor quote + "Great Card If / Don't Get If"
+Inline blockquote with attribution to a named UP staffer:
+> "It doesn't take much to justify the $95 annual fee since that breaks down to **under $8 per month**…"
+> — Stella Shon, compliance editor and content contributor
+
+Plus mirrored fit-criteria lists:
+> ## Great Card If
+> - You want a card that offers flexible redemption options
+> …
+> ## Don't Get If
+> - You seldom eat out and prefer cooking at home
+> …
+
+Multi-voice editorial, fit/no-fit framing. See `raw/upgradedpoints-csp-review.md`.
+
+#### TPG — Multi-byline panel + Jump-to-section
+Three named contributors with headshots + bios above the H1, including a **"Reviewed By"** label for the compliance associate. Then a Jump-to-section anchor list rendered client-side from the article's H2s. Sticky chrome confirmed. See `raw/tpg-csp-review.md`.
+
+#### OMAAT — Card-spec hero + personal % return
+Card-spec hero card replaces any prose lede. Then the article quantifies benefits as percentage returns derived from a stated points valuation:
+
+> Personally, I value Ultimate Rewards points at 1.7 cents each, so to me, the points are worth $2,550.
+> Earning 8x points at 1.7 cents each, to me that's the equivalent of a **13.6% return** on travel spending.
+
+The inverse of HfP's tabular "Value to me" — same intent, prose-and-percent form. See `raw/omaat-csr-review.md`.
 
 ### Image rhythm
 
-Three images in the Amex Platinum review body (a ~5000-word piece), placed at natural H2/H3 breakpoints. Format: 500×333 webp. **No captions, no inline credits.** This is looser than dubaipoints.ae's `Image courtesy of Emirates Media Centre` convention; HfP's interpretation of editorial-use rests on the same press-library logic but without the visible attribution line.
+| Site | Images per review | Captions | Credits | Notes |
+|---|---|---|---|---|
+| HfP | ~3 in a 5000-word piece | None | None inline | Press-library, looser than our convention |
+| UP | Multiple (not measured) | None | None inline | Stock + own |
+| TPG | Multiple | Brand attribution beneath, uppercase | Yes — `THE POINTS GUY` / `CHASE` / `GETTY IMAGES` / `WESTEND61/GETTY IMAGES` | Most rigorous of the four |
+| OMAAT | **~14 article images** | **Yes — every image** (5–10 words, assertive, often restates benefit) | None | One image per H2 + extras inside long H3s |
 
-For dubaipoints.ae the visible attribution is non-negotiable per the 2026-05-21 Charter amendment, so we will look more rigorous than HfP on credits — a small differentiator worth keeping.
+Dubaipoints.ae's Charter 2026-05-21 amendment requires a visible credit line on every press-library image. **We are stricter than HfP, UP, and OMAAT — and at least as rigorous as TPG.** This is a real differentiator; keep it visible.
 
-### Engagement layer
+### Engagement signals
 
-Comments are first-class. 109 on a single review, threaded, author replies inline. Comment count is visible at the top of the article AND in the homepage card. This is a flywheel that dubaipoints.ae does not currently have. Implementing comments is a separate engineering decision (Cloudflare Pages + Astro doesn't ship with comments by default — would need Disqus / utterances / a serverless write-API). Worth a Technical Lead memo.
+| Site | Sample engagement on the scraped review |
+|---|---|
+| HfP — Amex Platinum | **109 threaded comments**, Gravatar avatars, author replies, comments visible on homepage card |
+| UP — Chase Sapphire Preferred | No comments section visible |
+| TPG — Chase Sapphire Preferred | **Beta comments** + structured cardholder rating: `4.7/5 from 19 reviews`, 4 sub-ratings (Welcome bonus / Rewards / Additional perks / Customer service), distribution bars |
+| OMAAT — Chase Sapphire Reserve | **23 threaded comments**, sort by Most Recent / Oldest / Most Helpful, per-comment Helpful voting |
 
----
-
-## The Points Guy (TPG) — partial teardown
-
-### Brand design tokens
-
-From `/scrape branding` against `https://thepointsguy.com`:
-
-- **Body font**: Poppins
-- **Heading font**: Sora (also Lexend in fallback stack)
-- **Primary colour**: `#146AFF` (electric blue) — used for primary CTA and accent
-- **Secondary colour**: `#29836B` (deep green) — limited use
-- **Text primary**: `#162433` (almost-black navy)
-- **Background**: `#FFFFFF`
-- **Buttons**: 9999px border-radius (full pill). Primary blue, secondary white-on-navy outline.
-- **Card border-radius**: 16px
-- **Design framework**: Tailwind (confirmed)
-- **Personality**: professional / medium energy / travel enthusiasts
-
-Note: the Firecrawl `fontSizes` extraction reports `h1: 56px, h2: 12px, body: 12px` for TPG — the h2/body extraction is clearly an artefact (likely captured a small metadata label, not the actual body type). Worth re-running with a different selector strategy if precise typography matters. The 56px h1 is plausible for the homepage hero.
-
-### Homepage architecture (from markdown scrape)
-
-TPG opens with a row of **quick-link tiles** — icon+text cells with 160×160 thumbnails, each linking to a tool or campaign:
-
-- "Explore businesses worth the trip" (Capital One Business campaign — sponsored)
-- "TSA wait times" (live tool)
-- "Join us on Substack" (newsletter funnel)
-- "Protect your points" (advocacy campaign)
-- "Top credit cards" (card finder)
-- "The Business Brief" (newsletter funnel)
-
-This **pre-content navigation strip** is a strong UX pattern: it gives high-intent users (deal hunters, card seekers) a one-click path to the right destination before they see any editorial content. Dubaipoints.ae's "Salary-transfer tracker" and "Top card deals" links in the top nav are a basic version of this; TPG goes further with visual tiles.
-
-### Quick-link strip — sponsored placement transparency
-
-The first tile (Capital One Business — "Explore businesses worth the trip") is sponsored content placed in the same visual treatment as editorial tiles. **There is no visible "Sponsored" label in the markdown.** This is the kind of placement the Charter's "no advertorial-driven recommendations at launch" stance is built against; TPG is at a different point in its lifecycle and depends on these placements for revenue. Worth a Standards Editor note: when affiliate eventually enters dubaipoints.ae, sponsored content must visibly differ from editorial. TPG is the cautionary tale, not the model.
-
----
-
-## Upgraded Points (UP) — partial teardown
-
-### Brand design tokens
-
-From `/scrape branding` against `https://upgradedpoints.com`:
-
-- **Font**: Sofia Pro (single family, used for body and heading)
-- **Primary colour**: `#003458` (deep navy) — primary brand
-- **Accent colour**: `#25A773` (CTA green) — primary CTA buttons
-- **Secondary border colour**: `#F7941E` (orange) — pill-button outline
-- **Text primary**: `#083865` (deep navy, slightly lighter than primary)
-- **Background**: `#FFFFFF`
-- **Typography hierarchy**: H1 36px, H2 30px, body 16px — clean, scaled, **not the dramatic clamp of headlines you see at TPG**. Tighter, more publication-feeling.
-- **Card border-radius**: 10px
-- **Button border-radius**: 5px (primary), 9999px (secondary pill)
-- **Secondary button shadow**: `rgba(247, 148, 30, 0.15) 0px 10px 20px 1px` — a subtle orange-tinted glow under the pill secondary button. Detail-oriented design.
-- **Design framework**: Gatsby (custom CSS, not a major framework)
-
-### Homepage architecture (H2 sequence)
-
-In document order:
-
-1. **Advertiser Disclosure** (collapsible/modal banner) — opens with the full disclosure, has a Close button
-2. **Hero — "Our Readers Travel Like They Never Thought Possible..."** — three positioning bullets and three rotating photos (premium business class seat, woman with ocean view, infinity pool)
-3. **"Upgrade Your Travel"** — guide categories
-4. **"Latest News"** — news river
-5. **"Latest Credit Card Guides"** — card-content cluster
-6. **"Travel Hub"** — travel-content cluster
-7. **"Explore Our Top Content"** — most-popular surfacing
-8. **"As seen in"** — press-logo strip (social proof)
-9. **"Meet the Team"** — bylines / faces (E-E-A-T signal)
-10. **"How We Work"** — editorial process transparency
-11. **"Editorial Disclosure"** — long-form policy
-12. **"Disclaimer"** — regulatory
-
-### Editorial-trust scaffolding
-
-This is UP's biggest single differentiator vs. HfP. The homepage **literally ends with editorial policy**. Three of the last four sections are trust signals: As seen in / Meet the Team / How We Work / Editorial Disclosure / Disclaimer. By the time a reader scrolls to the footer, they've been shown the press strip, the byline faces, the methodology, and the legal language.
-
-For dubaipoints.ae: the current homepage has a thinner trust layer. A "Meet the Team" + "How We Work" + "Editorial Disclosure" stack on the homepage would directly address Charter §10 (editorial standards) at the surface, not just in policy files. This is high-value, low-engineering work.
-
-### Hero pattern
-
-UP's hero ("Our Readers Travel Like They Never Thought Possible...") leads with **audience benefit, not site identity**. Three short positioning bullets follow:
-
-> - Simplifying travel and credit cards. Our expertise makes affordable, unforgettable travel experiences a reality.
-> - We're travelers first. Our team has decades of travel and points expertise.
-> - We've got you covered. Latest updates across major cards, airlines, hotels, deals and more.
-
-Three photos rotate behind the text. The format is **claim → proof → coverage**, in that order. Dubaipoints.ae's current homepage opens with a directory-style structure; the UP pattern is more conversion-led and might suit a "what is this site?" first-visit reader better.
-
-### Advertiser disclosure modality
-
-UP shows the disclosure as a dismissable banner above the fold ("Advertiser Disclosure" + the full text + a Close button). It is **explicit and prominent** — a reader cannot miss it on first visit. For dubaipoints.ae the Charter currently bans affiliate-driven recommendations; if/when that changes, the UP modal is the model for compliance.
-
----
-
-## One Mile at a Time (OMAAT) — not scraped
-
-OMAAT was named in the handoff as the homepage style reference (`onemileatatime.com`). The site was not scraped in this pass due to quota discipline — TPG, UP, and HfP gave us higher-value first-pass coverage for the time invested. Next pass should:
-
-- `firecrawl_scrape` of `https://onemileatatime.com` (markdown + branding)
-- `firecrawl_scrape` of one OMAAT card review (Chase Sapphire Preferred or Amex Platinum US)
-
-The user has previously asked Head of UX to "study analyse" OMAAT and only got a partial response. Closing that gap is the explicit next deliverable.
+HfP's comment-engagement model is the highest-flywheel option. OMAAT's "Helpful" voting + multiple sort orders is the most polished moderation UX. TPG's structured survey is the most data-rich but requires a survey base we don't have.
 
 ---
 
 ## Synthesis — patterns to adopt, ranked by impact
 
-The following patterns are recommended for adoption, ranked by likely impact on dubaipoints.ae's editorial quality and reader value. Each is one-line justified; concrete implementation belongs in a follow-on UX brief, not this dossier.
-
 ### Tier A — adopt now, low engineering cost
 
-1. **"Value to me: AED X" pattern in every card review.** HfP's signature move; turns the benefits list into transparent math; reader can re-do the calculation with their own inputs. Easy MDX convention, no schema change.
-2. **H2-as-question** in card reviews — `What is the annual fee?`, `Can I get the sign-up bonus if I already hold X?`. Every H2 doubles as an SEO query target and a scannable signpost. Low effort, high mobile-readability win.
-3. **Special-offer callout repeated at top and end** of time-limited reviews. Bolded paragraph, no special box. We have the typography (`.dp-prose` is already strong); this is a copy-and-paragraph-style convention, not a new component.
-4. **APR / fee-disclosure as bold-inline**, not as a sidebar widget. HfP and dubaipoints.ae both already treat fees as factual content; reinforcing this matches reader expectation.
-5. **Visible image credit line under every press-library image** (already Charter §10 mandated). We are stricter than HfP on this. Keep the differentiator visible.
+1. **Top-of-article fact-tile strip** (UP + TPG signature) — `Welcome Offer / Annual Fee / APR / Min Salary / Credit Recommended` as 4–5 tiles above the fold. Single highest-density piece of information per article; turns scroll-to-find into scan-to-decide. Small Astro component, big payoff.
+2. **Inline `Value to me: AED X` after every H3 benefit** (HfP signature) + a conclusion that sums the math. Adapts directly to AED. Pure MDX convention, no schema change.
+3. **"Great Card If / Don't Get If" mirrored lists** (UP signature) — fit/no-fit framing above the deep-dive sections. Editorial-honesty signal; pure MDX content.
+4. **Per-image inline caption discipline** (OMAAT pattern) — every article image carries one short assertive caption. Combined with our visible-credit-line rule, this strengthens the editorial-magazine read.
+5. **Image-credit line beneath every press-library image** — *already Charter §10 mandated*. We are stricter than three of four competitors. Keep the differentiator visible.
+6. **Statement H2s for the spine, question H2 for the verdict** (OMAAT model with our voice) — six-section spine (Bonus & Fees → Earning → Redemption → Lounge / Perks → Benefits → "Is it worth it?" → Bottom line). Reject OMAAT's card-name-in-every-H2 pattern (SEO-spammy).
+7. **Repeated special-offer callout** (HfP signature) — bolded paragraph at top AND end of any time-limited review. Pure typography, no new component.
 
 ### Tier B — adopt soon, moderate engineering cost
 
-6. **Quick-link tile strip on the homepage** (TPG model) — icon+text cells linking to Salary-transfer tracker, Top card deals, Newsletter, etc. Visually distinct from the editorial directory below. New homepage component.
-7. **"Meet the Team" + "How We Work" + "Editorial Disclosure" stack on the homepage** (UP model) — closes the trust layer at the surface, not just in policy files. Three new homepage sections, all static content.
-8. **Press-logo strip ("As seen in") when we have placements to credit.** Dormant until we have placements. Worth pre-building the slot.
-9. **Subject-clustered content shelves on the homepage** (HfP model) — e.g. "The Skywards Infinite", "Salary-transfer offers this week" — four-card grids interleaved between news. Replaces the current flat directory grid.
-10. **Threaded comments under reviews** (HfP's flywheel) — engineering decision required; Astro+Cloudflare Pages doesn't ship comments by default. Technical Lead memo needed for build/buy.
+8. **Jump-to-section sticky chrome** (TPG signature) — small Astro/Preact island that reads H2s and renders a sticky anchor list on desktop, collapsible pill on mobile. The handoff already named this as a wanted feature; we now have the rationale.
+9. **Quick-link tile strip on the homepage** (TPG model, sponsored-tile rejection) — icon+text cells linking to Salary-transfer tracker, Top card deals, Newsletter, etc. New homepage component.
+10. **Trust-stack on the homepage** (UP model) — "Meet the Team" + "How We Work" + "Editorial Disclosure" as the last three sections. Closes the trust layer at the surface, not just in policy files.
+11. **Press-logo strip ("As seen in")** — dormant slot until we have placements. Pre-build the component.
+12. **Subject-clustered shelves on the homepage** (HfP model) — interleave product-anchored 4-card grids ("The Skywards Infinite", "Salary-transfer offers this week") between news blocks. Replaces the current flat directory grid.
+13. **Threaded comments under reviews** (HfP / OMAAT flywheel) — engineering decision required; Astro+Cloudflare Pages doesn't ship comments by default. Technical Lead memo needed for build/buy. OMAAT's Most Recent / Most Helpful sort + Helpful voting is the polished reference. **Standards Editor + Chairman must approve moderation policy first.**
+14. **Inline editor quote with named attribution** (UP signature) — low-cost trust upgrade once we have ≥2 named editors on the masthead. Convention not infrastructure.
+15. **"No AI prose" editorial-policy stance** (OMAAT signature) — Standards Editor + Chairman discussion. If adopted, the line goes in `01_editorial_standards.md` and surfaces in the trust page.
 
 ### Tier C — adopt when affiliate enters
 
-11. **Advertiser-disclosure modal banner** (UP model) — explicit, dismissable, persists across pages until first dismissed. Required when affiliate compensation enters; cosmetic until then.
-12. **Card-finder tool** ("Top credit cards — find the next best card based on your goals") — TPG's anchored funnel. Requires significant data scaffolding (we have `_features` discriminated union; would need filter UI). Major project.
+16. **Advertiser-disclosure modal banner** (UP model) — explicit, dismissable, persists until first dismissed. Required when affiliate enters.
+17. **Cardholder-survey ratings** (TPG model) — aggregate rating + 4 sub-ratings + distribution bars + verbatim cardholder quotes. Requires a newsletter base of ≥10k readers and a survey infrastructure decision.
+18. **Card-finder tool** (TPG CardMatch) — requires significant data scaffolding; we have `_features` discriminated union as foundation. Major project.
 
 ### Tier D — avoid
 
-13. **Quick-link strip with sponsored placements visually identical to editorial** (TPG's first tile — Capital One Business — has no visible Sponsored label). Charter forbids this; TPG is the cautionary tale, not the model.
+19. **Sponsored quick-link tiles indistinguishable from editorial** (TPG first tile — Capital One Business). Charter §5 forbids this.
+20. **OMAAT's affiliate-disclosure posture** — disclosure URL referenced only, no inline FTC paragraph above the fold. Charter §5 mandates inline above-the-fold disclosure.
+21. **Repeating the card name in every H2** (OMAAT SEO play) — reads poorly, contradicts house voice.
+22. **Newsletter / ad blocks interrupting prose mid-article** (TPG model) — breaks editorial flow for monetisation. Pre-affiliate the slot can carry editorial cross-promotion with the same visual treatment.
+23. **"Bottom Line" boxed callouts sprinkled inline** (UP / generic SEO pattern) — visual noise; reserve "Bottom Line" for the final H2.
 
 ---
 
 ## Raw archive
 
-- `.council/research/2026-05/raw/tpg-homepage.md` — TPG homepage, markdown, 64 KB
-- `.council/research/2026-05/raw/tpg-branding.json` — TPG branding tokens
-- `.council/research/2026-05/raw/upgradedpoints-homepage.json` — UP homepage, markdown, 50 KB
-- `.council/research/2026-05/raw/upgradedpoints-branding.json` — UP branding tokens
-- `.council/research/2026-05/raw/hfp-homepage.md` — HfP homepage notes
-- `.council/research/2026-05/raw/hfp-amex-platinum-review.md` — HfP Amex Platinum review with annotations
+| File | Bytes | Notes |
+|---|---|---|
+| `raw/tpg-homepage.md` | ~64 KB | TPG homepage markdown |
+| `raw/tpg-branding.json` | ~1.4 KB | TPG design tokens |
+| `raw/tpg-csp-review.md` | ~9 KB | TPG Chase Sapphire Preferred review template extraction |
+| `raw/upgradedpoints-homepage.json` | ~50 KB | UP homepage markdown |
+| `raw/upgradedpoints-branding.json` | ~1.4 KB | UP design tokens |
+| `raw/upgradedpoints-csp-review.md` | ~7 KB | UP Chase Sapphire Preferred review template extraction |
+| `raw/hfp-homepage.md` | ~3 KB | HfP homepage notes |
+| `raw/hfp-amex-platinum-review.md` | ~6 KB | HfP Amex Platinum review with annotations |
+| `raw/omaat-homepage.md` | ~6 KB | OMAAT homepage observations |
+| `raw/omaat-branding.json` | ~1.5 KB | OMAAT design tokens |
+| `raw/omaat-csr-review.json` | ~67 KB | Raw Firecrawl JSON of OMAAT Chase Sapphire Reserve review (too large for direct context) |
+| `raw/omaat-csr-review.md` | ~14 KB | Subagent-extracted template patterns + adopt/reject recommendations |
 
 All files traceable to Firecrawl scrape ID + source URL + date sourced.
 
@@ -252,12 +264,12 @@ All files traceable to Firecrawl scrape ID + source URL + date sourced.
 
 ## What this dossier does not yet contain
 
-- OMAAT homepage and card-review patterns (highest gap — handoff named OMAAT as the homepage reference).
-- TPG card-review template (we have homepage structure and branding; review template is the unscraped half).
-- UP card-review template (same — homepage and tokens captured, review template open).
-- Footer architecture across all four sites (we touched on UP's editorial-disclosure footer pattern; full comparison pending).
-- Sticky chrome behaviour (Jump-to-Section nav, reading-progress bar, share buttons) — requires JS-rendered observation, which Firecrawl can do with `waitFor` and screenshot formats. Not run in this pass.
+- **Sticky-chrome behaviour observation** (Jump-to-Section nav, reading-progress bar, share button) — Firecrawl markdown can't see client-side rendered sticky elements; would need `waitFor` + screenshot formats. The TPG `Jump to section` label is present in markdown but the anchor list itself is JS-rendered.
+- **Footer architecture comparison** — partial (we have UP's trust-footer stack and OMAAT's stats-brag). HfP and TPG footers not specifically analysed.
+- **Newsletter and post-conversion funnels** — visible in scrapes but not analysed comparatively.
+- **Mobile-specific layouts** — Firecrawl scrapes the desktop rendering by default.
+- **NerdWallet** — named in the handoff as a card-finder UX reference, deferred since the present scope already covers card reviews and homepage rebuilds. Worth a separate one-page teardown when Tier-C #18 (card-finder tool) becomes active scope.
 
-**Recommendation for next session:** spend 5–6 more Firecrawl credits to close OMAAT and the three missing card reviews, then this becomes a complete-enough teardown to drive the Phase 2a.2.5 brief and the homepage rebuild brief without further research-side blockers.
+**Recommendation for next session:** Hand this dossier to Head of UX to draft the Phase 2a.2.5 brief (Hot Tips + Jump-to-Section + fact-tile strip + Value to me convention). The fact-tile strip alone is worth a Phase 2a.2.6 brief in parallel — it is the single highest-leverage pattern in the dossier and is independent of the sticky-chrome work.
 
 End.

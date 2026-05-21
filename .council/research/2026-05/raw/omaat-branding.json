@@ -1,0 +1,55 @@
+{
+  "_source": "Firecrawl /scrape branding format",
+  "_url": "https://onemileatatime.com",
+  "_dateSourced": "2026-05-21",
+  "_indexId": "a87c5457-b2f2-46ce-a53a-b01564c14885",
+  "branding": {
+    "colorScheme": "light",
+    "fonts": [
+      { "family": "SharpGrotesk Book 19", "role": "body" },
+      { "family": "SharpGrotesk Book 23", "role": "heading" }
+    ],
+    "colors": {
+      "primary": "#FFB71B",
+      "secondary": "#DAE1E9",
+      "accent": "#FFB71B",
+      "background": "#F4F6F8",
+      "textPrimary": "#021D49",
+      "link": "#021D49"
+    },
+    "typography": {
+      "fontFamilies": {
+        "primary": "SharpGrotesk Book 19",
+        "heading": "SharpGrotesk Book 23"
+      },
+      "fontSizes": { "h1": "36px", "h2": "30.02px", "body": "15.2px" }
+    },
+    "spacing": { "baseUnit": 4, "borderRadius": "4px" },
+    "components": {
+      "buttonPrimary": {
+        "background": "#FFB71B",
+        "textColor": "#FFFFFF",
+        "borderColor": "#FFB71B",
+        "borderRadius": "0px"
+      },
+      "buttonSecondary": {
+        "background": "#021D49",
+        "textColor": "#FFFFFF",
+        "borderRadius": "0px"
+      }
+    },
+    "personality": {
+      "tone": "professional",
+      "energy": "medium",
+      "targetAudience": "frequent travelers and credit card users"
+    },
+    "designSystem": { "framework": "bootstrap" }
+  },
+  "_observations": [
+    "SharpGrotesk is a paid commercial typeface (Sharp Type) — premium-print signal vs. Google-Fonts-default rest of competitor set",
+    "0px border-radius across all components — explicitly sharp, journalism-magazine aesthetic, opposite of HfP/UP's rounded buttons and TPG's full pills",
+    "Background is #F4F6F8 (cool off-white) not pure #FFFFFF — slight tint reads as paper rather than glare",
+    "Primary CTA is #FFB71B (gold-orange) — sits in the warm-accent / luxury-finance register, similar to dubaipoints.ae's --gold but more saturated",
+    "Text colour #021D49 is a very dark navy — high contrast against the off-white background, formal feel"
+  ]
+}
