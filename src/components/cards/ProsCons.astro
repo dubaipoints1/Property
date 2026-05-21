@@ -80,7 +80,7 @@ const render = hasPros || hasCons;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0;
-    margin: 24px 0 32px;
+    margin: 32px 0 40px;
     border: 1px solid var(--line);
     background: var(--paper);
   }
@@ -126,7 +126,7 @@ const render = hasPros || hasCons;
     text-wrap: pretty;
   }
   @media (max-width: 719.98px) {
-    .dp-proscons-v2 { grid-template-columns: 1fr; }
+    .dp-proscons-v2 { grid-template-columns: 1fr; margin: 24px 0 32px; }
     .dp-proscons-v2-col.is-pros {
       border-right: none;
       border-bottom: 1px solid var(--line);

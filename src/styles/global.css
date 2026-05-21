@@ -440,12 +440,15 @@ img { display: block; max-width: 100%; }
    `dp-proscons-v2` to find the component's CSS. */
 
 /* Section heading inside an article */
-.dp-article-section { margin-block: 32px; }
+.dp-article-section { margin-block: 48px; }
 .dp-article-section > h2 {
   font-family: 'Fraunces', serif; font-weight: 500;
   font-size: clamp(20px, 3vw, 26px);
   letter-spacing: -0.4px; color: var(--ink);
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+}
+@media (max-width: 719.98px) {
+  .dp-article-section { margin-block: 36px; }
 }
 .dp-article-section > h3 {
   font-family: 'Fraunces', serif; font-weight: 500;
@@ -534,18 +537,25 @@ img { display: block; max-width: 100%; }
   font-family: 'Fraunces', serif; font-weight: 500;
   font-size: clamp(20px, 3vw, 26px);
   letter-spacing: -0.4px; color: var(--ink);
-  margin: 28px 0 12px;
+  margin: 48px 0 16px;
 }
+@media (max-width: 719.98px) {
+  .dp-prose h2 { margin: 36px 0 14px; }
+}
+.dp-prose h2:first-child { margin-top: 0; }
 .dp-prose h3 {
   font-family: 'Fraunces', serif; font-weight: 500;
   font-size: 18px; letter-spacing: -0.2px; color: var(--ink);
   margin: 24px 0 10px;
 }
-.dp-prose p { margin-bottom: 14px; text-wrap: pretty; }
-.dp-prose ul, .dp-prose ol {
-  margin: 0 0 14px; padding-left: 22px;
+.dp-prose p { margin-bottom: 18px; text-wrap: pretty; }
+@media (max-width: 719.98px) {
+  .dp-prose p { margin-bottom: 16px; }
 }
-.dp-prose ul li, .dp-prose ol li { margin-bottom: 6px; }
+.dp-prose ul, .dp-prose ol {
+  margin: 0 0 24px; padding-left: 22px;
+}
+.dp-prose ul li, .dp-prose ol li { margin-bottom: 8px; line-height: 1.65; }
 .dp-prose strong { color: var(--ink); font-weight: 600; }
 .dp-prose a {
   color: var(--ink); font-weight: 600;
@@ -2513,7 +2523,7 @@ img { display: block; max-width: 100%; }
    5-subsection × 2–3-bullet block into 5 dt/dd paragraph-style pairs.
    Tokens only: --ink, --ink (body), --green (link). */
 .dp-conditions {
-  margin: 16px 0 24px;
+  margin: 28px 0 32px;
   display: grid;
   gap: 14px;
   font-family: "DM Sans", system-ui, sans-serif;
@@ -2538,7 +2548,7 @@ img { display: block; max-width: 100%; }
   border-bottom: 1px solid currentColor;
 }
 @media (max-width: 719.98px) {
-  .dp-conditions { gap: 12px; }
+  .dp-conditions { margin: 24px 0 28px; gap: 12px; }
   .dp-conditions dt { font-size: 12px; }
   .dp-conditions dd { font-size: 13.5px; line-height: 1.5; }
 }

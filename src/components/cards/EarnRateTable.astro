@@ -120,7 +120,7 @@ const unitLabel = earnUnit ?? "per AED 1 spent";
   }
 
   .dp-earn-table {
-    margin: 0;
+    margin: 24px 0 40px;
     padding: 0;
     display: grid;
     gap: 0;
@@ -157,5 +157,8 @@ const unitLabel = earnUnit ?? "per AED 1 spent";
   .dp-earn-table .row.is-top dd {
     color: var(--green);
     font-weight: 700;
+  }
+  @media (max-width: 719.98px) {
+    .dp-earn-table { margin: 20px 0 32px; }
   }
 </style>

@@ -78,6 +78,23 @@ const cards = defineCollection({
     scores: ScoreDimensions.optional(),
     applyIf: z.string().max(120).optional(),
     skipIf: z.string().max(120).optional(),
+
+    // ── Phase 2a.2.4 (2026-05-21) — Hero photograph ────────────────────
+    // Optional licensed editorial photo above the card-review body.
+    // `src` is a filename in `src/assets/cards/library/` (the per-image
+    // licensing register lives in that directory's LIBRARY.md). The
+    // `<HeroImage />` component resolves the filename at build time
+    // and hands the resolved metadata to Astro's <Image> optimiser.
+    heroImage: z
+      .object({
+        src: z
+          .string()
+          .regex(/^[a-z0-9-]+\.(jpg|jpeg|png|webp|avif)$/i, "must be a library filename"),
+        alt: z.string().min(8).max(140),
+        caption: z.string().max(120).optional(),
+        credit: z.string().max(80).optional(),
+      })
+      .optional(),
   }),
 });
 

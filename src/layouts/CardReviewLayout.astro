@@ -18,6 +18,7 @@
 import BaseLayout from "./BaseLayout.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
 import StockImage from "~/components/StockImage.astro";
+import HeroImage from "~/components/cards/HeroImage.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
 
 interface Props {
@@ -45,6 +46,16 @@ interface Props {
   verifiedBy?: string;
   sources: string[];
   deck?: string;
+  /** Optional licensed editorial hero photo, rendered between the navy
+   * hero band and the body grid. Schema matches `cards` collection
+   * `heroImage` field; the filename resolves against
+   * `src/assets/cards/library/`. */
+  heroImage?: {
+    src: string;
+    alt: string;
+    caption?: string;
+    credit?: string;
+  };
 }
 
 const {
@@ -74,6 +85,7 @@ const {
   verifiedBy = "DubaiPoints Editorial",
   sources,
   deck,
+  heroImage,
 } = Astro.props;
 
 const fmt = (d: Date) =>
@@ -174,6 +186,12 @@ const hasPhoto = stockSlug ? hasStockEntry(stockSlug) : false;
       )}
     </div>
   </header>
+
+  {heroImage && (
+    <div class="dp-cr-hero-photo-wrap">
+      <HeroImage {...heroImage} />
+    </div>
+  )}
 
   <!-- Body grid: prose + sticky sidebar -->
   <div class="dp-cr-body-grid">

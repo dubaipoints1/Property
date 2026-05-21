@@ -1,0 +1,93 @@
+---
+// SectionBreak — Phase 2a.2.4 (2026-05-21).
+// Inline photographic break placed inside card-review MDX bodies to
+// create visual rhythm between major prose blocks. Uses the same
+// `src/assets/cards/library/` resolution pattern as HeroImage.
+//
+// Aspect ratio: 21:9 desktop (cinematic, low vertical weight),
+// 16:9 mobile (the 21:9 letterbox is too short on 360px viewports).
+// Loading: lazy + async — these never sit above the fold.
+//
+// `alt` defaults to `caption` when the prop is omitted: in editorial
+// practice the caption is almost always a fair alt; this saves the
+// MDX-author from duplicating the string by hand. Standards Editor
+// owns the library entries and is responsible for the caption-as-alt
+// being descriptive enough.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  image: string;
+  caption: string;
+  credit: string;
+  alt?: string;
+}
+
+const { image, caption, credit, alt } = Astro.props;
+const altText = alt ?? caption;
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/cards/library/*.{jpg,jpeg,png,webp,avif}",
+);
+const importer = images[`/src/assets/cards/library/${image}`];
+if (!importer) {
+  throw new Error(
+    `<SectionBreak />: ${image} not found in /src/assets/cards/library/. ` +
+      `Add the file to the library or check the filename.`,
+  );
+}
+const { default: resolved } = await importer();
+---
+
+<figure class="dp-section-break">
+  <Image
+    src={resolved}
+    alt={altText}
+    widths={[480, 720, 1080, 1440]}
+    sizes="(max-width: 720px) 100vw, 680px"
+    loading="lazy"
+    decoding="async"
+    class="dp-section-break-img"
+  />
+  <figcaption class="dp-section-break-attr">
+    <span class="cap">{caption}</span>
+    <span class="sep" aria-hidden="true">·</span>
+    <span class="cred">{credit}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .dp-section-break {
+    margin: 40px auto;
+    max-width: 100%;
+  }
+  .dp-section-break-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 21 / 9;
+    object-fit: cover;
+    border-radius: 0;
+  }
+  .dp-section-break-attr {
+    margin-top: 10px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ink-soft);
+    text-wrap: balance;
+  }
+  .dp-section-break-attr .cap { font-weight: 500; }
+  .dp-section-break-attr .sep { padding: 0 6px; color: var(--line); }
+  .dp-section-break-attr .cred {
+    font-weight: 400;
+    color: var(--muted);
+    font-style: italic;
+  }
+  @media (max-width: 719.98px) {
+    .dp-section-break { margin: 32px auto; }
+    .dp-section-break-img { aspect-ratio: 16 / 9; }
+    .dp-section-break-attr { font-size: 10px; }
+    .dp-section-break-attr .cred { font-size: 9px; }
+  }
+</style>
