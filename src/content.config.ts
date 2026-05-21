@@ -79,6 +79,17 @@ const cards = defineCollection({
     applyIf: z.string().max(120).optional(),
     skipIf: z.string().max(120).optional(),
 
+    // ── Phase 2a.2.5 (2026-05-21) — Key takeaways ──────────────────────
+    // 2–4 short bullets surfaced by <KeyTakeaways /> near the top of the
+    // card review. Modelled on Upgraded Points' "Key Takeaways" pattern:
+    // the reader who only reads the first screen still leaves with the
+    // headline judgement, the headline figure, and the headline caveat.
+    keyTakeaways: z
+      .array(z.string().min(8).max(140))
+      .min(2)
+      .max(4)
+      .optional(),
+
     // ── Phase 2a.2.4 (2026-05-21) — Hero photograph ────────────────────
     // Optional licensed editorial photo above the card-review body.
     // `src` is a filename in `src/assets/cards/library/` (the per-image

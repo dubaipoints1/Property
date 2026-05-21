@@ -1,0 +1,73 @@
+---
+// HotTip — inline editorial-aside callout for points-and-miles tactics.
+//
+// Phase 2a.2.5 (2026-05-21). Mirrors Upgraded Points' "Hot Tip" pattern:
+// a short, actionable tip the reader can apply, set apart from the prose
+// flow with a gold left-rule (gold is the secondary trust accent per
+// the 2026-05-09 brand-palette amendment — the only place gold ships
+// in body content).
+//
+// Children-slot based: editor writes `<HotTip>Body prose with links and
+// formatting</HotTip>` inline in MDX. Single optional `label` prop
+// overrides the default "Hot tip" eyebrow.
+//
+// Token-only, no JS hydration.
+
+interface Props {
+  /** Eyebrow label override. Defaults to "Hot tip". */
+  label?: string;
+}
+
+const { label = "Hot tip" } = Astro.props;
+---
+
+<aside class="dp-hot-tip" aria-label={label}>
+  <div class="eyebrow">{label}</div>
+  <div class="body">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .dp-hot-tip {
+    background: rgba(184, 132, 42, 0.04); /* var(--gold) at 4% */
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 4px 4px 0;
+    padding: 14px 18px 16px;
+    margin: 24px 0 28px;
+    display: grid;
+    gap: 6px;
+  }
+  .dp-hot-tip .eyebrow {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    line-height: 1.2;
+  }
+  .dp-hot-tip .body {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .dp-hot-tip .body :global(p) { margin: 0; }
+  .dp-hot-tip .body :global(p + p) { margin-top: 10px; }
+  .dp-hot-tip .body :global(a) {
+    color: var(--green);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--line);
+  }
+  .dp-hot-tip .body :global(a:hover) {
+    text-decoration-color: var(--green);
+  }
+  @media (max-width: 719.98px) {
+    .dp-hot-tip { padding: 12px 14px 14px; margin: 18px 0 22px; }
+    .dp-hot-tip .body { font-size: 14.5px; }
+  }
+</style>
