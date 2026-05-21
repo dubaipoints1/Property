@@ -181,11 +181,19 @@ Meta title patterns:
   figure carries an "(incl. VAT)" tag on the card review, AtAGlance
   tile, and comparison table.
 - **An image without a verifiable license.** No AI-generated photography
-  under any circumstances. No bank or airline marketing creative without
-  written permission referenced in
-  `src/assets/cards/library/LIBRARY.md`. Every published image carries
-  a visible credit line on the page. License type, source URL, and
-  confirmation date live in LIBRARY.md — not in JSDoc, not in
-  frontmatter, not in commit messages.
+  under any circumstances. Bank or airline imagery from a public press
+  / media library (e.g. `emirates.com/media-centre/media-library/`,
+  Etihad / Qatar / Saudia / flydubai press centres, bank press kits
+  published on issuer websites) is usable under the standard editorial-
+  publication interpretation — the library's existence on the issuer's
+  public website is the licence — provided the rendered page carries a
+  clear credit line ("Image courtesy of Emirates Media Centre" or the
+  equivalent for the issuer). LIBRARY.md records the source URL +
+  credit-line string + the date the image was sourced. Where an issuer
+  publishes terms-of-use that explicitly restrict editorial use, those
+  terms override. Takedown requests are honoured within 24 hours.
+  Every published image carries a visible credit line on the page.
+  Source URL + credit-line string + date-sourced live in LIBRARY.md —
+  not in JSDoc, not in frontmatter, not in commit messages.
 
 End.
