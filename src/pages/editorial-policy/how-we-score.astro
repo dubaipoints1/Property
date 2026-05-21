@@ -1,0 +1,63 @@
+---
+// How we score — the methodology page behind every <EditorScorecard />
+// rendered on a card review. Phase 2a.2.3 (2026-05-20).
+//
+// Body content delivered by Standards Editor, verbatim. Word count ≤500
+// per the Chairman's acceptance bar in the brief.
+
+import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+---
+
+<TrustPageLayout
+  title="How we score — DubaiPoints"
+  description="The rubric behind DubaiPoints' card-review tier badges, five dimension scores, and Apply / Skip qualifiers. AED-inclusive VAT convention explained."
+  eyebrow="Editorial Policy"
+  heading="How we score"
+  lastUpdated={new Date("2026-05-20")}
+>
+  <section>
+    <p>Every card review on dubaipoints.ae carries a tier badge, five dimension scores, and a one-line Apply / Skip pair. The rubric below is the same on every card. It is editorial judgement, not a black-box index — but the dimensions are fixed and the tier names mean what they say.</p>
+  </section>
+
+  <section>
+    <h2>The five dimensions</h2>
+
+    <p><strong>Welcome value.</strong> The AED-equivalent of the welcome bonus, net of joining fee, on the assumption the reader triggers it inside the qualifying window. A 100,000 Skywards Miles bonus values at AED 2,000 against our 2 fils-per-mile baseline; subtract the AED 3,148.95 joining fee and the headline is net AED -1,148.95 before any single Y-to-J upgrade. High scores reward bonuses that clear the joining fee at realistic spend; low scores flag bonuses that need a stretch trigger.</p>
+
+    <p><strong>Earn rate.</strong> The ongoing miles, points, or cashback per AED 1 of typical spend — partner categories, international, and domestic blended at a UAE-resident weighting. We quote in AED, never in USD, even when the bank prices in USD. High scores cluster above 1 mile per AED on partner spend; low scores fall under 0.3.</p>
+
+    <p><strong>Perks.</strong> Lounge access, hotel status, golf, cinema, concierge, valet — anything bundled at no extra fee. We weight lounge access and hotel status most, novelty perks least. High scores carry unlimited lounge access with a guest; low scores carry only token discounts.</p>
+
+    <p><strong>Fee value.</strong> Joining fee plus year-two renewal, weighed against the realistic value extracted at the audience the card targets. A high score means the card pays back at modest spend; a low score means the fee only clears at AED 100,000+ a year and bites everyone below.</p>
+
+    <p><strong>Access.</strong> Eligibility friendliness — minimum salary, salary-transfer requirement, documentation burden. A high score means a mid-market expat (AED 10,000–15,000 salary, no salary transfer required) can hold the card. A low score reserves the card for the AED 30,000+ band.</p>
+  </section>
+
+  <section>
+    <h2>The five tiers</h2>
+
+    <p><strong>Editor's Pick.</strong> The card we would open ourselves at the audience the kicker names — high scores on the dimensions that matter for that audience.</p>
+
+    <p><strong>Strong.</strong> A clear recommendation inside its segment; one or two dimensions hold it back from Editor's Pick.</p>
+
+    <p><strong>Solid.</strong> Does its job for the right reader; no single dimension is weak, none is exceptional.</p>
+
+    <p><strong>Niche.</strong> Pays back only for a narrow use case — a specific airline, a specific spend pattern, a specific lounge network.</p>
+
+    <p><strong>Skip.</strong> The fee, the earn rate, or the access bar cannot be defended against a cheaper alternative on the same shortlist.</p>
+  </section>
+
+  <section>
+    <h2>VAT convention</h2>
+    <p>Every AED figure on the site is inclusive of the UAE's 5% VAT. The reader's mental model is the credit-card statement, which carries VAT; we match it. Banks that publish fees excluding VAT — FAB's consolidated KFS, for instance — are grossed up at the data layer before we display them. Card pages tag inclusive fees "(incl. VAT)" so the convention is visible, not assumed.</p>
+  </section>
+
+  <section class="related">
+    <h3>Related</h3>
+    <ul>
+      <li><a href="/editorial-policy/">Editorial policy</a></li>
+      <li><a href="/how-we-make-money/">How we make money</a></li>
+      <li><a href="/valuations/">Points and miles valuations</a></li>
+    </ul>
+  </section>
+</TrustPageLayout>

@@ -64,7 +64,9 @@ const {
   // compatibility with existing call sites in src/pages/cards/[slug].astro,
   // but no longer consumed by the layout — see Phase 2a.2.0 (2026-05-20):
   // they are rendered by the MDX-invoked `<ProsCons />` component instead.
-  editorTake,
+  // `editorTake` is also accepted but no longer consumed — Phase 2a.2.3
+  // (2026-05-20) moved the "Editor's call" sidebar to <EditorScorecard />.
+  editorTake: _editorTake,
   category = "Cards",
   score,
   verdictLabel,
@@ -264,13 +266,12 @@ const hasPhoto = stockSlug ? hasStockEntry(stockSlug) : false;
         ) : null;
       })()}
 
-      {editorTake && (
-        <div class="dp-spec-card is-call">
-          <h4>Editor's call</h4>
-          <div class="verdict-prose">{verdictLabel ?? editorTake.split(".")[0] + "."}</div>
-          <a href="/cards/compare/" class="compare-link">Compare alternatives →</a>
-        </div>
-      )}
+      {/* Phase 2a.2.3 (2026-05-20): the layout's `.dp-spec-card.is-call`
+         block was removed — it duplicated the EditorVerdict at the top.
+         The new <EditorScorecard /> at the end of the MDX body carries
+         the tier badge + dimension scores + apply/skip qualifiers. The
+         `editorTake` prop stays on the layout interface (call sites
+         pass it) but is unused here. */}
     </aside>
   </div>
 

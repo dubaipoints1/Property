@@ -174,5 +174,11 @@ Meta title patterns:
   transition currencies (e.g. Qatar Privilege Club Qmiles instead of
   Avios).
 - An LLM-extracted typed numeric (per CLAUDE.md LLM-extraction policy).
+- **A bank fee displayed without its VAT treatment.** Site convention is
+  AED inclusive of 5% UAE VAT. Cards whose primary source publishes fees
+  excluding VAT (e.g. FAB's consolidated KFS) must be converted to the
+  inclusive figure at the data layer before display; the inclusive
+  figure carries an "(incl. VAT)" tag on the card review, AtAGlance
+  tile, and comparison table.
 
 End.

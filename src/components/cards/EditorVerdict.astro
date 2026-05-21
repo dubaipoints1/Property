@@ -22,8 +22,21 @@ interface Props {
 const { card } = Astro.props;
 
 const entry = await getEntry("cards", card);
-const raw = entry?.data?.editorTake;
-const editorTake = typeof raw === "string" ? raw.trim() : "";
+
+// Phase 2a.2.3 (2026-05-20): prefer `kicker` (1–2 sentences, ≤30 words)
+// when present; fall back to the first sentence of `editorTake`. The
+// full editorTake remains in frontmatter for SEO meta-description and
+// feed use.
+const kicker = entry?.data?.kicker;
+const rawTake = entry?.data?.editorTake;
+let body = "";
+if (typeof kicker === "string" && kicker.trim().length > 0) {
+  body = kicker.trim();
+} else if (typeof rawTake === "string" && rawTake.trim().length > 0) {
+  const raw = rawTake.trim();
+  body = raw.split(/[.!?]/)[0] + ".";
+}
+const editorTake = body;
 const render = editorTake.length > 0;
 ---
 

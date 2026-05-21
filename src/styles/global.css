@@ -2064,21 +2064,9 @@ img { display: block; max-width: 100%; }
 .dp-spec-row .v.flag { color: var(--green); }
 .dp-spec-row .v.warn { color: var(--red); }
 
-.dp-spec-card.is-call {
-  background: var(--navy); color: white; border: none;
-}
-.dp-spec-card.is-call h4 { color: rgba(155, 177, 164, 1); }
-.dp-spec-card.is-call .verdict-prose {
-  font-family: 'Fraunces', serif;
-  font-size: 18px; line-height: 1.3;
-  margin: 0 0 12px; color: white;
-}
-.dp-spec-card.is-call .compare-link {
-  font-size: 11px; opacity: 0.7;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  color: white;
-}
-.dp-spec-card.is-call .compare-link:hover { opacity: 1; }
+/* Phase 2a.2.3 (2026-05-20): `.dp-spec-card.is-call` and its children
+   were removed from the layout — replaced by <EditorScorecard /> at the
+   end of the article body. */
 
 /* ════════════════════════════════════════════════════════════════════════
    Tools template (Phase C — Claude Design handoff).

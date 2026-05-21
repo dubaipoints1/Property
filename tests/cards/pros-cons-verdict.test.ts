@@ -239,17 +239,25 @@ test("EditorVerdict contract: skywards-signature editorTake is a non-empty strin
   assert.ok(fm.editorTake!.trim().length > 0);
 });
 
-test("EditorVerdict contract: null-guard when editorTake missing or whitespace", () => {
+test("EditorVerdict contract: null-guard when kicker + editorTake both missing or whitespace", () => {
   const src = readFileSync(
     path.join(COMPONENT_DIR, "EditorVerdict.astro"),
     "utf8",
   );
-  // The render-null contract:
-  //   const raw = entry?.data?.editorTake;
-  //   const editorTake = typeof raw === "string" ? raw.trim() : "";
+  // Phase 2a.2.3 (2026-05-20) — EditorVerdict prefers `kicker`, falls
+  // back to first sentence of `editorTake`. Render-null contract:
+  //   const kicker = entry?.data?.kicker;
+  //   const rawTake = entry?.data?.editorTake;
+  //   let body = "";
+  //   if (kicker is non-empty string) body = kicker.trim();
+  //   else if (editorTake is non-empty string) body = raw.split(/[.!?]/)[0] + ".";
+  //   const editorTake = body;
   //   const render = editorTake.length > 0;
   //   {render && (<aside …/>)}
-  assert.match(src, /typeof raw === "string" \? raw\.trim\(\) : ""/);
+  assert.match(src, /const kicker = entry\?\.data\?\.kicker;/);
+  assert.match(src, /const rawTake = entry\?\.data\?\.editorTake;/);
+  assert.match(src, /body = raw\.split\(\/\[\.!\?\]\/\)\[0\] \+ "\."/);
+  assert.match(src, /const editorTake = body;/);
   assert.match(src, /const render = editorTake\.length > 0/);
   assert.match(src, /\{render && \(/);
 });

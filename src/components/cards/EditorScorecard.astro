@@ -1,0 +1,352 @@
+---
+// EditorScorecard — tier badge + five dimension stars + Apply/Skip
+// qualifiers. Renders at the END of the article body, just before
+// "## Watch out for". Replaces the layout's old `.dp-spec-card.is-call`
+// repetition.
+//
+// Phase 2a.2.3 (2026-05-20). Reads kicker scorecard fields from the
+// card's editorial MDX frontmatter via the `cards` content collection.
+// Renders `null` when none of tier / scores / applyIf / skipIf are set.
+//
+// Token-only. No JS hydration. Pure SSR markup + scoped CSS. Inline SVG
+// for stars so half-fill renders without clip-path.
+//
+// Spec source: `.council/briefs/2026-05-20-phase-2a-2-3-editor-scorecard
+// -and-vat.md`. Methodology rubric: /editorial-policy/how-we-score/.
+
+import { getEntry } from "astro:content";
+
+interface Props {
+  /** Card slug — must match an entry in the `cards` content collection. */
+  card: string;
+}
+
+const { card: slug } = Astro.props;
+
+const entry = await getEntry("cards", slug);
+if (!entry) {
+  throw new Error(`EditorScorecard: unknown card slug "${slug}"`);
+}
+
+const tier = entry.data.tier;
+const scores = entry.data.scores ?? {};
+const applyIf = entry.data.applyIf;
+const skipIf = entry.data.skipIf;
+
+const hasTier = typeof tier === "string";
+const hasScores =
+  scores.welcomeValue !== undefined ||
+  scores.earnRate !== undefined ||
+  scores.perks !== undefined ||
+  scores.feeValue !== undefined ||
+  scores.access !== undefined;
+const hasApply = typeof applyIf === "string" && applyIf.length > 0;
+const hasSkip = typeof skipIf === "string" && skipIf.length > 0;
+
+const render = hasTier || hasScores || hasApply || hasSkip;
+
+const TIER_LABELS: Record<string, string> = {
+  "editors-pick": "Editor's Pick",
+  strong: "Strong",
+  solid: "Solid",
+  niche: "Niche",
+  skip: "Skip",
+};
+
+const DIMENSION_LABELS: Array<[keyof typeof scores, string]> = [
+  ["welcomeValue", "Welcome value"],
+  ["earnRate", "Earn rate"],
+  ["perks", "Perks"],
+  ["feeValue", "Fee value"],
+  ["access", "Access"],
+];
+
+// Star meter: produce 5 stars per row, each one of "full", "half", or
+// "empty" based on `value` against star index (1..5). Half is rendered
+// as left-path filled + right-path empty so we don't need clip-path.
+function starStates(value: number): Array<"full" | "half" | "empty"> {
+  const out: Array<"full" | "half" | "empty"> = [];
+  for (let i = 1; i <= 5; i++) {
+    if (value >= i) out.push("full");
+    else if (value >= i - 0.5) out.push("half");
+    else out.push("empty");
+  }
+  return out;
+}
+
+function fmtScore(n: number): string {
+  // Drop `.0` (e.g. 4.0 -> "4"), keep half-steps ("4.5").
+  return n % 1 === 0 ? String(Math.trunc(n)) : n.toFixed(1);
+}
+
+// Visible dimension rows — preserve fixed order, skip undefined.
+const visibleRows = DIMENSION_LABELS.filter(
+  ([key]) => scores[key as keyof typeof scores] !== undefined,
+) as Array<[keyof typeof scores, string]>;
+---
+
+{render && (
+  <aside class="dp-editor-scorecard" aria-label="Editor scorecard for this card">
+    {hasTier && (
+      <div class="block tier-block">
+        <div class="eyebrow">Editor's verdict</div>
+        <div class={`tier-badge tier-${tier}`}>{TIER_LABELS[tier as string]}</div>
+      </div>
+    )}
+
+    {hasScores && (
+      <div class="block scores-block">
+        {visibleRows.map(([key, label]) => {
+          const value = scores[key as keyof typeof scores] as number;
+          const states = starStates(value);
+          return (
+            <div class="score-row">
+              <div class="row-label">{label}</div>
+              <div
+                class="star-meter"
+                role="img"
+                aria-label={`${label}: ${fmtScore(value)} out of 5`}
+              >
+                {states.map((state) => (
+                  <svg
+                    class={`star is-${state}`}
+                    viewBox="0 0 14 14"
+                    width="14"
+                    height="14"
+                    aria-hidden="true"
+                  >
+                    {/* Left half — filled when state is "full" or "half". */}
+                    <path
+                      class="half left"
+                      d="M7 1.2 L8.8 4.95 L13 5.55 L10 8.55 L10.7 12.8 L7 10.65 Z"
+                    />
+                    {/* Right half — filled only when state is "full". */}
+                    <path
+                      class="half right"
+                      d="M7 1.2 L5.2 4.95 L1 5.55 L4 8.55 L3.3 12.8 L7 10.65 Z"
+                    />
+                  </svg>
+                ))}
+              </div>
+              <div class="score-num">{fmtScore(value)}</div>
+            </div>
+          );
+        })}
+      </div>
+    )}
+
+    {(hasApply || hasSkip) && (
+      <div class="block apply-skip">
+        {hasApply && (
+          <div class="apply">
+            <div class="eyebrow apply-eyebrow">Apply if</div>
+            <p class="sentence">{applyIf}</p>
+          </div>
+        )}
+        {hasSkip && (
+          <div class="skip">
+            <div class="eyebrow skip-eyebrow">Skip if</div>
+            <p class="sentence">{skipIf}</p>
+          </div>
+        )}
+      </div>
+    )}
+
+    <div class="block methodology-row">
+      <a class="methodology-link" href="/editorial-policy/how-we-score/">
+        How we score →
+      </a>
+    </div>
+  </aside>
+)}
+
+<style>
+  .dp-editor-scorecard {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+    border-radius: 0 4px 4px 0;
+    padding: 18px 20px 18px;
+    margin: 32px 0 24px;
+    display: grid;
+    gap: 18px;
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+  @media (max-width: 719.98px) {
+    .dp-editor-scorecard {
+      padding: 16px 16px 18px;
+      margin: 24px 0 20px;
+      gap: 16px;
+    }
+  }
+
+  /* Block hairlines between tier / scores / apply-skip / methodology.
+     Each non-first block carries a 1px --line-soft top rule + 18px
+     top padding (16px on mobile). */
+  .dp-editor-scorecard .block + .block {
+    border-top: 1px solid var(--line-soft);
+    padding-top: 18px;
+  }
+  @media (max-width: 719.98px) {
+    .dp-editor-scorecard .block + .block {
+      padding-top: 16px;
+    }
+  }
+
+  /* ── Eyebrow (shared) ─────────────────────────────────────────────── */
+  .dp-editor-scorecard .eyebrow {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  /* ── Tier badge block ─────────────────────────────────────────────── */
+  .tier-block {
+    display: grid;
+    gap: 10px;
+  }
+  .tier-badge {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: -0.4px;
+    line-height: 1.1;
+    padding: 6px 14px;
+    border-radius: 2px;
+    justify-self: start;
+  }
+  .tier-badge.tier-editors-pick {
+    background: var(--green);
+    color: var(--paper);
+    border: none;
+  }
+  .tier-badge.tier-strong,
+  .tier-badge.tier-solid,
+  .tier-badge.tier-niche {
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .tier-badge.tier-skip {
+    background: var(--paper);
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+
+  /* ── Dimension stars block ────────────────────────────────────────── */
+  .scores-block {
+    display: grid;
+    gap: 10px;
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .row-label {
+    flex: 1 1 auto;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .star-meter {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    width: 78px;
+    flex: 0 0 78px;
+  }
+  .star-meter .star {
+    display: block;
+  }
+  /* Empty star = stroke only. */
+  .star-meter .star.is-empty .half {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  /* Half star = left filled, right empty stroke. */
+  .star-meter .star.is-half .half.left {
+    fill: var(--positive);
+    stroke: none;
+  }
+  .star-meter .star.is-half .half.right {
+    fill: none;
+    stroke: var(--line);
+    stroke-width: 1;
+  }
+  /* Full star = both halves filled. */
+  .star-meter .star.is-full .half {
+    fill: var(--positive);
+    stroke: none;
+  }
+  .score-num {
+    flex: 0 0 24px;
+    width: 24px;
+    text-align: right;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Apply if / Skip if block ─────────────────────────────────────── */
+  .apply-skip {
+    display: grid;
+    gap: 14px;
+  }
+  @media (min-width: 720px) {
+    .apply-skip {
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    /* When only one of apply/skip is set, let it span both columns
+       (full-width). */
+    .apply-skip > :only-child {
+      grid-column: 1 / -1;
+    }
+  }
+  .apply-skip .eyebrow {
+    font-size: 10px;
+    letter-spacing: 1.8px;
+    margin-bottom: 6px;
+  }
+  .apply-skip .apply-eyebrow {
+    color: var(--positive);
+  }
+  .apply-skip .skip-eyebrow {
+    color: var(--ink-soft);
+  }
+  .apply-skip .sentence {
+    margin: 0;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+    max-width: 38ch;
+  }
+
+  /* ── Methodology row ──────────────────────────────────────────────── */
+  .methodology-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .methodology-link {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--green);
+    text-decoration: none;
+  }
+  .methodology-link:hover {
+    text-decoration: underline;
+  }
+</style>

@@ -53,6 +53,29 @@ if (!left || !right) {
 const leftLabel = shortCardLabel(left);
 const rightLabel = shortCardLabel(right);
 const rows = cardComparisonRows(left, right);
+
+// Phase 2a.2.3 (2026-05-20) — per-row VAT tag for the Annual fee +
+// Joining fee rows. Inclusive policy + non-zero amount = "(incl. VAT)"
+// after the value. Free / AED 0 / "—" = no tag.
+const leftCard = left;
+const rightCard = right;
+const leftVat = (leftCard.vatPolicy ?? "inclusive") === "inclusive";
+const rightVat = (rightCard.vatPolicy ?? "inclusive") === "inclusive";
+function vatTagFor(
+  rowKey: "annualFee" | "joiningFee" | string,
+  side: "left" | "right",
+): string | null {
+  if (rowKey !== "annualFee" && rowKey !== "joiningFee") return null;
+  const card = side === "left" ? leftCard : rightCard;
+  const inclusive = side === "left" ? leftVat : rightVat;
+  if (!inclusive) return null;
+  const amount =
+    rowKey === "annualFee"
+      ? card.annualFee.amount
+      : card.joiningFee?.amount ?? null;
+  if (amount === null || amount === 0) return null;
+  return "(incl. VAT)";
+}
 ---
 
 <table class="dp-card-comparison">
@@ -74,33 +97,39 @@ const rows = cardComparisonRows(left, right);
     </tr>
   </thead>
   <tbody>
-    {rows.map((row) => (
-      <tr>
-        <th class="row-label" scope="row">
-          <span class="label-desktop">{row.label}</span>
-          <span class="label-mobile">{row.mobileLabel ?? row.label}</span>
-          {row.subtext && row.mobileLabel && (
-            <span class="label-subtext">{row.subtext}</span>
-          )}
-        </th>
-        <td
-          class={`value${row.winner === "left" ? " is-winner" : ""}${row.winner === "right" ? " is-loser" : ""}${row.winner === "tie" ? " is-tie" : ""}`}
-        >
-          <span class="val">{row.leftValue}</span>
-          {row.winner === "left" && (
-            <span class="glyph" aria-label="Better on this dimension">↗</span>
-          )}
-        </td>
-        <td
-          class={`value${row.winner === "right" ? " is-winner" : ""}${row.winner === "left" ? " is-loser" : ""}${row.winner === "tie" ? " is-tie" : ""}`}
-        >
-          <span class="val">{row.rightValue}</span>
-          {row.winner === "right" && (
-            <span class="glyph" aria-label="Better on this dimension">↗</span>
-          )}
-        </td>
-      </tr>
-    ))}
+    {rows.map((row) => {
+      const leftVatTag = vatTagFor(row.key, "left");
+      const rightVatTag = vatTagFor(row.key, "right");
+      return (
+        <tr>
+          <th class="row-label" scope="row">
+            <span class="label-desktop">{row.label}</span>
+            <span class="label-mobile">{row.mobileLabel ?? row.label}</span>
+            {row.subtext && row.mobileLabel && (
+              <span class="label-subtext">{row.subtext}</span>
+            )}
+          </th>
+          <td
+            class={`value${row.winner === "left" ? " is-winner" : ""}${row.winner === "right" ? " is-loser" : ""}${row.winner === "tie" ? " is-tie" : ""}`}
+          >
+            <span class="val">{row.leftValue}</span>
+            {leftVatTag && <span class="vat-tag">{leftVatTag}</span>}
+            {row.winner === "left" && (
+              <span class="glyph" aria-label="Better on this dimension">↗</span>
+            )}
+          </td>
+          <td
+            class={`value${row.winner === "right" ? " is-winner" : ""}${row.winner === "left" ? " is-loser" : ""}${row.winner === "tie" ? " is-tie" : ""}`}
+          >
+            <span class="val">{row.rightValue}</span>
+            {rightVatTag && <span class="vat-tag">{rightVatTag}</span>}
+            {row.winner === "right" && (
+              <span class="glyph" aria-label="Better on this dimension">↗</span>
+            )}
+          </td>
+        </tr>
+      );
+    })}
   </tbody>
 </table>
 
@@ -221,6 +250,19 @@ const rows = cardComparisonRows(left, right);
     color: var(--green);
     margin-left: 4px;
     vertical-align: baseline;
+  }
+  /* Phase 2a.2.3 — VAT tag stays --muted even on the winner row so the
+     winner's green emphasis stays on the value, not the qualifier. */
+  .dp-card-comparison .vat-tag {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    margin-left: 4px;
+  }
+  .dp-card-comparison tbody .value.is-winner .vat-tag {
+    color: var(--muted);
   }
 
   /* ≥720px — desktop rendering. Larger type, fuller labels, more
