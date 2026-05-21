@@ -74,35 +74,65 @@ image/jpeg. Binary files like images... are not supported."_
 
 ### Network policy state at session close
 
-User updated **claude.ai → Settings → Capabilities → Domain
-allowlist** to add the following wildcards on top of "Package
-managers only":
+**Correction logged 2026-05-21 (second session):** the original handoff
+told the user to add domains under `claude.ai → Settings → Capabilities
+→ Additional allowed domains`. That setting governs WebFetch in the
+claude.ai web chat product, **not** the Claude Code on the Web
+container egress. Adding domains there does nothing for `curl` /
+Firecrawl / image downloads inside this container.
+
+User did add the following to Capabilities anyway (preserved for
+record):
 
 - `*.unsplash.com`
 - `*.emirates.com`
 - `*.etihad.com`
 - `*.flydubai.com`
 - `*.marriot.com` ← **typo, should be `*.marriott.com`** (two t's).
-  Verify in settings; correct if still wrong.
-- **`*.presspage.com`** — user was asked to add this but the screenshot
-  before "Done" didn't show it. **Verify in settings**; without
-  presspage the two Emirates binaries still fail because
-  emirates.com just redirects to content.presspage.com for media.
+- `*.presspage.com`
 
-The new policy was not active in the originating session — network
-policies bind at container start. A fresh session (this one) gets
-the updated allowlist.
+A second session confirmed those wildcards have zero effect on
+container egress: `curl https://content.presspage.com/...` still
+returns `HTTP/2 403 / x-deny-reason: host_not_allowed / Host not in
+allowlist`. The Anthropic egress proxy presents a valid `*.presspage.com`
+cert (TLS handshake succeeds) and then refuses at the application layer.
+
+**The real setting** is the **environment's network policy**, chosen
+when the environment was created — see
+https://code.claude.com/docs/en/claude-code-on-the-web (Environment
+configuration section). Policy is bound at container start and cannot
+be changed mid-session.
+
+To unblock the image swap, the user needs to:
+
+1. Open Claude Code on the Web (`code.claude.com` or the Claude Code
+   surface in claude.ai — wherever they launch sessions from).
+2. Open **Environments** (NOT Capabilities). Sometimes labelled
+   "Cloud environments" or "Remote environments".
+3. Find the environment attached to `dubaipoints1/property` (current
+   policy: GitHub-only — only `*.github.com` and package-manager
+   hosts reachable).
+4. Edit the environment's **Network policy**. Switch to a policy that
+   permits a custom allowlist (e.g. "Standard" / "Extended" /
+   "Custom"), then add at minimum:
+   - `content.presspage.com` (or `*.presspage.com`)
+   - `images.unsplash.com` (or `*.unsplash.com`)
+5. Save and start a **fresh session** — the new policy binds at
+   container start.
 
 ### First thing the next session should do
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" --max-time 10 \
-  'https://content.presspage.com/uploads/2431/69849f10-93f2-4cb4-8bc6-e313c3e4c2ed/1920_039a0171.jpg'
+curl -si --max-time 10 \
+  'https://content.presspage.com/uploads/2431/69849f10-93f2-4cb4-8bc6-e313c3e4c2ed/1920_039a0171.jpg' \
+  | head -5
 ```
 
-Expected: `200`. If `403 host_not_allowed`, the user needs to verify
-`*.presspage.com` is actually in the allowlist (and Marriott typo
-fixed).
+Expected: `HTTP/2 200`. If still `HTTP/2 403 / x-deny-reason:
+host_not_allowed`, the environment's network policy was not updated
+correctly — **do not** waste turns trying to work around it in the
+container; tell the user to recheck the Environment settings (NOT
+Capabilities) per the steps above.
 
 If 200, the swap is straightforward:
 
