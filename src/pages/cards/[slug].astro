@@ -25,7 +25,9 @@ if (!data) {
 
 // Editorial layer (L3) — optional; render with empty body when absent.
 const editorial = (await getCollection("cards")).find((c) => c.id === slug);
-const Content = editorial ? (await render(editorial)).Content : null;
+const rendered = editorial ? await render(editorial) : null;
+const Content = rendered?.Content ?? null;
+const headings = rendered?.headings ?? [];
 
 // Bank reference resolves through the banks content collection; falls back to slug.
 const bankEntry = await getEntry("banks", data.bank);
@@ -52,6 +54,7 @@ const bankName = bankEntry?.data.name ?? data.bank;
   verifiedBy={editorial?.data.verifiedBy}
   sources={data.sources}
   heroImage={editorial?.data.heroImage}
+  headings={headings}
 >
   {Content && <Content />}
 </CardReviewLayout>
