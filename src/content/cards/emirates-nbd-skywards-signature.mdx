@@ -22,6 +22,10 @@ scores:
   access: 4
 applyIf: You fly Emirates once or twice a year and want direct Skywards earning at the AED 12,000 minimum salary.
 skipIf: You spend AED 100,000 or more a year on the card — the Infinite earns enough more to cover the fee gap.
+keyTakeaways:
+- Direct Skywards earning at 1.5 miles per USD on Emirates, flydubai, duty free and food delivery (≈ 0.41 miles per AED)
+- Welcome bonus up to 40,000 Skywards Miles covers the AED 735 year-two renewal at our 2 fils-per-mile baseline
+- AED 735 renewal fee has no published spend-waiver — posts every year regardless of card spend
 editorTake: The cheaper of ENBD's two Skywards co-brands, accessible at AED 12,000
   minimum salary versus the Infinite's AED 30,000. Earn rates are quoted per US dollar,
   translating to roughly 0.41 Skywards Miles per AED on Emirates / flydubai / duty
@@ -43,9 +47,24 @@ import AtAGlance from "~/components/cards/AtAGlance.astro";
 import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import EditorScorecard from "~/components/cards/EditorScorecard.astro";
 import SectionBreak from "~/components/cards/SectionBreak.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
+
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "welcome-bonus-breakdown", label: "Welcome bonus" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "skywards-signature-vs-skywards-infinite", label: "Signature vs Infinite" },
+  { id: "watch-out-for", label: "Watch out for" },
+  { id: "is-it-worth-it", label: "Is it worth it?" },
+  { id: "bottom-line", label: "Bottom line" },
+]} />
 
 The Skywards Signature is Emirates NBD's mid-tier co-branded Visa — a direct-earn
 Skywards card built for AED 12k–25k earners who fly Emirates a few times a year.
+
+<KeyTakeaways card="emirates-nbd-skywards-signature" />
 
 <AtAGlance card="emirates-nbd-skywards-signature" />
 
