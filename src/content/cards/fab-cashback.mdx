@@ -1,60 +1,238 @@
 ---
 slug: fab-cashback
 verifiedBy: DubaiPoints Editorial
+kicker: A genuinely accessible 5% cashback card with year-one fee waiver and a lounge / dining perk stack you usually don't see at AED 315/year. The AED 3,000 monthly-qualifier asterisk is the real gate.
+tier: solid
+scores:
+  welcomeValue: 4
+  earnRate: 3.5
+  perks: 3.5
+  feeValue: 4
+  access: 4.5
+applyIf: You spend AED 5,000+/month on dining, shopping or supermarkets and want simple percent-back at a low fee.
+skipIf: You're a frequent international spender (2.49% FX) or won't reliably clear the AED 3,000 monthly qualifier.
+keyTakeaways:
+- 5% cashback on supermarkets, fashion and dining (capped AED 150/category/month; AED 1,000 monthly total cap)
+- AED 1,000 Amazon Gift Card on AED 10,000 spend in 30 days — promo expires 31 May 2026, year-one fee waived alongside
+- AED 3,000 minimum spend in the previous month required to earn any cashback at all that cycle
 pros:
-- 5x FAB Rewards on dining and shopping translates to ~2.5% effective cashback
-  in the bank's top categories
-- First-year fee waiver gives a clean 12-month trial against the AED 2,500 sticker
-- Welcome AED 1,000 Amazon voucher on AED 10,000 spend inside 30 days — a low
-  hurdle by UAE standards
+- 5% cashback on supermarkets, fashion and dining — direct percent, not points (capped AED 150/category/month)
+- AED 315 annual fee, first year waived under the current promo
+- Free worldwide airport lounge access — 8 visits/year cardholder + 6 for guest, rare at this fee tier
+- Welcome AED 1,000 Amazon Gift Card on AED 10,000 spend in 30 days (or AED 500 on AED 5,000)
+- Rich everyday-perk stack — 40% off Talabat, 4 BOGO cinema tickets/month, AED 40 off Carrefour online, free Costa at DXB
+- AED 5,000 minimum salary, salary transfer not required
 cons:
-- AED 3,000 minimum prior-month spend to qualify for FAB Rewards at all —
-  thin-month users earn nothing
-- Cashback is paid as FAB Rewards, redeemable only inside the FAB Mobile app,
-  not as statement credit
-- AED 2,500 annual fee from year two unless waived by negotiation
-editorTake: A solid mid-tier cashback workhorse if your household spend reliably
-  clears AED 3,000 a month on dining and shopping. The ~2.5% effective rate on
-  those categories is competitive, but the FAB Rewards wrapper — and the lack of
-  a true statement-credit option — makes it less clean than Mashreq Cashback or
-  ADCB 365 for readers who want simplicity.
+- AED 3,000 minimum prior-month spend to qualify for cashback at all — thin-month users earn nothing
+- 2.49% FX fee makes it unsuitable for high-volume international spend
+- Cashback paid as FAB Rewards redeemable via FAB Mobile app, not auto-applied as statement credit
+- Welcome offer expires 31 May 2026 — apply by that date to capture the Amazon voucher + year-1 waiver
+- AED 1,000 monthly total cashback ceiling caps the headline 5% rate around AED 20,000 of qualifying monthly spend
+editorTake: >-
+  A genuinely accessible cashback card — AED 315/year (waived in year one),
+  AED 5,000 min salary, no salary transfer required, 5% direct percent-back
+  on dining and shopping. The perk stack (lounge access, Talabat, cinema,
+  Carrefour, Costa) over-delivers for the fee. The AED 3,000 monthly-spend
+  qualifier is the loud asterisk — skip a month and you earn nothing that
+  cycle, not pro-rated. For UAE households with reliable AED 5k–15k monthly
+  card spend on the bonus categories, this is one of the better entry-level
+  cashback options on the market.
+heroImage:
+  src: aed-banknotes-flat.jpg
+  alt: AED banknotes laid flat — the cashback the FAB Cashback card pays out in
+  caption: AED cashback — paid into the FAB Mobile app as FAB Rewards, redeemable on demand.
+  credit: Unsplash CC0
 ---
 
-The FAB Cashback Card sits in the bank's mid-tier lineup as a daily-spend card
-aimed at salaried residents earning at least AED 5,000 a month. It does not
-require a salary transfer, which is rarer than the marketing suggests in this
-segment.
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
+import CardComparison from "~/components/cards/CardComparison.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import EditorScorecard from "~/components/cards/EditorScorecard.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
+import HotTip from "~/components/cards/HotTip.astro";
 
-## What you actually get
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "welcome-bonus-breakdown", label: "Welcome bonus" },
+  { id: "perks-worth-using", label: "Perks worth using" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "fab-cashback-vs-fab-elite", label: "Cashback vs Elite" },
+  { id: "watch-out-for", label: "Watch out for" },
+  { id: "is-it-worth-it", label: "Is it worth it?" },
+  { id: "bottom-line", label: "Bottom line" },
+]} />
 
-The earn structure is 5 FAB Rewards per AED 1 on dining and shopping and 1 per
-AED 1 on everything else. The reward unit is FAB Rewards rather than direct
-cashback, but they redeem inside the FAB Mobile app at a rate that works out
-to roughly AED 0.50 cashback per 100 points — call it ~2.5% in the bonus
-categories and ~0.5% on the floor. Welcome offer at time of verification:
-AED 1,000 Amazon Gift Card on AED 10,000 spend in the first 30 days, or
-AED 500 on AED 5,000. The annual fee is AED 2,500 with a first-year waiver,
-and a minimum prior-month spend of AED 3,000 is required to earn any rewards
-at all that cycle. FX fee is 3%, which is at the high end — this is not a card
-to take abroad.
+The FAB Cashback Card sits in First Abu Dhabi Bank's mid-tier daily-spend
+lineup — accessible at AED 5,000/month salary, no salary transfer required,
+year-one fee waived. The proposition is direct percent-back on the
+categories most households spend the most on.
 
-## Who should open it
+<KeyTakeaways card="fab-cashback" />
 
-The card matches a household running AED 5,000–15,000 monthly on dining,
-groceries and general shopping, with someone employed on a stable salaried
-contract. Salary transfer is not required, so it slots in alongside an existing
-primary-bank relationship. If you are inside the first 24 months of UAE
-residency and still building AECB history, this is an accessible entry point
-into FAB's ecosystem.
+<AtAGlance card="fab-cashback" />
 
-## Where it falls short
+<GreatCardIf card="fab-cashback" />
 
-The AED 3,000 minimum-spend gate is the loud asterisk: any month you slip
-below it, your earnings zero out — not pro-rated, not deferred. The 3% FX fee
-makes it unsuitable for international spending of any volume. And the FAB
-Rewards redemption flow is more friction than a true cashback card; readers
-who want a statement-credit experience should look at Mashreq Cashback or
-HSBC Cash+ instead.
+<EditorVerdict card="fab-cashback" />
 
-A sensible cashback choice for FAB's existing customers; not a reason to switch
-banks.
+<ProsCons card="fab-cashback" />
+
+## Earn rates
+
+<EarnRateTable card="fab-cashback" />
+
+The cashback structure is direct percent on the bonus categories — not a
+points-to-cashback conversion you have to mentally translate:
+
+- **5% cashback** on supermarkets, fashion and dining
+- **3% cashback** on non-AED international spend (though the 2.49% FX fee
+  eats most of that — net ~0.5% on the international leg)
+- **1% cashback** on most other spending; a small list of categories drops
+  to 0.15%
+
+Cashback pays as **FAB Rewards** redeemable inside the FAB Mobile app —
+roughly AED 0.50 per 100 points at the app's prevailing rate. Not auto-applied
+as a statement credit; you have to redeem actively, which is a minor friction
+versus the Mashreq Cashback or HSBC Cash+ statement-credit model.
+
+## Fee summary
+
+<FeeBlock card="fab-cashback" />
+
+The AED 315 annual fee is **waived in year one** as part of the current
+welcome promo. From year two it posts in full — there's no spend-threshold
+waiver to chase. At AED 315 it's still one of the lowest-fee cashback cards
+in the UAE market.
+
+## Welcome bonus breakdown
+
+<WelcomeBonusCallout card="fab-cashback" />
+
+<HotTip label="Hot tip — time-limited">
+The Amazon Gift Card promo expires **31 May 2026** along with the
+first-year fee waiver. Two-tier structure: spend **AED 10,000** in the first
+30 days to unlock the AED 1,000 voucher; the lower **AED 5,000** tier pays
+AED 500. Apply before the deadline to capture both the voucher and the
+year-one fee waiver — without them, the year-one math is materially weaker.
+</HotTip>
+
+## Perks worth using
+
+The lifestyle perk stack is the part of this card most readers under-
+estimate at the AED 315 fee tier:
+
+- **Free worldwide airport lounge access** — 8 visits/year for the
+  cardholder + 6 for a guest. The closest equivalent at this fee point is
+  Mashreq Solitaire or ADCB 365 Reserve, both at higher fees.
+- **40% off Talabat** — 4 orders per month, AED 40 cap per order,
+  AED 100 minimum. Useful if Talabat is part of your weekly routine.
+- **4 movie tickets per month at AED 20** at Reel Cinemas, Cine Royal or
+  Star Cinemas — AED 80 effective discount/month if used routinely.
+- **AED 40 off Carrefour online**, once per month on AED 250+ spend.
+- **Free Costa coffee** at Dubai Airport via Mastercard Priceless Cities.
+- **15% off Bicester Village** (UK shopping outlet) and **40% off
+  MakeMyTrip** flight / hotel bookings.
+
+For a UAE household routinely using two or three of these perks plus the
+5% bonus categories, the AED 315 year-two fee is recovered comfortably
+inside three months of typical use.
+
+## Key conditions to know
+
+<dl class="dp-conditions">
+  <dt>AED 3,000 prior-month spend gate</dt>
+  <dd>You earn cashback in any given month <strong>only if</strong> the
+  previous month's eligible spend was at least AED 3,000. Drop below in
+  one month and the next month earns nothing — not pro-rated, not
+  deferred. Plan around this if your spend is seasonal.</dd>
+
+  <dt>AED 1,000 monthly cashback cap</dt>
+  <dd>The total cashback ceiling is AED 1,000 per month across all
+  categories. At 5% on the bonus categories that caps the headline rate
+  around AED 20,000 of qualifying spend per month.</dd>
+
+  <dt>Eligibility</dt>
+  <dd>AED 5,000/month minimum salary. Salary transfer is <strong>not
+  required</strong> — rare in this fee tier and the practical reason this
+  card slots in alongside an existing primary-bank relationship.</dd>
+
+  <dt>Lounge access mechanics</dt>
+  <dd>8 cardholder visits + 6 guest visits per year, worldwide network via
+  Mastercard. Resets on the card anniversary, not the calendar year.</dd>
+
+  <dt>FX fee</dt>
+  <dd>2.49% on non-AED transactions — eats most of the 3% international
+  cashback. Not a card to take abroad if international spend will be a
+  meaningful share of routine use.</dd>
+</dl>
+
+## FAB Cashback vs FAB Elite
+
+<CardComparison cards={["fab-cashback", "fab-elite"]} />
+
+The two FAB cards target opposite use cases. **Cashback** rewards everyday
+household spending at low fee and low salary bar — the right choice for
+AED 5,000–15,000 monthly card spend on dining, supermarkets and fashion.
+**Elite** rewards luxury merchants and ADV+ lifestyle perks at AED 40,000+
+salary and AED 10,000+ monthly spend — the right choice only when those
+gating thresholds clear.
+
+For most readers comparing them: stay on Cashback unless your spend
+profile pushes squarely into the Elite's narrow proposition.
+
+## Watch out for
+
+- **The AED 3,000 monthly qualifier is unforgiving.** One thin month and
+  the next month earns nothing. Standing orders or recurring household
+  bills routed through the card help guarantee the qualifier each cycle.
+- **Welcome promo expires 31 May 2026.** Without it, the AED 315 year-one
+  fee posts and the AED 1,000 voucher disappears. Apply by the deadline
+  or wait until FAB publishes the next promo cycle.
+- **Cashback is paid as FAB Rewards, not as statement credit.** You need
+  to log into FAB Mobile to redeem. Minor friction but worth knowing —
+  this is not the auto-applied-credit experience Mashreq Cashback or HSBC
+  Cash+ offer.
+- **2.49% FX fee** makes the 3% international cashback close to net-zero.
+  For travel spend, use a no-FX-fee card instead.
+- **AED 150 category sub-caps.** The 5% bonus rate stops paying past
+  AED 3,000 of monthly spend in each bonus category (5% × AED 3,000 =
+  AED 150). Over-cap spend earns the 1% floor.
+
+## Is it worth it?
+
+For UAE households spending AED 5,000–15,000 a month on dining, supermarkets
+and fashion, with reliable monthly card use that clears the AED 3,000
+qualifier — yes, the Cashback pays back comfortably even without the
+welcome offer. The lounge access + Talabat + cinema + Carrefour perk stack
+recovers the AED 315 year-two fee inside three months of routine use; the
+5% cashback on dining alone covers it on AED 6,300 of annual dining spend
+(roughly AED 525/month).
+
+With the current welcome offer (AED 1,000 Amazon voucher + year-one fee
+waiver, expires 31 May 2026) the year-one effective cost is **negative** —
+you net AED 1,000 of value against AED 0 fee, before any cashback earned.
+Apply during this window if it fits your spend profile.
+
+A reasonable break-even rule: **AED 5,000+ monthly card spend with at
+least AED 2,000/month on dining, supermarkets or fashion, and a clear plan
+to clear the AED 3,000 prior-month gate every cycle.**
+
+## Bottom line
+
+A genuinely accessible cashback card with a perk stack that over-delivers
+for the AED 315 fee tier. **Apply** if your monthly card spend clears
+AED 5,000 with meaningful share on dining, supermarkets or fashion — and
+do it before 31 May 2026 to capture the AED 1,000 Amazon voucher.
+**Move up to the FAB Elite** only if your salary clears AED 40,000/month
+and you'll work the luxury / ADV+ multipliers. **Look elsewhere** (Mashreq
+Cashback, HSBC Cash+) if you want statement-credit cashback rather than
+the FAB Rewards redemption flow.
+
+<EditorScorecard card="fab-cashback" />
