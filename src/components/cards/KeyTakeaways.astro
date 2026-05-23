@@ -1,0 +1,83 @@
+---
+// KeyTakeaways — 2–4 bullet headline-judgement box, near the top of a
+// card review. Reads `keyTakeaways: string[]` from card MDX frontmatter.
+//
+// Phase 2a.2.5 (2026-05-21). Mirrors Upgraded Points' Key Takeaways
+// pattern: the first-screen reader who never scrolls past the hero
+// still leaves with the headline judgement, the headline figure, and
+// the headline caveat. Navy left-rule callout. Token-only, no JS.
+
+import { getEntry } from "astro:content";
+
+interface Props {
+  /** Card slug — must match an entry in the `cards` content collection. */
+  card: string;
+}
+
+const { card } = Astro.props;
+const entry = await getEntry("cards", card);
+const points = entry?.data?.keyTakeaways;
+const render = Array.isArray(points) && points.length >= 2;
+---
+
+{render && (
+  <aside class="dp-key-takeaways" aria-label="Key takeaways">
+    <div class="eyebrow">Key takeaways</div>
+    <ul>
+      {points!.map((p) => (
+        <li>{p}</li>
+      ))}
+    </ul>
+  </aside>
+)}
+
+<style>
+  .dp-key-takeaways {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+    border-radius: 0 6px 6px 0;
+    padding: 18px 22px 20px;
+    margin: 28px 0 36px;
+    display: grid;
+    gap: 12px;
+  }
+  .dp-key-takeaways .eyebrow {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--green);
+    line-height: 1.2;
+  }
+  .dp-key-takeaways ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .dp-key-takeaways li {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink);
+    padding-left: 22px;
+    position: relative;
+  }
+  .dp-key-takeaways li::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+  }
+  @media (max-width: 719.98px) {
+    .dp-key-takeaways { padding: 16px 18px; margin: 20px 0 28px; }
+    .dp-key-takeaways li { font-size: 14.5px; }
+  }
+</style>

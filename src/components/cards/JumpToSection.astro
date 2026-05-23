@@ -1,189 +1,121 @@
 ---
-// JumpToSection — sticky right-rail TOC on desktop; collapsible
-// "Jump to section" disclosure pill above the article on mobile.
-// Reads the article's H2s from the Astro content-collection
-// `headings` array (passed in as a prop from the page that called
-// `render(entry)`).
+// JumpToSection — sticky in-page nav. Anchors to H2 ids in the article
+// body. Pure HTML (<details>/<summary>) so no JS hydration; the native
+// disclosure on tap is enough for the mobile-first reader who scrolls
+// fast and needs to bail to a specific section.
 //
-// Spec source: .council/briefs/2026-05-22-phase-2a-2-7-jump-to-section.md
-// Dossier source: .council/research/2026-05/competitor-teardown.md
-// Tier B pattern #8 — TPG signature: sticky Jump-to-section chrome
-// that lets a long-form reader land on the section they care about
-// without scrolling through the whole article.
+// Phase 2a.2.5 (2026-05-21). Modelled on Upgraded Points' / OMAAT's
+// "Jump to section" pattern. On scroll past the hero, the chip sticks
+// to the top of the viewport. Tap to expand the section list; tap an
+// item to scroll-jump.
 //
-// rehype-slug (added to astro.config.mjs) emits matching `id`
-// attributes on H2 elements so the `#slug` anchor links resolve.
+// Editor authors the section list in MDX — Astro's MDX rehype slugifier
+// turns each `## H2` into an id (lower-case, hyphens). The `id` prop
+// here must match.
 
-interface Heading {
-  depth: number;
-  slug: string;
-  text: string;
+interface Section {
+  /** The slugified id of the corresponding `## H2` in the MDX body. */
+  id: string;
+  /** Label shown in the nav — keep short (≤ 24 chars). */
+  label: string;
 }
 
 interface Props {
-  /** Array from `await render(entry)` — depth/slug/text for every heading. */
-  headings: Heading[];
-  /** `rail` renders the desktop sticky variant; `mobile` renders the
-   * collapsible disclosure. The component visually hides itself in the
-   * wrong viewport via CSS so it's safe to render both at once. */
-  variant: "rail" | "mobile";
+  sections: Section[];
 }
 
-const { headings, variant } = Astro.props;
-const h2s = (headings ?? []).filter((h) => h.depth === 2);
+const { sections } = Astro.props;
 ---
 
-{h2s.length > 0 && (
-  variant === "mobile" ? (
-    <details class="dp-jump-to is-mobile" aria-label="Jump to section">
-      <summary>Jump to section</summary>
-      <ol>
-        {h2s.map((h, i) => (
+{sections && sections.length > 0 && (
+  <nav class="dp-jump-to-section" aria-label="Jump to section">
+    <details>
+      <summary>
+        <span class="label">Jump to section</span>
+        <span class="caret" aria-hidden="true">▾</span>
+      </summary>
+      <ul>
+        {sections.map((s) => (
           <li>
-            <span class="num">{String(i + 1).padStart(2, "0")}</span>
-            <a href={`#${h.slug}`}>{h.text}</a>
+            <a href={`#${s.id}`}>{s.label}</a>
           </li>
         ))}
-      </ol>
+      </ul>
     </details>
-  ) : (
-    <nav class="dp-jump-to is-rail" aria-label="Jump to section">
-      <h4>Jump to section</h4>
-      <ol>
-        {h2s.map((h, i) => (
-          <li>
-            <span class="num">{String(i + 1).padStart(2, "0")}</span>
-            <a href={`#${h.slug}`}>{h.text}</a>
-          </li>
-        ))}
-      </ol>
-    </nav>
-  )
+  </nav>
 )}
 
 <style>
-  .dp-jump-to {
-    font-family: "DM Sans", system-ui, sans-serif;
-  }
-
-  /* Mobile disclosure pill ---------------------------------------- */
-  .dp-jump-to.is-mobile {
-    display: block;
-    border: 1px solid var(--line);
-    border-radius: 8px;
+  .dp-jump-to-section {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    margin: 0 0 24px;
     background: var(--paper);
-    margin: 0 0 20px;
-    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    padding: 10px 0;
   }
-  .dp-jump-to.is-mobile summary {
-    list-style: none;
-    cursor: pointer;
-    padding: 12px 16px;
-    font-weight: 700;
-    font-size: 10px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--green);
-    display: flex;
+  .dp-jump-to-section details {
+    max-width: 65ch;
+  }
+  .dp-jump-to-section summary {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    list-style: none;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--paper);
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--green);
+    letter-spacing: 0.2px;
+    line-height: 1;
+    transition: border-color 120ms ease, background 120ms ease;
   }
-  .dp-jump-to.is-mobile summary::-webkit-details-marker { display: none; }
-  .dp-jump-to.is-mobile summary::after {
-    content: "▾";
-    color: var(--ink-soft);
-    font-size: 12px;
-    transition: transform 0.2s ease;
-    margin-left: 8px;
+  .dp-jump-to-section summary::-webkit-details-marker { display: none; }
+  .dp-jump-to-section summary:hover {
+    border-color: var(--green);
+    background: rgba(45, 106, 82, 0.04);
   }
-  .dp-jump-to.is-mobile[open] summary::after {
+  .dp-jump-to-section summary .caret {
+    font-size: 10px;
+    transition: transform 150ms ease;
+  }
+  .dp-jump-to-section details[open] summary .caret {
     transform: rotate(180deg);
   }
-  .dp-jump-to.is-mobile ol {
+  .dp-jump-to-section ul {
     list-style: none;
-    padding: 6px 0 10px;
-    margin: 0;
-    border-top: 1px solid var(--line);
+    margin: 12px 0 4px;
+    padding: 12px 4px;
+    display: grid;
+    gap: 6px;
+    border-top: 1px solid var(--line-soft);
   }
-  .dp-jump-to.is-mobile li {
-    padding: 8px 16px;
-    display: flex;
-    gap: 10px;
+  .dp-jump-to-section li { margin: 0; }
+  .dp-jump-to-section a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-family: "DM Sans", system-ui, sans-serif;
     font-size: 14px;
-    line-height: 1.45;
-  }
-
-  /* Desktop sticky rail ------------------------------------------- */
-  .dp-jump-to.is-rail {
-    display: none;
-  }
-  .dp-jump-to.is-rail ol {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .dp-jump-to.is-rail li {
-    padding: 7px 0;
-    display: flex;
-    gap: 10px;
-    font-size: 13px;
-    line-height: 1.45;
-    border-bottom: 1px solid var(--line-soft, var(--line));
-  }
-  .dp-jump-to.is-rail li:last-child {
-    border-bottom: none;
-  }
-
-  .dp-jump-to .num {
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    font-size: 11px;
-    font-weight: 600;
-    flex-shrink: 0;
-  }
-  .dp-jump-to a {
-    color: var(--ink-soft);
+    color: var(--ink);
     text-decoration: none;
+    line-height: 1.3;
   }
-  .dp-jump-to a:hover {
+  .dp-jump-to-section a:hover {
+    background: rgba(45, 106, 82, 0.06);
     color: var(--green);
   }
-
-  /* Hide mobile pill on desktop, show rail. ------------------------ */
-  @media (min-width: 1024px) {
-    .dp-jump-to.is-mobile {
-      display: none;
-    }
-    .dp-jump-to.is-rail {
-      display: block;
-      border: 1px solid var(--line);
-      background: var(--paper);
-      padding: 18px 18px 14px;
-      margin: 0 0 20px;
-      position: sticky;
-      top: 80px;
-    }
-    .dp-jump-to.is-rail h4 {
-      font-family: "DM Sans", system-ui, sans-serif;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--green);
-      margin: 0 0 12px;
-    }
+  @media (max-width: 719.98px) {
+    .dp-jump-to-section { padding: 8px 0; margin: 0 0 18px; }
+    .dp-jump-to-section summary { font-size: 12px; padding: 7px 12px; }
   }
-</style>
-
-<!-- Smooth scroll + scroll-margin so the linked section's H2 isn't
-     hidden under the sticky site header. Scoped to the root via
-     is:global so it applies once globally (an `<html>` selector inside
-     a scoped style block would not escape Astro's scope). -->
-<style is:global>
-  html {
-    scroll-behavior: smooth;
-  }
-  .dp-prose h2[id] {
-    scroll-margin-top: 80px;
-  }
+  /* When the user clicks a section link, account for the sticky chip's
+     height so the H2 doesn't sit underneath it. */
+  :global(.dp-prose h2[id]) { scroll-margin-top: 64px; }
 </style>
