@@ -54,14 +54,18 @@ const render = hasApply || hasSkip;
 )}
 
 <style>
+  /* Phase 2a.2.6.1 (2026-05-23) — reader-feedback fix: the original
+     paper-background + border made GreatCardIf read as a third
+     "box" stacked alongside AtAGlance and EditorVerdict above the
+     fold. Stripped to a typographic pair with colored left-rules
+     so the chrome differentiates by typography rather than by
+     surface treatment. */
   .dp-great-card-if {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0;
+    gap: 28px;
     margin: 8px 0 32px;
     padding: 0;
-    border: 1px solid var(--line);
-    background: var(--paper);
     font-family: "DM Sans", system-ui, sans-serif;
   }
   /* Single-side fallback — if only applyIf or only skipIf is present,
@@ -70,20 +74,22 @@ const render = hasApply || hasSkip;
     grid-template-columns: 1fr;
   }
   .dp-great-card-if .side {
-    padding: 16px 18px 18px;
-    border-right: 1px solid var(--line);
+    padding: 4px 0 4px 14px;
+    border-left: 3px solid var(--line);
     min-width: 0;
   }
-  .dp-great-card-if .side:last-child {
-    border-right: none;
+  .dp-great-card-if .is-apply {
+    border-left-color: var(--green);
+  }
+  .dp-great-card-if .is-skip {
+    border-left-color: var(--ink-soft);
   }
   .dp-great-card-if .eyebrow {
-    margin: 0 0 8px;
+    margin: 0 0 6px;
     font-weight: 700;
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--muted);
     line-height: 1.2;
   }
   .dp-great-card-if .is-apply .eyebrow {
@@ -104,14 +110,8 @@ const render = hasApply || hasSkip;
   @media (max-width: 719.98px) {
     .dp-great-card-if {
       grid-template-columns: 1fr;
+      gap: 18px;
       margin: 6px 0 24px;
-    }
-    .dp-great-card-if .side {
-      padding: 12px 14px 14px;
-      border-right: none;
-    }
-    .dp-great-card-if .side:not(:last-child) {
-      border-bottom: 1px solid var(--line);
     }
     .dp-great-card-if .body {
       font-size: 16px;
