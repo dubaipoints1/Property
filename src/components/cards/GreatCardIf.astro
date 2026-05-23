@@ -1,0 +1,120 @@
+---
+// GreatCardIf — mirrored-list block surfacing applyIf + skipIf from
+// frontmatter as an above-the-fold fit/no-fit signal. Sits between
+// AtAGlance (numbers) and EditorVerdict (prose) so a reader can
+// self-qualify in 5 seconds before any editorial commits to reading.
+//
+// Spec source: .council/briefs/2026-05-22-phase-2a-2-6-great-card-if.md
+// Dossier source: .council/research/2026-05/competitor-teardown.md
+// Tier A pattern #3 — "Great Card If / Don't Get If" mirrored lists,
+// UP signature move. Adapted to dubaipoints.ae editorial register
+// (single-sentence applyIf / skipIf, ≤120 chars each, already in
+// Phase 2a.2.3 frontmatter shape).
+//
+// Reads applyIf + skipIf from the cards content-collection entry via
+// getEntry(slug), matching the EditorScorecard call pattern.
+
+import { getEntry } from "astro:content";
+
+interface Props {
+  /** Card slug — must match an entry in the `cards` content collection. */
+  card: string;
+}
+
+const { card: slug } = Astro.props;
+
+const entry = await getEntry("cards", slug);
+if (!entry) {
+  throw new Error(`GreatCardIf: unknown card slug "${slug}"`);
+}
+
+const applyIf = entry.data.applyIf;
+const skipIf = entry.data.skipIf;
+
+const hasApply = typeof applyIf === "string" && applyIf.trim().length > 0;
+const hasSkip = typeof skipIf === "string" && skipIf.trim().length > 0;
+const render = hasApply || hasSkip;
+---
+
+{render && (
+  <aside class="dp-great-card-if" aria-label="Fit criteria">
+    {hasApply && (
+      <div class="side is-apply">
+        <p class="eyebrow">Great card if</p>
+        <p class="body">{applyIf}</p>
+      </div>
+    )}
+    {hasSkip && (
+      <div class="side is-skip">
+        <p class="eyebrow">Skip if</p>
+        <p class="body">{skipIf}</p>
+      </div>
+    )}
+  </aside>
+)}
+
+<style>
+  .dp-great-card-if {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    margin: 8px 0 32px;
+    padding: 0;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    font-family: "DM Sans", system-ui, sans-serif;
+  }
+  /* Single-side fallback — if only applyIf or only skipIf is present,
+     collapse to one column so the block stays balanced. */
+  .dp-great-card-if:has(.side:nth-child(1):last-child) {
+    grid-template-columns: 1fr;
+  }
+  .dp-great-card-if .side {
+    padding: 16px 18px 18px;
+    border-right: 1px solid var(--line);
+    min-width: 0;
+  }
+  .dp-great-card-if .side:last-child {
+    border-right: none;
+  }
+  .dp-great-card-if .eyebrow {
+    margin: 0 0 8px;
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.2;
+  }
+  .dp-great-card-if .is-apply .eyebrow {
+    color: var(--green);
+  }
+  .dp-great-card-if .is-skip .eyebrow {
+    color: var(--ink-soft);
+  }
+  .dp-great-card-if .body {
+    margin: 0;
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 17px;
+    letter-spacing: -0.2px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+  @media (max-width: 719.98px) {
+    .dp-great-card-if {
+      grid-template-columns: 1fr;
+      margin: 6px 0 24px;
+    }
+    .dp-great-card-if .side {
+      padding: 12px 14px 14px;
+      border-right: none;
+    }
+    .dp-great-card-if .side:not(:last-child) {
+      border-bottom: 1px solid var(--line);
+    }
+    .dp-great-card-if .body {
+      font-size: 16px;
+    }
+  }
+</style>
