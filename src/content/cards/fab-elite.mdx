@@ -1,61 +1,205 @@
 ---
 slug: fab-elite
 verifiedBy: DubaiPoints Editorial
+kicker: A premium lifestyle Mastercard built around a 20x luxury-spend earn boost and the ADV+ programme. Pays back at AED 40k+ salary and AED 10k+ monthly spend; below those, the perks don't trigger.
+tier: solid
+scores:
+  welcomeValue: 1.5
+  earnRate: 3.5
+  perks: 4
+  feeValue: 3
+  access: 1.5
+applyIf: You spend AED 10,000+ a month and route a meaningful share through luxury merchants or the ADV+ lifestyle app.
+skipIf: Your salary is below AED 40,000/month, or your card spend won't hit AED 10,000/month — most perks gate on both.
 pros:
-- Welcome bonus of up to 500,000 FAB Rewards — large nominal headline
-- Eligibility opens at AED 1,200 salary with salary transfer, accessible to
-  early-career residents
-- ESG-themed bonus earn on eco-tagged merchants offers a genuine point of
-  difference
+- 20 FAB Rewards per AED 1 at luxury merchants (Hermes, Cartier, Harrods, etc.), capped at 200,000 Rewards/month
+- ADV+ lifestyle programme — 60+ beach clubs and gyms, hotel-restaurant discounts, BOGO cinema, free valet — at AED 10,000+ monthly spend
+- Free worldwide airport lounge access via Mastercard + DragonPass
+- 24/7 lifestyle concierge plus 6 free Careem airport rides per year
+- 10 FAB Rewards per AED 1 at eco-tagged merchants — a real point of difference vs other premium UAE lifestyle cards
 cons:
-- Salary transfer is mandatory, locking the relationship for the tenure
-- AED 2,500 annual fee with no published waiver mechanism
-- Base earn of 1 FAB Reward per AED 1 with no clear category multipliers
-  outside the eco programme
-editorTake: The Elite is FAB's attempt to graft a lifestyle-and-sustainability
-  narrative onto a fairly ordinary 1x earn card. The 500,000-point welcome is
-  the entire reason to consider it; outside the welcome window, the everyday
-  proposition is weaker than the FAB Cashback or FAB World Elite at the same
-  fee tier.
+- AED 40,000/month minimum salary excludes most mass-affluent residents
+- Salary transfer is mandatory — relationship lock-in for the card's tenure
+- 1 FAB Reward per AED 1 on base spend is uncompetitive; the card's value sits in luxury / eco multipliers most cardholders never reach
+- Most ADV+ lifestyle perks (valet, BOGO cinema, beach clubs) gate on AED 10,000+ monthly spend on top of the salary bar
+- AED 1,260 annual fee has no published spend-waiver path
+editorTake: The FAB Elite is a high-gate premium lifestyle Mastercard, not the ESG-themed 1x card the marketing reads like. The 20 FAB Rewards per AED 1 on luxury brands plus the ADV+ programme is the real proposition — and it only pays back at AED 40,000+ monthly salary with AED 10,000+ monthly spend. Below those thresholds the lifestyle perks won't trigger and the AED 1,260 annual fee won't recover.
 ---
 
-The FAB Elite Credit Card is pitched at the upper end of FAB's salary-transfer
-funnel, bundling a large welcome bonus with an ESG-themed rewards layer. It
-requires a salary transfer to FAB and is positioned for residents willing to
-move primary banking for the joining offer.
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import CardComparison from "~/components/cards/CardComparison.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import EditorScorecard from "~/components/cards/EditorScorecard.astro";
 
-## What you actually get
+The FAB Elite is First Abu Dhabi Bank's flagship lifestyle Mastercard, built
+around a luxury-spend earn boost and the ADV+ lifestyle programme. It sits at
+the top of FAB's salary-transfer funnel and is positioned for residents
+willing to move primary banking to FAB.
 
-The welcome bonus is headline up to 500,000 FAB Rewards — the conversion to
-AED-equivalent value depends on redemption category and is not published as
-a flat rate, so calibrate against your intended redemption channel.
-{/* TODO: verify exact spend threshold and qualifying window against issuer's
-product page — bank summary did not state these terms cleanly. */}
-Base earn is 1 FAB Reward per AED 1 of eligible spend, with bonus earn at
-"eco-friendly" merchants under a sustainability programme that also funds a
-tree-planting initiative tied to spend. Annual fee is AED 2,500 with no
-first-year waiver published at time of verification. FX fee is 2.49% — in
-line with FAB's premium Visa range. The headline lifestyle perk is a
-half-board stay for two adults and two children at a partner resort, redeemed
-through the FAB Mobile app.
+<AtAGlance card="fab-elite" />
 
-## Who should open it
+<GreatCardIf card="fab-elite" />
 
-The Elite is built for the resident who has already committed to moving salary
-to FAB — typically someone in the AED 15,000–30,000 monthly band who values
-the welcome haul over week-to-week rewards optimisation. It also suits buyers
-who genuinely route discretionary spend through ESG-tagged merchants; for
-everyone else, the eco-earn layer is essentially marketing.
+<EditorVerdict card="fab-elite" />
 
-## Where it falls short
+<ProsCons card="fab-elite" />
 
-Salary-transfer lock-in is the headline cost — leaving FAB inside the offer
-tenure triggers clawback under FAB's salary-transfer terms, so model the
-exit before the entry.
-{/* TODO: confirm exact clawback formula against current salary-transfer T&Cs.
-*/}
-The 1x base earn is uncompetitive against the FAB Cashback's 5x on dining and
-shopping, and there is no published annual-fee waiver path.
+## Earn rates
 
-Worth opening for the welcome bonus if you were going to move salary anyway;
-not worth moving salary for.
+The earn structure is bifurcated — a soft 1 FAB Reward per AED 1 base, with
+two large multipliers stacked on top for the niche spend categories FAB has
+designed the card around:
+
+<EarnRateTable card="fab-elite" />
+
+The headline numbers live outside the base earn:
+
+- **20 FAB Rewards per AED 1** on **luxury-tagged merchants** (Hermes, Cartier,
+  Harrods and the rest of FAB's luxury network). **Capped at 200,000
+  Rewards/month** — i.e. AED 10,000 of monthly luxury spend before the multiplier
+  stops paying.
+- **10 FAB Rewards per AED 1** on **eco-tagged merchants** under FAB's
+  sustainability programme. No published per-category cap; counts against the
+  500,000 Rewards/month overall ceiling.
+- **1 FAB Reward per AED 1** on everything else — the base rate.
+
+For comparison, a typical UAE travel-rewards Visa earns 2x AED on partner
+spend. The Elite's 1x base is materially below that; the card recovers value
+only when you actually hit the luxury or eco multipliers.
+
+## Fee summary
+
+<FeeBlock card="fab-elite" />
+
+There is no published annual-fee waiver path on the Elite, so the AED 1,260
+applies every year regardless of card spend. The 2.49% FX markup is in line
+with FAB's premium Mastercard range.
+
+## ADV+ lifestyle programme — what gates on AED 10,000 monthly spend
+
+A significant share of the Elite's perks live inside the ADV+ app and only
+activate while you're maintaining AED 10,000+ in monthly card spend (otherwise
+FAB charges AED 300/month for ADV+ access):
+
+- Free access to 60+ beach clubs, gyms and sports centres across the UAE
+- Up to 40% off the top hotel-group restaurants in the UAE
+- Free 1-hour valet parking at six premium UAE locations — Mall of the
+  Emirates, City Walk, Dubai Mall, Yas Mall, Al Qana, Dubai Hills Mall — five
+  times per month
+- Buy-one-get-one + AED 20 cinema tickets at Reel, Royal, Star, VOX — eight
+  tickets per month
+- 24/7 lifestyle concierge
+
+The not-gated lifestyle perks (those you keep regardless of monthly spend)
+are thinner:
+
+- 20% off Emaar attractions (KidZania, Dubai Aquarium, The Storm Coaster,
+  Zabeel Sports District) and Dubai Holding attractions (Wild Wadi, Dubai
+  Parks and Resorts, Burj Al Arab Inside, The Green Planet, The View at the
+  Palm)
+- 30% off golf worldwide via Mastercard's Thriwe-powered golf programme
+- Free worldwide airport lounge access via Mastercard + DragonPass
+- 3 complimentary airport security fast-track passes per year (Europe, Turkey,
+  Asia)
+- 6 free Careem airport rides per year
+
+## Key conditions to know
+
+<dl class="dp-conditions">
+  <dt>Eligibility</dt>
+  <dd>AED 40,000/month minimum salary with mandatory salary transfer to FAB.
+  The card sits at the top of the FAB salary-transfer funnel; leaving FAB
+  during the offer tenure triggers clawback under standard salary-transfer
+  T&Cs.{/* TODO: confirm exact clawback formula and the offer-tenure window
+  against the current FAB salary-transfer T&Cs (Fact-Check pass). */}</dd>
+
+  <dt>ADV+ access fee</dt>
+  <dd>The ADV+ lifestyle programme is free with the card while you maintain
+  AED 10,000+ in monthly spend. Drop below that and FAB charges AED 300/month
+  for ADV+ continuity. Cinema, valet and beach-club perks live exclusively
+  inside ADV+.</dd>
+
+  <dt>Earn caps</dt>
+  <dd>Overall ceiling 500,000 FAB Rewards/month across all categories.
+  Luxury-spend earn capped separately at 200,000 Rewards/month — equivalent to
+  AED 10,000 of monthly luxury spend at the 20x rate.</dd>
+
+  <dt>Travel protections</dt>
+  <dd>Travel medical insurance up to USD 500,000; travel inconvenience
+  insurance; rental Collision &amp; Loss Damage Waiver up to USD 50,000.
+  Insurance is via Mastercard's premium-tier benefit set, not a FAB-specific
+  programme.</dd>
+
+  <dt>Welcome offer</dt>
+  <dd>FAB does not currently publish a stable welcome-bonus structure for the
+  Elite that we have been able to verify against the issuer's product page.
+  Any 500,000-Rewards or gift-card promotional offer should be checked
+  directly with FAB before applying. The "Gold gift on AED 500,000+ annual
+  spend" perk listed in FAB's marketing materials is an
+  ongoing-spend reward, not a sign-up bonus.</dd>
+</dl>
+
+## FAB Elite vs FAB Cashback
+
+<CardComparison cards={["fab-elite", "fab-cashback"]} />
+
+The Cashback is the natural counter to the Elite at FAB: a much lower salary
+bar (AED 5,000), much lower fee, and a flat 5% cashback on dining, shopping
+and supermarkets that the Elite's 1x base earn can't match. Move up to the
+Elite only when your luxury or ADV+ spend justifies the gating thresholds.
+
+## Watch out for
+
+- **Salary-transfer lock-in.** Mandatory salary transfer to FAB is the price
+  of admission. Plan the exit before the entry — switching primary banking
+  inside the offer tenure can trigger clawback.
+- **Multiplier ceilings move the math.** The 20x luxury earn is the headline,
+  but it stops paying past 200,000 Rewards/month (AED 10,000 of luxury spend).
+  Above that, you're back to 1x on the over-cap purchases.
+- **ADV+ continuity has a cost.** Slip under AED 10,000 of monthly spend and
+  FAB charges AED 300/month to keep the ADV+ programme active — adding up to
+  AED 3,600/year to the effective annual fee on top of the AED 1,260 sticker.
+- **Base earn is weak.** 1x on everyday spend is below where premium
+  UAE travel-rewards cards typically sit (2x AED on travel partners). If most
+  of your spend isn't luxury or eco, the Elite earns less than several lower-
+  fee alternatives.
+- **The eco multiplier is real but narrow.** FAB's eco-tagged merchant list is
+  not published in full; verify your routine merchants are on it before
+  modelling the 10x boost into your card-choice math.
+- **No published spend-waiver.** The AED 1,260 annual fee posts every year,
+  full stop.
+
+## Is it worth it?
+
+For the FAB customer who's at AED 40,000+ monthly salary, already moving
+salary to FAB (or willing to), spending AED 10,000+ a month on the card, AND
+routing a meaningful share of that through either luxury merchants or the
+ADV+ lifestyle perks — the Elite pays back. The 20x luxury earn at the cap is
+~AED 4,000 in Rewards value per month against AED 10,000 of luxury spend; the
+ADV+ valet, beach-club and BOGO cinema perks together easily recover the
+AED 1,260 fee inside a year if used routinely.
+
+Below those thresholds the math collapses. At base earn the card pays 1 FAB
+Reward per AED 1 — below most UAE travel-rewards cards. ADV+ gates lock the
+lifestyle perks behind AED 10,000 monthly spend. The salary bar excludes most
+mass-affluent residents.
+
+A reasonable break-even rule: **AED 40,000+ monthly salary, AED 10,000+
+routine card spend, with a clear plan to route at least AED 5,000/month of
+that through ADV+ perks or luxury merchants.**
+
+## Bottom line
+
+A genuinely premium lifestyle Mastercard with two stand-out earn boosts and a
+rich ADV+ perk set — but only for residents already inside FAB's high-salary
+funnel who'll actively work the multipliers and the ADV+ app.
+**Apply** if your salary clears AED 40,000/month and you'll spend AED 10,000+
+monthly with luxury or ADV+ routing. **Move down to the FAB Cashback** if you
+won't meet either gate — the Cashback's 5% on dining and supermarkets earns
+more on everyday spend than the Elite does, at a fraction of the fee.
+
+<EditorScorecard card="fab-elite" />
