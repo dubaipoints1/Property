@@ -1,0 +1,334 @@
+---
+/*
+  DESIGN SPIKE — non-indexed prototype (2026-05-24).
+  Purpose: compare a recalibrated type scale + laptop-aware width against the
+  Chairman-locked warm-paper system, before proposing any change to global.css.
+
+  Scoped `.sp-*` classes only — this page does NOT touch global.css, so the
+  live site is unaffected. Reuses the existing CSS custom properties
+  (--ink, --green, --paper, ...) so the palette stays on-brand.
+
+  Inspiration (from archived dossiers, not live-scraped):
+   - Head for Points / The Points Guy / OneMileAtATime reading column + type.
+   - Teardown "Tier A" adopt-now patterns: top fact-tile strip, sticky verdict
+     rail, "Great card if / Don't get if", tabular-num data table.
+*/
+import BaseLayout from "~/layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Design spike — type & width prototype"
+  description="Non-indexed prototype comparing a larger type scale and laptop-aware layout."
+  fullWidth
+>
+  <div class="sp-root" data-pagefind-ignore>
+    <div class="sp-flag">
+      <strong>Design spike</strong> — non-indexed prototype. Not linked from
+      navigation, not indexed by search. Compare against a live page (e.g.
+      <code>/cards/…</code>) on a laptop. Nothing here ships without Chairman sign-off.
+    </div>
+
+    <article class="sp-article">
+      <header class="sp-head">
+        <p class="sp-eyebrow">Credit card review · Cashback</p>
+        <h1 class="sp-title">Sample Bank Cashback Signature: the dirham-first verdict</h1>
+        <p class="sp-lede">
+          A flat-rate cashback card with a salary-transfer waiver and no
+          category juggling. We tested it against the AED 1,200 fee and the
+          spend it actually takes to break even.
+        </p>
+        <div class="sp-meta">
+          <span><strong>Verified</strong> 24 May 2026</span>
+          <span class="sp-sep">·</span>
+          <span>9 min read</span>
+          <span class="sp-sep">·</span>
+          <span>By the Cards desk</span>
+        </div>
+      </header>
+
+      <div class="sp-grid">
+        <div class="sp-main">
+          <!-- Fact-tile strip — competitor "above the fold" pattern -->
+          <div class="sp-facts">
+            <div class="sp-fact">
+              <span class="sp-fact-k">Annual fee</span>
+              <span class="sp-fact-v">AED 1,200</span>
+              <span class="sp-fact-n">Waived on AED 15k+ salary</span>
+            </div>
+            <div class="sp-fact">
+              <span class="sp-fact-k">Cashback</span>
+              <span class="sp-fact-v">1.5%</span>
+              <span class="sp-fact-n">Flat, uncapped</span>
+            </div>
+            <div class="sp-fact">
+              <span class="sp-fact-k">Min. salary</span>
+              <span class="sp-fact-v">AED 10,000</span>
+              <span class="sp-fact-n">Or AED 30k deposit</span>
+            </div>
+            <div class="sp-fact">
+              <span class="sp-fact-k">Break-even</span>
+              <span class="sp-fact-v">AED 80,000/yr</span>
+              <span class="sp-fact-n">If fee not waived</span>
+            </div>
+          </div>
+
+          <div class="sp-prose">
+            <p>
+              The reading column below is set at roughly 70 characters per line
+              at 19px — the band Head for Points, The Points Guy and One Mile at
+              a Time all settle into. The current site caps prose at 65ch but
+              renders it inside an 880px article that floats left in a 1,280px
+              shell, so on a wide laptop the text hugs the left edge with a large
+              empty margin to its right. This layout instead uses that horizontal
+              space for a sticky facts rail.
+            </p>
+            <h2>What you actually earn</h2>
+            <p>
+              At a flat 1.5% with no categories and no cap, the maths is
+              refreshingly dull. Spend AED 8,000 a month and you bank AED 120 —
+              AED 1,440 a year, comfortably ahead of the fee even before the
+              salary waiver. The card stops being interesting the moment a
+              category card beats 1.5% on your largest line of spend.
+            </p>
+            <h2>The salary-transfer waiver</h2>
+            <p>
+              Route an AED 15,000 salary and the AED 1,200 fee disappears. That
+              is the whole proposition: a no-thought card for a transferred
+              salary, not a card you optimise. If your salary lands elsewhere,
+              you need AED 80,000 of annual spend just to cover the fee in
+              cashback — at which point a category card is the better tool.
+            </p>
+            <h3>Who it suits</h3>
+            <p>
+              Expats consolidating onto one salary account who want cashback
+              without a spreadsheet. It is the floor, not the ceiling, of a UAE
+              points strategy.
+            </p>
+          </div>
+
+          <!-- Two-up decision block — teardown Tier A -->
+          <div class="sp-decide">
+            <div class="sp-decide-col is-yes">
+              <span class="sp-decide-h">Great card if…</span>
+              <ul>
+                <li>Your AED 15k+ salary lands here, waiving the fee.</li>
+                <li>You want flat cashback with zero category tracking.</li>
+                <li>It is your only card and simplicity beats optimisation.</li>
+              </ul>
+            </div>
+            <div class="sp-decide-col is-no">
+              <span class="sp-decide-h">Don't get it if…</span>
+              <ul>
+                <li>Your salary lands at another bank — the fee bites.</li>
+                <li>You'll chase 2–5% category cards on dining or travel.</li>
+                <li>You value miles transfers over flat dirham cashback.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="sp-prose">
+            <h2>The numbers, side by side</h2>
+            <p>
+              Tabular figures, AED-native, right-aligned with tabular numerals so
+              the digits line up — the data-density competitors lean on.
+            </p>
+          </div>
+
+          <table class="sp-table">
+            <thead>
+              <tr><th>Annual spend</th><th class="num">Cashback</th><th class="num">Net of fee*</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>AED 40,000</td><td class="num">AED 600</td><td class="num">−AED 600</td></tr>
+              <tr><td>AED 80,000</td><td class="num">AED 1,200</td><td class="num">AED 0</td></tr>
+              <tr class="is-hi"><td>AED 120,000</td><td class="num">AED 1,800</td><td class="num">AED 600</td></tr>
+              <tr><td>AED 200,000</td><td class="num">AED 3,000</td><td class="num">AED 1,800</td></tr>
+            </tbody>
+          </table>
+          <p class="sp-foot">*Assumes the AED 1,200 fee is not waived. With a qualifying salary transfer, net cashback equals gross.</p>
+        </div>
+
+        <!-- Sticky rail — fills laptop width instead of empty margin -->
+        <aside class="sp-rail">
+          <div class="sp-verdict">
+            <span class="sp-verdict-label">Our take</span>
+            <p>
+              A competent default. Waive the fee with your salary and the 1.5%
+              flat rate quietly out-earns most do-nothing accounts — but it is a
+              floor, not a strategy.
+            </p>
+            <div class="sp-score">
+              <span class="sp-score-n">7.5</span>
+              <span class="sp-score-d">/10 · Cashback value</span>
+            </div>
+          </div>
+          <nav class="sp-toc">
+            <span class="sp-toc-h">On this page</span>
+            <a href="#">What you actually earn</a>
+            <a href="#">The salary-transfer waiver</a>
+            <a href="#">The numbers, side by side</a>
+          </nav>
+        </aside>
+      </div>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ── Spike-scoped tokens ──────────────────────────────────────────────
+     Larger type scale than live (17px UI / 19px prose vs 16/18) and a
+     laptop-aware two-column shell. Reuses global --ink/--green/--paper. */
+  .sp-root { --sp-measure: 70ch; --sp-rail: 300px; }
+
+  .sp-flag {
+    max-width: 1120px; margin: 0 auto 8px; padding: 12px 20px;
+    background: var(--shade-1); border: 1px dashed var(--line);
+    border-radius: 8px; font-size: 13px; color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .sp-flag code { font-size: 12px; background: var(--paper); padding: 1px 5px; border-radius: 3px; }
+
+  .sp-article {
+    max-width: 1120px; margin: 0 auto; padding: 24px 20px 80px;
+  }
+
+  /* ── Head ── */
+  .sp-head { max-width: var(--sp-measure); margin-bottom: 36px; }
+  .sp-eyebrow {
+    font-size: 12px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--green); margin-bottom: 14px;
+  }
+  .sp-title {
+    font-family: 'Fraunces', serif; font-weight: 700;
+    font-size: clamp(34px, 5.4vw, 52px); line-height: 1.05;
+    letter-spacing: -1.4px; color: var(--ink); text-wrap: balance;
+    margin: 0;
+  }
+  .sp-lede {
+    margin-top: 18px; font-size: 21px; line-height: 1.5;
+    color: var(--ink-soft); text-wrap: pretty;
+  }
+  .sp-meta {
+    margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px;
+    font-size: 13px; color: var(--muted);
+  }
+  .sp-meta strong { color: var(--ink); font-weight: 600; }
+  .sp-sep { color: var(--line); }
+
+  /* ── Two-column grid (laptop-aware) ── */
+  .sp-grid { display: grid; gap: 28px; }
+  @media (min-width: 1040px) {
+    .sp-grid {
+      grid-template-columns: minmax(0, 1fr) var(--sp-rail);
+      gap: 56px; align-items: start;
+    }
+  }
+  .sp-main { min-width: 0; }
+
+  /* ── Fact-tile strip ── */
+  .sp-facts {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line);
+    border-radius: 10px; overflow: hidden; margin-bottom: 36px;
+  }
+  @media (min-width: 600px) { .sp-facts { grid-template-columns: repeat(4, 1fr); } }
+  .sp-fact {
+    background: var(--paper); padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .sp-fact-k {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .sp-fact-v {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px;
+    color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.1;
+  }
+  .sp-fact-n { font-size: 12px; color: var(--ink-soft); line-height: 1.4; }
+
+  /* ── Prose (19px / ~70ch) ── */
+  .sp-prose { max-width: var(--sp-measure); font-size: 19px; line-height: 1.72; color: var(--ink); }
+  .sp-prose p { margin: 0 0 24px; text-wrap: pretty; }
+  .sp-prose h2 {
+    font-family: 'Fraunces', serif; font-weight: 700;
+    font-size: clamp(27px, 4vw, 34px); letter-spacing: -0.6px;
+    color: var(--green); line-height: 1.18; margin: 48px 0 16px;
+  }
+  .sp-prose h3 {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px;
+    letter-spacing: -0.3px; color: var(--ink); margin: 32px 0 12px; line-height: 1.3;
+  }
+
+  /* ── Decision two-up ── */
+  .sp-decide {
+    display: grid; gap: 16px; margin: 36px 0; max-width: var(--sp-measure);
+  }
+  @media (min-width: 560px) { .sp-decide { grid-template-columns: 1fr 1fr; } }
+  .sp-decide-col {
+    padding: 18px 20px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .sp-decide-col.is-yes { border-left: 4px solid var(--green); }
+  .sp-decide-col.is-no { border-left: 4px solid var(--muted); }
+  .sp-decide-h {
+    display: block; font-size: 12px; font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+  .sp-decide-col.is-yes .sp-decide-h { color: var(--green); }
+  .sp-decide-col.is-no .sp-decide-h { color: var(--ink-soft); }
+  .sp-decide ul { margin: 0; padding-left: 18px; }
+  .sp-decide li { font-size: 15px; line-height: 1.5; color: var(--ink); margin-bottom: 8px; }
+  .sp-decide li:last-child { margin-bottom: 0; }
+
+  /* ── Data table ── */
+  .sp-table {
+    width: 100%; max-width: var(--sp-measure); border-collapse: collapse;
+    margin: 8px 0 6px; font-size: 16px;
+  }
+  .sp-table th, .sp-table td {
+    padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left;
+  }
+  .sp-table th {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .sp-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .sp-table tbody tr.is-hi { background: var(--shade-1); }
+  .sp-table td { color: var(--ink); }
+  .sp-foot { max-width: var(--sp-measure); font-size: 13px; color: var(--ink-soft); margin-top: 8px; }
+
+  /* ── Sticky rail ── */
+  .sp-rail { display: flex; flex-direction: column; gap: 20px; }
+  @media (min-width: 1040px) {
+    .sp-rail { position: sticky; top: 24px; }
+  }
+  .sp-verdict {
+    background: var(--navy); color: #fff; padding: 22px; border-radius: 12px;
+  }
+  .sp-verdict-label {
+    display: block; font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 10px;
+  }
+  .sp-verdict p {
+    font-family: 'Fraunces', serif; font-weight: 500; font-size: 17px;
+    line-height: 1.5; margin: 0 0 16px; color: #f4f2ec;
+  }
+  .sp-score { display: flex; align-items: baseline; gap: 6px; }
+  .sp-score-n { font-family: 'Fraunces', serif; font-weight: 700; font-size: 32px; color: #fff; }
+  .sp-score-d { font-size: 12px; color: rgba(255,255,255,0.7); }
+
+  .sp-toc {
+    border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px;
+    background: var(--paper);
+  }
+  .sp-toc-h {
+    display: block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+  }
+  .sp-toc a {
+    display: block; font-size: 14px; line-height: 1.4; color: var(--ink);
+    text-decoration: none; padding: 6px 0; border-top: 1px solid var(--line);
+  }
+  .sp-toc a:first-of-type { border-top: 0; }
+  .sp-toc a:hover { color: var(--green); }
+</style>
