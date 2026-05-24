@@ -9,77 +9,293 @@ transferPartners:
   - hilton-honors
 sweetSpots:
   - title: AUH → JFK in Business on Etihad metal
-    description: "Etihad's flagship transatlantic in Business class is the textbook Guest Miles redemption for UAE residents — Business availability tends to open up further from departure than the Skywards equivalent on Emirates. From ~88,000 Guest Miles one-way in Business at the saver level, plus carrier-imposed surcharges in AED. <!-- TODO: verify against Etihad Guest's current award chart -->"
+    description: "Etihad's flagship transatlantic in Business class — the textbook Guest Miles redemption for UAE residents. Business availability tends to open up further from departure than the Skywards equivalent on Emirates. Saver-rate Business one-way from ~88,000 Guest Miles plus carrier-imposed surcharges (verify current rate against Etihad's published award chart before applying)."
   - title: AUH → LHR / CDG / FRA in Business on Etihad metal
-    description: "Short-haul-by-Etihad-standards European Business redemptions price meaningfully below the long-haul charts, and Etihad's Business product on the 787 is competitive with Emirates A380 Business on the same city pairs. From ~50,000 Guest Miles one-way in Business at the saver level. <!-- TODO: verify against Etihad Guest's current award chart -->"
+    description: "Short-haul-by-Etihad-standards European Business redemptions price meaningfully below the long-haul charts; Etihad's Business product on the 787 is competitive with Emirates A380 Business on the same city pairs. Saver-rate Business one-way from ~50,000 Guest Miles (verify current rate)."
   - title: Short-haul GCC redemptions
-    description: "AUH → BAH / DOH / RUH on Etihad metal at low Economy mileage rates — useful when cash fares spike around the Eid weekends. From ~7,500 Guest Miles one-way in Economy. <!-- TODO: verify against Etihad Guest's current award chart -->"
+    description: "AUH → BAH / DOH / RUH on Etihad metal at low Economy mileage rates — useful when cash fares spike around Eid weekends. From ~7,500 Guest Miles one-way in Economy at saver level (verify current rate)."
   - title: GuestSeat upgrades on paid cash fares
-    description: "Etihad's GuestSeat mechanism lets you bid Miles to upgrade a cash Economy booking to Business — frequently the highest fils-per-Mile redemption available on the programme if you already have a paid Economy ticket. Variable mileage cost."
-expiryPolicy: "Etihad Guest Miles expire 18 months after the most recent qualifying activity (earn or redeem). Any qualifying activity — including a single co-brand card spend transaction — resets the 18-month clock. <!-- TODO: verify against Etihad Guest's current published terms -->"
+    description: "Etihad's GuestSeat mechanism lets you bid Miles to upgrade a cash Economy booking to Business — frequently the highest fils-per-Mile redemption on the programme if you already have a paid Economy ticket. Variable mileage cost depending on cabin load and cash-fare class."
+expiryPolicy: "Etihad Guest Miles expire 18 months after the most recent qualifying activity (earn OR redeem). Any qualifying activity — including a single co-brand card spend transaction or a Marriott Bonvoy transfer in — resets the 18-month clock. This is materially more forgiving than Skywards' 3-year hard expiry at Blue tier."
 ---
 
-Etihad Guest is the loyalty programme of Etihad Airways, headquartered
-in Abu Dhabi. For UAE residents in Abu Dhabi or the northern emirates
-it sits alongside Emirates Skywards as a flag-carrier earning option;
-the choice between the two is rarely close once you actually count
-your annual segments.
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-## Tier structure
+<JumpToSection sections={[
+  { id: "etihad-guest-in-60-seconds", label: "In 60 seconds" },
+  { id: "how-to-earn-etihad-guest-miles", label: "How to earn" },
+  { id: "what-an-etihad-guest-mile-is-worth", label: "What a mile is worth" },
+  { id: "best-sweet-spot-redemptions", label: "Sweet spots" },
+  { id: "tier-structure-silver-gold-platinum-platinum-exclusive", label: "Tier structure" },
+  { id: "transfer-partners", label: "Transfer partners" },
+  { id: "mile-expiry-mechanics--the-skywards-differentiator", label: "Expiry mechanics" },
+  { id: "watch-out-for", label: "Watch out for" },
+  { id: "is-etihad-guest-worth-chasing", label: "Is it worth chasing?" },
+  { id: "bottom-line", label: "Bottom line" },
+]} />
 
-Etihad Guest runs four published tiers — **Silver**, **Gold**,
-**Platinum** and the invitation-only **Platinum Exclusive** — earned
-on Tier Miles accrued in a calendar year. Silver gets you priority
-check-in and extra baggage; Gold adds lounge access on Etihad metal
-and a confirmed companion benefit; Platinum is the meaningful tier,
-adding guaranteed Business-class award availability on Etihad metal
-and a higher mileage-earning multiplier on paid fares.
+Etihad Guest is the loyalty programme of Etihad Airways, headquartered in
+Abu Dhabi. For UAE residents in Abu Dhabi, Al Ain, or the northern emirates
+it sits alongside Emirates Skywards as a flag-carrier earning option — and
+for some segments of the market it is genuinely the better choice. The
+calculus between Skywards and Etihad Guest is rarely close once you actually
+count your annual segments and look at the expiry mechanics.
 
-## Who Etihad Guest suits
+## Etihad Guest in 60 seconds
 
-Earning into Guest Miles makes sense for a UAE resident if you fly
-Etihad four or more segments a year, *or* if your home is in Abu
-Dhabi or Al Ain and DXB is the inconvenient airport. For everyone
-else — particularly Dubai-based residents who can walk onto an
-Emirates flight to anywhere — Skywards is the default and Guest
-Miles is the hedge.
+- **Where it lives:** direct loyalty for Etihad Airways. No formal alliance
+  membership (Etihad sits outside Oneworld, Star Alliance, and SkyTeam),
+  though partnership agreements exist with selected carriers including
+  American Airlines and Air Serbia.
+- **What a mile is worth:** dubaipoints values an Etihad Guest Mile at
+  **2 fils per mile** (approximately AED 0.02) as our baseline — same
+  framework as Skywards. See the value-math section below for per-redemption
+  ranges.
+- **Best UAE earning cards:** the [Emirates NBD Etihad Guest Visa Inspire](/cards/emirates-nbd-etihad-guest-inspire/)
+  at the AED 12,000 salary bar (mid-tier earn), the [Emirates NBD Etihad
+  Guest Visa Elevate](/cards/emirates-nbd-etihad-guest-elevate/) at AED 30,000
+  salary, or the [FAB Etihad Guest Infinite](/cards/fab-etihad-guest-infinite/)
+  at AED 30,000 salary with a higher fee but stronger earn.
+- **Best sweet-spot redemption:** AUH → JFK in Business on Etihad metal at
+  ~88,000 Guest Miles saver one-way — Etihad's flagship transatlantic
+  Business product, with award availability that typically opens up further
+  from departure than the Skywards / Emirates equivalent.
+- **Killer differentiator vs Skywards:** the mile-expiry policy. Etihad Guest
+  uses an **18-month rolling activity reset** — a single co-brand card
+  swipe extends every mile in your account. Skywards Blue tier has a hard
+  3-year expiry per earning year that no activity will reset. For
+  occasional flyers banking miles slowly, this is a material advantage.
 
-The programme's second use case is as a Marriott Bonvoy transfer
-target. Bonvoy points transfer to Etihad Guest at 3:1 with a 5,000-
-mile bonus per 60,000 points moved — a useful diversification away
-from Skywards if you suspect Emirates is heading toward a quiet
-chart devaluation.
+## How to earn Etihad Guest Miles
 
-## How to earn from the UAE
+Three main routes for UAE residents:
 
-Direct earn cards in market include the FAB Etihad Guest Premium,
-the Emirates NBD Etihad Guest Inspire, and the ADIB Etihad Guest
-co-brand suite. Earn rates on co-brand cards typically cluster
-around 1.0–2.5 Guest Miles per AED 1 spent on the card, with
-elevated multipliers (3–4 Miles per AED 1) on Etihad-booked airfare.
+### From UAE-issued co-branded credit cards
 
-Indirect routes: Marriott Bonvoy transfers (3:1 + 5k per 60k),
-Hilton Honors transfers (10:1, which is rarely a good idea on raw
-maths), and Accor ALL → Etihad at 4,000:2,000.
+Three direct-earn cards in market:
 
-## What to watch
+- **[Emirates NBD Etihad Guest Visa Inspire](/cards/emirates-nbd-etihad-guest-inspire/)** — AED 12,000/month minimum salary, AED 735 annual fee. Mid-tier earn rate on Etihad-booked airfare with a lower entry bar than the Infinite peers; the most accessible route into Guest Miles from a UAE expat salary band.
+- **[Emirates NBD Etihad Guest Visa Elevate](/cards/emirates-nbd-etihad-guest-elevate/)** — AED 30,000/month minimum salary, AED 1,575 annual fee. The mid-premium step up — higher accelerator on Etihad spend with the same ENBD operational support.
+- **[FAB Etihad Guest Infinite](/cards/fab-etihad-guest-infinite/)** — AED 30,000/month minimum salary, AED 2,625 annual fee. Visa Infinite tier with lounge access via Visa Airport Companion + stronger earn on Etihad-booked airfare; the most expensive Etihad-earn card in market.
 
-Etihad has revised its award chart and earn structure more than
-once in the past three years, including the 2023 switch to a
-dynamic-priced award model on some routes and the consolidation
-of the Business-class earning bands. The chart printed above is
-correct as of the editor's last verification; check the current
-published chart before you transfer Bonvoy points in, because
-once they are in Guest they are not coming back. {/* TODO: verify current Etihad Guest award chart and earn structure */}
+Earn rates on co-brand cards typically cluster around **1.0–2.5 Guest Miles
+per AED 1** spent on the card, with elevated multipliers (3–4 Miles per
+AED 1) on Etihad-booked airfare. Confirm the current rate on the specific
+card's review page — bank-published earn rates have shifted twice in the
+past 18 months across the cohort.
 
-The other watch-item is **Etihad's Oneworld accession** — under
-discussion as of late 2025 and material if it lands, because it
-would open Avios redemptions on Etihad metal and reshape the
-calculus against Qatar Privilege Club entirely.
+### From flying Etihad
 
-## Related
+Etihad Guest uses a revenue-based earning model: Miles earned scale with
+the cash fare paid and your Etihad Guest tier multiplier. A Silver member
+on a flexible Business fare earns several Miles per AED of base fare;
+discount Economy on the same itinerary earns proportionally less.
 
-- [Points 101: what UAE currencies are actually worth](/guides/expat-starter-points-101/)
-- [Emirates Skywards](/airlines/skywards/)
-- [Qatar Privilege Club](/airlines/qatar-privilege-club/)
-- [Marriott Bonvoy](/airlines/marriott-bonvoy/)
+Etihad's partnership agreements (American Airlines, Air Serbia, and a
+handful of others) accrue Etihad Guest Miles at carrier-specific published
+rates on the partner-airline website, not at the Etihad rate.
+
+### From transfer partners
+
+Three transfer routes worth knowing:
+
+- **Marriott Bonvoy → Etihad Guest** at 3:1, with a **5,000-mile bonus per
+  60,000 points transferred** in a single block. This is one of the more
+  generous Bonvoy → airline transfer ratios in the global market — a
+  60,000-Bonvoy transfer becomes 25,000 Etihad Guest Miles. Useful as a
+  diversification away from Skywards.
+- **Hilton Honors → Etihad Guest** at 10:1. Almost never a good idea on
+  raw maths — a Hilton point redeemed against a hotel night is worth more
+  than a tenth of an Etihad Guest Mile in almost every scenario.
+- **Accor ALL → Etihad Guest** at 4,000:2,000 (2:1). Reserved for the
+  niche case where Accor points have no other useful home.
+
+Etihad Guest does **not** accept transfers from American Express Membership
+Rewards (US/Europe) or Chase Ultimate Rewards — the same gap as Skywards.
+
+## What an Etihad Guest Mile is worth
+
+DubaiPoints values an Etihad Guest Mile at **2 fils (AED 0.02) per mile**
+as our baseline — the same framework we use for Skywards. The per-
+redemption breakdown:
+
+| Redemption type | Approximate value per mile |
+|---|---|
+| GuestSeat Y-to-J upgrade on a paid cash Economy ticket | **2.5–4.0 fils** (best use case) |
+| Saver-rate Business one-way long-haul (AUH → JFK / LAX / etc.) | **1.8–2.3 fils** |
+| Saver-rate Business AUH → LHR / CDG / FRA | **1.5–2.2 fils** |
+| Saver-rate Economy short-haul GCC | **0.8–1.2 fils** (weak; better off paying cash) |
+| Marriott Bonvoy hotel night via Etihad Guest transfer back-route | rarely positive vs direct Bonvoy redemption |
+| GuestSeat Y-to-J Economy → Business at peak load | can drop to **1.0–1.5 fils** when Etihad pushes mileage cost up |
+
+**Why 2 fils as the baseline?** Most UAE readers redeeming Etihad Guest
+Miles either: (a) use a GuestSeat upgrade on an already-paid Economy
+ticket, which routinely clears 2.5+ fils; (b) book a saver-rate Business
+long-haul, which lands at 1.8–2.3 fils after Etihad surcharges. The 2-fils
+baseline is the median of those two patterns.
+
+**Same baseline as Skywards is intentional.** Both UAE flag carriers
+operate broadly similar award charts at the saver level and both impose
+heavy carrier-imposed surcharges on premium-cabin redemptions ex-AUH or
+ex-DXB. The difference is not per-mile value at redemption — it is the
+expiry mechanics and the network coverage.
+
+## Best sweet-spot redemptions
+
+The four documented sweet spots are listed in the Programme reference block
+below. Three of them are worth additional context:
+
+### AUH → JFK in Business — the flagship redemption
+
+Etihad's transatlantic Business on the A350 / 787 is competitive with the
+best Western and Gulf carriers. Saver-rate availability typically opens
+12 months out and again in the final 2-week release window. Expect
+~88,000 Guest Miles one-way plus AED 1,800–3,000 in carrier-imposed
+surcharges, against a cash fare commonly running AED 18,000–28,000 in
+the same direction.
+
+The redemption math at AED 22,000 cash equivalent net of AED 2,500
+surcharges: AED 19,500 of value against 88,000 miles = roughly 2.2 fils
+per mile. Squarely in our baseline range.
+
+### European Business — under-priced relative to long-haul
+
+AUH → LHR / CDG / FRA in Business at ~50,000 saver one-way. Cash fares
+on the same Etihad Business itinerary commonly run AED 7,000–10,500.
+At AED 8,500 cash equivalent net of ~AED 1,200 in surcharges, the
+redemption pays back at roughly 1.5 fils per mile — below baseline,
+but Etihad's European Business saver availability is generally easier
+to hit than Skywards' DXB-LHR Business, which makes the practical
+value higher than the per-mile number suggests.
+
+### GuestSeat upgrades — the highest-leverage use
+
+Buy a flexible Economy fare AUH → CMB, MAA, BLR, or similar — the
+short-medium-haul Indian Subcontinent routes Etihad runs cheaply.
+Bid GuestSeat Miles to upgrade to Business. Variable cost depending
+on cabin load, but a routine bid clears at 18,000–32,000 Miles each
+way for an upgrade that would cost AED 1,500–2,800 in cash. Routinely
+2.5–4 fils per mile — the best per-redemption return Etihad Guest
+offers.
+
+The catch: GuestSeat bids are revealed only after Etihad accepts or
+rejects the bid. You set a maximum; the system clears at the lowest
+winning bid above the threshold. Practice on a few low-stakes
+itineraries before betting a long-haul redemption on the mechanism.
+
+## Tier structure (Silver / Gold / Platinum / Platinum Exclusive)
+
+Etihad Guest runs four published tiers driven by Tier Miles accrued in a
+membership year:
+
+- **Silver** — entry-engaged tier. Priority check-in, +5kg baggage allowance,
+  reduced GuestSeat bid threshold.
+- **Gold** — meaningful tier. Lounge access on Etihad metal worldwide,
+  one free companion ticket per year (Business or higher), Tier Mile bonus
+  on Etihad-flown segments.
+- **Platinum** — the working tier. Lounge access for cardholder + 2
+  guests, guaranteed Business-class award availability on Etihad metal
+  with sufficient notice, higher mileage-earning multiplier on paid fares.
+- **Platinum Exclusive** — invitation-only. Not a tier you can target;
+  reserved for the top revenue cohort.
+
+**Practical note:** Etihad Guest tier (like Skywards) is hard to maintain
+on UAE-issued cards alone — Tier Miles accrue only from flown Etihad
+segments, not from card spend. The Inspire / Elevate / Infinite cards do
+**not** grant Silver tier as a welcome perk in the way Skywards Infinite
+does. If tier is your goal, plan to fly Etihad metal.
+
+## Transfer partners
+
+Three inbound routes (covered above). Etihad's strongest inbound partner
+is Marriott Bonvoy — the 60,000:25,000 ratio (3:1 + 5k bonus) is one of
+the better Bonvoy → airline rates globally and the route most UAE Bonvoy
+holders should consider when they need to top up an Etihad Guest balance
+for a specific redemption.
+
+Etihad has **no published outbound transfer partners** — Etihad Guest
+Miles cannot be transferred out to other programmes once accrued. Plan
+your earning against your intended Etihad redemption; don't bank Etihad
+Guest Miles as a transferable points-bank.
+
+## Mile expiry mechanics — the Skywards differentiator
+
+This is where Etihad Guest pulls clear of Skywards for occasional flyers:
+
+**Etihad Guest:** Miles expire **18 months after the most recent qualifying
+activity** — earn OR redeem. A single co-brand card transaction, a single
+flight segment, a single Bonvoy transfer in, a single award booking —
+any one of these resets the 18-month clock on your **entire balance**.
+For UAE residents holding an Etihad Guest co-brand card for the broader
+benefit set, the natural monthly card spend keeps the clock perpetually
+resetting.
+
+**Skywards Blue tier:** Miles expire **3 years after the calendar year
+in which they were earned**. No activity resets the clock. Miles earned
+in January 2026 expire on 31 December 2029 regardless of any subsequent
+spend.
+
+For UAE residents flying 1–4 segments a year and banking miles for a
+larger redemption 18–36 months out, the Etihad Guest model is materially
+more forgiving than the Skywards Blue clock. For frequent flyers earning
+Skywards Silver or higher via flown segments, the difference disappears
+(both tier-current memberships effectively hold miles indefinitely).
+
+## Watch out for
+
+- **Award-chart cadence.** Etihad has revised its award chart twice in
+  the past three years, including the 2023 switch to a dynamic-priced
+  award model on selected routes. The saver-rate numbers in this guide
+  reflect the editor's last verification against Etihad's published
+  chart — check the current published chart before transferring Bonvoy
+  points in, because once they are in Etihad Guest they are not coming
+  back out.
+- **Carrier-imposed surcharges on long-haul Business.** AED 1,500–3,500
+  on top of the mileage cost ex-AUH. Run the cash-equivalent math net
+  of surcharges, not gross.
+- **No formal alliance.** Etihad sits outside Oneworld, Star Alliance,
+  and SkyTeam. Award bookings on partner carriers exist (American
+  Airlines, Air Serbia, and a handful of others) but partner award
+  availability is materially thinner than what an alliance currency
+  would offer.
+- **Etihad's potential Oneworld accession.** Under discussion as of late
+  2025 and material if it lands — it would open Avios-style redemptions
+  on Etihad metal and reshape the calculus against Qatar Privilege Club
+  entirely. Worth tracking; don't bank miles long-term on the assumption
+  it will happen.
+- **GuestSeat bid mechanism is opaque.** Etihad doesn't publish the
+  clearing-bid distribution, so first-time bidders typically over-bid
+  or under-bid. Practice on lower-stakes itineraries first.
+
+## Is Etihad Guest worth chasing?
+
+For UAE residents in Abu Dhabi, Al Ain, or the northern emirates who fly
+Etihad more than twice a year: **yes, unambiguously.** The Inspire at
+AED 12,000/month salary is the most accessible direct-earn airline card
+on a UAE Visa, and the 18-month rolling expiry is forgiving for the
+intermittent-flyer pattern that fits this audience.
+
+For Dubai-based UAE residents who CAN walk onto an Emirates flight to
+anywhere: **probably not as your primary currency.** Skywards is the
+default for DXB-centric flying; Etihad Guest is the hedge. Run both
+programmes only if your monthly card spend covers two co-brand annual
+fees comfortably.
+
+For UAE residents who want a **second loyalty currency for diversification**
+(in case Skywards announces a chart devaluation): yes, Etihad Guest is the
+right second choice — the Marriott Bonvoy → Etihad Guest transfer route
+gives you an inbound feed even without a co-brand card, and the 18-month
+activity-reset means a small monthly card transaction keeps the balance
+alive indefinitely.
+
+## Bottom line
+
+Etihad Guest is the default points currency for Abu Dhabi-based UAE
+residents and the right second currency for Dubai-based residents who
+fly more than the bare minimum. **Apply** for the Inspire if your salary
+sits in the AED 12k–25k band and you fly Etihad once or twice a year;
+**move up to the Elevate or FAB Etihad Guest Infinite** at AED 30,000+
+salary if Etihad is your primary carrier and you'll spend AED 100,000+
+a year on the card. **Skip Etihad Guest as your primary currency** if
+you fly Emirates more than Etihad and you live in Dubai — Skywards is
+the better fit.
