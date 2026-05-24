@@ -373,6 +373,64 @@ above remains in force until the Chairman approves a swap.
   (`REPLACE_WITH_CLOUDFLARE_WEB_ANALYTICS_TOKEN`) — do not commit a
   real token without coordinating.
 
+## Network allowlist (Claude Code on the web)
+
+The web execution environment is configured with the **"allow all
+domains"** outbound network policy, but in practice that label is
+misleading: the runtime still enforces an internal allowlist and
+hosts not on it return `403 Host not in allowlist` regardless of
+the policy setting. A `000` (no resolve) result is the same class
+of failure presenting as a DNS miss.
+
+Confirmed status as of 2026-05-24:
+
+| Host | Status | Use case blocked |
+|---|---|---|
+| `github.com` | 200 ✓ | — |
+| `registry.npmjs.org` | 200 ✓ | — |
+| `images.unsplash.com` | 403 | Editorial hero imagery (stock) |
+| `images.pexels.com` | 403 | Editorial hero imagery (stock) |
+| `news.marriott.com` | 403 | Hotel-loyalty press library (per §10 amendment) |
+| `content.presspage.com` | 403 | Bank / issuer press kits hosted on Presspage |
+| `www.emirates.com` | 403 | Emirates Media Centre — primary press library |
+| `www.etihad.com` | 403 | Etihad press kit |
+| `media.flydubai.com` | 000 | flydubai press centre |
+
+**Operational consequences:**
+
+- The Head of Research cannot fetch issuer press-library imagery
+  directly from a web session even though the 2026-05-21 amendment
+  licences that use. Image sourcing for editorial work must happen
+  on a workstation or via a separate channel until the allowlist
+  is widened.
+- Firecrawl scraping of issuer websites that resolve through these
+  hosts will fail. The scrape pipeline (`scripts/scrape/*`) runs in
+  GitHub Actions, which uses a different network egress and is not
+  affected — but a manual `npm run scrape:fab` from a web session
+  will return `status: "fail"` on the affected hosts.
+- Editorial workflows that read airline / bank pages for fact-check
+  (e.g. Fact-Checker verifying a route, fare, or fee against the
+  issuer's own page) must rely on archived dossier excerpts in
+  `.council/research/`, not a fresh `WebFetch`.
+
+**Action items:**
+
+- Raise these hosts with the environment owner to be added to the
+  effective allowlist. The minimum viable set for editorial
+  operations is: `images.unsplash.com`, `images.pexels.com`,
+  `www.emirates.com`, `www.etihad.com`, `media.flydubai.com`,
+  `news.marriott.com`, `content.presspage.com`. Equivalent press
+  centres for Qatar Airways, Saudia, ADCB, FAB, Emirates NBD,
+  ENBD, Mashreq, RAKBANK, and DIB should be added at the same time.
+- Until then, dossier preparation that needs these hosts is a
+  "workstation only" task and the brief Stage 3 output must note
+  the source-fetch channel used.
+
+This section is descriptive of observed behaviour, not a policy
+change. The Charter's §10 imagery amendment (2026-05-21) still
+governs licensing; the allowlist is an infrastructure constraint
+that prevents executing on that policy from a web session.
+
 ## Branch & commit conventions
 
 - Cards-data PRs from the scrape workflow: branch
