@@ -32,6 +32,12 @@ const banks = defineCollection({
       website: z.string().url().optional(),
     }),
     cards: z.array(reference("cards")).default([]),
+    /** Optional reward-currency overview for the bank hub. Falls back to
+        a placeholder when absent. Qualitative prose only — no typed
+        numerics per Charter §6. */
+    rewardCurrencies: z.string().optional(),
+    /** Related guides surfaced in the hub's reading section. */
+    relatedGuides: z.array(reference("guides")).default([]),
   }),
 });
 

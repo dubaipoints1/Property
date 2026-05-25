@@ -1,6 +1,6 @@
 ---
 import BankHubLayout from "~/layouts/BankHubLayout.astro";
-import { getCollection, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import { getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getCardsByBank } from "~/lib/cardsData";
@@ -14,6 +14,10 @@ const { bank } = Astro.props;
 const { Content } = await render(bank);
 const offers = await getOffersForBank(bank.id);
 const allCards = getCardsByBank(bank.id);
+
+const relatedGuides = await Promise.all(
+  (bank.data.relatedGuides ?? []).map((ref) => getEntry(ref)),
+);
 
 const topBonusAed = offers.length === 0
   ? undefined
@@ -61,9 +65,14 @@ const latestVerified = allCards.length === 0
     }
   </div>
 
-  <div slot="currencies" class="text-sm text-slate-700">
-    Reward currency mapping coming in Phase 4 (TouchPoints, ENBD Plus, Mashreq
-    Salaam, etc.).
+  <div slot="currencies">
+    {bank.data.rewardCurrencies ? (
+      <p class="dp-bank-currencies">{bank.data.rewardCurrencies}</p>
+    ) : (
+      <p class="dp-bank-currencies dp-muted">
+        Reward-currency mapping for {bank.data.name} is in progress.
+      </p>
+    )}
   </div>
 
   <div slot="cards" class="grid gap-3 sm:grid-cols-2">
@@ -84,7 +93,30 @@ const latestVerified = allCards.length === 0
     }
   </div>
 
-  <div slot="articles" class="text-sm text-slate-500">No articles yet.</div>
+  <div slot="articles">
+    {relatedGuides.length > 0 ? (
+      <ul class="dp-bank-articles">
+        {relatedGuides.map((g) => (
+          <li><a href={`/guides/${g.id}/`}>{g.data.title}</a></li>
+        ))}
+      </ul>
+    ) : (
+      <p class="dp-bank-currencies dp-muted">No articles yet.</p>
+    )}
+  </div>
 
   <Content />
 </BankHubLayout>
+
+<style>
+  .dp-bank-currencies { line-height: 1.6; color: var(--ink); max-width: 70ch; }
+  .dp-bank-currencies.dp-muted { color: var(--muted); }
+  .dp-bank-articles { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .dp-bank-articles a {
+    color: var(--green);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in srgb, var(--green) 35%, transparent);
+  }
+  .dp-bank-articles a:hover { text-decoration-color: var(--green); }
+</style>
