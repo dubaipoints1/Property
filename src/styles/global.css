@@ -315,7 +315,7 @@ img { display: block; max-width: 100%; }
 .dp-article-title em { font-style: normal; color: inherit; font-weight: inherit; }
 .dp-article-lede {
   margin-top: 14px;
-  font-size: clamp(18px, 2.2vw, 21px); line-height: 1.5; color: var(--ink-soft);  /* Stage 1 redesign: 16→21 (2026-05-25) */
+  font-size: clamp(20px, 2.2vw, 21px); line-height: 1.5; color: var(--ink-soft);  /* Stage 1 redesign: 16→21 (2026-05-25); floor 20 keeps lede above 18px mobile prose */
   max-width: 65ch; text-wrap: pretty;
 }
 .dp-article-meta {
