@@ -72,75 +72,103 @@ const {
     </div>
   </header>
 
-  <article class="dp-prog-body">
-    <!-- Editorial prose first — this is what the reader came for. -->
-    <div class="dp-prose dp-prog-prose">
-      <slot />
-    </div>
+  <div class="dp-prog-grid">
+    <article class="dp-prog-body">
+      <!-- Editorial prose first — this is what the reader came for. -->
+      <div class="dp-prose dp-prog-prose">
+        <slot />
+      </div>
 
-    <!-- Programme reference block: structured data the reader can scan. -->
-    <section class="dp-prog-reference">
-      <h2>Programme reference</h2>
-
+      <!-- Redemption sweet spots: unbounded length, stays in main column. -->
       {sweetSpots.length > 0 && (
-        <div class="dp-prog-ref-block">
-          <h3>Redemption sweet spots</h3>
-          <ul class="dp-sweet-list">
-            {sweetSpots.map((s) => (
+        <section class="dp-prog-reference">
+          <h2>Programme reference</h2>
+          <div class="dp-prog-ref-block">
+            <h3>Redemption sweet spots</h3>
+            <ul class="dp-sweet-list">
+              {sweetSpots.map((s) => (
+                <li>
+                  <p class="title">{s.title}</p>
+                  <p class="desc">{s.description}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
+
+      <!-- Related cards: auto-populated from cards.json by loyaltyProgram. -->
+      {relatedCards.length > 0 && (
+        <section class="dp-prog-related">
+          <h2>UAE cards that earn into {currencyName}</h2>
+          <ul class="dp-prog-related-list">
+            {relatedCards.map((c) => (
               <li>
-                <p class="title">{s.title}</p>
-                <p class="desc">{s.description}</p>
+                <a href={`/cards/${c.slug}/`}>
+                  <span class="bank">{c.bankName}</span>
+                  <span class="name">{c.name}</span>
+                  <span class="fee">AED {c.annualFeeAed.toLocaleString()}/yr</span>
+                </a>
               </li>
             ))}
           </ul>
-        </div>
+        </section>
       )}
+    </article>
 
+    <!-- Sticky reference rail (Stage 2): compact programme facts. Source-
+         after the article so prose leads on mobile; pinned right on laptop+. -->
+    <aside class="dp-prog-aside">
       {transferPartners.length > 0 && (
-        <div class="dp-prog-ref-block">
+        <section class="dp-prog-railcard">
           <h3>Transfer partners</h3>
           <ul class="dp-tag-list">
             {transferPartners.map((p) => <li>{p}</li>)}
           </ul>
-        </div>
+        </section>
       )}
 
-      <div class="dp-prog-ref-block">
+      <section class="dp-prog-railcard">
         <div class="dp-expiry-block">
           <p class="label">Expiry policy</p>
           <p class="body">{expiryPolicy}</p>
         </div>
-      </div>
-    </section>
-
-    <!-- Related cards: auto-populated from cards.json by loyaltyProgram. -->
-    {relatedCards.length > 0 && (
-      <section class="dp-prog-related">
-        <h2>UAE cards that earn into {currencyName}</h2>
-        <ul class="dp-prog-related-list">
-          {relatedCards.map((c) => (
-            <li>
-              <a href={`/cards/${c.slug}/`}>
-                <span class="bank">{c.bankName}</span>
-                <span class="name">{c.name}</span>
-                <span class="fee">AED {c.annualFeeAed.toLocaleString()}/yr</span>
-              </a>
-            </li>
-          ))}
-        </ul>
       </section>
-    )}
-  </article>
+    </aside>
+  </div>
 </BaseLayout>
 
 <style>
-  .dp-prog-body {
-    max-width: 760px;
+  /* Stage 2 (2026-05-25 amendment): laptop-aware width. Single column on
+     mobile; at >=1024px a 1fr + 300px grid reclaims the right margin with
+     a sticky reference rail (transfer partners + expiry). Editorial prose
+     stays in the main column and leads on every viewport. */
+  .dp-prog-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    max-width: 1180px;
     margin: 0 auto;
     padding: 40px 32px 80px;
   }
+  @media (min-width: 1024px) {
+    .dp-prog-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 64px; }
+  }
   @media (max-width: 640px) {
-    .dp-prog-body { padding: 28px 20px 56px; }
+    .dp-prog-grid { padding: 28px 20px 56px; gap: 28px; }
+  }
+  .dp-prog-body { width: 100%; min-width: 0; }
+
+  .dp-prog-aside { display: flex; flex-direction: column; gap: 20px; }
+  @media (min-width: 1024px) {
+    .dp-prog-aside { position: sticky; top: 32px; align-self: flex-start; }
+  }
+  .dp-prog-railcard h3 {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    margin: 0 0 12px;
   }
 
   .dp-prog-prose { margin-bottom: 48px; }
