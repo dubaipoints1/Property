@@ -13,6 +13,8 @@
 //     slots dropped — they were never filled by the [slug] consumer.
 
 import BaseLayout from "./BaseLayout.astro";
+import StockImage from "~/components/StockImage.astro";
+import { hasStockEntry } from "~/lib/stockManifest";
 
 interface RelatedCard {
   slug: string;
@@ -24,6 +26,8 @@ interface RelatedCard {
 interface Props {
   title: string;
   description?: string;
+  /** programme slug (e.g. "etihad-guest") — resolves the programme-<slug> hero. */
+  slug?: string;
   programName: string;
   currencyName: string;
   region: string;
@@ -36,6 +40,7 @@ interface Props {
 const {
   title,
   description,
+  slug,
   programName,
   currencyName,
   region,
@@ -44,6 +49,9 @@ const {
   transferPartners,
   relatedCards = [],
 } = Astro.props;
+
+const heroSlug = slug ? `programme-${slug}` : null;
+const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
@@ -74,6 +82,18 @@ const {
 
   <div class="dp-prog-grid">
     <article class="dp-prog-body">
+      {hasHero && heroSlug && (
+        <StockImage
+          slug={heroSlug}
+          coverTitle={programName}
+          coverCategory="Programme"
+          coverSize="hero"
+          class="dp-hub-hero"
+          loading="eager"
+          sizes="(max-width: 800px) 100vw, 720px"
+        />
+      )}
+
       <!-- Editorial prose first — this is what the reader came for. -->
       <div class="dp-prose dp-prog-prose">
         <slot />
