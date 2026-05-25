@@ -126,6 +126,24 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
             </div>
           </div>
 
+          <!-- Mid-article image — competitor "image per section" rhythm.
+               Caption + visible credit line per teardown Tier A #4/#5 and
+               Charter §10. Using a local stock image (allowlist blocks new
+               fetches); swap for a licensed press-library shot before any
+               real publish. -->
+          <figure class="sp-figure">
+            <img
+              src="/images/stock/wallet-hero-cards.jpg"
+              alt="A fan of UAE credit cards held in one hand"
+              width="1200" height="675" loading="lazy" decoding="async"
+            />
+            <figcaption>
+              Flat cashback rewards the card you reach for first — so make it
+              the default in your wallet.
+              <span class="sp-credit">Image: DubaiPoints library</span>
+            </figcaption>
+          </figure>
+
           <div class="sp-prose">
             <h2>The numbers, side by side</h2>
             <p>
@@ -296,6 +314,21 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
   .sp-table tbody tr.is-hi { background: var(--shade-1); }
   .sp-table td { color: var(--ink); }
   .sp-foot { max-width: var(--sp-measure); font-size: 13px; color: var(--ink-soft); margin-top: 8px; }
+
+  /* ── Mid-article figure (competitor image rhythm) ── */
+  .sp-figure { max-width: var(--sp-measure); margin: 40px 0; }
+  .sp-figure img {
+    width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover;
+    border-radius: 12px; display: block;
+  }
+  .sp-figure figcaption {
+    margin-top: 10px; font-size: 14px; line-height: 1.45;
+    color: var(--ink-soft); text-wrap: pretty;
+  }
+  .sp-credit {
+    display: block; margin-top: 4px; font-size: 11px; letter-spacing: 0.3px;
+    text-transform: uppercase; color: var(--muted);
+  }
 
   /* ── Sticky rail ── */
   .sp-rail { display: flex; flex-direction: column; gap: 20px; }
