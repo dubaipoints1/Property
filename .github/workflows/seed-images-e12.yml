@@ -1,0 +1,99 @@
+# Phase E.12 — card-review heroes.
+#
+# 27 of 34 card reviews had no hero photo, so CardReviewLayout fell back
+# to the CSS card mock. This wave seeds a context-appropriate Pexels
+# photo for each missing card-<slug>. Per-card queries are conservative
+# editor picks (lifestyle / travel / retail matching the card's theme);
+# re-run a single slug via refetch-image.yml with --pick 1/2/3 if a
+# result looks wrong.
+#
+# Prereq: set the PEXELS_API_KEY repo secret (Settings → Secrets and
+# variables → Actions). Then: Actions → seed-images-e12 → Run workflow,
+# branch = the redesign branch. The workflow fetches, validates, and
+# commits the images + manifest entries back to that branch.
+
+name: seed-images-e12
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to seed (commits land here)"
+        required: true
+        default: "claude/claude-md-allowlist-blocking-cV3qE"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Fetch card-review heroes
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          while IFS='|' read -r slug query alt; do
+            [ -z "$slug" ] && continue
+            echo "::group::$slug"
+            npm run fetch:stock -- \
+              --slug "$slug" \
+              --query "$query" \
+              --orientation landscape \
+              --pick 0 \
+              --alt "$alt" || echo "::warning::fetch failed for $slug"
+            echo "::endgroup::"
+          done <<'SEEDS'
+          card-emirates-nbd-diners-club|airport business lounge interior|Airport business-class lounge interior
+          card-emirates-nbd-dnata-platinum|airport terminal departures travel|Airport terminal departures hall
+          card-emirates-nbd-dnata-world|airplane window view sky|View of the sky from an airplane window
+          card-emirates-nbd-duo|two credit cards on table|Two payment cards on a table
+          card-emirates-nbd-etihad-guest-inspire|airplane cabin window seat|Airplane cabin window seat
+          card-emirates-nbd-go4it-gold|fine dining restaurant table|Fine-dining restaurant table setting
+          card-emirates-nbd-go4it-platinum|evening dining lifestyle city|Evening dining and city lifestyle
+          card-emirates-nbd-lulu-247-platinum|supermarket grocery aisle|Supermarket grocery aisle
+          card-emirates-nbd-lulu-247-titanium|grocery shopping cart store|Grocery shopping cart in a store
+          card-emirates-nbd-manchester-united|football stadium match|Football stadium during a match
+          card-emirates-nbd-marriott-bonvoy-world|luxury hotel room interior|Luxury hotel room interior
+          card-emirates-nbd-marriott-bonvoy-world-elite|resort hotel swimming pool|Resort hotel swimming pool
+          card-emirates-nbd-mastercard-platinum|contactless card payment terminal|Contactless card payment at a terminal
+          card-emirates-nbd-noon-one|online shopping parcel delivery|Online shopping parcel delivery
+          card-emirates-nbd-share-visa-infinite|shopping mall retail interior|Shopping mall retail interior
+          card-emirates-nbd-share-visa-signature|retail shopping bags|Shopping bags from a retail trip
+          card-emirates-nbd-skywards-signature|airplane flying sunset sky|Airplane flying at sunset
+          card-emirates-nbd-u-by-emaar-family|dubai downtown skyline|Dubai Downtown skyline
+          card-emirates-nbd-u-by-emaar-infinite|burj khalifa dubai downtown|Burj Khalifa and Dubai Downtown
+          card-emirates-nbd-u-by-emaar-infinite-emiratis|dubai fountain downtown evening|Dubai Fountain in Downtown Dubai
+          card-emirates-nbd-visa-flexi|online card payment laptop|Making an online payment with a card
+          card-emirates-nbd-visa-infinite|first class airport lounge|First-class airport lounge
+          card-emirates-nbd-visa-platinum|payment card wallet|Payment card and wallet
+          card-emirates-nbd-webshopper|online shopping laptop|Online shopping on a laptop
+          card-fab-cashback|retail shopping purchase|Retail shopping purchase
+          card-fab-etihad-guest-infinite|business class airplane cabin|Business-class airplane cabin
+          card-fab-world-elite|premium airport lounge travel|Premium airport lounge
+          SEEDS
+
+      - name: Validate
+        run: npm run check
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then echo "No new images fetched (is PEXELS_API_KEY set?)."; exit 0; fi
+          git commit \
+            -m "feat(images): Phase E.12 — card-review heroes" \
+            -m "Seeds context-appropriate Pexels photos for the 27 card reviews that were falling back to the CSS card mock."
+          git push origin HEAD:${{ inputs.branch }}
