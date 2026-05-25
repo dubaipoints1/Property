@@ -71,85 +71,61 @@ const fmtVerified = (d: Date) =>
     )}
   </header>
 
-  <div class="dp-bank-grid">
-    <aside class="dp-bank-aside">
-      <section class="dp-bank-callout">
-        <p class="label">Current salary transfer offer</p>
-        <slot name="salary-transfer" />
+  <article class="dp-bank-body">
+    <section class="dp-bank-callout">
+      <p class="label">Current salary transfer offer</p>
+      <slot name="salary-transfer" />
+    </section>
+
+    <section>
+      <h2>Reward currencies</h2>
+      <slot name="currencies" />
+    </section>
+
+    <section>
+      <h2>Cards from {bankName}</h2>
+      <slot name="cards" />
+    </section>
+
+    <section>
+      <h2>Recent articles</h2>
+      <slot name="articles" />
+    </section>
+
+    {customerService && (
+      <section class="dp-bank-cs">
+        <p class="label">Customer service</p>
+        {customerService.phone && <p>Phone: {customerService.phone}</p>}
+        {customerService.email && (
+          <p>Email: <a href={`mailto:${customerService.email}`}>{customerService.email}</a></p>
+        )}
+        {customerService.website && (
+          <p>Web: <a href={customerService.website} target="_blank" rel="noopener">{customerService.website}</a></p>
+        )}
       </section>
+    )}
 
-      {customerService && (
-        <section class="dp-bank-cs">
-          <p class="label">Customer service</p>
-          {customerService.phone && <p>Phone: {customerService.phone}</p>}
-          {customerService.email && (
-            <p>Email: <a href={`mailto:${customerService.email}`}>{customerService.email}</a></p>
-          )}
-          {customerService.website && (
-            <p>Web: <a href={customerService.website} target="_blank" rel="noopener">{customerService.website}</a></p>
-          )}
-        </section>
-      )}
-    </aside>
-
-    <article class="dp-bank-body">
-      <section>
-        <h2>Reward currencies</h2>
-        <slot name="currencies" />
-      </section>
-
-      <section>
-        <h2>Cards from {bankName}</h2>
-        <slot name="cards" />
-      </section>
-
-      <section>
-        <h2>Recent articles</h2>
-        <slot name="articles" />
-      </section>
-
-      <div class="dp-prose dp-bank-prose">
-        <slot />
-      </div>
-    </article>
-  </div>
+    <div class="dp-prose dp-bank-prose">
+      <slot />
+    </div>
+  </article>
 </BaseLayout>
 
 <style>
-  /* Stage 2 (2026-05-25 amendment): laptop-aware width. Single column on
-     mobile; at >=1024px the empty right margin is reclaimed by a sticky
-     facts rail (1fr + 300px). The aside is source-first so the
-     salary-transfer offer leads on mobile; grid placement pins it right. */
-  .dp-bank-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
-    max-width: 1180px;
+  /* Single-column reading width. A Stage 2 sticky rail was trialled here
+     but reverted: bank hubs carry too little content to fill two columns,
+     so the rail left a large empty void on laptop. Reinstate the rail once
+     hubs have real reward-currency data, articles, and a live offer. */
+  .dp-bank-body {
+    max-width: 760px;
     margin: 0 auto;
     padding: 40px 32px 80px;
   }
-  @media (min-width: 1024px) {
-    .dp-bank-grid {
-      grid-template-columns: minmax(0, 1fr) 300px;
-      gap: 64px;
-    }
-    .dp-bank-grid .dp-bank-body { grid-column: 1; grid-row: 1; }
-    .dp-bank-grid .dp-bank-aside { grid-column: 2; grid-row: 1; }
-  }
   @media (max-width: 640px) {
-    .dp-bank-grid { padding: 28px 20px 56px; gap: 28px; }
-  }
-
-  .dp-bank-aside { display: flex; flex-direction: column; gap: 20px; }
-  @media (min-width: 1024px) {
-    .dp-bank-aside { position: sticky; top: 32px; align-self: flex-start; }
-  }
-
-  .dp-bank-body { width: 100%; min-width: 0; }
-  .dp-bank-body section { margin-bottom: 36px; }
-  @media (max-width: 640px) {
+    .dp-bank-body { padding: 28px 20px 56px; }
     .dp-bank-body section { margin-bottom: 28px; }
   }
+  .dp-bank-body section { margin-bottom: 36px; }
   .dp-bank-body h2 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
