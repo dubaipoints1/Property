@@ -1435,6 +1435,20 @@ img { display: block; max-width: 100%; }
   object-fit: cover;
 }
 
+/* Hub hero photograph (bank + airline programme). Same shape as the
+   article hero so the swap is visually consistent; kept global because
+   the <img> is rendered by StockImage (a separate component) and would
+   miss a layout's scoped style. */
+.dp-hub-hero {
+  width: 100%;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  margin-bottom: 28px;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+}
+
 /* Drop-cap on first paragraph of prose */
 .dp-prose p:first-of-type::first-letter {
   font-family: 'Fraunces', serif; font-weight: 700;

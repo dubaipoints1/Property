@@ -28,6 +28,7 @@ const latestVerified = allCards.length === 0
   title={`${bank.data.name} — hub`}
   description={`Everything we track for ${bank.data.name}: current salary transfer offer, cards, reward currencies and customer service.`}
   bankName={bank.data.name}
+  slug={bank.id}
   cardCount={allCards.length}
   topBonusAed={topBonusAed}
   lastVerified={latestVerified}

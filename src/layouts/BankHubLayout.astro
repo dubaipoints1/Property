@@ -7,11 +7,15 @@
 // across hub pages (banks + airlines).
 
 import BaseLayout from "./BaseLayout.astro";
+import StockImage from "~/components/StockImage.astro";
+import { hasStockEntry } from "~/lib/stockManifest";
 
 interface Props {
   title: string;
   description?: string;
   bankName: string;
+  /** bank slug (e.g. "fab") — resolves the bank-<slug> hero photograph. */
+  slug?: string;
   logo?: string;
   /** Number of cards we cover from this issuer; renders as the headline metric. */
   cardCount?: number;
@@ -30,6 +34,7 @@ const {
   title,
   description,
   bankName,
+  slug,
   cardCount,
   topBonusAed,
   lastVerified,
@@ -38,6 +43,9 @@ const {
 
 const fmtVerified = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+const heroSlug = slug ? `bank-${slug}` : null;
+const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
@@ -72,6 +80,18 @@ const fmtVerified = (d: Date) =>
   </header>
 
   <article class="dp-bank-body">
+    {hasHero && heroSlug && (
+      <StockImage
+        slug={heroSlug}
+        coverTitle={bankName}
+        coverCategory="Topic"
+        coverSize="hero"
+        class="dp-hub-hero"
+        loading="eager"
+        sizes="(max-width: 800px) 100vw, 760px"
+      />
+    )}
+
     <section class="dp-bank-callout">
       <p class="label">Current salary transfer offer</p>
       <slot name="salary-transfer" />

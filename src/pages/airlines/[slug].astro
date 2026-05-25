@@ -51,6 +51,7 @@ const relatedCards = await Promise.all(
 <AirlineProgramLayout
   title={`${program.data.name} — programme guide`}
   description={`UAE-focused guide to ${program.data.name}: tier table, earning methods, redemption sweet spots and transfer partners.`}
+  slug={program.id}
   programName={program.data.name}
   currencyName={program.data.currencyName}
   region={program.data.region}
