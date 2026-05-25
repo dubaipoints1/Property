@@ -94,7 +94,7 @@ body {
   font-family: 'DM Sans', system-ui, sans-serif;
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
-  font-size: 16px;            /* TPG-adapted bump from QL 15px */
+  font-size: 17px;            /* Stage 1 redesign: 16→17 toward competitor 17-18px band (2026-05-25) */
   line-height: 1.55;
 }
 a { text-decoration: none; color: inherit; }
@@ -307,15 +307,15 @@ img { display: block; max-width: 100%; }
 .dp-article-eyebrow.is-ink { color: var(--ink); }   /* opt-out for navy-band contexts */
 .dp-article-title {
   font-family: 'Fraunces', serif; font-weight: 700;   /* TPG-adapted bump from QL 600 */
-  font-size: clamp(30px, 5.4vw, 48px);
-  line-height: 1.06; letter-spacing: -1.2px;
+  font-size: clamp(32px, 5.4vw, 52px);   /* Stage 1 redesign: larger H1 (2026-05-25) */
+  line-height: 1.05; letter-spacing: -1.3px;
   color: var(--ink); text-wrap: balance;
 }
 /* Italic display words remain removed. em inside titles renders flat. */
 .dp-article-title em { font-style: normal; color: inherit; font-weight: inherit; }
 .dp-article-lede {
   margin-top: 14px;
-  font-size: 16px; line-height: 1.6; color: var(--ink-soft);
+  font-size: clamp(18px, 2.2vw, 21px); line-height: 1.5; color: var(--ink-soft);  /* Stage 1 redesign: 16→21 (2026-05-25) */
   max-width: 65ch; text-wrap: pretty;
 }
 .dp-article-meta {
@@ -535,11 +535,11 @@ img { display: block; max-width: 100%; }
    clamp(26px, 4vw, 34px) so the hierarchy reads at a glance on mobile
    instead of feeling like an MS Word export. */
 .dp-prose {
-  font-size: 18px; line-height: 1.7; color: var(--ink);
-  max-width: 65ch;
+  font-size: 19px; line-height: 1.7; color: var(--ink);   /* Stage 1 redesign: 18→19 (2026-05-25) */
+  max-width: 70ch;                                          /* Stage 1 redesign: 65→70ch */
 }
 @media (max-width: 719.98px) {
-  .dp-prose { font-size: 17px; }
+  .dp-prose { font-size: 18px; }
 }
 .dp-prose h2 {
   font-family: 'Fraunces', serif; font-weight: 700;
