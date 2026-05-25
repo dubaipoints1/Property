@@ -2540,7 +2540,7 @@ img { display: block; max-width: 100%; }
 }
 .dp-conditions dt {
   font-weight: 700;
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 0.2px;
   color: var(--ink);
   margin: 0;
@@ -2548,7 +2548,7 @@ img { display: block; max-width: 100%; }
 }
 .dp-conditions dd {
   margin: 4px 0 0;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.55;
   color: var(--ink);
   text-wrap: pretty;
@@ -2559,6 +2559,6 @@ img { display: block; max-width: 100%; }
 }
 @media (max-width: 719.98px) {
   .dp-conditions { margin: 24px 0 28px; gap: 12px; }
-  .dp-conditions dt { font-size: 12px; }
-  .dp-conditions dd { font-size: 13.5px; line-height: 1.5; }
+  .dp-conditions dt { font-size: 14px; }
+  .dp-conditions dd { font-size: 15px; line-height: 1.5; }
 }
