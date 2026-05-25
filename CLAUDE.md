@@ -501,4 +501,52 @@ no-AI-photography or visible-credit-line guarantees.
 
 — Chairman, 21 May 2026.
 
+### 2026-05-25 — Reading-layout & competitor-pattern adoption (scale/width/patterns; palette unchanged)
+
+On site-owner direction ("implement it on all"), the design-spike
+prototype at `/design-spike/` (`src/pages/design-spike.astro`) is
+authorised for site-wide rollout across the long-form layouts
+(CardReview, Article, BankHub, AirlineProgram, ComparisonTable,
+salary-transfer). This amends the *typographic and layout* idiom of
+the editorial article shell; it does NOT change the colour system.
+
+Scope of change:
+- Type scale: body 16→17, long-form prose 18→19, lede 16→21, larger H1.
+- Reading measure widened ~65→70ch.
+- Laptop-aware width: the empty right margin >1040px is reclaimed by a
+  sticky facts/verdict rail (1fr + 300px grid).
+- Competitor "Tier A" patterns from `.council/research/2026-05/`
+  (competitor-teardown.md, tpg-design-dossier.md, ux-redesign-brief.md,
+  card-review-page-visual-audit.md): fact-tile strip, "Great card if /
+  Don't get it if" two-up, statement-H2 spine + question verdict,
+  inline "Value to me: AED X" chip, mid-article figure w/ caption +
+  credit line, author/reviewer panel, jump-to-section nav.
+
+Explicitly UNCHANGED: the warm-paper surfaces, the navy primary accent
+(`--green` resolving to `#1f3a4d` per the 2026-05-16 navy directive),
+`--gold` trust accent, and Fraunces/DM Sans. This is a layout amendment,
+not a palette override.
+
+Rollout is phased and each stage ships independently at its own tier:
+Stage 1 type-scale/measure into shared `.dp-prose`/`.dp-article`
+(T2 — Standards + UX + Chairman); Stage 2 laptop-aware width + sticky-rail
+primitive applied template-by-template (T3); Stage 3 text-only patterns
+(T3); Stage 4 image + author/reviewer patterns (T3). Image-dependent
+patterns use existing library/stock assets only until the network
+allowlist permits press-library fetches. The first real card-review
+score (e.g. "7.5/10") is precedent-setting and returns to the Chairman
+before publish.
+
+Conditions: palette/fonts untouched; every stage reversible; numerics
+in fact-tiles / value chips / break-even traced to dossier or L2 per §6
+(no LLM extraction); author/reviewer panel cleared by Managing Editor +
+COI check.
+
+Note for the record: the 2026-05-16 navy directive that global.css
+already implements is not itself logged in this section. Technical Lead
+to open a ticket to back-fill that amendment; it is referenced here only
+to establish that the spike's navy rail is on-brand.
+
+— Chairman, 25 May 2026.
+
 End.
