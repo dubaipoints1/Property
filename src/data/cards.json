@@ -1,4 +1,113 @@
 {
+  "rakbank-world": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "editor-confirmed",
+      "minPayment": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "needs-review",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "needs-review",
+      "eligibility": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "rakbank",
+    "name": "RAKBANK World Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "cashback"
+    ],
+    "annualFee": {
+      "amount": 997.5,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": 100000,
+      "threshold_period": "annual",
+      "notes": "Free for the first year. AED 997.50 (incl. VAT) from year two, waived if eligible retail spend exceeds AED 100,000 in the previous year (RAKMoney transfers, balance transfers, credit-card cheques and cash transactions are excluded)."
+    },
+    "fxFee": 2.57,
+    "interestRate": {
+      "monthly": 3.65,
+      "annual": 43.8
+    },
+    "minPayment": "4% of the outstanding balance or AED 100, whichever is higher",
+    "cashAdvanceFee": "3.31% or AED 105, whichever is higher",
+    "loyaltyProgram": "RAKBANK Cashback",
+    "earnRates": {
+      "groceries": 10,
+      "dining": 10,
+      "travel": 10,
+      "everythingElse": 1,
+      "_caps": {
+        "min_monthly_spend_to_qualify_aed": 10000,
+        "per_category": {
+          "groceries": {
+            "monthly_aed": 300
+          },
+          "dining": {
+            "monthly_aed": 300
+          },
+          "travel": {
+            "monthly_aed": 400
+          }
+        }
+      }
+    },
+    "earnUnit": "% cashback",
+    "welcomeBonus": "AED 750 welcome bonus, subject to minimum-spend criteria (limited-time offer stated to 31 May 2026).",
+    "eligibility": {
+      "minSalary": 20000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried",
+        "self-employed"
+      ],
+      "minAge": 21,
+      "invitationOnly": false
+    },
+    "perks": [
+      "10% cashback on supermarket, dining and travel/hotel spends — each capped monthly (AED 300 supermarket, AED 300 dining, AED 400 travel; AED 1,000 combined). Requires a minimum AED 10,000 of retail spend in the month to earn the accelerated rates.",
+      "1% cashback on standard retail spend (AED 100/mo cap); 3% on retail via e-wallets such as Apple Pay, Samsung Pay and Google Pay (AED 150/mo cap).",
+      "Cashback must reach AED 300 to redeem and expires 15 months after it is earned.",
+      "Free Careem Plus membership for 12 months and up to 2 Careem airport transfers.",
+      "Complimentary airport lounge access via the World Mastercard programme, discounted VOX Cinemas tickets, talabat discounts and travel cover (see card terms for limits).",
+      "Welcome bonus: the product page states AED 750 while some RAKBANK marketing cites AED 1,500. Recorded as AED 750 and flagged for review; minimum-spend criteria apply and the offer is stated as limited-time to 31 May 2026.",
+      "Cashback structure follows RAKBANK's current World Credit Card product page (May 2026); an older archived terms page shows a different cap structure, so earn rates are flagged needs-review pending reconciliation."
+    ],
+    "_features": [
+      {
+        "type": "insurance_travel",
+        "scope": "Travel cover (World Mastercard / Secure Wallet)"
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://www.rakbank.ae/en/cards/credit-cards/world-credit-card",
+    "kfsUrl": "https://www.rakbank.ae/globalassets/rakbank/all-pdfs/001---key-fact-statements/bilingual/kfs0041-world-mastercard.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.rakbank.ae/en/cards/credit-cards/world-credit-card",
+      "https://www.rakbank.ae/globalassets/rakbank/all-pdfs/001---service-and-price-guides/bilingual/012-j00686-sp-consumercreditcard.pdf",
+      "https://www.rakbank.ae/en/help-centre/product-terms-kfs/terms-and-conditions/world-cc"
+    ],
+    "vatPolicy": "inclusive"
+  },
   "emirates-islamic-switch-cashback": {
     "_provenance": {
       "bank": "editor-confirmed",
