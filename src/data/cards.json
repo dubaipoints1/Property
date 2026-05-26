@@ -1,4 +1,138 @@
 {
+  "emirates-islamic-switch-cashback": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "sharia": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "fxFee": "needs-review",
+      "interestRate": "editor-confirmed",
+      "minPayment": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "editor-confirmed",
+      "eligibility": "needs-review",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "emirates-islamic",
+    "name": "Emirates Islamic Switch Cashback Credit Card",
+    "network": "Visa",
+    "categories": [
+      "cashback",
+      "Islamic"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 313.95,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": 30000,
+      "threshold_period": "annual",
+      "notes": "No annual membership fee in year one. AED 313.95 (incl. VAT) from year two, waived if eligible retail spend exceeds AED 30,000 in the prior 12 months (excludes balance transfers, cash advances, fees and quasi-cash)."
+    },
+    "fxFee": 2.54,
+    "interestRate": {
+      "monthly": 3.69,
+      "annual": 44.28
+    },
+    "minPayment": "5% of the outstanding balance or AED 100, whichever is higher",
+    "cashAdvanceFee": "3.15% or AED 103.95, whichever is higher",
+    "loyaltyProgram": "Emirates Islamic Cashback",
+    "earnRates": {
+      "groceries": 4,
+      "dining": 4,
+      "fuel": 8,
+      "travel": 4,
+      "everythingElse": 1,
+      "_caps": {
+        "min_monthly_spend_to_qualify_aed": 2500,
+        "per_category": {
+          "groceries": {
+            "monthly_aed": 200
+          },
+          "dining": {
+            "monthly_aed": 200
+          },
+          "fuel": {
+            "monthly_aed": 100
+          },
+          "travel": {
+            "monthly_aed": 200
+          }
+        }
+      }
+    },
+    "earnUnit": "% cashback",
+    "welcomeBonus": "AED 500 cashback after AED 15,000 of retail spend within 60 days of card approval (welcome offer valid until 30 June 2026).",
+    "eligibility": {
+      "minSalary": 5000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried",
+        "self-employed"
+      ],
+      "minAge": 21,
+      "invitationOnly": false
+    },
+    "perks": [
+      "Switchable rewards: choose Lifestyle or Travel each month in the EI+ app — you earn the accelerated rates of only the chosen category in a given month, not both.",
+      "Lifestyle mode: 8% cashback on domestic fuel (AED 100/mo cap), 4% on supermarkets, dining and education (AED 200/mo cap each), 0.5% on telecom/utilities/government, 1% on everything else.",
+      "Travel mode: 4% cashback on airlines, hotels and dining (AED 200/mo cap each), 0.5% on telecom/utilities/government, 1% on everything else.",
+      "Minimum AED 2,500 of posted spend per calendar month is required to earn any cashback; cashback expires 24 months after credit and needs a minimum AED 300 balance to redeem.",
+      "Complimentary airport lounge access at 1,200+ lounges, 2 golf rounds/month, 2 VOX or Reel buy-one-get-one cinema tickets/month, 1 valet parking and 1 airport meet-and-greet per month — each subject to a minimum monthly spend.",
+      "Multi-trip travel takaful (Sharia-compliant travel cover).",
+      "Sharia-compliant under a Murabaha structure; profit rate 3.69%/month, with no profit charged on accrued profit.",
+      "Emirates Islamic does not publish a fixed minimum salary for this card — income is assessed at application (minimum age 21). The AED 5,000 figure shown is indicative and pending primary-source confirmation.",
+      "FX fee: the Schedule of Charges lists 2.54% on foreign-currency transactions; the Key Facts Statement lists 2.34% for 'all other cards'. Treated as needs-review pending reconciliation."
+    ],
+    "_features": [
+      {
+        "type": "cinema_bogo",
+        "operator": "VOX / Reel",
+        "max_per_month": 2
+      },
+      {
+        "type": "golf",
+        "discount_pct": 100,
+        "scope": "UAE"
+      },
+      {
+        "type": "valet",
+        "location": "UAE",
+        "scope": "1 per month, subject to minimum monthly spend"
+      },
+      {
+        "type": "insurance_travel",
+        "scope": "Multi-trip travel takaful"
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://www.emiratesislamic.ae/en/cards/credit-cards/switch-cashback-credit-card",
+    "kfsUrl": "https://www.emiratesislamic.ae/-/media/ei/pdfs/Key-Information/kfs_cards_ea.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.emiratesislamic.ae/en/cards/credit-cards/switch-cashback-credit-card",
+      "https://www.emiratesislamic.ae/en/soc/cards",
+      "https://www.emiratesislamic.ae/-/media/ei/pdfs/Key-Information/kfs_cards_ea.pdf",
+      "https://www.emiratesislamic.ae/en/offers/switch-cashback-credit-card-welcome-bonus"
+    ],
+    "vatPolicy": "inclusive"
+  },
   "emirates-nbd-voyager-world": {
     "_provenance": {
       "bank": "editor-confirmed",
