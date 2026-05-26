@@ -1,4 +1,213 @@
 {
+  "adib-cashback-visa": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "sharia": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "fxFee": "needs-review",
+      "interestRate": "editor-confirmed",
+      "minPayment": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "editor-confirmed",
+      "eligibility": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "adib",
+    "name": "ADIB Cashback Visa Covered Card",
+    "network": "Visa",
+    "categories": [
+      "cashback",
+      "Islamic"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 99,
+      "currency": "AED"
+    },
+    "fxFee": 2.99,
+    "interestRate": {
+      "monthly": 3.75,
+      "annual": 45.63
+    },
+    "minPayment": "5% of the present balance (plus any installment or balance-transfer amount), minimum AED 100",
+    "cashAdvanceFee": "3% of the withdrawal amount, minimum AED 99",
+    "loyaltyProgram": "ADIB Cashback",
+    "earnRates": {
+      "groceries": 4,
+      "fuel": 4,
+      "dining": 4,
+      "everythingElse": 0,
+      "_caps": {
+        "monthly_max_aed": 1000,
+        "per_category": {
+          "groceries": {
+            "monthly_aed": 300
+          },
+          "fuel": {
+            "monthly_aed": 300
+          },
+          "dining": {
+            "monthly_aed": 200
+          }
+        }
+      }
+    },
+    "earnUnit": "% cashback",
+    "welcomeBonus": null,
+    "eligibility": {
+      "minSalary": 5000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried"
+      ],
+      "invitationOnly": false
+    },
+    "perks": [
+      "4% cashback on five everyday categories, each capped monthly: supermarket and grocery (AED 300), fuel and automobile (AED 300), school and education (AED 300), dining and restaurants (AED 200) and utility payments (AED 100). Total cashback capped at AED 1,000 per month.",
+      "Cashback is earned on those listed categories only; general and international spend earns nothing.",
+      "Free roadside assistance once a year and four free supplementary cards.",
+      "Sharia-compliant covered card (Murabaha structure); monthly profit rate 3.75% (45.63% APR), with a grace period of up to 55 days.",
+      "Fees are quoted excluding VAT: the AED 99 annual fee is AED 103.95 with 5% VAT; cash withdrawal is 3% (minimum AED 99).",
+      "FX fee: ADIB's KFS and product page do not state a foreign-currency fee, and the Schedule of Charges table is not cleanly legible — recorded as an indicative 2.99% and flagged for review."
+    ],
+    "_features": [
+      {
+        "type": "roadside_assistance",
+        "scope": "uae"
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://www.adib.ae/en/personal/cards/cashback-visa-card",
+    "kfsUrl": "https://www.adib.com/en/SiteAssets/kfs/ADIB-Covered-Cards-KFS.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.adib.ae/en/personal/cards/cashback-visa-card",
+      "https://www.adib.com/en/Pages/New-Cashback-Gold-Card.aspx",
+      "https://www.adib.com/en/SiteAssets/kfs/ADIB-Covered-Cards-KFS.pdf",
+      "https://adibm.com/ccsoc"
+    ],
+    "vatPolicy": "exclusive"
+  },
+  "dib-consumer-cashback": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "sharia": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "editor-confirmed",
+      "eligibility": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "dib",
+    "name": "DIB Consumer Cashback Reward Card",
+    "network": "Visa",
+    "categories": [
+      "cashback",
+      "Islamic"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 210,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "First year free under a limited-time offer. AED 210 (AED 200 + 5% VAT) annual fee applies thereafter, effective 10 May 2025 (the older Schedule of Charges lists AED 157.50)."
+    },
+    "fxFee": 3.7,
+    "interestRate": {
+      "monthly": 3.25
+    },
+    "cashAdvanceFee": "AED 94.50 per cash withdrawal",
+    "loyaltyProgram": "DIB Cashback",
+    "earnRates": {
+      "groceries": 3,
+      "fuel": 3,
+      "everythingElse": 0,
+      "_caps": {
+        "monthly_max_aed": 1000,
+        "min_monthly_spend_to_qualify_aed": 3000,
+        "per_category": {
+          "groceries": {
+            "monthly_aed": 300
+          },
+          "fuel": {
+            "monthly_aed": 100
+          }
+        }
+      }
+    },
+    "earnUnit": "% cashback",
+    "welcomeBonus": null,
+    "eligibility": {
+      "minSalary": 5000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried"
+      ],
+      "invitationOnly": false
+    },
+    "perks": [
+      "3% cashback (each category capped monthly) on: supermarkets and hypermarkets (AED 300 cap), automobile servicing (AED 300), school fees (AED 300), Etisalat and du bills (AED 100), fuel (AED 100), utility bills (AED 100), and Salik and Nol recharges (AED 25). Total cashback capped at AED 1,000 per billing cycle.",
+      "Cashback is earned only on those listed categories and only on UAE transactions; non-listed spend earns nothing. Since 1 December 2019, utility and government bills paid through DIB's own platforms earn no cashback.",
+      "Effective 10 May 2025, a minimum AED 3,000 of retail purchases per statement cycle is required to earn cashback, and an annual fee of AED 200 + VAT (AED 210) applies, with a limited-time first-year-free offer.",
+      "Complimentary roadside assistance up to twice a year (towing, battery boost, fuel, tyre change, lockout, off-road recovery) plus a free international driving licence.",
+      "Travel and medical cover up to US$100,000 via Watania takaful for the cardholder, spouse and up to four children under 18, when flight tickets are booked on the card.",
+      "Sharia-compliant (Salam structure); monthly profit rate up to 3.25%."
+    ],
+    "_features": [
+      {
+        "type": "roadside_assistance",
+        "scope": "uae"
+      },
+      {
+        "type": "insurance_travel",
+        "scope": "Travel and medical cover up to US$100,000 via Watania takaful"
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://www.dib.ae/personal/cards/consumer-reward-card",
+    "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/soc/cpr-soc-cards.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.dib.ae/personal/cards/consumer-reward-card",
+      "https://www.dib.ae/docs/default-source/cpr/soc/cpr-wajaha-soc-eng.pdf"
+    ],
+    "vatPolicy": "inclusive"
+  },
   "mashreq-cashback": {
     "_provenance": {
       "bank": "editor-confirmed",
