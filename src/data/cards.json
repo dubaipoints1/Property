@@ -1,4 +1,116 @@
 {
+  "emirates-nbd-voyager-world": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "joiningFee": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "editor-confirmed",
+      "eligibility": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "emirates-nbd",
+    "name": "Emirates NBD Voyager World Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "travel"
+    ],
+    "joiningFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "fxFee": 1.99,
+    "interestRate": {
+      "monthly": 3.69
+    },
+    "cashAdvanceFee": "3.15% or AED 103.95, whichever is higher",
+    "loyaltyProgram": "Voyager Miles",
+    "earnRates": {
+      "travel": 3,
+      "everythingElse": 0.5
+    },
+    "earnUnit": "Voyager Miles per AED 1 spent",
+    "welcomeBonus": "75,000 Voyager Miles when you spend AED 35,000 within the first 3 billing statements.",
+    "eligibility": {
+      "minSalary": 12000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried"
+      ],
+      "invitationOnly": false
+    },
+    "perks": [
+      "Free for Life as marketed on the Emirates NBD product page (verified 2026-05-26): no joining fee and no annual fee. The February 2026 Schedule of Charges lists a standard annual fee of AED 315 for the Voyager World tier, which the lifetime-free offer waives — confirm the terms on your application.",
+      "Earn 6 Voyager Miles per AED 1 on the Voyager Travel Portal, 3 per AED 1 on all other travel spend, and 0.5 per AED 1 on retail.",
+      "Voyager Miles redeem for flights and hotels through the Voyager Travel Portal, or transfer to partner airline and hotel programmes.",
+      "Complimentary unlimited airport lounge access worldwide via Mastercard Travel Pass (1,000+ lounges).",
+      "Complimentary visa appointment and processing via OneVasco.",
+      "Complimentary airport transfers within Dubai and Abu Dhabi city limits, plus select international destinations.",
+      "Complimentary golf at select UAE courses, valet parking at select Abu Dhabi locations, and year-round dining and cinema offers."
+    ],
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "Mastercard Travel Pass",
+        "scope": "unlimited",
+        "geo": [
+          "global"
+        ]
+      },
+      {
+        "type": "golf",
+        "discount_pct": 100,
+        "scope": "UAE"
+      },
+      {
+        "type": "valet",
+        "location": "Abu Dhabi",
+        "scope": "Select locations"
+      },
+      {
+        "type": "concierge",
+        "scope": "24/7"
+      },
+      {
+        "type": "insurance_travel",
+        "scope": "Travel and medical cover via Mastercard"
+      },
+      {
+        "type": "roadside_assistance",
+        "scope": "uae"
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://apply.emiratesnbd.com/en/credit-cards/voyager-world",
+    "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.emiratesnbd.com/en/cards/credit-cards/voyager-world-credit-card",
+      "https://www.emiratesnbd.com/en/media-center/emirates-nbd-launches-voyager-mastercard-credit-card",
+      "https://www.emiratesnbd.com/-/media/enbd/files/credit-cards/emiratesnbd_credit_card_fees_charges.pdf"
+    ],
+    "vatPolicy": "inclusive"
+  },
   "adcb-365-cashback": {
     "_provenance": {
       "bank": "scraped",
