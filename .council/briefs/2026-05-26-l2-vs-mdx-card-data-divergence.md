@@ -88,20 +88,25 @@ and the **live credit-cards listing** for earn rates.
   - `share-visa-infinite` annual fee 1500 → **1575** (was stored ex-VAT; all peers VAT-incl).
   - `dnata-platinum` fxFee 0 → **1.99** (0% forex is dnata World only).
 
-### Still to confirm (free-for-life vs SoC standard fee) — NOT changed
-L2 stores `annualFee: 0` while the SoC lists a standard fee. Either genuinely
-free-for-life (like Voyager World) or an L2 error. Needs a product-page check before
-either migrating or changing — not guessed:
-| Card | L2 | SoC standard |
-|---|---|---|
-| emirates-nbd-duo | 0 | 840 |
-| emirates-nbd-go4it-platinum | 0 | 208.95 |
-| emirates-nbd-manchester-united | 0 | 262.50 |
-| emirates-nbd-marriott-bonvoy-world | 0 | 315 |
-| emirates-nbd-visa-flexi | 0 | 735 |
+### Verified 2026-05-26 (ENBD product pages) — all confirmed correct, no further L2 change
+Checked every flagged card against its ENBD product page. **L2 was right on all 8:**
+| Card | L2 | Product page | Verdict |
+|---|---|---|---|
+| emirates-nbd-duo | 0 | "No Annual Fees" current offer | ✓ already has waiver note (SoC 840; AD-residents only) |
+| emirates-nbd-go4it-platinum | 0 | "No Annual Fees" current offer | ✓ already has waiver note (SoC 208.95) |
+| emirates-nbd-manchester-united | 0 | "No Annual Fees" current offer | ✓ already has waiver note (SoC 262.50) |
+| emirates-nbd-visa-flexi | 0 | "No Annual Fees" current offer | ✓ already has waiver note (SoC 735) |
+| emirates-nbd-marriott-bonvoy-world | 0 | "Free for life" (permanent) | ✓ 0 correct; SoC 315 is the waived standard |
+| emirates-nbd-diners-club | 420 | AED 420 | ✓ matches |
+| emirates-nbd-mastercard-platinum | 0 | "No Annual Fees" current offer | ✓ current reality; not in SoC |
+| emirates-nbd-visa-platinum | 0 | "No Annual Fees" current offer | ✓ current reality; not in SoC |
 
-Also unverifiable from the SoC (no matching row): `diners-club` (L2 420),
-`mastercard-platinum` (L2 0), `visa-platinum` (L2 0) — confirm on product pages.
+The four promo cards were **already reconciled** by a prior editor (waiver notes present
+documenting the SoC standard renewal). No edit required — and importantly, those existing
+notes (incl. Duo's "Abu Dhabi residents only") must be preserved on migration.
 
-**Net:** earn-rate migration is unblocked now; fee migration is unblocked for all cards
-except the 8 listed above, which need a quick product-page free-for-life confirmation.
+**Reconciliation COMPLETE.** L2 is the authoritative layer for ENBD cards — earn rates
+match the live listing, fees match the SoC, the two real errors are fixed
+(share-visa-infinite 1575, dnata-platinum FX 1.99). The legacy-card component migration
+is fully unblocked: removing the stale MDX tables in favour of L2-driven components is
+safe for all ENBD cards.
