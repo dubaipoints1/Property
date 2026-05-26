@@ -1,4 +1,101 @@
 {
+  "cbd-one": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "editor-confirmed",
+      "minPayment": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "needs-review",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "editor-confirmed",
+      "eligibility": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "cbd",
+    "name": "CBD One Credit Card",
+    "network": "Visa",
+    "categories": [
+      "cashback"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "fxFee": 3.5,
+    "interestRate": {
+      "monthly": 3.85,
+      "annual": 46.2
+    },
+    "minPayment": "5% of the statement balance",
+    "cashAdvanceFee": "AED 204.75 per cash withdrawal",
+    "loyaltyProgram": "CBD One Cashback",
+    "earnRates": {
+      "everythingElse": 0,
+      "_caps": {
+        "monthly_max_aed": 135,
+        "min_monthly_spend_to_qualify_aed": 5000
+      }
+    },
+    "earnUnit": "AED cashback at selected merchants",
+    "welcomeBonus": null,
+    "eligibility": {
+      "minSalary": 5000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried",
+        "self-employed"
+      ],
+      "minAge": 21,
+      "invitationOnly": false
+    },
+    "perks": [
+      "Up to AED 135 cashback per month at around two dozen selected online merchants (including noon, Amazon, Careem, Uber, Talabat, Deliveroo, Netflix, Spotify, Booking.com, Airbnb and major cinemas), credited once a month and requiring at least AED 5,000 of monthly spend. General spend outside these merchants earns no cashback.",
+      "Free for life — no annual fee on primary or supplementary cards.",
+      "8 complimentary airport lounge visits a year at 1,000+ lounges via the Visa Airport Companion app.",
+      "Multi-trip travel insurance for cardholder and family, up to US$500,000, for 90 days per trip; plus purchase protection and extended warranty.",
+      "50% off cinema tickets (VOX, Reel and Novo) and up to 20% off Emaar attractions (KidZania, Dubai Aquarium, Dubai Ice Rink and more).",
+      "Welcome offer (to 30 June 2026): 0% interest on Cash on Call and Balance Transfer 6- and 12-month plans within 30 days of issuance (one-time processing fee 3.99% / 6%)."
+    ],
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "Visa Airport Companion",
+        "scope": {
+          "visits_per_year": 8
+        },
+        "geo": [
+          "global"
+        ]
+      },
+      {
+        "type": "insurance_travel",
+        "scope": "Multi-trip travel insurance up to US$500,000 (cardholder and family, 90 days per trip)"
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://www.cbd.ae/personal/cards/credit-cards/cbd-one",
+    "kfsUrl": "https://www.cbd.ae/docs/default-source/document/cards/cbd-kfs-conventional_cbd-one-cc.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.cbd.ae/personal/cards/credit-cards/cbd-one",
+      "https://www.cbd.ae/docs/default-source/document/cards/cbd-kfs-conventional_cbd-one-cc.pdf"
+    ],
+    "vatPolicy": "inclusive"
+  },
   "adib-cashback-visa": {
     "_provenance": {
       "bank": "editor-confirmed",

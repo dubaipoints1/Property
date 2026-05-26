@@ -36,6 +36,7 @@ this document.
 | banks/mashreq | placeholder | 2026-05-26 | Replace with Mashreq brand-kit SVG |
 | banks/dib | placeholder | 2026-05-26 | Replace with Dubai Islamic Bank brand-kit SVG |
 | banks/adib | placeholder | 2026-05-26 | Replace with ADIB brand-kit SVG |
+| banks/cbd | placeholder | 2026-05-26 | Replace with Commercial Bank of Dubai brand-kit SVG |
 | airlines/skywards | placeholder | 2026-05-06 | Replace with Emirates Skywards brand-kit SVG |
 | airlines/etihad-guest | placeholder | 2026-05-26 | Replace with Etihad Guest brand-kit SVG |
 | airlines/marriott-bonvoy | placeholder | 2026-05-26 | Replace with Marriott Bonvoy brand-kit SVG |
