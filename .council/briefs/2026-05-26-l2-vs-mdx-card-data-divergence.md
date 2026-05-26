@@ -3,7 +3,7 @@
 **Date:** 2026-05-26
 **Raised by:** Tier-A component rollout (competitor-pattern migration)
 **Owner needed:** Fact-Checker (Stage 6) reconciliation against issuer primary sources, then Technical Lead to migrate.
-**Status:** open — blocks the legacy-card component migration.
+**Status:** reconciliation started 2026-05-26 (see outcome at foot). Earn rates confirmed L2-correct; 2 L2 fee errors fixed; 5 fee items pending a free-for-life check.
 
 ## What happened
 
@@ -71,3 +71,37 @@ one is stale. Confirm the live convention per card before trusting either.
    u-by-emaar-infinite-emiratis, visa-infinite, visa-platinum, fab-etihad-guest-infinite,
    fab-world-elite) can take the additive components immediately — no table conflict —
    in the same migration pass once it proceeds.
+
+## Reconciliation outcome — 2026-05-26
+
+Verified L2 against ENBD primary sources: the **Schedule of Charges (Feb 2026)** for fees
+and the **live credit-cards listing** for earn rates.
+
+- **Earn rates: L2 is CORRECT.** The listing's "value back" figures match L2 — Darna
+  Infinite 10%, Signature 7.5%, Select 6.25%; SHARE Infinite 8% / Signature 6% /
+  Platinum 4%; U by Emaar Infinite 7.5%; Duo "5% on grocery/electronics/utilities/
+  education/fuel"; Flexi/Mastercard Platinum/Diners Club 1.5%. **The MDX tables were the
+  stale side.** Earn-rate migration to `EarnRateTable` is safe.
+- **FX: 1.99% uniform** (SoC), waived only for dnata **World** (listing confirms "0%
+  forex"). MDX "FX 0%" rows were wrong.
+- **Fees: 2 L2 errors corrected** —
+  - `share-visa-infinite` annual fee 1500 → **1575** (was stored ex-VAT; all peers VAT-incl).
+  - `dnata-platinum` fxFee 0 → **1.99** (0% forex is dnata World only).
+
+### Still to confirm (free-for-life vs SoC standard fee) — NOT changed
+L2 stores `annualFee: 0` while the SoC lists a standard fee. Either genuinely
+free-for-life (like Voyager World) or an L2 error. Needs a product-page check before
+either migrating or changing — not guessed:
+| Card | L2 | SoC standard |
+|---|---|---|
+| emirates-nbd-duo | 0 | 840 |
+| emirates-nbd-go4it-platinum | 0 | 208.95 |
+| emirates-nbd-manchester-united | 0 | 262.50 |
+| emirates-nbd-marriott-bonvoy-world | 0 | 315 |
+| emirates-nbd-visa-flexi | 0 | 735 |
+
+Also unverifiable from the SoC (no matching row): `diners-club` (L2 420),
+`mastercard-platinum` (L2 0), `visa-platinum` (L2 0) — confirm on product pages.
+
+**Net:** earn-rate migration is unblocked now; fee migration is unblocked for all cards
+except the 8 listed above, which need a quick product-page free-for-life confirmation.
