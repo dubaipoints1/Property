@@ -33,4 +33,10 @@ this document.
 | banks/adcb | placeholder | 2026-05-06 | Replace with ADCB brand-kit SVG |
 | banks/emirates-islamic | placeholder | 2026-05-06 | Replace with Emirates Islamic brand-kit SVG |
 | banks/rakbank | placeholder | 2026-05-06 | Replace with RAKBANK brand-kit SVG |
+| banks/mashreq | placeholder | 2026-05-26 | Replace with Mashreq brand-kit SVG |
+| banks/dib | placeholder | 2026-05-26 | Replace with Dubai Islamic Bank brand-kit SVG |
+| banks/adib | placeholder | 2026-05-26 | Replace with ADIB brand-kit SVG |
 | airlines/skywards | placeholder | 2026-05-06 | Replace with Emirates Skywards brand-kit SVG |
+| airlines/etihad-guest | placeholder | 2026-05-26 | Replace with Etihad Guest brand-kit SVG |
+| airlines/marriott-bonvoy | placeholder | 2026-05-26 | Replace with Marriott Bonvoy brand-kit SVG |
+| airlines/qatar-privilege-club | placeholder | 2026-05-26 | Replace with Qatar Privilege Club brand-kit SVG |
