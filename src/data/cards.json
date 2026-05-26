@@ -1,4 +1,107 @@
 {
+  "adib-cashback-visa": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "sharia": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "fxFee": "needs-review",
+      "interestRate": "editor-confirmed",
+      "minPayment": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "editor-confirmed",
+      "eligibility": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "adib",
+    "name": "ADIB Cashback Visa Covered Card",
+    "network": "Visa",
+    "categories": [
+      "cashback",
+      "Islamic"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 99,
+      "currency": "AED"
+    },
+    "fxFee": 2.99,
+    "interestRate": {
+      "monthly": 3.75,
+      "annual": 45.63
+    },
+    "minPayment": "5% of the present balance (plus any installment or balance-transfer amount), minimum AED 100",
+    "cashAdvanceFee": "3% of the withdrawal amount, minimum AED 99",
+    "loyaltyProgram": "ADIB Cashback",
+    "earnRates": {
+      "groceries": 4,
+      "fuel": 4,
+      "dining": 4,
+      "everythingElse": 0,
+      "_caps": {
+        "monthly_max_aed": 1000,
+        "per_category": {
+          "groceries": {
+            "monthly_aed": 300
+          },
+          "fuel": {
+            "monthly_aed": 300
+          },
+          "dining": {
+            "monthly_aed": 200
+          }
+        }
+      }
+    },
+    "earnUnit": "% cashback",
+    "welcomeBonus": null,
+    "eligibility": {
+      "minSalary": 5000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried"
+      ],
+      "invitationOnly": false
+    },
+    "perks": [
+      "4% cashback on five everyday categories, each capped monthly: supermarket and grocery (AED 300), fuel and automobile (AED 300), school and education (AED 300), dining and restaurants (AED 200) and utility payments (AED 100). Total cashback capped at AED 1,000 per month.",
+      "Cashback is earned on those listed categories only; general and international spend earns nothing.",
+      "Free roadside assistance once a year and four free supplementary cards.",
+      "Sharia-compliant covered card (Murabaha structure); monthly profit rate 3.75% (45.63% APR), with a grace period of up to 55 days.",
+      "Fees are quoted excluding VAT: the AED 99 annual fee is AED 103.95 with 5% VAT; cash withdrawal is 3% (minimum AED 99).",
+      "FX fee: ADIB's KFS and product page do not state a foreign-currency fee, and the Schedule of Charges table is not cleanly legible — recorded as an indicative 2.99% and flagged for review."
+    ],
+    "_features": [
+      {
+        "type": "roadside_assistance",
+        "scope": "uae"
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://www.adib.ae/en/personal/cards/cashback-visa-card",
+    "kfsUrl": "https://www.adib.com/en/SiteAssets/kfs/ADIB-Covered-Cards-KFS.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.adib.ae/en/personal/cards/cashback-visa-card",
+      "https://www.adib.com/en/Pages/New-Cashback-Gold-Card.aspx",
+      "https://www.adib.com/en/SiteAssets/kfs/ADIB-Covered-Cards-KFS.pdf",
+      "https://adibm.com/ccsoc"
+    ],
+    "vatPolicy": "exclusive"
+  },
   "dib-consumer-cashback": {
     "_provenance": {
       "bank": "editor-confirmed",
