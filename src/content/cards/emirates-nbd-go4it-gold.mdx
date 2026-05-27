@@ -16,16 +16,25 @@ editorTake: If you commute on Dubai Metro and want a transit-card credit card, G
   earn elsewhere.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The Go4it Gold is Emirates NBD's entry-level lifestyle card, combining Nol card
 functionality with a low AED 104 annual fee. Built for UAE residents who want
 RTA convenience and basic rewards without a high income threshold.
 
+<AtAGlance card="emirates-nbd-go4it-gold" />
+
+<EditorVerdict card="emirates-nbd-go4it-gold" />
+
+<ProsCons card="emirates-nbd-go4it-gold" />
+
 ## Earn rates
 
-| Spend type | Plus Points per AED 1 |
-|---|---|
-| Weekend entertainment | **0.0125** (5 PP per AED 400) |
-| Standard retail | **0.01** (1 PP per AED 100) |
+<EarnRateTable card="emirates-nbd-go4it-gold" />
 
 Plus Points convert to Skywards Miles, cashback, or merchant credit at
 ENBD's published conversion rates — typically realising around 1¢ per

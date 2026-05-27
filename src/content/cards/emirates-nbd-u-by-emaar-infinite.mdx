@@ -20,18 +20,27 @@ editorTake: Built for Dubai Mall locals — anyone who spends real money inside 
   ~AED 35,000 a month of Emaar spend.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The U by Emaar Infinite is Emirates NBD's co-branded Visa Infinite card with the U by Emaar
 loyalty programme. Built for residents who spend heavily at Emaar properties — Dubai Mall,
 Address/Rove/Vida hotels, and Emaar's F&B outlets.
+
+<AtAGlance card="emirates-nbd-u-by-emaar-infinite" />
+
+<EditorVerdict card="emirates-nbd-u-by-emaar-infinite" />
+
+<ProsCons card="emirates-nbd-u-by-emaar-infinite" />
 
 ## Earn rates
 
 All earn rates are expressed as **% back in UPoints** (not miles per AED):
 
-| Spend category | Rate |
-|---|---|
-| All Emaar spends (malls, hotels, dining) | **7.5%** |
-| Everything else | **1.5%** |
+<EarnRateTable card="emirates-nbd-u-by-emaar-infinite" />
 
 UPoints are credited to your U by Emaar account. They are **not transferable to airlines**.
 

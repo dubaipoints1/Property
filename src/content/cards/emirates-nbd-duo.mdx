@@ -17,15 +17,25 @@ editorTake: The Duo is a paired-card product (a Visa plus a Mastercard or Diners
   bigger elsewhere.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The Emirates NBD Duo is a paired-card product — a Visa plus a complementary
 Mastercard or Diners Club on a single credit limit. AED 0 annual fee, 0% FX
 fee, no welcome bonus, and a flat 1% Plus Points earn rate.
 
+<AtAGlance card="emirates-nbd-duo" />
+
+<EditorVerdict card="emirates-nbd-duo" />
+
+<ProsCons card="emirates-nbd-duo" />
+
 ## Earn rates
 
-| Spend category | Plus Points per AED 1 |
-|---|---|
-| Everything else | **1** |
+<EarnRateTable card="emirates-nbd-duo" />
 
 Plus Points redeem for Skywards Miles, cashback, or merchant credit at ENBD's
 published rates — typically ~1¢ per point at the cashback ceiling.

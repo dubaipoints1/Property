@@ -16,17 +16,27 @@ editorTake: The Darna Select is the entry tier of ENBD's Darna property-rewards 
   flat-rate cashback card for everyday spending.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The Darna Select Visa is the entry tier of Emirates NBD's Darna programme — points
 earned can be applied against Dubai property obligations (rent, service charges,
 developer payments) at participating providers. No annual fee, low salary threshold,
 and zero FX fee mean it's also serviceable as a starter card if you don't use the
 Darna mechanics.
 
+<AtAGlance card="emirates-nbd-darna-select-visa" />
+
+<EditorVerdict card="emirates-nbd-darna-select-visa" />
+
+<ProsCons card="emirates-nbd-darna-select-visa" />
+
 ## Earn rates
 
-| Spend category | Darna Points per AED 1 |
-|---|---|
-| Everything else | **1** |
+<EarnRateTable card="emirates-nbd-darna-select-visa" />
 
 Points redeem against Darna programme bills — participating developers and
 property managers only. Verify your landlord or building manager is in the

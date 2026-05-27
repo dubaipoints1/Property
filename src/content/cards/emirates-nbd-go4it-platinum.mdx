@@ -16,19 +16,27 @@ editorTake: Worth the AED 209 fee over the Gold version only if you'll use the B
   upgrade is a perks upgrade, not a points one.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The Go4it Platinum is Emirates NBD's lifestyle card built around Dubai's entertainment and transit
 ecosystem. It doubles as a Nol card, making it uniquely practical for daily Dubai commuters, and
 offers VOX Cinemas BOGO plus RTA integration perks.
+
+<AtAGlance card="emirates-nbd-go4it-platinum" />
+
+<EditorVerdict card="emirates-nbd-go4it-platinum" />
+
+<ProsCons card="emirates-nbd-go4it-platinum" />
 
 ## Earn rates
 
 Go4it cards earn **Plus Points**. Points can be redeemed for cashback or converted to Skywards Miles.
 
-| Spend type | Plus Points per AED 1 |
-|---|---|
-| Weekends | **0.025** (5 PP per AED 200) |
-| RTA (transit, parking) | **0.02** (4 PP per AED 200) |
-| Standard (weekday retail) | **0.01** (1 PP per AED 100) |
+<EarnRateTable card="emirates-nbd-go4it-platinum" />
 
 Plus Points conversion: 25 Plus Points = 1 Skywards Mile (approx 0.4 fils per AED spent as miles).
 

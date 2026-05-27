@@ -17,16 +17,26 @@ editorTake: The Darna Signature is the middle tier of ENBD's Darna programme —
   generation.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The Darna Visa Signature is the mid-tier card in Emirates NBD's Darna programme.
 AED 0 annual fee at an AED 12,000 minimum salary, 0% FX fee, and the same
 Darna redemption mechanics as the higher-tier Infinite — applied against rent,
 service charges, or developer payments at participating Dubai providers.
 
+<AtAGlance card="emirates-nbd-darna-visa-signature" />
+
+<EditorVerdict card="emirates-nbd-darna-visa-signature" />
+
+<ProsCons card="emirates-nbd-darna-visa-signature" />
+
 ## Earn rates
 
-| Spend category | Darna Points per AED 1 |
-|---|---|
-| Everything else | **1** |
+<EarnRateTable card="emirates-nbd-darna-visa-signature" />
 
 Flat earn — the redemption mechanic, not the earn rate, is the value.
 
