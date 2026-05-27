@@ -1,4 +1,106 @@
 {
+  "sc-platinum-x": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "needs-review",
+      "minPayment": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "needs-review",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "editor-confirmed",
+      "eligibility": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "standard-chartered",
+    "name": "Standard Chartered Platinum X Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "cashback"
+    ],
+    "annualFee": {
+      "amount": 525,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "First year free. From year two AED 525, waived on meeting Standard Chartered's minimum annual spend (per the Service & Price Guide)."
+    },
+    "fxFee": 2.99,
+    "interestRate": {
+      "monthly": 3.69,
+      "annual": 44.28
+    },
+    "minPayment": "1% of the principal balance plus fees, or AED 110, whichever is higher",
+    "cashAdvanceFee": "3.15% or AED 105, whichever is higher",
+    "loyaltyProgram": "Standard Chartered Cashback",
+    "earnRates": {
+      "online": 10,
+      "international": 10,
+      "everythingElse": 0,
+      "_caps": {
+        "monthly_max_aed": 1000,
+        "min_monthly_spend_to_qualify_aed": 2500
+      }
+    },
+    "earnUnit": "% cashback (online / foreign-currency / mobile-wallet only)",
+    "welcomeBonus": null,
+    "eligibility": {
+      "minSalary": 5000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried",
+        "self-employed"
+      ],
+      "minAge": 21,
+      "invitationOnly": false
+    },
+    "perks": [
+      "Cashback is earned ONLY on three channels — AED online spend, non-AED foreign-currency spend, and AED mobile-wallet (Apple/Samsung/Google Pay) spend. Regular in-store card swipes earn nothing.",
+      "The rate is tiered by total monthly spend: under AED 2,500 earns 0%; AED 2,500-7,499 earns 3%; AED 7,500-14,999 earns 5%; AED 15,000+ earns 10%.",
+      "Monthly caps per channel: online and foreign-currency cap at AED 400 each at the top tier; mobile-wallet caps at AED 200 — roughly AED 1,000 total cashback a month.",
+      "The 10% headline applies only above AED 15,000 of total monthly spend; most users sit in the 3-5% bands. Foreign-currency cashback is offset by the up-to-2.99% FX fee.",
+      "Complimentary unlimited access to 20+ local and international airport lounges via Mastercard; Cleartrip and Expedia travel discounts.",
+      "Minimum income AED 5,000; age 21-60. Finance charge differs between sources — Service & Price Guide lists 3.69%/month (44.28% APR), the product page 3.45% — recorded as needs-review."
+    ],
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "Mastercard (20+ lounges)",
+        "scope": "unlimited",
+        "geo": [
+          "UAE",
+          "global"
+        ],
+        "notes": "Unlimited complimentary access to 20+ local and international lounges."
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://www.sc.com/ae/credit-cards/platinum-x-cashback/",
+    "kfsUrl": "https://av.sc.com/ae/content/docs/ae-sp-price-guide-conventional-english-v3.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.sc.com/ae/credit-cards/platinum-x-cashback/",
+      "https://av.sc.com/ae/content/docs/ae-sp-price-guide-conventional-english-v3.pdf"
+    ],
+    "vatPolicy": "inclusive"
+  },
   "citi-cashback": {
     "_provenance": {
       "bank": "editor-confirmed",
