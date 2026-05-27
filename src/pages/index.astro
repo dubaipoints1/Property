@@ -199,6 +199,45 @@ const milesTiles = allPrograms
     </div>
   </section>
 
+  <!-- ── 2b. Wayfinder / quick links ──────────────────────────────────── -->
+  <section class="hp-miles-band" aria-label="Browse dubaipoints.ae">
+    <div class="hp-miles-head">
+      <div class="dp-featured-eyebrow">
+        <span>Start here</span>
+        <span class="rule"></span>
+        <span class="meta">Everything on dubaipoints.ae</span>
+      </div>
+      <h2>Find your way around.</h2>
+      <p>Card reviews, bank hubs, loyalty-programme guides and the live salary-transfer tracker — all AED-first, every figure dated and sourced.</p>
+    </div>
+    <div class="hp-miles-grid">
+      <a href="/cards/" class="hp-miles-tile is-wayfinder">
+        <div class="hp-miles-tile-head"><span class="eyebrow">Compare</span></div>
+        <h3 class="hp-miles-tile-title">Credit-card reviews</h3>
+        <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Cards</span>Cashback, miles and Islamic cards ranked by net AED value.</p>
+        <span class="hp-miles-tile-cta">Browse cards →</span>
+      </a>
+      <a href="/banks/" class="hp-miles-tile is-wayfinder">
+        <div class="hp-miles-tile-head"><span class="eyebrow">Hubs</span></div>
+        <h3 class="hp-miles-tile-title">Bank guides</h3>
+        <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Issuers</span>Every major UAE bank — fees, eligibility and card line-ups.</p>
+        <span class="hp-miles-tile-cta">Browse banks →</span>
+      </a>
+      <a href="/airlines/" class="hp-miles-tile is-wayfinder">
+        <div class="hp-miles-tile-head"><span class="eyebrow">Programmes</span></div>
+        <h3 class="hp-miles-tile-title">Miles &amp; loyalty</h3>
+        <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Airlines</span>Skywards, Etihad Guest, Qatar and more — tiers and sweet spots.</p>
+        <span class="hp-miles-tile-cta">Browse programmes →</span>
+      </a>
+      <a href="/salary-transfer/" class="hp-miles-tile is-wayfinder">
+        <div class="hp-miles-tile-head"><span class="eyebrow">Tracker</span></div>
+        <h3 class="hp-miles-tile-title">Salary-transfer offers</h3>
+        <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Live</span>Band-by-band cash and rate offers across UAE banks.</p>
+        <span class="hp-miles-tile-cta">Open the tracker →</span>
+      </a>
+    </div>
+  </section>
+
   <!-- ── 3. Fresh Intel ──────────────────────────────────────────────── -->
   <section class="hp-intel-band">
     <div class="hp-intel-head">
@@ -314,6 +353,16 @@ const milesTiles = allPrograms
     <div class="hp-miles-foot">
       <a href="/airlines/" class="hp-miles-more">Browse every programme →</a>
     </div>
+  </section>
+
+  <!-- ── 5b. Trust strip ──────────────────────────────────────────────── -->
+  <section class="hp-trust-strip" aria-label="Why trust DubaiPoints">
+    <span class="label">Why trust us</span>
+    <a href="/about/">About DubaiPoints</a>
+    <a href="/team/">Meet the team</a>
+    <a href="/how-we-make-money/">How we make money</a>
+    <a href="/editorial-policy/">Editorial policy</a>
+    <a href="/valuations/methodology/">Our valuation method</a>
   </section>
 
   <!-- ── 6. Newsletter band ───────────────────────────────────────────── -->
@@ -862,6 +911,36 @@ const milesTiles = allPrograms
     transition: opacity 0.15s ease;
   }
   .hp-miles-more:hover { opacity: 0.75; }
+
+  /* ── Trust strip ─────────────────────────────────────────────────── */
+  .hp-trust-strip {
+    max-width: 1180px;
+    margin: 8px auto 4px;
+    padding: 26px 32px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px 22px;
+  }
+  .hp-trust-strip .label {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hp-trust-strip a {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--green);
+    text-decoration: none;
+  }
+  .hp-trust-strip a:hover { text-decoration: underline; }
 
   /* ── Newsletter band ─────────────────────────────────────────────── */
   .hp-news-band {
