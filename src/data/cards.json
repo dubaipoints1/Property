@@ -1,4 +1,102 @@
 {
+  "citi-cashback": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "editor-confirmed",
+      "minPayment": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "editor-confirmed",
+      "eligibility": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "citi",
+    "name": "Citi Cash Back Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "cashback"
+    ],
+    "annualFee": {
+      "amount": 300,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": 9000,
+      "threshold_period": "annual",
+      "notes": "No annual fee in year one. From year two AED 300 (+ 5% VAT), waived if annual spend reaches AED 9,000."
+    },
+    "fxFee": 2.99,
+    "interestRate": {
+      "monthly": 3.5,
+      "annual": 42
+    },
+    "minPayment": "Higher of AED 100 or 2.74% of the statement balance",
+    "cashAdvanceFee": "3% or AED 99, whichever is higher (max AED 250)",
+    "loyaltyProgram": "Citi Cashback",
+    "earnRates": {
+      "international": 3,
+      "groceries": 2,
+      "everythingElse": 1
+    },
+    "earnUnit": "% cashback",
+    "welcomeBonus": "AED 150 joining-bonus statement credit on AED 6,000 of spend within 60 days (new Citi credit-card customers applying directly via Citi).",
+    "eligibility": {
+      "minSalary": 8000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried",
+        "self-employed"
+      ],
+      "minAge": 21,
+      "invitationOnly": false
+    },
+    "perks": [
+      "Flat, uncapped cashback: 3% on non-AED (international) spend, 2% on grocery/supermarket, 1% on all other spend — no minimum spend and no caps up to the credit limit.",
+      "No cashback on spend above the credit limit in a cycle, or on utility-bill payments made through Citi online/mobile/phone channels.",
+      "8 airport lounge visits a year via Mastercard Travel Pass (1,200+ lounges), subject to non-AED spend.",
+      "One complimentary Careem airport ride a year (up to AED 84) and 20% off Talabat (up to AED 14) once a month.",
+      "No minimum spend to earn cashback; cashback is credited automatically to the card account."
+    ],
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "Mastercard Travel Pass",
+        "scope": {
+          "visits_per_year": 8
+        },
+        "geo": [
+          "global"
+        ],
+        "notes": "Subject to non-AED spend; visits beyond 8 are charged."
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://www.citibank.ae/credit-cards/cashback/citi-cashback-credit-card",
+    "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.citibank.ae/credit-cards/cashback/citi-cashback-credit-card",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/fees-and-charges.pdf"
+    ],
+    "vatPolicy": "exclusive"
+  },
   "hsbc-live-plus": {
     "_provenance": {
       "bank": "editor-confirmed",
