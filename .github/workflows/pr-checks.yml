@@ -22,10 +22,13 @@ on:
     branches:
       - main
   # Also run on push to main so the green check shows on the merged
-  # commit history, useful for spotting silent regressions.
+  # commit history, and on push to claude/** branches so the `validate`
+  # check lands on each commit — this is what makes auto-opened PRs
+  # (auto-pr.yml, via the default token) show the required check.
   push:
     branches:
       - main
+      - "claude/**"
 
 # Cancel previous runs on the same PR if a new commit lands.
 concurrency:
