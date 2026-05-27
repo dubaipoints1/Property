@@ -1,0 +1,63 @@
+# Auto-open a draft PR for every Claude working branch.
+#
+# Removes the manual "create a PR" step: the moment a `claude/**` branch
+# is pushed, this opens a draft PR to `main` if one doesn't already
+# exist. Idempotent — pushing a branch that already has an open PR is a
+# no-op, so it's safe on every push.
+#
+# ── One-time repo setting required ────────────────────────────────────
+#   Settings → Actions → General → Workflow permissions →
+#     ✓ "Allow GitHub Actions to create and approve pull requests"
+#   Without it, `gh pr create` fails with a permissions error.
+#
+# ── CI on the auto-PR ─────────────────────────────────────────────────
+#   GitHub's default token does NOT trigger `pull_request` workflows, so
+#   pr-checks.yml also runs `validate` on push to `claude/**`. The check
+#   lands on the head commit, which is what branch protection evaluates —
+#   so the auto-opened PR still shows `validate` and is mergeable on green.
+#
+# The PR opens as a DRAFT on purpose: per the Council Charter, no PR
+# merges to main without a `## Council sign-off` block and the Chairman's
+# approval. Automation removes the busywork, not the publish gate.
+
+name: auto-pr
+
+on:
+  push:
+    branches:
+      - "claude/**"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: auto-pr-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  open-pr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Open draft PR if none exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="${GITHUB_REF_NAME}"
+          if gh pr view "$branch" --repo "$GITHUB_REPOSITORY" --json number >/dev/null 2>&1; then
+            echo "PR already open for $branch — nothing to do."
+            exit 0
+          fi
+          title="$(git log -1 --pretty=%s)"
+          gh pr create \
+            --repo "$GITHUB_REPOSITORY" \
+            --base main \
+            --head "$branch" \
+            --title "$title" \
+            --draft \
+            --body "Auto-opened draft PR for \`$branch\`. Per the Council Charter, add a '## Council sign-off' block with the Chairman's approved status before merging. CI (\`validate\`) runs on each push to this branch."
+          echo "Opened draft PR for $branch."
