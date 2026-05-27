@@ -17,19 +17,27 @@ editorTake: The single best UAE card for households that shop weekly at LuLu Hyp
   often and effectively 0% if you don't.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The LuLu 247 Platinum is Emirates NBD's co-branded Mastercard with LuLu Hypermarkets. It's a
 free-for-life card with a strong 7% earn rate at LuLu stores, making it particularly valuable
 for families who regularly shop at LuLu across the UAE.
+
+<AtAGlance card="emirates-nbd-lulu-247-platinum" />
+
+<EditorVerdict card="emirates-nbd-lulu-247-platinum" />
+
+<ProsCons card="emirates-nbd-lulu-247-platinum" />
 
 ## Earn rates
 
 All earn rates are **% back as LuLu Points** (1 LuLu Point ≈ AED 0.01 in redemption value):
 
-| Spend category | Rate |
-|---|---|
-| LuLu in-store and luluhypermarket.com | **7%** |
-| Fuel | **4%** |
-| Everything else | **1%** |
+<EarnRateTable card="emirates-nbd-lulu-247-platinum" />
 
 Lower-earning categories (at ~25% of the standard non-LuLu rate per search data) include:
 car dealerships, non-LuLu grocery/supermarkets, insurance, and fast-food restaurants.

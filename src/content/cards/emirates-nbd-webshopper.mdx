@@ -16,15 +16,24 @@ editorTake: A purpose-built online-shopping card with a single trick — 0% FX f
   separation also reduces fraud blast-radius if a website is breached.
 ---
 
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The Emirates NBD WebShopper is a purpose-built online-shopping card — AED 0
 annual fee, 0% FX fee, and a flat 1% Plus Points earn rate. Designed to be
 used exclusively for e-commerce, separate from your in-store card.
 
+<AtAGlance card="emirates-nbd-webshopper" />
+
+<EditorVerdict card="emirates-nbd-webshopper" />
+
+<ProsCons card="emirates-nbd-webshopper" />
+
 ## Earn rates
 
-| Spend category | Plus Points per AED 1 |
-|---|---|
-| Everything else | **1** |
+<EarnRateTable card="emirates-nbd-webshopper" />
 
 Plus Points convert at ENBD's published rates — cashback at par-value
 (~1¢ per point) is the cleanest realisation.

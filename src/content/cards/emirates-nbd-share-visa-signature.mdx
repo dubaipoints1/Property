@@ -17,19 +17,28 @@ editorTake: The Signature is the SHARE card most UAE residents should actually a
   earn rate alone makes this one of the best free cards in the UAE.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 Launched in May 2025, the SHARE Visa Signature is Emirates NBD's co-branded card with Majid Al
 Futtaim — the group behind Mall of the Emirates, City Centre Malls, Carrefour, VOX Cinemas, and
 more. It earns 6% back in SHARE Points across the entire MAF ecosystem and is completely free
 for life with no annual or joining fee.
 
+<AtAGlance card="emirates-nbd-share-visa-signature" />
+
+<EditorVerdict card="emirates-nbd-share-visa-signature" />
+
+<ProsCons card="emirates-nbd-share-visa-signature" />
+
 ## Earn rates
 
 All earn rates are **% back in SHARE Points** (1 SHARE Point = AED 0.10 in redemption value at MAF outlets):
 
-| Spend category | Rate |
-|---|---|
-| All MAF brands & outlets | **6%** |
-| All other local & international spend | **1%** |
+<EarnRateTable card="emirates-nbd-share-visa-signature" />
 
 MAF brands covered: Mall of the Emirates, all City Centre Malls (Deira, Mirdif, Me'aisem, Sharjah,
 Fujairah, Bahrain), Carrefour, VOX Cinemas, Magic Planet, Ski Dubai, iFly Dubai, and 5,000+ stores

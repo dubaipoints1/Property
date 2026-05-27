@@ -17,17 +17,26 @@ editorTake: A dining specialist card. 5x Plus Points on restaurant spend is genu
   point — confirm the rest of your banking relationship is durable before locking in.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The Emirates NBD Diners Club is a Mastercard-network card (despite the Diners Club
 branding) built around a single big-multiplier category: 5% back in Plus Points on
 dining. No annual fee at AED 12,000 minimum salary, 0% FX fee, but salary transfer
 is required to qualify.
 
+<AtAGlance card="emirates-nbd-diners-club" />
+
+<EditorVerdict card="emirates-nbd-diners-club" />
+
+<ProsCons card="emirates-nbd-diners-club" />
+
 ## Earn rates
 
-| Spend category | Plus Points per AED 1 |
-|---|---|
-| Dining | **5** |
-| Everything else | 0.5 |
+<EarnRateTable card="emirates-nbd-diners-club" />
 
 Plus Points convert to Skywards Miles, cashback, or merchant credit at ENBD's
 published rates — typically realising around 1¢ per point at the cashback ceiling.

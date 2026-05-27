@@ -17,16 +17,26 @@ editorTake: This is a relationship card, not a standalone product. ENBD issues i
   the package, not on the standalone card maths.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The Priority Banking Visa Infinite is Emirates NBD's relationship card — issued to
 existing Priority Banking customers as part of the wealth-management package. AED
 1,500 annual fee, 0% FX fee, Visa Infinite benefit suite, and a flat 1% Plus
 Points earn rate.
 
+<AtAGlance card="emirates-nbd-priority-banking-visa-infinite" />
+
+<EditorVerdict card="emirates-nbd-priority-banking-visa-infinite" />
+
+<ProsCons card="emirates-nbd-priority-banking-visa-infinite" />
+
 ## Earn rates
 
-| Spend category | Plus Points per AED 1 |
-|---|---|
-| Everything else | **1** |
+<EarnRateTable card="emirates-nbd-priority-banking-visa-infinite" />
 
 Earn is flat. The card's value sits in the Visa Infinite perks and the wider
 Priority Banking relationship, not in points generation on day-to-day spend.

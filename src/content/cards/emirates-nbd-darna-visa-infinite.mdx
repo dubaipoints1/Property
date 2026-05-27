@@ -18,16 +18,26 @@ editorTake: The Darna Infinite is the premium tier of ENBD's property-rewards pr
   per dirham at the same fee tier.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+
 The Darna Visa Infinite sits at the top of Emirates NBD's Darna programme stack.
 Premium Visa Infinite benefits — concierge, travel insurance, global lounge access
 — combined with Darna Points that redeem against Dubai property bills at
 participating developers.
 
+<AtAGlance card="emirates-nbd-darna-visa-infinite" />
+
+<EditorVerdict card="emirates-nbd-darna-visa-infinite" />
+
+<ProsCons card="emirates-nbd-darna-visa-infinite" />
+
 ## Earn rates
 
-| Spend category | Darna Points per AED 1 |
-|---|---|
-| Everything else | **1** |
+<EarnRateTable card="emirates-nbd-darna-visa-infinite" />
 
 Earn is flat — there's no category multiplier. The card's value sits in the
 Visa Infinite perks and the Darna redemption path, not in points generation
