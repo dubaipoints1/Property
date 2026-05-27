@@ -1,4 +1,124 @@
 {
+  "hsbc-live-plus": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "editor-confirmed",
+      "cashAdvanceFee": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "welcomeBonus": "editor-confirmed",
+      "eligibility": "editor-confirmed",
+      "_features": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-05-26",
+    "_lastReviewed": "2026-05-26",
+    "bank": "hsbc",
+    "name": "HSBC Live+ Credit Card",
+    "network": "Visa",
+    "categories": [
+      "cashback"
+    ],
+    "annualFee": {
+      "amount": 313.95,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": 12000,
+      "threshold_period": "annual",
+      "notes": "No annual fee in year one (applications approved on/before 30 June 2026). From year two AED 313.95 (incl. VAT), waived if spend exceeds AED 12,000 in the prior 12 months."
+    },
+    "fxFee": 2,
+    "interestRate": {
+      "monthly": 3.69,
+      "annual": 44.28
+    },
+    "cashAdvanceFee": "3% or AED 100, whichever is higher",
+    "loyaltyProgram": "HSBC Cashback",
+    "earnRates": {
+      "dining": 6,
+      "fuel": 5,
+      "groceries": 2,
+      "entertainment": 2,
+      "everythingElse": 0.5,
+      "_caps": {
+        "min_monthly_spend_to_qualify_aed": 3000,
+        "per_category": {
+          "dining": {
+            "monthly_aed": 200
+          },
+          "fuel": {
+            "monthly_aed": 200
+          },
+          "groceries": {
+            "monthly_aed": 200
+          }
+        }
+      }
+    },
+    "earnUnit": "% cashback",
+    "welcomeBonus": "Up to AED 1,500 welcome cashback on meeting the spend and funding requirements, plus AED 100 on the first mobile-wallet payment (new credit-card customers; offer ends 31 May 2026).",
+    "eligibility": {
+      "minSalary": 5000,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried",
+        "self-employed"
+      ],
+      "minAge": 21,
+      "invitationOnly": false
+    },
+    "perks": [
+      "6% cashback on dining, 5% on fuel, and 2% on groceries and entertainment (combined) — each capped at AED 200 per statement cycle, requiring at least AED 3,000 of monthly spend. Everything else, and all spend in months under AED 3,000, earns 0.5%. Maximum AED 600/month on the accelerated categories.",
+      "Complimentary 12-month Careem Plus subscription and 12-month Zomato Gold membership (up to 50% off at 4,000+ UAE restaurants).",
+      "12 complimentary airport lounge visits a year via Visa Airport Companion (requires at least one USD 1+ international purchase per year), plus multi-trip travel insurance up to US$500,000.",
+      "Buy-one-get-one-free cinema tickets monthly (VOX, Reel, Roxy) on at least AED 6,000 monthly spend; up to 7% back on Booking.com via Visa.",
+      "Minimum salary AED 5,000 for employees of HSBC-approved companies, or AED 12,500 for all other applicants; age 21-65.",
+      "Expat-friendly: HSBC can use credit history from 12 countries (UK, US, India, Canada, Australia and more) for new UAE arrivals."
+    ],
+    "_features": [
+      {
+        "type": "lounge_access",
+        "network": "Visa Airport Companion",
+        "scope": {
+          "visits_per_year": 12
+        },
+        "geo": [
+          "global"
+        ]
+      },
+      {
+        "type": "insurance_travel",
+        "scope": "Multi-trip travel insurance up to US$500,000 (cardholder and family, trips up to 90 days)"
+      },
+      {
+        "type": "concierge",
+        "scope": "24/7"
+      }
+    ],
+    "transferPartners": [],
+    "applyUrl": "https://www.hsbc.ae/credit-cards/products/live-plus/",
+    "kfsUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/kfs-credit-cards.pdf",
+    "lastVerified": "2026-05-26",
+    "sources": [
+      "https://www.hsbc.ae/credit-cards/products/live-plus/",
+      "https://www.hsbc.ae/credit-cards/credit-card-charges-and-how-to-avoid-them/"
+    ],
+    "vatPolicy": "inclusive"
+  },
   "cbd-one": {
     "_provenance": {
       "bank": "editor-confirmed",
