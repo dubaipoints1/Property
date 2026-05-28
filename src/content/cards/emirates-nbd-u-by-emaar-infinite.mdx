@@ -1,36 +1,70 @@
 ---
 slug: emirates-nbd-u-by-emaar-infinite
-cons:
-- AED 4,200 in joining + first-year fees is the highest entry cost in the ENBD lineup
-- 1.5% on non-Emaar spend — only marginally above the SHARE / Skywards base
-- Only economic if real Emaar spend exceeds ~AED 35,000 a month — narrow audience
+verifiedBy: DubaiPoints Editorial — verified against the Emirates NBD U by Emaar Infinite product page and Schedule of Charges, 28 May 2026
+kicker: ENBD's co-branded U by Emaar Visa Infinite — 7.5% UPoints across Dubai Mall, Address/Vida/Rove hotels and Emaar F&B; AED 4,200 to enter year one.
+tier: niche
+applyIf: Your everyday spend lives in Emaar — Dubai Mall, Address/Vida/Rove hotels — at AED 30,000+ a month.
+skipIf: You spend mostly outside Emaar — 1.5% on non-Emaar won't repay the AED 2,625 joining and AED 1,575 renewal.
+keyTakeaways:
+- 7.5% UPoints across Dubai Mall, Dubai Marina Mall, Dubai Hills Mall, Address, Rove and Vida hotels and Emaar F&B
+- AED 2,625 joining + AED 1,575 annual (incl. VAT) with no published spend-based waiver — break-even ~AED 35,000/month of Emaar spend
+- Automatic U by Emaar Platinum status, Visa Airport Companion lounge access, Reel Cinemas BOGO above AED 5,000 monthly spend
+- UPoints redeem only within the Emaar ecosystem — not transferable to airlines or hotel programmes
 pros:
-- 7.5% UPoints across Dubai Mall, Dubai Marina Mall, Dubai Hills Mall, Address, Rove,
-  and Vida hotels
-- Automatic U by Emaar Platinum status — concierge, valet at Dubai Mall, complimentary
-  suite upgrades
-- Visa Airport Companion unlimited global lounge access
-verifiedBy: DubaiPoints Editorial
-editorTake: Built for Dubai Mall locals — anyone who spends real money inside Emaar's
-  footprint of malls, hotels, and entertainment. 7.5% back on every Dubai Mall, Dubai
-  Marina Mall, and Dubai Hills Mall purchase, plus 7.5% on Address, Vida, and Rove
-  Hotels stays, is unmatched if your life genuinely happens inside that ecosystem.
-  The AED 2,625 joining fee plus AED 1,575 annual is the second-highest cost on the
-  ENBD lineup, with no spend-waiver published — so it only makes financial sense above
-  ~AED 35,000 a month of Emaar spend.
+- 7.5% UPoints on Dubai Mall, Dubai Marina Mall, Dubai Hills Mall, Address, Rove, Vida and Emaar F&B
+- Automatic U by Emaar Platinum status — suite upgrades (max 7 nights/year), 20% off Emaar Hospitality F&B and spas
+- Unlimited Visa Airport Companion lounge access (1,000+ lounges) and 24/7 concierge
+- No salary-transfer requirement — eligibility is salary-tested only at AED 30,000/month
+cons:
+- AED 2,625 joining + AED 1,575 annual is the highest entry cost in the ENBD Visa lineup
+- 1.5% on non-Emaar spend is only marginally above the ENBD Plus Points base
+- UPoints redeem only within Emaar's 2,500+ partner outlets — no airline or hotel-programme transfers
+- Economic only above ~AED 35,000/month of real Emaar spend — a narrow audience
+editorTake: >-
+  The U by Emaar Infinite is Emirates NBD's co-branded Visa Infinite for the resident whose
+  discretionary spend genuinely lives inside Emaar's footprint — Dubai Mall, Dubai Marina
+  Mall, Dubai Hills Mall, Address, Rove and Vida hotels, and Emaar F&B outlets. The
+  category rate is unmatched in the UAE market: 7.5% back as UPoints on every dirham spent
+  inside that ecosystem, with automatic U by Emaar Platinum status — suite upgrades, F&B
+  and spa discounts, and entertainment access — layered on top. The price of entry is
+  steep: AED 2,625 joining plus AED 1,575 annual renewal (both inclusive of VAT), with no
+  published spend-based waiver. On a 7.5% headline rate, the break-even on the AED 2,625
+  joining fee alone is about AED 35,000 a month of qualifying Emaar spend — a number that
+  rules out most readers and rules in a small, well-defined audience: Dubai Mall regulars,
+  Address loyalists, and households that genuinely route their dining and entertainment
+  through the Emaar list. The 1.5% on non-Emaar spend is thin, and UPoints redeem only
+  within the Emaar partner network — no airline transfers, no hotel-programme conversion.
+  A bullseye for the right resident; an overpaid Visa Infinite for everyone else.
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
-import AtAGlance from "~/components/cards/AtAGlance.astro";
-import ProsCons from "~/components/cards/ProsCons.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-The U by Emaar Infinite is Emirates NBD's co-branded Visa Infinite card with the U by Emaar
-loyalty programme. Built for residents who spend heavily at Emaar properties — Dubai Mall,
-Address/Rove/Vida hotels, and Emaar's F&B outlets.
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "watch-out-for", label: "Watch out for" },
+  { id: "is-it-worth-it", label: "Is it worth it?" },
+]} />
+
+The Emirates NBD U by Emaar Infinite is the bank's co-branded Visa Infinite with the U by
+Emaar loyalty programme. It is built for the resident whose discretionary spend genuinely
+runs through Emaar's footprint — Dubai Mall, the Address/Vida/Rove hotel families, and
+Emaar F&B — and earns 7.5% back as UPoints across that universe.
+
+<KeyTakeaways card="emirates-nbd-u-by-emaar-infinite" />
 
 <AtAGlance card="emirates-nbd-u-by-emaar-infinite" />
+
+<GreatCardIf card="emirates-nbd-u-by-emaar-infinite" />
 
 <EditorVerdict card="emirates-nbd-u-by-emaar-infinite" />
 
@@ -38,53 +72,94 @@ Address/Rove/Vida hotels, and Emaar's F&B outlets.
 
 ## Earn rates
 
-All earn rates are expressed as **% back in UPoints** (not miles per AED):
+All earn rates are expressed as **% back in UPoints**, redeemable across Emaar's 2,500+
+partner outlets — not as miles per AED:
 
 <EarnRateTable card="emirates-nbd-u-by-emaar-infinite" />
 
-UPoints are credited to your U by Emaar account. They are **not transferable to airlines**.
+<HotTip>
+On a 7.5% headline, the AED 2,625 joining fee alone breaks even at roughly **AED 35,000 a
+month** of qualifying Emaar spend in year one (AED 2,625 ÷ 7.5% ÷ 12). Add the AED 1,575
+renewal and the year-one break-even climbs higher still. Run your own twelve-month Emaar
+total before applying — anything below that line, and a no-fee ENBD Plus Points card plus
+a separate U by Emaar account earns the loyalty side without the AED 4,200 of card fees.
+</HotTip>
 
 ## Fee summary
 
-| Fee | Amount |
-|---|---|
-| Joining fee (one-time, year 1) | AED 2,625 |
-| Annual renewal fee (year 2+) | AED 1,575 |
-| Interest rate | 3.25% per month |
-| Minimum payment | 5% of outstanding or AED 100 (higher applies) |
-| FX fee | ~1.99% (verify against KFS) |
+<FeeBlock card="emirates-nbd-u-by-emaar-infinite" />
 
-## Welcome bonus breakdown
-
-- **15,000 UPoints** — credited automatically on card activation + joining fee payment
-- **10,000 UPoints** — on cumulative retail spend of USD 10,000 within first 3 billing statements
-- **Automatic U by Emaar Platinum status** on activation
+The card carries an **AED 2,625 joining fee** in year one, on top of the **AED 1,575
+annual renewal** from year two onwards — both inclusive of VAT. There is **no published
+spend-based waiver** on either fee. The **foreign-currency fee is 1.99%**, levied on every
+non-AED transaction. As with any rewards card, clear the statement in full each month —
+the 3.25% monthly interest charge will erase any UPoints value many times over.
 
 ## Key conditions to know
 
-**Reel Cinemas BOGO:**
-- Requires AED 5,000 minimum monthly card spend
-- Max 3 free tickets (6 total) per calendar month
-- Must book online via Reel Cinemas website or app
+<dl class="dp-conditions">
+  <dt>UPoints earn structure</dt>
+  <dd>7.5% back as UPoints on Dubai Mall, Dubai Marina Mall, Dubai Hills Mall, Address Hotels, Rove Hotels, Vida Hotels and Emaar F&B outlets (including Atmosphere and Thiptara). 1.5% back as UPoints on all other spend. UPoints redeem instantly at 2,500+ Emaar partner outlets — they are not transferable to airline or hotel programmes.</dd>
 
-**Hotel suite upgrade:**
-- Capped at 7 complimentary nights per year
-- Late checkout until 4pm, subject to availability
-- Book via brand websites or U by Emaar app for member rates
+  <dt>Welcome bonus</dt>
+  <dd>Up to 25,000 UPoints — 15,000 credited on card activation and joining-fee payment, 10,000 on cumulative retail spend of USD 10,000 (~AED 36,725) within the first three billing statements. Automatic U by Emaar Platinum status on activation.</dd>
 
-**Valet parking (as of May 2025):**
-- Grand Drive valet at Dubai Mall unavailable due to expansion — redirected to China Town valet area
-- Access via OTP generated in the U by Emaar app (required from Jan 2025)
+  <dt>Salary transfer</dt>
+  <dd>Not required. Minimum salary AED 30,000 a month, credited to any UAE bank. Salaried, self-employed or business-owner applicants accepted.</dd>
 
-## Best for
+  <dt>Reel Cinemas BOGO</dt>
+  <dd>Buy-one-get-one-free movie tickets at Reel Cinemas with a free soft drink and popcorn, conditional on AED 5,000 minimum monthly card spend. Maximum 3 free tickets (6 in total) per calendar month. Online booking only via the Reel Cinemas website or app.</dd>
 
-Residents who regularly shop, eat, or stay within the Emaar ecosystem. The 7.5% back on
-all Emaar spend is among the strongest category earn rates on any UAE card. Particularly
-strong for Dubai Mall regulars, Reel Cinemas users, and Address/Rove/Vida hotel guests.
+  <dt>Hotel suite upgrade</dt>
+  <dd>Complimentary suite upgrade on Emaar hotel stays (Address, Vida, Rove), capped at 7 nights per year. Late checkout to 4pm, subject to availability. Bookings via the brand website or the U by Emaar app to qualify.</dd>
+
+  <dt>Visa Infinite chrome</dt>
+  <dd>Unlimited complimentary access to 1,000+ global lounges via the Visa Airport Companion app, 24/7 concierge, complimentary Grand Drive valet at Dubai Mall (Galeries Lafayette and The Souk), and 0% Easy Payment Plans at Apple, Carrefour, Emirates, Amazon and Fitness First.</dd>
+
+  <dt>Foreign-currency fee</dt>
+  <dd>1.99% on every non-AED transaction. Standard for the UAE Visa Infinite segment, but not a zero-FX travel card.</dd>
+
+  <dt>Eligibility</dt>
+  <dd>Minimum salary AED 30,000, UAE residency required, age 21+. Documentation: Emirates ID and passport copy (with visa page for expatriates), salary certificate or trade licence, latest three months' bank statements, and a security cheque.</dd>
+</dl>
 
 ## Watch out for
 
-- AED 2,625 joining fee is steep — calculate your year-one net value carefully
-- UPoints **only redeem within the Emaar ecosystem** — no airline or hotel transfers
-- 1.5% on non-Emaar spend is decent but not market-leading for a card at this fee level
-- Reel Cinemas BOGO requires AED 5k/month minimum — check your typical spend first
+- **AED 35,000/month of Emaar spend is the break-even.** Below that, the AED 2,625 joining
+  fee is not earned back on the 7.5% rate in year one. Run a twelve-month Emaar audit
+  before applying — restaurants, mall purchases, hotel stays, cinema tickets — and confirm
+  the number stands up.
+- **UPoints lock you into the Emaar ecosystem.** They redeem at Emaar's 2,500+ partner
+  outlets and nowhere else — no airline transfers, no hotel-programme conversion. If your
+  travel ambitions sit outside Emaar's footprint, a Skywards or hotel-co-brand card will
+  carry more redemption optionality.
+- **The 1.5% on non-Emaar spend is thin.** It is only marginally above the ENBD Plus
+  Points base; the SC Platinum X or Mashreq Cashback earns more on the same non-Emaar
+  spend. Treat this as a single-purpose Emaar-spend card, not an everyday earner.
+- **The Reel Cinemas BOGO gate.** The benefit is conditional on AED 5,000 minimum card
+  spend in the month. Check your typical monthly card spend before relying on it.
+- **Valet redirection at Dubai Mall.** Grand Drive valet has been periodically rerouted
+  during Dubai Mall expansion works; access is via an OTP generated in the U by Emaar app.
+  Re-verify the current valet location before relying on it for a planned visit.
+
+## Is it worth it?
+
+For the household that genuinely spends AED 35,000+ a month inside the Emaar footprint —
+Dubai Mall regulars, Address loyalists, families that route their dining and weekend
+entertainment through the Emaar list — the 7.5% UPoints rate is unmatched in the UAE
+market and the AED 4,200 of year-one fees is recoverable. Layer on automatic U by Emaar
+Platinum status, suite upgrades and the Visa Infinite chrome, and the proposition stands
+up for the right reader.
+
+It is the wrong card for everyone else. Non-Emaar spend earns 1.5% — only marginally above
+the ENBD Plus Points base — and UPoints lock you into Emaar's ecosystem with no airline or
+hotel-programme escape valve. Below AED 35,000 a month of qualifying spend the AED 2,625
+joining fee does not pencil out, and a no-fee ENBD Visa Flexi plus a free-standing U by
+Emaar account captures the loyalty side without the card fees.
+
+## Bottom line
+
+A bullseye for Dubai Mall locals and Emaar-hotel loyalists; an overpaid Visa Infinite for
+everyone else. **Apply** if your year of Emaar spend clears AED 420,000 and you value the
+Platinum status. **Skip** if most of your spend lands outside the Emaar footprint — the
+1.5% non-Emaar rate and the AED 4,200 year-one fees rule it out as a default card.
