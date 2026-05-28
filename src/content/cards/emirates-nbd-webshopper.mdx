@@ -1,32 +1,63 @@
 ---
 slug: emirates-nbd-webshopper
-cons:
-- Single-purpose card — pointless for in-store spending
-- 1% flat earn isn't a category bonus, just a base rate
-- Plus Points realise unevenly outside the cashback ceiling
+verifiedBy: DubaiPoints Editorial — verified against the Emirates NBD WebShopper product page, 28 May 2026
+kicker: A purpose-built online-only Visa from ENBD at AED 52.50 a year — earns Plus Points on every e-commerce purchase, but the rate is thin and the FX fee is standard.
+tier: niche
+applyIf: You want a dedicated online-only card to ring-fence e-commerce spend from your main wallet at the lowest entry cost.
+skipIf: You want meaningful cashback or low FX on international online spend — Webshopper offers neither.
+keyTakeaways:
+- AED 52.50 annual fee and AED 5,000 minimum salary — among the lowest entry points in the ENBD lineup
+- Earn is roughly 1 Plus Point per AED 200 spent — a thin reward, not a category bonus
+- 1.99% FX on every non-AED transaction — standard, not a saving for international e-commerce
+- The pitch is fraud-surface separation, not rewards — keep it for online use only
 pros:
-- AED 5,000 minimum salary — among the lowest entry points in the ENBD lineup
-- Earns Plus Points on every online purchase
-- Designed specifically for online shopping — separate from a physical card reduces fraud-exposure surface
-verifiedBy: DubaiPoints Editorial
-editorTake: A basic online-only card. At AED 52.50 a year with a standard 1.99% FX fee,
-  it carries no special foreign-currency advantage — its only real draws are the low
-  AED 5,000 salary bar and keeping online spend on a card separate from your main one to
-  limit fraud exposure. The roughly 1% Plus Points earn is unremarkable, so there is
-  little reason to pick it over a no-fee everyday card unless that online/in-store
-  separation matters to you.
+- Very low entry bar — AED 5,000 minimum salary and AED 52.50 annual fee
+- Dedicated to e-commerce, useful for ring-fencing online spend from your main card
+- No salary-transfer requirement — works alongside any existing UAE bank relationship
+cons:
+- Roughly 1 Plus Point per AED 200 is a thin earn rate, not a category bonus
+- 1.99% FX fee matches the UAE market norm — no saving on international purchases
+- Single-purpose — pointless for in-store spending, where category cards earn more
+- Welcome bonus not documented at our last verification
+editorTake: >-
+  A basic online-only Visa from Emirates NBD. At AED 52.50 a year with a 1.99% FX
+  fee, it carries no foreign-currency advantage — its only real draws are the
+  AED 5,000 salary bar and the option to keep online spend on a separate card to
+  limit fraud exposure. The roughly 1 Plus Point per AED 200 earn (about half a
+  percent at standard cashback redemption) is thin, so there is little reason to
+  pick it over a no-fee everyday card unless that online/in-store separation
+  matters to you. Hold it as a deliberately dedicated e-commerce instrument, or
+  skip it and put online spend on a broader cashback card.
 ---
 
+import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
-import AtAGlance from "~/components/cards/AtAGlance.astro";
-import ProsCons from "~/components/cards/ProsCons.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-The Emirates NBD WebShopper is a purpose-built online-shopping card — AED 52.50
-annual fee, 1.99% FX fee, and a roughly 1% Plus Points earn rate. Designed to be
-used exclusively for e-commerce, separate from your in-store card.
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "watch-out-for", label: "Watch out for" },
+  { id: "is-it-worth-it", label: "Is it worth it?" },
+]} />
+
+The Emirates NBD WebShopper is a purpose-built online-shopping Visa: AED 52.50 a
+year, a 1.99% foreign-currency fee, and Plus Points earned on every e-commerce
+transaction. The pitch is fraud-surface separation, not rewards — a dedicated
+card for online purchases that you keep out of your day-to-day wallet.
+
+<KeyTakeaways card="emirates-nbd-webshopper" />
 
 <AtAGlance card="emirates-nbd-webshopper" />
+
+<GreatCardIf card="emirates-nbd-webshopper" />
 
 <EditorVerdict card="emirates-nbd-webshopper" />
 
@@ -36,52 +67,85 @@ used exclusively for e-commerce, separate from your in-store card.
 
 <EarnRateTable card="emirates-nbd-webshopper" />
 
-Plus Points convert at ENBD's published rates — cashback at par-value
-(~1¢ per point) is the cleanest realisation.
+Plus Points convert at Emirates NBD's published rates; cashback redemption at
+par value (~AED 1 per point) is the cleanest realisation. ENBD's product page
+states the WebShopper earns **1 Plus Point per AED 200 spent**, which works out
+to roughly 0.5% back at cashback redemption — a thin reward by UAE market
+standards.
+
+<HotTip>
+The WebShopper's earn rate is unremarkable on any reading. Its real argument is
+fraud-surface separation: an online-only card with its own 16-digit number that
+you never carry in your wallet limits the blast radius if a merchant is
+breached. If you already have a no-fee everyday card you trust, this is the
+cheapest way to add that separation without taking on a second category card.
+</HotTip>
 
 ## Fee summary
 
-| Fee | Amount |
-|---|---|
-| Annual fee | AED 52.50 |
-| FX fee | 1.99% |
-| Minimum monthly salary | AED 5,000 |
-| Salary transfer | Not required |
+<FeeBlock card="emirates-nbd-webshopper" />
 
-The fee profile is modest: AED 52.50 annual cost,
-1.99% FX, AED 5,000 minimum salary — the low salary bar is its main draw.
+The cost profile is modest: AED 52.50 annual fee, 1.99% FX, AED 5,000 minimum
+salary, no salary-transfer requirement. The 1.99% FX matches the UAE market
+norm of 1.99–2.49%, so there is no international-spend saving. The 3.25%
+monthly interest rate (39% APR) only matters if you revolve a balance — clear
+the statement in full each month and it is irrelevant.
 
 ## Key conditions to know
 
-**Intended use — online only:**
-- Marketed for e-commerce; physical-merchant transactions earn the same
-  flat 1% but you'd typically use a category card in-store
-- Card number is the standard 16-digit format — accepted by any online
-  merchant that accepts Visa
-- Some users keep the card unactivated for physical use to reduce
-  card-cloning risk
+<dl class="dp-conditions">
+  <dt>Intended use — online only</dt>
+  <dd>Marketed as a dedicated e-commerce card. Accepted by any online merchant that accepts Visa. Physical-merchant transactions earn the same Plus Points but you would typically use a category card in-store.</dd>
 
-**FX fee:**
-- 1.99% FX, in line with the UAE market norm of 1.99–2.49% — no saving on
-  international e-commerce
-- On AED 5,000 of annual non-AED online spend, the FX cost is
-  ~AED 100 — the standard surcharge
+  <dt>Plus Points earn structure</dt>
+  <dd>1 Plus Point per AED 200 spent — applies to all eligible transactions. No published category multipliers on the WebShopper variant. Plus Points redeem against statement-credit cashback at the standard ENBD ratio.</dd>
 
-## Best for
+  <dt>Foreign-currency fee</dt>
+  <dd>1.99% on every non-AED transaction. On AED 5,000 of annual non-AED online spend, the FX cost is about AED 100 — the standard UAE surcharge.</dd>
 
-UAE residents on AED 5,000+ a month who shop online internationally
-(Amazon, AliExpress, ASOS, Shein, Etsy) and want a dedicated card for
-that traffic. Particularly useful for new residents who don't yet
-qualify for higher-tier cards but want zero FX on their first online
-purchases.
+  <dt>Salary transfer</dt>
+  <dd>Not required. Minimum salary AED 5,000 a month, credited to any UAE bank. Salaried applicants only.</dd>
+
+  <dt>Interest-free window</dt>
+  <dd>Up to 55 days on retail purchases and related fees. Minimum payment 5% of outstanding or AED 100, whichever is higher. Revolving a balance at 3.25% per month (39% APR) will erase any Plus Points value many times over.</dd>
+
+  <dt>Documentation</dt>
+  <dd>Standard ENBD credit-card pack: completed application, Emirates ID and passport copy (with visa page for expatriates), latest salary certificate, three months' bank statements, and a security cheque.</dd>
+</dl>
 
 ## Watch out for
 
-- **1% earn is the floor.** The card pays a thin reward — and with a
-  1.99% FX fee there is no FX-fee saving to lean on either
-- **Single-purpose.** Off-online spending earns the same 1% with no
-  category bonuses — pair with a category card for groceries and dining
-- **Welcome bonus not documented** at our last verification
-- **Online-fraud exposure.** Keeping a dedicated card for e-commerce
-  reduces the blast radius if a merchant is breached, but only works if
-  you actually leave the physical card at home — not just symbolically
+- **The earn rate is the floor.** Roughly 1 Plus Point per AED 200 spent — about
+  half a percent at standard cashback redemption — is well below what category
+  cards return on online spend. Pair the WebShopper with a category card, or
+  skip it for a stronger everyday earner.
+- **No FX advantage.** The 1.99% FX matches the UAE market norm. International
+  e-commerce on this card costs the same as on any other ENBD card.
+- **Single-purpose.** Off-online spending earns the same flat rate with no
+  category bonuses. The card is designed for one job; treat it that way.
+- **Welcome bonus not documented** at our last verification. If a current promo
+  exists, it is not on the product page we sourced.
+- **Online-fraud exposure assumption.** The separation argument only works if
+  you actually leave the physical card at home — not just symbolically. If both
+  your main card and the WebShopper sit in the same wallet, the fraud-blast
+  benefit is theoretical.
+
+## Is it worth it?
+
+For UAE residents on AED 5,000+ a month who want a dedicated online-only card
+to ring-fence e-commerce spend from their main wallet, the WebShopper does the
+job at the lowest entry cost in the ENBD lineup. It is particularly useful for
+new residents who do not yet qualify for higher-tier cards and want a second
+card whose only purpose is internet purchases.
+
+It is the wrong card for rewards optimisation. The earn rate is thin, the FX
+fee is standard, and any no-fee everyday card — ENBD's own Visa Flexi included
+— pays more on the same online spend. Pick the WebShopper for the separation,
+or skip it for the earn.
+
+## Bottom line
+
+A deliberately narrow online-only Visa whose draw is fraud separation, not
+rewards. **Apply** if you want a dedicated e-commerce card at the lowest entry
+cost. **Skip** if you want meaningful cashback or low FX on international
+online spend — neither is on offer here.

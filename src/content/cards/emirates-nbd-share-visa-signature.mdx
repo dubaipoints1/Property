@@ -1,34 +1,76 @@
 ---
 slug: emirates-nbd-share-visa-signature
 cons:
-- 1% on non-MAF spend — same below-average base rate as the Infinite
-- 5,000-point welcome bonus (~AED 500) requires AED 25,000 spend in 90 days
-- SHARE Points only redeem within the MAF ecosystem
+- 1% on non-MAF spend — same below-average base as the Infinite
+- 5,000-point welcome bonus (AED 500) requires AED 25,000 spend in 90 days — ~AED 8,300/month
+- SHARE Points only redeem inside the Majid Al Futtaim ecosystem — no airline or hotel flexibility
+- Groceries outside Carrefour earn 0.25%; fuel and utilities just 0.10%
+- Lounge access is 1,000+ via Visa Airport Companion — capped visits, not unlimited like the Infinite
 pros:
-- AED 0 annual fee for life
-- 6% SHARE Points at all MAF malls, Carrefour, VOX — the strongest free card in this
-  category
-- 1,000+ airport lounge access on a no-fee card
-verifiedBy: DubaiPoints Editorial
-editorTake: The Signature is the SHARE card most UAE residents should actually apply
-  for. The Infinite's 8% rate beats it by 2 percentage points, but the Signature is
-  free for life and the AED 12,000 minimum salary opens it to a far wider pool. If
-  you spend more than AED 5,000 a month inside Majid Al Futtaim merchants, the 6%
-  earn rate alone makes this one of the best free cards in the UAE.
+- AED 0 annual fee for life — no joining, no renewal, no spend gate
+- 6% back as SHARE Points at all MAF malls, Carrefour, VOX Cinemas — the strongest free card
+  in this category
+- Visa Airport Companion lounge access at 1,000+ lounges on a free-for-life card
+- AED 12,000 minimum salary opens it to mid-market expat households
+- 5,000 SHARE Points (AED 500) welcome bonus + AED 350 YOUGotaGift on online application
+verifiedBy: DubaiPoints Editorial — verified against the ENBD SHARE Visa Signature product
+  page and SHARE programme terms, 28 May 2026
+kicker: The SHARE card most UAE residents should actually apply for — 6% back across
+  Majid Al Futtaim merchants, no annual fee, AED 12,000 salary bar.
+tier: strong
+applyIf: You spend regularly at Carrefour, City Centre malls or VOX and want a
+  free-for-life card with lounge access.
+skipIf: Your spend lives outside the MAF ecosystem — the 1% base rate is below
+  market on general spend.
+keyTakeaways:
+- 6% back as SHARE Points across the Majid Al Futtaim footprint — Mall of the Emirates,
+  City Centre malls, Carrefour, VOX Cinemas, Ski Dubai
+- Free for life, AED 12,000 minimum salary; 5,000 SHARE Points (AED 500) on AED 25,000 spend
+- Visa Airport Companion lounge access at 1,000+ lounges on a no-fee card
+- SHARE Points only redeem inside MAF — no airline or hotel flexibility
+editorTake: >-
+  The Signature is the SHARE card most UAE residents should actually apply for. The
+  Infinite earns 8% versus 6% and adds unlimited lounge access, but it costs AED 1,575
+  a year from year two and asks for an AED 30,000 salary. The Signature is free for life
+  and the AED 12,000 minimum salary opens it to a far wider pool. If a household spends
+  more than AED 5,000 a month inside MAF — Carrefour, the City Centre malls, VOX
+  Cinemas, Ski Dubai — the 6% rate alone makes this one of the best free cards in the
+  UAE. AED 5,000 a month at Carrefour returns AED 300 of SHARE value with no fee to
+  recover. The catch is the same as the Infinite: SHARE Points are closed-loop, redeeming
+  only inside MAF, and the non-MAF base earn drops to 1%. Hold it as a category card,
+  earn elsewhere on general spend.
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
-import AtAGlance from "~/components/cards/AtAGlance.astro";
-import ProsCons from "~/components/cards/ProsCons.astro";
+import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
+import CardComparison from "~/components/cards/CardComparison.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-Launched in May 2025, the SHARE Visa Signature is Emirates NBD's co-branded card with Majid Al
-Futtaim — the group behind Mall of the Emirates, City Centre Malls, Carrefour, VOX Cinemas, and
-more. It earns 6% back in SHARE Points across the entire MAF ecosystem and is completely free
-for life with no annual or joining fee.
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "welcome-bonus-breakdown", label: "Welcome bonus" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "share-signature-vs-share-infinite", label: "Signature vs Infinite" },
+  { id: "watch-out-for", label: "Watch out for" },
+]} />
+
+Launched in May 2025, the SHARE Visa Signature is Emirates NBD's free-for-life
+co-branded Visa with Majid Al Futtaim — 6% back as SHARE Points across the MAF
+ecosystem, with no annual or joining fee.
+
+<KeyTakeaways card="emirates-nbd-share-visa-signature" />
 
 <AtAGlance card="emirates-nbd-share-visa-signature" />
+
+<GreatCardIf card="emirates-nbd-share-visa-signature" />
 
 <EditorVerdict card="emirates-nbd-share-visa-signature" />
 
@@ -36,39 +78,100 @@ for life with no annual or joining fee.
 
 ## Earn rates
 
-All earn rates are **% back in SHARE Points** (1 SHARE Point = AED 0.10 in redemption value at MAF outlets):
+All earn rates are credited as **% back in SHARE Points** (10 SHARE Points = AED 1 in
+redemption value at MAF outlets):
 
 <EarnRateTable card="emirates-nbd-share-visa-signature" />
 
-MAF brands covered: Mall of the Emirates, all City Centre Malls (Deira, Mirdif, Me'aisem, Sharjah,
-Fujairah, Bahrain), Carrefour, VOX Cinemas, Magic Planet, Ski Dubai, iFly Dubai, and 5,000+ stores
-within MAF-managed destinations.
+Partner brands here means the full Majid Al Futtaim footprint — Mall of the Emirates,
+all City Centre malls (Deira, Mirdif, Me'aisem, Sharjah, Fujairah and beyond), Carrefour
+in-store and online, VOX Cinemas, Magic Planet, Ski Dubai, iFly Dubai, and 5,000+ stores
+at MAF-managed destinations.
 
-## SHARE Points value
+<HotTip>
+The 6% rate is paid as SHARE Points (10 points = AED 1). AED 5,000 a month at Carrefour
+returns 3,000 SHARE Points worth AED 300 — and with no annual fee to recover, every
+dirham is yield. Stack it with a flat-rate cashback card for spend outside MAF.
+</HotTip>
 
-SHARE Points earned via this card are credited to your Majid Al Futtaim SHARE loyalty account:
-- Redeemable instantly at 5,000+ MAF stores and partner outlets
-- 1 SHARE Point ≈ AED 0.10 (verify redemption rate on SHARE app/website)
-- Points are **not transferable to airlines or hotel programs**
+## Fee summary
 
-## Card tiers
+<FeeBlock card="emirates-nbd-share-visa-signature" />
 
-| Feature | Signature (Free) | Infinite (AED 1,500) |
-|---|---|---|
-| MAF earn rate | **6%** | **8%** |
-| Non-MAF earn rate | 1% | 1–2% |
-| Min salary | AED 12,000 | AED 30,000 |
-| Annual fee | Free for life | AED 1,500 (waived on AED 40,000 spend in 3 months) |
-| Lounge access | 1,000+ via Visa Airport Companion | Unlimited |
+Free for life means free for life — no joining fee, no annual fee, no spend gate.
+FX is 1.99% and the monthly interest rate is 3.25% (~39% APR); all fees include 5% VAT.
 
-## Best for
+## Welcome bonus breakdown
 
-UAE residents who regularly shop at Carrefour, visit City Centre Malls or Mall of the Emirates,
-or use VOX Cinemas. The 6% return at Carrefour alone can deliver strong value for families —
-AED 5,000/month grocery spend = AED 300 back/month.
+<WelcomeBonusCallout card="emirates-nbd-share-visa-signature" />
+
+The 5,000 SHARE Points are worth AED 500 of MAF spend; the spend threshold is
+AED 25,000 in 90 days, which works out to ~AED 8,300 a month. ENBD has also been
+running an AED 350 YOUGotaGift HappyYOU Card on online applications; verify it's
+still live on the application page.
+
+## Key conditions to know
+
+<dl class="dp-conditions">
+  <dt>SHARE programme</dt>
+  <dd>SHARE is Majid Al Futtaim's lifestyle loyalty currency. 10 SHARE Points = AED 1 of redemption value at MAF stores and partner outlets. Points are not transferable to airlines or hotel programmes.</dd>
+
+  <dt>MAF footprint</dt>
+  <dd>Mall of the Emirates, every City Centre mall, Carrefour (in-store and online), VOX Cinemas, Magic Planet, Ski Dubai, iFly Dubai, and 5,000+ stores at MAF-managed destinations. The 6% rate applies at all of them.</dd>
+
+  <dt>Lounge access</dt>
+  <dd>Visa Airport Companion access at 1,000+ lounges worldwide on a free-for-life card — unusually generous at this fee tier. Visit-count caps apply; check the Visa Airport Companion app.</dd>
+
+  <dt>Eligibility</dt>
+  <dd>Minimum salary AED 12,000/month; UAE resident, salaried or self-employed or business owner; age 21+. Salary transfer not required.</dd>
+
+  <dt>Fees</dt>
+  <dd>AED 0 annual fee for life. FX 1.99%; monthly interest 3.25% (~39% APR). All fees inclusive of VAT.</dd>
+</dl>
+
+## SHARE Signature vs SHARE Infinite
+
+<CardComparison cards={["emirates-nbd-share-visa-signature", "emirates-nbd-share-visa-infinite"]} />
+
+The Signature gives up 2 percentage points on the MAF rate (6% vs 8%) and downgrades
+from unlimited lounge access to capped Visa Airport Companion visits. In exchange it
+costs zero a year and asks for an AED 12,000 salary instead of AED 30,000. **The
+decision rule:** if your annual MAF spend is under ~AED 75,000 a year, the Signature
+nets out ahead even before counting the AED 1,575 fee you avoid.
 
 ## Watch out for
 
-- SHARE Points only redeem within MAF ecosystem — no flexibility beyond MAF brands
-- Welcome bonus requires AED 25,000 spend in 3 months (~AED 8,333/month) — requires high spenders
-- Non-MAF earn at 1% is below market-leading cashback cards for general use
+- **SHARE Points are closed-loop.** Useful only at MAF — no airline, hotel, or cash
+  redemption flexibility. If your loyalty drifts away from the ecosystem, the points strand.
+- **Welcome bonus needs ~AED 8,300/month.** AED 25,000 in 90 days is achievable on
+  rent-card or school-fee spend but not casual swipes.
+- **Non-MAF base earn is 1%.** Below market-leading cashback cards for general use —
+  pair with a flat-rate cashback or miles card.
+- **Groceries outside Carrefour earn 0.25%; fuel and utilities 0.10%.** Treat as a
+  category card, not an everywhere card.
+
+## Is it worth it?
+
+For a free-for-life card with a 6% category rate inside the largest retail ecosystem in
+the UAE, the Signature is hard to argue with. A household that spends AED 5,000 a month
+at Carrefour earns AED 300 of SHARE value back; add a weekly VOX trip and a few City
+Centre swipes and the yield clears AED 500 a month at no cost. The Visa Airport Companion
+lounge access — at 1,000+ lounges, on a no-fee card — is the kind of perk usually
+gated to AED 1,000-fee tiers.
+
+For a household that doesn't shop MAF regularly, the maths is simpler: there's no fee
+to recover, so the card is harmless to hold for the lounge access alone. But the 1%
+base rate means you should not put non-MAF spend on this card — use a flat-rate cashback
+or miles card for that.
+
+**Pay smart:** for non-MAF general spend, look at a free-for-life card like the
+[CBD One](/cards/cbd-one/) or, if you're a frequent Emirates flyer, the
+[Skywards Signature](/cards/emirates-nbd-skywards-signature/) earns better on travel
+spend than this card does outside MAF.
+
+## Bottom line
+
+The free-for-life sweet spot of the SHARE pair — 6% across the MAF footprint with no
+annual fee. **Apply** if you shop Carrefour, City Centre malls, or VOX with any
+regularity. **Skip** if your spend is entirely outside MAF; this card has no value to
+that profile.
