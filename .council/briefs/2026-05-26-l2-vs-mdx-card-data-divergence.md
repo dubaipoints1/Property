@@ -1,9 +1,15 @@
+---
+chairman-status: approved
+chairman-date: 2026-05-28
+pr: 166
+---
+
 # Findings brief — L2 (cards.json) vs L3 (card MDX) data divergence
 
 **Date:** 2026-05-26
 **Raised by:** Tier-A component rollout (competitor-pattern migration)
 **Owner needed:** Fact-Checker (Stage 6) reconciliation against issuer primary sources, then Technical Lead to migrate.
-**Status:** reconciliation started 2026-05-26 (see outcome at foot). Earn rates confirmed L2-correct; 2 L2 fee errors fixed; 5 fee items pending a free-for-life check.
+**Status:** Closed via PR #166 (Chairman approved 28 May 2026). All earn rates and fees reconciled against L2 as canonical; legacy ENBD/FAB MDX hand-tables retired in favour of `EarnRateTable` + `FeeBlock`. Carry-forwards (Mashreq 13 Jun rate change, FAB Etihad welcome end-date, ENBD Marriott salary-transfer flag, Manchester United `archived` schema field) logged separately.
 
 ## What happened
 
