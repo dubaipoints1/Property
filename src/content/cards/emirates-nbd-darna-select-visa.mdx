@@ -1,34 +1,69 @@
 ---
 slug: emirates-nbd-darna-select-visa
+verifiedBy: DubaiPoints Editorial — verified against the Emirates NBD Darna Select Visa product page and L2 schedule, 28 May 2026
+kicker: ENBD's entry Darna co-brand — AED 0 fee, 6.25% Darna Points at participating Emaar partners, 0.75% everywhere else, AED 5,000 salary.
+tier: niche
+applyIf: You pay Emaar / Darna-network bills and want Darna Points back at AED 5,000 minimum salary.
+skipIf: Your spend sits outside the Darna partner list — 0.75% on the rest is uncompetitive vs flat-rate cashback.
+keyTakeaways:
+- AED 0 annual fee at AED 5,000 minimum salary — one of ENBD's lowest entry bars
+- 6.25% back as Darna Points at participating partners; 0.75% on everything else (10 Darna Points = AED 1)
+- Welcome bonus is a AED 250 YOUGotaGift HappyYOU voucher plus Darna Silver tier — discounted at 20% on our calculator (worth AED 200)
+- 1.99% FX fee — not a zero-FX travel card, contrary to older marketing summaries
 cons:
-- Darna Points only redeem within Emirates NBD's Darna programme — no airline or hotel transfers
-- 1% flat earn rate is below cashback-card alternatives in the same fee tier
-- Programme value tied to participation by Dubai property developers — narrower than open cashback
+- Darna Points only redeem inside the Emaar / Darna partner network — no airline transfers, no hotel-programme conversion
+- 0.75% on non-partner spend is below flat-rate cashback cards at the same fee tier
+- 1.99% FX fee — usable abroad but not the zero-FX card it was sometimes presented as
+- Welcome voucher (AED 250 face value) ceilings the upside for non-Emaar households
 pros:
-- AED 0 annual fee with AED 5,000 minimum salary — one of the lowest entry barriers in the ENBD lineup
-- 0% FX fee makes it usable for international online shopping
-- Salary transfer not required — straightforward approval path for new residents
-verifiedBy: DubaiPoints Editorial
-editorTake: The Darna Select is the entry tier of ENBD's Darna property-rewards programme.
-  At AED 0 in fees and AED 5,000 minimum salary it's a no-cost trial of the Darna ecosystem
-  — useful if you're already a Damac, Emaar, or DMCC tenant and want points toward rent or
-  service charges. For everyone else the 1% earn rate underdelivers; pair it with a
-  flat-rate cashback card for everyday spending.
+- AED 0 annual fee with AED 5,000 minimum salary — easy entry, no salary transfer
+- 6.25% back as Darna Points at participating Emaar partners — meaningful for Emaar tenants and frequent Dubai Mall / Address spenders
+- Automatic Darna Silver tier on activation
+- No salary-transfer requirement — clean approval path for new residents
+editorTake: >-
+  The Darna Select is the entry tier of Emirates NBD's Darna property-and-lifestyle programme.
+  At AED 0 in fees and AED 5,000 minimum salary it is the cheapest way into the Darna
+  ecosystem — useful if you are already an Emaar tenant or a Dubai Mall regular and want to
+  chip points off rent, service charges or Emaar F&B bills at participating providers. The
+  6.25% category rate at partner outlets is genuinely competitive; the catch is that
+  everything outside that list earns just 0.75%, well below a flat-rate cashback card.
+  Darna Points redeem only inside the Emaar / Darna partner network — there are no airline
+  transfers, no hotel-programme conversion, no cash-out. The welcome offer is a AED 250
+  YOUGotaGift HappyYOU voucher (we discount voucher value at 20% on the calculator — worth
+  AED 200 in real money) plus Darna Silver tier, not a points bonus. The FX fee is 1.99%,
+  contrary to older summaries that presented this as a zero-FX card. Held by an Emaar
+  household whose discretionary spend genuinely runs through the partner list, it pays its
+  own way at no cost; held by anyone else, it earns 0.75% and is the wrong default card.
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
-import AtAGlance from "~/components/cards/AtAGlance.astro";
-import ProsCons from "~/components/cards/ProsCons.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-The Darna Select Visa is the entry tier of Emirates NBD's Darna programme — points
-earned can be applied against Dubai property obligations (rent, service charges,
-developer payments) at participating providers. No annual fee, low salary threshold,
-and zero FX fee mean it's also serviceable as a starter card if you don't use the
-Darna mechanics.
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "watch-out-for", label: "Watch out for" },
+  { id: "is-it-worth-it", label: "Is it worth it?" },
+]} />
+
+The Emirates NBD Darna Select Visa is the entry rung of ENBD's Darna property-and-lifestyle
+co-brand. AED 0 annual fee, AED 5,000 minimum salary, and 6.25% back as Darna Points at the
+participating Emaar partner list — redeemable against rent, service charges, Emaar F&B and
+Reel Cinemas at the providers inside the network.
+
+<KeyTakeaways card="emirates-nbd-darna-select-visa" />
 
 <AtAGlance card="emirates-nbd-darna-select-visa" />
+
+<GreatCardIf card="emirates-nbd-darna-select-visa" />
 
 <EditorVerdict card="emirates-nbd-darna-select-visa" />
 
@@ -36,40 +71,79 @@ Darna mechanics.
 
 ## Earn rates
 
+Earn is expressed as **% value back as Darna Points** (10 Darna Points = AED 1), redeemable
+inside the Emaar / Darna partner network — not as miles per AED and not as cashback:
+
 <EarnRateTable card="emirates-nbd-darna-select-visa" />
 
-Points redeem against Darna programme bills — participating developers and
-property managers only. Verify your landlord or building manager is in the
-Darna network before applying.
+<HotTip>
+The 6.25% partner rate looks competitive on paper, but Darna Points have one redemption
+universe: the Emaar / Darna partner network. They are not transferable to Skywards, Etihad
+Guest, Marriott Bonvoy or any cash-equivalent. If your landlord, building manager or weekly
+dining list does not sit inside that network, the effective rate on your real spend is the
+0.75% non-partner line — which a no-fee flat-rate cashback card will beat outright. Run a
+twelve-week audit of where your spend actually lands before applying.
+</HotTip>
 
 ## Fee summary
 
-| Fee | Amount |
-|---|---|
-| Annual fee | AED 0 |
-| FX fee | 0% |
-| Minimum monthly salary | AED 5,000 |
-| Salary transfer | Not required |
+<FeeBlock card="emirates-nbd-darna-select-visa" />
 
-The headline draw is the **0% FX fee** combined with the AED 0 annual cost —
-rare on a UAE-issued Visa at this salary band. If you shop online in foreign
-currency, the FX-fee saving alone can outweigh the modest earn rate on
-travel and entertainment spend.
+The card is **AED 0 to hold**. The cost to watch is the **1.99% foreign-currency fee** — the
+older "0% FX" line you may see in legacy summaries is not the current published figure. As
+with any rewards card, clear the statement in full each month — the standard ENBD revolving
+rate will erase any Darna value many times over.
 
-## Best for
+## Key conditions to know
 
-UAE residents on AED 5,000+ a month who rent within the Darna network and want
-to chip points off their housing costs. Also serviceable as a foreign-currency
-shopping card given the 0% FX fee.
+<dl class="dp-conditions">
+  <dt>Darna Points mechanics</dt>
+  <dd>10 Darna Points = AED 1 of redemption value. 6.25% back at participating Emaar / Darna partner outlets — Dubai Mall, Address / Vida / Rove hotels, Emaar F&B, Reel Cinemas among them. 0.75% back on all other spend. Points credit monthly to your Darna account; redeem within the partner network, not for cash and not via airline / hotel transfer.</dd>
+
+  <dt>Welcome bonus</dt>
+  <dd>AED 250 YOUGotaGift HappyYOU Card on successful online application, plus automatic Darna Silver tier. The voucher is digital and spendable across the YOUGotaGift merchant list — we discount voucher value at 20% on our calculator, so the modelled value is AED 200.</dd>
+
+  <dt>Salary transfer</dt>
+  <dd>Not required. Minimum salary AED 5,000 a month, credited to any UAE bank. Salaried applicants only at this tier — self-employed routes through the higher Darna cards.</dd>
+
+  <dt>Foreign-currency fee</dt>
+  <dd>1.99% on every non-AED transaction. Older marketing summaries described this as a 0% FX card; the L2 figure verified against the issuer page is 1.99%.</dd>
+
+  <dt>Eligibility</dt>
+  <dd>Minimum salary AED 5,000, UAE residency required, age 21+. Documentation: Emirates ID and passport copy (with visa page for expatriates), salary certificate, latest three months' bank statements, and a security cheque.</dd>
+</dl>
 
 ## Watch out for
 
-- **Darna programme breadth.** Confirm your landlord, developer, or service
-  charge issuer accepts Darna Points — the network is narrower than open
-  cashback. If they don't participate, you're left with a 1% earn rate and
-  no redemption path
-- **No welcome bonus published** on the issuer page at our last verification
-  — confirm with Emirates NBD before applying if a bonus is material to your
-  decision
-- **1% earn is uncompetitive** outside the Darna use-case — pair with a
-  cashback card for groceries, fuel, and dining
+- **Confirm your Darna partner exposure before applying.** The 6.25% rate only pays at
+  outlets inside the Emaar / Darna network. If your rent goes to a non-Emaar landlord and
+  your grocery and fuel spend is at non-partner merchants, you are earning 0.75% on the
+  bulk of your card spend — a no-fee flat-rate cashback card will earn more.
+- **No airline or hotel transfers.** Darna Points have one home: the Emaar / Darna partner
+  network. There is no points-to-Skywards or points-to-Marriott escape valve. Hold this
+  for the Emaar use case, not as an open-ended rewards account.
+- **The welcome offer is a voucher, not a points bonus.** AED 250 face value on
+  YOUGotaGift, discounted to AED 200 on our calculator. Useful, not transformative.
+- **Clawback on closure.** Standard ENBD card terms claw back welcome offers and tier
+  status if the account is closed inside the first twelve months. If you are likely to
+  leave the UAE or switch banks within the year, the voucher value is at risk.
+
+## Is it worth it?
+
+For the Emaar-adjacent household — tenants in Emaar buildings, Dubai Mall regulars,
+households that route dining and weekend entertainment through the Emaar list — the Darna
+Select is an easy free keep. The 6.25% at partner outlets is real money, the AED 250
+welcome voucher is useful, the Darna Silver tier adds a modest discount layer, and there is
+no annual fee or salary-transfer commitment to balance against.
+
+It is the wrong default card for anyone else. The 0.75% non-partner rate is well below a
+flat-rate cashback card, Darna Points have no exit ramp out of the Emaar ecosystem, and
+the FX fee of 1.99% rules it out as a travel-spend card. Held alongside a broad cashback
+card — not as the primary — it is fine; held as the only card, the maths does not pencil.
+
+## Bottom line
+
+A free-for-life entry into ENBD's Darna ecosystem, well-suited to Emaar tenants and Dubai
+Mall regulars. **Apply** if your spend list genuinely lives at Darna partners. **Skip** if
+your rent and weekly spend land outside the network — 0.75% on the bulk of your card spend
+is not enough to make this the default.

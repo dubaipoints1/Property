@@ -1,31 +1,65 @@
 ---
 slug: emirates-nbd-lulu-247-titanium
 cons:
-- 3.5% LuLu rate is half the Platinum's 7% — opportunity cost is real
-- 0.5% on non-LuLu, non-fuel spend is the weakest base rate in the ENBD lineup
-- 'Same redemption ceiling: LuLu Points only redeem at LuLu'
+- 3.5% LuLu rate is half what the Platinum sibling pays on the same shop
+- 0.5% on non-LuLu, non-fuel spend is the weakest base rate in the ENBD card stack
+- LuLu Points only redeem at LuLu — useless if you shop mostly at Carrefour, Spinneys or Union Coop
+- No utilities multiplier and no global lounge access — both are Platinum-only
 pros:
-- AED 8,000 minimum salary opens the LuLu cashback to the broadest UAE earner band
-- AED 0 annual fee for life
-- 10+ Middle East lounges complimentary — unusual on a Titanium-tier card
-verifiedBy: DubaiPoints Editorial
-editorTake: The Titanium is the lower-salary entry into the LuLu cashback ecosystem
-  at AED 8,000 monthly minimum. The 3.5% LuLu rate is half what the Platinum delivers,
-  but at AED 0 annual fee and a lower salary bar, it's still positive value if LuLu
-  is a regular shop. If you can clear AED 15,000 a month, jump to the Platinum — the
-  marginal earn over a year covers the salary-bar gap easily.
+- 3.5% back as LuLu Points on LuLu in-store and online — strongest UAE grocery rate at this salary band
+- AED 8,000 minimum salary is one of the lowest in the ENBD lineup
+- Free for life — no annual fee, no spend threshold, no clawback
+- Complimentary access to 10+ Middle East lounges — unusual on a Titanium-tier card
+verifiedBy: DubaiPoints Editorial — verified against the Emirates NBD LuLu 247 Titanium product page and Key Facts Statement, 28 May 2026
+kicker: The entry-level LuLu co-brand — 3.5% back as LuLu Points on LuLu, free for life, on an AED 8,000 salary bar. Half what the Platinum pays, but half the salary requirement.
+tier: solid
+applyIf: You shop weekly at LuLu, earn under AED 12,000 a month, and want a free-for-life card with a real grocery rate.
+skipIf: You earn AED 12,000 or more — the Platinum doubles the LuLu rate at the same zero annual fee.
+keyTakeaways:
+- 3.5% back as LuLu Points at LuLu in-store and online — half the Platinum's 7%, but at a lower AED 8,000 salary bar
+- Free for life with no spend threshold; 10+ Middle East lounges complimentary
+- 2% back on fuel, 0.5% on everything else — base rate is the weakest in the ENBD stack
+- LuLu Points only redeem at LuLu Hypermarket, Express and luluhypermarket.com
+editorTake: >-
+  The LuLu 247 Titanium is the entry-level half of Emirates NBD's LuLu co-brand pair, sized
+  for households that earn under the AED 12,000 Platinum salary bar but still shop at LuLu
+  most weeks. The 3.5% LuLu earn is half what the Platinum delivers — a household putting AED
+  1,000 a month through LuLu earns AED 35 in points; AED 3,000 a month earns AED 105 — but
+  the card is free for life and asks only AED 8,000 in monthly salary, so the value is net
+  positive on any consistent LuLu spend. The 10+ Middle East lounge stack is generous for a
+  Titanium-tier card and the 2% fuel rate is solid. Where it lags is on everything else: the
+  0.5% base earn is the weakest in the ENBD lineup, and the captive LuLu Points only redeem
+  inside the LuLu ecosystem. If you can clear AED 12,000 a month, jump to the Platinum — the
+  doubled rates pay for themselves on grocery spend in weeks. Below that threshold, this is
+  the easy LuLu hold.
 ---
 
-import AtAGlance from "~/components/cards/AtAGlance.astro";
-import ProsCons from "~/components/cards/ProsCons.astro";
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-The LuLu 247 Titanium is Emirates NBD's entry-level LuLu co-branded Mastercard.
-Free for life, with a lower income threshold than the Platinum, it's a starting
-point for LuLu shoppers on more modest incomes who want points on everyday
-grocery spending.
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "watch-out-for", label: "Watch out for" },
+]} />
+
+The LuLu 247 Titanium is the entry-level half of Emirates NBD's co-branded Mastercard pair
+with LuLu Hypermarkets — a free-for-life card that opens LuLu cashback to households on
+modest salaries who still do their weekly shop at LuLu.
+
+<KeyTakeaways card="emirates-nbd-lulu-247-titanium" />
 
 <AtAGlance card="emirates-nbd-lulu-247-titanium" />
+
+<GreatCardIf card="emirates-nbd-lulu-247-titanium" />
 
 <EditorVerdict card="emirates-nbd-lulu-247-titanium" />
 
@@ -33,68 +67,96 @@ grocery spending.
 
 ## Earn rates
 
-All earn rates are **% back as LuLu Points** (1 LuLu Point ≈ AED 0.01 in
-redemption value):
+All earn is paid as **LuLu Points**, redeemable 1:1 at the till at any LuLu Hypermarket,
+LuLu Express or on luluhypermarket.com:
 
-| Spend category | Titanium | [Platinum](/cards/emirates-nbd-lulu-247-platinum/) |
-|---|---|---|
-| LuLu in-store / online | **3.5%** | 7% |
-| Fuel | **2%** | 4% |
-| Everything else | **0.5%** | 1% |
+<EarnRateTable card="emirates-nbd-lulu-247-titanium" />
 
-LuLu Points redeem at the till at LuLu hypermarkets and online — no transfer
-to airlines, hotels, or third-party programmes.
+<HotTip>
+A household putting **AED 1,000 a month** through LuLu earns AED 35 a month in points;
+**AED 2,000 a month** earns AED 70; **AED 3,000 a month** earns AED 105 — roughly AED
+1,260 a year in groceries-back at the higher spend benchmark, on a card with no annual
+fee. The cap on value is the captive currency: those points only spend at LuLu.
+</HotTip>
 
 ## Fee summary
 
-| Fee | Amount |
-|---|---|
-| Annual fee | AED 0 (free for life) |
-| Interest rate | 3.49% per month |
-| FX fee | 1.99% |
-| Minimum monthly salary | AED 8,000 |
-| Salary transfer | Not required |
+<FeeBlock card="emirates-nbd-lulu-247-titanium" />
 
-The fee structure is the simplest in the ENBD lineup — no fee, no waiver
-threshold, no clawback. The cost sits entirely in the interest rate if you
-revolve a balance.
+The card is free for life — AED 0 annual fee, no spend threshold, no clawback. The costs
+that bite are a **1.99% foreign-currency fee** and a **3.49% monthly profit rate** (roughly
+42% APR) if you revolve a balance. All published fees include 5% VAT.
+
+## LuLu 247 Titanium vs Platinum
+
+The Titanium is the lower-salary sibling. If you can clear AED 12,000 a month on salary,
+the doubled earn covers the gap easily — same fee, same free-for-life pitch, twice the LuLu
+rate:
+
+| Feature | Titanium | [Platinum](/cards/emirates-nbd-lulu-247-platinum/) |
+|---|---|---|
+| Min salary | **AED 8,000** | AED 12,000 |
+| LuLu earn rate | 3.5% | **7%** |
+| Fuel earn rate | 2% | **4%** |
+| Utilities earn rate | — | **2%** |
+| Other spend earn rate | 0.5% | 0.7% |
+| Lounge access | 10+ ME lounges | 25+ global lounges |
+| Annual fee | Free for life | Free for life |
 
 ## Key conditions to know
 
-**Lounge access:**
-- Complimentary access to **10+ airport lounges across the Middle East** —
-  DragonPass-style network
-- Coverage is regional, not global; the Platinum extends to 25+ destinations
-  worldwide
+<dl class="dp-conditions">
+  <dt>LuLu Points redemption</dt>
+  <dd>1 LuLu Point = AED 0.01 redemption value, used at the till at LuLu Hypermarket and LuLu Express, or at checkout on luluhypermarket.com. No transfers to airlines, hotels or third-party programmes.</dd>
 
-**Travel desk and golf:**
-- 3% discount on flight bookings via ENBD Travel Desk
-- 7% off holiday packages booked through the same channel
-- 40% off green fees at 100+ golf courses globally (limited rounds per year —
-  verify current programme)
+  <dt>Lounge access</dt>
+  <dd>Complimentary access to 10+ airport lounges across the Middle East via Mastercard Travel Pass — regional coverage, not global. Confirm your departure-terminal lounge is on the network before you rely on it.</dd>
 
-**LuLu redemption mechanics:**
-- Points credited monthly to your LuLu loyalty account
-- Redeem at the till or online — no minimum balance
-- Points **expire after 12 months** of inactivity
+  <dt>Travel desk and golf</dt>
+  <dd>3% discount on flight bookings and 7% off holiday packages booked via the ENBD Travel Desk. 40% off green fees at 100+ golf courses globally.</dd>
 
-## Best for
+  <dt>Eligibility</dt>
+  <dd>Minimum monthly salary AED 8,000; UAE residency required; salary transfer not required. Open to salaried and self-employed applicants; minimum age 21.</dd>
 
-Lower-income UAE residents who shop at LuLu weekly. The card pays for itself
-on grocery spend alone: a household putting AED 3,000 a month through LuLu
-earns AED 105 a month in points (AED 1,260 a year). At AED 0 in fees, every
-dirham of earn is net value.
+  <dt>Welcome</dt>
+  <dd>No headline welcome bonus on Titanium — Emirates NBD reserves the 500-LuLu-Points opener for the Platinum tier.</dd>
+</dl>
 
 ## Watch out for
 
-- **Opportunity cost vs Platinum.** Earn half the points the Platinum does
-  across every category. If your salary clears AED 15,000, the Platinum's
-  AED 250 annual fee is recouped in roughly four months of typical LuLu spend
-- **Narrow redemption.** LuLu Points only work at LuLu — if you wouldn't
-  shop there otherwise, the points have zero realisable value
-- **Weak base earn.** 0.5% on non-grocery, non-fuel spend is the lowest base
-  rate in the ENBD card stack; pair this with a flat-rate cashback card for
-  everything that isn't LuLu or fuel
-- **Lounge coverage is regional.** Don't apply for the lounge access alone —
-  ten-plus Middle East lounges is useful for short-haul, less so if you're
-  flying long-haul out of DXB and want a Priority Pass-style global network
+- **Opportunity cost vs Platinum.** You earn half the points the Platinum does on LuLu,
+  fuel and base spend. If your salary clears AED 12,000, the Platinum is the better hold at
+  the same zero annual fee.
+- **Captive currency.** LuLu Points only redeem inside the LuLu ecosystem. If you shop
+  mostly at Carrefour, Spinneys or Union Coop, a flat-rate cashback card is the simpler hold.
+- **Weak base earn.** 0.5% on non-LuLu, non-fuel spend is the lowest base rate in the ENBD
+  card stack — pair this card with a broad cashback card for everything outside groceries
+  and petrol.
+- **Lounge coverage is regional.** Useful for short-haul out of DXB or SHJ, less useful if
+  you're flying long-haul and want a Priority Pass-style global network.
+
+## Is it worth it?
+
+For a LuLu-loyal household earning between AED 8,000 and AED 12,000 a month, this is the
+card that fits the slot — free for life, real grocery cashback, regional lounges thrown in.
+At AED 3,000 of LuLu spend a month you earn AED 105 in points; at AED 1,000 you earn AED
+35. Either way, you're earning on grocery spend you were going to do anyway, with nothing
+to lose if you stop carrying it.
+
+It is the wrong card for households that clear AED 12,000 a month — the Platinum doubles
+every meaningful rate at the same zero fee — and the wrong card for anyone who shops at a
+different supermarket chain.
+
+## Bottom line
+
+The entry-level LuLu co-brand: half the rates of its Platinum sibling, half the salary bar,
+the same free-for-life pitch. **Apply** if LuLu is your weekly shop and your salary sits
+under the AED 12,000 Platinum gate. **Skip** if you earn above that — the Platinum is the
+better hold — or if you shop elsewhere.
+
+---
+
+**Pay smart:** for everything-else spending outside the LuLu aisles, pair this with a
+broad-merchant cashback card like the [CBD One](/cards/cbd-one/) free-for-life Visa. Newer
+UAE residents working through the bank-account-and-card setup should start with our
+[expat starter guide](/guides/expat-starter/).
