@@ -1,70 +1,161 @@
 ---
 slug: fab-world-elite
-verifiedBy: DubaiPoints Editorial
+verifiedBy: DubaiPoints Editorial — verified against the FAB World Elite product page and FAB consolidated Key Facts Statement, 28 May 2026
+kicker: A by-invitation FAB Mastercard built around 10× FAB Rewards on international spend, unlimited worldwide lounge access and a USD 500,000 travel-insurance shell — no published annual fee.
+tier: niche
+applyIf: FAB has invited you, you travel internationally 3+ times a year and want unlimited worldwide lounge access for two.
+skipIf: Your spend stays in AED — 1× domestic earn and the 2.49% FX fee make this an expensive card to hold for in-UAE use.
+keyTakeaways:
+- Invitation-only — FAB does not publish a minimum salary, fee or open application route
+- 10× FAB Rewards on international (foreign-currency) spend, 1× on everything else
+- Unlimited worldwide lounge access for cardholder and a guest, USD 500,000 (~AED 1.84m) travel insurance, 24/7 concierge
+- 2.49% FX fee — material against the 10× international headline once converted to AED-per-dirham value
 pros:
-- 10 FAB Rewards per AED 1 on international spend — strong return on foreign
-  currency purchases
+- 10 FAB Rewards per AED 1 on international spend — strong return on foreign-currency purchases
 - Unlimited worldwide lounge access for cardholder and one guest
-- Travel insurance cover up to USD 500,000 (~AED 1,836,000) and 24/7
-  concierge included in the fee
+- Travel insurance cover up to USD 500,000 (~AED 1,836,000) and 24/7 concierge included
+- Invitation-only positioning — no published annual fee disclosed at time of writing
 cons:
-- AED 2,500 annual fee with no published first-year waiver
-- 1x base earn on domestic AED spend is uncompetitive against category-bonus
-  cards
-- FX fee of 2.49% partially erodes the headline international earn rate
-editorTake: A capable premium travel card built around lounge access and a
-  10x international earn rate. The proposition is clean if you travel
-  internationally three or more times a year and value lounge entry; the AED
-  2,500 fee is steep but the lounge benefit alone covers it for frequent
-  flyers. Not the card for someone whose spending stays in the UAE.
+- Invitation-only — you cannot apply on the FAB website; the bank approaches eligible relationship clients
+- 1× base earn on domestic AED spend is uncompetitive against category-bonus cards
+- 2.49% FX fee partially erodes the headline 10× international earn rate
+- FAB does not publish the fee schedule, minimum salary or full eligibility on the public product page
+editorTake: >-
+  The FAB World Elite Mastercard is FAB's top-tier travel-and-lifestyle card and is
+  positioned as invitation-only — there is no public application route, no published
+  minimum salary, and no annual fee disclosed on the product page or the consolidated
+  Key Facts Statement at time of writing. What FAB does publish is the rewards shape:
+  10 FAB Rewards per AED 1 spent in foreign currency, 1 per AED 1 on everything else,
+  unlimited worldwide lounge access for the cardholder and a guest, USD 500,000
+  (~AED 1,836,000) of travel insurance cover and a 24/7 concierge desk. The structure
+  is a clean premium-traveller proposition: heavy international earn, lounge access
+  with no visit cap, and a travel-insurance shell wide enough to displace a standalone
+  policy for most trips. The catch the rewards table hides is FAB's 2.49% foreign-
+  currency fee, which knocks roughly a quarter off the AED-per-dirham value of the 10×
+  international earn once you do the conversion. And without published fee or salary
+  data we cannot run the break-even arithmetic competitors normally rely on. Treat
+  this card as the offer FAB makes to clients it already knows — a sound premium
+  travel package for someone whose spend is international and whose lounge use is
+  regular, but not a card you set out to chase.
 ---
 
-import AtAGlance from "~/components/cards/AtAGlance.astro";
-import ProsCons from "~/components/cards/ProsCons.astro";
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-The FAB World Elite Mastercard is FAB's top-end travel-and-lifestyle card,
-positioned around lounge access, premium insurance and a heavy international
-earn multiplier. There is no published minimum salary at the time of
-verification, but residency is required and the underwriting tilts to higher
-incomes.
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "key-conditions", label: "Key conditions" },
+  { id: "watch-out-for", label: "Watch out for" },
+]} />
+
+The FAB World Elite Mastercard is FAB's top-end travel-and-lifestyle card, positioned
+around unlimited worldwide lounge access, a heavy international earn multiplier and a
+USD 500,000 travel-insurance shell. It is **invitation-only**: at the time of writing,
+FAB does not publish a minimum salary, an annual fee or a public application route on
+the product page or the consolidated Key Facts Statement. The bank approaches eligible
+relationship clients directly.
+
+<KeyTakeaways card="fab-world-elite" />
 
 <AtAGlance card="fab-world-elite" />
+
+<GreatCardIf card="fab-world-elite" />
 
 <EditorVerdict card="fab-world-elite" />
 
 <ProsCons card="fab-world-elite" />
 
-## What you actually get
+## Earn rates
 
-Earn is 10 FAB Rewards per AED 1 on international (foreign currency) spend
-and 1 FAB Reward per AED 1 on everything else. The card carries unlimited
-worldwide lounge access for the primary cardholder and a guest — the most
-useful perk in the package — plus a 24/7 concierge service and travel
-insurance coverage of up to USD 500,000 (~AED 1,836,000). Annual fee is AED
-2,500 with no first-year waiver published. FX fee is 2.49%, in line with
-FAB's premium tier.
-{/* TODO: verify exact lounge programme (LoungeKey / Priority Pass /
-DragonPass) and any visit caps against issuer page — scrape returned generic
-"worldwide lounge access" text only. */}
+The rewards structure is binary — heavy on foreign-currency spend, flat on everything
+else:
 
-## Who should open it
+<EarnRateTable card="fab-world-elite" />
 
-The card matches a traveller-resident profile: AED 25,000+ household income,
-three or more international trips a year, regular online spend in USD or GBP,
-and someone who values lounge access enough to budget for it. It pairs well
-as the international companion to a domestic cashback card — keep the World
-Elite for foreign-currency and travel spend, run AED-denominated daily
-spending through a 5%-category cashback product.
+<HotTip>
+The 10× headline applies to **international (foreign-currency) spend only** — anything
+billed in AED, including AED-denominated online purchases at international merchants,
+earns the 1× base rate. Pair this card with a strong domestic cashback or category card
+and keep the World Elite for genuine foreign-currency purchases and travel bookings.
+</HotTip>
 
-## Where it falls short
+## Fee summary
 
-The 1x AED-spend floor is the structural weakness; a resident whose travel
-patterns slow down loses most of the card's value while still paying AED 2,500
-a year. The 2.49% FX fee shaves around a quarter off the headline 10x
-international earn once converted to AED-value-per-dirham-spent. And without
-a first-year fee waiver, you commit AED 2,500 before you have run a single
-qualifying transaction.
+<FeeBlock card="fab-world-elite" />
 
-A genuine premium-travel card for the right user; an expensive 1x earner for
-the wrong one.
+FAB does not publish an annual fee for the World Elite on the product page or the
+consolidated Key Facts Statement; the card surfaces as **free** in our fee tile until
+FAB publishes a figure. Bank-confirmed fees for invited clients should be requested
+in writing before activation. The foreign-currency fee is **2.49%** — the figure most
+relevant to the card's value, because it bites the same international spend the 10×
+earn rewards. Cash advance, late-payment and over-limit fees follow FAB's standard
+premium Mastercard schedule; ask for the personalised KFS before you sign.
+
+## Key conditions
+
+<dl class="dp-conditions">
+  <dt>Eligibility</dt>
+  <dd>Invitation-only. FAB does not publish a minimum-salary threshold on the product page; UAE residency required, salaried profile, and the card is positioned for existing relationship clients.</dd>
+
+  <dt>Lounge access</dt>
+  <dd>Unlimited worldwide airport lounge access for the cardholder and one accompanying guest. FAB's published page does not name the underlying programme (LoungeKey, Priority Pass or DragonPass); confirm with FAB's premium-card desk before relying on the network.</dd>
+
+  <dt>Travel insurance</dt>
+  <dd>Coverage up to USD 500,000 (~AED 1,836,000) when travel is booked on the card. Pre-existing conditions and trip-length caps follow the underwriter's schedule — request the policy document from FAB before relying on the cover.</dd>
+
+  <dt>Concierge</dt>
+  <dd>24/7 Mastercard World Elite concierge — restaurant, travel and event-ticket bookings.</dd>
+
+  <dt>Network</dt>
+  <dd>Mastercard World Elite — accepted broadly outside the GCC; check Mastercard coverage versus your travel pattern (Visa Infinite is the comparable alternative on other FAB tiers).</dd>
+</dl>
+
+## Watch out for
+
+- **No public application route.** You cannot apply for this card on the FAB website.
+  Eligible clients are approached by their relationship manager. If you are not
+  invited, the FAB Etihad Guest Infinite (AED 40,000 minimum salary) or the FAB Elite
+  Credit Card are the open-application alternatives at the top of FAB's range.
+- **The 2.49% FX fee.** A 10× international earn rate translates into roughly
+  7.5× of AED-per-dirham value once you net off the FX fee — still strong, but read
+  any "10×" headline as gross of fees, not net.
+- **Unpublished fees.** FAB's product page does not show an annual fee for this card;
+  if your invitation comes with a fee, get it in writing in your Key Facts Statement
+  and benchmark it against the lounge-access value you actually use.
+- **Domestic 1× floor.** This is not the card for in-UAE everyday spend. Pair it with a
+  cashback card (Mashreq Cashback, CBD One, ADCB 365) for AED spending.
+
+## Is it worth it?
+
+For a frequent international traveller who has been invited — typically a FAB Elite or
+Private Banking relationship client — the package is well-judged: a 10× international
+earn rate, lounge access with no visit cap for two, and a meaningful travel-insurance
+shell. The 2.49% FX fee is the friction worth pricing into the maths, and the 1×
+domestic floor means you should treat this as a specialist travel card rather than a
+default daily-spend card.
+
+For a reader who has not received an invitation, there is no application path. The
+practical alternatives at the top of FAB's open range are the **FAB Etihad Guest
+Infinite** (Etihad Guest miles, AED 40,000 minimum salary) and the **FAB Elite Credit
+Card** (AED 40,000 minimum salary), both of which carry premium travel benefits
+without the invitation gate.
+
+## Bottom line
+
+A by-invitation premium-travel Mastercard whose value lives entirely in foreign-
+currency spend, unlimited lounge access and travel insurance. **Apply** if FAB has
+already approached you and your travel pattern justifies the headline earn. **Skip**
+— there is no application route, so this card is either offered to you or it isn't.
+
+For the rest of FAB's lineup, see the [FAB hub](/banks/fab/). Anyone weighing salary-
+transfer mechanics into the bank should read our [FAB salary-transfer deep-dive](/salary-transfer/fab/);
+for eligibility logic across UAE banks, see the [UAE credit card eligibility
+guide](/guides/uae-credit-card-eligibility-2026/).

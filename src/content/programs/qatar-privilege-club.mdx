@@ -20,6 +20,16 @@ sweetSpots:
 expiryPolicy: "Avios in Privilege Club expire 36 months after the most recent earn or redeem activity. The clock resets on any qualifying activity — including a Qatar co-brand card spend or a Bonvoy transfer in. Note: the BA Executive Club expiry rules do not apply here, despite the shared Avios currency. <!-- TODO: verify against Qatar's current published terms -->"
 ---
 
+import JumpToSection from "~/components/cards/JumpToSection.astro";
+
+<JumpToSection sections={[
+  { id: "tier-structure", label: "Tier structure" },
+  { id: "who-qatar-privilege-club-suits", label: "Who it suits" },
+  { id: "how-to-earn-from-the-uae", label: "How to earn" },
+  { id: "what-to-watch", label: "What to watch" },
+  { id: "related", label: "Related" },
+]} />
+
 Qatar Privilege Club is the loyalty programme of Qatar Airways. It
 moved from proprietary Qmiles to **Avios** in 2022, aligning with
 the British Airways / Iberia / Aer Lingus / Finnair family — though
