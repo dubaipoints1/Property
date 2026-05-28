@@ -1,33 +1,70 @@
 ---
 slug: emirates-nbd-duo
-cons:
-- 1% flat earn rate is below most cashback alternatives in the same fee tier
-- No category multipliers and no welcome bonus to recover annual carry
-- Plus Points realisation is uneven — best at the cashback ceiling
+verifiedBy: DubaiPoints Editorial — verified against the Emirates NBD Duo Credit Cards product page and Schedule of Charges, 28 May 2026
+kicker: ENBD's dual-card product — a Diners Club and a Mastercard on one account, with a 5% category earn gated by AED 5,000 monthly spend and capped at 500 Plus Points a statement.
+tier: niche
+applyIf: You bank in Abu Dhabi on AED 12,000+ and want Diners + Mastercard rails on one account for category-bonus stacking.
+skipIf: You live outside Abu Dhabi, spend under AED 5,000 a month, or want a 0% FX travel card — Duo is none of those.
+keyTakeaways:
+- Two physical cards on one account — a Diners Club + a Mastercard — paid out as one statement, with the category earn assessed across both
+- 5% as Plus Points on groceries, fuel, utilities, electronics and education — but only above AED 5,000 of monthly spend; otherwise 1.5%
+- Plus Points are capped at 500 per statement; 1.99% foreign-currency fee
+- Current promo waives the annual fee but the product is exclusive to Abu Dhabi residents per the Schedule of Charges
 pros:
-- AED 0 annual fee at AED 12,000 minimum salary
-- 0% FX fee on international spend
-- Dual-card product — Visa + supplementary card on one credit limit
-verifiedBy: DubaiPoints Editorial
-editorTake: The Duo is a paired-card product (a Visa plus a Mastercard or Diners,
-  on a shared credit limit) aimed at households that want a primary plus a backup
-  on the same account. At AED 0 in fees and 0% FX it's serviceable as a default
-  card, but the 1% earn ceiling means it underperforms any specialist cashback or
-  category card. Use it for redundancy or international online shopping — earn
-  bigger elsewhere.
+- AED 0 annual fee on the current promo (vs SoC standard AED 840 if the waiver lapses)
+- Dual-network rails — a Diners Club and a Mastercard on one credit limit, useful for network redundancy and at Diners-accepting merchants
+- 5% Plus Points on grocery, fuel, utility, electronics and education spend once the AED 5,000 monthly threshold is cleared
+- Low AED 12,000 minimum salary and no salary-transfer requirement
+cons:
+- The 5% rate only kicks in above AED 5,000 of monthly spend; below the threshold you earn a flat 0.5% on bonus categories
+- Plus Points cap of 500 per statement limits effective return at higher spend
+- 1.99% foreign-currency fee — this is not a zero-FX card despite the dual-network framing
+- Per the Schedule of Charges, the product is "exclusive for Abu Dhabi residents only" — read your branch terms before applying outside Abu Dhabi
+- No published welcome bonus to defray onboarding
+editorTake: >-
+  The Duo is Emirates NBD's two-cards-one-account product — a Diners Club and a Mastercard
+  issued on a shared credit limit, with a combined earn on Plus Points. The headline is
+  5% as Plus Points on grocery, fuel, utility, electronics and education spend, which is
+  competitive on paper; the catch sits in the conditions. You only reach the 5% rate above
+  AED 5,000 of monthly spend on the account — below that you earn 0.5% on bonus categories
+  and 1.5% on the rest. Plus Points are capped at 500 per statement, which is roughly the
+  cap on AED 10,000 of bonus-category spend in a month, so the effective rate compresses
+  the harder you push the card. The current promo waives the annual fee, but the Schedule
+  of Charges notes the product is exclusive to Abu Dhabi residents and quotes an AED 840
+  standard renewal if the waiver ends; the 1.99% foreign-currency fee makes this the wrong
+  card for travel. Useful as a stacking play if your monthly grocery and utility line clears
+  AED 5,000 and you want both Mastercard and Diners rails on one account — and you bank in
+  Abu Dhabi. Not a destination card; not a primary on its own merits.
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
-import AtAGlance from "~/components/cards/AtAGlance.astro";
-import ProsCons from "~/components/cards/ProsCons.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-The Emirates NBD Duo is a paired-card product — a Visa plus a complementary
-Mastercard or Diners Club on a single credit limit. AED 0 annual fee, 0% FX
-fee, no welcome bonus, and a flat 1% Plus Points earn rate.
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "watch-out-for", label: "Watch out for" },
+  { id: "is-it-worth-it", label: "Is it worth it?" },
+]} />
+
+The Emirates NBD Duo is the bank's dual-card product — a Diners Club and a Mastercard issued on
+a single credit limit, with the earn assessed across the two cards together as Plus Points. The
+pitch is network redundancy plus a category-bonus earn on grocery, fuel and utility spend; the
+fine print is a spend gate, a points cap, and Abu Dhabi residency.
+
+<KeyTakeaways card="emirates-nbd-duo" />
 
 <AtAGlance card="emirates-nbd-duo" />
+
+<GreatCardIf card="emirates-nbd-duo" />
 
 <EditorVerdict card="emirates-nbd-duo" />
 
@@ -35,51 +72,82 @@ fee, no welcome bonus, and a flat 1% Plus Points earn rate.
 
 ## Earn rates
 
+The headline 5% applies to a defined category list — grocery, electronics, utilities, education
+and fuel — and only above the monthly spend threshold:
+
 <EarnRateTable card="emirates-nbd-duo" />
 
-Plus Points redeem for Skywards Miles, cashback, or merchant credit at ENBD's
-published rates — typically ~1¢ per point at the cashback ceiling.
+<HotTip>
+The Duo's 5% earn is conditional on **AED 5,000 of monthly spend** on the account and capped at
+**500 Plus Points per statement** — roughly AED 10,000 of bonus-category spend in a month at the
+5% rate before the cap binds. Below AED 5,000 of monthly spend, the rate drops to **0.5%** on
+bonus categories and **1.5%** elsewhere. Model your actual category spend against the threshold
+and the cap before treating this as a 5% card.
+</HotTip>
 
 ## Fee summary
 
-| Fee | Amount |
-|---|---|
-| Annual fee | AED 0 |
-| FX fee | 0% |
-| Minimum monthly salary | AED 12,000 |
-| Salary transfer | Not required |
+<FeeBlock card="emirates-nbd-duo" />
 
-The fee profile is the headline draw: zero ongoing cost, zero FX surcharge
-on international transactions.
+The annual fee is **AED 0** on the current promotional waiver; the Schedule of Charges standard
+renewal is **AED 840** if the waiver lapses. The product carries an "exclusive for Abu Dhabi
+residents only" condition on the Schedule of Charges — verify with your ENBD branch before applying
+outside Abu Dhabi. The **1.99% foreign-currency fee** is unchanged from the rest of the ENBD Plus
+Points range.
 
 ## Key conditions to know
 
-**Paired-card mechanics:**
-- The product issues **two physical cards** on a single credit limit — a Visa
-  and a complementary Mastercard or Diners
-- The two cards share statement, limit, and minimum payment
-- Useful for redundancy (one card declined, use the other) and for splitting
-  by partner without managing separate accounts
+<dl class="dp-conditions">
+  <dt>Two cards, one account</dt>
+  <dd>The product issues two physical cards — a Diners Club and a Mastercard — on a single credit limit and a single statement. Spending on either card draws on the same limit, and the Plus Points cap is assessed across the combined statement.</dd>
 
-**Network acceptance:**
-- Visa runs everywhere; the paired Mastercard / Diners catches the edge
-  cases where one network is preferred or required
+  <dt>5% earn — conditions</dt>
+  <dd>5% as Plus Points on grocery, electronics, utilities, education and fuel spend, conditional on at least AED 5,000 of monthly spend on the account. Below the threshold, bonus categories earn 0.5% and other spend earns 1.5%.</dd>
 
-## Best for
+  <dt>Plus Points cap</dt>
+  <dd>Capped at 500 Plus Points per statement — equivalent to the cap on AED 10,000 of bonus-category spend at the 5% rate. Above the cap, additional bonus-category spend earns nothing further on Plus Points.</dd>
 
-Households on AED 12,000+ a month who want a primary plus a backup card on
-a single account, and who care more about availability and zero FX cost than
-about earn rate. Particularly useful for travellers who want network
-redundancy abroad.
+  <dt>Abu Dhabi residency clause</dt>
+  <dd>The Schedule of Charges note on this product reads "exclusive for Abu Dhabi residents only". Confirm with your ENBD branch whether this clause currently applies to your application.</dd>
+
+  <dt>Foreign-currency fee</dt>
+  <dd>1.99% on every non-AED transaction across both cards. Not zero.</dd>
+
+  <dt>Eligibility</dt>
+  <dd>Minimum salary AED 12,000; UAE residency required; salaried applicants. No salary transfer to Emirates NBD required.</dd>
+</dl>
 
 ## Watch out for
 
-- **1% earn is flat and uncompetitive** — outside the FX-fee saving, this
-  card returns very little in points
-- **No welcome bonus** published on the issuer page at our verification —
-  there's no signup runway to defray the (already zero) annual cost
-- **Plus Points realise unevenly.** Cashback at par is usually the cleanest
-  redemption; the Skywards conversion rate is unfavourable
-- **Two cards, one limit.** Spending on both cards depletes the shared
-  credit line — useful for redundancy, less useful if you want to ring-fence
-  partner spend
+- **The spend gate moves the maths.** The 5% headline only applies if you clear AED 5,000 in
+  monthly spend; under the threshold it collapses to 0.5% on bonus categories. Households that
+  occasionally underspend (a quiet month, a long holiday) lose the rate that month.
+- **The 500 Plus Points cap.** Effective return compresses as you push more spend through the
+  card. Above roughly AED 10,000 of bonus-category spend in a month, additional spend earns no
+  further Plus Points.
+- **The Abu Dhabi residency clause.** The Schedule of Charges restricts this product to Abu Dhabi
+  residents. If you bank in Dubai or the Northern Emirates, confirm eligibility before applying.
+- **1.99% FX is real.** The dual-card framing can imply this is a travel product. It is not — the
+  foreign-currency fee bites on every non-AED transaction.
+- **No published welcome bonus** at our verification — no signup runway to defray the (currently
+  waived) annual fee.
+
+## Is it worth it?
+
+If you live in Abu Dhabi, run more than AED 5,000 of monthly spend through one account, and your
+spend leans on the bonus categories — grocery, fuel, utility, electronics, education — the Duo
+returns 5% as Plus Points up to the per-statement cap for no annual fee on the current promo. The
+dual-network aspect (Diners + Mastercard) is genuinely useful at the small number of UAE merchants
+that prefer Diners; on a household account where one partner carries each network, it works.
+
+It is the wrong card if you live outside Abu Dhabi (verify the residency clause first), if your
+monthly spend regularly falls under AED 5,000, or if you want a travel-spend card — the 1.99% FX
+fee rules that out. The 500 Plus Points cap also makes it a poor choice for very high spenders
+who would saturate the cap and earn nothing on the marginal AED.
+
+## Bottom line
+
+A category-bonus dual-card product with a real spend gate and an Abu Dhabi residency clause.
+**Apply** if you bank in Abu Dhabi, run AED 5,000+ in monthly spend on the bonus categories, and
+want Diners + Mastercard rails on one account. **Skip** if you live outside Abu Dhabi, spend less,
+or want a travel-spend or zero-FX card.

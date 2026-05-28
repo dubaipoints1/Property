@@ -1,34 +1,72 @@
 ---
 slug: emirates-nbd-priority-banking-visa-infinite
-cons:
-- Card only issues to existing Priority Banking customers — not openly available
-- 1% flat earn rate is below par for a Visa Infinite at this fee tier
-- Card value is bundled into the wider Priority Banking relationship — hard to isolate
+verifiedBy: DubaiPoints Editorial — verified against the Emirates NBD Priority Banking Visa Infinite product page and Schedule of Charges, 28 May 2026
+kicker: ENBD's invitation-only Visa Infinite for existing Priority Banking customers — gated by the relationship, not by salary, with a modest Plus Points earn whose value sits in the perks.
+tier: niche
+applyIf: You are already inside Emirates NBD Priority Banking and want the in-ecosystem Visa Infinite for the relationship.
+skipIf: You are not in ENBD Priority Banking — the card is invitation-only and not a reason to enter the relationship.
+keyTakeaways:
+- Invitation-only — issued to existing ENBD Priority Banking customers; the gate is the relationship, not a published salary minimum
+- 2% as Plus Points on general spend, with 0.4% on groceries/insurance and 0.2% on fuel/utilities — modest for a Visa Infinite
+- AED 1,575 annual fee; 1.99% foreign-currency fee; salary transfer flagged as required
+- Bundled into the wider Priority Banking relationship — value depends on the relationship's perks, not the standalone card maths
 pros:
-- Exclusive access to 5-star beach clubs and gyms
-- Visa Infinite benefit suite (concierge, lounge access, travel insurance) included
-- Bundled with Priority Banking — wealth manager, preferential FX, fee waivers across products
-verifiedBy: DubaiPoints Editorial
-editorTake: This is a relationship card, not a standalone product. ENBD issues it
-  to existing Priority Banking customers (typically AED 350,000+ in AUM or salary
-  AED 50,000+/month). On its own the card is unremarkable — 1% base earn, AED 1,575 fee
-  — but the Visa Infinite perks combine well with the wider Priority relationship's
-  preferential FX rates and waiver structure. Judge it as part of the package, not on
-  the standalone card maths.
+- Visa Infinite chrome — airport lounge access, concierge service and travel insurance via the Visa Infinite suite
+- ENBD-specific perks include up to 4 valet visits per month at selected Abu Dhabi locations, up to 4 airport transfers per year, and free golf at participating UAE courses
+- Sits inside the Priority Banking relationship — preferential FX rates, fee waivers and a dedicated relationship manager apply across products
+- Quarterly spend incentive — maintain AED 50,000 in quarterly spend to enter a draw for an AED 5,000 cashback prize
+cons:
+- Invitation-only — you cannot apply for the card without already being inside ENBD Priority Banking
+- AED 1,575 annual fee for a 2% Plus Points base earn is poor as a standalone product
+- 1.99% foreign-currency fee — the Priority Banking relationship's preferential FX rates apply to transfers, not to card transactions
+- Salary transfer required — clawback exposure applies if you leave the bank or the UAE inside tenure
+- The product's value is bundled into the relationship — hard to isolate the card itself from the wider wealth-management package
+editorTake: >-
+  The Priority Banking Visa Infinite is not a card you choose; it is a card you receive once
+  you are already inside Emirates NBD's Priority Banking relationship. The gate is the
+  relationship — typically held by customers with a meaningful assets-under-management balance
+  with the bank — not a published salary minimum. The standalone economics are unremarkable:
+  AED 1,575 annual fee, 2 Plus Points per AED 100 on general spend, with category boosts of 0.4%
+  on supermarkets and insurance and 0.2% on fuel and utilities, all denominated in Plus Points
+  rather than cashback dirhams; the foreign-currency fee is 1.99%. What the card actually buys
+  is alignment with the wider Priority relationship — preferential FX on transfers, fee waivers
+  across products, a dedicated relationship manager, ENBD-specific perks (up to four valet visits
+  a month in Abu Dhabi, up to four airport transfers a year, free golf at participating UAE
+  courses), plus the standard Visa Infinite chrome of lounge access, concierge and travel
+  insurance. Judge it as a relationship product, not a card on its own: if you are inside ENBD
+  Priority Banking, it is the default in-ecosystem Infinite; if you are not, opening the entire
+  wealth-management relationship to chase this card does not pencil out, and the bank does not
+  offer it as a standalone application anyway.
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
-import AtAGlance from "~/components/cards/AtAGlance.astro";
-import ProsCons from "~/components/cards/ProsCons.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-The Priority Banking Visa Infinite is Emirates NBD's relationship card — issued to
-existing Priority Banking customers as part of the wealth-management package. AED
-1,575 annual fee, 1.99% FX fee, Visa Infinite benefit suite, and a flat 1% Plus
-Points earn rate.
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "watch-out-for", label: "Watch out for" },
+  { id: "is-it-worth-it", label: "Is it worth it?" },
+]} />
+
+The Emirates NBD Priority Banking Visa Infinite is the bank's relationship card — issued by
+invitation to existing Priority Banking customers as part of the wider wealth-management package.
+The gate is the relationship, not the salary line on an application form; the value sits in what
+the relationship brings around the card, not in the standalone earn rate.
+
+<KeyTakeaways card="emirates-nbd-priority-banking-visa-infinite" />
 
 <AtAGlance card="emirates-nbd-priority-banking-visa-infinite" />
+
+<GreatCardIf card="emirates-nbd-priority-banking-visa-infinite" />
 
 <EditorVerdict card="emirates-nbd-priority-banking-visa-infinite" />
 
@@ -36,66 +74,90 @@ Points earn rate.
 
 ## Earn rates
 
+Plus Points earn is on every transaction, with small category boosts on groceries and insurance
+and a thin earn on fuel and utilities:
+
 <EarnRateTable card="emirates-nbd-priority-banking-visa-infinite" />
 
-Earn is flat. The card's value sits in the Visa Infinite perks and the wider
-Priority Banking relationship, not in points generation on day-to-day spend.
+<HotTip>
+The base earn is **2 Plus Points per AED 100** of general spend — modest for a Visa Infinite at
+this fee tier. Category rates of **0.4% on groceries and insurance** and **0.2% on fuel and
+utilities** apply on the same Plus Points basis, capped at the standard per-statement maximum.
+This card is not bought for the earn rate; it is bought because you are inside Priority Banking
+and want the in-ecosystem Visa Infinite.
+</HotTip>
 
 ## Fee summary
 
-| Fee | Amount |
-|---|---|
-| Annual fee | AED 1,575 |
-| FX fee | 1.99% |
-| Minimum monthly salary | Priority Banking qualification required |
-| Salary transfer | **Required** |
+<FeeBlock card="emirates-nbd-priority-banking-visa-infinite" />
 
-The Priority Banking relationship typically requires AED 350,000+ in total assets
-under management with the bank, **or** a salary of AED 50,000+ per month
-credited to ENBD. Confirm current thresholds with your relationship manager
-before applying.
+The annual fee is **AED 1,575**. The Priority Banking relationship sometimes waives the card fee
+at the bank's discretion for higher-tier customers — confirm with your relationship manager
+whether your tier currently qualifies. The **1.99% foreign-currency fee** applies to every non-AED
+card transaction; Priority Banking's preferential FX rates apply to outbound transfers and currency
+exchange, not to card transactions.
 
 ## Key conditions to know
 
-**Priority Banking relationship:**
-- Card is **only issued to existing Priority Banking customers** — you cannot
-  apply for the card without the underlying relationship
-- Priority Banking benefits typically include a dedicated relationship
-  manager, preferential FX rates, fee waivers on transfers, and access to
-  Priority Banking lounges in DXB and select ENBD branches
-- Card fee is sometimes waived for Premier-tier Priority customers — confirm
-  with your RM
+<dl class="dp-conditions">
+  <dt>Invitation-only</dt>
+  <dd>The card is issued to existing Emirates NBD Priority Banking customers only. You cannot apply for it directly without first being inside the Priority Banking relationship; the relationship is the gate.</dd>
 
-**Visa Infinite benefits:**
-- Visa Infinite concierge service
-- Global lounge access (verify provider and visit cap — historically
-  DragonPass-based)
-- Visa Infinite travel insurance, purchase protection, extended warranty
-- Travel and lifestyle privileges through Visa's regional partner network
+  <dt>Salary transfer</dt>
+  <dd>Salary transfer to Emirates NBD is flagged as required on this product. Clawback applies if you change jobs or leave the UAE inside the bank's tenure window — review the salary-transfer T&Cs with your relationship manager.</dd>
 
-**Salary-transfer mechanics:**
-- For salaried applicants, mandatory transfer to ENBD
-- For business owners and self-employed, the AUM threshold path applies
-  instead
+  <dt>Plus Points earn structure</dt>
+  <dd>2% as Plus Points on general spend; 0.4% on supermarkets and insurance; 0.2% on fuel and utilities. Denominated in Plus Points, not cashback dirhams, and subject to a per-statement cap.</dd>
 
-## Best for
+  <dt>Visa Infinite benefits</dt>
+  <dd>Airport lounge access (verify the current provider and visit cap before relying on it), Visa Infinite concierge service, travel insurance and purchase protection through the Visa Infinite certificate.</dd>
 
-Existing Emirates NBD Priority Banking customers who want a Visa Infinite
-that aligns with their wealth-management relationship and who lean on the wider
-relationship's preferential FX rates for international spend. The card is not a
-rational standalone choice — it's a relationship product.
+  <dt>ENBD relationship perks</dt>
+  <dd>Up to 4 complimentary valet parking visits per month at selected Abu Dhabi locations, up to 4 airport transfers per year in the UAE, free golf at participating UAE courses with up to 40% off premium courses globally, and local courier service up to 12 times a year.</dd>
+
+  <dt>Quarterly cashback draw</dt>
+  <dd>Maintain AED 50,000 of quarterly spend on the card to enter a draw for an AED 5,000 cashback prize — terms vary; confirm the current campaign with your RM.</dd>
+
+  <dt>Eligibility</dt>
+  <dd>Issued to existing Priority Banking customers — UAE residency required; salaried applicants; salary transfer required. The bank does not publish a salary minimum because the gate is the Priority Banking relationship itself.</dd>
+</dl>
 
 ## Watch out for
 
-- **Not openly available.** If you're not already a Priority Banking
-  customer, applying for this card means opening the entire wealth-management
-  relationship first
-- **AED 1,575 fee for 1% earn** is poor on standalone economics — the
-  relationship perks have to do the heavy lifting
-- **Welcome bonus terms** not consistently documented at our last
-  verification — confirm with your RM
-- **Fee waiver is discretionary.** Premier-tier customers sometimes have
-  the AED 1,575 waived; verify the current policy applies to your tier
-- **Compare to relationship alternatives.** Mashreq Gold, ADCB Privilege,
-  and FAB Premier all offer comparable wealth-relationship cards — the
-  decision usually follows your primary banking, not the other way around
+- **The relationship is the product.** Standalone, AED 1,575 for a 2% Plus Points earner is
+  uncompetitive. The card only pencils out if you are already drawing real value from the wider
+  Priority Banking package — preferential FX on transfers, fee waivers, RM access, in-branch
+  service.
+- **Salary-transfer clawback.** The card carries a salary-transfer requirement; expect clawback
+  exposure on any joining incentives and the loss of preferential pricing if you change jobs or
+  leave the UAE inside tenure.
+- **1.99% FX on card spend.** Priority Banking's preferential FX rates apply to outbound transfers
+  and currency exchange — not to card transactions. For routine non-AED spend, pair the card with
+  a lower-FX product.
+- **Fee waiver is discretionary.** Some Priority customers see the AED 1,575 waived at the bank's
+  discretion; do not budget on it. Confirm with your RM.
+- **Compare across relationships.** Mashreq Gold, ADCB Privilege Club and FAB Elite all offer
+  comparable wealth-relationship Visa Infinites — the decision typically follows your primary
+  banking, not the other way round.
+
+## Is it worth it?
+
+If you are already inside Emirates NBD Priority Banking, the Visa Infinite is the default
+in-ecosystem card — it aligns with the wealth-management relationship, carries the standard Visa
+Infinite chrome and brings ENBD-specific perks (valet, airport transfers, golf, the quarterly
+draw) that the rest of the ENBD card range does not. Judge the AED 1,575 in the context of the
+overall relationship — the preferential FX on transfers and the cross-product fee waivers usually
+recover the card fee comfortably for an active Priority customer.
+
+It is the wrong card if you are not already in Priority Banking. The card is invitation-only; you
+cannot apply for it directly, and opening the wealth-management relationship to chase this card
+is not a rational play. If you are choosing between banks for the relationship itself, compare
+the full Priority / Premier / Elite tiers across ENBD, Mashreq, ADCB and FAB — the card follows
+that decision, not the other way round.
+
+## Bottom line
+
+A relationship product, not a standalone card. **Apply** if you are already an Emirates NBD
+Priority Banking customer and want the in-ecosystem Visa Infinite. **Skip** if you are not in
+Priority Banking — there is no application path for this card outside the relationship, and no
+reason to open the relationship just to chase it.

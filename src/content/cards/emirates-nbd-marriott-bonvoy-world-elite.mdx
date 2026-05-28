@@ -1,60 +1,182 @@
 ---
 slug: emirates-nbd-marriott-bonvoy-world-elite
-verifiedBy: DubaiPoints Editorial
+verifiedBy: DubaiPoints Editorial — verified against the ENBD Marriott Bonvoy World Elite product page and ENBD Schedule of Charges, 28 May 2026
 pros:
-- Up to 200,000 Bonvoy points welcome bonus — large enough to fund a multi-
-  night premium-property stay
-- 6 Bonvoy points per USD 1 at participating Marriott hotels (per Bonvoy
-  programme rules layered on top of card earn)
-- No annual fee at the World Elite tier — unusual at this earn rate
+- Up to 200,000 Marriott Bonvoy points welcome — large enough to fund a multi-night peak-season Dubai stay
+- 6 Bonvoy points per USD 1 at participating Marriott properties, plus 3 per USD 1 on shopping, dining and international spend
+- Automatic Marriott Bonvoy Gold Elite status + 15 Elite Night Credits a year and a 50,000-point Free Night Award on anniversary
+- Direct Bonvoy earning — no transfer step, no ratio loss
 cons:
-- Salary transfer to ENBD is required; clawback applies on early exit
-- AED 25,000 minimum salary keeps this out of reach for the 5–15k band
-- Bonvoy point devaluations have been frequent globally — earn rate may not
-  hold its current AED-equivalent value
-editorTake: Easily the most generous welcome bonus in the UAE co-brand range
-  at the time of writing. If you stay in Marriott-family properties more than
-  three nights a year and earn AED 25,000+, the 200,000-point welcome — and a
-  zero annual fee — make this a high-conviction hold. Just price in the
-  inevitable Bonvoy devaluation when sizing the long-term value.
+- AED 1,575 joining fee in year one and AED 1,575 annual fee from year two — no published spend waiver
+- Salary transfer to Emirates NBD required; AED 25,000 minimum monthly salary
+- 1.99% FX fee — the international earn rate is offset on every overseas purchase
+- Bonvoy devalues regularly; AED-equivalent of the welcome bonus drifts down with each award-chart move
+editorTake: >-
+  The Bonvoy World Elite is the heaviest welcome bonus on a UAE co-brand card right now —
+  up to 200,000 Marriott Bonvoy points (100,000 on activation plus joining-fee payment,
+  100,000 more on USD 15,000 of retail spend across the first three statements). Stack
+  on automatic Gold Elite status, 15 Elite Night Credits a year, a 50,000-point Free
+  Night Award on anniversary, and direct earning at 6 Bonvoy points per USD 1 at
+  Marriott properties — and at our 2.5-fils-per-point baseline the welcome alone is
+  worth around AED 5,000. The catches are real, though. The AED 1,575 joining fee and
+  AED 1,575 annual fee from year two are not waived by any published spend threshold;
+  salary transfer to ENBD is mandatory at AED 25,000+ a month; the 1.99% FX fee cancels
+  most of the international earn; and Bonvoy's history of devaluations means the
+  welcome should be spent, not saved. If you stay in Marriott-family properties three
+  or more nights a year, you live in the AED 25,000-plus salary band, and you can route
+  the first-three-statements spend through the card, this is a high-conviction year-one
+  hold — and a year-two judgement call depending on what Bonvoy does to its chart next.
+kicker: The biggest welcome bonus on a UAE co-brand card — 200,000 Bonvoy points plus Gold Elite — but with a real AED 1,575 fee from year two and a salary-transfer lock-in.
+tier: strong
+applyIf: You stay in Marriott 3+ nights a year, earn AED 25,000+, and will clear USD 15,000 of spend in three statements.
+skipIf: You can't route salary to ENBD, can't clear the USD 15,000 spend gate, or treat the AED 1,575 renewal as a sunk cost.
+keyTakeaways:
+- Welcome up to 200,000 Bonvoy points (100k on activation + 100k on USD 15,000 spend in first 3 statements) plus automatic Gold Elite status
+- 6 Bonvoy points per USD 1 at Marriott; 3 per USD 1 on shopping, dining and international spend; 0.3 on utilities, fuel and government
+- AED 1,575 joining fee + AED 1,575 annual fee with no published spend waiver — fee is not a sunk cost only if you trigger the welcome
+- Salary transfer to ENBD required at AED 25,000+ monthly; 1.99% FX fee offsets most international earn
 ---
 
-The Emirates NBD Marriott Bonvoy World Elite Mastercard is the higher-tier
-of ENBD's two Bonvoy co-brands. It carries no annual fee, requires salary
-transfer, and is built around a large welcome bonus and direct Bonvoy points
-earning on Marriott stays.
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-## What you actually get
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "welcome-bonus-breakdown", label: "Welcome bonus" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "watch-out-for", label: "Watch out for" },
+]} />
 
-Welcome offer at time of verification is up to 200,000 Bonvoy points:
-100,000 on activation plus joining-fee payment, and a further 100,000 on
-USD 15,000 (~AED 55,100) of retail spend across the first three statement
-cycles. Ongoing earn is 3 Bonvoy points per AED 1 on shopping and on
-international (foreign currency) spend, plus 1 per AED 1 on everything else,
-and — separately — 6 Bonvoy points per USD 1 at participating Marriott
-properties under the Bonvoy programme's own card-member earn layer.
-Annual fee is zero. FX fee is 0%. Salary transfer to Emirates NBD is required;
-minimum monthly salary AED 25,000. Cardholder gets Bonvoy Silver Elite
-status; 15 Elite Night Credits per calendar year are part of the standard
-World Elite benefit suite globally — verify the UAE issuance carries this.
-{/* TODO: confirm the Silver Elite status and Elite Night Credit count on
-the ENBD-issued product specifically, plus the welcome-bonus qualifying window. */}
+The Emirates NBD Marriott Bonvoy World Elite Mastercard is the heavier of ENBD's
+two Bonvoy co-brands — a direct-earn hotel card built around a 200,000-point welcome,
+automatic Gold Elite status, and a salary-transfer-and-fee commitment that has to
+be priced honestly before you apply.
 
-## Who should open it
+<KeyTakeaways card="emirates-nbd-marriott-bonvoy-world-elite" />
 
-The card matches a household earning AED 25,000+ that takes at least three
-Marriott-family stays a year and has the discretionary spend to clear the
-USD 15,000 welcome-bonus hurdle inside three statement cycles. Bonvoy
-loyalists, GCC business travellers and Address-Hotel-equivalent stay
-patterns all index well here.
+<AtAGlance card="emirates-nbd-marriott-bonvoy-world-elite" />
 
-## Where it falls short
+<GreatCardIf card="emirates-nbd-marriott-bonvoy-world-elite" />
 
-Salary-transfer lock-in is the cost of entry — if there is any chance you
-exit Emirates NBD inside the offer tenure, model the clawback before
-applying. And the USD-denominated USD 15,000 spend gate is real money: at
-the AED 25,000-salary floor, it is roughly two months of total household
-discretionary spend, concentrated into three months.
+<EditorVerdict card="emirates-nbd-marriott-bonvoy-world-elite" />
 
-The strongest welcome bonus in the UAE co-brand range right now; the long-
-term hold case depends on your Marriott footprint.
+<ProsCons card="emirates-nbd-marriott-bonvoy-world-elite" />
+
+## Earn rates
+
+ENBD quotes Bonvoy earn per **USD 1** of eligible spend, not per AED. At USD 1 ≈
+AED 3.67, 3 Bonvoy points per USD 1 works out to roughly 0.82 points per AED 1
+on shopping, dining and international spend, and the 6-points-per-USD top rate
+at Marriott resolves to ~1.63 points per AED 1:
+
+<EarnRateTable card="emirates-nbd-marriott-bonvoy-world-elite" />
+
+Points post directly to your Marriott Bonvoy account — no transfer ratio, no
+intermediate currency.
+
+<HotTip>
+Marriott's [5th-night-free benefit](/programs/marriott-bonvoy/) on award stays
+means a five-night peak-season Dubai redemption is priced at four nights of
+points, not five. Bank the 200,000-point welcome and a 50,000-point anniversary
+Free Night Award against a Ritz-Carlton DIFC or St. Regis Dubai The Palm stay
+in November–March and the headline value lands close to AED 6,000 — well above
+the AED 3,150 of fees you've paid across two years.
+</HotTip>
+
+## Fee summary
+
+<FeeBlock card="emirates-nbd-marriott-bonvoy-world-elite" />
+
+The structure is steep and unforgiving: an AED 1,575 joining fee in year one and
+an AED 1,575 annual fee from year two, with no published spend threshold that
+waives either. The 1.99% FX fee applies on every non-AED transaction — material
+because the card's "international" earn is paid in the same currency it taxes.
+All fees include 5% VAT.
+
+## Welcome bonus breakdown
+
+<WelcomeBonusCallout card="emirates-nbd-marriott-bonvoy-world-elite" />
+
+The split matters: **100,000 Bonvoy points post on card activation plus joining-fee
+payment**, and a further **100,000 post on USD 15,000 (~AED 55,100) of retail spend
+within the first three billing statements**. Miss the spend gate and you collect
+the activation half only — at our [2.5-fils-per-point Bonvoy baseline](/programs/marriott-bonvoy/),
+that is roughly AED 2,500 of value against AED 1,575 of joining fee, which is a
+fine but unspectacular trade. Trigger the full 200,000 and the welcome is worth
+around AED 5,000 — comfortably ahead of the year-one and year-two fees combined.
+
+## Key conditions to know
+
+<dl class="dp-conditions">
+  <dt>Marriott Bonvoy status</dt>
+  <dd>Automatic Gold Elite tier on activation, plus a fast-track to Platinum on qualifying nights. Gold unlocks late check-out, a 25% points bonus on stays, and enhanced room when available.</dd>
+
+  <dt>Elite Night Credits</dt>
+  <dd>15 Elite Night Credits per calendar year. Stack with paid stays to shorten the climb to Platinum (50 nights) — useful for the GCC-business-travel pattern.</dd>
+
+  <dt>Free Night Award</dt>
+  <dd>One 50,000-point Free Night Award issued on each card anniversary. Top up with up to 15,000 of your own Bonvoy points to unlock any 65,000-point night — covers most peak-season Dubai Marriotts.</dd>
+
+  <dt>Salary transfer</dt>
+  <dd>Required. ENBD typically asks for 3 months of payslips plus a stamped salary certificate. Model the clawback before applying — see the <a href="/salary-transfer/">salary-transfer tracker</a>.</dd>
+
+  <dt>Eligibility</dt>
+  <dd>Minimum monthly salary AED 25,000; UAE resident; salaried employment only.</dd>
+</dl>
+
+## Watch out for
+
+- **No fee waiver.** Unlike ENBD's Skywards Infinite, there is no AED 100,000-spend
+  threshold that waives the AED 1,575 renewal. Plan year-two value around the
+  Free Night Award and the Elite Nights — not a spend-based escape.
+- **The USD 15,000 spend gate is real money.** Roughly AED 55,100 in three
+  statements is about AED 18,400 a month — feasible for a household at the
+  AED 25,000-salary floor only by routing rent, education and bills through
+  the card. The lower categories earn just 0.3–0.75 points per USD on those.
+- **FX fee versus international earn.** 3 Bonvoy points per USD 1 sounds
+  generous, but the 1.99% FX fee burns roughly the equivalent of a 6-fils-per-AED
+  cost on every overseas purchase. The net is a small positive at our point
+  valuation — not a strong reason to put non-AED spend here.
+- **Devaluation risk.** Marriott has moved off published award charts since
+  2022. The 200,000-point welcome is worth what you spend it on inside the
+  next 12 months — saving it for a far-future redemption is exposed to the
+  next chart move.
+- **Salary-transfer lock-in.** If you exit ENBD inside the offer tenure, the
+  clawback applies. If your employer changes salary-routing arrangements,
+  factor that in before applying.
+
+## Is it worth it?
+
+For the Marriott-loyal UAE resident at AED 25,000+ a month who can clear the
+USD 15,000 spend gate, the year-one math is convincing: the 200,000-point
+welcome lands roughly AED 5,000 of Bonvoy value at our baseline against
+AED 1,575 of joining fee, with automatic Gold Elite status and 15 Elite Night
+Credits stacked on top. Spend the welcome on a five-night Dubai stay in
+November or March, take advantage of the [5th-night-free benefit](/programs/marriott-bonvoy/),
+and the card pays for itself in a single redemption.
+
+Year two is the harder question. With no spend-based fee waiver, the AED 1,575
+renewal posts in full. The case to hold rests on the 50,000-point anniversary
+Free Night Award, ongoing 6-Bonvoy-points-per-USD earn at Marriott properties,
+and continued Gold Elite benefits — total notional value AED 1,500–2,500
+depending on how you redeem. The break-even is real but tight; if your
+Marriott footprint drops below three nights a year, the math doesn't hold.
+
+## Bottom line
+
+The largest welcome bonus on a UAE co-brand card right now — but the
+fee structure assumes you'll actually use it. **Apply** if you stay in
+Marriott three or more nights a year, can route salary to ENBD, and will
+clear USD 15,000 of spend in the first three statements. **Skip** if any
+one of those is in doubt — the lower-tier
+[ENBD Marriott Bonvoy World Mastercard](/cards/emirates-nbd-marriott-bonvoy-world/)
+is free-for-life on the same Bonvoy currency.

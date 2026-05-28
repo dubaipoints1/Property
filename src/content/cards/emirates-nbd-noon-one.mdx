@@ -1,56 +1,165 @@
 ---
 slug: emirates-nbd-noon-one
-verifiedBy: DubaiPoints Editorial
-pros:
-- AED 500 welcome credit on AED 5,000 spend in the first two months —
-  effective ~10% return on the qualifying window
-- No annual fee and no salary-transfer requirement
-- Direct noon Loyalty earning, redeemable as noon balance at checkout
 cons:
-- 1% earn outside the noon platforms makes the card unrewarding away from noon
-- Value is locked to the noon ecosystem (noon, noon Food, noon Daily,
-  Sivvi)
-- Welcome bonus is new-to-bank only — existing ENBD cardholders are excluded
-editorTake: A clean welcome-bonus product for new-to-bank residents who
-  shop on noon regularly. AED 500 back on AED 5,000 spend inside two
-  months is a strong opening return; after that, the earn structure
-  rewards noon spend (up to 20% back) but only 1% elsewhere, so the card
-  belongs in the drawer unless noon is your default shopping destination.
+- Welcome bonus is new-to-bank or new-to-card only — existing Emirates NBD cardholders get nothing
+- Earn outside the noon ecosystem is just 1%, making this a one-shop card
+- noon Credits are a captive currency — useful only if you keep shopping on noon, noon Food, NowNow or Namshi
+- 1.99% foreign-currency fee — not a travel card despite the no-annual-fee positioning
+pros:
+- AED 500 noon Credits welcome on AED 5,000 of spend in 60 days — roughly 10% return on the qualifying window
+- Up to 20% back on noon Food, 10% on NowNow and 5% on noon / Namshi / supermall — capped at AED 2,000/month
+- Free for life — no annual fee, no salary-transfer requirement, AED 5,000 salary bar
+- AED 250 YOUGotaGift HappyYOU Card on issue plus a 1-year free noon One membership
+verifiedBy: DubaiPoints Editorial — verified against the Emirates NBD Noon One product page and Key Facts Statement, 28 May 2026
+kicker: A new-to-bank noon co-brand with a strong AED 500 welcome on AED 5,000 spend, then up to 20% back on noon platforms — paid in noon Credits, not dirhams.
+tier: niche
+applyIf: You are new to Emirates NBD, shop AED 2,000+ a month on noon platforms and want a free-for-life noon-credits card.
+skipIf: You already bank with Emirates NBD or rarely shop on noon — the welcome excludes existing customers and base earn is 1%.
+keyTakeaways:
+- AED 500 noon Credits welcome on AED 5,000 of spend in the first 60 days (new-to-bank or new-to-card only)
+- Up to 20% back on noon Food, 10% on NowNow, 5% on noon / Namshi / supermall — capped at AED 2,000 of noon Credits per month
+- 1% earn on everything outside the noon ecosystem; 1.99% foreign-currency fee
+- Free for life with an AED 5,000 minimum salary; payouts are noon Credits, not AED — captive to the noon ecosystem
+editorTake: >-
+  The Emirates NBD Noon One Visa is a co-brand with noon, the regional ecommerce platform
+  that competes head-on with Amazon.ae across the UAE and Saudi Arabia. The opening hook is
+  strong — AED 500 in noon Credits when you spend AED 5,000 on the card inside 60 days, plus
+  AED 250 on a YOUGotaGift HappyYOU Card and a year of free noon One membership. For a
+  household that already shops on noon weekly, that is roughly a 10% return on the
+  qualifying spend window and an easy claim. After the welcome, the earn structure is sharp
+  but narrow: 20% back on noon Food, 10% on NowNow, 5% on noon, Namshi and supermall —
+  capped at AED 2,000 of noon Credits a month — and 1% on everything else. The catch is the
+  payout currency. noon Credits are not AED; they are a closed-loop balance redeemable only
+  at checkout on noon platforms. If you'd shop there anyway, that is a non-issue. If you
+  wouldn't, the card sits idle in a drawer once the welcome clears. Crucially, the welcome
+  excludes existing Emirates NBD cardholders, so this works as a first-ENBD-card for
+  residents inside their first two years in the UAE, not as an add-on for the bank's own
+  customers.
 ---
 
-The Emirates NBD Noon One Visa is co-branded with noon, the UAE-based
-e-commerce group. It earns noon Loyalty rewards directly into the
-cardholder's noon balance, redeemable at checkout across noon, noon Food,
-noon Daily and Sivvi.
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
+import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
+import HotTip from "~/components/cards/HotTip.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 
-## What you actually get
+<JumpToSection sections={[
+  { id: "earn-rates", label: "Earn rates" },
+  { id: "fee-summary", label: "Fee summary" },
+  { id: "welcome-bonus-breakdown", label: "Welcome bonus" },
+  { id: "key-conditions-to-know", label: "Key conditions" },
+  { id: "watch-out-for", label: "Watch out for" },
+]} />
 
-Earn is up to 20% back as noon credits on noon platforms (noon Food 20%,
-NowNow 10%, noon / Namshi / supermall / Minutes ~5%), capped at
-AED 2,000/month across noon platforms, and 1% on all other spends. Welcome
-bonus is AED 500 credit on AED 5,000 spend in the first two months for
-new-to-bank or new-to-card customers — a ~10% return on the qualifying
-spend. Annual fee is zero. FX fee is 0%. Salary transfer is not required;
-minimum monthly salary AED 5,000.
-{/* TODO: verify the noon Loyalty redemption ratio (1 point = 1 fil vs
-other) and any noon-spend category multipliers above the flat 1x base
-against the current issuer page. */}
+The Emirates NBD Noon One Visa is co-branded with noon — the UAE-and-Saudi ecommerce
+platform that competes head-on with Amazon.ae — and earns noon Credits straight into the
+cardholder's noon balance, redeemable at checkout across noon, noon Food, NowNow, Namshi
+and supermall.
 
-## Who should open it
+<KeyTakeaways card="emirates-nbd-noon-one" />
 
-The card matches a household that shops on noon regularly — at least
-AED 2,000–3,000 a month across the noon ecosystem — and is willing to
-route a chunk of discretionary spend through it for two months to clear
-the welcome hurdle. New-to-bank-only welcome eligibility means it works
-particularly well as a first ENBD card for residents inside their first
-two years in the UAE.
+<AtAGlance card="emirates-nbd-noon-one" />
 
-## Where it falls short
+<GreatCardIf card="emirates-nbd-noon-one" />
 
-The 1% off-platform earn rate is unremarkable once the welcome bonus has been
-claimed. noon credit is a closed-loop currency — useful only if you keep shopping
-on noon. And the welcome-bonus exclusion of existing ENBD customers
-means a second-card application from the bank's own customers gets nothing.
+<EditorVerdict card="emirates-nbd-noon-one" />
 
-Worth opening for the AED 500 welcome credit if you fit the new-to-bank
-criteria; not a long-term keeper.
+<ProsCons card="emirates-nbd-noon-one" />
+
+## Earn rates
+
+All earn is paid as **noon Credits** — a closed-loop balance redeemable only at checkout on
+noon platforms. The headline rate tiers, with the AED 2,000-per-month combined cap across
+all noon platforms:
+
+<EarnRateTable card="emirates-nbd-noon-one" />
+
+<HotTip>
+noon Credits are not AED — they are a captive currency. A 20% return on a noon Food order
+is genuine 20% off your next noon Food order; it is not cash, statement credit, miles or
+points transferable elsewhere. The economics work if you would shop on noon anyway. They do
+not work as a general cashback card — the off-platform rate is just 1%.
+</HotTip>
+
+## Fee summary
+
+<FeeBlock card="emirates-nbd-noon-one" />
+
+The card is free for life — AED 0 annual fee, no spend threshold, no clawback. The cost to
+watch is a **1.99% foreign-currency fee**: most noon purchases settle in AED, but anything
+through a non-AED merchant — or a noon site billed in another GCC currency — picks the fee
+up. All published fees include 5% VAT.
+
+## Welcome bonus breakdown
+
+<WelcomeBonusCallout card="emirates-nbd-noon-one" />
+
+The welcome stack runs to three pieces: **AED 500 in noon Credits** for **AED 5,000** of
+spend in the first **60 days**, plus a **AED 250 YOUGotaGift HappyYOU Card** on issue, plus
+a **1-year free noon One membership** (50% off thereafter). The AED 500 + AED 250 = AED
+750 on AED 5,000 of qualifying spend is roughly a 15% return on the opening window — strong
+by UAE no-fee-card standards. Critically, the welcome is **new-to-bank or new-to-card
+only**: existing Emirates NBD cardholders are excluded and receive nothing for opening it.
+
+## Key conditions to know
+
+<dl class="dp-conditions">
+  <dt>noon Credits redemption</dt>
+  <dd>noon Credits sit in your noon wallet and are redeemed at checkout on noon, noon Food, NowNow, Namshi and supermall. No transfers to airlines, hotels, statement credit, AED cash-out or third-party programmes.</dd>
+
+  <dt>Earn caps</dt>
+  <dd>The accelerated rates (20% / 10% / 5%) are capped at a combined AED 2,000 of noon Credits per calendar month across all noon platforms. The 1% off-platform earn is uncapped.</dd>
+
+  <dt>Welcome eligibility</dt>
+  <dd>AED 500 noon Credits on AED 5,000 of spend in the first 60 days; new-to-bank or new-to-card customers only. AED 250 YOUGotaGift HappyYOU Card and 1-year free noon One membership packaged with issue.</dd>
+
+  <dt>Eligibility</dt>
+  <dd>Minimum monthly salary AED 5,000; salaried only; UAE residency required; salary transfer not required. Standard ENBD documentation — Emirates ID, passport with visa page, three months' bank statements, security cheque.</dd>
+
+  <dt>Network</dt>
+  <dd>Visa — accepted everywhere noon and its sub-brands process card payments. Apple Pay, Samsung Pay and Google Pay supported.</dd>
+</dl>
+
+## Watch out for
+
+- **Captive-currency payout.** noon Credits redeem only on noon platforms. The 20% on noon
+  Food is genuine, but only if you order noon Food. Stop shopping on noon and the balance
+  effectively traps the rewards.
+- **New-to-bank gate on the welcome.** Existing Emirates NBD cardholders get the earn rates
+  but none of the AED 500 + AED 250 + noon One welcome. If you already hold an ENBD card,
+  the maths is much weaker.
+- **1% off-platform.** Outside the noon ecosystem the card is a 1% cashback — well below
+  the UAE average. Carry a flat-rate cashback card for everything that isn't noon.
+- **FX fee at 1.99%.** Modest by UAE standards but not zero. The no-annual-fee positioning
+  shouldn't be confused with a travel card.
+
+## Is it worth it?
+
+For a UAE resident who is new to Emirates NBD, shops on noon at least AED 2,000 a month,
+and is willing to route a chunk of discretionary spend through the card for two months to
+clear the welcome hurdle, this is an easy AED 750 of welcome value with strong ongoing
+earn on the spend you'd do anyway. As a first-ENBD-card for residents inside their first
+two years in the UAE, the maths is sharp.
+
+For everyone else it is the wrong card. Existing Emirates NBD customers are excluded from
+the welcome. Light noon shoppers cap out the off-platform 1% before the captive currency
+becomes useful. And anyone wanting AED-denominated, redeemable-anywhere cashback should
+look at a flat-rate product instead.
+
+## Bottom line
+
+A clean welcome-bonus product for new-to-bank residents who already live on noon. **Apply**
+if you fit the new-to-bank criteria and shop on noon weekly. **Skip** if you already bank
+with Emirates NBD, or if your spend isn't concentrated on noon platforms.
+
+---
+
+**Pay smart:** for AED-denominated rewards on the spend that doesn't go through noon, pair
+this with a broad-merchant cashback card like the [CBD One](/cards/cbd-one/) free-for-life
+Visa. Newer UAE residents setting up their first bank account and card should start with
+our [expat starter guide](/guides/expat-starter/).

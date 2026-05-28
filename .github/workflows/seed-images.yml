@@ -196,6 +196,26 @@ jobs:
             --orientation landscape \
             --alt "Wide-body aircraft at sunset"
 
+      - name: Fetch news-emirates-skywards-season-of-rewards-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug news-emirates-skywards-season-of-rewards-2026 \
+            --query "airport boarding pass summer travel" \
+            --orientation landscape \
+            --alt "Boarding pass and passport on a summer travel desk"
+
+      - name: Fetch deal-enbd-skywards-welcome-q2-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug deal-enbd-skywards-welcome-q2-2026 \
+            --query "premium black credit card luxury desk" \
+            --orientation landscape \
+            --alt "Premium black credit card on a luxury desk"
+
       - name: Run validation
         run: |
           npm run check

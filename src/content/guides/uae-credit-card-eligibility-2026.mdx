@@ -1,32 +1,211 @@
 ---
 title: "UAE credit card eligibility — 2026 guide"
-description: "Minimum salary, salary transfer, and residency rules for UAE credit cards, with a worked example using the Emirates NBD Skywards Infinite."
+description: "Minimum salary, salary transfer, AECB credit history and documentation rules for UAE credit cards in 2026, with an issuer-by-issuer salary table and a worked example."
 publishedAt: 2026-04-01
-updatedAt: 2026-04-29
+updatedAt: 2026-05-28
 relatedCards:
   - emirates-nbd-skywards-infinite
+  - cbd-one
+  - fab-world-elite
 relatedPrograms:
   - skywards
 ---
 
-## Minimum salary
+UAE credit card approval is a three-variable equation: a **minimum
+monthly salary** the issuer publishes for each card, an **AECB credit
+report** the bank pulls on every application, and a **salary-transfer
+arrangement** that some banks require and most banks weight heavily
+without naming the weight. Get all three right and approval is usually
+mechanical. Miss any one and you receive a polite decline with no
+right of reply.
 
-UAE banks set a **monthly minimum salary** for each card tier. For premium
-travel cards, expect AED 25,000–30,000 per month; for entry-level cashback
-cards, AED 5,000–8,000 is common.
+This guide reads the published eligibility on every priority UAE
+issuer, lays out what salary transfer actually changes about your
+application, and explains the AECB friction every new arrival meets
+in their first six months. AED-first throughout. The figures in the
+table below come straight from our card database
+([`src/data/cards.json`](https://github.com/dubaipoints/dubaipoints.ae/blob/main/src/data/cards.json));
+the per-card source URL is on each individual card review.
 
-## Salary transfer
+## Minimum salary by bank — at a glance
 
-Some banks **require** your salary to be transferred to an account with them
-before approving certain cards. Others treat salary transfer as optional but
-weight it heavily in approval decisions.
+The "salary range across L2 cards" column is the lowest and highest
+**published** minimum monthly salary across the cards we track for
+that issuer. Issuers may publish higher thresholds on private-banking
+or invitation-only tiers we do not list. Always confirm against the
+specific card's Key Facts Statement before you apply.
 
-## Residency
+| Issuer | Salary range (AED/month, across cards we track) | Salary transfer | Notes |
+|---|---|---|---|
+| ADCB | 5,000 – 30,000 | Required on Betaqti and Essential Cashback; optional on most TouchPoints/LuLu cards | Broadest mass-market range; TouchPoints Infinite sits at the top at AED 30,000 |
+| ADIB (Islamic) | 5,000 | Optional | Sharia-compliant; entry Cashback Visa Covered Card at AED 5,000 |
+| CBD | 5,000 | Optional | CBD One is the AED 5,000 entry; premium tiers higher (confirm on KFS) |
+| Citi UAE | 8,000 | Optional | Citi Cash Back Credit Card is the published AED 8,000 entry |
+| DIB (Islamic) | 5,000 | Optional | DIB Consumer Cashback Reward Card at AED 5,000 |
+| Emirates Islamic | 5,000 | Optional | Switch Cashback Credit Card is the AED 5,000 entry |
+| Emirates NBD | 5,000 – 30,000 | Required on several Infinite tiers (Visa Infinite, Etihad Guest Elevate, Marriott Bonvoy World Elite, U by Emaar Infinite for Emiratis, Diners Club, dnata World) | Largest single lineup we track; Skywards Infinite at AED 30,000 with salary transfer not strictly required |
+| FAB | 5,000 – 40,000 | Required on FAB Elite | FAB Cashback at AED 5,000; FAB Elite at AED 40,000; FAB World Elite Mastercard is invitation-only with no published minimum |
+| HSBC UAE | 5,000 | Optional | HSBC Live+ at AED 5,000; HSBC Premier mortgage-banking tiers higher (not in this set) |
+| Mashreq | 5,000 | Optional | Mashreq Cashback Credit Card at AED 5,000 |
+| RAKBank | 20,000 | Optional | We currently track the RAKBANK World Credit Card at AED 20,000; entry tiers are lower on the bank's full lineup |
+| Standard Chartered | 5,000 | Optional | Platinum X at AED 5,000 |
 
-A valid **UAE residence visa** and Emirates ID are required for almost all UAE
-credit cards. Tourist applications are not accepted.
+**Reading the table.** AED 5,000 is the floor for an entry-level
+cashback or rewards card across almost every conventional and Islamic
+bank in the UAE. Premium and travel cards step up in bands of AED
+12,000, AED 20,000, AED 25,000 and AED 30,000. Above AED 30,000 you
+are typically in invitation-only or relationship-priced territory
+(Private Banking, Elite, Priority) where the card is offered to you
+rather than the other way around.
+
+## What "salary transfer" actually means
+
+A salary transfer is a written instruction (a "salary letter" issued
+by your employer) directing your full monthly net salary into a UAE
+bank account at a named bank. The instruction is filed with the
+**Wages Protection System** (WPS), the Ministry of Human Resources
+and Emiratisation framework that all UAE employers must use to pay
+in-country payroll. Once routed, your salary credit appears on the
+account on the same day each month, and the bank uses that credit
+history as a primary affordability signal.
+
+Three things follow from this:
+
+1. **Salary transfer is exclusive.** WPS routes your *full* net
+   salary to one bank. You cannot split salary across two banks under
+   a single WPS file. Switching banks therefore means switching the
+   WPS instruction with your employer's payroll team — usually a
+   one-month lag before the new bank sees a salary credit.
+2. **"Salary transfer required" is binary.** A card that requires
+   salary transfer will not approve you on income proof alone. You
+   need to either already bank with the issuer on a transferred
+   salary or commit to switching as part of the application. The bank
+   typically gives you 60–90 days to land the first salary credit
+   before they downgrade or close the limit.
+3. **"Salary transfer optional" is weighted, not neutral.** Even
+   where a bank does not formally require salary transfer, an
+   internal customer (someone whose salary is already with them)
+   tends to clear approval with thinner credit history and a slimmer
+   document pack. Use this if you are new in-country and your AECB
+   file is light.
+
+The clawback realities of switching a salary-transfer arrangement
+mid-tenure — particularly where a salary-transfer-conditional cash or
+voucher reward was paid out — are covered on the
+[salary-transfer tracker](/salary-transfer/) and on each
+per-bank deep-dive.
+
+## AECB and credit history for new UAE arrivals
+
+The **Al Etihad Credit Bureau** (AECB) is the UAE's federal credit
+bureau, established under Federal Law No. 6 of 2010 and active since
+2014. Every bank, telecom and major utility reports your repayment
+behaviour to AECB, and every credit application triggers an AECB
+report pull. Your AECB score is a number between 300 and 900;
+mortgage-grade is broadly 700+ and 620–700 is the band where most
+credit cards approve without friction.
+
+For new UAE arrivals, the file is the friction:
+
+- **The first six months you are invisible.** No AECB history exists
+  for someone who arrived last month, because no bank has reported
+  on you yet. Banks resolve this by either (a) using employer salary
+  certificates and a bank statement from overseas as proxy proof, or
+  (b) declining and asking you to come back after six months on a
+  salary-credited UAE account.
+- **One missed payment lingers.** A single 30-days-past-due flag on a
+  credit card or personal loan typically pulls 30–50 points off the
+  score and remains on the report for 24 months from the date the
+  account was brought current. Two flags inside 12 months and most
+  banks will not approve a new card regardless of salary.
+- **Mortgage Debt Burden Ratio is the harder cap.** The UAE Central
+  Bank's mortgage rules set a Debt Burden Ratio (DBR) cap of **50%**
+  of monthly income across all credit commitments — credit-card
+  minimum payments included. Hold five cards with combined minimum
+  payments approaching 50% of income and the next application meets
+  a DBR refusal regardless of AECB score.
+
+A free AECB report and score can be pulled once a year via the AECB
+app; we recommend pulling one before any major application (mortgage,
+high-limit credit card, personal loan) so the bank's read of your
+file is not a surprise.
+
+## Documentation banks ask for
+
+Across the issuers in the table above, the standard documentation
+pack for a salaried applicant is:
+
+- **Completed application form** (online or paper).
+- **Emirates ID** (original sighted at branch, or scanned for digital
+  applications).
+- **Passport copy** with the residence-visa page.
+- **Latest salary certificate** issued by your employer on company
+  letterhead within the last 30 days.
+- **Latest 3 months of bank statements** showing salary credits — at
+  the issuer for an existing customer, or at your current bank for
+  a switcher.
+- **Security cheque** post-dated for the card limit (most issuers).
+
+Self-employed applicants substitute a **valid trade licence** and
+typically **6 months of business bank statements**, and several
+banks require an audited P&L or a tax registration certificate.
+Business-owner thresholds are usually higher than salaried by AED
+5,000–15,000 on the same card.
+
+## What to do if you are below the minimum
+
+The published minimum is a guideline, not a discrete cliff. If your
+salary sits AED 1,000–2,000 below the threshold, there is still a
+viable path:
+
+1. **Try the secured card route.** ADCB, Emirates NBD and Standard
+   Chartered all offer a secured-card variant against a fixed deposit
+   of AED 5,000–15,000. Six months of clean usage builds the AECB
+   file and the bank's internal score; you can then re-apply for the
+   target card unsecured.
+2. **Apply at the bank that holds your salary.** Internal customers
+   clear approval at lower thresholds than the published walk-in
+   number, because the bank already sees salary credits and
+   discretionary spend.
+3. **Wait for a salary-transfer offer.** Banks periodically waive the
+   stated minimum salary for new salary-transfer customers in
+   exchange for a tenure commitment (12–24 months) and a payback
+   clawback if you leave early. The
+   [salary-transfer tracker](/salary-transfer/) lists current offers
+   with AED-first values discounted at 20% on vouchered components.
+4. **Avoid the multi-application reflex.** Three declines in 90 days
+   pulls the AECB score by enough that the next application — even
+   at the right bank — fails on score. One application, eight weeks'
+   patience, then the next: that is the order of operations.
+
+## Bottom line
+
+A UAE credit card application is read as one document: salary
+certificate, AECB report and salary-transfer position read together.
+The AED 5,000 floor is real and broad — almost every issuer's entry
+cashback card sits at that line — but the friction lives in the AECB
+file for new arrivals and in the salary-transfer-required premium
+tiers (FAB Elite at AED 40,000, several Emirates NBD Infinites at AED
+30,000, ADCB TouchPoints Infinite at AED 30,000). Pull your AECB
+report before you apply, file salary-transfer paperwork before you
+hit "submit" on a salary-transfer-required card, and treat each
+decline as a 90-day pause rather than a prompt to try the next bank.
+
+For the specific issuer's process and live offers see the bank hub
+([ADCB](/banks/adcb/), [Emirates NBD](/banks/emirates-nbd/),
+[FAB](/banks/fab/), [Mashreq](/banks/mashreq/),
+[HSBC](/banks/hsbc/)). For salary-transfer mechanics and the
+clawback rules per offer, the
+[salary-transfer tracker](/salary-transfer/) is the live source.
 
 ## Worked example
 
-The Emirates NBD Skywards Infinite requires AED 30,000 monthly income, does
-not strictly require salary transfer, and does require UAE residency.
+The **Emirates NBD Skywards Infinite** requires AED 30,000 monthly
+income and does not strictly require salary transfer; UAE residency
+and Emirates ID are mandatory. An applicant on AED 32,000/month with
+a salary already credited to Emirates NBD, an 18-month UAE file at
+AECB scoring 720, and a clean security cheque would meet every gate
+on the bank's published list. The same applicant on a six-month UAE
+file with no AECB history — even with the AED 32,000 salary — would
+typically receive a declined-pending-history outcome and a suggestion
+to re-apply after six months of salary credits with the bank.
