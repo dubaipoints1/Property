@@ -41,14 +41,14 @@ const latestVerified = allCards.length === 0
   <div slot="salary-transfer">
     {
       offers.length === 0 ? (
-        <p class="mt-2 text-sm text-slate-600">
+        <p class="dp-bank-salary-empty">
           No live salary transfer offer tracked for {bank.data.name}.
         </p>
       ) : (
         offers.map((o) => (
-          <div class="mt-2 text-sm">
-            <p class="font-semibold text-slate-900">{o.name}</p>
-            <p class="text-slate-700">
+          <div class="dp-bank-salary-card">
+            <p class="dp-bank-salary-name">{o.name}</p>
+            <p class="dp-bank-salary-meta">
               Up to{" "}
               <strong>
                 {formatAED(Math.max(...o.salaryBands.map((b) => b.rewardAmount)))}
@@ -56,7 +56,7 @@ const latestVerified = allCards.length === 0
               · {o.tenureMonths} months · ends{" "}
               {new Date(o.validUntil).toLocaleDateString("en-GB")}
             </p>
-            <p class="mt-1">
+            <p class="dp-bank-salary-cta">
               <a href={`/salary-transfer/${bank.id}/`}>Full offer details →</a>
             </p>
           </div>
@@ -75,18 +75,15 @@ const latestVerified = allCards.length === 0
     )}
   </div>
 
-  <div slot="cards" class="grid gap-3 sm:grid-cols-2">
+  <div slot="cards" class="dp-bank-cards-grid">
     {
       allCards.length === 0 ? (
-        <p class="text-sm text-slate-500">No cards from {bank.data.name} indexed yet.</p>
+        <p class="dp-bank-cards-empty">No cards from {bank.data.name} indexed yet.</p>
       ) : (
         allCards.map((c) => (
-          <a
-            href={`/cards/${c.slug}/`}
-            class="rounded-md border border-slate-200 bg-white p-3 no-underline hover:border-brand-500"
-          >
-            <p class="text-xs uppercase tracking-wide text-slate-500">{c.network}</p>
-            <p class="mt-1 font-semibold text-slate-900">{c.name}</p>
+          <a href={`/cards/${c.slug}/`} class="dp-bank-card-tile">
+            <p class="dp-bank-card-network">{c.network}</p>
+            <p class="dp-bank-card-name">{c.name}</p>
           </a>
         ))
       )
@@ -119,4 +116,44 @@ const latestVerified = allCards.length === 0
     text-decoration-color: color-mix(in srgb, var(--green) 35%, transparent);
   }
   .dp-bank-articles a:hover { text-decoration-color: var(--green); }
+
+  .dp-bank-salary-card { margin-top: 8px; font-size: 14px; line-height: 1.5; }
+  .dp-bank-salary-name { font-weight: 600; color: var(--ink); margin: 0; }
+  .dp-bank-salary-meta { color: var(--ink-soft); margin: 4px 0 0; }
+  .dp-bank-salary-cta { margin: 6px 0 0; }
+  .dp-bank-salary-cta a {
+    color: var(--green);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in srgb, var(--green) 35%, transparent);
+  }
+  .dp-bank-salary-cta a:hover { text-decoration-color: var(--green); }
+  .dp-bank-salary-empty { font-size: 14px; color: var(--ink-soft); margin-top: 8px; }
+
+  .dp-bank-cards-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .dp-bank-cards-grid { grid-template-columns: 1fr 1fr; } }
+  .dp-bank-cards-empty { font-size: 14px; color: var(--muted); margin: 0; }
+  .dp-bank-card-tile {
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--paper);
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .dp-bank-card-tile:hover { border-color: var(--green); }
+  .dp-bank-card-network {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .dp-bank-card-name {
+    margin: 4px 0 0;
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 15px;
+  }
 </style>
