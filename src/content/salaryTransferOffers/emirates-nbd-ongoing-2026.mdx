@@ -1,6 +1,6 @@
 ---
 bank: emirates-nbd
-name: "Emirates NBD — Ongoing Salary Transfer + Skywards Card (2026)"
+name: "Emirates NBD — Salary Transfer Cash Bonus (archived)"
 validFrom: 2026-01-01
 validUntil: 2026-12-31
 tenureMonths: 12
@@ -38,18 +38,28 @@ clawbackTerms: |
   Cash bonus is clawed back fully if salary transfer ceases in months 1–6, and
   pro-rata in months 7–12. Card welcome top-up is forfeited if the card is
   cancelled within 12 months.
-sourceUrl: https://www.emiratesnbd.com/en/personal-banking/accounts/salary-account
-lastVerified: 2026-04-29
-archived: false
+sourceUrl: https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more
+lastVerified: 2026-05-28
+archived: true
 ---
 
 ## Real-world notes
 
-> **Verification status:** illustrative skeleton; will be replaced by scraped
-> values in Phase 2.
-
-- ENBD is a year-round programme rather than a quarterly promotion — useful
-  baseline when nothing better is live.
-- The savings interest boost mentioned in marketing applies to ENBD's tiered
-  savings account, not the salary account itself; not modelled in the calculator.
-- Salary transfer turnaround typically 1–2 working days for new ENBD customers.
+> **Archive note (28 May 2026):** The cash-bonus structure tracked above is
+> based on an earlier ENBD campaign and is no longer the live offer. ENBD's
+> [current salary-transfer promotion](https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more)
+> (valid 1 February – 30 June 2026) is a **bonus-interest** offer — base
+> 5.00% p.a. for residents (5.50% for Emiratis), plus an additional 0.50%
+> if the customer takes a credit card and spends AED 10,000 in 60 days,
+> paid on the average monthly account balance over a 6-month reward
+> window. Minimum salary transfer AED 10,000, minimum average monthly
+> balance AED 25,000.
+>
+> The current offer's reward shape (bonus interest on balance, not a
+> fixed cash sum per salary band) does not map onto the
+> `salaryTransferOfferShape` schema's `cash | voucher | cashback_monthly | points`
+> reward types — flagged for Technical Lead / Chairman as a schema
+> extension candidate (e.g. `rewardType: "interest_bonus"`). Until
+> resolved, the bank hub describes the offer in prose; this file is
+> archived so the tracker does not surface the stale cash-bonus
+> structure.
