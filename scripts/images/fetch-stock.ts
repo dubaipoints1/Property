@@ -173,9 +173,12 @@ async function main(): Promise<void> {
   const manifest = loadManifest();
   const existing = manifest.entries.find((e) => e.slug === args.slug);
   if (existing && !args.replace) {
-    console.error(`ERROR: slug "${args.slug}" already in manifest at ${existing.file}`);
-    console.error("Pass --replace to overwrite.");
-    process.exit(1);
+    // Idempotency: a workflow re-run that finds a slug already seeded is a
+    // no-op, not a failure. Quota-friendly (no Pexels call) and lets the
+    // batched workflow add new slugs without forcing --replace on the
+    // existing-and-correct ones. Pass --replace to force a refetch.
+    console.log(`SKIP: slug "${args.slug}" already in manifest at ${existing.file} — pass --replace to overwrite.`);
+    return;
   }
 
   if (key === "skip") {
