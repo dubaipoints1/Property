@@ -1,0 +1,12 @@
+# dubaipoints.ae — robots.txt
+# Generated 29 May 2026 (PR-D, post-audit SEO foundation).
+
+User-agent: *
+Allow: /
+
+# Out of scope for indexing — internal scaffolding / dev-only.
+Disallow: /design-spike/
+Disallow: /style-guide/
+Disallow: /dev/
+
+Sitemap: https://dubaipoints.ae/sitemap-index.xml

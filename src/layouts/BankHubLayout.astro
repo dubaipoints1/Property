@@ -46,9 +46,47 @@ const fmtVerified = (d: Date) =>
 
 const heroSlug = slug ? `bank-${slug}` : null;
 const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
+
+// JSON-LD: bank hubs emit Organization (sub-type FinancialService) +
+// BreadcrumbList. Customer-service contact and the issuer website are
+// surfaced when present. PR-D (29 May 2026).
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://dubaipoints.ae";
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Organization", "FinancialService"],
+      "@id": `${canonicalUrl}#bank`,
+      name: bankName,
+      description: description ?? `${bankName} — DubaiPoints UAE bank guide.`,
+      url: customerService?.website || canonicalUrl,
+      areaServed: "AE",
+      ...(customerService?.phone || customerService?.email
+        ? {
+            contactPoint: {
+              "@type": "ContactPoint",
+              contactType: "customer service",
+              ...(customerService?.phone ? { telephone: customerService.phone } : {}),
+              ...(customerService?.email ? { email: customerService.email } : {}),
+              areaServed: "AE",
+            },
+          }
+        : {}),
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+        { "@type": "ListItem", position: 2, name: "Banks", item: `${siteUrl}/banks/` },
+        { "@type": "ListItem", position: 3, name: bankName, item: canonicalUrl },
+      ],
+    },
+  ],
+};
 ---
 
-<BaseLayout title={title} description={description} fullWidth>
+<BaseLayout title={title} description={description} fullWidth schema={schema}>
   <header class="dp-pagehead is-narrow">
     <div class="crumb">UAE bank</div>
     <h1>{bankName}</h1>

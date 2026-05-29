@@ -116,9 +116,57 @@ const fmtScore = (s?: number) => {
 // fallback for every card that doesn't yet have a curated photograph.
 const stockSlug = slug ? `card-${slug}` : null;
 const hasPhoto = stockSlug ? hasStockEntry(stockSlug) : false;
+
+// JSON-LD: every card review emits a Product entity with a FinancialProduct
+// additionalType so search engines parse it as a credit card. The fee and
+// eligibility carry into offers / brand. BreadcrumbList complements it.
+// PR-D (29 May 2026) per SEO + Tech audit P0.
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://dubaipoints.ae";
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["Product", "FinancialProduct"],
+      "@id": `${canonicalUrl}#product`,
+      name: cardName,
+      brand: { "@type": "Organization", name: bankName },
+      category: category ?? "Credit card",
+      description: description ?? `${cardName} — DubaiPoints credit-card review.`,
+      url: canonicalUrl,
+      ...(slug ? { sku: slug } : {}),
+      ...(typeof score === "number"
+        ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: score,
+              bestRating: 10,
+              worstRating: 0,
+              ratingCount: 1,
+              author: { "@type": "Organization", name: "DubaiPoints" },
+            },
+          }
+        : {}),
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "AED",
+        price: annualFee,
+        url: canonicalUrl,
+      },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+        { "@type": "ListItem", position: 2, name: "Cards", item: `${siteUrl}/cards/` },
+        { "@type": "ListItem", position: 3, name: cardName, item: canonicalUrl },
+      ],
+    },
+  ],
+};
 ---
 
-<BaseLayout title={title} description={description} fullWidth>
+<BaseLayout title={title} description={description} fullWidth schema={schema}>
 
   <!-- Navy hero band: card photograph (when registered) or CSS mock fallback -->
   <header class="dp-cr-hero">

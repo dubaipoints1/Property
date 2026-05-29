@@ -111,9 +111,57 @@ const relatedGuides = allGuidesForRail.slice(0, 3);
 
 const fmtShort = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+
+// JSON-LD: news pages emit NewsArticle; guides + deals emit Article.
+// Author + publisher + dates carry through; BreadcrumbList complements
+// it via the crumb prop. PR-D (29 May 2026).
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://dubaipoints.ae";
+const articleType = currentPath.startsWith("/news/") ? "NewsArticle" : "Article";
+const sectionType = currentPath.startsWith("/news/")
+  ? "News"
+  : currentPath.startsWith("/deals/")
+  ? "Deals"
+  : "Guides";
+const sectionPath = currentPath.startsWith("/news/")
+  ? "/news/"
+  : currentPath.startsWith("/deals/")
+  ? "/deals/"
+  : "/guides/";
+const schema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": articleType,
+      "@id": `${canonicalUrl}#article`,
+      headline: title,
+      ...(description ? { description } : {}),
+      url: canonicalUrl,
+      mainEntityOfPage: canonicalUrl,
+      ...(publishedAt ? { datePublished: publishedAt.toISOString() } : {}),
+      ...(updatedAt ? { dateModified: updatedAt.toISOString() } : {}),
+      inLanguage: "en-AE",
+      author: { "@type": "Organization", name: author },
+      publisher: {
+        "@type": "Organization",
+        name: "DubaiPoints",
+        logo: { "@type": "ImageObject", url: `${siteUrl}/logo-mark.svg` },
+      },
+      ...(eyebrow ? { articleSection: eyebrow } : {}),
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+        { "@type": "ListItem", position: 2, name: sectionType, item: `${siteUrl}${sectionPath}` },
+        { "@type": "ListItem", position: 3, name: title, item: canonicalUrl },
+      ],
+    },
+  ],
+};
 ---
 
-<BaseLayout title={title} description={description} fullWidth>
+<BaseLayout title={title} description={description} fullWidth schema={schema}>
   <header class="dp-pagehead is-narrow">
     {crumb && <div class="crumb">{crumb}</div>}
     {(eyebrow || publishedAt || readMinutes) && (
