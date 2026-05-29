@@ -12,13 +12,22 @@
 #      https://www.pexels.com/api/).
 #   2. Go to Actions → "seed-images" → Run workflow.
 #   3. Pick the branch (e.g. claude/check-latest-updates-GkRze).
-#   4. Click Run. The workflow fetches the 12 seed photos, writes
+#   4. Click Run. The workflow fetches every seeded photo, writes
 #      manifest entries, commits, and pushes to the same branch.
 #
 # What it fetches:
-#   12 seed slugs covering every <StockImage> reference on the
-#   rebuilt homepage, /cards/, /guides/, /news/, and /airlines/.
-#   See scripts/images/fetch-stock.ts for the script the slugs feed.
+#   ~68 slugs covering every <StockImage> reference site-wide: homepage
+#   hero, wallet, every active /cards/<slug>/ hero, every /banks/<slug>/
+#   hero, every /guides/ hero, every /airlines/ programme hero, news,
+#   deals. See scripts/images/fetch-stock.ts for the script the slugs
+#   feed.
+#
+# Re-runnability (PR #167):
+#   fetch-stock.ts is idempotent — existing manifest slugs no-op (log
+#   SKIP and exit 0, no Pexels call). So the workflow is safe to re-run
+#   any time. First seed-images run on a fresh repo fetches everything;
+#   subsequent runs only fetch genuinely-new slugs. Pass --replace on a
+#   per-step run override to force a refetch.
 #
 # Editorial guardrails:
 #   - Pexels licence is "free to use, attribution not required" — we
@@ -28,7 +37,8 @@
 #     result looks wrong for its context, re-run with `--pick 2/3/4`
 #     to grab a different result from the same search.
 #   - Each fetch hits the Pexels API once; free tier is 200/hour, so
-#     the 12 calls in this workflow use ~6% of an hour's quota.
+#     the ~68 calls in this workflow use ~34% of an hour's quota on the
+#     first full seed.
 
 name: seed-images
 
@@ -216,6 +226,546 @@ jobs:
             --orientation landscape \
             --alt "Premium black credit card on a luxury desk"
 
+
+      - name: Fetch card-sc-platinum-x
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-sc-platinum-x \
+            --query "private banking office leather desk" \
+            --orientation landscape \
+            --alt "Private banking office interior"
+
+      - name: Fetch card-citi-cashback
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-citi-cashback \
+            --query "shopping bags receipt cashback" \
+            --orientation landscape \
+            --alt "Shopping bags and a receipt"
+
+      - name: Fetch card-hsbc-live-plus
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-hsbc-live-plus \
+            --query "shopping bags receipt cashback" \
+            --orientation landscape \
+            --alt "Shopping bags and a receipt"
+
+      - name: Fetch card-cbd-one
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-cbd-one \
+            --query "shopping bags receipt cashback" \
+            --orientation landscape \
+            --alt "Shopping bags and a receipt"
+
+      - name: Fetch card-adib-cashback-visa
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adib-cashback-visa \
+            --query "modern minimal banking architecture" \
+            --orientation landscape \
+            --alt "Modern minimal banking architecture"
+
+      - name: Fetch card-dib-consumer-cashback
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-dib-consumer-cashback \
+            --query "modern minimal banking architecture" \
+            --orientation landscape \
+            --alt "Modern minimal banking architecture"
+
+      - name: Fetch card-mashreq-cashback
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-mashreq-cashback \
+            --query "shopping bags receipt cashback" \
+            --orientation landscape \
+            --alt "Shopping bags and a receipt"
+
+      - name: Fetch card-rakbank-world
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-rakbank-world \
+            --query "shopping bags receipt cashback" \
+            --orientation landscape \
+            --alt "Shopping bags and a receipt"
+
+      - name: Fetch card-emirates-islamic-switch-cashback
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-islamic-switch-cashback \
+            --query "modern minimal banking architecture" \
+            --orientation landscape \
+            --alt "Modern minimal banking architecture"
+
+      - name: Fetch card-emirates-nbd-voyager-world
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-voyager-world \
+            --query "boarding pass passport airport" \
+            --orientation landscape \
+            --alt "Boarding pass and passport on a travel desk"
+
+      - name: Fetch card-adcb-365-cashback
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-365-cashback \
+            --query "Abu Dhabi corniche modern architecture" \
+            --orientation landscape \
+            --alt "Abu Dhabi corniche at golden hour"
+
+      - name: Fetch card-adcb-betaqti
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-betaqti \
+            --query "Abu Dhabi skyline evening" \
+            --orientation landscape \
+            --alt "Abu Dhabi skyline at evening"
+
+      - name: Fetch card-adcb-essential-cashback
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-essential-cashback \
+            --query "Abu Dhabi corniche modern architecture" \
+            --orientation landscape \
+            --alt "Abu Dhabi corniche at golden hour"
+
+      - name: Fetch card-adcb-lulu-platinum
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-lulu-platinum \
+            --query "supermarket aisle bright shopping cart" \
+            --orientation landscape \
+            --alt "Grocery aisle in a modern supermarket"
+
+      - name: Fetch card-adcb-lulu-titanium-gold
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-lulu-titanium-gold \
+            --query "supermarket aisle bright shopping cart" \
+            --orientation landscape \
+            --alt "Grocery aisle in a modern supermarket"
+
+      - name: Fetch card-adcb-shukran
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-shukran \
+            --query "modern shopping mall walkway" \
+            --orientation landscape \
+            --alt "Modern shopping-mall walkway"
+
+      - name: Fetch card-adcb-talabat
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-talabat \
+            --query "food delivery scooter city street" \
+            --orientation landscape \
+            --alt "Food-delivery scooter rider in a city street"
+
+      - name: Fetch card-adcb-touchpoints-infinite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-touchpoints-infinite \
+            --query "Abu Dhabi corniche modern architecture" \
+            --orientation landscape \
+            --alt "Abu Dhabi corniche at golden hour"
+
+      - name: Fetch card-adcb-touchpoints-platinum
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-touchpoints-platinum \
+            --query "Abu Dhabi corniche modern architecture" \
+            --orientation landscape \
+            --alt "Abu Dhabi corniche at golden hour"
+
+      - name: Fetch card-adcb-touchpoints-titanium-gold
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-touchpoints-titanium-gold \
+            --query "Abu Dhabi corniche modern architecture" \
+            --orientation landscape \
+            --alt "Abu Dhabi corniche at golden hour"
+
+      - name: Fetch card-adcb-traveller
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-adcb-traveller \
+            --query "boarding pass passport airport" \
+            --orientation landscape \
+            --alt "Boarding pass and passport on a travel desk"
+
+      - name: Fetch card-emirates-nbd-diners-club
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-diners-club \
+            --query "business dinner restaurant table" \
+            --orientation landscape \
+            --alt "Business dinner at a modern restaurant"
+
+      - name: Fetch card-emirates-nbd-dnata-platinum
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-dnata-platinum \
+            --query "boarding pass passport airport" \
+            --orientation landscape \
+            --alt "Boarding pass and passport on a travel desk"
+
+      - name: Fetch card-emirates-nbd-dnata-world
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-dnata-world \
+            --query "boarding pass passport airport" \
+            --orientation landscape \
+            --alt "Boarding pass and passport on a travel desk"
+
+      - name: Fetch card-emirates-nbd-duo
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-duo \
+            --query "Dubai modern lifestyle cafe" \
+            --orientation landscape \
+            --alt "Modern Dubai lifestyle scene"
+
+      - name: Fetch card-emirates-nbd-etihad-guest-inspire
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-etihad-guest-inspire \
+            --query "airplane wing sunset clouds" \
+            --orientation landscape \
+            --alt "Aircraft wing above the clouds at sunset"
+
+      - name: Fetch card-emirates-nbd-go4it-gold
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-go4it-gold \
+            --query "young person mobile payment cafe" \
+            --orientation landscape \
+            --alt "Young person paying via phone in a café"
+
+      - name: Fetch card-emirates-nbd-go4it-platinum
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-go4it-platinum \
+            --query "young person mobile payment cafe" \
+            --orientation landscape \
+            --alt "Young person paying via phone in a café"
+
+      - name: Fetch card-emirates-nbd-lulu-247-platinum
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-lulu-247-platinum \
+            --query "supermarket aisle bright shopping cart" \
+            --orientation landscape \
+            --alt "Grocery aisle in a modern supermarket"
+
+      - name: Fetch card-emirates-nbd-lulu-247-titanium
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-lulu-247-titanium \
+            --query "supermarket aisle bright shopping cart" \
+            --orientation landscape \
+            --alt "Grocery aisle in a modern supermarket"
+
+      - name: Fetch card-emirates-nbd-marriott-bonvoy-world
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-marriott-bonvoy-world \
+            --query "luxury hotel lobby modern" \
+            --orientation landscape \
+            --alt "Luxury hotel lobby with warm lighting"
+
+      - name: Fetch card-emirates-nbd-marriott-bonvoy-world-elite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-marriott-bonvoy-world-elite \
+            --query "luxury hotel lobby modern" \
+            --orientation landscape \
+            --alt "Luxury hotel lobby with warm lighting"
+
+      - name: Fetch card-emirates-nbd-mastercard-platinum
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-mastercard-platinum \
+            --query "shopping bags receipt cashback" \
+            --orientation landscape \
+            --alt "Shopping bags and a receipt"
+
+      - name: Fetch card-emirates-nbd-noon-one
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-noon-one \
+            --query "online shopping laptop boxes" \
+            --orientation landscape \
+            --alt "Online shopping laptop and packed boxes"
+
+      - name: Fetch card-emirates-nbd-share-visa-infinite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-share-visa-infinite \
+            --query "shopping mall lifestyle people" \
+            --orientation landscape \
+            --alt "Modern shopping centre with lifestyle shoppers"
+
+      - name: Fetch card-emirates-nbd-share-visa-signature
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-share-visa-signature \
+            --query "shopping mall lifestyle people" \
+            --orientation landscape \
+            --alt "Modern shopping centre with lifestyle shoppers"
+
+      - name: Fetch card-emirates-nbd-skywards-signature
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-skywards-signature \
+            --query "airplane wing sunset clouds" \
+            --orientation landscape \
+            --alt "Aircraft wing above the clouds at sunset"
+
+      - name: Fetch card-emirates-nbd-u-by-emaar-family
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-u-by-emaar-family \
+            --query "Dubai apartment interior keys" \
+            --orientation landscape \
+            --alt "Modern Dubai apartment interior"
+
+      - name: Fetch card-emirates-nbd-u-by-emaar-infinite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-u-by-emaar-infinite \
+            --query "Dubai apartment interior keys" \
+            --orientation landscape \
+            --alt "Modern Dubai apartment interior"
+
+      - name: Fetch card-emirates-nbd-u-by-emaar-infinite-emiratis
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-u-by-emaar-infinite-emiratis \
+            --query "Dubai apartment interior keys" \
+            --orientation landscape \
+            --alt "Modern Dubai apartment interior"
+
+      - name: Fetch card-emirates-nbd-visa-flexi
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-visa-flexi \
+            --query "shopping bags receipt cashback" \
+            --orientation landscape \
+            --alt "Shopping bags and a receipt"
+
+      - name: Fetch card-emirates-nbd-visa-infinite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-visa-infinite \
+            --query "Dubai modern lifestyle cafe" \
+            --orientation landscape \
+            --alt "Modern Dubai lifestyle scene"
+
+      - name: Fetch card-emirates-nbd-visa-platinum
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-visa-platinum \
+            --query "Dubai modern lifestyle cafe" \
+            --orientation landscape \
+            --alt "Modern Dubai lifestyle scene"
+
+      - name: Fetch card-emirates-nbd-webshopper
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-webshopper \
+            --query "online shopping checkout laptop" \
+            --orientation landscape \
+            --alt "Online shopping checkout on a laptop"
+
+      - name: Fetch card-fab-cashback
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-fab-cashback \
+            --query "shopping bags receipt cashback" \
+            --orientation landscape \
+            --alt "Shopping bags and a receipt"
+
+      - name: Fetch card-fab-etihad-guest-infinite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-fab-etihad-guest-infinite \
+            --query "airplane wing sunset clouds" \
+            --orientation landscape \
+            --alt "Aircraft wing above the clouds at sunset"
+
+      - name: Fetch card-fab-world-elite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-fab-world-elite \
+            --query "shopping bags receipt cashback" \
+            --orientation landscape \
+            --alt "Shopping bags and a receipt"
+
+      - name: Fetch bank-adib
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-adib \
+            --query "Abu Dhabi Islamic architecture modern" \
+            --orientation landscape \
+            --alt "Modern Abu Dhabi Islamic architecture"
+
+      - name: Fetch bank-cbd
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-cbd \
+            --query "Dubai office tower facade" \
+            --orientation landscape \
+            --alt "Dubai office tower glass facade"
+
+      - name: Fetch bank-citi
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-citi \
+            --query "global skyscraper international banking" \
+            --orientation landscape \
+            --alt "International banking skyscraper exterior"
+
+      - name: Fetch bank-dib
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-dib \
+            --query "modern Islamic banking architecture geometric" \
+            --orientation landscape \
+            --alt "Modern Islamic banking architecture"
+
+      - name: Fetch bank-hsbc
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-hsbc \
+            --query "international bank entrance glass" \
+            --orientation landscape \
+            --alt "International bank entrance facade"
+
+      - name: Fetch bank-mashreq
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-mashreq \
+            --query "Dubai bank lobby modern interior" \
+            --orientation landscape \
+            --alt "Modern Dubai bank lobby"
+
+      - name: Fetch bank-standard-chartered
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug bank-standard-chartered \
+            --query "Asia Africa banking modern building" \
+            --orientation landscape \
+            --alt "Modern international bank tower"
       - name: Run validation
         run: |
           npm run check
