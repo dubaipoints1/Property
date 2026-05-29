@@ -1060,7 +1060,7 @@
       "name": "scraped",
       "network": "scraped",
       "categories": "scraped",
-      "annualFee": "scraped",
+      "annualFee": "editor-corrected",
       "fxFee": "editor-corrected",
       "loyaltyProgram": "scraped",
       "earnRates": "scraped",
@@ -1069,7 +1069,8 @@
       "kfsUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-10",
@@ -1080,7 +1081,7 @@
       "cashback"
     ],
     "annualFee": {
-      "amount": 0,
+      "amount": 383.25,
       "currency": "AED"
     },
     "fxFee": 2.99,
@@ -1122,6 +1123,12 @@
         "All international retail purchases will earn 1% cashback regardless of spend category.",
         "Buy one ticket, get one free (up to 4 tickets per month per card)"
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "Per ADCB SoF Ver.46 (Feb 2026): AED 383.25/year, first year free."
     }
   },
   "adcb-betaqti": {
@@ -1224,7 +1231,7 @@
       "fxFee": "editor-corrected",
       "loyaltyProgram": "scraped",
       "earnRates": "scraped",
-      "welcomeBonus": "scraped",
+      "welcomeBonus": "editor-corrected",
       "eligibility": "scraped",
       "applyUrl": "scraped",
       "kfsUrl": "scraped",
@@ -1248,7 +1255,14 @@
     "earnRates": {
       "everythingElse": 1
     },
-    "welcomeBonus": "welcome bonus of up to _AED_ 350 when you apply for the ADCB Essential Cashback Credit Card on select digital channels",
+    "welcomeBonus": {
+      "amount": 350,
+      "unit": "aed_cashback",
+      "spend_threshold_aed": null,
+      "qualify_window_days": null,
+      "headline": "Up to AED 350 welcome cashback on new-customer activation",
+      "notes": "Per the ADCB Essential Cashback product page — channel and spend mechanics not separately published; verify at application."
+    },
     "eligibility": {
       "minSalary": 5000,
       "salaryTransferRequired": true,
@@ -1429,7 +1443,7 @@
       "name": "scraped",
       "network": "scraped",
       "categories": "scraped",
-      "annualFee": "scraped",
+      "annualFee": "editor-corrected",
       "fxFee": "editor-corrected",
       "loyaltyProgram": "scraped",
       "earnRates": "scraped",
@@ -1439,7 +1453,8 @@
       "kfsUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-10",
@@ -1451,7 +1466,7 @@
       "shopping"
     ],
     "annualFee": {
-      "amount": 0,
+      "amount": 262.5,
       "currency": "AED"
     },
     "fxFee": 2.99,
@@ -1490,6 +1505,12 @@
         "Shukrans can be redeemed for transactions at any of the Shukran brands within UAE (point of sale or online).",
         "Get fast track upgrade to Shukran Platinum Tier membership upon card issuance."
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "Per ADCB SoF Ver.46 (Feb 2026): AED 262.50/year Aspire (Free for UAE Nationals at Excellency), first year free."
     }
   },
   "adcb-talabat": {
@@ -1503,7 +1524,7 @@
       "loyaltyProgram": "scraped",
       "earnRates": "scraped",
       "earnUnit": "scraped",
-      "welcomeBonus": "scraped",
+      "welcomeBonus": "editor-corrected",
       "eligibility": "scraped",
       "applyUrl": "scraped",
       "kfsUrl": "scraped",
@@ -1530,7 +1551,14 @@
       "everythingElse": 1
     },
     "earnUnit": "Talabat Pro per AED 1 spent",
-    "welcomeBonus": "Welcome bonus of up to _AED_ 750 will be applicable for cards applied via the digital channels only such as talabat application, ADCB website, ADCB Mobile Banking App, Hayyak App & talabat app subject to a minimum spend condition of _AED_ 5,000 in first 45 days",
+    "welcomeBonus": {
+      "amount": 750,
+      "unit": "aed_credit",
+      "spend_threshold_aed": null,
+      "qualify_window_days": null,
+      "headline": "AED 750 talabat credit welcome (new-to-bank applicants)",
+      "notes": "Per the ADCB Talabat Credit Card product page — existing-customer welcome bonus is AED 200; verify at application."
+    },
     "eligibility": {
       "minSalary": 5000,
       "salaryTransferRequired": false,
@@ -1570,7 +1598,7 @@
       "name": "scraped",
       "network": "scraped",
       "categories": "scraped",
-      "annualFee": "scraped",
+      "annualFee": "editor-corrected",
       "fxFee": "editor-corrected",
       "loyaltyProgram": "scraped",
       "earnRates": "editor-corrected",
@@ -1580,7 +1608,8 @@
       "kfsUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-10",
@@ -1592,7 +1621,7 @@
       "lifestyle"
     ],
     "annualFee": {
-      "amount": 0,
+      "amount": 1050,
       "currency": "AED"
     },
     "fxFee": 2.99,
@@ -1643,6 +1672,12 @@
         "To be eligible for this offer there is a minimum spend requirement of _AED_ 5,000 per month.",
         "To reserve your complimentary round of golf call us on 600 508008 up to 14 days in advance of the golf booking date."
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": false,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "Per ADCB SoF Ver.46 (Feb 2026): AED 1,050/year Aspire (AED 525 Excellency), no first-year waiver."
     }
   },
   "adcb-touchpoints-platinum": {
@@ -1651,7 +1686,7 @@
       "name": "scraped",
       "network": "scraped",
       "categories": "scraped",
-      "annualFee": "scraped",
+      "annualFee": "editor-corrected",
       "fxFee": "editor-corrected",
       "loyaltyProgram": "scraped",
       "earnRates": "scraped",
@@ -1661,7 +1696,8 @@
       "kfsUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-10",
@@ -1672,7 +1708,7 @@
       "travel"
     ],
     "annualFee": {
-      "amount": 0,
+      "amount": 630,
       "currency": "AED"
     },
     "fxFee": 2.99,
@@ -1713,6 +1749,12 @@
         "Enjoy 20% off Talabat orders, for up to _AED_ 20 off per order on 2 orders a month. Use the promo code ADCBPLAT and follow the instructions on screen at the Talabat mobile app.",
         "The discount stated is valid across orders in UAE and not applicable on mobile wallet payments and service charges."
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "Per ADCB SoF Ver.46 (Feb 2026): AED 630/year Aspire (AED 315 Privilege; Free Excellency), first year free."
     }
   },
   "adcb-touchpoints-titanium-gold": {
@@ -1790,7 +1832,7 @@
       "name": "scraped",
       "network": "scraped",
       "categories": "scraped",
-      "annualFee": "scraped",
+      "annualFee": "editor-corrected",
       "fxFee": "editor-corrected",
       "loyaltyProgram": "scraped",
       "earnRates": "editor-corrected",
@@ -1800,7 +1842,8 @@
       "kfsUrl": "scraped",
       "lastVerified": "scraped",
       "sources": "scraped",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
     "_lastReviewed": "2026-05-10",
@@ -1811,7 +1854,7 @@
       "travel"
     ],
     "annualFee": {
-      "amount": 0,
+      "amount": 1575,
       "currency": "AED"
     },
     "fxFee": 0,
@@ -1853,6 +1896,12 @@
         "For accompanying guests, over and above the entitlement, an amount of USD 32 per visit will be charged directly to your card.",
         "If you do not make an international transaction, you will not be able to access the airport lounge unless you make a payment of USD 32 on your Mastercard card."
       ]
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": false,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "Per ADCB SoF Ver.46 (Feb 2026): AED 1,575/year Aspire (AED 787.50 Privilege/Excellency), no first-year waiver."
     }
   },
   "emirates-nbd-darna-select-visa": {
@@ -3198,7 +3247,7 @@
       "ongoing_threshold_aed": null,
       "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 262.50."
     },
-    "welcomeBonus": "AED 2,000 spend in first 30 days → Manchester United Home Jersey. AED 6,000 spend in 3 months → Manchester United RED Box of official merchandise. Monthly/quarterly/yearly top-spender rewards + chance to win Old Trafford match tickets.",
+    "welcomeBonus": null,
     "discontinuedForNewApplicants": {
       "date": "2025-06-01",
       "note": "Closed to new applications. Existing cardholders retain all benefits."
