@@ -4,7 +4,7 @@ import { getCollection, getEntry, render } from "astro:content";
 import { getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getCardsByBank } from "~/lib/cardsData";
-import { topEarnEntry } from "~/lib/cardsDataFormat";
+import { topEarnEntry, formatEarnValue } from "~/lib/cardsDataFormat";
 
 export async function getStaticPaths() {
   const banks = await getCollection("banks");
@@ -48,7 +48,7 @@ const cardTiles = allCards.map((c) => {
     network: c.network,
     feeLabel,
     salaryLabel,
-    topValue: top?.value ?? null,
+    topDisplay: top ? formatEarnValue(top.value, c.earnUnit, c.categories) : null,
     topLabel: top?.label ?? null,
   };
 });
@@ -119,10 +119,10 @@ const cardTiles = allCards.map((c) => {
                 <dt>Min salary</dt>
                 <dd>{t.salaryLabel}</dd>
               </div>
-              {t.topValue != null && (
+              {t.topDisplay != null && (
                 <div class="fact">
                   <dt>Top earn</dt>
-                  <dd>{t.topValue}×<span class="cat">{t.topLabel}</span></dd>
+                  <dd>{t.topDisplay}<span class="cat">{t.topLabel}</span></dd>
                 </div>
               )}
             </dl>

@@ -10,6 +10,7 @@
 
 import type { CardData } from "~/lib/cardsData";
 import { getCardData } from "~/lib/cardsData";
+import { formatEarnValue, earnIsPercentage } from "~/lib/cardsDataFormat";
 
 interface Props {
   /** Phase 2a.2: when set, the component resolves earnRates + earnUnit
@@ -80,12 +81,20 @@ const topKey = candidateEntries.length > 0
   : null;
 
 const unitLabel = earnUnit ?? "per AED 1 spent";
+
+// §6 unit-integrity (2026-05-29): cashback / %-denominated cards render
+// "5%", points cards "2×". When the value already carries "%", strip a
+// leading "%" from the descriptive unit so the collapsed line doesn't
+// read "5% % cashback".
+const isPct = earnIsPercentage(earnUnit, resolved?.categories);
+const displayUnit = isPct ? unitLabel.replace(/^%\s*/, "") : unitLabel;
+const cats = resolved?.categories;
 ---
 
 {onlyEverythingElse && allEntries[0] ? (
   <div class="dp-earn-collapsed">
-    <span class="rate">{allEntries[0].value}×</span>
-    <span class="unit">{unitLabel}</span>
+    <span class="rate">{formatEarnValue(allEntries[0].value, earnUnit, cats)}</span>
+    <span class="unit">{displayUnit}</span>
   </div>
 ) : (
   <dl class="dp-earn-table">
@@ -94,7 +103,7 @@ const unitLabel = earnUnit ?? "per AED 1 spent";
         class={`row${key === "everythingElse" ? " is-default" : ""}${key === topKey ? " is-top" : ""}`}
       >
         <dt>{label}</dt>
-        <dd>{value}×</dd>
+        <dd>{formatEarnValue(value, earnUnit, cats)}</dd>
       </div>
     ))}
   </dl>

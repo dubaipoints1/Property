@@ -16,6 +16,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
 import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import { earnIsPercentage } from "~/lib/cardsDataFormat";
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EligibilityChips from "~/components/cards/EligibilityChips.astro";
@@ -96,7 +97,9 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     ].filter((v): v is number => typeof v === "number"),
     r.everythingElse,
   );
-  if (max === r.everythingElse) return `${max}× per AED 1`;
+  const pct = earnIsPercentage(card.earnUnit, card.categories);
+  const fmt = (n: number) => (pct ? `${n}%` : `${n}×`);
+  if (max === r.everythingElse) return pct ? `${max}% all spend` : `${max}× per AED 1`;
   const cat =
     r.travel === max
       ? "travel"
@@ -109,7 +112,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
             : r.fuel === max
               ? "fuel"
               : "category";
-  return `${max}× ${cat}, ${r.everythingElse}× rest`;
+  return `${fmt(max)} ${cat}, ${fmt(r.everythingElse)} rest`;
 };
 ---
 
