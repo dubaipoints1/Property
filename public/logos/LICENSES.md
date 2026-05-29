@@ -14,12 +14,20 @@ are sourced.
 
 Per the editorial style guide, real SVGs must be:
 
-1. Sourced from the bank's or airline's published **brand kit / press
-   page** only. Not screenshotted from the website. Not redrawn.
+1. Sourced from EITHER (a) the issuer's published **brand kit / press
+   page**, OR (b) **Wikimedia Commons** where the file is tagged
+   **{{PD-textlogo}}** (below the threshold of originality, not
+   copyrightable). Per the Charter §10 amendment (2026-05-29), Commons
+   {{PD-textlogo}} marks are licensed for nominative editorial use — to
+   identify a product the publication reviews, never to imply endorsement.
+   Not screenshotted from the website. Not redrawn. No AI-generated marks.
 2. **Unmodified.** Original aspect ratio preserved. No tinting or
    recolouring outside the bank's own hub page on this site.
 3. Filed under the slug used in `src/content/banks/` or
    `src/content/programs/`, e.g. `banks/emirates-nbd.svg`.
+4. Rendered **nominatively** — adjacent to the brand name (e.g.
+   `<BankLogo>` beside the name). A mark standing alone in a hero needs a
+   visible credit line. Takedown requests honoured within 24 hours.
 
 When you replace a file, log the source URL and the date pulled in
 this document.

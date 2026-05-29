@@ -589,4 +589,43 @@ Follow-up obligations:
 
 — Chairman, 29 May 2026.
 
+### 2026-05-29 — §10 logo-sourcing: Wikimedia Commons {{PD-textlogo}} ratified
+
+The placeholder text-mark logos were replaced with real brand SVGs
+(`seed-logos.yml`). The available clean source for most was **Wikimedia
+Commons**, not the issuer's own brand kit — which the `LICENSES.md`
+replacement rule had required ("Sourced from the bank's or airline's
+published brand kit / press page only"). On Chairman ruling at the
+seed-logos gate, that rule is widened.
+
+Wikimedia Commons assets tagged **{{PD-textlogo}}** ("consists only of
+simple geometric shapes or text… does not meet the threshold of
+originality needed for copyright protection") are an accepted §10 source
+for issuer logos, on two independent bases: the mark is below the
+threshold of originality (not copyrightable), and it is used
+**nominatively** to identify a product the publication reviews — never to
+imply endorsement. This is industry-standard practice (TPG, HfP).
+
+Guardrails (mirroring the 2026-05-21 imagery amendment):
+- Source URL + date logged in `public/logos/LICENSES.md` (done per file).
+- Marks are used **unmodified** — no recolouring outside the issuer's own
+  hub page.
+- Logos render **nominatively**, adjacent to the brand name (e.g.
+  `<BankLogo>` beside the name at 18–44px); a mark standing alone in a
+  hero needs a visible credit line.
+- **No AI-generated marks**, ever.
+- Takedown requests honoured within 24 hours.
+
+Parent-brand marks identify loyalty programmes whose operator is the
+parent (Emirates → Skywards, Etihad → Etihad Guest, Qatar Airways →
+Privilege Club, Marriott → Bonvoy) — editorially honest, no
+misrepresentation.
+
+Seeded (9): fab, adcb, hsbc, citi, standard-chartered, qatar-privilege-club,
+etihad-guest, skywards, marriott-bonvoy. Retained as text-mark placeholders
+(no clean free source): emirates-nbd, dib, adib, cbd, emirates-islamic,
+rakbank — left honest rather than filled with inferior assets.
+
+— Chairman, 29 May 2026.
+
 End.
