@@ -549,4 +549,44 @@ to establish that the spike's navy rail is on-brand.
 
 — Chairman, 25 May 2026.
 
+### 2026-05-29 — Emergency §10 correction: ADCB FX-fee scraper parse error
+
+A full-team site audit (29 May 2026) surfaced a Charter §10 kill-list
+violation: `cards.json` carried `fxFee: 0.525` for every ADCB card except
+Traveller. `adcb-essential-cashback.mdx` actively promoted the wrong
+figure as a card-recommending pro ("0.525% — well below the typical UAE
+2.99–3.5% band"). The published figure is **2.99%** per the ADCB
+Schedule of Fees Ver.46/February 2026
+(`https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf`),
+verified by Head of Research scrape on 29 May 2026. The 0.525 was the
+scraper picking up the "Cash deposit/withdrawal in foreign currency"
+line (0.525% flat) instead of the credit-card "Foreign Currency
+transaction margin" line (2.99%).
+
+L2 corrected on 10 cards with `_provenance.fxFee: editor-corrected`. L3
+prose rewritten on all 10 — most importantly `adcb-essential-cashback.mdx`
+had the FX pro bullet removed and the editorial argument rebuilt, with
+a new con surfacing the ~2% net cost on overseas spend. ADCB Traveller
+remains correctly at 0% FX.
+
+Process exception: under Charter §"Tiered review", a T3 schema/data
+change requires full council convening. Under Charter §10 a live
+kill-list violation is an emergency. The two collided. Per Chairman
+direction, full council convening was **skipped** for this emergency
+push; T2 sign-off (Fact-Checker + Standards + business-realestate-editor
++ Chairman) was substituted for the merge gate. Logged here for the
+record.
+
+Follow-up obligations:
+1. Open a separate brief for 5 ADCB cards with wrong annualFee in L2
+   (365-cashback, touchpoints-infinite, touchpoints-platinum, shukran,
+   traveller). The SoF lists real figures; L2 carries 0. Owner:
+   Managing Editor + business-realestate-editor.
+2. Technical Lead opens a fenced contract issue: `parseFxFee()` in
+   `scripts/scrape/_normaliser.ts` must disambiguate "Foreign Currency
+   transaction margin" from "Cash deposit/withdrawal in foreign
+   currency" before the next weekly scrape window. Regex test required.
+
+— Chairman, 29 May 2026.
+
 End.
