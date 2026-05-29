@@ -1,6 +1,12 @@
 ---
-// Bank logo — renders the SVG mark from /logos/banks/[slug].svg.
-// Falls back to a styled text initial if the file is missing.
+// Bank logo — renders the SVG mark from /logos/banks/[slug].svg by default,
+// or the PNG at /logos/banks/[slug].png when the slug is listed in
+// PNG_FORMAT_SLUGS (a per-slug override for issuers whose only freely-
+// licensed/official brand asset is PNG — e.g. Emirates NBD's brand kit at
+// emiratesnbd.com/en/brand-assets ships PNG only).
+//
+// Falls back to a styled text initial when the asset is missing or fails
+// to load (onerror).
 //
 // Usage:
 //   <BankLogo slug="emirates-nbd" name="Emirates NBD" size="md" />
@@ -15,6 +21,17 @@ const { slug, name, size = "md" } = Astro.props;
 
 const dim = { sm: 18, md: 28, lg: 44 }[size];
 
+// Per-slug format override. Default is SVG; add a slug here when the only
+// freely-licensed/official brand asset for that issuer is PNG. Keep this
+// list short — SVG is preferred for crisp scaling.
+//
+// Source for each PNG-format slug must be logged in
+// public/logos/LICENSES.md per Charter §10.
+const PNG_FORMAT_SLUGS = new Set<string>([
+  "emirates-nbd", // emiratesnbd.com/en/brand-assets ships PNG only
+]);
+const ext = PNG_FORMAT_SLUGS.has(slug) ? "png" : "svg";
+
 // Initial fallback: first capital letter of each word, max 2.
 const initials = name
   .split(/\s+/)
@@ -25,7 +42,7 @@ const initials = name
 
 <span class={`dp-bank-logo dp-bank-logo--${size}`} aria-label={`${name} logo`} role="img">
   <img
-    src={`/logos/banks/${slug}.svg`}
+    src={`/logos/banks/${slug}.${ext}`}
     alt=""
     width={dim}
     height={dim}
