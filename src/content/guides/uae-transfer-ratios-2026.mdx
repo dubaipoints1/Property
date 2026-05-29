@@ -1,0 +1,217 @@
+---
+title: "UAE bank-points-to-airline-miles transfer ratios — 2026 guide"
+description: "How ENBD Plus Points, ADCB TouchPoints, FAB Rewards and the hotel currencies convert into Skywards, Etihad Guest and Avios — with AED-per-mile maths."
+publishedAt: 2026-05-28
+updatedAt: 2026-05-28
+relatedCards:
+  - emirates-nbd-etihad-guest-inspire
+  - emirates-nbd-etihad-guest-elevate
+  - emirates-nbd-dnata-world
+  - emirates-nbd-dnata-platinum
+  - emirates-nbd-diners-club
+  - adcb-betaqti
+  - adcb-touchpoints-titanium-gold
+  - adcb-traveller
+  - fab-etihad-guest-infinite
+  - emirates-nbd-skywards-infinite
+  - emirates-nbd-marriott-bonvoy-world-elite
+  - fab-elite
+relatedPrograms:
+  - skywards
+  - etihad-guest
+  - marriott-bonvoy
+  - qatar-privilege-club
+---
+
+A bank-points-to-airline-miles transfer ratio is the rate at which
+the proprietary points your UAE credit card earns can be moved into a
+flag-carrier loyalty programme. ENBD Plus Points into Skywards Miles;
+ADCB TouchPoints into Skywards Miles; FAB Rewards into Skywards,
+Etihad Guest, Bonvoy or Avios; Marriott Bonvoy into any of the three
+GCC airline programmes. The ratio decides whether the points on your
+statement are worth what the issuer's marketing suggests — or roughly
+half as much.
+
+The mental model the rest of this guide leans on: **at our baseline
+valuation, a Skywards Mile or an Etihad Guest Mile is worth 2 fils
+(AED 0.02)**, and a Marriott Bonvoy Point is worth roughly 4–6 fils
+depending on the Dubai property and season. That means a 3:1 transfer
+ratio from a bank-proprietary point into a Skywards Mile is implicitly
+valuing the bank point at 0.67 fils per point. If the bank's
+statement-credit option redeems at 1 fil per point (a common floor),
+the transfer route is the worse option by a third — before any
+"transfer bonus" promotion changes the maths back.
+
+This guide is AED-first. Every ratio cited traces to our card
+database ([`src/data/cards.json`](https://github.com/dubaipoints/dubaipoints.ae/blob/main/src/data/cards.json))
+or to the relevant programme page on this site. Where a bank publishes
+that an exchange route exists but does **not** publish the ratio, we
+say so rather than invent one.
+
+## The currency map at a glance
+
+The table below is the live state of UAE bank-points-to-airline-miles
+transfer routes as we track them. Effective AED-per-mile is derived
+from our published 2-fils-per-Mile baseline for Skywards and Etihad
+Guest, and from the relevant cash-redemption alternative for Bonvoy.
+
+| Source programme | Native currency | Transferable to | Ratio | Effective AED-per-mile (at baseline) |
+|---|---|---|---|---|
+| ENBD Plus Points | Plus Points | Emirates Skywards | Route exists ("Convert Plus Points to Skywards Miles" — per L2 card perks); **ratio not published at programme level** | Cannot compute — see note below |
+| ADCB TouchPoints | TouchPoints | Emirates Skywards | Route exists ("Exchange with Emirates Skywards Miles" — per L2 card perks); **ratio not published at programme level** | Cannot compute — see note below |
+| FAB Rewards | FAB Rewards | Multiple — Emirates Skywards, Etihad Guest, Marriott Bonvoy, Avios | **Ratios not published at programme level** for any individual exit. Editorially we have flagged Skywards as the strongest exit (see Points 101). | Cannot compute — see note below |
+| Marriott Bonvoy | Bonvoy Points | Emirates Skywards | 3 Bonvoy → 1 Skywards Mile, with a 5,000-Mile bonus on a 60,000-point block (effectively 60,000:25,000) | ~5 fils per Bonvoy point spent (25,000 Miles × 2 fils ÷ 60,000 Bonvoy) |
+| Marriott Bonvoy | Bonvoy Points | Etihad Guest | 3 Bonvoy → 1 Etihad Guest Mile, with a 5,000-Mile bonus per 60,000 (60,000:25,000) | ~5 fils per Bonvoy point spent |
+| Marriott Bonvoy | Bonvoy Points | Qatar Privilege Club (Avios) | 3 Bonvoy → 1 Avios, with a 5,000-Avios bonus per 60,000 (60,000:25,000) | ~5 fils per Bonvoy point spent (Avios baseline broadly aligned with Skywards / Guest) |
+| Hilton Honors | Hilton Points | Etihad Guest | 10 Hilton → 1 Etihad Guest Mile | ~2 fils per 10 Hilton Points — almost always worse than a Hilton hotel-night redemption |
+| Accor ALL | Accor Rewards | Emirates Skywards | 4,000 Accor → 2,000 Skywards Miles (2:1) | ~1 fil per Accor point spent |
+| Accor ALL | Accor Rewards | Etihad Guest | 4,000 Accor → 2,000 Etihad Guest Miles (2:1) | ~1 fil per Accor point spent |
+
+**Reading the table.** The three UAE bank-proprietary programmes
+(ENBD Plus Points, ADCB TouchPoints, FAB Rewards) all advertise an
+airline-exchange route in their card-perk copy but **do not publish
+the ratio at programme level** at time of writing. The bank's in-app
+flow will show the current rate at transfer time; treat that as a
+flexible-rate mechanic the bank can re-price without notice, not a
+contractual ratio. Run the in-app number first — if the implicit
+AED-per-Mile is worse than the cashback option from the same balance,
+take the cashback.
+
+The hotel-to-airline ratios in the bottom half of the table are
+published at programme level (by Bonvoy, Hilton and Accor respectively)
+and are stable enough to plan a redemption around — though Bonvoy has
+historically paused individual airline-transfer routes with limited
+notice, including periodic outages on Asia-Pacific partners.
+
+## Direct-earn vs transfer-earn — when each makes sense
+
+The choice between earning a flag-carrier mile directly on a
+co-brand card and earning a bank-proprietary point you'll later
+transfer is one of the most consequential decisions a UAE expat
+makes inside the first year. The maths is straightforward; the
+emotional pull of "flexibility" is the part that misleads.
+
+**Direct-earn is the correct default if Emirates or Etihad is your
+primary carrier.** The Emirates NBD Skywards Infinite at AED 30,000
+salary earns 2 Skywards Miles per USD 1 on Emirates / flydubai /
+duty free / food delivery — roughly **0.54 Miles per AED**, posted
+directly into your Skywards account with no transfer step and no
+ratio loss. AED 100,000 of qualifying-category spend buys ~54,000
+Miles; at our 2-fils baseline that is AED 1,080 of redemption value,
+and on a regional Y-to-J upgrade it can clear AED 2,500–3,500. The
+[Skywards Infinite](/cards/emirates-nbd-skywards-infinite/),
+[Skywards Signature](/cards/emirates-nbd-skywards-signature/), and
+[FAB Etihad Guest Infinite](/cards/fab-etihad-guest-infinite/) all
+post Miles direct.
+
+**Transfer-earn makes sense when you don't yet know your travel
+pattern, or when you want optionality across two carriers.** A
+FAB Rewards card lets you push the same point balance into Skywards
+or Etihad Guest depending on which Saver award opens up first for
+the date window you need. The trade-off is rate: every transfer
+route published by the three UAE bank-proprietary programmes is, on
+our reading of the in-app rates, materially worse per AED than the
+direct-earn equivalent on a Skywards or Etihad Guest co-brand for
+the same monthly spend. You are paying for the optionality with
+roughly a third of the redemption value.
+
+**Transfer-earn is the wrong choice if you fly Emirates rarely and
+will redeem to cashback or statement credit anyway.** If your
+realistic redemption is an AED 1,500 credit back to your statement,
+the airline-mile route is irrelevant — you want a high-cashback or
+high-flat-rate-points card, full stop. Examples worth a look:
+[FAB Cashback](/cards/fab-cashback/),
+[CBD One](/cards/cbd-one/) and the
+[ADCB Betaqti](/cards/adcb-betaqti/) if you stay inside the qualifying
+categories.
+
+## The transfer-bonus trap
+
+Two or three times a year, the UAE banks and the hotel programmes
+run promotions worded along the lines of "20% bonus when you transfer
+this month" or "30% extra Miles on Bonvoy → Skywards transfers". Our
+editorial position on these is sceptical.
+
+The reason is structural. A 20% bonus on a transfer route that was
+already pricing the underlying point below the cashback floor does
+not turn it into the best use of the balance — it pulls the maths
+back toward neutral. Bonvoy → Skywards at 3:1 with a 20% bonus
+becomes effectively 3:1.2; against our Skywards baseline, that lifts
+the per-Bonvoy-point value from ~0.67 fils to ~0.8 fils. The same
+Bonvoy point redeemed against a 50,000-point Ritz-Carlton DIFC
+off-peak night routinely clears 4–6 fils. The "bonus" is the
+programme cropping back ground they conceded in the base rate.
+
+Two carve-outs where a transfer bonus is genuinely the right move:
+
+- **You already have a specific airline-Saver-award redemption priced
+  out and are short by the bonus amount.** If you need 88,000 Etihad
+  Guest Miles for an AUH → JFK Business Saver, a Bonvoy → Etihad Guest
+  transfer bonus that closes the gap from 65,000 to 88,000 Miles is
+  rational — the airline redemption is the value driver, the bonus is
+  a discount on the means.
+- **The underlying balance has no better use.** Accor ALL points that
+  will not be spent on a hotel night within the 12-month expiry window
+  can reasonably go to Skywards or Etihad Guest at 2:1 with a bonus on
+  top, because the alternative is forfeit.
+
+Otherwise: ignore the marketing email, read the base rate, and decide
+whether the redemption you actually want is on the airline side or the
+hotel side. Then earn into the right programme directly, not via a
+two-step bonus path.
+
+## What we'd actually transfer (and what we wouldn't)
+
+The editorial calls below are specific to UAE residents at our
+baseline valuations:
+
+- **Bonvoy → Etihad Guest at 60,000:25,000, for an AUH → JFK Business
+  Saver.** The single best transfer call in the UAE market — the
+  implicit 5-fils-per-Bonvoy value lands well above the Bonvoy
+  statement-credit floor, and Etihad's transatlantic Business Saver
+  availability beats Skywards' DXB → JFK Saver for late inventory.
+  **Worth it.**
+- **Bonvoy → Qatar Privilege Club at 60,000:25,000, for a DOH-
+  departing Qsuite Business Saver.** Same maths as the Etihad route.
+  Qsuite is the consensus best Business product worldwide and the
+  AED 400–600 DXB → DOH positioning hop is rounding error against
+  the redemption value. **Worth it for Qsuite.**
+- **ENBD Plus Points → Skywards Miles in the absence of a published
+  ratio.** Check the in-app exchange rate first. If the implicit
+  Skywards-Mile cost is above ~3.5 Plus Points per Mile (i.e. the bank
+  is internally valuing your Plus Point at ~0.55–0.65 fils against
+  Skywards), the cashback redemption from the same balance will
+  almost always beat the airline route. **Conditional — run the
+  in-app number first.**
+- **Marriott Bonvoy → Skywards Miles for a regional Y-to-J upgrade.**
+  Bonvoy → Skywards is the weaker of the three Bonvoy-out routes
+  because Skywards' partner-redemption value is thinner and you cannot
+  combine Skywards with another Avios balance the way you can with
+  Qatar. Use it only when you are within 10,000–20,000 Miles of a
+  specific regional Y-to-J upgrade redemption. **Niche.**
+- **Hilton Honors → Etihad Guest at 10:1.** Almost never worth it.
+  A Hilton point is worth meaningfully more than a tenth of an
+  Etihad Guest Mile on every redemption path we can model. **Don't.**
+
+## Bottom line
+
+The UAE bank-proprietary programmes (ENBD Plus Points, ADCB TouchPoints,
+FAB Rewards) all advertise an airline-exchange route into Skywards or
+Etihad Guest, but none of them publishes a fixed programme-level ratio.
+That is itself the signal: treat the in-app exchange rate as a
+flexible mechanic the bank can re-price, run the implicit
+AED-per-Mile against our 2-fils baseline before you transfer, and
+default to the cashback or statement-credit option if the maths
+doesn't clear. The hotel-to-airline routes — Marriott Bonvoy in
+particular, at 60,000:25,000 into all three GCC airline currencies —
+are the published-and-stable transfer routes worth planning around,
+and Bonvoy → Etihad Guest for a transatlantic Business Saver is the
+one transfer call in the market we'll make without hesitation.
+
+For the airline-side redemption sweet spots see
+[Emirates Skywards](/airlines/skywards/),
+[Etihad Guest](/airlines/etihad-guest/), and the
+[Skywards business-class redemptions 2026 playbook](/guides/skywards-business-class-redemptions-2026/).
+For the entry-level framing of what a Mile is actually worth, the
+[Points 101 guide](/guides/expat-starter-points-101/) is the
+companion read.
