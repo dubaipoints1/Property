@@ -29,18 +29,18 @@ this document.
 | Slug | Source URL | Pulled | Notes |
 |---|---|---|---|
 | banks/emirates-nbd | placeholder | 2026-05-06 | Replace with ENBD brand-kit SVG |
-| banks/fab | placeholder | 2026-05-07 | Replace with FAB brand-kit SVG |
-| banks/adcb | placeholder | 2026-05-06 | Replace with ADCB brand-kit SVG |
+| banks/fab | https://commons.wikimedia.org/wiki/File:First_Abu_Dhabi_Bank_Logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of First Abu Dhabi Bank, used nominatively |
+| banks/adcb | https://commons.wikimedia.org/wiki/File:Abu_Dhabi_Commercial_Bank_logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Abu Dhabi Commercial Bank, used nominatively |
 | banks/emirates-islamic | placeholder | 2026-05-06 | Replace with Emirates Islamic brand-kit SVG |
 | banks/rakbank | placeholder | 2026-05-06 | Replace with RAKBANK brand-kit SVG |
 | banks/mashreq | placeholder | 2026-05-26 | Replace with Mashreq brand-kit SVG |
 | banks/dib | placeholder | 2026-05-26 | Replace with Dubai Islamic Bank brand-kit SVG |
 | banks/adib | placeholder | 2026-05-26 | Replace with ADIB brand-kit SVG |
 | banks/cbd | placeholder | 2026-05-26 | Replace with Commercial Bank of Dubai brand-kit SVG |
-| banks/hsbc | placeholder | 2026-05-26 | Replace with HSBC brand-kit SVG |
-| banks/citi | placeholder | 2026-05-26 | Replace with Citibank brand-kit SVG |
-| banks/standard-chartered | placeholder | 2026-05-26 | Replace with Standard Chartered brand-kit SVG |
-| airlines/skywards | placeholder | 2026-05-06 | Replace with Emirates Skywards brand-kit SVG |
-| airlines/etihad-guest | placeholder | 2026-05-26 | Replace with Etihad Guest brand-kit SVG |
-| airlines/marriott-bonvoy | placeholder | 2026-05-26 | Replace with Marriott Bonvoy brand-kit SVG |
-| airlines/qatar-privilege-club | placeholder | 2026-05-26 | Replace with Qatar Privilege Club brand-kit SVG |
+| banks/hsbc | https://commons.wikimedia.org/wiki/File:HSBC_logo_(2018).svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of HSBC Holdings, used nominatively |
+| banks/citi | https://commons.wikimedia.org/wiki/File:Citi.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Citigroup, used nominatively |
+| banks/standard-chartered | https://commons.wikimedia.org/wiki/File:Standard_Chartered_(2021).svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Standard Chartered PLC, used nominatively |
+| airlines/skywards | https://commons.wikimedia.org/wiki/File:Emirates_logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Emirates, used nominatively — parent-airline mark for the Emirates Skywards programme |
+| airlines/etihad-guest | https://commons.wikimedia.org/wiki/File:Etihad-airways-logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Etihad Airways, used nominatively — parent-airline mark for the Etihad Guest programme |
+| airlines/marriott-bonvoy | https://commons.wikimedia.org/wiki/File:Marriott_Logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Marriott International, used nominatively — parent-brand mark for the Marriott Bonvoy programme |
+| airlines/qatar-privilege-club | https://commons.wikimedia.org/wiki/File:Qatar_Airways_logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Qatar Airways, used nominatively — parent-airline mark for the Privilege Club programme |
