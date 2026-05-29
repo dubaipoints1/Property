@@ -91,7 +91,16 @@ const LOGOS = [
 ];
 
 async function download(url) {
-  const res = await fetch(url, { redirect: "follow" });
+  // Wikimedia returns 403 to requests without a descriptive User-Agent
+  // (their UA policy). Send a real one identifying the publication.
+  const res = await fetch(url, {
+    redirect: "follow",
+    headers: {
+      "User-Agent":
+        "DubaiPoints-logo-seed/1.0 (https://dubaipoints.ae; editorial brand-logo fetch) node-fetch",
+      Accept: "image/svg+xml,*/*",
+    },
+  });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
   const text = await res.text();
   if (!/<svg[\s>]/i.test(text)) {
