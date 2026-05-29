@@ -48,6 +48,8 @@ const COMMONS_PAGE = (file) =>
   `https://commons.wikimedia.org/wiki/File:${file.replace(/ /g, "_")}`;
 const PD = (issuer) =>
   `Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of ${issuer}, used nominatively`;
+const OFFICIAL = (issuer, page) =>
+  `Issuer brand kit (${page}); trademark of ${issuer}, used nominatively per Charter §10`;
 
 const LOGOS = [
   // ── Banks ──────────────────────────────────────────────────────────────
@@ -88,9 +90,20 @@ const LOGOS = [
     slug: "marriott-bonvoy", dir: "airlines", file: "Marriott Logo.svg",
     issuer: "Marriott International", note: "parent-brand mark for the Marriott Bonvoy programme",
   },
+  // ── Direct-URL PNGs from issuer brand kits ──────────────────────────────
+  // PNG output overwrites public/logos/<dir>/<slug>.png; BankLogo's
+  // PNG_FORMAT_SLUGS opt-in routes the <img src> to .png for these slugs.
+  {
+    slug: "emirates-nbd", dir: "banks", ext: "png",
+    url: "https://cdn.emiratesnbd.com/assets/images/primary-logo-blue.png",
+    pageUrl: "https://www.emiratesnbd.com/en/brand-assets",
+    issuer: "Emirates NBD Bank PJSC",
+    licence: "Issuer brand kit (emiratesnbd.com/en/brand-assets); trademark of Emirates NBD Bank PJSC, used nominatively per Charter §10",
+    note: "official primary logo (blue, horizontal) — only freely-available format is PNG",
+  },
 ];
 
-async function download(url) {
+async function download(url, expectedFormat) {
   // Wikimedia returns 403 to requests without a descriptive User-Agent
   // (their UA policy). Send a real one identifying the publication.
   const res = await fetch(url, {
@@ -98,10 +111,23 @@ async function download(url) {
     headers: {
       "User-Agent":
         "DubaiPoints-logo-seed/1.0 (https://dubaipoints.ae; editorial brand-logo fetch) node-fetch",
-      Accept: "image/svg+xml,*/*",
+      Accept:
+        expectedFormat === "png" ? "image/png,*/*" : "image/svg+xml,*/*",
     },
   });
   if (!res.ok) throw new Error(`${res.status} ${res.statusText} for ${url}`);
+  if (expectedFormat === "png") {
+    // PNG: validate via the 8-byte signature, return binary buffer.
+    const buf = Buffer.from(await res.arrayBuffer());
+    const sig = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+    for (let i = 0; i < sig.length; i++) {
+      if (buf[i] !== sig[i]) {
+        throw new Error(`Downloaded asset is not a PNG: ${url}`);
+      }
+    }
+    return buf;
+  }
+  // SVG: validate via the opening tag, return text.
   const text = await res.text();
   if (!/<svg[\s>]/i.test(text)) {
     throw new Error(`Downloaded asset is not an SVG: ${url}`);
@@ -133,17 +159,25 @@ function updateLicenses(rows) {
 async function main() {
   const done = [];
   for (const logo of LOGOS) {
-    const url = COMMONS(logo.file);
-    process.stdout.write(`Fetching ${logo.slug} ← ${logo.file} ... `);
-    const svg = await download(url);
-    const dest = path.join(LOGOS_DIR, logo.dir, `${logo.slug}.svg`);
-    fs.writeFileSync(dest, svg, "utf-8");
-    console.log(`ok (${svg.length} bytes → public/logos/${logo.dir}/${logo.slug}.svg)`);
+    // Two source modes:
+    //   - Commons SVG: { file } → resolves via Special:FilePath, output .svg
+    //   - Direct URL : { url, ext } → fetched as-is (typically PNG from an
+    //     issuer brand kit), output with the supplied extension
+    const isDirect = typeof logo.url === "string";
+    const fetchUrl = isDirect ? logo.url : COMMONS(logo.file);
+    const ext = isDirect ? logo.ext ?? "svg" : "svg";
+    const label = isDirect ? logo.url : logo.file;
+    process.stdout.write(`Fetching ${logo.slug} ← ${label} ... `);
+    const payload = await download(fetchUrl, ext);
+    const dest = path.join(LOGOS_DIR, logo.dir, `${logo.slug}.${ext}`);
+    fs.writeFileSync(dest, payload);
+    const size = typeof payload === "string" ? payload.length : payload.byteLength;
+    console.log(`ok (${size} bytes → public/logos/${logo.dir}/${logo.slug}.${ext})`);
     done.push({
       slug: logo.slug,
       dir: logo.dir,
-      pageUrl: COMMONS_PAGE(logo.file),
-      licence: PD(logo.issuer),
+      pageUrl: isDirect ? logo.pageUrl : COMMONS_PAGE(logo.file),
+      licence: isDirect ? logo.licence : PD(logo.issuer),
       note: logo.note,
     });
   }
