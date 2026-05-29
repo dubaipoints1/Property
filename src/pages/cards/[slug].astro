@@ -5,8 +5,11 @@ import {
   getCardData,
   getAllCards,
   earnRatesNumeric,
-  welcomeBonusDisplay,
 } from "~/lib/cardsData";
+import {
+  topEarnEntry,
+  CATEGORY_LABELS_FOR_TOP,
+} from "~/lib/cardsDataFormat";
 
 // Generate one route per card in the data layer (L2). Even cards without
 // editorial MDX (L3) get a page — it just renders attributes only.
@@ -25,16 +28,48 @@ if (!data) {
 
 // Editorial layer (L3) — optional; render with empty body when absent.
 const editorial = (await getCollection("cards")).find((c) => c.id === slug);
-const Content = editorial ? (await render(editorial)).Content : null;
+const rendered = editorial ? await render(editorial) : null;
+const Content = rendered?.Content ?? null;
+
+// H2 headings → JumpToSection chip (PR-F, 29 May 2026 — closes Head of UX
+// audit "no jump-nav on card reviews"). Slugify uses Astro's MDX rehype
+// output so anchors match. Filter to depth=2 (H2) for the chip; deeper
+// headings stay accessible but don't crowd the rail.
+const tocSections = (rendered?.headings ?? [])
+  .filter((h) => h.depth === 2)
+  .map((h) => ({ id: h.slug, label: h.text }));
 
 // Bank reference resolves through the banks content collection; falls back to slug.
 const bankEntry = await getEntry("banks", data.bank);
 const bankName = bankEntry?.data.name ?? data.bank;
+
+// Per §9 — composed meta title + description from L2 attributes. Closes
+// the SEO Strategist audit's "meta title pattern not applied editorially"
+// and "card review descriptions are the welcome-bonus string" P1s.
+const cardTitle = `${data.name} review (May 2026) | DubaiPoints`;
+const top = topEarnEntry(data.earnRates as Record<string, unknown>);
+const topLabel = top ? CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key : null;
+const feeFragment = data.annualFee.amount === 0 ? "No annual fee" : `AED ${data.annualFee.amount} annual fee`;
+const minSalaryFragment = data.eligibility.invitationOnly
+  ? "invitation-only"
+  : data.eligibility.minSalary > 0
+  ? `min salary AED ${data.eligibility.minSalary.toLocaleString()}`
+  : "no min salary";
+const earnFragment = top && topLabel ? `${top.value}× ${topLabel}` : null;
+const cardDescription = [
+  `${bankName} ${data.name} review`,
+  feeFragment,
+  minSalaryFragment,
+  earnFragment,
+  "AED-first verdict from DubaiPoints",
+]
+  .filter(Boolean)
+  .join(" · ");
 ---
 
 <CardReviewLayout
-  title={`${data.name} review`}
-  description={welcomeBonusDisplay(data.welcomeBonus)}
+  title={cardTitle}
+  description={cardDescription}
   bankName={bankName}
   bankSlug={data.bank}
   slug={slug}
@@ -52,6 +87,8 @@ const bankName = bankEntry?.data.name ?? data.bank;
   verifiedBy={editorial?.data.verifiedBy}
   sources={data.sources}
   heroImage={editorial?.data.heroImage}
+  category={data.categories?.[0]}
+  tocSections={tocSections}
 >
   {Content && <Content />}
 </CardReviewLayout>
