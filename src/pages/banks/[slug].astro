@@ -4,6 +4,7 @@ import { getCollection, getEntry, render } from "astro:content";
 import { getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getCardsByBank } from "~/lib/cardsData";
+import { topEarnEntry } from "~/lib/cardsDataFormat";
 
 export async function getStaticPaths() {
   const banks = await getCollection("banks");
@@ -26,6 +27,31 @@ const topBonusAed = offers.length === 0
 const latestVerified = allCards.length === 0
   ? undefined
   : new Date(Math.max(...allCards.map((c) => new Date(c.lastVerified).getTime())));
+
+// Pre-compute the per-card tile facts in the frontmatter (TS generics like
+// `as Record<string, unknown>` can't live inside an Astro template expression
+// — the `<` is parsed as a JSX tag). Each tile surfaces the three decision
+// facts (fee, salary bar, top earn rate) so the issuer line-up is scannable
+// without opening every review.
+const cardTiles = allCards.map((c) => {
+  const top = topEarnEntry(c.earnRates as Record<string, unknown>);
+  const feeLabel = c.annualFee.amount === 0 ? "Free" : formatAED(c.annualFee.amount);
+  const salaryLabel =
+    c.eligibility.invitationOnly === true
+      ? "By invitation"
+      : c.eligibility.minSalary > 0
+        ? `${formatAED(c.eligibility.minSalary)}/mo`
+        : "No minimum";
+  return {
+    slug: c.slug,
+    name: c.name,
+    network: c.network,
+    feeLabel,
+    salaryLabel,
+    topValue: top?.value ?? null,
+    topLabel: top?.label ?? null,
+  };
+});
 ---
 
 <BankHubLayout
@@ -77,13 +103,30 @@ const latestVerified = allCards.length === 0
 
   <div slot="cards" class="dp-bank-cards-grid">
     {
-      allCards.length === 0 ? (
+      cardTiles.length === 0 ? (
         <p class="dp-bank-cards-empty">No cards from {bank.data.name} indexed yet.</p>
       ) : (
-        allCards.map((c) => (
-          <a href={`/cards/${c.slug}/`} class="dp-bank-card-tile">
-            <p class="dp-bank-card-network">{c.network}</p>
-            <p class="dp-bank-card-name">{c.name}</p>
+        cardTiles.map((t) => (
+          <a href={`/cards/${t.slug}/`} class="dp-bank-card-tile">
+            <span class="dp-bank-card-network">{t.network}</span>
+            <span class="dp-bank-card-name">{t.name}</span>
+            <dl class="dp-bank-card-facts">
+              <div class="fact">
+                <dt>Annual fee</dt>
+                <dd>{t.feeLabel}</dd>
+              </div>
+              <div class="fact">
+                <dt>Min salary</dt>
+                <dd>{t.salaryLabel}</dd>
+              </div>
+              {t.topValue != null && (
+                <div class="fact">
+                  <dt>Top earn</dt>
+                  <dd>{t.topValue}×<span class="cat">{t.topLabel}</span></dd>
+                </div>
+              )}
+            </dl>
+            <span class="dp-bank-card-cta">Read review →</span>
           </a>
         ))
       )
@@ -130,30 +173,88 @@ const latestVerified = allCards.length === 0
   .dp-bank-salary-cta a:hover { text-decoration-color: var(--green); }
   .dp-bank-salary-empty { font-size: 14px; color: var(--ink-soft); margin-top: 8px; }
 
-  .dp-bank-cards-grid { display: grid; gap: 12px; grid-template-columns: 1fr; }
+  .dp-bank-cards-grid { display: grid; gap: 14px; grid-template-columns: 1fr; }
   @media (min-width: 640px) { .dp-bank-cards-grid { grid-template-columns: 1fr 1fr; } }
   .dp-bank-cards-empty { font-size: 14px; color: var(--muted); margin: 0; }
+
+  /* Enriched comparison-card tile (2026-05-29) — was a name-only link;
+     now a scannable card surfacing the three decision facts (fee, salary
+     bar, top earn rate) so the reader can compare an issuer's line-up
+     without opening every review. Data is L2 via getCardsByBank. */
   .dp-bank-card-tile {
-    display: block;
-    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 18px 14px;
     border: 1px solid var(--line);
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--paper);
     text-decoration: none;
-    transition: border-color 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
   }
-  .dp-bank-card-tile:hover { border-color: var(--green); }
+  .dp-bank-card-tile:hover {
+    border-color: var(--green);
+    box-shadow: 0 6px 20px -12px rgba(31, 58, 77, 0.4);
+    transform: translateY(-1px);
+  }
   .dp-bank-card-network {
-    font-size: 11px;
+    align-self: flex-start;
+    font-size: 9.5px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--muted);
-    margin: 0;
+    letter-spacing: 1.4px;
+    color: var(--green);
+    border: 1px solid color-mix(in srgb, var(--green) 30%, transparent);
+    border-radius: 999px;
+    padding: 3px 9px;
+    line-height: 1.2;
   }
   .dp-bank-card-name {
-    margin: 4px 0 0;
+    margin: 11px 0 0;
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 17px;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    color: var(--ink);
+  }
+  .dp-bank-card-tile:hover .dp-bank-card-name { color: var(--green); }
+  .dp-bank-card-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin: 12px 0 0;
+    padding: 12px 0 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  .dp-bank-card-facts .fact { margin: 0; min-width: 0; }
+  .dp-bank-card-facts dt {
+    margin: 0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .dp-bank-card-facts dd {
+    margin: 3px 0 0;
+    font-size: 13px;
     font-weight: 600;
     color: var(--ink);
-    font-size: 15px;
   }
+  .dp-bank-card-facts dd .cat {
+    margin-left: 5px;
+    font-weight: 500;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .dp-bank-card-cta {
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--green);
+    opacity: 0.55;
+    transition: opacity 0.15s;
+  }
+  .dp-bank-card-tile:hover .dp-bank-card-cta { opacity: 1; }
 </style>
