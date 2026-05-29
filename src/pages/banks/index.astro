@@ -10,7 +10,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
-import { getAllCards } from "~/lib/cardsData";
+import { getActiveCards } from "~/lib/cardsData";
 
 const banks = (await getCollection("banks")).sort((a, b) =>
   a.data.name.localeCompare(b.data.name),
@@ -18,7 +18,7 @@ const banks = (await getCollection("banks")).sort((a, b) =>
 
 // Card counts per bank — pulled from L2 (cards.json) since the bank
 // frontmatter `cards: []` is stale on most banks.
-const cards = getAllCards();
+const cards = getActiveCards();
 const cardCountByBank = new Map<string, number>();
 for (const c of cards) {
   cardCountByBank.set(c.bank, (cardCountByBank.get(c.bank) ?? 0) + 1);

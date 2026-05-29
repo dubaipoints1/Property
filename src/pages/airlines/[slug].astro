@@ -1,7 +1,7 @@
 ---
 import AirlineProgramLayout from "~/layouts/AirlineProgramLayout.astro";
 import { getCollection, getEntry, render } from "astro:content";
-import { getAllCards } from "~/lib/cardsData";
+import { getActiveCards } from "~/lib/cardsData";
 
 export async function getStaticPaths() {
   const programs = await getCollection("programs");
@@ -25,7 +25,7 @@ function normalise(s: string): string {
 const programmeNeedle = normalise(program.data.name);
 const currencyNeedle = normalise(program.data.currencyName);
 
-const relatedRaw = getAllCards().filter((c) => {
+const relatedRaw = getActiveCards().filter((c) => {
   const lp = c.loyaltyProgram;
   if (!lp || lp === "scraped" || lp === "editor-confirmed") return false;
   const card = normalise(lp);

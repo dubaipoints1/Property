@@ -5,14 +5,14 @@
  * Editorial counter to a competitor that paywalls the same feature.
  * Ships free, transparent, with methodology visible above the fold of the
  * results. The calculator reads typed `earnRates` from L2 cards.json via
- * `getAllCards()` — no LLM, no live scraping (Charter §6).
+ * `getActiveCards()` — no LLM, no live scraping (Charter §6).
  */
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import RewardsCalculator from "~/components/islands/RewardsCalculator";
-import { getAllCards } from "~/lib/cardsData";
+import { getActiveCards } from "~/lib/cardsData";
 import { AED_PER_UNIT } from "~/components/islands/RewardsCalculator";
 
-const cards = getAllCards();
+const cards = getActiveCards();
 const cardCount = cards.length;
 const lastUpdated = new Date().toLocaleDateString("en-GB", {
   day: "numeric",

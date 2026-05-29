@@ -29,10 +29,10 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getEntry } from "astro:content";
-import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
 
 const cards = await Promise.all(
-  getAllCards()
+  getActiveCards()
     .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
     .map(async (card) => {
       const bank = await getEntry("banks", card.bank);

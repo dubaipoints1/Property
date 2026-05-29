@@ -28,10 +28,10 @@
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
-import { getAllCards } from "~/lib/cardsData";
+import { getActiveCards } from "~/lib/cardsData";
 import SpecCard from "~/components/cards/SpecCard.astro";
 
-const allCards = getAllCards();
+const allCards = getActiveCards();
 
 // Resolve bank-collection display names up-front so the SpecCards
 // don't need to await inside the .map (which works in Astro but is
@@ -104,7 +104,7 @@ const FEE_OPTIONS: Array<{ value: string; label: string }> = [
   { value: "under-1000", label: "Under AED 1,000" },
 ];
 
-// Initial render order — by min salary ascending (mirrors getAllCards()).
+// Initial render order — by min salary ascending (mirrors getActiveCards()).
 // The inline script reorders on page-load based on URL params.
 const initialOrder = cardsWithBanks;
 ---

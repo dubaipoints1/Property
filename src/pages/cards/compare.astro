@@ -15,7 +15,7 @@
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
-import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EligibilityChips from "~/components/cards/EligibilityChips.astro";
@@ -24,7 +24,7 @@ import VerifiedStamp from "~/components/cards/VerifiedStamp.astro";
 
 const MAX_CARDS = 4;
 
-const allCards = getAllCards();
+const allCards = getActiveCards();
 const allBySlug = new Map(allCards.map((c) => [c.slug, c]));
 
 // ── Read ?cards=... ─────────────────────────────────────────────────
