@@ -44,7 +44,7 @@ this document.
 
 | Slug | Source URL | Pulled | Notes |
 |---|---|---|---|
-| banks/emirates-nbd | placeholder | 2026-05-06 | Replace with ENBD brand-kit SVG |
+| banks/emirates-nbd | https://www.emiratesnbd.com/en/brand-assets | 2026-05-29 | Issuer brand kit (emiratesnbd.com/en/brand-assets); trademark of Emirates NBD Bank PJSC, used nominatively per Charter §10 — official primary logo (blue, horizontal) — only freely-available format is PNG |
 | banks/fab | https://commons.wikimedia.org/wiki/File:First_Abu_Dhabi_Bank_Logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of First Abu Dhabi Bank, used nominatively |
 | banks/adcb | https://commons.wikimedia.org/wiki/File:Abu_Dhabi_Commercial_Bank_logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Abu Dhabi Commercial Bank, used nominatively |
 | banks/emirates-islamic | placeholder | 2026-05-06 | Replace with Emirates Islamic brand-kit SVG |
