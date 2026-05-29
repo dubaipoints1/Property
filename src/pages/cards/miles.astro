@@ -2,6 +2,7 @@
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
 import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import { formatEarnValue } from "~/lib/cardsDataFormat";
 
 const milesCards = getActiveCards().filter(
   (c) => c.categories.includes("travel") || c.categories.includes("co-brand"),
@@ -16,7 +17,7 @@ const rows = await Promise.all(
       values: [
         `AED ${c.annualFee.amount.toLocaleString()}`,
         `${c.fxFee}%`,
-        `${c.earnRates.everythingElse}× per AED`,
+        `${formatEarnValue(c.earnRates.everythingElse ?? 0, c.earnUnit, c.categories)}${c.earnUnit && c.earnUnit.toLowerCase().includes("per") ? " per AED" : ""}`,
         welcomeBonusDisplay(c.welcomeBonus) || "—",
       ],
     };

@@ -350,3 +350,52 @@ test("cards.json: unknown slug returns undefined (basis for CardComparison's bui
   const card = cards["this-slug-does-not-exist"];
   assert.equal(card, undefined);
 });
+
+// ── §6 unit-integrity: top-earn row renders % for cashback, × for points ──
+// Regression guard for the 2026-05-29 fix. Earn values are stored as bare
+// numbers; cashback cards must render "5%" and points cards "5×". The
+// cardComparisonRows top-earn row was the call-site missed in the first
+// pass (caught at the Chairman gate) — these assertions lock both polarities.
+// Anchored to live cards.json: citi-cashback (earnUnit "% cashback") and
+// emirates-nbd-skywards-infinite (earnUnit "Skywards Miles per USD 1 spent").
+
+test("cardComparisonRows: cashback card top-earn row renders % not ×", () => {
+  const citi = cards["citi-cashback"];
+  const skywards = cards["emirates-nbd-skywards-infinite"];
+  assert.ok(citi && skywards, "fixture cards present in cards.json");
+  const rows = cardComparisonRows(citi, skywards);
+  const top = rows.find((r) => r.key === "topEarn")!;
+  // citi-cashback is the left side — must carry a % and never a ×
+  assert.match(top.leftValue, /%/);
+  assert.doesNotMatch(top.leftValue, /×/);
+});
+
+test("cardComparisonRows: points card top-earn row renders × not %", () => {
+  const citi = cards["citi-cashback"];
+  const skywards = cards["emirates-nbd-skywards-infinite"];
+  const rows = cardComparisonRows(citi, skywards);
+  const top = rows.find((r) => r.key === "topEarn")!;
+  // skywards is the right side (points per USD) — must carry × not %
+  assert.match(top.rightValue, /×/);
+  assert.doesNotMatch(top.rightValue, /%/);
+});
+
+// formatEarnValue / earnIsPercentage direct unit tests — the parenthetical
+// "(EU/UK at 50%)" on a points card must NOT trip the % branch.
+test("earnIsPercentage: starts-with-% and cashback are percentage; parenthetical % is not", async () => {
+  const { earnIsPercentage, formatEarnValue } = await import(
+    "../../src/lib/cardsDataFormat"
+  );
+  assert.equal(earnIsPercentage("% cashback"), true);
+  assert.equal(earnIsPercentage("% as ENBD Plus Points (5% grocery)"), true);
+  assert.equal(earnIsPercentage("AED cashback per AED 1 spent"), true);
+  assert.equal(
+    earnIsPercentage("Skywards Miles per USD 1 spent (EU/UK at 50%)"),
+    false,
+  );
+  assert.equal(earnIsPercentage("ADCB TouchPoints per AED 1 spent"), false);
+  assert.equal(earnIsPercentage("FAB Rewards per AED 1 spent"), false);
+  assert.equal(earnIsPercentage(undefined, ["cashback"]), true);
+  assert.equal(formatEarnValue(5, "% cashback"), "5%");
+  assert.equal(formatEarnValue(2, "Skywards Miles per USD 1 spent"), "2×");
+});

@@ -249,6 +249,10 @@ export interface CardForComparison {
   joiningFee?: { amount: number } | null;
   eligibility: { minSalary: number; invitationOnly?: boolean };
   earnRates: Record<string, number | unknown | undefined>;
+  /** L2 earnUnit + categories — drive whether the top-earn comparison row
+   * renders "5%" (cashback) or "5×" (points). §6 unit-integrity. */
+  earnUnit?: string | null;
+  categories?: readonly string[];
   welcomeBonus?:
     | StructuredWelcomeBonus
     | StructuredWelcomeBonusBifurcated
@@ -498,8 +502,12 @@ export function cardComparisonRows(
   {
     const lTop = topEarnEntry(left.earnRates as Record<string, unknown>);
     const rTop = topEarnEntry(right.earnRates as Record<string, unknown>);
-    const lValue = lTop ? `${lTop.label} ${lTop.value}×` : "—";
-    const rValue = rTop ? `${rTop.label} ${rTop.value}×` : "—";
+    const lValue = lTop
+      ? `${lTop.label} ${formatEarnValue(lTop.value, left.earnUnit, left.categories)}`
+      : "—";
+    const rValue = rTop
+      ? `${rTop.label} ${formatEarnValue(rTop.value, right.earnUnit, right.categories)}`
+      : "—";
     let winner: ComparisonWinner;
     if (!lTop && !rTop) winner = "none";
     else if (!lTop) winner = "right";
