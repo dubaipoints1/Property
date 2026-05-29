@@ -1,0 +1,27 @@
+---
+// SchemaJsonLd — emits a <script type="application/ld+json"> tag in the
+// document <head>, properly serialised with HTML-safe escaping. Used by
+// page layouts to inject per-template structured data: Product for
+// card reviews, Organization for bank hubs, Article for guides/news,
+// WebSite + Organization for the homepage.
+//
+// PR-D (29 May 2026) — closes the SEO + Tech audit's joint P0 finding
+// of "zero JSON-LD across the site." See .council/research/2026-05/
+// for the per-template schema spec the SEO Strategist set.
+
+interface Props {
+  /** A schema.org JSON-LD object, or an array of them. The component
+   * serialises and emits exactly what you pass. Validate against
+   * https://validator.schema.org/ before publishing new templates. */
+  schema: unknown;
+}
+
+const { schema } = Astro.props;
+
+// JSON-LD must escape `</script>` to prevent context-break injection.
+// JSON.stringify handles `&` `<` `>` partially but not the literal close
+// tag sequence — explicit replace is the safe pattern.
+const serialised = JSON.stringify(schema).replace(/<\/script/gi, "<\\/script");
+---
+
+<script type="application/ld+json" is:inline set:html={serialised} />
