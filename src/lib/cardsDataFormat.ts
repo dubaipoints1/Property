@@ -249,6 +249,10 @@ export interface CardForComparison {
   joiningFee?: { amount: number } | null;
   eligibility: { minSalary: number; invitationOnly?: boolean };
   earnRates: Record<string, number | unknown | undefined>;
+  /** L2 earnUnit + categories — drive whether the top-earn comparison row
+   * renders "5%" (cashback) or "5×" (points). §6 unit-integrity. */
+  earnUnit?: string | null;
+  categories?: readonly string[];
   welcomeBonus?:
     | StructuredWelcomeBonus
     | StructuredWelcomeBonusBifurcated
@@ -325,6 +329,57 @@ export function topEarnEntry(earnRates: Record<string, unknown>):
     }
   }
   return best;
+}
+
+// ── Earn-value unit suffix (§6 numeric-integrity fix, 2026-05-29) ─────────
+//
+// Earn rates are stored as a bare number in `earnRates`. For points cards
+// the number is a points-per-AED multiplier → renders "2×". For cashback
+// cards the same field holds a percentage → must render "5%", not "5×".
+// Before this helper every renderer hard-coded "{value}×", so a 5%-cashback
+// card read "5×" site-wide (caught at the PR #180 Chairman gate).
+//
+// The signal is `earnUnit`: a unit that STARTS with "%" (e.g. "% cashback",
+// "% as ENBD Plus Points") or contains "cashback" is a percentage; one
+// containing "per AED" / "per USD" / "points" / "miles" / "multiplier" is a
+// points multiplier. When earnUnit is absent we fall back to the cashback
+// category.
+//
+// "Starts with %", not "contains %": points cards carry parenthetical notes
+// like "Skywards Miles per USD 1 spent (EU/UK at 50%)" — the "50%" there is a
+// rate note, not the earn unit. A bare `includes("%")` mis-flagged every such
+// card as cashback (caught in QA: Skywards Infinite rendered "2%" not "2×").
+// Check the %/cashback branch FIRST — "% as ENBD Plus Points" contains both
+// "%" and "points" and must resolve to percentage.
+
+/** True when a card's earn values are percentages rather than
+ * points-per-AED multipliers. */
+export function earnIsPercentage(
+  earnUnit?: string | null,
+  categories?: readonly string[],
+): boolean {
+  const u = (earnUnit ?? "").trim().toLowerCase();
+  if (u.startsWith("%") || u.includes("cashback")) return true;
+  if (
+    u.includes("per aed") ||
+    u.includes("per usd") ||
+    u.includes("multiplier") ||
+    u.includes("points") ||
+    u.includes("miles")
+  ) {
+    return false;
+  }
+  return (categories ?? []).some((c) => c.toLowerCase() === "cashback");
+}
+
+/** Format a single earn value with the correct unit suffix —
+ * "5%" for cashback / %-denominated schemes, "2×" for points multipliers. */
+export function formatEarnValue(
+  value: number,
+  earnUnit?: string | null,
+  categories?: readonly string[],
+): string {
+  return earnIsPercentage(earnUnit, categories) ? `${value}%` : `${value}×`;
 }
 
 interface LoungeFeature {
@@ -447,8 +502,12 @@ export function cardComparisonRows(
   {
     const lTop = topEarnEntry(left.earnRates as Record<string, unknown>);
     const rTop = topEarnEntry(right.earnRates as Record<string, unknown>);
-    const lValue = lTop ? `${lTop.label} ${lTop.value}×` : "—";
-    const rValue = rTop ? `${rTop.label} ${rTop.value}×` : "—";
+    const lValue = lTop
+      ? `${lTop.label} ${formatEarnValue(lTop.value, left.earnUnit, left.categories)}`
+      : "—";
+    const rValue = rTop
+      ? `${rTop.label} ${formatEarnValue(rTop.value, right.earnUnit, right.categories)}`
+      : "—";
     let winner: ComparisonWinner;
     if (!lTop && !rTop) winner = "none";
     else if (!lTop) winner = "right";

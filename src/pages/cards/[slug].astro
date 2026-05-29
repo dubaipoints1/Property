@@ -9,6 +9,7 @@ import {
 import {
   topEarnEntry,
   CATEGORY_LABELS_FOR_TOP,
+  formatEarnValue,
 } from "~/lib/cardsDataFormat";
 
 // Generate one route per card in the data layer (L2). Even cards without
@@ -55,7 +56,7 @@ const minSalaryFragment = data.eligibility.invitationOnly
   : data.eligibility.minSalary > 0
   ? `min salary AED ${data.eligibility.minSalary.toLocaleString()}`
   : "no min salary";
-const earnFragment = top && topLabel ? `${top.value}× ${topLabel}` : null;
+const earnFragment = top && topLabel ? `${formatEarnValue(top.value, data.earnUnit, data.categories)} ${topLabel}` : null;
 const cardDescription = [
   `${bankName} ${data.name} review`,
   feeFragment,
@@ -79,6 +80,7 @@ const cardDescription = [
   fxFee={data.fxFee}
   minSalary={data.eligibility.minSalary}
   earnRates={earnRatesNumeric(data.earnRates)}
+  earnUnit={data.earnUnit}
   perks={data.perks}
   pros={editorial?.data.pros}
   cons={editorial?.data.cons}

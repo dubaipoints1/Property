@@ -30,6 +30,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getEntry } from "astro:content";
 import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import { formatEarnValue } from "~/lib/cardsDataFormat";
 
 const cards = await Promise.all(
   getActiveCards()
@@ -69,7 +70,7 @@ function topEarnRate(card: typeof cards[number]["card"]): string | null {
     }
   }
   if (!best) return null;
-  return `${best.value}× on ${best.label}`;
+  return `${formatEarnValue(best.value, card.earnUnit, card.categories)} on ${best.label}`;
 }
 
 // Perk chips — up to 2, free-text fallback to the typed _features list.

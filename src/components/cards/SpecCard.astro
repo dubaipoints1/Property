@@ -24,6 +24,7 @@
 import { getEntry } from "astro:content";
 import type { CardData } from "~/lib/cardsData";
 import { welcomeBonusDisplay as toDisplay } from "~/lib/cardsData";
+import { formatEarnValue } from "~/lib/cardsDataFormat";
 import BankLogo from "../BankLogo.astro";
 import FeeBlock from "./FeeBlock.astro";
 import EarnRateTable from "./EarnRateTable.astro";
@@ -71,7 +72,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 const top = topEarnRate(card);
 const earnLine = top
-  ? `${top.value}× ${CATEGORY_LABELS[top.label] ?? top.label}`
+  ? `${formatEarnValue(top.value, card.earnUnit, card.categories)} ${CATEGORY_LABELS[top.label] ?? top.label}`
   : null;
 
 // 90-day stale check — reused for the warning chip on the card head.
@@ -119,7 +120,7 @@ if (variant === "full") {
       card.annualFee.amount === 0
         ? "no annual fee"
         : `AED ${card.annualFee.amount.toLocaleString()} a year`;
-    tagline = `${top.value}× on ${lbl} — ${feeStr}.`;
+    tagline = `${formatEarnValue(top.value, card.earnUnit, card.categories)} on ${lbl} — ${feeStr}.`;
   }
 }
 ---

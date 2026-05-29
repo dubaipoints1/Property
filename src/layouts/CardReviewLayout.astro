@@ -21,6 +21,7 @@ import StockImage from "~/components/StockImage.astro";
 import HeroImage from "~/components/cards/HeroImage.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
+import { earnIsPercentage } from "~/lib/cardsDataFormat";
 
 interface Props {
   title: string;
@@ -36,6 +37,9 @@ interface Props {
   fxFee: number;
   minSalary: number;
   earnRates: Record<string, number | undefined>;
+  /** L2 earnUnit — drives whether the spec-card earn rows render "5%"
+   * (cashback) or "2×" (points). §6 unit-integrity (2026-05-29). */
+  earnUnit?: string;
   perks?: string[];
   pros?: string[];
   cons?: string[];
@@ -74,6 +78,7 @@ const {
   fxFee,
   minSalary,
   earnRates,
+  earnUnit,
   perks = [],
   // pros + cons are accepted on the props interface for backward
   // compatibility with existing call sites in src/pages/cards/[slug].astro,
@@ -299,7 +304,7 @@ const schema = {
           {earnRows.map(([k, v]) => (
             <div class="dp-spec-row">
               <span class="k">{formatEarnKey(k)}</span>
-              <span class={`v ${v >= 3 ? "flag" : ""}`}>{v}× per AED 1</span>
+              <span class={`v ${v >= 3 ? "flag" : ""}`}>{earnIsPercentage(earnUnit, [category]) ? `${v}%` : `${v}× per AED 1`}</span>
             </div>
           ))}
         </div>
