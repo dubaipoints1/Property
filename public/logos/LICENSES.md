@@ -4,19 +4,22 @@ This directory holds bank and airline-programme logos used by the site.
 
 ## Status
 
-As of 2026-05-29, this directory holds a **mix**: 9 files are real brand
-SVGs sourced per the replacement rule below (see the source log), and the
-remaining 6 are **placeholder text-marks** authored by DubaiPoints — not
-official brand marks — rendering the bank/programme name in a neutral
+As of 2026-05-29, this directory holds a **mix**: 10 files are real brand
+marks sourced per the replacement rule below (see the source log), and
+the remaining 5 are **placeholder text-marks** authored by DubaiPoints —
+not official brand marks — rendering the bank/programme name in a neutral
 serif until a clean asset is sourced.
 
-- **Real marks (9):** banks/fab, banks/adcb, banks/hsbc, banks/citi,
-  banks/standard-chartered, airlines/qatar-privilege-club,
-  airlines/etihad-guest, airlines/skywards, airlines/marriott-bonvoy.
-- **Still placeholders (6):** banks/emirates-nbd (official asset is
-  PNG-only — pending a format decision), banks/dib, banks/adib,
-  banks/cbd, banks/emirates-islamic, banks/rakbank (no clean free source
-  found). Each renders the name in serif and falls back gracefully.
+- **Real marks (10):** banks/emirates-nbd (PNG, official brand kit;
+  resolved via `BankLogo` `PNG_FORMAT_SLUGS` set), banks/fab, banks/adcb,
+  banks/hsbc, banks/citi, banks/standard-chartered,
+  airlines/qatar-privilege-club, airlines/etihad-guest, airlines/skywards,
+  airlines/marriott-bonvoy.
+- **Still placeholders (5):** banks/dib, banks/adib, banks/cbd,
+  banks/emirates-islamic, banks/rakbank (no clean free source found —
+  no Wikimedia {{PD-textlogo}} entry, no public brand-kit page with a
+  downloadable asset). Each renders the name in serif and falls back
+  gracefully.
 
 ## Replacement rule
 
