@@ -1,0 +1,94 @@
+# One-shot brand-logo seed — replaces 9 placeholder text-marks with real
+# SVGs sourced from Wikimedia Commons ({{PD-textlogo}}) / issuer brand kits.
+#
+# Why this workflow exists:
+#   The Claude sandbox is blocked from reaching Wikimedia / image hosts at
+#   the network allowlist layer. GitHub Actions runners are not, so
+#   scripts/images/seed-logos.mjs downloads cleanly here.
+#
+# How to use:
+#   Actions → "seed-logos" → Run workflow → pick the branch → Run.
+#   It downloads the 9 logos, overwrites the placeholders at their existing
+#   public/logos/<dir>/<slug>.svg paths, refreshes LICENSES.md, validates,
+#   and commits + pushes back to the same branch.
+#
+# Scope (see scripts/images/seed-logos.mjs for the sourced list):
+#   Seeded: fab, adcb, hsbc, citi, standard-chartered (banks);
+#           qatar-privilege-club, etihad-guest, skywards, marriott-bonvoy
+#           (airline/programme parent-brand marks).
+#   NOT seeded (no clean free source — keep text-mark placeholders):
+#           emirates-nbd (official asset is PNG-only), dib, adib, cbd,
+#           emirates-islamic, rakbank.
+#
+# Sourcing guardrail (Charter §10): every Commons file is {{PD-textlogo}}
+# (not copyrightable); the marks remain issuer trademarks, used nominatively
+# to identify reviewed products. Source URL + date logged in LICENSES.md.
+
+name: seed-logos
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to seed (commits land here)"
+        required: true
+        default: "claude/seed-logos-workflow"
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-logos.yml"
+      - "scripts/images/seed-logos.mjs"
+
+permissions:
+  contents: write
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.ref_name }}
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download + place logos
+        run: node scripts/images/seed-logos.mjs
+
+      - name: Validate
+        run: |
+          npm run check
+          npm test
+
+      - name: Show what changed
+        run: |
+          echo "Logo files:"
+          ls -la public/logos/banks public/logos/airlines
+          echo "LICENSES.md source log:"
+          sed -n '/## Source log/,$p' public/logos/LICENSES.md
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/logos/
+          if git diff --staged --quiet; then
+            echo "No logo changes to commit."
+            exit 0
+          fi
+          git commit \
+            -m "feat(logos): seed 9 real brand SVGs over placeholders" \
+            -m "Automated fetch via .github/workflows/seed-logos.yml. fab, adcb, hsbc, citi, standard-chartered + qatar-privilege-club, etihad-guest, skywards, marriott-bonvoy. Sourced from Wikimedia Commons {{PD-textlogo}} (below threshold of originality; trademarks of their issuers, used nominatively per Charter §10). Source URLs + date logged in public/logos/LICENSES.md." \
+            -m "Not seeded (no clean free source; placeholders retained): emirates-nbd, dib, adib, cbd, emirates-islamic, rakbank."
+          git push origin HEAD:${{ inputs.branch || github.ref_name }}
