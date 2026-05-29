@@ -19,6 +19,7 @@
 
 import BaseLayout from "./BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 import { getCollection } from "astro:content";
 
 interface Props {
@@ -210,6 +211,9 @@ const schema = {
         ) : (
           <div class="hero-img">{heroLabel}</div>
         )
+      )}
+      {toc.length >= 2 && (
+        <JumpToSection sections={toc} />
       )}
       <div class="dp-prose">
         <slot />

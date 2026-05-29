@@ -19,6 +19,7 @@ import BaseLayout from "./BaseLayout.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
 import StockImage from "~/components/StockImage.astro";
 import HeroImage from "~/components/cards/HeroImage.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
 
 interface Props {
@@ -41,6 +42,9 @@ interface Props {
   editorTake?: string;
   category?: string;
   score?: number;
+  /** H2 sections derived from MDX `headings`; chip renders when ≥ 2 entries.
+   * Closes the Head of UX audit's "no jump-nav on card reviews" finding. */
+  tocSections?: Array<{ id: string; label: string }>;
   verdictLabel?: string;
   lastVerified: Date;
   verifiedBy?: string;
@@ -86,6 +90,7 @@ const {
   sources,
   deck,
   heroImage,
+  tocSections = [],
 } = Astro.props;
 
 const fmt = (d: Date) =>
@@ -265,6 +270,10 @@ const schema = {
         See `.council/briefs/2026-05-20-phase-2a-2-0-pros-cons-verdict-
         amendment.md`.
       -->
+
+      {tocSections.length >= 2 && (
+        <JumpToSection sections={tocSections} />
+      )}
 
       <!-- Editorial prose (MDX slot) -->
       <div class="dp-prose">
