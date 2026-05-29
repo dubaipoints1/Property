@@ -517,9 +517,21 @@ export function getAllCards(): Array<CardData & { slug: string }> {
     .sort((a, b) => a.eligibility.minSalary - b.eligibility.minSalary);
 }
 
+/** Cards the issuer is still onboarding new applicants for. Filters out any
+ * card whose L2 entry carries `discontinuedForNewApplicants` (e.g. ENBD
+ * Manchester United, closed 2025-06-01). The slug page still renders for
+ * these — see /cards/[slug].astro using getAllCards — so existing
+ * cardholders can read the review and inbound links don't 404. Directory
+ * listings, the homepage intel band, and the bank-hub card grid should use
+ * this helper to surface only currently-applicable products to readers.
+ * Brief: .council/briefs/2026-05-28-cards-archived-schema-field.md */
+export function getActiveCards(): Array<CardData & { slug: string }> {
+  return getAllCards().filter((c) => !c.discontinuedForNewApplicants);
+}
+
 export function getEditorConfirmedCards(): Array<CardData & { slug: string }> {
   const matcherKeys = ["annualFee", "fxFee", "eligibility", "earnRates"];
-  return getAllCards().filter((c) => {
+  return getActiveCards().filter((c) => {
     for (const k of matcherKeys) {
       const p = c._provenance[k];
       if (p === "scraped" || p === "needs-review") return false;
@@ -531,14 +543,16 @@ export function getEditorConfirmedCards(): Array<CardData & { slug: string }> {
 export function getCardsByBank(
   bankSlug: string,
 ): Array<CardData & { slug: string }> {
-  return getAllCards().filter((c) => c.bank === bankSlug);
+  return getActiveCards().filter((c) => c.bank === bankSlug);
 }
 
-/** Find all cards whose _features array includes the given type. */
+/** Find all currently-issued cards whose _features array includes the given
+ * type. Filters out discontinued cards so perk-based discovery does not
+ * recommend products closed to new applicants. */
 export function getCardsWithFeature(
   featureType: CardFeature["type"],
 ): Array<CardData & { slug: string }> {
-  return getAllCards().filter((c) =>
+  return getActiveCards().filter((c) =>
     c._features.some((f) => f.type === featureType),
   );
 }

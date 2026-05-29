@@ -1,11 +1,24 @@
 ---
-status: open
+status: closed-resolved
 tier: T3
 raised-by: Lifestyle-Culture Editor, via PR #166 Chairman review (28 May 2026)
 owner: Technical Lead
-chairman-status: pending
-chairman-date: null
+chairman-status: approved
+chairman-date: 2026-05-28
+resolution: path-(c) — filter via existing L2 discontinuedForNewApplicants field; no schema change to the cards collection
 ---
+
+> **Resolution (28 May 2026):** Implemented as path (c) below — neither
+> schema duplication (path a) nor per-card editorial banner-only (path b),
+> but a `getActiveCards()` helper in `src/lib/cardsData.ts` that filters
+> the L2 `discontinuedForNewApplicants` field already present on Manchester
+> United. Every directory / index / homepage / bank-hub / airline-page
+> listing now uses `getActiveCards()`; `/cards/[slug].astro` keeps using
+> `getAllCards()` so the review page remains reachable for existing
+> cardholders and inbound links. `SpecCard.astro` already renders the
+> "Closed to new applications" badge on the slug page. No content.config.ts
+> schema change required; no L3 frontmatter duplication of L2 truth.
+
 
 # Brief — add `archived` field to the cards content collection
 

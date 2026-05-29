@@ -28,12 +28,12 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
-import { getAllCards } from "~/lib/cardsData";
+import { getActiveCards } from "~/lib/cardsData";
 
 const allGuides = await getCollection("guides");
 const allPrograms = await getCollection("programs");
 const allBanks = await getCollection("banks");
-const cards = getAllCards();
+const cards = getActiveCards();
 
 const fmtShort = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });

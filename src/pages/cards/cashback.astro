@@ -1,9 +1,9 @@
 ---
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
-import { getAllCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
 
-const cashbackCards = getAllCards().filter((c) =>
+const cashbackCards = getActiveCards().filter((c) =>
   c.categories.includes("cashback"),
 );
 const rows = await Promise.all(
