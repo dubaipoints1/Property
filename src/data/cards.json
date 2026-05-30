@@ -4906,7 +4906,7 @@
   },
   "fab-cashback": {
     "kfsUrl": "https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf",
-    "earnUnit": "FAB Rewards per AED 1 spent",
+    "earnUnit": "% cashback (paid as FAB Rewards)",
     "eligibility": {
       "minSalary": 5000,
       "salaryTransferRequired": false,
@@ -4915,15 +4915,16 @@
         "salaried"
       ]
     },
-    "lastVerified": "2026-05-20",
+    "lastVerified": "2026-05-30",
     "earnRates": {
       "dining": 5,
       "shopping": 5,
+      "international": 3,
       "everythingElse": 1,
       "_caps": {
         "min_monthly_spend_to_qualify_aed": 3000,
         "monthly_max_aed": 1000,
-        "notes": "AED 3,000 minimum monthly spend in the previous month required to earn any FAB Rewards. Maximum cashback cap AED 1,000 per month."
+        "notes": "AED 3,000 minimum monthly spend in the previous month required to earn any FAB Rewards. Maximum cashback cap AED 1,000 per month. AED 150/category sub-cap on the 5% bonus categories (5% × AED 3,000 = AED 150)."
       }
     },
     "loyaltyProgram": "FAB Rewards",
@@ -4962,7 +4963,7 @@
     ],
     "_provenance": {
       "kfsUrl": "editor-confirmed",
-      "earnUnit": "editor-confirmed",
+      "earnUnit": "editor-corrected",
       "eligibility": "editor-confirmed",
       "lastVerified": "editor-confirmed",
       "earnRates": "editor-corrected",
@@ -4981,7 +4982,7 @@
       "annualFeeWaiver": "editor-corrected"
     },
     "_lastScraped": "2026-05-10",
-    "_lastReviewed": "2026-05-20",
+    "_lastReviewed": "2026-05-30",
     "_scraped_freetext": {
       "perks": [
         "Apply for your new card by 15 May 2026.",
@@ -5226,7 +5227,7 @@
       "earnUnit": "editor-confirmed",
       "eligibility": "editor-corrected",
       "lastVerified": "editor-confirmed",
-      "earnRates": "editor-confirmed",
+      "earnRates": "editor-corrected",
       "loyaltyProgram": "editor-confirmed",
       "annualFee": "editor-confirmed",
       "network": "editor-confirmed",
