@@ -112,9 +112,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-fab-elite \
-            --query "black credit card luxury close up" \
+            --replace \
+            --query "luxury watch boutique storefront mall" \
             --orientation landscape \
-            --alt "Premium dark credit card on a textured surface"
+            --alt "Luxury watch and jewellery boutique storefront in a UAE mall"
 
       - name: Fetch card-emirates-nbd-etihad-guest-elevate
         env:
@@ -122,9 +123,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-etihad-guest-elevate \
-            --query "passport boarding pass airport" \
+            --replace \
+            --query "business class cabin window seat dimmed lighting" \
             --orientation landscape \
-            --alt "Passport and boarding pass on a travel desk"
+            --alt "Business-class cabin window seat with dimmed mood lighting"
 
       - name: Fetch card-emirates-nbd-darna-select-visa
         env:
@@ -132,9 +134,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-darna-select-visa \
-            --query "Dubai apartment keys interior" \
+            --replace \
+            --query "Dubai apartment balcony skyline view" \
             --orientation landscape \
-            --alt "Modern Dubai apartment interior"
+            --alt "Dubai apartment balcony with skyline view"
 
       - name: Fetch guide-expat-starter
         env:
@@ -233,9 +236,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-sc-platinum-x \
-            --query "private banking office leather desk" \
+            --replace \
+            --query "smartphone contactless payment online checkout" \
             --orientation landscape \
-            --alt "Private banking office interior"
+            --alt "Contactless mobile payment at an online checkout"
 
       - name: Fetch card-citi-cashback
         env:
@@ -243,9 +247,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-citi-cashback \
-            --query "shopping bags receipt cashback" \
+            --replace \
+            --query "grocery shelves trolley fresh produce" \
             --orientation landscape \
-            --alt "Shopping bags and a receipt"
+            --alt "Grocery shelves and a shopping trolley"
 
       - name: Fetch card-hsbc-live-plus
         env:
@@ -253,9 +258,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-hsbc-live-plus \
-            --query "shopping bags receipt cashback" \
+            --replace \
+            --query "restaurant table dining couple evening" \
             --orientation landscape \
-            --alt "Shopping bags and a receipt"
+            --alt "Couple dining at a modern restaurant in the evening"
 
       - name: Fetch card-cbd-one
         env:
@@ -263,9 +269,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-cbd-one \
-            --query "shopping bags receipt cashback" \
+            --replace \
+            --query "laptop coffee streaming subscription home" \
             --orientation landscape \
-            --alt "Shopping bags and a receipt"
+            --alt "Laptop and coffee at home with a streaming subscription on screen"
 
       - name: Fetch card-adib-cashback-visa
         env:
@@ -273,9 +280,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adib-cashback-visa \
-            --query "modern minimal banking architecture" \
+            --replace \
+            --query "Abu Dhabi modern geometric architecture minimal" \
             --orientation landscape \
-            --alt "Modern minimal banking architecture"
+            --alt "Modern geometric Abu Dhabi architectural facade"
 
       - name: Fetch card-dib-consumer-cashback
         env:
@@ -283,9 +291,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-dib-consumer-cashback \
-            --query "modern minimal banking architecture" \
+            --replace \
+            --query "Dubai mosque silhouette skyline dusk" \
             --orientation landscape \
-            --alt "Modern minimal banking architecture"
+            --alt "Dubai mosque silhouette against a dusk skyline"
 
       - name: Fetch card-mashreq-cashback
         env:
@@ -293,9 +302,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-mashreq-cashback \
-            --query "shopping bags receipt cashback" \
+            --replace \
+            --query "restaurant plated food delivery box" \
             --orientation landscape \
-            --alt "Shopping bags and a receipt"
+            --alt "Plated restaurant food beside a delivery box"
 
       - name: Fetch card-rakbank-world
         env:
@@ -303,9 +313,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-rakbank-world \
-            --query "shopping bags receipt cashback" \
+            --replace \
+            --query "supermarket trolley dining travel suitcase collage" \
             --orientation landscape \
-            --alt "Shopping bags and a receipt"
+            --alt "Mix of supermarket trolley, dining and travel suitcase scenes"
 
       - name: Fetch card-emirates-islamic-switch-cashback
         env:
@@ -313,9 +324,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-islamic-switch-cashback \
-            --query "modern minimal banking architecture" \
+            --replace \
+            --query "petrol station nozzle car refuelling" \
             --orientation landscape \
-            --alt "Modern minimal banking architecture"
+            --alt "Car refuelling at a modern petrol station"
 
       - name: Fetch card-emirates-nbd-voyager-world
         env:
@@ -323,9 +335,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-voyager-world \
-            --query "boarding pass passport airport" \
+            --replace \
+            --query "online travel booking laptop holiday planning" \
             --orientation landscape \
-            --alt "Boarding pass and passport on a travel desk"
+            --alt "Hands booking a holiday online via a laptop travel portal"
 
       - name: Fetch card-adcb-365-cashback
         env:
@@ -333,9 +346,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-365-cashback \
-            --query "Abu Dhabi corniche modern architecture" \
+            --replace \
+            --query "restaurant dinner table friends evening lights" \
             --orientation landscape \
-            --alt "Abu Dhabi corniche at golden hour"
+            --alt "Friends dining at a restaurant table in the evening"
 
       - name: Fetch card-adcb-betaqti
         env:
@@ -343,9 +357,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-betaqti \
-            --query "Abu Dhabi skyline evening" \
+            --replace \
+            --query "Sheikh Zayed Grand Mosque Abu Dhabi golden hour" \
             --orientation landscape \
-            --alt "Abu Dhabi skyline at evening"
+            --alt "Sheikh Zayed Grand Mosque Abu Dhabi at golden hour"
 
       - name: Fetch card-adcb-essential-cashback
         env:
@@ -353,9 +368,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-essential-cashback \
-            --query "Abu Dhabi corniche modern architecture" \
+            --replace \
+            --query "cinema popcorn movie tickets flat lay" \
             --orientation landscape \
-            --alt "Abu Dhabi corniche at golden hour"
+            --alt "Cinema popcorn and movie tickets on a flat lay"
 
       - name: Fetch card-adcb-lulu-platinum
         env:
@@ -363,9 +379,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-lulu-platinum \
-            --query "supermarket aisle bright shopping cart" \
+            --replace \
+            --query "supermarket fresh produce family weekly shop" \
             --orientation landscape \
-            --alt "Grocery aisle in a modern supermarket"
+            --alt "Family doing a weekly fresh-produce shop in a supermarket"
 
       - name: Fetch card-adcb-lulu-titanium-gold
         env:
@@ -373,9 +390,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-lulu-titanium-gold \
-            --query "supermarket aisle bright shopping cart" \
+            --replace \
+            --query "petrol pump fuel nozzle station" \
             --orientation landscape \
-            --alt "Grocery aisle in a modern supermarket"
+            --alt "Fuel nozzle at a modern petrol station"
 
       - name: Fetch card-adcb-shukran
         env:
@@ -383,9 +401,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-shukran \
-            --query "modern shopping mall walkway" \
+            --replace \
+            --query "kids clothing store rack family shopping" \
             --orientation landscape \
-            --alt "Modern shopping-mall walkway"
+            --alt "Children's clothing rack in a family fashion store"
 
       - name: Fetch card-adcb-talabat
         env:
@@ -393,9 +412,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-talabat \
-            --query "food delivery scooter city street" \
+            --replace \
+            --query "food delivery rider scooter Dubai street night" \
             --orientation landscape \
-            --alt "Food-delivery scooter rider in a city street"
+            --alt "Food-delivery rider on a scooter in a Dubai street at night"
 
       - name: Fetch card-adcb-touchpoints-infinite
         env:
@@ -403,9 +423,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-touchpoints-infinite \
-            --query "Abu Dhabi corniche modern architecture" \
+            --replace \
+            --query "airport lounge premium seating panoramic view" \
             --orientation landscape \
-            --alt "Abu Dhabi corniche at golden hour"
+            --alt "Premium airport lounge with panoramic seating"
 
       - name: Fetch card-adcb-touchpoints-platinum
         env:
@@ -413,9 +434,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-touchpoints-platinum \
-            --query "Abu Dhabi corniche modern architecture" \
+            --replace \
+            --query "Abu Dhabi Etihad Towers skyline dusk" \
             --orientation landscape \
-            --alt "Abu Dhabi corniche at golden hour"
+            --alt "Abu Dhabi Etihad Towers skyline at dusk"
 
       - name: Fetch card-adcb-touchpoints-titanium-gold
         env:
@@ -423,9 +445,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-touchpoints-titanium-gold \
-            --query "Abu Dhabi corniche modern architecture" \
+            --replace \
+            --query "Abu Dhabi corniche promenade morning" \
             --orientation landscape \
-            --alt "Abu Dhabi corniche at golden hour"
+            --alt "Abu Dhabi corniche promenade in the morning"
 
       - name: Fetch card-adcb-traveller
         env:
@@ -433,9 +456,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-traveller \
-            --query "boarding pass passport airport" \
+            --replace \
+            --query "luxury suitcase hotel hallway traveller arrival" \
             --orientation landscape \
-            --alt "Boarding pass and passport on a travel desk"
+            --alt "Traveller wheeling a luxury suitcase along a hotel hallway"
 
       - name: Fetch card-emirates-nbd-diners-club
         env:
@@ -443,9 +467,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-diners-club \
-            --query "business dinner restaurant table" \
+            --replace \
+            --query "fine dining tasting menu plated chef" \
             --orientation landscape \
-            --alt "Business dinner at a modern restaurant"
+            --alt "Plated fine-dining tasting menu at a chef's table"
 
       - name: Fetch card-emirates-nbd-dnata-platinum
         env:
@@ -453,9 +478,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-dnata-platinum \
-            --query "boarding pass passport airport" \
+            --replace \
+            --query "travel agent desk world map holiday brochure" \
             --orientation landscape \
-            --alt "Boarding pass and passport on a travel desk"
+            --alt "Travel-agent desk with holiday brochures and a world map"
 
       - name: Fetch card-emirates-nbd-dnata-world
         env:
@@ -463,9 +489,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-dnata-world \
-            --query "boarding pass passport airport" \
+            --replace \
+            --query "premium suitcase passport boarding gate terminal" \
             --orientation landscape \
-            --alt "Boarding pass and passport on a travel desk"
+            --alt "Premium suitcase and passport at an airport boarding gate"
 
       - name: Fetch card-emirates-nbd-duo
         env:
@@ -473,9 +500,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-duo \
-            --query "Dubai modern lifestyle cafe" \
+            --replace \
+            --query "two credit cards side by side flat lay marble" \
             --orientation landscape \
-            --alt "Modern Dubai lifestyle scene"
+            --alt "Two credit cards side by side on a marble desk flat lay"
 
       - name: Fetch card-emirates-nbd-etihad-guest-inspire
         env:
@@ -483,9 +511,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-etihad-guest-inspire \
-            --query "airplane wing sunset clouds" \
+            --replace \
+            --query "wide body airliner tail livery tarmac" \
             --orientation landscape \
-            --alt "Aircraft wing above the clouds at sunset"
+            --alt "Wide-body airliner tail livery on the tarmac"
 
       - name: Fetch card-emirates-nbd-go4it-gold
         env:
@@ -493,9 +522,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-go4it-gold \
-            --query "young person mobile payment cafe" \
+            --replace \
+            --query "Dubai Metro train platform commuter morning" \
             --orientation landscape \
-            --alt "Young person paying via phone in a café"
+            --alt "Commuter waiting on a Dubai Metro platform in the morning"
 
       - name: Fetch card-emirates-nbd-go4it-platinum
         env:
@@ -503,9 +533,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-go4it-platinum \
-            --query "young person mobile payment cafe" \
+            --replace \
+            --query "young professional cinema seats friends popcorn" \
             --orientation landscape \
-            --alt "Young person paying via phone in a café"
+            --alt "Young friends in cinema seats with popcorn"
 
       - name: Fetch card-emirates-nbd-lulu-247-platinum
         env:
@@ -513,9 +544,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-lulu-247-platinum \
-            --query "supermarket aisle bright shopping cart" \
+            --replace \
+            --query "hypermarket checkout bagging weekly groceries" \
             --orientation landscape \
-            --alt "Grocery aisle in a modern supermarket"
+            --alt "Hypermarket checkout bagging a weekly grocery haul"
 
       - name: Fetch card-emirates-nbd-lulu-247-titanium
         env:
@@ -523,9 +555,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-lulu-247-titanium \
-            --query "supermarket aisle bright shopping cart" \
+            --replace \
+            --query "grocery basket bread vegetables corner shop" \
             --orientation landscape \
-            --alt "Grocery aisle in a modern supermarket"
+            --alt "Grocery basket with bread and vegetables at a corner shop"
 
       - name: Fetch card-emirates-nbd-marriott-bonvoy-world
         env:
@@ -533,9 +566,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-marriott-bonvoy-world \
-            --query "luxury hotel lobby modern" \
+            --replace \
+            --query "boutique hotel king bedroom city view" \
             --orientation landscape \
-            --alt "Luxury hotel lobby with warm lighting"
+            --alt "Boutique hotel king bedroom with a city view"
 
       - name: Fetch card-emirates-nbd-marriott-bonvoy-world-elite
         env:
@@ -543,9 +577,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-marriott-bonvoy-world-elite \
-            --query "luxury hotel lobby modern" \
+            --replace \
+            --query "luxury hotel suite infinity pool sunset view" \
             --orientation landscape \
-            --alt "Luxury hotel lobby with warm lighting"
+            --alt "Luxury hotel suite with an infinity pool at sunset"
 
       - name: Fetch card-emirates-nbd-mastercard-platinum
         env:
@@ -553,9 +588,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-mastercard-platinum \
-            --query "shopping bags receipt cashback" \
+            --replace \
+            --query "credit card backup wallet flat lay minimal" \
             --orientation landscape \
-            --alt "Shopping bags and a receipt"
+            --alt "Backup credit card in a minimal wallet flat lay"
 
       - name: Fetch card-emirates-nbd-noon-one
         env:
@@ -563,9 +599,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-noon-one \
-            --query "online shopping laptop boxes" \
+            --replace \
+            --query "online shopping smartphone parcels doorstep delivery" \
             --orientation landscape \
-            --alt "Online shopping laptop and packed boxes"
+            --alt "Online shopping smartphone next to parcels at the doorstep"
 
       - name: Fetch card-emirates-nbd-share-visa-infinite
         env:
@@ -573,9 +610,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-share-visa-infinite \
-            --query "shopping mall lifestyle people" \
+            --replace \
+            --query "Mall of the Emirates atrium luxury shoppers" \
             --orientation landscape \
-            --alt "Modern shopping centre with lifestyle shoppers"
+            --alt "Atrium of a Dubai shopping mall with luxury-brand shoppers"
 
       - name: Fetch card-emirates-nbd-share-visa-signature
         env:
@@ -583,9 +621,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-share-visa-signature \
-            --query "shopping mall lifestyle people" \
+            --replace \
+            --query "Carrefour hypermarket trolley aisle weekly shop" \
             --orientation landscape \
-            --alt "Modern shopping centre with lifestyle shoppers"
+            --alt "Trolley in a hypermarket aisle on a weekly shop"
 
       - name: Fetch card-emirates-nbd-skywards-signature
         env:
@@ -593,9 +632,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-skywards-signature \
-            --query "airplane wing sunset clouds" \
+            --replace \
+            --query "A380 double deck aircraft gate Dubai International" \
             --orientation landscape \
-            --alt "Aircraft wing above the clouds at sunset"
+            --alt "Double-deck A380 aircraft at a Dubai International gate"
 
       - name: Fetch card-emirates-nbd-u-by-emaar-family
         env:
@@ -603,9 +643,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-u-by-emaar-family \
-            --query "Dubai apartment interior keys" \
+            --replace \
+            --query "Dubai Mall fountain family weekend" \
             --orientation landscape \
-            --alt "Modern Dubai apartment interior"
+            --alt "Family at the Dubai Mall fountain on a weekend"
 
       - name: Fetch card-emirates-nbd-u-by-emaar-infinite
         env:
@@ -613,9 +654,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-u-by-emaar-infinite \
-            --query "Dubai apartment interior keys" \
+            --replace \
+            --query "Burj Khalifa downtown Dubai skyline twilight" \
             --orientation landscape \
-            --alt "Modern Dubai apartment interior"
+            --alt "Downtown Dubai skyline with the Burj Khalifa at twilight"
 
       - name: Fetch card-emirates-nbd-u-by-emaar-infinite-emiratis
         env:
@@ -623,9 +665,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-u-by-emaar-infinite-emiratis \
-            --query "Dubai apartment interior keys" \
+            --replace \
+            --query "Address Downtown Dubai hotel pool deck dusk" \
             --orientation landscape \
-            --alt "Modern Dubai apartment interior"
+            --alt "Address Downtown Dubai-style hotel pool deck at dusk"
 
       - name: Fetch card-emirates-nbd-visa-flexi
         env:
@@ -633,9 +676,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-visa-flexi \
-            --query "shopping bags receipt cashback" \
+            --replace \
+            --query "AED dirham banknotes wallet flat lay" \
             --orientation landscape \
-            --alt "Shopping bags and a receipt"
+            --alt "UAE dirham banknotes in a wallet flat lay"
 
       - name: Fetch card-emirates-nbd-visa-infinite
         env:
@@ -643,9 +687,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-visa-infinite \
-            --query "Dubai modern lifestyle cafe" \
+            --replace \
+            --query "executive desk pen leather portfolio salary slip" \
             --orientation landscape \
-            --alt "Modern Dubai lifestyle scene"
+            --alt "Executive desk with leather portfolio and salary documents"
 
       - name: Fetch card-emirates-nbd-visa-platinum
         env:
@@ -653,9 +698,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-visa-platinum \
-            --query "Dubai modern lifestyle cafe" \
+            --replace \
+            --query "Dubai cafe latte laptop morning lifestyle" \
             --orientation landscape \
-            --alt "Modern Dubai lifestyle scene"
+            --alt "Dubai cafe morning latte and laptop on a marble counter"
 
       - name: Fetch card-emirates-nbd-webshopper
         env:
@@ -663,9 +709,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-webshopper \
-            --query "online shopping checkout laptop" \
+            --replace \
+            --query "ecommerce checkout cart icon laptop keyboard close up" \
             --orientation landscape \
-            --alt "Online shopping checkout on a laptop"
+            --alt "Close-up of an e-commerce checkout cart on a laptop keyboard"
 
       - name: Fetch card-fab-cashback
         env:
@@ -673,9 +720,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-fab-cashback \
-            --query "shopping bags receipt cashback" \
+            --replace \
+            --query "cafe brunch table friends weekend Dubai" \
             --orientation landscape \
-            --alt "Shopping bags and a receipt"
+            --alt "Friends at a weekend brunch table at a Dubai cafe"
 
       - name: Fetch card-fab-etihad-guest-infinite
         env:
@@ -683,9 +731,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-fab-etihad-guest-infinite \
-            --query "airplane wing sunset clouds" \
+            --replace \
+            --query "wide body aircraft taxiing runway dawn Abu Dhabi" \
             --orientation landscape \
-            --alt "Aircraft wing above the clouds at sunset"
+            --alt "Wide-body aircraft taxiing on an Abu Dhabi runway at dawn"
 
       - name: Fetch card-fab-world-elite
         env:
@@ -693,9 +742,10 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-fab-world-elite \
-            --query "shopping bags receipt cashback" \
+            --replace \
+            --query "first class private cabin suite champagne service" \
             --orientation landscape \
-            --alt "Shopping bags and a receipt"
+            --alt "First-class private cabin suite with champagne service"
 
       - name: Fetch bank-adib
         env:
@@ -766,6 +816,62 @@ jobs:
             --query "Asia Africa banking modern building" \
             --orientation landscape \
             --alt "Modern international bank tower"
+
+      - name: Fetch card-emirates-nbd-darna-visa-infinite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-darna-visa-infinite \
+            --replace \
+            --query "Dubai Marina luxury penthouse interior sunset" \
+            --orientation landscape \
+            --alt "Luxury Dubai Marina penthouse interior at sunset"
+
+      - name: Fetch card-emirates-nbd-darna-visa-signature
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-darna-visa-signature \
+            --replace \
+            --query "Downtown Dubai Burj Khalifa apartment view" \
+            --orientation landscape \
+            --alt "Downtown Dubai apartment with Burj Khalifa view"
+
+      - name: Fetch card-emirates-nbd-manchester-united
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-manchester-united \
+            --replace \
+            --query "football stadium floodlights red kit fans evening" \
+            --orientation landscape \
+            --alt "Football stadium under floodlights"
+
+      - name: Fetch card-emirates-nbd-priority-banking-visa-infinite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-priority-banking-visa-infinite \
+            --replace \
+            --query "private banking lounge leather armchair Dubai window" \
+            --orientation landscape \
+            --alt "Private banking lounge interior with city window"
+
+      - name: Fetch card-emirates-nbd-skywards-infinite
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug card-emirates-nbd-skywards-infinite \
+            --replace \
+            --query "Emirates A380 business class suite sliding door" \
+            --orientation landscape \
+            --alt "Wide-body business-class suite cabin"
+
       - name: Run validation
         run: |
           npm run check
