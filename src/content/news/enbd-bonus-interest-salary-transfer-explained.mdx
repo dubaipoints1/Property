@@ -1,0 +1,142 @@
+---
+title: "ENBD's bonus-interest salary transfer: 5% to 6% on AED 25,000 for six months, explained in AED"
+description: "Emirates NBD's 1 February – 30 June 2026 cycle pays bonus interest on a salary-transfer balance instead of a fixed cash sum. Here's what it actually pays in AED, who clears the gates, and how it compares to a cash-bonus cycle."
+publishedAt: 2026-05-29
+category: salary-transfer
+relatedCards:
+  - emirates-nbd-skywards-infinite
+  - emirates-nbd-visa-infinite
+relatedBanks:
+  - emirates-nbd
+sources:
+  - https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more
+---
+
+Most UAE salary-transfer offers pay a fixed cash bonus — AED 1,500 at the
+mid band, AED 5,000 at the top. **Emirates NBD's current cycle isn't
+that.** It pays **bonus interest** on the account balance instead. The
+upside is uncapped at the top end; the downside is you need to actually
+hold money in the account to earn it.
+
+We verified the live terms against ENBD's published campaign page on
+29 May 2026. Here is what the offer actually pays in AED, and how to
+think about it against the cash-bonus cycles closing at FAB, RAKBANK,
+HSBC and Emirates Islamic today.
+
+## The mechanic
+
+The promotion runs **1 February – 30 June 2026**. To enrol you need to be
+either a **first-time ENBD account holder**, or an existing customer
+**who has not transferred salary to ENBD in the prior six months**. The
+gates are:
+
+- Transfer a salary of **AED 10,000 or more** to a new Millionaire,
+  Current or Savings account.
+- Maintain a **monthly average balance of AED 25,000** in that account.
+
+When both fire, ENBD pays bonus interest on the average balance over a
+**6-month reward window**:
+
+| Resident profile | Base bonus interest | With ENBD credit card + AED 10,000 spend in 60 days |
+|---|---|---|
+| UAE Nationals | 5.50% p.a. | 6.00% p.a. |
+| Residents | 5.00% p.a. | 5.50% p.a. |
+
+Two things move the rate: nationality (+0.50%) and a credit card spending
+hurdle (+0.50%). Both are additive.
+
+## What it actually pays — AED maths at three balances
+
+Bonus interest accrues on the **monthly average balance**, paid over
+six months. Simple-interest arithmetic on the AED 25,000 floor:
+
+| Avg balance | Resident base (5.00%) | Resident + card (5.50%) | Emirati + card (6.00%) |
+|---|---|---|---|
+| AED 25,000 (floor) | AED 625 | AED 688 | AED 750 |
+| AED 50,000 | AED 1,250 | AED 1,375 | AED 1,500 |
+| AED 100,000 | AED 2,500 | AED 2,750 | AED 3,000 |
+
+(All figures = balance × annualised rate × 0.5 — i.e. half a year of
+interest at the published p.a. rate. Actual payout depends on whether
+the bank computes average daily or month-end and on any fees deducted;
+confirm at enrolment.)
+
+Read across: a UAE resident on the base 5% who parks **AED 50,000** for
+six months banks roughly **AED 1,250** — comparable to a mid-band cash
+bonus at FAB or RAKBANK. At **AED 100,000** the same resident clears
+**AED 2,500**, which is roughly the top-band cash bonus at most banks
+without needing a high-band salary.
+
+## How it stacks against the cash-bonus cycles closing today
+
+The four cash-bonus cycles that ended 31 May 2026 ([wrap-up here](/news/may-2026-welcome-cycles-end-31-may/))
+paid a fixed sum keyed to your salary band: typically AED 1,500 at the
+AED 5,000–10,000 band, AED 3,000 at the AED 10,000–25,000 band, AED 4,500–6,000
+above that. The reader profile that benefits from ENBD's cycle is
+different:
+
+- **Cash-bonus cycles reward salary band.** Higher salary → higher cash sum,
+  regardless of how much you actually keep on deposit.
+- **ENBD's bonus-interest cycle rewards balance.** Higher balance → higher
+  interest, regardless of how high your salary is above the AED 10,000
+  floor.
+
+If you draw a AED 12,000 salary and run the account dry every month,
+ENBD's offer pays nothing — you don't clear the AED 25,000 average
+balance gate. If you draw AED 30,000 and a parent or a windfall just put
+AED 100,000 in your account, ENBD's offer clears materially more than
+any cash-bonus alternative.
+
+## The credit-card lever
+
+The +0.50% uplift requires:
+
+- Taking an ENBD credit card alongside the account.
+- Spending AED 10,000 on it within 60 days.
+
+At AED 25,000 balance the +0.50% lever is worth roughly **AED 63** over
+six months. At AED 100,000 it's **AED 250**. The arithmetic only swings
+hard at high balances — at the floor the AED 10,000 spend gate is a
+heavier ask than the +0.50% upside justifies on its own, but ENBD's
+credit-card portfolio carries its own welcome bonuses and lounge
+benefits, so the card is rarely the wrong call independently.
+
+## What it doesn't cover, and the catches we'd flag
+
+- **There is no fixed cash bonus.** If you read the offer expecting an
+  AED 5,000 cheque to clear in month two, it won't. The reward is the
+  bonus-interest credit.
+- **The 6-month window is fixed.** If you transferred salary on 1 February
+  the reward window has been running and is most of the way through; if
+  you enrol now your window runs roughly through 29 November regardless
+  of when the campaign window itself closes on 30 June. (Confirm on
+  enrolment — payout timing of the interest credit varies.)
+- **Eligibility is one-shot.** Either you're a first-ever ENBD account
+  holder, or you've not transferred salary to ENBD in the prior six
+  months. Cycle through ENBD twice for the bonus and you won't qualify
+  the second time inside the same year.
+
+## Our tracker treatment
+
+Our `salaryTransferOffers` schema currently models cash-bonus cycles
+(`rewardType: cash | voucher | cashback_monthly | points`) and doesn't
+yet have an `interest_bonus` shape — so this offer is **described in
+prose on the [Emirates NBD bank hub](/banks/emirates-nbd/)** rather than
+appearing as a band-and-bonus row in the live
+[tracker](/salary-transfer/). The schema gap is on the technical-lead
+queue; until it lands the prose on the bank hub is canonical for this
+cycle.
+
+## Should you take it?
+
+Run the numbers on **your own** average balance, not the rate. If you
+can hold AED 50,000+ on deposit for six months without it eating into
+spending, the maths clears AED 1,250+ — competitive with any cash-bonus
+cycle now closed. If your salary sits in the AED 5,000–10,000 band, the
+AED 10,000 minimum salary gate locks you out anyway. If your salary
+clears AED 10,000 but the account empties every month, the offer pays
+literally nothing — a cash-bonus cycle would have at least cleared the
+mid-band figure regardless of post-payday balance.
+
+Apply by **30 June 2026** to capture this cycle; the next ENBD
+salary-transfer cycle is expected mid-Q3. We'll file when it opens.
