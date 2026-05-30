@@ -112,7 +112,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-fab-elite \
-            --replace \
             --query "luxury watch boutique storefront mall" \
             --orientation landscape \
             --alt "Luxury watch and jewellery boutique storefront in a UAE mall"
@@ -123,7 +122,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-etihad-guest-elevate \
-            --replace \
             --query "business class cabin window seat dimmed lighting" \
             --orientation landscape \
             --alt "Business-class cabin window seat with dimmed mood lighting"
@@ -134,7 +132,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-darna-select-visa \
-            --replace \
             --query "Dubai apartment balcony skyline view" \
             --orientation landscape \
             --alt "Dubai apartment balcony with skyline view"
@@ -236,7 +233,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-sc-platinum-x \
-            --replace \
             --query "smartphone contactless payment online checkout" \
             --orientation landscape \
             --alt "Contactless mobile payment at an online checkout"
@@ -247,7 +243,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-citi-cashback \
-            --replace \
             --query "grocery shelves trolley fresh produce" \
             --orientation landscape \
             --alt "Grocery shelves and a shopping trolley"
@@ -258,7 +253,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-hsbc-live-plus \
-            --replace \
             --query "restaurant table dining couple evening" \
             --orientation landscape \
             --alt "Couple dining at a modern restaurant in the evening"
@@ -269,7 +263,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-cbd-one \
-            --replace \
             --query "laptop coffee streaming subscription home" \
             --orientation landscape \
             --alt "Laptop and coffee at home with a streaming subscription on screen"
@@ -280,7 +273,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adib-cashback-visa \
-            --replace \
             --query "Abu Dhabi modern geometric architecture minimal" \
             --orientation landscape \
             --alt "Modern geometric Abu Dhabi architectural facade"
@@ -291,7 +283,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-dib-consumer-cashback \
-            --replace \
             --query "Dubai mosque silhouette skyline dusk" \
             --orientation landscape \
             --alt "Dubai mosque silhouette against a dusk skyline"
@@ -302,7 +293,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-mashreq-cashback \
-            --replace \
             --query "restaurant plated food delivery box" \
             --orientation landscape \
             --alt "Plated restaurant food beside a delivery box"
@@ -313,7 +303,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-rakbank-world \
-            --replace \
             --query "supermarket trolley dining travel suitcase collage" \
             --orientation landscape \
             --alt "Mix of supermarket trolley, dining and travel suitcase scenes"
@@ -324,7 +313,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-islamic-switch-cashback \
-            --replace \
             --query "petrol station nozzle car refuelling" \
             --orientation landscape \
             --alt "Car refuelling at a modern petrol station"
@@ -335,7 +323,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-voyager-world \
-            --replace \
             --query "online travel booking laptop holiday planning" \
             --orientation landscape \
             --alt "Hands booking a holiday online via a laptop travel portal"
@@ -346,7 +333,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-365-cashback \
-            --replace \
             --query "restaurant dinner table friends evening lights" \
             --orientation landscape \
             --alt "Friends dining at a restaurant table in the evening"
@@ -357,7 +343,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-betaqti \
-            --replace \
             --query "Sheikh Zayed Grand Mosque Abu Dhabi golden hour" \
             --orientation landscape \
             --alt "Sheikh Zayed Grand Mosque Abu Dhabi at golden hour"
@@ -368,7 +353,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-essential-cashback \
-            --replace \
             --query "cinema popcorn movie tickets flat lay" \
             --orientation landscape \
             --alt "Cinema popcorn and movie tickets on a flat lay"
@@ -379,7 +363,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-lulu-platinum \
-            --replace \
             --query "supermarket fresh produce family weekly shop" \
             --orientation landscape \
             --alt "Family doing a weekly fresh-produce shop in a supermarket"
@@ -390,7 +373,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-lulu-titanium-gold \
-            --replace \
             --query "petrol pump fuel nozzle station" \
             --orientation landscape \
             --alt "Fuel nozzle at a modern petrol station"
@@ -401,7 +383,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-shukran \
-            --replace \
             --query "kids clothing store rack family shopping" \
             --orientation landscape \
             --alt "Children's clothing rack in a family fashion store"
@@ -412,7 +393,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-talabat \
-            --replace \
             --query "food delivery rider scooter Dubai street night" \
             --orientation landscape \
             --alt "Food-delivery rider on a scooter in a Dubai street at night"
@@ -423,7 +403,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-touchpoints-infinite \
-            --replace \
             --query "airport lounge premium seating panoramic view" \
             --orientation landscape \
             --alt "Premium airport lounge with panoramic seating"
@@ -434,7 +413,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-touchpoints-platinum \
-            --replace \
             --query "Abu Dhabi Etihad Towers skyline dusk" \
             --orientation landscape \
             --alt "Abu Dhabi Etihad Towers skyline at dusk"
@@ -445,7 +423,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-touchpoints-titanium-gold \
-            --replace \
             --query "Abu Dhabi corniche promenade morning" \
             --orientation landscape \
             --alt "Abu Dhabi corniche promenade in the morning"
@@ -456,7 +433,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-adcb-traveller \
-            --replace \
             --query "luxury suitcase hotel hallway traveller arrival" \
             --orientation landscape \
             --alt "Traveller wheeling a luxury suitcase along a hotel hallway"
@@ -467,7 +443,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-diners-club \
-            --replace \
             --query "fine dining tasting menu plated chef" \
             --orientation landscape \
             --alt "Plated fine-dining tasting menu at a chef's table"
@@ -478,7 +453,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-dnata-platinum \
-            --replace \
             --query "travel agent desk world map holiday brochure" \
             --orientation landscape \
             --alt "Travel-agent desk with holiday brochures and a world map"
@@ -489,7 +463,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-dnata-world \
-            --replace \
             --query "premium suitcase passport boarding gate terminal" \
             --orientation landscape \
             --alt "Premium suitcase and passport at an airport boarding gate"
@@ -500,7 +473,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-duo \
-            --replace \
             --query "two credit cards side by side flat lay marble" \
             --orientation landscape \
             --alt "Two credit cards side by side on a marble desk flat lay"
@@ -511,7 +483,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-etihad-guest-inspire \
-            --replace \
             --query "wide body airliner tail livery tarmac" \
             --orientation landscape \
             --alt "Wide-body airliner tail livery on the tarmac"
@@ -522,7 +493,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-go4it-gold \
-            --replace \
             --query "Dubai Metro train platform commuter morning" \
             --orientation landscape \
             --alt "Commuter waiting on a Dubai Metro platform in the morning"
@@ -533,7 +503,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-go4it-platinum \
-            --replace \
             --query "young professional cinema seats friends popcorn" \
             --orientation landscape \
             --alt "Young friends in cinema seats with popcorn"
@@ -544,7 +513,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-lulu-247-platinum \
-            --replace \
             --query "hypermarket checkout bagging weekly groceries" \
             --orientation landscape \
             --alt "Hypermarket checkout bagging a weekly grocery haul"
@@ -555,7 +523,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-lulu-247-titanium \
-            --replace \
             --query "grocery basket bread vegetables corner shop" \
             --orientation landscape \
             --alt "Grocery basket with bread and vegetables at a corner shop"
@@ -566,7 +533,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-marriott-bonvoy-world \
-            --replace \
             --query "boutique hotel king bedroom city view" \
             --orientation landscape \
             --alt "Boutique hotel king bedroom with a city view"
@@ -577,7 +543,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-marriott-bonvoy-world-elite \
-            --replace \
             --query "luxury hotel suite infinity pool sunset view" \
             --orientation landscape \
             --alt "Luxury hotel suite with an infinity pool at sunset"
@@ -588,7 +553,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-mastercard-platinum \
-            --replace \
             --query "credit card backup wallet flat lay minimal" \
             --orientation landscape \
             --alt "Backup credit card in a minimal wallet flat lay"
@@ -599,7 +563,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-noon-one \
-            --replace \
             --query "online shopping smartphone parcels doorstep delivery" \
             --orientation landscape \
             --alt "Online shopping smartphone next to parcels at the doorstep"
@@ -610,7 +573,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-share-visa-infinite \
-            --replace \
             --query "Mall of the Emirates atrium luxury shoppers" \
             --orientation landscape \
             --alt "Atrium of a Dubai shopping mall with luxury-brand shoppers"
@@ -621,7 +583,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-share-visa-signature \
-            --replace \
             --query "Carrefour hypermarket trolley aisle weekly shop" \
             --orientation landscape \
             --alt "Trolley in a hypermarket aisle on a weekly shop"
@@ -632,7 +593,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-skywards-signature \
-            --replace \
             --query "A380 double deck aircraft gate Dubai International" \
             --orientation landscape \
             --alt "Double-deck A380 aircraft at a Dubai International gate"
@@ -643,7 +603,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-u-by-emaar-family \
-            --replace \
             --query "Dubai Mall fountain family weekend" \
             --orientation landscape \
             --alt "Family at the Dubai Mall fountain on a weekend"
@@ -654,7 +613,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-u-by-emaar-infinite \
-            --replace \
             --query "Burj Khalifa downtown Dubai skyline twilight" \
             --orientation landscape \
             --alt "Downtown Dubai skyline with the Burj Khalifa at twilight"
@@ -665,7 +623,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-u-by-emaar-infinite-emiratis \
-            --replace \
             --query "Address Downtown Dubai hotel pool deck dusk" \
             --orientation landscape \
             --alt "Address Downtown Dubai-style hotel pool deck at dusk"
@@ -676,7 +633,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-visa-flexi \
-            --replace \
             --query "AED dirham banknotes wallet flat lay" \
             --orientation landscape \
             --alt "UAE dirham banknotes in a wallet flat lay"
@@ -687,7 +643,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-visa-infinite \
-            --replace \
             --query "executive desk pen leather portfolio salary slip" \
             --orientation landscape \
             --alt "Executive desk with leather portfolio and salary documents"
@@ -698,7 +653,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-visa-platinum \
-            --replace \
             --query "Dubai cafe latte laptop morning lifestyle" \
             --orientation landscape \
             --alt "Dubai cafe morning latte and laptop on a marble counter"
@@ -709,7 +663,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-webshopper \
-            --replace \
             --query "ecommerce checkout cart icon laptop keyboard close up" \
             --orientation landscape \
             --alt "Close-up of an e-commerce checkout cart on a laptop keyboard"
@@ -720,7 +673,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-fab-cashback \
-            --replace \
             --query "cafe brunch table friends weekend Dubai" \
             --orientation landscape \
             --alt "Friends at a weekend brunch table at a Dubai cafe"
@@ -731,7 +683,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-fab-etihad-guest-infinite \
-            --replace \
             --query "wide body aircraft taxiing runway dawn Abu Dhabi" \
             --orientation landscape \
             --alt "Wide-body aircraft taxiing on an Abu Dhabi runway at dawn"
@@ -742,7 +693,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-fab-world-elite \
-            --replace \
             --query "first class private cabin suite champagne service" \
             --orientation landscape \
             --alt "First-class private cabin suite with champagne service"
@@ -823,7 +773,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-darna-visa-infinite \
-            --replace \
             --query "Dubai Marina luxury penthouse interior sunset" \
             --orientation landscape \
             --alt "Luxury Dubai Marina penthouse interior at sunset"
@@ -834,7 +783,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-darna-visa-signature \
-            --replace \
             --query "Downtown Dubai Burj Khalifa apartment view" \
             --orientation landscape \
             --alt "Downtown Dubai apartment with Burj Khalifa view"
@@ -845,7 +793,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-manchester-united \
-            --replace \
             --query "football stadium floodlights red kit fans evening" \
             --orientation landscape \
             --alt "Football stadium under floodlights"
@@ -856,7 +803,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-priority-banking-visa-infinite \
-            --replace \
             --query "private banking lounge leather armchair Dubai window" \
             --orientation landscape \
             --alt "Private banking lounge interior with city window"
@@ -867,7 +813,6 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-skywards-infinite \
-            --replace \
             --query "Emirates A380 business class suite sliding door" \
             --orientation landscape \
             --alt "Wide-body business-class suite cabin"
@@ -891,8 +836,22 @@ jobs:
             echo "No new images to commit."
             exit 0
           fi
+          # Dynamic commit count (PR-#170 chairman T1 follow-up): the
+          # previous hardcoded "12 Pexels stock photos" line was stale once
+          # the workflow grew to 70+ fetch steps and into --replace re-fetch
+          # cycles. Count the actual diff so the message reflects what
+          # landed (new vs refreshed).
+          IMG_ADDED=$(git diff --staged --diff-filter=A --name-only -- public/images/stock | wc -l | tr -d ' ')
+          IMG_MODIFIED=$(git diff --staged --diff-filter=M --name-only -- public/images/stock | wc -l | tr -d ' ')
+          IMG_TOTAL=$((IMG_ADDED + IMG_MODIFIED))
+          if [ "$IMG_ADDED" -gt 0 ] && [ "$IMG_MODIFIED" -gt 0 ]; then
+            COUNT_LINE="${IMG_TOTAL} Pexels stock photos (${IMG_ADDED} new, ${IMG_MODIFIED} refreshed)"
+          elif [ "$IMG_MODIFIED" -gt 0 ]; then
+            COUNT_LINE="${IMG_MODIFIED} Pexels stock photos refreshed via --replace"
+          else
+            COUNT_LINE="${IMG_TOTAL} Pexels stock photos"
+          fi
           git commit \
-            -m "feat(images): Phase E.2 seed — 12 Pexels stock photos" \
-            -m "Automated fetch via .github/workflows/seed-images.yml. Stock photographs covering hero-cabin, wallet-hero-cards, programme-skywards, two top-card heroes, and six per-guide heroes. Every <StockImage> slot on the rebuilt homepage, /cards/, /guides/, /news/, and /airlines/ pages now resolves to real photography." \
-            -m "Each manifest entry carries full provenance (photographer name + URL, Pexels photo ID, source URL, Pexels licence). Per Charter §'No advertorial-driven recommendations', attribution renders via <ImageCredit> on every consumer page."
+            -m "feat(images): Phase E.2 seed — ${COUNT_LINE}" \
+            -m "Automated fetch via .github/workflows/seed-images.yml. Each manifest entry carries full provenance (photographer name + URL, Pexels photo ID, source URL, Pexels licence). Per Charter §'No advertorial-driven recommendations', attribution renders via <ImageCredit> on every consumer page."
           git push origin HEAD:${{ inputs.branch || github.ref_name }}
