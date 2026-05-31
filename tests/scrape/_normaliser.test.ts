@@ -489,6 +489,51 @@ test("C6 parseFxFee: sub-1.5% candidate returns null with parser warning", () =>
   );
 });
 
+test("§10 (2026-05-29) parseFxFee: cash-deposit line must not poison the credit-card margin parse", () => {
+  // The ADCB SoF lists both:
+  //   "Cash deposit/withdrawal in foreign currency: 0.525% flat"
+  //   "Foreign Currency transaction margin: 2.99% on every non-AED purchase"
+  // Pre-fix, the parser stopped at the 0.525% line (single-match
+  // text.match), returned null on plausibility, and never reached the
+  // 2.99% line — seeding fxFee: 0 across 10 ADCB cards. The recovery
+  // amendment requires explicit disambiguation: the cash line must be
+  // skipped via anti-trigger, the parser must continue iterating, and
+  // the 2.99% headline must be the value returned.
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "adcb-fx-cash-vs-margin.md"),
+  );
+  assert.equal(fixture.status, "ok", `Fixture must load: ${fixture.failReason ?? ""}`);
+
+  const draft = normalise(
+    "adcb",
+    {
+      slug: "adcb-touchpoints",
+      name: "ADCB TouchPoints Credit Card",
+      network: "Visa",
+      categories: ["everyday"],
+      loyaltyProgram: "ADCB TouchPoints",
+      salaryTransferRequired: false,
+      urls: {
+        product: "https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-ic.aspx",
+        kfs: null,
+        welcome: null,
+      },
+    },
+    [fixture],
+  );
+
+  assert.equal(
+    draft.fxFee,
+    2.99,
+    "must skip the 0.525% cash-deposit line and resolve to the 2.99% transaction-margin line",
+  );
+  assert.notEqual(
+    draft.fxFee,
+    0.525,
+    "the 0.525% cash line must never be promoted to headline FX fee",
+  );
+});
+
 test("C6 multi-tier SOF PDF: annualFee + fxFee return null with needs-review warning", () => {
   // Consolidated SOF / KFS PDFs list every card's tier on one page;
   // the parser must not guess. Both annualFee and fxFee return null
