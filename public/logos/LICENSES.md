@@ -21,6 +21,22 @@ serif until a clean asset is sourced.
   downloadable asset). Each renders the name in serif and falls back
   gracefully.
 
+  **Sourcing sweep (2026-05-30):** re-checked all 5. Wikimedia Commons
+  has no SVG logo for any of them (DIB's Commons category holds only
+  panoramio photos; the others have no category). Wikipedia hosts
+  `File:Commercial Bank of Dubai logo.svg` and `File:ADIB logo.svg` —
+  both are explicitly tagged **non-free / fair-use** ("All non-free
+  logos", "Wikipedia non-free files with NFUR stated"). Wikipedia
+  non-free uploads are NOT §10-licensed for our use; only Commons
+  {{PD-textlogo}} (below the threshold of originality) and issuer
+  brand kits qualify. No public brand-kit pages with downloadable
+  assets surfaced for DIB, Emirates Islamic, or RAKBANK. Next attempt
+  needs either (a) an issuer publishing a brand kit, (b) a Wikimedia
+  editor uploading to Commons under {{PD-textlogo}} with a below-
+  threshold-of-originality argument, or (c) a direct permission
+  request to each bank's PR/brand team — all three outside the
+  autonomous-safe envelope.
+
 ## Replacement rule
 
 Per the editorial style guide, real SVGs must be:
