@@ -160,26 +160,60 @@ function collectAedAmounts(window: string): Set<number> {
  * cross-border, forex, foreign exchange, currency conversion. The window
  * after the trigger uses [\s\S] (not [^.]) so phrasings with periods
  * between trigger and value still match (e.g. "Foreign currency. Charged
- * at 2.49%."). */
+ * at 2.49%.").
+ *
+ * Per the 2026-05-29 §10 emergency-correction amendment: iterates ALL
+ * candidate matches (not just the first) and skips any whose ±80-char
+ * context contains a cash-operation anti-trigger ("cash deposit",
+ * "withdrawal in foreign currency", "cash advance", etc.). The previous
+ * `text.match` single-match implementation stopped at the first hit —
+ * which, on ADCB's SoF, was the 0.525% cash-deposit line, poisoning the
+ * parse before it reached the real 2.99% transaction-margin line below.
+ * Anti-trigger discipline + multi-match iteration is the layer beneath
+ * the 1.5% plausibility floor; the floor catches a stray below-band
+ * candidate but doesn't prevent the parser from missing the real value
+ * on pages where both lines appear. */
 function parseFxFee(text: string): number | null {
   const trigger =
     /(?:FX|foreign\s+(?:currency|exchange)|non-AED|international\s+(?:transaction|spend|purchase)|cross-border|forex(?:\s+markup)?|currency\s+conversion)/i;
-  // Tight: trigger then up to 60 chars then digits + % (covers "FX fee 2.49%")
-  let m = text.match(
-    new RegExp(`${trigger.source}[\\s\\S]{0,60}?(\\d+(?:\\.\\d+)?)\\s*%`, "i"),
+  // Anti-trigger context: phrases that signal the candidate is NOT a
+  // credit-card FX transaction margin even though an FX-adjacent word
+  // sits in range. Cash operations have their own lower flat rate; VAT
+  // on the fee is a downstream tax line; interest-rate / APR text is a
+  // different fee entirely that happens to share prose with FX copy.
+  const antiTriggerRx =
+    /\b(?:cash\s+(?:deposit|withdrawal|advance)s?|(?:cash|atm)\s+disbursements?|withdrawal\s+(?:in|on)\s+foreign|deposit\s+(?:in|on)\s+foreign|VAT\s+on\s+(?:the\s+)?(?:FX|foreign)|interest\s+rate|monthly\s+rate|APR|outstanding\s+balance|per\s+month\b|minimum\s+payment)/i;
+
+  const inAntiContext = (idx: number, matchLen: number): boolean => {
+    const ctx = text.slice(
+      Math.max(0, idx - 80),
+      Math.min(text.length, idx + matchLen + 20),
+    );
+    return antiTriggerRx.test(ctx);
+  };
+
+  // Forward: trigger then up to 60 chars then digits + %
+  const fwdRx = new RegExp(
+    `${trigger.source}[\\s\\S]{0,60}?(\\d+(?:\\.\\d+)?)\\s*%`,
+    "ig",
   );
-  if (m) {
+  for (const m of text.matchAll(fwdRx)) {
+    if (inAntiContext(m.index ?? 0, m[0].length)) continue;
     const n = Number(m[1]);
     if (isPlausibleFxFee(n)) return n;
   }
+
   // Reverse: percent before trigger ("2.49% on foreign currency")
-  m = text.match(
-    new RegExp(`(\\d+(?:\\.\\d+)?)\\s*%[\\s\\S]{0,40}?${trigger.source}`, "i"),
+  const revRx = new RegExp(
+    `(\\d+(?:\\.\\d+)?)\\s*%[\\s\\S]{0,40}?${trigger.source}`,
+    "ig",
   );
-  if (m) {
+  for (const m of text.matchAll(revRx)) {
+    if (inAntiContext(m.index ?? 0, m[0].length)) continue;
     const n = Number(m[1]);
     if (isPlausibleFxFee(n)) return n;
   }
+
   return null;
 }
 
