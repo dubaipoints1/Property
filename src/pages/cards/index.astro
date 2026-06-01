@@ -29,7 +29,12 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getEntry } from "astro:content";
-import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import {
+  getActiveCards,
+  welcomeBonusDisplay,
+  welcomeBonusHeadline,
+  FEATURE_CHIP_LABELS,
+} from "~/lib/cardsData";
 import { formatEarnValue } from "~/lib/cardsDataFormat";
 
 const cards = await Promise.all(
@@ -73,15 +78,62 @@ function topEarnRate(card: typeof cards[number]["card"]): string | null {
   return `${formatEarnValue(best.value, card.earnUnit, card.categories)} on ${best.label}`;
 }
 
-// Perk chips — up to 2, free-text fallback to the typed _features list.
+// Perk chips — up to 2 short scan-affordances. Prefers typed `_features`
+// canonical labels (Cinema BOGO, Lounge access, Concierge etc.) over
+// free-text `perks[]`. Free-text fallback clips at the last whole word
+// inside 18 chars so the chip never reads "Complimentary unlimited D…".
 function perkChips(card: typeof cards[number]["card"]): string[] {
+  const seen = new Set<string>();
   const out: string[] = [];
+  for (const f of (card._features ?? []) as Array<{ type: string }>) {
+    if (out.length >= 2) break;
+    const label = FEATURE_CHIP_LABELS[f.type];
+    if (label && !seen.has(label)) {
+      seen.add(label);
+      out.push(label);
+    }
+  }
+  if (out.length >= 2) return out;
+  // Free-text fallback for cards without enough typed _features.
   for (const p of card.perks ?? []) {
     if (out.length >= 2) break;
-    // Trim verbose perks to under ~28 chars so the chip stays a chip.
-    out.push(p.length > 28 ? `${p.slice(0, 25)}…` : p);
+    let label = p;
+    if (label.length > 18) {
+      const cut = label.slice(0, 18);
+      const lastSpace = cut.lastIndexOf(" ");
+      label = (lastSpace > 8 ? cut.slice(0, lastSpace) : cut) + "…";
+    }
+    if (!seen.has(label)) {
+      seen.add(label);
+      out.push(label);
+    }
   }
   return out;
+}
+
+// Year-1 vs year-2 annual-fee qualifier. Cards with a joining premium
+// (joiningFee.amount > annualFee.amount) or a year-1 waiver render the
+// listing fee with an explicit "(year 2+)" tag so the bare AED figure
+// in the tile doesn't read as a contradiction against the body text.
+function annualFeeLabel(card: typeof cards[number]["card"]): {
+  amount: string;
+  qual: string | null;
+} {
+  const annual = `AED ${card.annualFee.amount.toLocaleString()}`;
+  const jf = card.joiningFee?.amount;
+  if (typeof jf === "number" && jf > card.annualFee.amount) {
+    return { amount: annual, qual: "year 2+" };
+  }
+  const waiver = card.annualFeeWaiver;
+  if (
+    waiver &&
+    typeof waiver === "object" &&
+    "year_one_waived" in waiver &&
+    waiver.year_one_waived === true
+  ) {
+    return { amount: annual, qual: "year 2+" };
+  }
+  return { amount: annual, qual: null };
 }
 ---
 
@@ -154,7 +206,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
               : <a href={f.href} class="dp-filter-pill">{f.label}</a>
           ))}
         </div>
-        <span class="cards-compare-sort">Sort: <strong>Welcome bonus</strong> ▾</span>
+        <span class="cards-compare-sort">Sorted by <strong>welcome bonus</strong></span>
       </div>
     </div>
 
@@ -163,38 +215,20 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
       {compareList.map((f) => {
         const earn = topEarnRate(f.card);
         const chips = perkChips(f.card);
+        const fee = annualFeeLabel(f.card);
+        const bonus = welcomeBonusHeadline(f.card.welcomeBonus);
         return (
           <li class="cards-row">
             <a href={`/cards/${f.card.slug}/`} class="cards-row-link">
               <div class="cards-row-art">
-                {/* Scaled card mock — used at >=640px. Below 640px the
-                    0.5× scale + negative margins read as a decorative
-                    chip rather than a card preview (F-UX-2). */}
-                <div class="dp-cr-mock" data-bank={f.card.bank} aria-hidden="true">
-                  <div class="dp-cr-mock-chip"></div>
-                  <div class="dp-cr-mock-row">
-                    <div class="b">{f.bankName}</div>
-                    <div class="dp-cr-mock-mark">{f.card.network.slice(0, 1)}</div>
-                  </div>
-                  <div class="n">{f.card.name}</div>
-                  <div class="b">{f.card.network}</div>
-                </div>
-                {/* Mobile thumbnail — 64×40 with bank logo (or initial
-                    fallback) on a navy-tinted square. Shown at <640px. */}
-                <div class="cards-row-thumb" data-bank={f.card.bank} aria-hidden="true">
-                  <img
-                    src={`/logos/banks/${f.card.bank}.svg`}
-                    alt=""
-                    width="40"
-                    height="24"
-                    loading="lazy"
-                    decoding="async"
-                    onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                  />
-                  <span class="cards-row-thumb-fallback">
-                    {f.bankName.split(/\s+/).map((w) => w[0]?.toUpperCase() ?? "").slice(0, 3).join("")}
-                  </span>
-                </div>
+                <StockImage
+                  slug={`card-${f.card.slug}`}
+                  coverTitle={f.card.name}
+                  coverCategory="Review"
+                  coverSize="thumb"
+                  class="cards-row-art-image"
+                  sizes="(max-width: 640px) 96px, 140px"
+                />
               </div>
               <div class="cards-row-id">
                 <span class="cards-row-bank">{f.bankName}</span>
@@ -207,18 +241,21 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
               </div>
               <div class="cards-row-bonus">
                 <span class="cards-row-label">Welcome bonus</span>
-                <span class="cards-row-value is-bonus">{welcomeBonusDisplay(f.card.welcomeBonus) ?? "—"}</span>
+                <span class="cards-row-value is-bonus">{bonus || "—"}</span>
               </div>
               <div class="cards-row-fee">
                 <span class="cards-row-label">Annual fee</span>
-                <span class="cards-row-value">AED {f.card.annualFee.amount.toLocaleString()}</span>
+                <span class="cards-row-value">
+                  {fee.amount}
+                  {fee.qual && <small class="cards-row-fee-qual"> ({fee.qual})</small>}
+                </span>
               </div>
               <div class="cards-row-earn">
                 <span class="cards-row-label">Top earn rate</span>
                 <span class="cards-row-value">{earn ?? "—"}</span>
               </div>
               <div class="cards-row-cta">
-                <span class="cards-row-cta-pill">Compare →</span>
+                <span class="cards-row-cta-pill">Read review →</span>
                 <span class="cards-row-verified">Verified {fmt(f.card.lastVerified)}</span>
               </div>
             </a>
@@ -461,17 +498,24 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     text-decoration: none;
     color: inherit;
   }
-  .cards-row-art .dp-cr-mock {
-    transform: scale(0.55);
-    transform-origin: left center;
-    width: 250px;
-    margin: -28px -90px -28px 0;
+  /* Per-card stock-image hero on the listing tile (F-UX-3, June 2026):
+     replaces the prior scaled card-mock + mobile bank-logo box. Single
+     element for both breakpoints; sizing controlled by .cards-row-art. */
+  .cards-row-art {
+    width: 140px;
+    height: 88px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-soft);
+    flex-shrink: 0;
   }
-  /* Mobile thumbnail — hidden until <640px, where it replaces the
-     scaled mock (F-UX-2). 64×40 navy-tinted square + bank logo
-     (or initials fallback when /logos/banks/<slug>.svg is missing). */
-  .cards-row-thumb { display: none; }
-  .cards-row-thumb-fallback { display: none; }
+  .cards-row-art :global(.cards-row-art-image),
+  .cards-row-art :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
   .cards-row-id { display: grid; gap: 4px; }
   .cards-row-bank {
     font-family: 'DM Sans', system-ui, sans-serif;
@@ -618,6 +662,18 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     margin-top: 4px;
   }
 
+  /* Year-1 vs year-2 annual-fee qualifier (F-UX-3). When a card has a
+     year-1 joining premium or a year-1 waiver, the bare AED figure in
+     the tile is the year-2+ rate; the qualifier disambiguates so the
+     reader doesn't see a contradiction against the body text. */
+  .cards-row-fee-qual {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.2px;
+  }
+
   /* ── Responsive ─────────────────────────────────────────────────── */
   @media (max-width: 960px) {
     .cards-top-grid { grid-template-columns: 1fr; }
@@ -625,19 +681,32 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
       grid-template-columns: 1fr;
       align-items: start;
     }
+    /* Mobile / tablet (F-UX-3): row stays a row. Card-art on the left,
+       bonus/fee/earn/cta on the right in a 2-column grid so the tile
+       reads as one scannable block rather than a single-column scroll. */
     .cards-row-link {
       grid-template-columns: 100px minmax(0, 1fr);
       gap: 14px;
     }
-    .cards-row-art .dp-cr-mock { width: 180px; margin: -20px -55px -20px 0; transform: scale(0.5); }
+    .cards-row-art {
+      width: 100px;
+      height: 64px;
+      align-self: start;
+    }
+    .cards-row-id {
+      grid-column: 2 / -1;
+    }
     .cards-row-bonus,
     .cards-row-fee,
-    .cards-row-earn,
-    .cards-row-cta {
-      grid-column: 1 / -1;
+    .cards-row-earn {
+      grid-column: 2 / -1;
       padding-left: 0;
     }
-    .cards-row-cta { justify-items: start; }
+    .cards-row-cta {
+      grid-column: 2 / -1;
+      padding-left: 0;
+      justify-items: start;
+    }
     .cards-callout-grid { grid-template-columns: 1fr; gap: 32px; }
     .cards-callout-ctas { grid-template-columns: 1fr; }
   }
@@ -647,43 +716,17 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     .cards-callout { padding: 40px 20px 48px; }
     .cards-row-link {
       padding: 14px;
-      grid-template-columns: 64px minmax(0, 1fr);
+      grid-template-columns: 96px minmax(0, 1fr);
       gap: 12px;
     }
-    /* Hide the scaled mock and show a clean 64×40 thumbnail with the
-       bank logo (F-UX-2). The mock at scale(0.5) inside a 100px col
-       with negative margins reads as a decorative chip. */
-    .cards-row-art .dp-cr-mock { display: none; }
-    .cards-row-thumb {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 64px;
-      height: 40px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, #0d3b6c 0%, #1a1a2e 100%);
-      overflow: hidden;
-      padding: 4px;
+    .cards-row-art {
+      width: 96px;
+      height: 60px;
     }
-    .cards-row-thumb img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      /* Bank SVGs are usually dark — tint to paper on the navy chip. */
-      filter: brightness(0) invert(1);
-      opacity: 0.92;
-    }
-    .cards-row-thumb-fallback {
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
-      color: var(--paper);
-      font-family: 'Fraunces', serif;
-      font-weight: 500;
-      font-size: 13px;
-      letter-spacing: 0.4px;
-      line-height: 1;
+    /* Hide perk chips on very small viewports — bonus + fee + earn
+       are the load-bearing decision facts at this width. */
+    @media (max-width: 480px) {
+      .cards-row-chips { display: none; }
     }
   }
 </style>

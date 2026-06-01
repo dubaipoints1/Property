@@ -561,6 +561,8 @@ export function getCardsWithFeature(
 // without astro:content. Re-export so existing imports keep working.
 export {
   welcomeBonusDisplay,
+  welcomeBonusHeadline,
+  FEATURE_CHIP_LABELS,
   annualFeeWaiverDisplay,
   isStructuredWelcomeBonus,
   isBifurcatedWelcomeBonus,
