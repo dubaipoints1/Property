@@ -147,6 +147,65 @@ export function welcomeBonusDisplay(
   return "";
 }
 
+/**
+ * Short form of the welcome bonus suitable for listing-tile chrome where
+ * vertical space is constrained. Prefers the editor-typed `headline` field
+ * on L2 (a clean one-line summary) and falls back to `${amount} ${unit}`
+ * only when no headline is set. Never appends `spend_threshold_aed`,
+ * `qualify_window_days`, or `notes` — those belong on the review page
+ * (`welcomeBonusDisplay` above), not on a scan-affordance.
+ *
+ * Charter §6 compliant: `headline` is editor-typed in L2, not LLM-re-extracted.
+ */
+export function welcomeBonusHeadline(
+  v:
+    | StructuredWelcomeBonus
+    | StructuredWelcomeBonusBifurcated
+    | string
+    | null
+    | undefined,
+): string {
+  if (v === undefined || v === null) return "";
+  if (typeof v === "string") return v;
+  if (isStructuredWelcomeBonus(v)) {
+    if (v.headline) return v.headline;
+    const amount = v.amount.toLocaleString();
+    const unit = REWARD_UNIT_LABELS[v.unit] ?? v.unit;
+    return `${amount} ${unit}`;
+  }
+  if (isBifurcatedWelcomeBonus(v)) {
+    const primary = v.with_salary_transfer ?? v.without_salary_transfer;
+    if (!primary) return "";
+    if (primary.headline) return primary.headline;
+    const amount = primary.amount.toLocaleString();
+    const unit = REWARD_UNIT_LABELS[primary.unit] ?? primary.unit;
+    return `${amount} ${unit}`;
+  }
+  return "";
+}
+
+/**
+ * Short canonical labels for typed `_features` discriminated-union entries.
+ * Used by listing-tile perk chips so the chips read as scan-affordances
+ * (one or two keywords each) instead of truncated marketing prose.
+ */
+export const FEATURE_CHIP_LABELS: Record<string, string> = {
+  cinema_bogo: "Cinema BOGO",
+  entertainer_bogo: "Entertainer",
+  lounge_access: "Lounge access",
+  hotel_discount: "Hotel discount",
+  hotel_earn_boost: "Hotel earn boost",
+  golf: "Golf",
+  status_match: "Status match",
+  insurance_life: "Life insurance",
+  insurance_travel: "Travel insurance",
+  concierge: "Concierge",
+  transit_card: "Nol / Salik",
+  valet: "Valet",
+  roadside_assistance: "Roadside assist",
+  travel_desk_discount: "Travel desk",
+};
+
 // ── Phase 2a.2: CardComparison helpers ───────────────────────────────────
 //
 // Pure helpers consumed by `src/components/cards/CardComparison.astro`
