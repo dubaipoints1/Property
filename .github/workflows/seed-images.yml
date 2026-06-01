@@ -196,6 +196,16 @@ jobs:
             --orientation landscape \
             --alt "Paperwork and laptop on an office desk"
 
+      - name: Fetch guide-uae-transfer-ratios-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug guide-uae-transfer-ratios-2026 \
+            --query "calculator banknotes desk math" \
+            --orientation landscape \
+            --alt "Calculator and banknotes on a desk — illustrating points-to-cash conversion math"
+
       - name: Fetch programme-skywards
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -215,6 +225,36 @@ jobs:
             --query "airport boarding pass summer travel" \
             --orientation landscape \
             --alt "Boarding pass and passport on a summer travel desk"
+
+      - name: Fetch news-enbd-bonus-interest-salary-transfer-explained
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug news-enbd-bonus-interest-salary-transfer-explained \
+            --query "savings deposit dirham banking" \
+            --orientation landscape \
+            --alt "Savings deposit slip and AED banknotes — illustrating a bonus-interest salary transfer cycle"
+
+      - name: Fetch news-mashreq-cashback-category-rate-cut-13-june-2026
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug news-mashreq-cashback-category-rate-cut-13-june-2026 \
+            --query "supermarket cashier receipt dubai" \
+            --orientation landscape \
+            --alt "Supermarket checkout receipt — illustrating a cashback category rate cut"
+
+      - name: Fetch news-may-2026-welcome-cycles-end-31-may
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          npm run fetch:stock -- \
+            --slug news-may-2026-welcome-cycles-end-31-may \
+            --query "calendar deadline office desk" \
+            --orientation landscape \
+            --alt "Calendar with a deadline marked — illustrating a welcome-bonus cycle close"
 
       - name: Fetch deal-enbd-skywards-welcome-q2-2026
         env:
