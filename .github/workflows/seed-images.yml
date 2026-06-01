@@ -523,9 +523,11 @@ jobs:
         run: |
           npm run fetch:stock -- \
             --slug card-emirates-nbd-etihad-guest-inspire \
-            --query "wide body airliner tail livery tarmac" \
+            --query "abu dhabi airport aircraft white tail" \
             --orientation landscape \
-            --alt "Wide-body airliner tail livery on the tarmac"
+            --replace \
+            --alt "White-tail aircraft at an Abu Dhabi airport gate" \
+            --usage "Etihad Guest co-brand hero — query bumped (1 June 2026) after the prior 'wide body airliner tail livery tarmac' search returned a Thai Airways A350 on the live page. New query scopes to Abu Dhabi visual cues."
 
       - name: Fetch card-emirates-nbd-go4it-gold
         env:

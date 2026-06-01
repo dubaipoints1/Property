@@ -21,7 +21,8 @@ import StockImage from "~/components/StockImage.astro";
 import HeroImage from "~/components/cards/HeroImage.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
-import { earnIsPercentage } from "~/lib/cardsDataFormat";
+import { earnIsPercentage, welcomeBonusHeadline } from "~/lib/cardsDataFormat";
+import type { CardData } from "~/lib/cardsData";
 
 interface Props {
   title: string;
@@ -54,6 +55,12 @@ interface Props {
   verifiedBy?: string;
   sources: string[];
   deck?: string;
+  /** L2 welcomeBonus — rendered as a one-line headline in the navy hero
+   * band beneath the H1. Prefers the structured `headline` field; falls
+   * back to `${amount} ${unit}` only when the headline is unset.
+   * The page `description` prop is the SEO meta, not the welcome bonus —
+   * the strap renders welcomeBonus separately to avoid the cross-wire. */
+  welcomeBonus?: CardData["welcomeBonus"];
   /** Optional licensed editorial hero photo, rendered between the navy
    * hero band and the body grid. Schema matches `cards` collection
    * `heroImage` field; the filename resolves against
@@ -94,9 +101,20 @@ const {
   verifiedBy = "DubaiPoints Editorial",
   sources,
   deck,
+  welcomeBonus,
   heroImage,
   tocSections = [],
 } = Astro.props;
+
+// Welcome-bonus headline for the navy-band strap. The page passes the
+// SEO meta description as `description`; that's NOT the welcome bonus
+// (it's the "bankName cardName review · annual fee · min salary · top
+// earn · AED-first verdict" composed string for SERPs). The strap
+// shows the editor-typed L2 welcomeBonus.headline instead — falling
+// back to amount + unit when no headline is set, and to null when the
+// card has no structured welcome bonus at all (in which case the strap
+// is hidden entirely).
+const welcomeBonusStrap = welcomeBonusHeadline(welcomeBonus) || null;
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -236,10 +254,10 @@ const schema = {
         </div>
       )}
 
-      {description && (
+      {welcomeBonusStrap && (
         <p class="strap">
           <span class="strap-label">Welcome bonus</span>
-          <span class="strap-value">{description}</span>
+          <span class="strap-value">{welcomeBonusStrap}</span>
         </p>
       )}
     </div>
