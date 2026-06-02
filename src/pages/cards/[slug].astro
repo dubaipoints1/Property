@@ -50,7 +50,7 @@ const bankName = bankEntry?.data.name ?? data.bank;
 const cardTitle = `${data.name} review (May 2026) | DubaiPoints`;
 const top = topEarnEntry(data.earnRates as Record<string, unknown>);
 const topLabel = top ? CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key : null;
-const feeFragment = data.annualFee.amount === 0 ? "No annual fee" : `AED ${data.annualFee.amount} annual fee`;
+const feeFragment = data.annualFee.amount === 0 ? "No annual fee" : `AED ${data.annualFee.amount.toLocaleString()} annual fee`;
 const minSalaryFragment = data.eligibility.invitationOnly
   ? "invitation-only"
   : data.eligibility.minSalary > 0
@@ -82,6 +82,7 @@ const cardDescription = [
   earnRates={earnRatesNumeric(data.earnRates)}
   earnUnit={data.earnUnit}
   categories={data.categories}
+  fxFeeProvenance={data._provenance?.fxFee}
   perks={data.perks}
   pros={editorial?.data.pros}
   cons={editorial?.data.cons}

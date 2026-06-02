@@ -466,6 +466,33 @@ would be a cosmetic rollback for no reader benefit.
 
 — Chairman, 9 May 2026.
 
+### 2026-05-16 — `--green` token resolved to navy (`#1f3a4d`)
+
+The 2026-05-09 amendment ratified `--green` as the canonical primary
+accent and recorded its colour as deep editorial green `#2d6a52`. A
+subsequent design-handoff directive (logged as Phase F.9) on 16 May
+2026 shifted the resolved colour to navy `#1f3a4d` for cross-page
+contrast with the warm-paper surfaces. The token name `--green` was
+kept (rather than renamed to `--navy`) because every existing rule
+already consumed `var(--green)` and a rename would have churned 70+
+files for no reader benefit.
+
+The 16 May change shipped to production (`src/styles/global.css:54`
+has carried `#1f3a4d` since that date) but was not recorded as its
+own amendment entry. The 2026-05-25 reading-layout amendment
+referenced "the navy primary accent (`--green` resolving to `#1f3a4d`
+per the 2026-05-16 navy directive)" in its scope statement; this
+back-fill formalises the missing entry the 2026-05-25 entry was
+already citing. Surfaced by the 1 June 2026 Head of UX audit.
+
+Net effect: `--green` is the canonical primary-accent CSS variable
+across the site; its resolved colour is **navy `#1f3a4d`**, not the
+2026-05-09-recorded `#2d6a52`. The token name is stable. The
+2026-05-09 amendment's "deep editorial green" descriptor is
+superseded.
+
+— Chairman, 16 May 2026 (recorded 2 June 2026).
+
 ### 2026-05-21 — Editorial image-licensing clarification
 
 The §10 kill-list previously read as "no issuer / airline marketing
