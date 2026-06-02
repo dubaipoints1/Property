@@ -300,6 +300,52 @@ export function formatAED(amount: number): string {
   return Number.isInteger(amount) ? AED_INT_FMT.format(amount) : AED_DEC_FMT.format(amount);
 }
 
+/** Minimal shape needed by `annualFeeLabel`. */
+export interface CardForAnnualFee {
+  annualFee: { amount: number };
+  joiningFee?: { amount: number } | null;
+  annualFeeWaiver?: unknown;
+}
+
+/**
+ * Year-1 vs year-2 annual-fee qualifier (F-UX-3 + audit follow-up, 1 June 2026).
+ *
+ * When a card has a year-1 joining premium (`joiningFee.amount > annualFee.amount`)
+ * OR a year-1 waiver (`annualFeeWaiver.year_one_waived === true`), the bare AED
+ * figure on listing tiles is the year-2+ rate; the qualifier disambiguates so the
+ * reader doesn't see a contradiction against the body text or against the same
+ * card's listing on a different surface.
+ *
+ * Returns:
+ *   { amount: "AED 735", qual: "year 2+" }   — joining fee or year-1 waiver applies
+ *   { amount: "AED 315", qual: null }        — flat-fee card, no qualifier needed
+ *   { amount: "Free",    qual: null }        — annualFee.amount === 0
+ *
+ * Charter §6 compliant: reads typed numerics from L2 only (joiningFee.amount,
+ * annualFee.amount, annualFeeWaiver.year_one_waived); no LLM extraction.
+ */
+export function annualFeeLabel(card: CardForAnnualFee): {
+  amount: string;
+  qual: string | null;
+} {
+  const amount =
+    card.annualFee.amount === 0 ? "Free" : formatAED(card.annualFee.amount);
+  const jf = card.joiningFee?.amount;
+  if (typeof jf === "number" && jf > card.annualFee.amount) {
+    return { amount, qual: "year 2+" };
+  }
+  const waiver = card.annualFeeWaiver;
+  if (
+    waiver &&
+    typeof waiver === "object" &&
+    "year_one_waived" in waiver &&
+    (waiver as { year_one_waived?: unknown }).year_one_waived === true
+  ) {
+    return { amount, qual: "year 2+" };
+  }
+  return { amount, qual: null };
+}
+
 /** Minimal shape of a card object needed by `cardComparisonRows`.
  * Kept structural so tests don't need to import the full CardData. */
 export interface CardForComparison {

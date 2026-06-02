@@ -31,9 +31,9 @@ import StockImage from "~/components/StockImage.astro";
 import { getEntry } from "astro:content";
 import {
   getActiveCards,
-  welcomeBonusDisplay,
   welcomeBonusHeadline,
   FEATURE_CHIP_LABELS,
+  annualFeeLabel,
 } from "~/lib/cardsData";
 import { formatEarnValue } from "~/lib/cardsDataFormat";
 
@@ -111,30 +111,9 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
   return out;
 }
 
-// Year-1 vs year-2 annual-fee qualifier. Cards with a joining premium
-// (joiningFee.amount > annualFee.amount) or a year-1 waiver render the
-// listing fee with an explicit "(year 2+)" tag so the bare AED figure
-// in the tile doesn't read as a contradiction against the body text.
-function annualFeeLabel(card: typeof cards[number]["card"]): {
-  amount: string;
-  qual: string | null;
-} {
-  const annual = `AED ${card.annualFee.amount.toLocaleString()}`;
-  const jf = card.joiningFee?.amount;
-  if (typeof jf === "number" && jf > card.annualFee.amount) {
-    return { amount: annual, qual: "year 2+" };
-  }
-  const waiver = card.annualFeeWaiver;
-  if (
-    waiver &&
-    typeof waiver === "object" &&
-    "year_one_waived" in waiver &&
-    waiver.year_one_waived === true
-  ) {
-    return { amount: annual, qual: "year 2+" };
-  }
-  return { amount: annual, qual: null };
-}
+// Year-1 vs year-2 annual-fee qualifier lives in cardsDataFormat.ts
+// (see `annualFeeLabel`) so every listing surface (Top picks, row list,
+// SpecCard, comparison tables) routes through the same primitive.
 ---
 
 <BaseLayout
@@ -163,7 +142,9 @@ function annualFeeLabel(card: typeof cards[number]["card"]): {
         <h2>The two cards we'd open first.</h2>
       </div>
       <div class="cards-top-grid">
-        {topPicks.map((f) => (
+        {topPicks.map((f) => {
+          const fee = annualFeeLabel(f.card);
+          return (
           <article class="cards-top-card">
             <StockImage
               slug={`card-${f.card.slug}`}
@@ -179,17 +160,21 @@ function annualFeeLabel(card: typeof cards[number]["card"]): {
               <dl class="cards-top-card-stats">
                 <div>
                   <dt>Welcome bonus</dt>
-                  <dd class="is-bonus">{welcomeBonusDisplay(f.card.welcomeBonus) ?? "—"}</dd>
+                  <dd class="is-bonus">{welcomeBonusHeadline(f.card.welcomeBonus) || "—"}</dd>
                 </div>
                 <div>
                   <dt>Annual fee</dt>
-                  <dd>AED {f.card.annualFee.amount.toLocaleString()}</dd>
+                  <dd>
+                    {fee.amount}
+                    {fee.qual && <small class="cards-top-card-fee-qual"> ({fee.qual})</small>}
+                  </dd>
                 </div>
               </dl>
               <a href={`/cards/${f.card.slug}/`} class="cards-top-card-cta">Read review →</a>
             </div>
           </article>
-        ))}
+          );
+        })}
       </div>
     </section>
   )}
@@ -506,8 +491,15 @@ function annualFeeLabel(card: typeof cards[number]["card"]): {
     height: 88px;
     border-radius: 8px;
     overflow: hidden;
-    background: var(--bg-soft);
+    background: var(--shade-1);
     flex-shrink: 0;
+  }
+  .cards-top-card-fee-qual {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.2px;
   }
   .cards-row-art :global(.cards-row-art-image),
   .cards-row-art :global(img) {

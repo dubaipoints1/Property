@@ -563,6 +563,7 @@ export {
   welcomeBonusDisplay,
   welcomeBonusHeadline,
   FEATURE_CHIP_LABELS,
+  annualFeeLabel,
   annualFeeWaiverDisplay,
   isStructuredWelcomeBonus,
   isBifurcatedWelcomeBonus,

@@ -41,6 +41,12 @@ interface Props {
   /** L2 earnUnit — drives whether the spec-card earn rows render "5%"
    * (cashback) or "2×" (points). §6 unit-integrity (2026-05-29). */
   earnUnit?: string;
+  /** L2 categories array — paired with earnUnit by `earnIsPercentage` to
+   * disambiguate cashback vs multiplier rendering. The hub category
+   * (`Cards` / `Travel & Miles` / etc.) is a page-display label and
+   * should NOT be threaded here; L2 `categories` is the canonical
+   * source. */
+  categories?: readonly string[];
   perks?: string[];
   pros?: string[];
   cons?: string[];
@@ -86,6 +92,7 @@ const {
   minSalary,
   earnRates,
   earnUnit,
+  categories = [],
   perks = [],
   // pros + cons are accepted on the props interface for backward
   // compatibility with existing call sites in src/pages/cards/[slug].astro,
@@ -322,7 +329,7 @@ const schema = {
           {earnRows.map(([k, v]) => (
             <div class="dp-spec-row">
               <span class="k">{formatEarnKey(k)}</span>
-              <span class={`v ${v >= 3 ? "flag" : ""}`}>{earnIsPercentage(earnUnit, [category]) ? `${v}%` : `${v}× per AED 1`}</span>
+              <span class={`v ${v >= 3 ? "flag" : ""}`}>{earnIsPercentage(earnUnit, categories) ? `${v}%` : `${v}× per AED 1`}</span>
             </div>
           ))}
         </div>

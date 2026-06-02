@@ -23,8 +23,15 @@
 
 import { getEntry } from "astro:content";
 import type { CardData } from "~/lib/cardsData";
-import { welcomeBonusDisplay as toDisplay } from "~/lib/cardsData";
-import { formatEarnValue } from "~/lib/cardsDataFormat";
+import {
+  welcomeBonusDisplay as toDisplay,
+  annualFeeLabel,
+} from "~/lib/cardsData";
+import {
+  formatEarnValue,
+  topEarnEntry,
+  CATEGORY_LABELS_FOR_TOP,
+} from "~/lib/cardsDataFormat";
 import BankLogo from "../BankLogo.astro";
 import FeeBlock from "./FeeBlock.astro";
 import EarnRateTable from "./EarnRateTable.astro";
@@ -44,36 +51,21 @@ const { card, variant = "compact", showVerified = true } = Astro.props;
 const bankEntry = await getEntry("banks", card.bank);
 const bankName = bankEntry?.data.name ?? card.bank;
 
-// Headline earn-rate string — used in compact + row variants.
-function topEarnRate(c: CardData): { label: string; value: number } | null {
-  const r = c.earnRates;
-  const entries = Object.entries(r).filter(
-    ([k, v]) => k !== "_caps" && typeof v === "number",
-  ) as Array<[string, number]>;
-  if (entries.length === 0) return null;
-  let best: { label: string; value: number } | null = null;
-  for (const [label, value] of entries) {
-    if (!best || value > best.value) best = { label, value };
-  }
-  return best;
-}
-
-const CATEGORY_LABELS: Record<string, string> = {
-  dining: "dining",
-  groceries: "groceries",
-  shopping: "shopping",
-  travel: "travel",
-  fuel: "fuel",
-  entertainment: "entertainment",
-  online: "online",
-  international: "FX",
-  everythingElse: "everything",
-};
-
-const top = topEarnRate(card);
+// Headline earn-rate string — routes through the shared `topEarnEntry`
+// + `CATEGORY_LABELS_FOR_TOP` so the rendered label is the same as
+// AtAGlance's "Top earn rate" tile and the EarnRateTable's "top" row
+// (audit finding, 1 June 2026 — the prior local topEarnRate + minimal
+// CATEGORY_LABELS table leaked raw L2 keys like "partnerBrands" and
+// "everythingElse" to readers because the local map omitted them).
+const top = topEarnEntry(card.earnRates as Record<string, unknown>);
 const earnLine = top
-  ? `${formatEarnValue(top.value, card.earnUnit, card.categories)} ${CATEGORY_LABELS[top.label] ?? top.label}`
+  ? `${formatEarnValue(top.value, card.earnUnit, card.categories)} ${CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key}`
   : null;
+
+// Year-1 vs year-2 annual-fee qualifier — shared with the listing tile,
+// comparison tables, and SEO meta so the same card never reads as a
+// different annual fee on different surfaces.
+const feeLabel = annualFeeLabel(card);
 
 // 90-day stale check — reused for the warning chip on the card head.
 const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
@@ -115,11 +107,11 @@ if (variant === "full") {
     // computed tagline below.
   }
   if (!tagline && top) {
-    const lbl = CATEGORY_LABELS[top.label] ?? top.label;
+    const lbl = CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key;
     const feeStr =
       card.annualFee.amount === 0
         ? "no annual fee"
-        : `AED ${card.annualFee.amount.toLocaleString()} a year`;
+        : `${feeLabel.amount} a year`;
     tagline = `${formatEarnValue(top.value, card.earnUnit, card.categories)} on ${lbl} — ${feeStr}.`;
   }
 }
@@ -199,9 +191,8 @@ if (variant === "full") {
       <div>
         <dt>Annual fee</dt>
         <dd>
-          {card.annualFee.amount === 0
-            ? "Free"
-            : `AED ${card.annualFee.amount.toLocaleString()}`}
+          {feeLabel.amount}
+          {feeLabel.qual && <small class="qual"> ({feeLabel.qual})</small>}
         </dd>
       </div>
       {earnLine && (
@@ -389,6 +380,12 @@ if (variant === "full") {
     font-size: 14px;
     font-weight: 600;
     color: var(--ink);
+  }
+  .mini-stats dd .qual {
+    font-weight: 500;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.2px;
   }
 
   .eligibility .lbl {
