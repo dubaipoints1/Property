@@ -47,6 +47,11 @@ interface Props {
    * should NOT be threaded here; L2 `categories` is the canonical
    * source. */
   categories?: readonly string[];
+  /** L2 `_provenance.fxFee` — when "needs-review" the sidebar FX row
+   * renders "—" instead of a bare percent so an unverified zero can't
+   * be mistaken for a confirmed zero. (1 June 2026 audit follow-up
+   * to the 2026-05-29 §10 ADCB FX-fee amendment.) */
+  fxFeeProvenance?: string;
   perks?: string[];
   pros?: string[];
   cons?: string[];
@@ -93,6 +98,7 @@ const {
   earnRates,
   earnUnit,
   categories = [],
+  fxFeeProvenance,
   perks = [],
   // pros + cons are accepted on the props interface for backward
   // compatibility with existing call sites in src/pages/cards/[slug].astro,
@@ -167,7 +173,11 @@ const schema = {
       name: cardName,
       brand: { "@type": "Organization", name: bankName },
       category: category ?? "Credit card",
-      description: description ?? `${cardName} — DubaiPoints credit-card review.`,
+      // Omit description rather than fall back to a placeholder string —
+      // Schema.org's Product type doesn't require it, and an absent
+      // description is more honest than a generic stand-in (1 June 2026
+      // audit LOW).
+      ...(description ? { description } : {}),
       url: canonicalUrl,
       ...(slug ? { sku: slug } : {}),
       ...(typeof score === "number"
@@ -319,7 +329,12 @@ const schema = {
         <h4>At a glance</h4>
         <div class="dp-spec-row"><span class="k">Annual fee</span><span class="v">AED {annualFee.toLocaleString()}</span></div>
         <div class="dp-spec-row"><span class="k">Min salary</span><span class="v">AED {minSalary.toLocaleString()}/mo</span></div>
-        <div class="dp-spec-row"><span class="k">FX markup</span><span class="v">{fxFee}%</span></div>
+        <div class="dp-spec-row">
+          <span class="k">FX markup</span>
+          <span class={`v ${fxFeeProvenance === "needs-review" ? "is-unverified" : ""}`}>
+            {fxFeeProvenance === "needs-review" ? "—" : `${fxFee}%`}
+          </span>
+        </div>
         <div class="dp-spec-row"><span class="k">Network</span><span class="v">{network}</span></div>
       </div>
 

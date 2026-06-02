@@ -83,11 +83,19 @@ const topKey = candidateEntries.length > 0
 const unitLabel = earnUnit ?? "per AED 1 spent";
 
 // §6 unit-integrity (2026-05-29): cashback / %-denominated cards render
-// "5%", points cards "2×". When the value already carries "%", strip a
-// leading "%" from the descriptive unit so the collapsed line doesn't
-// read "5% % cashback".
+// "5%", points cards "2×". When the value already carries "%" prefix
+// in earnUnit (e.g. "% cashback (paid as FAB Rewards)"), strip the
+// leading "%" so the collapsed line doesn't read "5% % cashback". When
+// the value is a percentage but earnUnit is the "per AED 1 spent"
+// default (or any non-%-prefixed form), drop the per-AED trailer
+// entirely and render "cashback" — the value's "%" already conveys
+// the percent-back framing (1 June 2026 audit follow-up).
 const isPct = earnIsPercentage(earnUnit, resolved?.categories);
-const displayUnit = isPct ? unitLabel.replace(/^%\s*/, "") : unitLabel;
+const displayUnit = isPct
+  ? unitLabel.startsWith("%")
+    ? unitLabel.replace(/^%\s*/, "")
+    : "cashback"
+  : unitLabel;
 const cats = resolved?.categories;
 ---
 
