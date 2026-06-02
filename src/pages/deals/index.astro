@@ -122,7 +122,7 @@ const tabs = [
                 sizes="(max-width: 900px) 100vw, 66vw"
               />
               <div class="intel-featured-body">
-                <span class="intel-featured-eyebrow">★ {formatCategory(featured.entry.data.category)} · {featured.bankName}</span>
+                <span class="intel-featured-eyebrow">{formatCategory(featured.entry.data.category)} · {featured.bankName}</span>
                 <h2>{featured.entry.data.title}</h2>
                 <p>Live until {fmt(featured.entry.data.expiresOn)} — {daysUntil(featured.entry.data.expiresOn)} {daysUntil(featured.entry.data.expiresOn) === 1 ? "day" : "days"} remaining.</p>
                 <span class="intel-featured-meta">

@@ -200,7 +200,7 @@ img { display: block; max-width: 100%; }
   text-transform: none; letter-spacing: 0;
   min-height: 32px;
 }
-.dp-tracker-select select:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
+.dp-tracker-select select:focus { outline: 2px solid var(--green); outline-offset: 1px; }
 .dp-tracker-select-end { margin-left: auto; }
 @media (max-width: 640px) {
   .dp-tracker-select-end { margin-left: 0; }
@@ -209,7 +209,7 @@ img { display: block; max-width: 100%; }
 .dp-tracker-empty {
   padding: 14px 16px;
   border: 1px solid var(--line);
-  border-left: 3px solid var(--brand);
+  border-left: 3px solid var(--green);
   border-radius: 4px;
   background: var(--brand-soft);
   font-size: 13px; line-height: 1.55;
@@ -248,7 +248,7 @@ img { display: block; max-width: 100%; }
   color: var(--ink);
   display: inline-flex; align-items: center; gap: 8px;
 }
-.dp-tracker-bank:hover { color: var(--brand); }
+.dp-tracker-bank:hover { color: var(--green); }
 .dp-tracker-name {
   margin-top: 2px;
   font-size: 12px; color: var(--ink-soft); line-height: 1.5;
@@ -526,7 +526,7 @@ img { display: block; max-width: 100%; }
   text-decoration: underline; text-underline-offset: 3px;
   text-decoration-color: var(--line);
 }
-.dp-article-foot a:hover { color: var(--brand); }
+.dp-article-foot a:hover { color: var(--green); }
 
 /* Prose body (MDX <slot />)
    2026-05-21: typography overhaul to match publication-grade reference
@@ -572,7 +572,7 @@ img { display: block; max-width: 100%; }
   text-decoration: underline; text-underline-offset: 3px;
   text-decoration-color: var(--line);
 }
-.dp-prose a:hover { color: var(--brand); text-decoration-color: var(--brand); }
+.dp-prose a:hover { color: var(--green); text-decoration-color: var(--green); }
 .dp-prose blockquote {
   border-left: 3px solid var(--ink);
   padding: 4px 0 4px 16px; margin: 18px 0;
@@ -609,7 +609,7 @@ img { display: block; max-width: 100%; }
   font-size: 13px; color: var(--ink-soft);
   line-height: 1.4;
 }
-.dp-toc a:hover { color: var(--brand); }
+.dp-toc a:hover { color: var(--green); }
 @media (min-width: 1024px) {
   .dp-toc-rail { position: sticky; top: 80px; }
 }
@@ -639,7 +639,7 @@ img { display: block; max-width: 100%; }
   min-height: 100px;
 }
 .dp-dir-tile:hover {
-  border-color: var(--brand);
+  border-color: var(--green);
 }
 .dp-dir-tile .eyebrow {
   font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
@@ -651,7 +651,7 @@ img { display: block; max-width: 100%; }
   font-size: 18px; letter-spacing: -0.2px;
   color: var(--ink); line-height: 1.3;
 }
-.dp-dir-tile:hover .title { color: var(--brand); }
+.dp-dir-tile:hover .title { color: var(--green); }
 .dp-dir-tile .desc {
   font-size: 13px; line-height: 1.5;
   color: var(--ink-soft);
@@ -683,10 +683,10 @@ img { display: block; max-width: 100%; }
 .dp-dir-pill:hover { border-color: var(--ink); color: var(--ink); }
 .dp-dir-pill.is-feature {
   background: var(--brand-soft);
-  border-color: var(--brand);
+  border-color: var(--green);
   color: var(--brand-deep);
 }
-.dp-dir-pill.is-feature:hover { background: var(--brand); color: white; }
+.dp-dir-pill.is-feature:hover { background: var(--green); color: white; }
 
 /* ════════════════════════════════════════════════════════════════════════
    TPG-adapted components (locked 2026-05-08-bis).
