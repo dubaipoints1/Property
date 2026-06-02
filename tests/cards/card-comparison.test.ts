@@ -399,3 +399,52 @@ test("earnIsPercentage: starts-with-% and cashback are percentage; parenthetical
   assert.equal(formatEarnValue(5, "% cashback"), "5%");
   assert.equal(formatEarnValue(2, "Skywards Miles per USD 1 spent"), "2×");
 });
+
+// annualFeeLabel — year-1 vs year-2 disambiguation. The bare AED figure
+// on a card with a joining premium or a year-1 waiver must carry the
+// "(year 2+)" qualifier so listing tiles don't contradict body text.
+// Regression guard against the 1 June 2026 audit where the qualifier
+// landed only on the row list (PR #199) but was missing on Top picks,
+// SpecCard compact/row variant, and cashback/miles/islamic comparison
+// tables.
+// Note: Intl.NumberFormat returns an NBSP between "AED" and the digits;
+// `normSpaces` collapses it to a regular space for readable assertions.
+const normSpaces = (s: string) => s.replace(/\s+/g, " ");
+
+test("annualFeeLabel: year-1 joining premium adds qualifier", async () => {
+  const { annualFeeLabel } = await import("../../src/lib/cardsDataFormat");
+  const card = {
+    annualFee: { amount: 735 },
+    joiningFee: { amount: 1575 },
+  };
+  const out = annualFeeLabel(card);
+  assert.equal(normSpaces(out.amount), "AED 735");
+  assert.equal(out.qual, "year 2+");
+});
+
+test("annualFeeLabel: year-1 waiver adds qualifier", async () => {
+  const { annualFeeLabel } = await import("../../src/lib/cardsDataFormat");
+  const card = {
+    annualFee: { amount: 315 },
+    annualFeeWaiver: { year_one_waived: true, ongoing_threshold_aed: null },
+  };
+  const out = annualFeeLabel(card);
+  assert.equal(normSpaces(out.amount), "AED 315");
+  assert.equal(out.qual, "year 2+");
+});
+
+test("annualFeeLabel: flat-fee card has no qualifier", async () => {
+  const { annualFeeLabel } = await import("../../src/lib/cardsDataFormat");
+  const card = { annualFee: { amount: 525 } };
+  const out = annualFeeLabel(card);
+  assert.equal(normSpaces(out.amount), "AED 525");
+  assert.equal(out.qual, null);
+});
+
+test("annualFeeLabel: zero fee renders Free, no qualifier", async () => {
+  const { annualFeeLabel } = await import("../../src/lib/cardsDataFormat");
+  const card = { annualFee: { amount: 0 } };
+  const out = annualFeeLabel(card);
+  assert.equal(out.amount, "Free");
+  assert.equal(out.qual, null);
+});

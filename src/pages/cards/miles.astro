@@ -1,7 +1,11 @@
 ---
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
-import { getActiveCards, welcomeBonusHeadline } from "~/lib/cardsData";
+import {
+  getActiveCards,
+  welcomeBonusHeadline,
+  annualFeeLabel,
+} from "~/lib/cardsData";
 import { formatEarnValue } from "~/lib/cardsDataFormat";
 
 const milesCards = getActiveCards().filter(
@@ -10,12 +14,13 @@ const milesCards = getActiveCards().filter(
 const rows = await Promise.all(
   milesCards.map(async (c) => {
     const bank = await getEntry("banks", c.bank);
+    const fee = annualFeeLabel(c);
     return {
       cardName: c.name,
       bankName: bank?.data.name ?? c.bank,
       href: `/cards/${c.slug}/`,
       values: [
-        `AED ${c.annualFee.amount.toLocaleString()}`,
+        fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
         `${c.fxFee}%`,
         `${formatEarnValue(c.earnRates.everythingElse ?? 0, c.earnUnit, c.categories)}${c.earnUnit && c.earnUnit.toLowerCase().includes("per") ? " per AED" : ""}`,
         welcomeBonusHeadline(c.welcomeBonus) || "—",

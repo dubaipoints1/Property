@@ -1,18 +1,23 @@
 ---
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
-import { getActiveCards, welcomeBonusHeadline } from "~/lib/cardsData";
+import {
+  getActiveCards,
+  welcomeBonusHeadline,
+  annualFeeLabel,
+} from "~/lib/cardsData";
 
 const islamicCards = getActiveCards().filter((c) => c.categories.includes("Islamic"));
 const rows = await Promise.all(
   islamicCards.map(async (c) => {
     const bank = await getEntry("banks", c.bank);
+    const fee = annualFeeLabel(c);
     return {
       cardName: c.name,
       bankName: bank?.data.name ?? c.bank,
       href: `/cards/${c.slug}/`,
       values: [
-        `AED ${c.annualFee.amount.toLocaleString()}`,
+        fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
         `${c.fxFee}%`,
         `AED ${c.eligibility.minSalary.toLocaleString()}/mo`,
         welcomeBonusHeadline(c.welcomeBonus) || "—",

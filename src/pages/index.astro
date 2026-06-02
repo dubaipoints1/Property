@@ -451,7 +451,11 @@ const milesTiles = allPrograms
     flex: 1; min-width: 0;
     border: 0; background: transparent;
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 14px;
+    /* 16px minimum keeps iOS Safari from auto-zooming when the input
+       takes focus — anything smaller breaks the one-handed mobile
+       signup flow on the highest-traffic CTA. Matches the
+       Pagefind input defence at search.astro:78. */
+    font-size: 16px;
     color: var(--ink);
     padding: 8px 4px;
     outline: none;
