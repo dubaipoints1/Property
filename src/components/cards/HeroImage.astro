@@ -38,7 +38,7 @@ const { default: resolved } = await importer();
     src={resolved}
     alt={alt}
     widths={[480, 720, 1080, 1440, 1800]}
-    sizes="(max-width: 720px) 100vw, (max-width: 1180px) 100vw, 1180px"
+    sizes="(max-width: 720px) 100vw, (max-width: var(--container-listing)) 100vw, 1180px"
     loading="eager"
     decoding="async"
     class="dp-cr-hero-photo-img"
@@ -54,7 +54,7 @@ const { default: resolved } = await importer();
 
 <style>
   .dp-cr-hero-photo {
-    max-width: 1180px;
+    max-width: var(--container-listing);
     margin: 0 auto 8px;
     padding: 0 32px;
   }

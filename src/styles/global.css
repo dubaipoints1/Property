@@ -86,6 +86,23 @@
   --brand-soft:#eef3fb;
   --cool:      #f4f5f7;          /* legacy from TPG pivot */
   --cream:     #f8f0e0;          /* legacy from TPG pivot */
+
+  /* ── Container widths ────────────────────────────────────────────
+     `--container-listing` is the canonical max-width for listing
+     surfaces (homepage, /cards/, /banks/, /guides/, /news/, /deals/,
+     /airlines/, /salary-transfer/). Smoothly scales from 1180px at
+     a 1600px viewport to 1500px at 2400px+, so 34" ultra-wide
+     monitors don't render the site as a postcard centred in a
+     warm-paper void. Long-form reading prose stays narrow per
+     Charter §"Editorial conventions" — `.dp-article` and
+     `.dp-prose` keep their existing caps (880/1080/70ch) so the
+     reading measure isn't compromised.
+
+     The scaling slope `(100vw - 1600px) * 0.4` lifts the container
+     by 0.4px for every 1px of viewport above 1600px, plateauing at
+     1500px once the viewport reaches 2400px. Below 1600px the
+     existing 1180px cap is preserved (clamp lower bound). */
+  --container-listing: clamp(1180px, 1180px + (100vw - 1600px) * 0.4, 1500px);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1604,7 +1621,7 @@ img { display: block; max-width: 100%; }
 /* Related guides — Phase D2 footer-band, sits between article-body-grid
    and .dp-article-sources. 3-column grid on desktop, stacks on mobile. */
 .dp-article-related {
-  max-width: 1180px;
+  max-width: var(--container-listing);
   margin: 32px auto 24px;
   padding: 40px 32px 8px;
   border-top: 1px solid var(--line);
@@ -2046,7 +2063,7 @@ img { display: block; max-width: 100%; }
 .dp-cr-body-grid {
   display: grid; grid-template-columns: 1fr; gap: 40px;
   padding: 56px 32px 80px;
-  max-width: 1180px; margin: 0 auto;
+  max-width: var(--container-listing); margin: 0 auto;
 }
 @media (min-width: 1024px) {
   .dp-cr-body-grid {
