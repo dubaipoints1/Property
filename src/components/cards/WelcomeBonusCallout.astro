@@ -44,12 +44,12 @@ if (card && !resolved) {
 const welcomeBonus = (resolved?.welcomeBonus ?? welcomeBonusProp) as
   | NonNullable<CardData["welcomeBonus"]>
   | undefined;
-if (!welcomeBonus) {
-  throw new Error(
-    "WelcomeBonusCallout: requires `card` or inline `welcomeBonus` prop, and the resolved card must carry a welcomeBonus",
-  );
-}
-const welcomeBonusDisplay = displayProp ?? toDisplay(welcomeBonus);
+// When the resolved card has no welcomeBonus (legitimately — e.g. a
+// card whose cycle has closed and the next hasn't been announced;
+// PR #213 nulled rakbank-world.welcomeBonus on 3 June 2026 after the
+// 31 May cycle expired), render nothing. The MDX call site stays
+// in place so the next cycle can re-populate without touching prose.
+const welcomeBonusDisplay = welcomeBonus ? (displayProp ?? toDisplay(welcomeBonus)) : "";
 
 const aedFormatter = new Intl.NumberFormat("en-AE", {
   style: "currency",
@@ -88,11 +88,13 @@ const thresholdLine =
     : null;
 ---
 
-<aside class="dp-welcome-callout" aria-label="Welcome offer">
-  <div class="eyebrow">Welcome offer</div>
-  <div class={`body${structured && structured.headline ? " is-headline" : ""}`}>{bodyText}</div>
-  {thresholdLine && <div class="threshold">{thresholdLine}</div>}
-</aside>
+{welcomeBonus && (
+  <aside class="dp-welcome-callout" aria-label="Welcome offer">
+    <div class="eyebrow">Welcome offer</div>
+    <div class={`body${structured && structured.headline ? " is-headline" : ""}`}>{bodyText}</div>
+    {thresholdLine && <div class="threshold">{thresholdLine}</div>}
+  </aside>
+)}
 
 <style>
   .dp-welcome-callout {

@@ -17,11 +17,16 @@ editorTake: A fan card, plainly. If you are a Manchester United supporter
   ordinary expenditure into accumulating club tickets. If you are not
   that person, this card is dead currency and you should hold an ENBD
   Mastercard Platinum instead.
+applyIf: Manchester United fan who buys club merchandise — 10x on sports-goods spend anchors the return.
+skipIf: You're not a Manchester United supporter — Red Points are closed-loop and become dead currency without club spend.
 ---
 
 import AtAGlance from "~/components/cards/AtAGlance.astro";
+import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 
 <AtAGlance card="emirates-nbd-manchester-united" />
+
+<GreatCardIf card="emirates-nbd-manchester-united" />
 
 The Emirates NBD Manchester United Credit Card is the bank's co-brand with
 the football club. It earns Red Points redeemable inside the club's

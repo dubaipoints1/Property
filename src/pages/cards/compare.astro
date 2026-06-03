@@ -16,7 +16,12 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
 import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
-import { earnIsPercentage } from "~/lib/cardsDataFormat";
+import {
+  earnIsPercentage,
+  formatEarnValue,
+  topEarnEntry,
+  CATEGORY_LABELS_FOR_TOP,
+} from "~/lib/cardsDataFormat";
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EligibilityChips from "~/components/cards/EligibilityChips.astro";
@@ -82,37 +87,25 @@ const bankGroups = [...allByBank.entries()].sort(([a], [b]) =>
 
 const selectedSet = new Set(finalSlugs);
 
-// Pick a representative earn-rate metric per card (used in the top
-// header strip; the EarnRateTable component carries the detail).
+// Pick a representative earn-rate metric per card. Routes through the
+// canonical `topEarnEntry` + `CATEGORY_LABELS_FOR_TOP` so this surface
+// renders the same label AtAGlance, EarnRateTable.is-top and SpecCard
+// use — closes the same regression class PR #204 fixed in SpecCard
+// (local-CATEGORY_LABELS leak of raw L2 keys like "partnerBrands" /
+// "online" / "utilities" / "everythingElse" to the reader).
 const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
+  const top = topEarnEntry(card.earnRates as Record<string, unknown>);
   const r = card.earnRates;
-  const max = Math.max(
-    ...[
-      r.dining,
-      r.groceries,
-      r.shopping,
-      r.travel,
-      r.fuel,
-      r.online,
-    ].filter((v): v is number => typeof v === "number"),
-    r.everythingElse,
-  );
+  const everythingElse = typeof r.everythingElse === "number" ? r.everythingElse : 0;
   const pct = earnIsPercentage(card.earnUnit, card.categories);
-  const fmt = (n: number) => (pct ? `${n}%` : `${n}×`);
-  if (max === r.everythingElse) return pct ? `${max}% all spend` : `${max}× per AED 1`;
-  const cat =
-    r.travel === max
-      ? "travel"
-      : r.dining === max
-        ? "dining"
-        : r.groceries === max
-          ? "groceries"
-          : r.shopping === max
-            ? "shopping"
-            : r.fuel === max
-              ? "fuel"
-              : "category";
-  return `${fmt(max)} ${cat}, ${fmt(r.everythingElse)} rest`;
+  const fmtRest = pct ? `${everythingElse}%` : `${everythingElse}× per AED 1`;
+  if (!top || top.key === "everythingElse") {
+    return pct ? `${everythingElse}% all spend` : fmtRest;
+  }
+  const topLabel = CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key;
+  const topFmt = formatEarnValue(top.value, card.earnUnit, card.categories);
+  const restFmt = formatEarnValue(everythingElse, card.earnUnit, card.categories);
+  return `${topFmt} ${topLabel.toLowerCase()}, ${restFmt} rest`;
 };
 ---
 

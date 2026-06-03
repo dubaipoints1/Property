@@ -228,9 +228,9 @@ img { display: block; max-width: 100%; }
   border: 1px solid var(--line);
   border-left: 3px solid var(--green);
   border-radius: 4px;
-  background: var(--brand-soft);
+  background: var(--shade-1);
   font-size: 13px; line-height: 1.55;
-  color: var(--brand-deep);
+  color: var(--green);
 }
 
 .dp-tracker-list {
@@ -699,9 +699,9 @@ img { display: block; max-width: 100%; }
 }
 .dp-dir-pill:hover { border-color: var(--ink); color: var(--ink); }
 .dp-dir-pill.is-feature {
-  background: var(--brand-soft);
+  background: var(--shade-1);
   border-color: var(--green);
-  color: var(--brand-deep);
+  color: var(--green);
 }
 .dp-dir-pill.is-feature:hover { background: var(--green); color: white; }
 

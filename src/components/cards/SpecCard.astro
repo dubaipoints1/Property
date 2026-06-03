@@ -384,7 +384,9 @@ if (variant === "full") {
   .mini-stats dd .qual {
     font-weight: 500;
     font-size: 11px;
-    color: var(--muted);
+    /* WCAG-AA contrast fix on the year-1/year-2 disambiguator
+       (UX audit, 3 June 2026). --muted ~2.85:1; --ink-soft ~6.4:1. */
+    color: var(--ink-soft);
     letter-spacing: 0.2px;
   }
 

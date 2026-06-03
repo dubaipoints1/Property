@@ -951,7 +951,11 @@ const milesTiles = allPrograms
     background: var(--green);
     color: white;
     padding: 64px 32px 72px;
-    margin: 24px 32px 48px;
+    margin: 24px auto 48px;
+    /* Match the other homepage sections (UX audit, 3 June 2026 — at
+       ultra-wide the band was full-bleed while every other section
+       capped at --container-listing, creating a postcard inversion). */
+    max-width: var(--container-listing);
     border-radius: 32px;
     position: relative;
     overflow: hidden;
