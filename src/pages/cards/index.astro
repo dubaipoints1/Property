@@ -309,7 +309,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
 
   /* ── Top Picks ──────────────────────────────────────────────────── */
   .cards-top-picks {
-    max-width: 1180px; margin: 32px auto;
+    max-width: var(--container-listing); margin: 32px auto;
     padding: 0 32px;
   }
   .cards-section-head {
@@ -421,7 +421,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
 
   /* ── Compare section ────────────────────────────────────────────── */
   .cards-compare-section {
-    max-width: 1180px; margin: 48px auto 56px;
+    max-width: var(--container-listing); margin: 48px auto 56px;
     padding: 0 32px;
   }
   .cards-compare-head {
@@ -588,7 +588,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     margin: 32px 0 48px;
   }
   .cards-callout-grid {
-    max-width: 1180px; margin: 0 auto;
+    max-width: var(--container-listing); margin: 0 auto;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
     gap: 48px;
