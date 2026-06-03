@@ -498,7 +498,10 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 12px;
     font-weight: 500;
-    color: var(--muted);
+    /* --ink-soft (#56606b) measures ~6.4:1 on --paper — WCAG AA pass for
+       body text. The year-1/year-2 disambiguator must clear the
+       contrast bar; using --muted (~2.85:1) failed (UX audit, 3 June). */
+    color: var(--ink-soft);
     letter-spacing: 0.2px;
   }
   .cards-row-art :global(.cards-row-art-image),
@@ -662,7 +665,9 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 11px;
     font-weight: 500;
-    color: var(--muted);
+    /* Same WCAG-AA contrast fix as .cards-top-card-fee-qual above
+       (UX audit, 3 June). */
+    color: var(--ink-soft);
     letter-spacing: 0.2px;
   }
 

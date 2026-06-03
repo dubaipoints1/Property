@@ -20,7 +20,7 @@ const rows = await Promise.all(
       href: `/cards/${c.slug}/`,
       values: [
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
-        `${c.fxFee}%`,
+        c._provenance?.fxFee === "needs-review" ? "—" : `${c.fxFee}%`,
         `AED ${c.eligibility.minSalary.toLocaleString()}/mo`,
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],

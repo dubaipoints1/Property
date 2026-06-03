@@ -332,7 +332,7 @@ const schema = {
         <div class="dp-spec-row">
           <span class="k">FX markup</span>
           <span class={`v ${fxFeeProvenance === "needs-review" ? "is-unverified" : ""}`}>
-            {fxFeeProvenance === "needs-review" ? "—" : `${fxFee}%`}
+            {fxFeeProvenance === "needs-review" ? "—" : `+${fxFee.toFixed(2)}%`}
           </span>
         </div>
         <div class="dp-spec-row"><span class="k">Network</span><span class="v">{network}</span></div>
