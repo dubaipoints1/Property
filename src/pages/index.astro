@@ -100,7 +100,7 @@ if (newestCard) {
     href: `/cards/${newestCard.slug}/`,
     category: "Card Review",
     title: newestCard.name,
-    excerpt: `${newestCard.bank} · annual fee AED ${newestCard.annualFee.toLocaleString()}`,
+    excerpt: `${newestCard.bank} · annual fee AED ${newestCard.annualFee.amount.toLocaleString()}`,
     meta: `Verified ${fmtShort(new Date(newestCard.lastVerified))}`,
     imageSlug: `card-${newestCard.slug}`,
     coverCategory: "Review",
