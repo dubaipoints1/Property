@@ -142,7 +142,7 @@ const tabs = [
             <ul class="intel-card-grid">
               {others.map((d) => {
                 const daysLeft = daysUntil(d.entry.data.expiresOn);
-                const isExpiringSoon = 7 >= daysLeft;
+                const isExpiringSoon = daysLeft < 8;
                 return (
                   <li class="intel-card-item">
                     <a href={`/deals/${d.entry.id}/`} class="intel-card">

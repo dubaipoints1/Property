@@ -39,6 +39,7 @@ type Group = { title: string; rows: SubRow[] };
 const cardsPanel: Group[] = [
   { title: "By card type", rows: [
     { label: "Best overall UAE cards", href: "/cards/", sub: "Editor's pick" },
+
     { label: "Best travel cards",       href: "/cards/miles/", sub: "Miles & lounge access" },
     { label: "Best cashback cards",     href: "/cards/cashback/", sub: "Capped & uncapped" },
     { label: "Best Islamic (Sharia) cards", href: "/cards/islamic/" },
@@ -188,7 +189,7 @@ const publicationRows: SubRow[] = [
     <nav class="dp-header-nav" aria-label="Primary">
       <div class="dp-nav-mega-wrap">
         <a href="/cards/" class={isActive("/cards/") ? "is-active" : ""}>
-          Credit Cards
+          Credit cards
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </a>
         <div class="dp-megapanel" role="region" aria-label="Cards menu">
@@ -212,10 +213,10 @@ const publicationRows: SubRow[] = [
 
       <div class="dp-nav-mega-wrap">
         <a href="/airlines/" class={isActive("/airlines/") ? "is-active" : ""}>
-          Earn Miles
+          Earn miles
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </a>
-        <div class="dp-megapanel" role="region" aria-label="Earn Miles menu">
+        <div class="dp-megapanel" role="region" aria-label="Earn miles menu">
           <div class="dp-megapanel-inner">
             {pointsPanel.map((g) => (
               <div class="dp-mega-grp">
