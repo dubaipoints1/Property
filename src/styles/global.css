@@ -552,7 +552,7 @@ img { display: block; max-width: 100%; }
    clamp(26px, 4vw, 34px) so the hierarchy reads at a glance on mobile
    instead of feeling like an MS Word export. */
 .dp-prose {
-  font-size: 19px; line-height: 1.7; color: var(--ink);   /* Stage 1 redesign: 18→19 (2026-05-25) */
+  font-size: 19px; line-height: 1.72; color: var(--ink);   /* Stage 1 redesign: 18→19 (2026-05-25); rhythm pass 1.7→1.72 (2026-06-05) */
   max-width: 70ch;                                          /* Stage 1 redesign: 65→70ch */
 }
 @media (max-width: 719.98px) {
@@ -562,27 +562,27 @@ img { display: block; max-width: 100%; }
   font-family: 'Fraunces', serif; font-weight: 700;
   font-size: clamp(26px, 4vw, 34px);
   letter-spacing: -0.6px; color: var(--green);
-  margin: 56px 0 18px;
+  margin: 60px 0 20px;                                      /* rhythm pass: 56/18 → 60/20 */
   line-height: 1.2;
 }
 @media (max-width: 719.98px) {
-  .dp-prose h2 { margin: 40px 0 14px; }
+  .dp-prose h2 { margin: 44px 0 16px; }
 }
 .dp-prose h2:first-child { margin-top: 0; }
 .dp-prose h3 {
   font-family: 'Fraunces', serif; font-weight: 600;
   font-size: 20px; letter-spacing: -0.3px; color: var(--ink);
-  margin: 32px 0 12px;
+  margin: 36px 0 14px;                                      /* rhythm pass: 32/12 → 36/14 */
   line-height: 1.3;
 }
-.dp-prose p { margin-bottom: 22px; text-wrap: pretty; }
+.dp-prose p { margin-bottom: 24px; text-wrap: pretty; }     /* rhythm pass: 22 → 24 */
 @media (max-width: 719.98px) {
-  .dp-prose p { margin-bottom: 18px; }
+  .dp-prose p { margin-bottom: 20px; }                      /* rhythm pass: 18 → 20 */
 }
 .dp-prose ul, .dp-prose ol {
-  margin: 0 0 24px; padding-left: 22px;
+  margin: 0 0 26px; padding-left: 22px;                     /* rhythm pass: 24 → 26 */
 }
-.dp-prose ul li, .dp-prose ol li { margin-bottom: 8px; line-height: 1.65; }
+.dp-prose ul li, .dp-prose ol li { margin-bottom: 10px; line-height: 1.7; }  /* rhythm pass: 8/1.65 → 10/1.7 */
 .dp-prose strong { color: var(--ink); font-weight: 600; }
 .dp-prose a {
   color: var(--ink); font-weight: 600;
@@ -592,10 +592,10 @@ img { display: block; max-width: 100%; }
 .dp-prose a:hover { color: var(--green); text-decoration-color: var(--green); }
 .dp-prose blockquote {
   border-left: 3px solid var(--ink);
-  padding: 4px 0 4px 16px; margin: 18px 0;
+  padding: 6px 0 6px 18px; margin: 22px 0;                  /* rhythm pass: 4/16/18 → 6/18/22 */
   font-family: 'Fraunces', serif; font-style: normal;
   font-weight: 500;
-  color: var(--ink); font-size: 18px; line-height: 1.5;
+  color: var(--ink); font-size: 18px; line-height: 1.6;     /* rhythm pass: 1.5 → 1.6 */
 }
 .dp-prose code {
   background: var(--bg); padding: 2px 6px;

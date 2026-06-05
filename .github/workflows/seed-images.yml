@@ -196,16 +196,6 @@ jobs:
             --orientation landscape \
             --alt "Paperwork and laptop on an office desk"
 
-      - name: Fetch guide-uae-transfer-ratios-2026
-        env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        run: |
-          npm run fetch:stock -- \
-            --slug guide-uae-transfer-ratios-2026 \
-            --query "calculator banknotes desk math" \
-            --orientation landscape \
-            --alt "Calculator and banknotes on a desk — illustrating points-to-cash conversion math"
-
       - name: Fetch programme-skywards
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -427,16 +417,6 @@ jobs:
             --orientation landscape \
             --alt "Children's clothing rack in a family fashion store"
 
-      - name: Fetch card-adcb-talabat
-        env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        run: |
-          npm run fetch:stock -- \
-            --slug card-adcb-talabat \
-            --query "food delivery rider scooter Dubai street night" \
-            --orientation landscape \
-            --alt "Food-delivery rider on a scooter in a Dubai street at night"
-
       - name: Fetch card-adcb-touchpoints-infinite
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -528,16 +508,6 @@ jobs:
             --replace \
             --alt "White-tail aircraft at an Abu Dhabi airport gate" \
             --usage "Etihad Guest co-brand hero — query bumped (1 June 2026) after the prior 'wide body airliner tail livery tarmac' search returned a Thai Airways A350 on the live page. New query scopes to Abu Dhabi visual cues."
-
-      - name: Fetch card-emirates-nbd-go4it-gold
-        env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        run: |
-          npm run fetch:stock -- \
-            --slug card-emirates-nbd-go4it-gold \
-            --query "Dubai Metro train platform commuter morning" \
-            --orientation landscape \
-            --alt "Commuter waiting on a Dubai Metro platform in the morning"
 
       - name: Fetch card-emirates-nbd-go4it-platinum
         env:
@@ -669,16 +639,6 @@ jobs:
             --orientation landscape \
             --alt "Address Downtown Dubai-style hotel pool deck at dusk"
 
-      - name: Fetch card-emirates-nbd-visa-flexi
-        env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        run: |
-          npm run fetch:stock -- \
-            --slug card-emirates-nbd-visa-flexi \
-            --query "AED dirham banknotes wallet flat lay" \
-            --orientation landscape \
-            --alt "UAE dirham banknotes in a wallet flat lay"
-
       - name: Fetch card-emirates-nbd-visa-infinite
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -769,16 +729,6 @@ jobs:
             --orientation landscape \
             --alt "International banking skyscraper exterior"
 
-      - name: Fetch bank-dib
-        env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        run: |
-          npm run fetch:stock -- \
-            --slug bank-dib \
-            --query "modern Islamic banking architecture geometric" \
-            --orientation landscape \
-            --alt "Modern Islamic banking architecture"
-
       - name: Fetch bank-hsbc
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -799,16 +749,6 @@ jobs:
             --orientation landscape \
             --alt "Modern Dubai bank lobby"
 
-      - name: Fetch bank-standard-chartered
-        env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        run: |
-          npm run fetch:stock -- \
-            --slug bank-standard-chartered \
-            --query "Asia Africa banking modern building" \
-            --orientation landscape \
-            --alt "Modern international bank tower"
-
       - name: Fetch card-emirates-nbd-darna-visa-infinite
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
@@ -828,16 +768,6 @@ jobs:
             --query "Downtown Dubai Burj Khalifa apartment view" \
             --orientation landscape \
             --alt "Downtown Dubai apartment with Burj Khalifa view"
-
-      - name: Fetch card-emirates-nbd-manchester-united
-        env:
-          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
-        run: |
-          npm run fetch:stock -- \
-            --slug card-emirates-nbd-manchester-united \
-            --query "football stadium floodlights red kit fans evening" \
-            --orientation landscape \
-            --alt "Football stadium under floodlights"
 
       - name: Fetch card-emirates-nbd-priority-banking-visa-infinite
         env:
