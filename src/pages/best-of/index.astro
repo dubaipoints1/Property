@@ -5,56 +5,77 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 // "best-of" page. Until individual roundups land, the eligible cards
 // can be browsed via the linked filter/section page.
 
-const roundups = [
+type Roundup = {
+  href: string;
+  label: string;
+  deck: string;
+  status: string;
+  state: "live" | "pending";
+};
+
+const roundups: Roundup[] = [
   {
     href: "/cards/",
     label: "Best UAE credit cards for expats",
     deck: "The cards the editorial team would recommend to a UAE resident in their first six months — including those still waiting on an Emirates ID.",
     status: "Editor's pick",
+    state: "live",
   },
   {
     href: "/cards/cashback/",
     label: "Best cashback cards in the UAE",
     deck: "Capped vs uncapped, monthly vs statement-credit, and the structural fee that erodes most cashback returns.",
     status: "Live",
+    state: "live",
   },
   {
     href: "/cards/miles/",
     label: "Best travel cards in the UAE",
     deck: "Miles, lounge access and FX markup compared against UAE-resident eligibility.",
     status: "Live",
+    state: "live",
   },
   {
     href: "/cards/islamic/",
     label: "Best Islamic (Sharia) cards in the UAE",
     deck: "Fee-only profit-rate models, the AAOIFI-aligned issuers, and the rewards mechanics that translate to a Sharia structure.",
     status: "Live",
+    state: "live",
   },
   {
     href: "/salary-transfer/",
     label: "Best salary-transfer offers right now",
     deck: "Live offers ranked in cash-equivalent AED across all five salary bands.",
     status: "Live tracker",
+    state: "live",
   },
   {
     href: "/airlines/",
     label: "Best UAE points programmes for premium-cabin redemption",
     deck: "Skywards, Etihad Guest, Avios and Privilege Club compared by sweet-spot value per dirham.",
     status: "Coming next quarter",
+    state: "pending",
   },
   {
     href: "/cards/",
     label: "Best entry-level cards (AED 5,000–8,000 salary)",
     deck: "Cards that issue at salaries under AED 15,000 — the eligibility bar is lower than most comparison sites suggest.",
     status: "Coming next quarter",
+    state: "pending",
   },
   {
     href: "/cards/",
     label: "Best premium cards (AED 30,000+ salary)",
     deck: "Where the annual fee earns back its cost, and where it does not.",
     status: "Coming next quarter",
+    state: "pending",
   },
 ];
+
+// Sort: live items surface first, pending below — matches reader's
+// scanning order (what can I read now vs. what is coming).
+const liveRoundups = roundups.filter((r) => r.state === "live");
+const pendingRoundups = roundups.filter((r) => r.state === "pending");
 ---
 
 <BaseLayout
@@ -74,8 +95,8 @@ const roundups = [
   </header>
 
   <div class="dp-best-grid">
-    {roundups.map((r) => (
-      <a class="dp-best-tile" href={r.href}>
+    {liveRoundups.map((r) => (
+      <a class="dp-best-tile" href={r.href} data-state={r.state}>
         <span class="status">{r.status}</span>
         <span class="t">{r.label}</span>
         <span class="d">{r.deck}</span>
@@ -83,6 +104,24 @@ const roundups = [
       </a>
     ))}
   </div>
+
+  {pendingRoundups.length > 0 && (
+    <div class="dp-best-section-head">
+      <span class="rule"></span>
+      <span class="label">On the editorial calendar</span>
+      <span class="rule"></span>
+    </div>
+    <div class="dp-best-grid is-pending">
+      {pendingRoundups.map((r) => (
+        <a class="dp-best-tile" href={r.href} data-state={r.state}>
+          <span class="status">{r.status}</span>
+          <span class="t">{r.label}</span>
+          <span class="d">{r.deck}</span>
+          <span class="cta">Read related →</span>
+        </a>
+      ))}
+    </div>
+  )}
 </BaseLayout>
 
 <style>
@@ -117,6 +156,35 @@ const roundups = [
     text-transform: uppercase;
     color: var(--green);
   }
+  /* Pending tiles render muted — scannable signal that the tile points
+     at the closest existing surface, not a fully-shipped roundup. */
+  .dp-best-tile[data-state="pending"] .status { color: var(--muted); }
+  .dp-best-tile[data-state="pending"] .t { color: var(--ink-soft); }
+
+  /* Section divider between live and pending tiers. */
+  .dp-best-section-head {
+    max-width: var(--container-listing);
+    margin: 32px auto 16px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .dp-best-section-head .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .dp-best-section-head .label {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .dp-best-grid.is-pending { padding-top: 0; }
   .dp-best-tile .t {
     font-family: 'Fraunces', serif;
     font-weight: 500;

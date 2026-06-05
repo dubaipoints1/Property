@@ -60,11 +60,13 @@ const distributionPct = (p: Programme): number => {
     </div>
   </div>
 
-  <div class="dp-toolbar">
-    <div class="dp-toolbar-input">Search programmes</div>
-    <div class="dp-toolbar-select">Type: All</div>
-    <div class="dp-toolbar-select">Region: UAE-relevant</div>
-    <div class="dp-toolbar-reset">Sort: by DP value ▾</div>
+  <div class="dp-toolbar" aria-label="Table scope" style="justify-content: space-between;">
+    <span style="font-family: 'DM Sans', system-ui, sans-serif; font-size: 13px; color: var(--ink-soft);">
+      Showing <strong style="color: var(--ink); font-weight: 600;">{programmes.length}</strong> UAE-relevant programmes
+    </span>
+    <span style="font-family: 'DM Sans', system-ui, sans-serif; font-size: 13px; color: var(--ink-soft);">
+      Sorted by <strong style="color: var(--ink); font-weight: 600;">DP value</strong>
+    </span>
   </div>
 
   <div class="dp-tools-table-wrap">
