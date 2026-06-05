@@ -32,6 +32,12 @@ if (!card) throw new Error(`AtAGlance: unknown card slug "${slug}"`);
 const annualFeeAmount = card.annualFee.amount;
 const minSalary = card.eligibility.minSalary;
 const invitationOnly = card.eligibility.invitationOnly === true;
+// L2 `_provenance.eligibility` — when "needs-review" the min-salary tile
+// renders "Pending" rather than a bare AED figure so an unverified band
+// can't be mistaken for a confirmed one. Matches the FX provenance
+// pattern threaded through CardReviewLayout in PR #210.
+const eligibilityProvenance = card._provenance?.eligibility;
+const isEligibilityUnverified = eligibilityProvenance === "needs-review";
 const top = topEarnEntry(card.earnRates as Record<string, unknown>);
 
 // welcomeBonus is a union: structured object | bifurcated (with/without
@@ -68,6 +74,8 @@ const minSalaryEyebrow = "Min salary";
 let minSalaryLabel: string;
 if (invitationOnly) {
   minSalaryLabel = "Invitation only";
+} else if (isEligibilityUnverified) {
+  minSalaryLabel = "Pending";
 } else if (minSalary === 0) {
   minSalaryLabel = "No minimum";
 } else {
@@ -128,7 +136,7 @@ const tileCount =
   </div>
   <div class="tile">
     <dt class="eyebrow">{minSalaryEyebrow}</dt>
-    <dd class="value">{minSalaryLabel}</dd>
+    <dd class={`value${isEligibilityUnverified ? " is-unverified" : ""}`}>{minSalaryLabel}</dd>
   </div>
   {top && (
     <div class="tile">
@@ -200,6 +208,13 @@ const tileCount =
     white-space: nowrap;
     overflow: hidden;
     text-overflow: clip;
+  }
+  /* Provenance-aware: when L2 `_provenance.eligibility` is "needs-review"
+     the tile renders "Pending" in muted italics so an unverified salary
+     band can't be read as a confirmed one. */
+  .dp-at-a-glance .value.is-unverified {
+    color: var(--muted);
+    font-style: italic;
   }
   .dp-at-a-glance .value .num {
     display: block;

@@ -52,6 +52,11 @@ interface Props {
    * be mistaken for a confirmed zero. (1 June 2026 audit follow-up
    * to the 2026-05-29 §10 ADCB FX-fee amendment.) */
   fxFeeProvenance?: string;
+  /** L2 `_provenance.eligibility` — when "needs-review" the sidebar
+   * Min salary row renders "—" instead of a bare AED figure. Mirrors
+   * the fxFeeProvenance pattern; closes the 3 June 2026 audit P0 H3
+   * "minSalary leaks as confirmed across chrome surfaces" finding. */
+  eligibilityProvenance?: string;
   perks?: string[];
   pros?: string[];
   cons?: string[];
@@ -99,6 +104,7 @@ const {
   earnUnit,
   categories = [],
   fxFeeProvenance,
+  eligibilityProvenance,
   perks = [],
   // pros + cons are accepted on the props interface for backward
   // compatibility with existing call sites in src/pages/cards/[slug].astro,
@@ -328,7 +334,12 @@ const schema = {
       <div class="dp-spec-card">
         <h4>At a glance</h4>
         <div class="dp-spec-row"><span class="k">Annual fee</span><span class="v">AED {annualFee.toLocaleString()}</span></div>
-        <div class="dp-spec-row"><span class="k">Min salary</span><span class="v">AED {minSalary.toLocaleString()}/mo</span></div>
+        <div class="dp-spec-row">
+          <span class="k">Min salary</span>
+          <span class={`v ${eligibilityProvenance === "needs-review" ? "is-unverified" : ""}`}>
+            {eligibilityProvenance === "needs-review" ? "—" : `AED ${minSalary.toLocaleString()}/mo`}
+          </span>
+        </div>
         <div class="dp-spec-row">
           <span class="k">FX markup</span>
           <span class={`v ${fxFeeProvenance === "needs-review" ? "is-unverified" : ""}`}>

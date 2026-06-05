@@ -19,7 +19,9 @@ const rows = await Promise.all(
       values: [
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
         c._provenance?.fxFee === "needs-review" ? "—" : `${c.fxFee}%`,
-        `AED ${c.eligibility.minSalary.toLocaleString()}/mo`,
+        c._provenance?.eligibility === "needs-review"
+          ? "—"
+          : `AED ${c.eligibility.minSalary.toLocaleString()}/mo`,
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };

@@ -36,12 +36,16 @@ const latestVerified = allCards.length === 0
 const cardTiles = allCards.map((c) => {
   const top = topEarnEntry(c.earnRates as Record<string, unknown>);
   const feeLabel = c.annualFee.amount === 0 ? "Free" : formatAED(c.annualFee.amount);
+  // Provenance-gated salary label — needs-review renders "Pending" so
+  // the bank hub doesn't surface an unverified AED figure as confirmed.
   const salaryLabel =
     c.eligibility.invitationOnly === true
       ? "By invitation"
-      : c.eligibility.minSalary > 0
-        ? `${formatAED(c.eligibility.minSalary)}/mo`
-        : "No minimum";
+      : c._provenance?.eligibility === "needs-review"
+        ? "Pending"
+        : c.eligibility.minSalary > 0
+          ? `${formatAED(c.eligibility.minSalary)}/mo`
+          : "No minimum";
   return {
     slug: c.slug,
     name: c.name,

@@ -51,8 +51,14 @@ const cardTitle = `${data.name} review (May 2026) | DubaiPoints`;
 const top = topEarnEntry(data.earnRates as Record<string, unknown>);
 const topLabel = top ? CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key : null;
 const feeFragment = data.annualFee.amount === 0 ? "No annual fee" : `AED ${data.annualFee.amount.toLocaleString()} annual fee`;
+// Provenance-gated min-salary fragment: if eligibility is unverified
+// we drop the AED figure from the SERP description entirely rather
+// than emit "min salary AED 5,000" as if confirmed (3 June 2026
+// audit P0 H3 — same pattern as the FX-fee provenance gate).
 const minSalaryFragment = data.eligibility.invitationOnly
   ? "invitation-only"
+  : data._provenance?.eligibility === "needs-review"
+  ? null
   : data.eligibility.minSalary > 0
   ? `min salary AED ${data.eligibility.minSalary.toLocaleString()}`
   : "no min salary";
@@ -83,6 +89,7 @@ const cardDescription = [
   earnUnit={data.earnUnit}
   categories={data.categories}
   fxFeeProvenance={data._provenance?.fxFee}
+  eligibilityProvenance={data._provenance?.eligibility}
   perks={data.perks}
   pros={editorial?.data.pros}
   cons={editorial?.data.cons}
