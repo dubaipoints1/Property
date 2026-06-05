@@ -542,6 +542,15 @@ const publicationRows: SubRow[] = [
   letter-spacing: 1.4px;
   text-transform: uppercase;
 }
+/* Ultra-wide: at ≥1440px the 1500px container has the 3 quick-links
+   floating in whitespace. Open up the letter-spacing slightly so the
+   strip reads as a deliberate header band rather than empty chrome. */
+@media (min-width: 1440px) {
+  .dp-tracker-strip-inner {
+    gap: 22px;
+    letter-spacing: 2px;
+  }
+}
 .dp-quicklink {
   color: var(--ink-soft);
   text-decoration: none;
@@ -804,9 +813,12 @@ const publicationRows: SubRow[] = [
   border-bottom: 1px solid var(--line);
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  text-transform: uppercase;
+  /* Sentence-case at 600 weight reads as navigation; the prior
+     uppercase + 800 + negative-tracking combination read as a
+     shouted billboard (Standards Editor / Head of UX audit,
+     3 June 2026). Matches the panel `lbl` rows below. */
+  font-weight: 600;
+  letter-spacing: 0.1px;
   color: var(--ink);
   text-decoration: none;
   cursor: pointer;
