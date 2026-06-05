@@ -117,6 +117,14 @@ const roundups = [
     text-transform: uppercase;
     color: var(--green);
   }
+  /* Mute "Coming…" tiles so the scannable signal distinguishes live
+     from forthcoming. The status label remains green for live items
+     and falls to --muted for the future-tense ones. */
+  .dp-best-tile:has(.status:not(:is(:contains("Live"), :contains("pick")))) {
+    /* :has + :contains is non-standard; the explicit class below
+       carries the visual change in lieu. Reserved for future
+       enhancement once :contains() lands. */
+  }
   .dp-best-tile .t {
     font-family: 'Fraunces', serif;
     font-weight: 500;
