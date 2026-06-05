@@ -2114,6 +2114,14 @@ img { display: block; max-width: 100%; }
 }
 .dp-spec-row .v.flag { color: var(--green); }
 .dp-spec-row .v.warn { color: var(--red); }
+/* Provenance-aware: needs-review fields render an em-dash in muted
+   italics so the sidebar can't surface an unverified figure as if it
+   were confirmed. Applied to fxFee + minSalary (eligibility) rows. */
+.dp-spec-row .v.is-unverified {
+  color: var(--muted);
+  font-style: italic;
+  font-weight: 500;
+}
 
 /* Phase 2a.2.3 (2026-05-20): `.dp-spec-card.is-call` and its children
    were removed from the layout — replaced by <EditorScorecard /> at the

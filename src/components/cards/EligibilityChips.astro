@@ -15,9 +15,15 @@ import type { CardData } from "~/lib/cardsData";
 
 interface Props {
   eligibility: CardData["eligibility"];
+  /** L2 `_provenance.eligibility` — when "needs-review" the minSalary
+   * line renders an explicit "Pending" placeholder instead of a bare
+   * AED figure, so an unverified salary band can't be mistaken for a
+   * confirmed one. Matches the FX provenance pattern from PR #210. */
+  eligibilityProvenance?: string;
 }
 
-const { eligibility } = Astro.props;
+const { eligibility, eligibilityProvenance } = Astro.props;
+const isUnverified = eligibilityProvenance === "needs-review";
 
 const aedFormatter = new Intl.NumberFormat("en-AE", {
   style: "currency",
@@ -56,8 +62,12 @@ for (const t of eligibility.employmentTypes ?? []) {
   {!isInviteOnly && (
     <dl class="dp-eligibility-primary">
       <dt>Minimum salary</dt>
-      <dd>
-        {aedFormatter.format(eligibility.minSalary)}<span class="per">/mo</span>
+      <dd class={isUnverified ? "is-unverified" : undefined}>
+        {isUnverified ? (
+          <>—<span class="per"> confirmation pending</span></>
+        ) : (
+          <>{aedFormatter.format(eligibility.minSalary)}<span class="per">/mo</span></>
+        )}
       </dd>
     </dl>
   )}
@@ -104,6 +114,10 @@ for (const t of eligibility.employmentTypes ?? []) {
     color: var(--ink);
     line-height: 1.1;
     letter-spacing: -0.2px;
+  }
+  .dp-eligibility-primary dd.is-unverified {
+    color: var(--muted);
+    font-style: italic;
   }
   .dp-eligibility-primary .per {
     font-family: "DM Sans", system-ui, sans-serif;
