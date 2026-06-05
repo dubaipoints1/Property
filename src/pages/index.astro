@@ -75,7 +75,7 @@ if (guidesSorted[0]) {
   const g = guidesSorted[0];
   intel.push({
     href: `/guides/${g.id}/`,
-    category: "Sweet Spots",
+    category: "Sweet spots",
     title: g.data.title,
     excerpt: g.data.description,
     meta: `Updated ${fmtShort(g.data.updatedAt)}`,
@@ -98,7 +98,7 @@ if (guidesSorted[1]) {
 if (newestCard) {
   intel.push({
     href: `/cards/${newestCard.slug}/`,
-    category: "Card Review",
+    category: "Card review",
     title: newestCard.name,
     excerpt: `${newestCard.bank} · annual fee AED ${newestCard.annualFee.amount.toLocaleString()}`,
     meta: `Verified ${fmtShort(new Date(newestCard.lastVerified))}`,
@@ -136,7 +136,7 @@ const milesTiles = allPrograms
 ---
 
 <BaseLayout
-  title="DubaiPoints — UAE Miles, Deals & Banking Hacks"
+  title="DubaiPoints — UAE miles, deals and banking, AED-first"
   description="Independent UAE-resident-led guides to credit cards, salary-transfer bonuses, miles redemptions and lifestyle deals. Every figure in AED, every card checked."
   fullWidth
 >
