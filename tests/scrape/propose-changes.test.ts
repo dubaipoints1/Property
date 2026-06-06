@@ -151,6 +151,19 @@ test("PR-207 isPlausibleWelcomeBonus accepts a real bifurcated bonus signal", ()
   assert.equal(isPlausibleWelcomeBonus(bifurcated), true);
 });
 
+test("PR-226 mergeDraft does not write present-with-null for previously-absent optional string fields", () => {
+  // The 6 June 2026 weekly scrape (PR #226) wrote `loyaltyProgram: null`
+  // to adcb-365-cashback + adcb-essential-cashback. Pre-scrape, these
+  // cards had no loyaltyProgram key at all. Zod's `z.string().optional()`
+  // accepts absent OR string but NOT present-with-null — the build broke
+  // on parse. The guard skips the write when the scraped value is null
+  // and the existing entry has no value, so the field stays absent.
+  const draft = { loyaltyProgram: null };
+  // No existing entry — first scrape on a new card
+  const { entry } = mergeDraft("test-card", undefined, draft);
+  assert.equal("loyaltyProgram" in entry, false, "loyaltyProgram must not appear in entry as a null key");
+});
+
 test("PR-207 mergeDraft skips top-level write for contaminated welcomeBonus, freetext still captured", () => {
   const draft = {
     welcomeBonus: "welcome offer** ![Earn upto 15 Plus Points on your retail spends](https://www",
