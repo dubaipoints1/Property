@@ -604,6 +604,58 @@ img { display: block; max-width: 100%; }
   color: var(--ink);
 }
 
+/* Markdown tables inside .dp-prose (guides + airline programmes). Before
+   this rule landed on 5 June 2026, MDX tables rendered as default browser
+   tables — no padding, no header background, no alignment, font-size
+   collapsing inside the 19px prose stack. This brings them in line with
+   .dp-data-table (the explicit class used in finder / comparison pages)
+   while staying sympathetic to the longer-form prose context (15px cells
+   vs the 14px on .dp-data-table, slightly more vertical padding). */
+.dp-prose table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-collapse: collapse;
+  margin: 0 0 28px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+}
+@media (min-width: 720px) {
+  .dp-prose table { display: table; overflow: visible; }
+}
+.dp-prose thead { background: var(--bg); text-align: left; }
+.dp-prose thead th {
+  padding: 12px 14px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+  vertical-align: bottom;
+  text-align: left;
+}
+.dp-prose tbody tr { border-top: 1px solid var(--line-soft); }
+.dp-prose tbody tr:first-child { border-top: none; }
+.dp-prose tbody td {
+  padding: 12px 14px;
+  color: var(--ink-soft);
+  vertical-align: top;
+  text-align: left;
+}
+.dp-prose tbody td:first-child { color: var(--ink); font-weight: 500; }
+.dp-prose tbody td strong { color: var(--ink); font-weight: 600; }
+/* Respect markdown's `:---:` / `---:` column-alignment hints. */
+.dp-prose table th[align="right"], .dp-prose table td[align="right"] { text-align: right; }
+.dp-prose table th[align="center"], .dp-prose table td[align="center"] { text-align: center; }
+@media (max-width: 719.98px) {
+  .dp-prose table { font-size: 14px; margin-bottom: 24px; }
+  .dp-prose thead th { padding: 10px 12px; font-size: 10px; letter-spacing: 1.3px; }
+  .dp-prose tbody td { padding: 10px 12px; }
+}
+
 /* TOC (right rail on desktop, top on mobile) */
 .dp-article-grid { display: grid; gap: 28px; }
 @media (min-width: 1024px) {
