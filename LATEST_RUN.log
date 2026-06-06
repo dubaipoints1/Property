@@ -20,7 +20,7 @@ added 503 packages in 5s
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
 [fab] Fetching https://www.bankfab.com/en-ae/personal/credit-cards/fab-world-elite
 [fab] Fetching https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf
-[fab] Wrote data/scraped/fab/2026-06-02T12-53-13-772Z.json
+[fab] Wrote data/scraped/fab/2026-06-06T07-32-42-242Z.json
 [fab] 4 card(s) had parsing warnings:
 [fab]   fab-cashback: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
 [fab]   fab-etihad-guest-infinite: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
@@ -62,7 +62,7 @@ added 503 packages in 5s
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card-for-emiratis
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-family-credit-card
 [enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/noon-one-visa-credit-card
-[enbd] Wrote data/scraped/enbd/2026-06-02T12-55-08-714Z.json
+[enbd] Wrote data/scraped/enbd/2026-06-06T07-34-47-856Z.json
 [enbd] 28 card(s) had parsing warnings:
 [enbd]   emirates-nbd-skywards-infinite: Could not parse annual fee; Could not parse FX fee
 [enbd]   emirates-nbd-skywards-signature: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
@@ -75,20 +75,20 @@ added 503 packages in 5s
 [enbd]   emirates-nbd-mastercard-platinum: Could not parse annual fee; Could not parse FX fee
 [enbd]   emirates-nbd-duo: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-go4it-platinum: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-go4it-gold: Could not parse annual fee; Could not parse FX fee
+[enbd]   emirates-nbd-go4it-gold: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-visa-platinum: Could not parse annual fee; Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
 [enbd]   emirates-nbd-diners-club: Could not parse annual fee; Could not parse FX fee
 [enbd]   emirates-nbd-webshopper: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-dnata-world: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-dnata-platinum: Could not parse annual fee; Could not parse FX fee
 [enbd]   emirates-nbd-etihad-guest-elevate: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-etihad-guest-inspire: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
+[enbd]   emirates-nbd-etihad-guest-inspire: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-manchester-united: Could not parse annual fee; Could not parse FX fee
 [enbd]   emirates-nbd-lulu-247-platinum: Could not parse annual fee; Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
 [enbd]   emirates-nbd-lulu-247-titanium: Could not parse annual fee; Could not parse FX fee
 [enbd]   emirates-nbd-marriott-bonvoy-world-elite: Could not parse annual fee; Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
 [enbd]   emirates-nbd-marriott-bonvoy-world: Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-u-by-emaar-infinite: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[enbd]   emirates-nbd-u-by-emaar-infinite: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
 [enbd]   emirates-nbd-u-by-emaar-infinite-emiratis: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
 [enbd]   emirates-nbd-u-by-emaar-family: Could not parse annual fee; Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
 [enbd]   emirates-nbd-noon-one: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
@@ -122,7 +122,7 @@ added 503 packages in 5s
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
 [adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/essential-cashback-credit-card.aspx
 [adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
-[adcb] Wrote data/scraped/adcb/2026-06-02T12-55-41-800Z.json
+[adcb] Wrote data/scraped/adcb/2026-06-06T07-35-23-682Z.json
 [adcb] 11 card(s) had parsing warnings:
 [adcb]   adcb-shukran: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
 [adcb]   adcb-traveller: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
@@ -142,7 +142,7 @@ added 503 packages in 5s
 > dubaipoints@0.1.0 scrape:propose
 > tsx scripts/scrape/propose-changes.ts
 
-[propose] Wrote PR_BODY.md: 0 new, 43 changed, 119 warning(s)
+[propose] Wrote PR_BODY.md: 0 new, 43 changed, 122 warning(s)
 
 === git status src/data/cards.json ===
  M src/data/cards.json
