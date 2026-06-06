@@ -232,6 +232,19 @@ export function mergeDraft(
     const before = JSON.stringify(entry[field]);
     const after = JSON.stringify(draft[field]);
     if (before !== after) {
+      // Schema-correctness guard against the present-with-null class
+      // surfaced on PR #226 (6 June 2026). Several L2 fields are
+      // `z.string().optional()` — they accept absent OR string, but
+      // not present-with-null. Pre-scrape these cards had no
+      // `loyaltyProgram` key; the scraper wrote `loyaltyProgram: null`
+      // for cards where the parser couldn't find a loyalty programme
+      // mention, breaking the build on parse. If the scraped value is
+      // null AND the existing entry has no value, skip the write so
+      // the field stays absent (the schema's accepted state for
+      // unknown-or-no-loyalty-programme).
+      if (draft[field] === null && entry[field] === undefined) {
+        continue;
+      }
       entry[field] = draft[field];
       provenance[field] = "scraped";
       changedFields.push(field);
