@@ -7,7 +7,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mergeDraft, SCRAPED_FIELDS, FREETEXT_FIELDS } from "../../scripts/scrape/propose-changes.ts";
+import { mergeDraft, SCRAPED_FIELDS, FREETEXT_FIELDS, isPlausibleWelcomeBonus } from "../../scripts/scrape/propose-changes.ts";
 
 test("Audit-09 SCRAPED_FIELDS includes welcomeBonus", () => {
   assert.ok(
@@ -110,4 +110,57 @@ test("Audit-09 mergeDraft falls back to string welcomeBonus when normaliser coul
 
   assert.equal(typeof entry.welcomeBonus, "string");
   assert.equal(entry._provenance?.welcomeBonus, "scraped");
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// PR #207 audit (6 June 2026): the plausibility guard against the welcome-
+// bonus contamination class. The four cases below are the actual strings
+// the 2 June scrape merge produced. Each must be rejected by
+// isPlausibleWelcomeBonus() AND must NOT be written to top-level L2 by
+// mergeDraft() (instead the raw value lands under _scraped_freetext.welcome
+// BonusFreetext for editor audit).
+// ─────────────────────────────────────────────────────────────────────────
+
+test("PR-207 isPlausibleWelcomeBonus rejects markdown-image contamination", () => {
+  const contaminated = "welcome offer** ![Earn upto 15 Plus Points on your retail spends](https://www";
+  assert.equal(isPlausibleWelcomeBonus(contaminated), false);
+});
+
+test("PR-207 isPlausibleWelcomeBonus rejects raw-HTML fragments", () => {
+  const broken = "Up to 1 LuLu Points<br>- 0";
+  assert.equal(isPlausibleWelcomeBonus(broken), false);
+});
+
+test("PR-207 isPlausibleWelcomeBonus rejects empty / near-empty captures", () => {
+  assert.equal(isPlausibleWelcomeBonus(""), false);
+  assert.equal(isPlausibleWelcomeBonus("welcome"), false);
+});
+
+test("PR-207 isPlausibleWelcomeBonus accepts the structured object the normaliser emits", () => {
+  const structured = { amount: 1000, unit: "aed_voucher", spend_threshold_aed: 10000, qualify_window_days: 30 };
+  assert.equal(isPlausibleWelcomeBonus(structured), true);
+});
+
+test("PR-207 isPlausibleWelcomeBonus accepts plausible editor-typed string fallback", () => {
+  const real = "Welcome bonus of AED 365 - Enjoy a welcome bonus of AED 365 when you sign up for the card.";
+  assert.equal(isPlausibleWelcomeBonus(real), true);
+});
+
+test("PR-207 isPlausibleWelcomeBonus accepts a real bifurcated bonus signal", () => {
+  const bifurcated = "welcome bonus of AED 1,200 and UAE residents will receive a welcome bonus of AED 1,000";
+  assert.equal(isPlausibleWelcomeBonus(bifurcated), true);
+});
+
+test("PR-207 mergeDraft skips top-level write for contaminated welcomeBonus, freetext still captured", () => {
+  const draft = {
+    welcomeBonus: "welcome offer** ![Earn upto 15 Plus Points on your retail spends](https://www",
+    welcomeBonusFreetext: "welcome offer** ![Earn upto 15 Plus Points on your retail spends](https://www",
+  };
+  const { entry } = mergeDraft("emirates-nbd-visa-flexi", undefined, draft);
+  assert.equal(entry.welcomeBonus, undefined, "contaminated string must not reach top-level welcomeBonus");
+  assert.equal(
+    (entry._scraped_freetext as Record<string, unknown> | undefined)?.welcomeBonus,
+    "welcome offer** ![Earn upto 15 Plus Points on your retail spends](https://www",
+    "raw capture must still land in _scraped_freetext for editor audit",
+  );
 });

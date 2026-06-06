@@ -148,6 +148,49 @@ interface MergeOutcome {
  *   - All replaced fields get _provenance = "scraped".
  *   - _lastScraped is set to today's date.
  */
+/**
+ * Plausibility check for a scraped welcome-bonus value before it's written
+ * to the top-level L2 `welcomeBonus` field. Closes the 6 June 2026 PR #207
+ * audit's "ENBD cross-contamination" finding: the scraper captured the
+ * issuer's shared promotional-banner alt-text (`![Earn upto 15 Plus Points
+ * ...](https://www`) and assigned the identical string to four unrelated
+ * cards. Same class as the 2026-05-29 §10 parseFxFee() failure.
+ *
+ * The check is intentionally conservative — false positives (i.e. real
+ * welcome bonuses being rejected) just route the value to
+ * _scraped_freetext.welcomeBonusFreetext for the editor to audit and
+ * type up by hand. False negatives (garbage strings reaching L2) are the
+ * actual harm we're guarding against.
+ *
+ * Returns true if `value` looks like a plausible welcome bonus.
+ */
+export function isPlausibleWelcomeBonus(value: unknown): boolean {
+  // Structured welcomeBonus object (the normaliser's preferred output) —
+  // trust the typed shape, the schema validates downstream.
+  if (value && typeof value === "object") return true;
+  // Null/undefined — caller decides whether to write.
+  if (value == null) return true;
+  // Everything else must be a string to be considered.
+  if (typeof value !== "string") return false;
+  const s = value.trim();
+  // Empty or near-empty captures.
+  if (s.length < 16) return false;
+  // Markdown image fragment — the ENBD contamination pattern.
+  if (/!\[.*?\]\(/.test(s)) return false;
+  // Truncated URL — the scraper cut mid-href.
+  if (/https?:\/\/[^\s]*$/.test(s) && !/\.(com|ae|net|org)(\b|\/)/.test(s)) return false;
+  // Raw HTML fragments — the LuLu Titanium Gold pattern ("Up to 1 LuLu
+  // Points<br>- 0").
+  if (/<br\s*\/?>|<div|<span|<p\s|<a\s/i.test(s)) return false;
+  // No currency or count signal in the body — almost certainly not a
+  // welcome bonus. (A real welcome bonus mentions AED, miles, points,
+  // cashback, voucher, gift, or a numeric amount.)
+  if (!/AED|\baed\b|miles?\b|points?\b|cashback|voucher|gift|bonus|\b\d/i.test(s)) {
+    return false;
+  }
+  return true;
+}
+
 export function mergeDraft(
   slug: string,
   existing: CardEntry | undefined,
@@ -165,6 +208,25 @@ export function mergeDraft(
     const currentProv = provenance[field];
     if (currentProv === "editor-confirmed" || currentProv === "editor-corrected") {
       preservedFields.push(field);
+      continue;
+    }
+    // Defensive guard against the welcomeBonus contamination class
+    // surfaced on the 6 June 2026 PR #207 audit: the scraper had pulled
+    // generic page-chrome banner alt-text ("welcome offer** ![Earn upto
+    // 15 Plus Points...](https://www") and assigned the identical string
+    // to four different ENBD cards. Same problem class as the 2026-05-29
+    // §10 ADCB FX-fee parser confusion. The plausibility check below
+    // rejects strings that look like markdown image fragments, truncated
+    // URLs, raw HTML fragments, or near-empty captures — those route to
+    // _scraped_freetext.welcomeBonusFreetext only, leaving the top-level
+    // L2 welcomeBonus untouched until an editor verifies and types a
+    // structured value by hand.
+    if (
+      (field === "welcomeBonus" || field === "welcomeBonusValue") &&
+      !isPlausibleWelcomeBonus(draft[field])
+    ) {
+      // Skip top-level write; the free-text branch below still captures
+      // the raw output for the editor to audit.
       continue;
     }
     const before = JSON.stringify(entry[field]);
