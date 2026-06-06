@@ -656,6 +656,101 @@ img { display: block; max-width: 100%; }
   .dp-prose tbody td { padding: 10px 12px; }
 }
 
+/* Defensive .dp-prose rules for the remaining markdown elements that
+   had the same "no rule, browser default" gap as <table> (PR #222).
+   These are not heavily used today but get used the moment an editor
+   reaches for an `---`, `![]()`, ```, or nested list. Cost is one
+   block of CSS now versus another visual-regression fire-drill later. */
+
+/* Horizontal rule between sections. Markdown's `---` (not the frontmatter
+   delimiter) renders as <hr>. We use the soft hairline rather than a
+   heavy black bar so it sits below the body rhythm, not on top of it. */
+.dp-prose hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 36px 0;
+  height: 0;
+}
+
+/* Inline images / figures. Editor's `![alt](path)` becomes <img>;
+   MDX may wrap a `<figure><img/><figcaption/></figure>`. Both need to
+   not blow out of the 70ch prose column. Caption inherits the 15px
+   muted treatment the table cells use, so the visual register is
+   consistent. */
+.dp-prose img, .dp-prose figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 4px;
+}
+.dp-prose figure {
+  margin: 28px 0;
+}
+.dp-prose figcaption {
+  margin-top: 10px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  text-align: left;
+  text-wrap: pretty;
+}
+
+/* Fenced code blocks (```). Rare in editorial content but used in
+   technical guides (e.g. the AECB walkthrough). Single-rule treatment
+   that survives long lines via horizontal scroll. */
+.dp-prose pre {
+  margin: 0 0 24px;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.dp-prose pre code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+}
+
+/* Plain <dl> in prose (without the .dp-conditions class). Rare — most
+   card MDX bodies pass the class explicitly — but worth a fallback so
+   an editor writing a bare dl gets a sensible render rather than the
+   browser's indented-but-otherwise-untouched default. */
+.dp-prose dl {
+  margin: 0 0 26px;
+  display: grid;
+  gap: 12px;
+}
+.dp-prose dl dt {
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: 0.2px;
+}
+.dp-prose dl dd {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* Nested lists. Without these the inner list reuses the outer's 22px
+   left-padding which compounds visually (and the inner bullets lose
+   their indent register). */
+.dp-prose ul ul, .dp-prose ol ol, .dp-prose ul ol, .dp-prose ol ul {
+  margin: 8px 0 0;
+  padding-left: 22px;
+}
+
 /* TOC (right rail on desktop, top on mobile) */
 .dp-article-grid { display: grid; gap: 28px; }
 @media (min-width: 1024px) {
