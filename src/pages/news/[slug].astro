@@ -22,7 +22,7 @@ const formatCategory = (c: string) =>
 ---
 
 <ArticleLayout
-  title={post.data.title}
+  title={`${post.data.title} | DubaiPoints`}
   description={post.data.description}
   crumb={`DubaiPoints / News / ${formatCategory(post.data.category)}`}
   eyebrow={formatCategory(post.data.category).toUpperCase()}
