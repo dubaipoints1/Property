@@ -48,7 +48,13 @@ const heroSweetSpot = flagshipProgramme?.data.sweetSpots[0];
 const stats: { value: string; label: string }[] = [
   { value: `${cards.length}+`, label: "Cards reviewed" },
   { value: `${allBanks.length}`, label: "UAE banks tracked" },
-  { value: "Monthly", label: "Tracker refresh" },
+  // "Daily" matches the cadence claimed on the tracker itself
+  // (/salary-transfer/ pagehead + index deck), the homepage directory
+  // tile and the 404 page — this stat read "Monthly" and contradicted
+  // all four on the same site, two on this same page (10 June 2026
+  // fresh-eyes audit). Fact-Checker to confirm the true cadence; if it
+  // is not daily, all five surfaces change together.
+  { value: "Daily", label: "Tracker refresh" },
   { value: "Zero", label: "Paid placements" },
 ];
 

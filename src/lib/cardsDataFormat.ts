@@ -597,8 +597,16 @@ export function cardComparisonRows(
       key: "minSalary",
       label: "Minimum salary",
       mobileLabel: "Min salary",
-      leftValue: lInvite ? "Invitation only" : `${formatAED(lSalary ?? 0)}/mo`,
-      rightValue: rInvite ? "Invitation only" : `${formatAED(rSalary ?? 0)}/mo`,
+      leftValue: lInvite
+        ? "Invitation only"
+        : lSalary && lSalary > 0
+          ? `${formatAED(lSalary)}/mo`
+          : "No minimum",
+      rightValue: rInvite
+        ? "Invitation only"
+        : rSalary && rSalary > 0
+          ? `${formatAED(rSalary)}/mo`
+          : "No minimum",
       winner: lowerWins(lSalary, rSalary),
     });
   }
@@ -662,10 +670,17 @@ export function annualFeeWaiverDisplay(
   const parts: string[] = [];
   if (v.year_one_waived) parts.push("year-one waived");
   if (v.ongoing_threshold_aed !== null && v.ongoing_threshold_aed !== undefined) {
-    const period = v.threshold_period === "monthly" ? "monthly" : "annual";
-    parts.push(
-      `AED ${v.ongoing_threshold_aed.toLocaleString()} ${period} spend ongoing`,
-    );
+    if (v.ongoing_threshold_aed === 0) {
+      // A zero threshold means the ongoing waiver is unconditional —
+      // "AED 0 annual spend ongoing" read like a glitch (10 June 2026
+      // fresh-eyes audit, seen on the card-finder fee chips).
+      parts.push("no ongoing spend requirement");
+    } else {
+      const period = v.threshold_period === "monthly" ? "monthly" : "annual";
+      parts.push(
+        `AED ${v.ongoing_threshold_aed.toLocaleString()} ${period} spend ongoing`,
+      );
+    }
   }
   let s = parts.join(", ");
   if (s.length > 0) s = s.charAt(0).toUpperCase() + s.slice(1);
