@@ -34,7 +34,7 @@ const deck = isLive
 
 <ArticleLayout
   title={`${deal.data.title} | DubaiPoints`}
-  description={deal.data.description}
+  description={`${deal.data.title} — ${bank?.data.name ?? "UAE issuer"} ${formatCategory(deal.data.category).toLowerCase()} deal, ${isLive ? `live until ${expiresStr}` : `expired ${expiresStr}`}. AED-first verdict from DubaiPoints.`}
   crumb={`DubaiPoints / Deals / ${formatCategory(deal.data.category)}`}
   eyebrow={`DEAL · ${formatCategory(deal.data.category).toUpperCase()}`}
   deck={deck}
