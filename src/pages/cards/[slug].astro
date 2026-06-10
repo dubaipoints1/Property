@@ -47,7 +47,15 @@ const bankName = bankEntry?.data.name ?? data.bank;
 // Per §9 — composed meta title + description from L2 attributes. Closes
 // the SEO Strategist audit's "meta title pattern not applied editorially"
 // and "card review descriptions are the welcome-bonus string" P1s.
-const cardTitle = `${data.name} review (May 2026) | DubaiPoints`;
+// Month stamp computed from L2 lastVerified so the title can never
+// silently roll over a month boundary (10 June 2026 staleness sweep —
+// the previous hardcoded "(May 2026)" went stale the day the calendar
+// turned).
+const verifiedStamp = new Date(data.lastVerified).toLocaleDateString("en-GB", {
+  month: "long",
+  year: "numeric",
+});
+const cardTitle = `${data.name} review (${verifiedStamp}) | DubaiPoints`;
 const top = topEarnEntry(data.earnRates as Record<string, unknown>);
 const topLabel = top ? CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key : null;
 const feeFragment = data.annualFee.amount === 0 ? "No annual fee" : `AED ${data.annualFee.amount.toLocaleString()} annual fee`;
@@ -90,6 +98,7 @@ const cardDescription = [
   categories={data.categories}
   fxFeeProvenance={data._provenance?.fxFee}
   eligibilityProvenance={data._provenance?.eligibility}
+  invitationOnly={data.eligibility.invitationOnly === true}
   perks={data.perks}
   pros={editorial?.data.pros}
   cons={editorial?.data.cons}

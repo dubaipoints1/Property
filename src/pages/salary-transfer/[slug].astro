@@ -71,7 +71,7 @@ if (props.kind === "band") {
 {
   props.kind === "bank" && (
     <BaseLayout
-      title={`${props.bankName} salary transfer offer (June 2026) | DubaiPoints`}
+      title={`${props.bankName} salary transfer offer (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
       description={`Deep-dive on ${props.bankName}'s current salary transfer offer: bands, clawback, payout timing, and expat-relevant gotchas.`}
       fullWidth
     >

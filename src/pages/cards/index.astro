@@ -117,7 +117,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
 ---
 
 <BaseLayout
-  title="The best UAE credit cards (June 2026) | DubaiPoints"
+  title={`The best UAE credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
   description="Every UAE credit card we cover, sorted by welcome-bonus value. Annual fees and earn rates checked against the issuer's Schedule of Charges."
   fullWidth
 >

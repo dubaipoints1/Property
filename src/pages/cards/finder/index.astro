@@ -107,6 +107,14 @@ const FEE_OPTIONS: Array<{ value: string; label: string }> = [
 // Initial render order — by min salary ascending (mirrors getActiveCards()).
 // The inline script reorders on page-load based on URL params.
 const initialOrder = cardsWithBanks;
+
+// "Last refreshed" stamp computed from the newest L2 lastVerified so the
+// stats strip can never go stale (10 June 2026 staleness sweep — the
+// previous hardcoded "20 May 2026" had been overtaken by three L2
+// refreshes).
+const lastRefreshed = new Date(
+  Math.max(...allCards.map((c) => new Date(c.lastVerified).getTime())),
+).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 ---
 
 <BaseLayout
@@ -132,7 +140,7 @@ const initialOrder = cardsWithBanks;
       </span>
       <span>
         <span class="lbl">Last refreshed</span>
-        <strong>20 May 2026</strong>
+        <strong>{lastRefreshed}</strong>
       </span>
       <span>
         <span class="lbl">Methodology</span>
