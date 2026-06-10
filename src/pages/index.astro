@@ -27,6 +27,7 @@
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
+import PressStrip from "~/components/PressStrip.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
 
@@ -355,15 +356,46 @@ const milesTiles = allPrograms
     </div>
   </section>
 
-  <!-- ── 5b. Trust strip ──────────────────────────────────────────────── -->
-  <section class="hp-trust-strip" aria-label="Why trust DubaiPoints">
-    <span class="label">Why trust us</span>
-    <a href="/about/">About DubaiPoints</a>
-    <a href="/team/">Meet the team</a>
-    <a href="/how-we-make-money/">How we make money</a>
-    <a href="/editorial-policy/">Editorial policy</a>
-    <a href="/valuations/methodology/">Our valuation method</a>
+  <!-- ── 5b. Trust stack ─────────────────────────────────────────────────
+       Competitor-pattern adoption B10 (10 June 2026): UP / TPG land readers
+       at three dedicated trust sections before the newsletter / footer.
+       Replaces the prior single-line strip with three eyebrow + lead +
+       description + CTA tiles. Each tile carries readers to the underlying
+       policy page so trust language sits on the homepage, not just in
+       /editorial-policy/. PressStrip below the tiles is dormant today
+       (renders nothing while data/press.json is empty); lights up the day
+       the first placement arrives.
+       ─────────────────────────────────────────────────────────────────── -->
+  <section class="hp-trust-stack" aria-label="Why trust DubaiPoints">
+    <div class="inner">
+      <p class="eyebrow">Why trust us</p>
+      <div class="grid">
+        <a href="/team/" class="tile">
+          <p class="tile-eyebrow">Editors</p>
+          <h3>Meet the team</h3>
+          <p class="lead">UAE-resident editors with named bylines on every review. No anonymous content, no syndicated copy.</p>
+          <span class="cta" aria-hidden="true">See the masthead →</span>
+        </a>
+        <a href="/editorial-policy/" class="tile">
+          <p class="tile-eyebrow">Method</p>
+          <h3>How we work</h3>
+          <p class="lead">Every figure traces to an issuer's published Schedule of Charges. Cards re-verified on a 90-day rolling cycle.</p>
+          <span class="cta" aria-hidden="true">Our editorial policy →</span>
+        </a>
+        <a href="/how-we-make-money/" class="tile">
+          <p class="tile-eyebrow">Honesty</p>
+          <h3>How we make money</h3>
+          <p class="lead">No affiliate-driven recommendations. No paid placements. Independent UAE coverage, AED-first.</p>
+          <span class="cta" aria-hidden="true">Read the full posture →</span>
+        </a>
+      </div>
+      <p class="footnote">
+        Also: <a href="/about/">about DubaiPoints</a> · <a href="/corrections/">corrections policy</a> · <a href="/valuations/methodology/">how we value miles + points</a>
+      </p>
+    </div>
   </section>
+
+  <PressStrip />
 
   <!-- ── 6. Newsletter band ───────────────────────────────────────────── -->
   <section class="hp-news-band">
@@ -916,35 +948,96 @@ const milesTiles = allPrograms
   }
   .hp-miles-more:hover { opacity: 0.75; }
 
-  /* ── Trust strip ─────────────────────────────────────────────────── */
-  .hp-trust-strip {
+  /* ── Trust stack (B10 competitor-pattern adoption, 10 June 2026) ──── */
+  .hp-trust-stack {
     max-width: var(--container-listing);
-    margin: 8px auto 4px;
-    padding: 26px 32px;
-    border-top: 1px solid var(--line);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 10px 22px;
+    margin: 32px auto 24px;
+    padding: 0 32px;
   }
-  .hp-trust-strip .label {
+  .hp-trust-stack .inner {
+    border-top: 1px solid var(--line);
+    padding: 36px 0 8px;
+    display: grid;
+    gap: 24px;
+  }
+  .hp-trust-stack .eyebrow {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 2.5px;
     text-transform: uppercase;
     color: var(--muted);
+    margin: 0;
   }
-  .hp-trust-strip a {
+  .hp-trust-stack .grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) {
+    .hp-trust-stack .grid { grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  }
+  .hp-trust-stack .tile {
+    display: block;
+    padding: 20px 22px 22px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--paper);
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+  }
+  .hp-trust-stack .tile:hover {
+    border-color: var(--green);
+    box-shadow: 0 6px 20px -12px rgba(31, 58, 77, 0.4);
+    transform: translateY(-1px);
+  }
+  .hp-trust-stack .tile-eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--green);
+    margin: 0 0 8px;
+  }
+  .hp-trust-stack .tile h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0 0 10px;
+  }
+  .hp-trust-stack .tile .lead {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+    text-wrap: pretty;
+  }
+  .hp-trust-stack .tile .cta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: var(--green);
+  }
+  .hp-trust-stack .footnote {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
+    color: var(--ink-soft);
+    margin: 4px 0 0;
+    text-align: center;
+  }
+  .hp-trust-stack .footnote a {
     color: var(--green);
     text-decoration: none;
+    font-weight: 600;
   }
-  .hp-trust-strip a:hover { text-decoration: underline; }
+  .hp-trust-stack .footnote a:hover { text-decoration: underline; }
 
   /* ── Newsletter band ─────────────────────────────────────────────── */
   .hp-news-band {

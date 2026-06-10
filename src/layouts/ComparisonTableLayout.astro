@@ -25,7 +25,7 @@ const { title, description, columns, rows } = Astro.props;
 
 <BaseLayout title={title} description={description} fullWidth>
   <header class="dp-pagehead is-narrow">
-    <div class="crumb">Compare</div>
+    <div class="crumb"><a href="/cards/compare/" class="crumb-link">Compare</a></div>
     <h1>{title}</h1>
     {description && <p class="deck">{description}</p>}
   </header>

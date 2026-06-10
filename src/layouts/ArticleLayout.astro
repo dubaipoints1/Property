@@ -164,7 +164,25 @@ const schema = {
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
   <header class="dp-pagehead is-narrow">
-    {crumb && <div class="crumb">{crumb}</div>}
+    {crumb && (
+      <div class="crumb">
+        {/* 10 June 2026 SEO punch-list #3: visible crumb segments anchored
+            so each guide/news/deals article carries inbound links to the
+            section index (was BreadcrumbList-schema-only). sectionType +
+            sectionPath are already computed above for the schema graph;
+            re-using them here keeps the visible crumb structurally aligned
+            with the schema. The passed `crumb` string's first two segments
+            ("DubaiPoints / Guides") are now rendered as anchors; any third
+            segment (e.g. category on news / deals) stays plain text. */}
+        <a href="/" class="crumb-link">DubaiPoints</a>
+        {" / "}
+        <a href={sectionPath} class="crumb-link">{sectionType}</a>
+        {(() => {
+          const segments = crumb.split("/").map((s) => s.trim());
+          return segments.length >= 3 ? <>{" / "}{segments.slice(2).join(" / ")}</> : null;
+        })()}
+      </div>
+    )}
     {(eyebrow || publishedAt || readMinutes) && (
       <div class="dp-article-eyebrow-row">
         {eyebrow && <span class="dp-article-eyebrow">{eyebrow}</span>}
