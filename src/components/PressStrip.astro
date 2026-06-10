@@ -1,0 +1,108 @@
+---
+// PressStrip — "As seen in" dormant slot, ready to light up the day the
+// first placement arrives.
+//
+// Per the 2026-06-06 competitor-pattern adoption audit
+// (.council/briefs/2026-06-06-competitor-pattern-adoption-audit.md item B11),
+// the trust-stack pattern from Upgraded Points includes a press-logo strip
+// near the homepage footer. The audit observation: pre-build the component
+// as a dormant slot reading from data — when a placement lands, the editor
+// adds an entry, the strip lights up, no engineering changes needed.
+//
+// Renders nothing when the placement list is empty. No engineering churn
+// on the day the first credit lands.
+//
+// Reads from /src/data/press.json. Schema is intentionally tiny:
+//   { name, url, kind, sourcedAt } per entry. Each row carries the
+//   publication name, the original article URL, a kind tag for filtering
+//   (review / mention / quote), and the date sourced.
+
+import pressData from "../data/press.json";
+
+interface PressEntry {
+  name: string;
+  url: string;
+  kind: "review" | "mention" | "quote";
+  sourcedAt: string;
+}
+
+const entries = pressData as PressEntry[];
+
+if (entries.length > 0 && !entries.every((e) => e.name && e.url && e.kind && e.sourcedAt)) {
+  throw new Error("PressStrip: data/press.json entries must carry name, url, kind, sourcedAt");
+}
+---
+
+{entries.length > 0 && (
+  <section class="dp-press-strip" aria-label="As seen in">
+    <div class="dp-press-strip-inner">
+      <p class="dp-press-strip-eyebrow">As seen in</p>
+      <ul class="dp-press-strip-row" role="list">
+        {entries.map((p) => (
+          <li>
+            <a
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={`${p.name} — ${p.kind}, sourced ${p.sourcedAt}`}
+            >
+              {p.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .dp-press-strip {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 28px 0;
+    background: var(--paper);
+  }
+  .dp-press-strip-inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: grid;
+    gap: 14px;
+    justify-items: center;
+  }
+  .dp-press-strip-eyebrow {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .dp-press-strip-row {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px 28px;
+  }
+  .dp-press-strip-row a {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: 18px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .dp-press-strip-row a:hover {
+    color: var(--green);
+  }
+  @media (max-width: 719.98px) {
+    .dp-press-strip { padding: 22px 0; }
+    .dp-press-strip-inner { padding: 0 20px; }
+    .dp-press-strip-row { gap: 10px 20px; }
+    .dp-press-strip-row a { font-size: 16px; }
+  }
+</style>
