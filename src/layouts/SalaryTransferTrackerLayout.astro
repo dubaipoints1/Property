@@ -25,7 +25,7 @@ const { title, description, liveCount } = Astro.props;
       change. Filter by salary band, tenure and reward type.
     </p>
     <div class="dp-tools-stats">
-      <div><strong class="live"><span class="dot" aria-hidden="true"></span>Live</strong> <span class="lbl">{liveCount} offers</span></div>
+      <div><strong class="live"><span class="dot" aria-hidden="true"></span>Live</strong> <span class="lbl">{liveCount} {liveCount === 1 ? "offer" : "offers"}</span></div>
       <div><strong>Refresh</strong> <span class="lbl">daily</span></div>
       <div><strong>Currency</strong> <span class="lbl">AED-equivalent</span></div>
       <div><strong>Bands</strong> <span class="lbl">AED 5,000 – 50,000+ across five tiers</span></div>

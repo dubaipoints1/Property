@@ -204,9 +204,13 @@ if (variant === "full") {
       <div>
         <dt>Min salary</dt>
         <dd class={card._provenance?.eligibility === "needs-review" ? "is-unverified" : undefined}>
-          {card._provenance?.eligibility === "needs-review"
+          {card.eligibility.invitationOnly === true
+            ? "Invitation only"
+            : card._provenance?.eligibility === "needs-review"
             ? "Pending"
-            : `AED ${card.eligibility.minSalary.toLocaleString()}/mo`}
+            : card.eligibility.minSalary > 0
+            ? `AED ${card.eligibility.minSalary.toLocaleString()}/mo`
+            : "No minimum"}
         </dd>
       </div>
     </dl>

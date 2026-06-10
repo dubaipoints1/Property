@@ -21,9 +21,13 @@ const rows = await Promise.all(
       values: [
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
         c._provenance?.fxFee === "needs-review" ? "—" : `${c.fxFee}%`,
-        c._provenance?.eligibility === "needs-review"
+        c.eligibility.invitationOnly === true
+          ? "Invitation only"
+          : c._provenance?.eligibility === "needs-review"
           ? "—"
-          : `AED ${c.eligibility.minSalary.toLocaleString()}/mo`,
+          : c.eligibility.minSalary > 0
+          ? `AED ${c.eligibility.minSalary.toLocaleString()}/mo`
+          : "No minimum",
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };
@@ -32,7 +36,7 @@ const rows = await Promise.all(
 ---
 
 <ComparisonTableLayout
-  title="Best UAE cashback credit cards (June 2026) | DubaiPoints"
+  title={`Best UAE cashback credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
   description="Side-by-side comparison of the cashback-earning UAE credit cards we cover. Annual fee, FX fee, minimum salary, and current welcome bonus."
   columns={["Annual fee", "FX fee", "Min salary", "Welcome bonus"]}
   rows={rows}

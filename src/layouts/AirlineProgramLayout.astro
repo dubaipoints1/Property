@@ -159,7 +159,7 @@ const schema = {
                 <a href={`/cards/${c.slug}/`}>
                   <span class="bank">{c.bankName}</span>
                   <span class="name">{c.name}</span>
-                  <span class="fee">AED {c.annualFeeAed.toLocaleString()}/yr</span>
+                  <span class="fee">{c.annualFeeAed === 0 ? "Free" : `AED ${c.annualFeeAed.toLocaleString()}/yr`}</span>
                 </a>
               </li>
             ))}

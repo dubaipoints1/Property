@@ -84,7 +84,7 @@ const cardTiles = allCards.map((c) => {
                 {formatAED(Math.max(...o.salaryBands.map((b) => b.rewardAmount)))}
               </strong>{" "}
               · {o.tenureMonths} months · ends{" "}
-              {new Date(o.validUntil).toLocaleDateString("en-GB")}
+              {new Date(o.validUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
             </p>
             <p class="dp-bank-salary-cta">
               <a href={`/salary-transfer/${bank.id}/`}>Full offer details →</a>

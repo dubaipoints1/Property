@@ -117,7 +117,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
 ---
 
 <BaseLayout
-  title="The best UAE credit cards (June 2026) | DubaiPoints"
+  title={`The best UAE credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
   description="Every UAE credit card we cover, sorted by welcome-bonus value. Annual fees and earn rates checked against the issuer's Schedule of Charges."
   fullWidth
 >
@@ -217,7 +217,16 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
               </div>
               <div class="cards-row-id">
                 <span class="cards-row-bank">{f.bankName}</span>
-                <span class="cards-row-name">{f.card.name}</span>
+                {/* Strip a leading bank-name prefix from the display name —
+                    the eyebrow above already says it, so "EMIRATES NBD /
+                    Emirates NBD Skywards Infinite" stuttered on ~30 rows
+                    (10 June 2026 fresh-eyes audit). Display-only; L2 name
+                    untouched. */}
+                <span class="cards-row-name">
+                  {f.card.name.startsWith(`${f.bankName} `)
+                    ? f.card.name.slice(f.bankName.length + 1)
+                    : f.card.name}
+                </span>
                 {chips.length > 0 && (
                   <div class="cards-row-chips">
                     {chips.map((c) => <span class="cards-row-chip">{c}</span>)}

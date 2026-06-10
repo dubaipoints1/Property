@@ -71,7 +71,7 @@ if (props.kind === "band") {
 {
   props.kind === "bank" && (
     <BaseLayout
-      title={`${props.bankName} salary transfer offer (June 2026) | DubaiPoints`}
+      title={`${props.bankName} salary transfer offer (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
       description={`Deep-dive on ${props.bankName}'s current salary transfer offer: bands, clawback, payout timing, and expat-relevant gotchas.`}
       fullWidth
     >
@@ -98,7 +98,7 @@ if (props.kind === "band") {
               <header class="dp-offer-head">
                 <h2>{o.name}</h2>
                 <span class="dp-offer-verified">
-                  Last verified {new Date(o.lastVerified).toLocaleDateString("en-GB")}
+                  Last verified {new Date(o.lastVerified).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
                 </span>
               </header>
 

@@ -49,7 +49,19 @@ export async function getLiveOffers(): Promise<SalaryTransferOffer[]> {
 }
 
 export async function getOffersForBank(bankSlug: string): Promise<SalaryTransferOffer[]> {
-  const entries = await getCollection("salaryTransferOffers", (e) => e.data.bank.id === bankSlug);
+  // Same live predicate as getLiveOffers. All three consumers (bank hub
+  // "Current salary transfer offer" slot, /salary-transfer/<bank>/, and
+  // the history page's "live" block) present the result as the current
+  // offer — before 10 June 2026 this returned archived/expired entries
+  // too, so /salary-transfer/emirates-nbd/ rendered the archived
+  // cash-bonus offer as if live while the bank hub prose described the
+  // bonus-interest offer as current (staleness-sweep finding #3).
+  const today = Date.now();
+  const entries = await getCollection("salaryTransferOffers", (e) => {
+    if (e.data.bank.id !== bankSlug) return false;
+    if (e.data.archived) return false;
+    return e.data.validUntil.getTime() >= today;
+  });
   return Promise.all(entries.map(entryToOffer));
 }
 
