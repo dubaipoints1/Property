@@ -74,14 +74,20 @@ states the assumption alongside the figure.
   programme overview, not the editor's gut. The current published
   baselines (10 June 2026):
   - Skywards: 2 fils per Mile (see `programs/skywards.mdx`)
-  - Etihad Guest: ~3 fils per Mile (per Standards Editor reference)
-  - Marriott Bonvoy: 4 fils per point
+  - Etihad Guest: 2 fils per Mile (per `programs/etihad-guest.mdx`)
+  - Marriott Bonvoy: 2.5 fils per point (per `programs/marriott-bonvoy.mdx`)
   - Qatar Privilege Club (Avios): ~3 fils per Avios
   - Hilton Honors: 1.5 fils per point
   - dnata: 2 fils per point
   - SHARE Points: 10 fils per point (1 AED per 10 points)
   - LuLu Points: 1 fil per point
   - U Points: 2 fils per point
+
+  When in doubt: open the relevant `programs/<programme>.mdx` and use
+  the figure published there. Don't guess — the travel-experiences-editor
+  flagged a Bonvoy mismatch on the 10 June 2026 cascade where the
+  earlier draft of this SOP had 4 fils instead of the 2.5 published
+  in the programme overview.
 - **Reference the methodology** at the bottom of long-form value
   sections — for Skywards, link to `/airlines/skywards/` so readers can
   see the cost-basis vs cash-fare-avoidance footnote.
