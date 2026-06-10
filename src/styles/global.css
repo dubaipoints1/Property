@@ -2167,6 +2167,18 @@ img { display: block; max-width: 100%; }
   font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
   font-weight: 600; margin-bottom: 12px;
 }
+.dp-cr-hero .crumb .crumb-link {
+  color: rgba(255,255,255,0.85);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(255,255,255,0.35);
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+.dp-cr-hero .crumb .crumb-link:hover,
+.dp-cr-hero .crumb .crumb-link:focus {
+  color: #fff;
+  text-decoration-color: #fff;
+}
 .dp-cr-hero h1 {
   font-family: 'Fraunces', serif; font-weight: 700;
   font-size: clamp(28px, 4.5vw, 42px);

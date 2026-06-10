@@ -251,13 +251,19 @@ const schema = {
     )}
 
     <div class="dp-cr-text">
-      <div class="crumb">{
-        // Avoid the "Cards / Cards / FAB" double when no specific category is
-        // passed — collapse "Cards / Cards" to just "Cards".
-        category === "Cards"
-          ? `Cards / ${bankName}`
-          : `Cards / ${category} / ${bankName}`
-      }</div>
+      <div class="crumb">
+        {/* 10 June 2026 SEO audit: the bank-name segment is now an inline
+            link to /banks/<slug>/, giving every card review a visible
+            inbound link to its issuer hub (was schema-only via
+            BreadcrumbList). Closes the audit's "0/54 card reviews link
+            visibly to bank hub" finding without rewiring each MDX file. */}
+        {category === "Cards" ? "Cards / " : `Cards / ${category} / `}
+        {bankSlug ? (
+          <a href={`/banks/${bankSlug}/`} class="crumb-link">{bankName}</a>
+        ) : (
+          bankName
+        )}
+      </div>
       <h1>{title}</h1>
 
       {(score != null || verdictLabel) && (
