@@ -33,7 +33,7 @@ Source: `.council/research/2026-05/competitor-teardown.md` §"Synthesis
 | # | Pattern | Status | Evidence |
 |---|---|---|---|
 | **A1** | Top-of-article fact-tile strip (`Welcome / Fee / APR / Min Salary` tiles above the fold) | **SHIPPED** | `src/components/cards/AtAGlance.astro` used in 55/55 active card MDX files |
-| **A2** | Inline `Value to me: AED X` after every H3 benefit + summing conclusion | **PARTIAL — 12/55** (updated 11 June 2026) | Pilot shipped in PR #231 (fab-cashback, skywards-infinite); cascade wave 1+2 in PR #232 brought it to 12/55 cards. SOP ratified at `.council/sops/value-to-me-convention.md`. Remaining 43 cards: `grep -L "Value to me" src/content/cards/*.mdx` |
+| **A2** | Inline `Value to me: AED X` after every H3 benefit + summing conclusion | **PARTIAL — 45/55** (audit re-run 11 June 2026) | Pilot shipped in PR #231 (fab-cashback, skywards-infinite); cascade wave 1+2 in PR #232. Lifestyle wave (11 June 2026) added 9: adcb-touchpoints-titanium-gold, 3× ENBD Darna, duo, go4it-gold, priority-banking-visa-infinite, visa-infinite, visa-platinum; parallel section-editor waves account for the rest. SOP ratified at `.council/sops/value-to-me-convention.md`. Remaining 10 cards: `grep -L "Value to me" src/content/cards/*.mdx` |
 | **A3** | "Great Card If / Don't Get If" mirrored lists | **SHIPPED** | `src/components/cards/GreatCardIf.astro` used in 55/55 cards |
 | **A4** | Per-image inline caption discipline (every article image carries one assertive caption) | **SHIPPED — partial** | `HeroImage.astro` supports `caption` + `credit` props (2 figcaption emit sites). Editor discipline: every MDX `heroImage` frontmatter declares a caption. Audit needed to confirm every active card with a heroImage carries a caption — `grep -B 2 "src:" src/content/cards/*.mdx \| grep caption` shows partial coverage |
 | **A5** | Image-credit line beneath every press-library image | **SHIPPED** | `src/components/ImageCredit.astro` exists; Charter 2026-05-21 amendment mandates a visible credit line; teardown notes "We are stricter than HfP / UP / OMAAT — and at least as rigorous as TPG" |
@@ -165,4 +165,33 @@ Owner: section editors. **T2.**
 4. Section editors complete A4 + A6 audit + cascade (2 weeks)
 5. Chairman gate on each batch before merge per Charter §3
 
-End.
+---
+
+> Drafted by lifestyle-culture-editor on 2026-06-11.
+> Scope: A2 Value-to-me cascade, lifestyle wave 3 (9 cards): adcb-touchpoints-titanium-gold,
+> emirates-nbd-darna-select-visa, emirates-nbd-darna-visa-infinite,
+> emirates-nbd-darna-visa-signature, emirates-nbd-duo, emirates-nbd-go4it-gold,
+> emirates-nbd-priority-banking-visa-infinite, emirates-nbd-visa-infinite,
+> emirates-nbd-visa-platinum.
+> Personally tested: none — desk piece; all figures derive from L2 `cards.json`,
+> SOP baselines, and market prices already cited in sibling reviews
+> (cinema AED 40–50, lounge AED 200 walk-in, mall valet AED 50–80, Dubai Ferry
+> AED 50/pair, term-cover AED 150–250/yr per go4it-platinum).
+> Open for Fact-Checker:
+> 1. darna-visa-infinite carried a 12× break-even arithmetic error
+>    ("AED 15,000/month" vs the correct AED 1,575 ÷ 10% ÷ 12 ≈ AED 1,315/month).
+>    Body prose + the keyTakeaways bullet corrected this pass; the fenced
+>    `applyIf` and `editorTake` fields still carry the old AED 15,000/month
+>    figure and need their own review.
+> 2. All three Darna reviews describe the partner network as Emaar
+>    (Dubai Mall, Address/Vida/Rove, Reel); L2 scraped freetext and the ENBD
+>    apply URLs say ALDAR ("Redeem instantly across 1,200 Aldar destinations",
+>    `apply.emiratesnbd.com/en/credit-card/aldar/...`). New sections use neutral
+>    "Darna partner" wording; the Emaar framing needs source verification.
+> 3. emirates-nbd-duo L2 below-gate rate is internally inconsistent
+>    (earnUnit says "otherwise 1.5%", earnRates.everythingElse = 0.5, scraped
+>    freetext says 0.5% on other spends); review body says both. Flagged, not fixed.
+> 4. emirates-nbd-visa-infinite / -platinum L2 earnUnit labelled
+>    "% as ENBD Plus Points" while values are points-per-AED-100 per the issuer
+>    freetext — unit labelling needs review (no AED impact while Plus Points
+>    remain unpriced).
