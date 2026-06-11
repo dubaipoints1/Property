@@ -34,7 +34,7 @@ const relatedRaw = getActiveCards().filter((c) => {
 
 const relatedCards = await Promise.all(
   relatedRaw
-    .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
+    .sort(compareByWelcomeValue)
     .slice(0, 8)
     .map(async (c) => {
       const bank = await getEntry("banks", c.bank);

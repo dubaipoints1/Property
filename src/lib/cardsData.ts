@@ -386,7 +386,10 @@ const CardDataSchema = z.object({
     .union([WelcomeBonus, WelcomeBonusBifurcated, z.string()])
     .nullable()
     .optional(),
-  /** Legacy: editor-estimated point/mile count. Kept for sort fallback. */
+  /** Legacy: editor-estimated point/mile count. DEPRECATED 2026-06-11 —
+   * raw counts of different currencies are not comparable, so this no
+   * longer drives any sort path; ranking surfaces use
+   * compareByWelcomeValue (cardsDataFormat.ts). Retained as data only. */
   welcomeBonusValue: z.number().optional(),
 
   /** Sharia compliance — first-class boolean. Distinct from the `Islamic`

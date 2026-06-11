@@ -469,3 +469,53 @@ test("annualFeeLabel: zero fee renders Free, no qualifier", async () => {
   assert.equal(out.amount, "Free");
   assert.equal(out.qual, null);
 });
+
+// ── compareByWelcomeValue / welcomeBonusRank (2026-06-11) ────────────────
+
+import {
+  compareByWelcomeValue,
+  welcomeBonusRank,
+} from "../../src/lib/cardsDataFormat";
+
+test("welcomeBonusRank: priced units convert at the published baselines", () => {
+  assert.deepEqual(
+    welcomeBonusRank({ amount: 100000, unit: "skywards_miles", spend_threshold_aed: null, qualify_window_days: null }),
+    { tier: "priced", aed: 2000 },
+  );
+  assert.deepEqual(
+    welcomeBonusRank({ amount: 500, unit: "aed_cashback", spend_threshold_aed: null, qualify_window_days: null }),
+    { tier: "priced", aed: 500 },
+  );
+});
+
+test("welcomeBonusRank: unpriced currencies rank by presence, never AED 0", () => {
+  assert.deepEqual(
+    welcomeBonusRank({ amount: 300000, unit: "adcb_touchpoints", spend_threshold_aed: null, qualify_window_days: null }),
+    { tier: "unpriced" },
+  );
+  assert.deepEqual(welcomeBonusRank("Welcome bonus of AED 1,200 in Shukrans"), { tier: "unpriced" });
+  assert.deepEqual(welcomeBonusRank(null), { tier: "none" });
+});
+
+test("compareByWelcomeValue: AED-normalised order — miles vs cashback vs unpriced vs none", () => {
+  const skywards = { welcomeBonus: { amount: 100000, unit: "skywards_miles", spend_threshold_aed: null, qualify_window_days: null } };
+  const cashback = { welcomeBonus: { amount: 2500, unit: "aed_cashback", spend_threshold_aed: null, qualify_window_days: null } };
+  const touchpoints = { welcomeBonus: { amount: 999999, unit: "adcb_touchpoints", spend_threshold_aed: null, qualify_window_days: null } };
+  const none = { welcomeBonus: null };
+
+  const sorted = [none, touchpoints, skywards, cashback].sort(compareByWelcomeValue);
+  // cashback AED 2,500 > skywards AED 2,000; unpriced after priced; none last.
+  assert.deepEqual(sorted, [cashback, skywards, touchpoints, none]);
+});
+
+test("compareByWelcomeValue: bifurcated bonus uses the salary-transfer branch first", () => {
+  const bifurcated = {
+    welcomeBonus: {
+      with_salary_transfer: { amount: 150000, unit: "etihad_guest_miles", spend_threshold_aed: null, qualify_window_days: null },
+      without_salary_transfer: { amount: 10000, unit: "etihad_guest_miles", spend_threshold_aed: null, qualify_window_days: null },
+    },
+  };
+  const flat = { welcomeBonus: { amount: 2500, unit: "aed_cashback", spend_threshold_aed: null, qualify_window_days: null } };
+  // 150,000 × 0.02 = AED 3,000 beats AED 2,500.
+  assert.deepEqual([flat, bifurcated].sort(compareByWelcomeValue), [bifurcated, flat]);
+});

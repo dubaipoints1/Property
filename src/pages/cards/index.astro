@@ -35,11 +35,11 @@ import {
   FEATURE_CHIP_LABELS,
   annualFeeLabel,
 } from "~/lib/cardsData";
-import { formatEarnValue } from "~/lib/cardsDataFormat";
+import { compareByWelcomeValue, formatEarnValue } from "~/lib/cardsDataFormat";
 
 const cards = await Promise.all(
   getActiveCards()
-    .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
+    .sort(compareByWelcomeValue)
     .map(async (card) => {
       const bank = await getEntry("banks", card.bank);
       return { card, bankName: bank?.data.name ?? card.bank };
