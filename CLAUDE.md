@@ -297,12 +297,13 @@ problem — not the GitHub Actions secret. Fix is to set the env var in
 the environment configuration and **start a new session**; MCP servers
 read credentials at container boot.
 
-> Status (2026-05-20): Hobby plan subscribed. GitHub Actions secret
-> provisioned. **MCP server token in Claude Code on the web environment:
-> to be verified in next session** — last attempt returned Unauthorized,
-> the MCP server subsequently disconnected. First session that
-> successfully scrapes a card page should overwrite this note with
-> "verified" and the date.
+> Status (2026-06-11): **verified.** Hobby plan subscribed. GitHub
+> Actions secret provisioned. MCP server token in Claude Code on the
+> web environment confirmed working — live `firecrawl_scrape` of
+> headforpoints.com returned 200 on 11 June 2026. Note: the MCP tools
+> are available to the **main session only**; sub-agents (including
+> Head of Research) do not inherit them, so Firecrawl work must run
+> in the orchestrating session or via the GitHub Actions channel.
 
 ## Content collections
 
