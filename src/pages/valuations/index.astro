@@ -1,9 +1,9 @@
 ---
 // Valuations — Phase C tools template (Claude Design handoff).
 // Reference: dubaipoints/project/templates/tools.jsx::Valuations.
-// Placeholder data until DP-value methodology lands (Q3 2026 per
-// EDITORIAL.md). Each row is flagged "draft" so readers know the
-// numbers are illustrative until the methodology page goes live.
+// DP values mirror the published programme-page baselines; rows with
+// no published baseline are "Pending" until the DP-value methodology
+// lands (Q3 2026 per EDITORIAL.md).
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 
@@ -18,21 +18,32 @@ interface Programme {
   status: "Active" | "Pending" | "Under review";
 }
 
-// Draft valuations — illustrative until methodology lands.
+// DP values carry only the baselines actually published in the
+// programme overviews (and used by card reviews) — see
+// .council/sops/value-to-me-convention.md. The earlier illustrative
+// figures here (Skywards 3.5, Etihad 2.8, …) contradicted the 2-fil
+// baseline the reviews cite; a reader cross-checking a review against
+// this page got a different number (Fact-Checker redline, 11 June
+// 2026). Floor/ceiling ranges and 90-day deltas return when the
+// methodology lands (Q3 2026) — they are not published until they
+// can be traced.
 const programmes: Programme[] = [
-  { name: "Emirates",         currencyName: "Skywards",         mark: "SKY", floor: 3.2, ceiling: 3.8, dpValue: 3.5, delta90: "+0.2", status: "Active" },
-  { name: "Etihad",           currencyName: "Guest",            mark: "ETI", floor: 2.6, ceiling: 3.2, dpValue: 2.8, delta90: "-0.3", status: "Active" },
-  { name: "Qatar",            currencyName: "Avios",            mark: "QR",  floor: 2.9, ceiling: 3.4, dpValue: 3.0, delta90: "—",    status: "Active" },
-  { name: "British Airways",  currencyName: "Avios",            mark: "BA",  floor: 3.0, ceiling: 3.6, dpValue: 3.1, delta90: "+0.1", status: "Active" },
-  { name: "Marriott",         currencyName: "Bonvoy",           mark: "MAR", floor: 2.4, ceiling: 2.9, dpValue: 2.5, delta90: "—",    status: "Active" },
-  { name: "IHG",              currencyName: "One Rewards",      mark: "IHG", floor: 1.7, ceiling: 2.2, dpValue: 1.9, delta90: "—",    status: "Active" },
-  { name: "Hilton",           currencyName: "Honors",           mark: "HIL", floor: 1.2, ceiling: 1.6, dpValue: 1.4, delta90: "-0.1", status: "Active" },
-  { name: "flydubai",         currencyName: "OPEN",             mark: "FZ",  floor: 1.8, ceiling: 2.4, dpValue: 2.0, delta90: "—",    status: "Active" },
+  { name: "Emirates",         currencyName: "Skywards",         mark: "SKY", floor: null, ceiling: null, dpValue: 2.0,  delta90: "—", status: "Active" },
+  { name: "Etihad",           currencyName: "Guest",            mark: "ETI", floor: null, ceiling: null, dpValue: 2.0,  delta90: "—", status: "Active" },
+  { name: "Qatar",            currencyName: "Avios",            mark: "QR",  floor: null, ceiling: null, dpValue: 3.0,  delta90: "—", status: "Active" },
+  { name: "British Airways",  currencyName: "Avios",            mark: "BA",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
+  { name: "Marriott",         currencyName: "Bonvoy",           mark: "MAR", floor: null, ceiling: null, dpValue: 2.5,  delta90: "—", status: "Active" },
+  { name: "IHG",              currencyName: "One Rewards",      mark: "IHG", floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
+  { name: "Hilton",           currencyName: "Honors",           mark: "HIL", floor: null, ceiling: null, dpValue: 1.5,  delta90: "—", status: "Active" },
+  { name: "flydubai",         currencyName: "OPEN",             mark: "FZ",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
   { name: "Wizz Air",         currencyName: "Discount Club",    mark: "W6",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
-  { name: "Air Arabia",       currencyName: "Airewards",        mark: "G9",  floor: 1.5, ceiling: 2.1, dpValue: 1.7, delta90: "—",    status: "Active" },
+  { name: "Air Arabia",       currencyName: "Airewards",        mark: "G9",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
 ];
 
-const today = new Date();
+// Date the published baselines were last confirmed against the
+// programme overview pages — NOT the build date. A build-date stamp
+// here manufactured freshness for numbers that hadn't moved.
+const baselinesConfirmed = new Date("2026-06-10");
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
@@ -55,7 +66,7 @@ const distributionPct = (p: Programme): number => {
 
     <div class="dp-tools-stats">
       <span><span class="lbl">Programmes tracked:</span> <strong>{programmes.length}</strong></span>
-      <span><span class="lbl">Last revalued:</span> <strong>{fmt(today)}</strong></span>
+      <span><span class="lbl">Baselines confirmed:</span> <strong>{fmt(baselinesConfirmed)}</strong></span>
       <span><span class="lbl">Methodology:</span> <strong style="color: var(--link);"><a href="/editorial-policy/">Read →</a></strong></span>
     </div>
   </div>
@@ -98,12 +109,12 @@ const distributionPct = (p: Programme): number => {
             <td class="num">{p.ceiling ?? "—"}</td>
             <td class="num"><strong style="font-size: 15px;">{p.dpValue ?? "—"}</strong></td>
             <td>
-              {p.dpValue != null ? (
+              {p.dpValue != null && p.floor != null && p.ceiling != null ? (
                 <div class="dp-val-bar">
                   <span style={`width: ${Math.max(15, distributionPct(p))}%;`}></span>
                 </div>
               ) : (
-                <span style="font-size: 11px; color: var(--muted);">under review</span>
+                <span style="font-size: 11px; color: var(--muted);">{p.dpValue != null ? "range pending methodology" : "under review"}</span>
               )}
             </td>
             <td class={p.delta90.startsWith("+") ? "delta-up" : p.delta90.startsWith("-") ? "delta-down" : ""}>{p.delta90}</td>
@@ -127,7 +138,7 @@ const distributionPct = (p: Programme): number => {
     </div>
     <div class="col">
       <div class="lbl">DP value</div>
-      <p>Our weighted blend used for every earn-rate calculation in card reviews. Recalibrated quarterly. Methodology page lands Q3 2026 per editorial calendar.</p>
+      <p>The baseline published in each programme's overview page and used for every earn-rate calculation in card reviews — a deliberately conservative cost-basis figure. Floor/ceiling ranges land with the methodology page, Q3 2026 per editorial calendar.</p>
     </div>
   </section>
 

@@ -245,7 +245,7 @@ test("cardComparisonRows: identical annualFee resolves to a tie", () => {
   assert.equal(byKey.topEarn.winner, "tie");
 });
 
-test("cardComparisonRows: null joiningFee renders '—' and yields no-winner with both null", () => {
+test("cardComparisonRows: joiningFee row is omitted when neither card has one", () => {
   const a: CardForComparison = {
     name: "A",
     annualFee: { amount: 0 },
@@ -260,9 +260,30 @@ test("cardComparisonRows: null joiningFee renders '—' and yields no-winner wit
   };
 
   const rows = cardComparisonRows(a, b);
+  assert.equal(rows.find((r) => r.key === "joiningFee"), undefined);
+});
+
+test("cardComparisonRows: one-sided null joiningFee renders '—' and takes no winner highlight", () => {
+  const noFee: CardForComparison = {
+    name: "No published joining fee",
+    annualFee: { amount: 0 },
+    eligibility: { minSalary: 5000 },
+    earnRates: { everythingElse: 1 },
+  };
+  const charged: CardForComparison = {
+    name: "Charged",
+    annualFee: { amount: 0 },
+    joiningFee: { amount: 1500 },
+    eligibility: { minSalary: 5000 },
+    earnRates: { everythingElse: 1 },
+  };
+
+  const rows = cardComparisonRows(noFee, charged);
   const join = rows.find((r) => r.key === "joiningFee")!;
   assert.equal(join.leftValue, "—");
-  assert.equal(join.rightValue, "—");
+  assert.equal(join.rightValue.replace(/ /g, " "), "AED 1,500");
+  // An unpublished fee is not a verified AED 0 — neither side may be
+  // marked "better on this dimension".
   assert.equal(join.winner, "none");
 });
 

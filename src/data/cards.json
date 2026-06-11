@@ -469,7 +469,7 @@
       "threshold_period": "annual",
       "notes": "Per ADCB SoF Ver.46 (Feb 2026): AED 262.50/year Aspire (Free for UAE Nationals at Excellency), first year free."
     },
-    "welcomeBonus": "Welcome bonus of AED 1,200 (UAE residents receive AED 1,000). Verify the split against the live ADCB Shukran offer page before final publish."
+    "welcomeBonus": "Welcome bonus in Shukrans: AED 1,200 for UAE Nationals new to ADCB cards, AED 1,000 for other UAE residents new to ADCB cards, AED 200 for existing ADCB cardholders. Requires AED 8,000 spend in the first 60 days; credited within 120 days."
   },
   "adcb-talabat": {
     "_provenance": {
@@ -1037,7 +1037,7 @@
       "Up to AED 135 cashback per month at around two dozen selected online merchants (including noon, Amazon, Careem, Uber, Talabat, Deliveroo, Netflix, Spotify, Booking.com, Airbnb and major cinemas), credited once a month and requiring at least AED 5,000 of monthly spend. General spend outside these merchants earns no cashback.",
       "Free for life — no annual fee on primary or supplementary cards.",
       "8 complimentary airport lounge visits a year at 1,000+ lounges via the Visa Airport Companion app.",
-      "Multi-trip travel insurance for cardholder and family, up to US$500,000, for 90 days per trip; plus purchase protection and extended warranty.",
+      "Multi-trip travel insurance for cardholder and family, up to USD 500,000, for 90 days per trip; plus purchase protection and extended warranty.",
       "50% off cinema tickets (VOX, Reel and Novo) and up to 20% off Emaar attractions (KidZania, Dubai Aquarium, Dubai Ice Rink and more).",
       "Welcome offer (to 30 June 2026): 0% interest on Cash on Call and Balance Transfer 6- and 12-month plans within 30 days of issuance (one-time processing fee 3.99% / 6%)."
     ],
@@ -1054,7 +1054,7 @@
       },
       {
         "type": "insurance_travel",
-        "scope": "Multi-trip travel insurance up to US$500,000 (cardholder and family, 90 days per trip)"
+        "scope": "Multi-trip travel insurance up to USD 500,000 (cardholder and family, 90 days per trip)"
       }
     ],
     "transferPartners": [],
@@ -1248,7 +1248,7 @@
       "Cashback is earned only on those listed categories and only on UAE transactions; non-listed spend earns nothing. Since 1 December 2019, utility and government bills paid through DIB's own platforms earn no cashback.",
       "Effective 10 May 2025, a minimum AED 3,000 of retail purchases per statement cycle is required to earn cashback, and an annual fee of AED 200 + VAT (AED 210) applies, with a limited-time first-year-free offer.",
       "Complimentary roadside assistance up to twice a year (towing, battery boost, fuel, tyre change, lockout, off-road recovery) plus a free international driving licence.",
-      "Travel and medical cover up to US$100,000 via Watania takaful for the cardholder, spouse and up to four children under 18, when flight tickets are booked on the card.",
+      "Travel and medical cover up to USD 100,000 via Watania takaful for the cardholder, spouse and up to four children under 18, when flight tickets are booked on the card.",
       "Sharia-compliant (Salam structure); monthly profit rate up to 3.25%."
     ],
     "_features": [
@@ -1258,7 +1258,7 @@
       },
       {
         "type": "insurance_travel",
-        "scope": "Travel and medical cover up to US$100,000 via Watania takaful"
+        "scope": "Travel and medical cover up to USD 100,000 via Watania takaful"
       }
     ],
     "transferPartners": [],
@@ -1477,7 +1477,7 @@
       "unit": "aed_voucher",
       "spend_threshold_aed": 0,
       "qualify_window_days": null,
-      "notes": "YOUGotaGift HappyYOU Card AED 250 on online application + Darna Silver tier status."
+      "notes": "AED 250 YOUGotaGift gift card on online application, plus Darna Silver tier status."
     },
     "vatPolicy": "inclusive"
   },
@@ -1910,7 +1910,7 @@
       "partnerBrands": 5,
       "everythingElse": 0.5
     },
-    "earnUnit": "% as ENBD Plus Points (5% on grocery/electronics/utilities/education/fuel **requires AED 5,000 minimum monthly spend** — otherwise 1.5%; max 500 Plus Points per statement)",
+    "earnUnit": "% as ENBD Plus Points (5% on grocery/electronics/utilities/education/fuel requires AED 5,000 minimum monthly spend — otherwise 1.5%; max 500 Plus Points per statement)",
     "eligibility": {
       "minSalary": 12000,
       "salaryTransferRequired": false,
@@ -1944,7 +1944,7 @@
     "annualFeeWaiver": {
       "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 840. **Exclusive for Abu Dhabi residents only**."
+      "notes": "No annual fee under the current promotion; standard renewal AED 840 per the Schedule of Charges. Abu Dhabi residents only."
     },
     "vatPolicy": "inclusive"
   },
@@ -2123,7 +2123,7 @@
   },
   "emirates-nbd-go4it-gold": {
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
-    "earnUnit": "Plus Points per AED 1 spent (weekend: 0.0125; standard: 0.01)",
+    "earnUnit": "% as ENBD Plus Points (entertainment 1.25% / everything else 1%)",
     "eligibility": {
       "minSalary": 5000,
       "salaryTransferRequired": false,
@@ -2145,8 +2145,8 @@
     },
     "lastVerified": "2026-05-20",
     "earnRates": {
-      "entertainment": 0.0125,
-      "everythingElse": 0.01
+      "entertainment": 1.25,
+      "everythingElse": 1
     },
     "loyaltyProgram": "ENBD Plus Points",
     "transferPartners": [],
@@ -2180,10 +2180,10 @@
     ],
     "_provenance": {
       "kfsUrl": "editor-confirmed",
-      "earnUnit": "editor-confirmed",
+      "earnUnit": "editor-corrected",
       "eligibility": "editor-confirmed",
       "lastVerified": "editor-confirmed",
-      "earnRates": "editor-confirmed",
+      "earnRates": "editor-corrected",
       "loyaltyProgram": "editor-corrected",
       "transferPartners": "editor-confirmed",
       "annualFee": "editor-confirmed",
@@ -2355,7 +2355,7 @@
     "annualFeeWaiver": {
       "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 208.95."
+      "notes": "No annual fee under the current promotion; standard renewal AED 208.95 per the Schedule of Charges."
     },
     "_features": [
       {
@@ -2760,7 +2760,7 @@
     "annualFeeWaiver": {
       "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 262.50."
+      "notes": "No annual fee under the current promotion; standard renewal AED 262.50 per the Schedule of Charges."
     },
     "welcomeBonus": null,
     "discontinuedForNewApplicants": {
@@ -2857,8 +2857,8 @@
       "unit": "marriott_bonvoy_points",
       "spend_threshold_aed": 22000,
       "qualify_window_days": 90,
-      "headline": "2 Free Night Awards (35k points each) on US$6,000 spend + Silver Elite status",
-      "notes": "2 Free Night Awards (35,000 points each, can be topped up by 15k points) on cumulative US$6,000 retail spend in first 3 billing statements. Automatic Silver Elite status + fast track to Gold. 10 Elite Night Credits/year. 1 additional Free Night Award on anniversary."
+      "headline": "2 Free Night Awards (35k points each) on USD 6,000 spend + Silver Elite status",
+      "notes": "2 Free Night Awards (35,000 points each, can be topped up by 15k points) on cumulative USD 6,000 retail spend in first 3 billing statements. Automatic Silver Elite status + fast track to Gold. 10 Elite Night Credits/year. 1 additional Free Night Award on anniversary."
     },
     "vatPolicy": "inclusive"
   },
@@ -2912,8 +2912,8 @@
       "unit": "marriott_bonvoy_points",
       "spend_threshold_aed": 55000,
       "qualify_window_days": 90,
-      "headline": "200,000 Marriott Bonvoy points (100k on activation + 100k on US$15k spend)",
-      "notes": "100,000 Marriott Bonvoy points on activation + joining fee payment, plus 100,000 bonus on USD$15,000 spend in first 3 billing statements. Automatic Gold Elite status + fast track to Platinum. 15 Elite Night Credits/year. 1 Free Night Award (50,000-point value) on anniversary."
+      "headline": "200,000 Marriott Bonvoy points (100k on activation + 100k on USD 15,000 spend)",
+      "notes": "100,000 Marriott Bonvoy points on activation + joining fee payment, plus 100,000 bonus on USD 15,000 spend in first 3 billing statements. Automatic Gold Elite status + fast track to Platinum. 15 Elite Night Credits/year. 1 Free Night Award (50,000-point value) on anniversary."
     },
     "joiningFee": {
       "amount": 1575,
@@ -3025,7 +3025,7 @@
     "annualFeeWaiver": {
       "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "notes": "Current promo: no annual fees. Standard fee per Schedule of Charges not explicitly listed for this product — verify with bank if waiver ends."
+      "notes": "No annual fee under the current promotion. Standard fee not explicitly listed in the Schedule of Charges for this product — confirm with the bank if the waiver ends."
     },
     "vatPolicy": "inclusive"
   },
@@ -4217,7 +4217,7 @@
     "annualFeeWaiver": {
       "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 735."
+      "notes": "No annual fee under the current promotion; standard renewal AED 735 per the Schedule of Charges."
     },
     "vatPolicy": "inclusive"
   },
@@ -4366,7 +4366,7 @@
     "annualFeeWaiver": {
       "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "notes": "Current promo: No Annual Fees. SoC standard renewal: AED 735."
+      "notes": "No annual fee under the current promotion; standard renewal AED 735 per the Schedule of Charges."
     },
     "vatPolicy": "inclusive"
   },
@@ -4672,7 +4672,6 @@
       "https://www.bankfab.com/en-ae/personal/credit-cards/fab-elite-credit-card",
       "https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf"
     ],
-    "welcomeBonusValue": 500000,
     "fxFee": 2.49,
     "name": "FAB Elite Credit Card",
     "bank": "fab",
@@ -4710,7 +4709,7 @@
       "annualFee": "editor-corrected",
       "network": "editor-corrected",
       "sources": "editor-confirmed",
-      "welcomeBonusValue": "editor-confirmed",
+      "welcomeBonusValue": "editor-corrected",
       "fxFee": "editor-confirmed",
       "name": "editor-confirmed",
       "bank": "editor-confirmed",
@@ -4974,7 +4973,7 @@
     "perks": [
       "6% cashback on dining, 5% on fuel, and 2% on groceries and entertainment (combined) — each capped at AED 200 per statement cycle, requiring at least AED 3,000 of monthly spend. Everything else, and all spend in months under AED 3,000, earns 0.5%. Maximum AED 600/month on the accelerated categories.",
       "Complimentary 12-month Careem Plus subscription and 12-month Zomato Gold membership (up to 50% off at 4,000+ UAE restaurants).",
-      "12 complimentary airport lounge visits a year via Visa Airport Companion (requires at least one USD 1+ international purchase per year), plus multi-trip travel insurance up to US$500,000.",
+      "12 complimentary airport lounge visits a year via Visa Airport Companion (requires at least one USD 1+ international purchase per year), plus multi-trip travel insurance up to USD 500,000.",
       "Buy-one-get-one-free cinema tickets monthly (VOX, Reel, Roxy) on at least AED 6,000 monthly spend; up to 7% back on Booking.com via Visa.",
       "Minimum salary AED 5,000 for employees of HSBC-approved companies, or AED 12,500 for all other applicants; age 21-65.",
       "Expat-friendly: HSBC can use credit history from 12 countries (UK, US, India, Canada, Australia and more) for new UAE arrivals."
@@ -4992,7 +4991,7 @@
       },
       {
         "type": "insurance_travel",
-        "scope": "Multi-trip travel insurance up to US$500,000 (cardholder and family, trips up to 90 days)"
+        "scope": "Multi-trip travel insurance up to USD 500,000 (cardholder and family, trips up to 90 days)"
       },
       {
         "type": "concierge",

@@ -572,19 +572,26 @@ export function cardComparisonRows(
     });
   }
 
-  // 2. Joining fee (year 1)
+  // 2. Joining fee (year 1). A null here means the bank publishes no
+  // joining fee for the card — which is not the same as a verified
+  // AED 0 — so a one-sided null never takes the winner highlight, and
+  // a row where neither card has a published joining fee is omitted
+  // rather than rendered as "— vs —".
   {
     const lJoin = left.joiningFee?.amount ?? null;
     const rJoin = right.joiningFee?.amount ?? null;
-    rows.push({
-      key: "joiningFee",
-      label: "Joining fee (year 1)",
-      mobileLabel: "Joining fee",
-      subtext: "year 1",
-      leftValue: lJoin === null ? "—" : formatAED(lJoin),
-      rightValue: rJoin === null ? "—" : formatAED(rJoin),
-      winner: lowerWins(lJoin, rJoin),
-    });
+    if (lJoin !== null || rJoin !== null) {
+      rows.push({
+        key: "joiningFee",
+        label: "Joining fee (year 1)",
+        mobileLabel: "Joining fee",
+        subtext: "year 1",
+        leftValue: lJoin === null ? "—" : formatAED(lJoin),
+        rightValue: rJoin === null ? "—" : formatAED(rJoin),
+        winner:
+          lJoin === null || rJoin === null ? "none" : lowerWins(lJoin, rJoin),
+      });
+    }
   }
 
   // 3. Minimum salary

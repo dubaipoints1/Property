@@ -23,7 +23,7 @@ const isActive = (href: string) =>
 // Mobile menu — flat top-level rows (mirror wireframe MobileMenu).
 const mobileTop = [
   { href: "/newsletter/", label: "Subscribe", subscribe: true },
-  { href: "/news/",       label: "Latest" },
+  { href: "/cards/",      label: "Cards" },
   { href: "/banks/",      label: "Banks" },
   { href: "/deals/",      label: "Deals" },
   { href: "/guides/",     label: "Guides" },
@@ -42,8 +42,6 @@ const cardsPanel: Group[] = [
     { label: "Best travel cards",       href: "/cards/miles/", sub: "Miles & lounge access" },
     { label: "Best cashback cards",     href: "/cards/cashback/", sub: "Capped & uncapped" },
     { label: "Best Islamic (Sharia) cards", href: "/cards/islamic/" },
-    { label: "Best entry-level cards",  href: "/cards/", sub: "Min salary AED 8,000+" },
-    { label: "Best premium cards",      href: "/cards/", sub: "Min salary AED 30,000+" },
     { label: "All cards",               href: "/cards/" },
   ]},
   { title: "By bank issuer", rows: [
@@ -61,8 +59,8 @@ const cardsPanel: Group[] = [
     { label: "All co-branded cards",      href: "/cards/" },
   ]},
   { title: "Learn about UAE cards", rows: [
-    { label: "Beginner's guide",          href: "/guides/" },
-    { label: "AECB credit score",         href: "/guides/" },
+    { label: "Beginner's guide",          href: "/guides/expat-starter/" },
+    { label: "AECB credit score",         href: "/guides/aecb-credit-report-walkthrough/" },
     { label: "Salary transfer explained", href: "/salary-transfer/" },
     { label: "Card reviews methodology",  href: "/editorial-policy/" },
   ]},

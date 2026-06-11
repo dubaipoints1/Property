@@ -19,9 +19,17 @@ const bands = [
   { slug: "aed-50000-plus",     label: "AED 50,000+" },
 ];
 
-const today = new Date();
 const fmtFull = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+
+// The honest freshness signal is the newest per-offer verification date —
+// not the build date, which manufactured a "Last refresh: today" stamp
+// above offers verified weeks earlier (Fact-Checker redline, 11 June 2026).
+const newestVerification = offers.length
+  ? new Date(
+      Math.max(...offers.map((o) => new Date(o.lastVerified).getTime())),
+    )
+  : null;
 ---
 
 <BaseLayout
@@ -32,12 +40,14 @@ const fmtFull = (d: Date) =>
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Salary-transfer tracker</div>
     <h1>The salary-transfer tracker.</h1>
-    <p>Every UAE bank's salary-transfer offer in one table. Verified against issuer T&amp;Cs, refreshed daily. Filter by salary band, reward type, or specific bank.</p>
+    <p>Every UAE bank's salary-transfer offer in one table, verified against issuer T&amp;Cs and dated per offer. Filter by salary band, reward type, or specific bank.</p>
 
     <div class="dp-tools-stats">
       <span><span class="lbl">Banks tracked:</span> <strong>{new Set(offers.map((o) => o.bankSlug)).size}</strong></span>
       <span><span class="lbl">Live offers:</span> <strong>{offers.length}</strong></span>
-      <span><span class="lbl">Last refresh:</span> <strong>{fmtFull(today)}</strong></span>
+      {newestVerification && (
+        <span><span class="lbl">Newest verification:</span> <strong>{fmtFull(newestVerification)}</strong></span>
+      )}
     </div>
   </div>
 
