@@ -48,13 +48,11 @@ const heroSweetSpot = flagshipProgramme?.data.sweetSpots[0];
 const stats: { value: string; label: string }[] = [
   { value: `${cards.length}+`, label: "Cards reviewed" },
   { value: `${allBanks.length}`, label: "UAE banks tracked" },
-  // "Daily" matches the cadence claimed on the tracker itself
-  // (/salary-transfer/ pagehead + index deck), the homepage directory
-  // tile and the 404 page — this stat read "Monthly" and contradicted
-  // all four on the same site, two on this same page (10 June 2026
-  // fresh-eyes audit). Fact-Checker to confirm the true cadence; if it
-  // is not daily, all five surfaces change together.
-  { value: "Daily", label: "Tracker refresh" },
+  // Fact-Checker ruling (11 June 2026): no refresh-cadence claim is
+  // supportable — offers are verified individually, not on a schedule.
+  // "Daily" / "Monthly" cadence copy was removed from all surfaces
+  // (homepage stat + tile, /salary-transfer/, 404) in the same change.
+  { value: `${allPrograms.length}`, label: "Loyalty programmes" },
   { value: "Zero", label: "Paid placements" },
 ];
 
@@ -103,29 +101,25 @@ if (guidesSorted[1]) {
   });
 }
 if (newestCard) {
+  const bankName =
+    allBanks.find((b) => b.id === newestCard.bank)?.data.name ??
+    newestCard.bank;
   intel.push({
     href: `/cards/${newestCard.slug}/`,
     category: "Card review",
     title: newestCard.name,
-    excerpt: `${newestCard.bank} · annual fee AED ${newestCard.annualFee.amount.toLocaleString()}`,
+    excerpt: `${bankName} · annual fee AED ${newestCard.annualFee.amount.toLocaleString()}`,
     meta: `Verified ${fmtShort(new Date(newestCard.lastVerified))}`,
     imageSlug: `card-${newestCard.slug}`,
     coverCategory: "Review",
   });
 }
 
-// ── UAE Wallet Setup — live average welcome bonus across reviewed cards ───
-const welcomeBonusValues = cards
-  .map((c) => c.welcomeBonusValue ?? 0)
-  .filter((v) => v > 0);
-const avgWelcomeBonusK =
-  welcomeBonusValues.length > 0
-    ? Math.round(
-        welcomeBonusValues.reduce((a, b) => a + b, 0) /
-          welcomeBonusValues.length /
-          1000,
-      )
-    : 0;
+// ── UAE Wallet Setup — count of cards with a live welcome offer ──────────
+// (Replaces the former "average welcome bonus" figure, which averaged
+// airline miles, four bank point currencies and AED into one unitless
+// number — Fact-Checker redline, 11 June 2026.)
+const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
 
 // ── Master Your Miles tiles ─────────────────────────────────────────────
 // Order: Skywards (UAE flag carrier) first, then alpha by name. Pages
@@ -158,19 +152,11 @@ const milesTiles = allPrograms
           bonuses and miles redemptions that stretch a Dubai paycheque
           further — every figure in dirhams, dated and verified.
         </p>
-        <form class="hp-hero-form" action="/newsletter/" method="get">
-          <label class="hp-hero-form-label" for="hp-hero-email">Email</label>
-          <input
-            id="hp-hero-email"
-            type="email"
-            name="email"
-            placeholder="Enter your email"
-            autocomplete="email"
-            required
-          />
-          <button type="submit">Join the brief →</button>
-        </form>
-        <p class="hp-hero-micro">One email each Friday. Unsubscribe anytime.</p>
+        <!-- Email capture returns here once the Buttondown endpoint is
+             wired; until then a form that collects an address and lands
+             on a "coming soon" page is a dead-end (UX audit, 11 June). -->
+        <a href="/newsletter/" class="hp-hero-form-cta">About the Friday brief →</a>
+        <p class="hp-hero-micro">One email each Friday, launching soon. Unsubscribe at any time.</p>
       </div>
 
       <div class="hp-hero-media">
@@ -215,7 +201,7 @@ const milesTiles = allPrograms
         <span class="meta">Everything on dubaipoints.ae</span>
       </div>
       <h2>Find your way around.</h2>
-      <p>Card reviews, bank hubs, loyalty-programme guides and the live salary-transfer tracker — all AED-first, every figure dated and sourced.</p>
+      <p>Card reviews, bank hubs, loyalty-programme guides and the live salary-transfer tracker.</p>
     </div>
     <div class="hp-miles-grid">
       <a href="/cards/" class="hp-miles-tile is-wayfinder">
@@ -237,7 +223,7 @@ const milesTiles = allPrograms
         <span class="hp-miles-tile-cta">Browse programmes →</span>
       </a>
       <a href="/salary-transfer/" class="hp-miles-tile is-wayfinder">
-        <div class="hp-miles-tile-head"><span class="eyebrow">Refreshed daily</span></div>
+        <div class="hp-miles-tile-head"><span class="eyebrow">Verified per offer</span></div>
         <h3 class="hp-miles-tile-title">Salary-transfer offers</h3>
         <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Live</span>Band-by-band cash and rate offers across UAE banks.</p>
         <span class="hp-miles-tile-cta">Open the tracker →</span>
@@ -248,7 +234,7 @@ const milesTiles = allPrograms
   <!-- ── 3. Fresh Intel ──────────────────────────────────────────────── -->
   <section class="hp-intel-band">
     <div class="hp-intel-head">
-      <h2>Fresh guides</h2>
+      <h2>Fresh intel</h2>
       <p>Latest reviews, sweet spots and banking moves — every claim verified against the issuer's Schedule of Charges.</p>
       <a href="/guides/" class="hp-intel-more">All guides →</a>
     </div>
@@ -316,10 +302,10 @@ const milesTiles = allPrograms
           class="hp-wallet-image"
           sizes="(max-width: 900px) 100vw, 50vw"
         />
-        {avgWelcomeBonusK > 0 && (
-          <div class="hp-wallet-stat" role="figure" aria-label="Average welcome bonus across reviewed cards">
-            <span class="hp-wallet-stat-value">{avgWelcomeBonusK}k</span>
-            <span class="hp-wallet-stat-label">Average welcome bonus<br />on reviewed cards</span>
+        {liveWelcomeCount > 0 && (
+          <div class="hp-wallet-stat" role="figure" aria-label="Cards with a live welcome offer">
+            <span class="hp-wallet-stat-value">{liveWelcomeCount}</span>
+            <span class="hp-wallet-stat-label">Cards with a live<br />welcome offer</span>
           </div>
         )}
       </div>
@@ -392,7 +378,7 @@ const milesTiles = allPrograms
           <p class="tile-eyebrow">Honesty</p>
           <h3>How we make money</h3>
           <p class="lead">No affiliate-driven recommendations. No paid placements. Independent UAE coverage, AED-first.</p>
-          <span class="cta" aria-hidden="true">Read the full posture →</span>
+          <span class="cta" aria-hidden="true">How we make money →</span>
         </a>
       </div>
       <p class="footnote">
@@ -469,6 +455,22 @@ const milesTiles = allPrograms
     color: var(--ink-soft);
     text-wrap: pretty;
   }
+  /* Hero CTA — takes the slot the email form occupied; the form (and
+     these companion rules) return when the newsletter endpoint is live. */
+  .hp-hero-form-cta {
+    display: inline-block;
+    background: var(--green);
+    color: white;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    border-radius: 999px;
+    padding: 12px 22px;
+    box-shadow: 0 6px 20px -12px rgba(15, 31, 46, 0.18);
+  }
+  .hp-hero-form-cta:hover { background: #15293a; }
   .hp-hero-form {
     display: flex;
     gap: 0;
