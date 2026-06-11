@@ -2,6 +2,7 @@
 import AirlineProgramLayout from "~/layouts/AirlineProgramLayout.astro";
 import { getCollection, getEntry, render } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
+import { compareByWelcomeValue } from "~/lib/cardsDataFormat";
 
 export async function getStaticPaths() {
   const programs = await getCollection("programs");
