@@ -48,6 +48,21 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           branch="${GITHUB_REF_NAME}"
+          # Stale-branch denylist (10 June 2026 handoff §2.2, re-confirmed by
+          # content 12 June): these branches predate squash-merges of their
+          # own work and exist only because remote ref deletion is blocked
+          # for the repo owner. Auto-opening PRs from them resurrected
+          # superseded file versions three times (#235, #237/#238, #241 —
+          # all closed-not-merged). Never open a PR from them; remove an
+          # entry only if its branch is deliberately revived with new work.
+          case "$branch" in
+            claude/card-hero-welcome-bonus-fix|\
+            claude/check-firecrawl-status-QqRQp-RTouq|\
+            claude/jumpsection-and-meta-rebuild|\
+            claude/prose-element-fallbacks)
+              echo "Branch $branch is on the stale-branch denylist — content already on main; not opening a PR."
+              exit 0;;
+          esac
           if gh pr view "$branch" --repo "$GITHUB_REPOSITORY" --json number >/dev/null 2>&1; then
             echo "PR already open for $branch — nothing to do."
             exit 0
