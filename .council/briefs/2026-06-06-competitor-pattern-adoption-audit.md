@@ -33,7 +33,7 @@ Source: `.council/research/2026-05/competitor-teardown.md` §"Synthesis
 | # | Pattern | Status | Evidence |
 |---|---|---|---|
 | **A1** | Top-of-article fact-tile strip (`Welcome / Fee / APR / Min Salary` tiles above the fold) | **SHIPPED** | `src/components/cards/AtAGlance.astro` used in 55/55 active card MDX files |
-| **A2** | Inline `Value to me: AED X` after every H3 benefit + summing conclusion | **PARTIAL — 45/55** (audit re-run 11 June 2026) | Pilot shipped in PR #231 (fab-cashback, skywards-infinite); cascade wave 1+2 in PR #232. Lifestyle wave (11 June 2026) added 9: adcb-touchpoints-titanium-gold, 3× ENBD Darna, duo, go4it-gold, priority-banking-visa-infinite, visa-infinite, visa-platinum; parallel section-editor waves account for the rest. SOP ratified at `.council/sops/value-to-me-convention.md`. Remaining 10 cards: `grep -L "Value to me" src/content/cards/*.mdx` |
+| **A2** | Inline `Value to me: AED X` after every H3 benefit + summing conclusion | **SHIPPED — 55/55** (final wave 12 June 2026) | Pilot shipped in PR #231 (fab-cashback, skywards-infinite); cascade wave 1+2 in PR #232. Lifestyle wave (11 June 2026) added 9: adcb-touchpoints-titanium-gold, 3× ENBD Darna, duo, go4it-gold, priority-banking-visa-infinite, visa-infinite, visa-platinum. Travel/co-brand final wave (12 June 2026) added the last 6: emirates-nbd-marriott-bonvoy-world, share-visa-infinite, share-visa-signature, u-by-emaar-family, u-by-emaar-infinite-emiratis, voyager-world. SOP ratified at `.council/sops/value-to-me-convention.md`. `grep -L "Value to me" src/content/cards/*.mdx` returns empty — A2 closes |
 | **A3** | "Great Card If / Don't Get If" mirrored lists | **SHIPPED** | `src/components/cards/GreatCardIf.astro` used in 55/55 cards |
 | **A4** | Per-image inline caption discipline (every article image carries one assertive caption) | **SHIPPED — partial** | `HeroImage.astro` supports `caption` + `credit` props (2 figcaption emit sites). Editor discipline: every MDX `heroImage` frontmatter declares a caption. Audit needed to confirm every active card with a heroImage carries a caption — `grep -B 2 "src:" src/content/cards/*.mdx \| grep caption` shows partial coverage |
 | **A5** | Image-credit line beneath every press-library image | **SHIPPED** | `src/components/ImageCredit.astro` exists; Charter 2026-05-21 amendment mandates a visible credit line; teardown notes "We are stricter than HfP / UP / OMAAT — and at least as rigorous as TPG" |
@@ -137,6 +137,28 @@ Build the `<PressStrip>` component as an empty array reading from
 `src/data/press.json` (or equivalent). Renders nothing when the array
 is empty. The day the first placement arrives, the editor adds an
 entry and the strip lights up. **T2.**
+
+---
+
+> Drafted by travel-experiences-editor on 2026-06-12 (A2 final wave,
+> 6 travel/co-brand cards: marriott-bonvoy-world, share-visa-infinite,
+> share-visa-signature, u-by-emaar-family, u-by-emaar-infinite-emiratis,
+> voyager-world). All figures computed from L2 + published programme
+> baselines per the SOP; nothing personally tested this wave.
+> Verified directly: none — Bonvoy World arithmetic cross-checked against
+> the published 2.5-fil baseline at `programs/marriott-bonvoy.mdx` and the
+> per-USD `earnUnit` in L2 (converted at USD 1 = AED 3.6725).
+> Not-computable declarations: Voyager Miles (welcome + earn — no
+> published AED valuation; Betaqti pattern followed).
+> Open for Fact-Checker: (1) corrected a month/year unit error in the
+> u-by-emaar-infinite-emiratis break-even HotTip (AED 1,575 ÷ 7.5% =
+> AED 21,000/year, not /month); (2) L2 `_features` for share-visa-signature
+> says lounge scope "unlimited" while L3 pros/cons say capped visits —
+> contradiction flagged, not fixed, value line priced conservatively;
+> (3) stale/ambiguous legacy `welcomeBonusValue` fields: share-visa-infinite
+> carries 1500 (structured bonus = AED 1,000), share-visa-signature 5000 and
+> u-by-emaar-infinite-emiratis 25000 (points, not AED) — per SOP these were
+> not quoted.
 
 ### Priority 5 — track A4 + A6-verdict completion
 
