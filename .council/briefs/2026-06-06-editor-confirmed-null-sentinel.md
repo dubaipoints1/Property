@@ -1,9 +1,9 @@
 ---
-status: open
+status: closed — implemented 12 June 2026
 tier: T3
 raised-by: PR #207 audit (6 June 2026) — surfaced by Fact-Checker spawn during the per-page editorial pass
 owner: technical-lead (schema design) → chairman (provenance taxonomy decision) → editor (sentinel-flipping convention)
-chairman-status: pending
+chairman-status: approved (Option A) — 12 June 2026
 ---
 
 # Brief — editor-confirmed null sentinel for the scrape merge contract
@@ -149,3 +149,14 @@ next weekly scrape (Sunday 23:00 UTC) will continue to re-populate
 deliberately-nulled fields unless an editor catches them in the PR.
 
 End.
+
+---
+
+## Ruling — 12 June 2026
+
+**Approved, Option A.** Implemented same day: `PROVENANCE` Zod enum +
+`ProvenanceMap` type + merge guard extended; regression test Audit-09
+added; backfill applied to `rakbank-world` (the motivating case) and
+`emirates-nbd-go4it-platinum` (null with absent provenance). Charter
+amendment logged in CLAUDE.md. Editors flip further deliberate nulls
+to `editor-confirmed-null` as their verification cycles touch them.

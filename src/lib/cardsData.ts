@@ -113,6 +113,11 @@ const PROVENANCE = z.enum([
   "editor-confirmed",
   "editor-corrected",
   "needs-review",
+  // Chairman-ratified 12 June 2026 (editor-confirmed-null sentinel brief):
+  // "this field is null because the editor deliberately nulled it (e.g. an
+  // expired welcome cycle)" — distinct from needs-review/absent, and
+  // preserved by the weekly scrape merge like the other editor-* states.
+  "editor-confirmed-null",
 ]);
 
 // ── Structured welcomeBonus + annualFeeWaiver ────────────────────────────

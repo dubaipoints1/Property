@@ -177,3 +177,21 @@ test("PR-207 mergeDraft skips top-level write for contaminated welcomeBonus, fre
     "raw capture must still land in _scraped_freetext for editor audit",
   );
 });
+
+test("Audit-09 mergeDraft preserves editor-confirmed-null on subsequent scrape", () => {
+  // Chairman-ratified 12 June 2026: a deliberate editor null (e.g. an
+  // expired welcome cycle, the PR #207 rakbank-world regression) must
+  // survive the weekly scrape — the scraper may not re-pull the stale
+  // offer onto a field the editor intentionally nulled.
+  const existing = {
+    welcomeBonus: null,
+    _provenance: { welcomeBonus: "editor-confirmed-null" as const },
+  };
+  const draft = {
+    welcomeBonus: "AED 750 welcome bonus, subject to minimum-spend criteria",
+  };
+  const { entry, outcome } = mergeDraft("rakbank-world", existing, draft);
+  assert.equal(entry.welcomeBonus, null);
+  assert.ok(outcome.preservedFields.includes("welcomeBonus"));
+  assert.equal(entry._provenance?.welcomeBonus, "editor-confirmed-null");
+});

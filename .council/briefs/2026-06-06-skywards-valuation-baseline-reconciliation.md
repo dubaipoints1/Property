@@ -1,9 +1,9 @@
 ---
-status: open
+status: closed — ruled 12 June 2026
 tier: T3
 raised-by: travel-experiences-editor (5 June 2026 per-page editorial pass) — surfaced via fact-checker referral on PR #220
 owner: chairman (valuation methodology) → standards-editor (cross-page consistency) → travel-experiences-editor (downstream rewrites)
-chairman-status: pending
+chairman-status: approved (keep 2-fils cost basis) — 12 June 2026
 ---
 
 # Brief — Skywards Mile baseline valuation methodology reconciliation
@@ -182,3 +182,16 @@ inseparable from the basis question this brief already puts to the
 Chairman — so the table is now additional evidence for this decision,
 not a separate fix. Fact-Checker should re-derive every row on whichever
 basis the Chairman ratifies.
+
+---
+
+## Ruling — 12 June 2026
+
+**The 2-fils cost-basis baseline stands.** Cash-fare-avoidance figures
+may be cited where they help the reader (e.g. "a Business-saver burn
+realises AED 8,000–14,000") but must be explicitly labelled and never
+presented as the baseline. Per the 11 June addendum, the Etihad Guest
+valuation table is re-labelled to the cash-fare basis with its two
+provable rows rescaled; the remaining rows are queued for Fact-Checker
+re-derivation on the ratified basis. Charter amendment logged in
+CLAUDE.md.

@@ -51,7 +51,7 @@ Source: `.council/research/2026-05/competitor-teardown.md` §"Synthesis
 | **B12** | Subject-clustered shelves on homepage (4-card product grids between news blocks) | **SHIPPED** | 7 cluster/shelf hits in `src/pages/index.astro` — "Fresh guides", "Sweet spots", "Wallet" sections each render a 4-card grid; HfP idea adapted |
 | **B13** | Threaded comments under reviews | **DEFERRED** | No comment component exists. Teardown notes "engineering decision required; Astro+Cloudflare Pages doesn't ship comments by default. Tech Lead memo needed for build/buy. Standards Editor + Chairman must approve moderation policy first" |
 | **B14** | Inline editor quote with named attribution | **SHIPPED — passive form** | All 55 card MDXes carry `verifiedBy:` frontmatter (named editor / "DubaiPoints Editorial"). The active inline blockquote with attribution (UP signature) is not yet a convention — needs a brief instance to set precedent |
-| **B15** | "No AI prose" editorial-policy stance | **NOT STARTED — needs Chairman call** | CLAUDE.md / Charter is silent on AI-generated prose. The Charter bans AI-generated photography but not AI-prose. OMAAT's signature footer line ("I write all my own content; there are no ghostwriters or AI at OMAAT!") is a brand-positioning statement worth ratifying or rejecting |
+| **B15** | "No AI prose" editorial-policy stance | **REJECTED — Chairman, 12 June 2026** | CLAUDE.md / Charter is silent on AI-generated prose. The Charter bans AI-generated photography but not AI-prose. OMAAT's signature footer line ("I write all my own content; there are no ghostwriters or AI at OMAAT!") is a brand-positioning statement worth ratifying or rejecting |
 
 ### Tier C — adopt when affiliate enters
 
