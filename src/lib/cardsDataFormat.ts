@@ -109,6 +109,69 @@ export function isStructuredAnnualFeeWaiver(
   return typeof v === "object" && v !== null && "year_one_waived" in v;
 }
 
+// ── Welcome-bonus AED ranking (2026-06-11) ───────────────────────────────
+//
+// Published AED-per-point baselines from the programme overview pages,
+// mirrored from .council/sops/value-to-me-convention.md. Currencies whose
+// issuer publishes no redemption rate or exchange ratio (ADCB TouchPoints,
+// FAB Rewards, ENBD Plus Points, …) are deliberately absent — an unpriced
+// bonus must not be ranked as if it were worth AED 0, and fabricating a
+// rate would breach Charter §6. This replaces the legacy
+// `welcomeBonusValue` field on every sort path: that field compared raw
+// counts of miles, four bank point currencies and dirhams against each
+// other, which is how a phantom 500k figure once held the #1 top-pick
+// slot on /cards/.
+const REWARD_UNIT_AED: Partial<Record<RewardUnit, number>> = {
+  skywards_miles: 0.02, // programs/skywards.mdx — 2 fils/Mile
+  etihad_guest_miles: 0.02, // programs/etihad-guest.mdx — 2 fils/Mile
+  qatar_avios: 0.03, // SOP baseline (~3 fils; ranking-grade, not display)
+  share_points: 0.1, // 10 points = AED 1
+  lulu_points: 0.01,
+  upoints: 0.02,
+  dnata_points: 0.02,
+  marriott_bonvoy_points: 0.025, // programs/marriott-bonvoy.mdx — 2.5 fils
+  aed_cashback: 1,
+  aed_voucher: 1,
+  aed_credit: 1,
+};
+
+export type WelcomeRank =
+  | { tier: "priced"; aed: number }
+  | { tier: "unpriced" }
+  | { tier: "none" };
+
+export function welcomeBonusRank(welcomeBonus: unknown): WelcomeRank {
+  let wb = welcomeBonus;
+  if (isBifurcatedWelcomeBonus(wb)) {
+    wb = wb.with_salary_transfer ?? wb.without_salary_transfer;
+  }
+  if (isStructuredWelcomeBonus(wb)) {
+    if (wb.headline_value_aed != null) {
+      return { tier: "priced", aed: wb.headline_value_aed };
+    }
+    const rate = REWARD_UNIT_AED[wb.unit];
+    if (rate != null) return { tier: "priced", aed: wb.amount * rate };
+    return { tier: "unpriced" };
+  }
+  if (typeof wb === "string" && wb.trim() !== "") return { tier: "unpriced" };
+  return { tier: "none" };
+}
+
+/** Sort comparator for ranking surfaces: priced bonuses by AED value
+ * descending, then unpriced-but-present, then no bonus. Ties preserve
+ * input order (Array.prototype.sort is stable). */
+export function compareByWelcomeValue(
+  a: { welcomeBonus?: unknown },
+  b: { welcomeBonus?: unknown },
+): number {
+  const tierScore = { priced: 2, unpriced: 1, none: 0 } as const;
+  const ra = welcomeBonusRank(a.welcomeBonus ?? null);
+  const rb = welcomeBonusRank(b.welcomeBonus ?? null);
+  if (ra.tier !== rb.tier) return tierScore[rb.tier] - tierScore[ra.tier];
+  if (ra.tier === "priced" && rb.tier === "priced") return rb.aed - ra.aed;
+  return 0;
+}
+
 function singleWelcomeBonusDisplay(v: StructuredWelcomeBonus): string {
   const amount = v.amount.toLocaleString();
   const unit = REWARD_UNIT_LABELS[v.unit] ?? v.unit;

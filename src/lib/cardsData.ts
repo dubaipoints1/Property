@@ -113,6 +113,11 @@ const PROVENANCE = z.enum([
   "editor-confirmed",
   "editor-corrected",
   "needs-review",
+  // Chairman-ratified 12 June 2026 (editor-confirmed-null sentinel brief):
+  // "this field is null because the editor deliberately nulled it (e.g. an
+  // expired welcome cycle)" — distinct from needs-review/absent, and
+  // preserved by the weekly scrape merge like the other editor-* states.
+  "editor-confirmed-null",
 ]);
 
 // ── Structured welcomeBonus + annualFeeWaiver ────────────────────────────
@@ -386,7 +391,10 @@ const CardDataSchema = z.object({
     .union([WelcomeBonus, WelcomeBonusBifurcated, z.string()])
     .nullable()
     .optional(),
-  /** Legacy: editor-estimated point/mile count. Kept for sort fallback. */
+  /** Legacy: editor-estimated point/mile count. DEPRECATED 2026-06-11 —
+   * raw counts of different currencies are not comparable, so this no
+   * longer drives any sort path; ranking surfaces use
+   * compareByWelcomeValue (cardsDataFormat.ts). Retained as data only. */
   welcomeBonusValue: z.number().optional(),
 
   /** Sharia compliance — first-class boolean. Distinct from the `Islamic`

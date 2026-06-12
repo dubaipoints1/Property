@@ -1,9 +1,9 @@
 ---
-status: open
+status: closed — ruled 12 June 2026
 tier: T3
 raised-by: travel-experiences-editor (5 June 2026 per-page editorial pass) — surfaced via fact-checker referral on PR #220
 owner: chairman (valuation methodology) → standards-editor (cross-page consistency) → travel-experiences-editor (downstream rewrites)
-chairman-status: pending
+chairman-status: approved (keep 2-fils cost basis) — 12 June 2026
 ---
 
 # Brief — Skywards Mile baseline valuation methodology reconciliation
@@ -155,3 +155,43 @@ T3 convene per Charter §"Tiered review". The conservative path
 itself is the convene trigger.
 
 End.
+
+---
+
+## Addendum — 11 June 2026 (consolidating session): Etihad Guest page carried the same error class, live
+
+The travel-experiences-editor flagged during the best-of roundup build
+that `src/content/programs/etihad-guest.mdx` published "AED 19,500 of
+value against 88,000 miles = roughly 2.2 fils per mile. Squarely in our
+baseline range." The arithmetic on its own inputs is **~22 fils** on the
+cash-fare-avoidance basis — a factor-of-ten understatement of the same
+class as the PR #221 Skywards fix, and the "squarely in our baseline
+range" framing laundered cash-fare value into the cost-basis baseline.
+The European example (7,300 / 50,000 = 14.6 fils, published as "1.5
+fils") had the identical error.
+
+Both prose sentences were corrected on 11 June with explicit
+cash-fare-avoidance labelling. **Not corrected:** the page's
+"What an Etihad Guest Mile is worth" table — its two rows with on-page
+worked examples (transatlantic 1.8–2.3, European 1.5–2.2) are provably
+10× understated on the cash-fare basis, but the remaining rows
+(GuestSeat 2.5–4.0, GCC 0.8–1.2, peak 1.0–1.5) have no worked examples
+to scale from, and the "Why 2 fils as the baseline?" paragraph derives
+the baseline from the understated numbers. Rescaling the table is
+inseparable from the basis question this brief already puts to the
+Chairman — so the table is now additional evidence for this decision,
+not a separate fix. Fact-Checker should re-derive every row on whichever
+basis the Chairman ratifies.
+
+---
+
+## Ruling — 12 June 2026
+
+**The 2-fils cost-basis baseline stands.** Cash-fare-avoidance figures
+may be cited where they help the reader (e.g. "a Business-saver burn
+realises AED 8,000–14,000") but must be explicitly labelled and never
+presented as the baseline. Per the 11 June addendum, the Etihad Guest
+valuation table is re-labelled to the cash-fare basis with its two
+provable rows rescaled; the remaining rows are queued for Fact-Checker
+re-derivation on the ratified basis. Charter amendment logged in
+CLAUDE.md.

@@ -232,7 +232,10 @@ between `src/data/cards.json` and `src/content/cards/<slug>.mdx`.
 
 `cards.json` entries carry a `_provenance` map per top-level field
 with values `scraped | editor-confirmed | editor-corrected |
-needs-review`. The merge rules in
+needs-review | editor-confirmed-null` (the fifth value, ratified
+12 June 2026, marks a deliberate editor null — e.g. an expired
+welcome cycle — that the weekly scrape must preserve). The merge
+rules in
 `scripts/scrape/propose-changes.ts` are load-bearing:
 
 - Editor-confirmed / editor-corrected fields are **never**
@@ -445,6 +448,36 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-06-12 — Three Chairman rulings (provenance sentinel; valuation baseline; AI-prose stance)
+
+On site-owner/Chairman direction (12 June 2026), three open briefs are
+ruled:
+
+1. **`editor-confirmed-null` ratified** (per
+   `2026-06-06-editor-confirmed-null-sentinel.md`, Option A). The
+   provenance enum gains a fifth value marking a deliberate editor
+   null; the scrape merge contract preserves it alongside
+   `editor-confirmed` / `editor-corrected`. Implemented same day:
+   schema, merge guard, regression test (Audit-09), backfill on
+   `rakbank-world` and `emirates-nbd-go4it-platinum`.
+2. **The 2-fils cost-basis baseline stands** (per
+   `2026-06-06-skywards-valuation-baseline-reconciliation.md`).
+   Card-review arithmetic continues to use the conservative
+   cost-basis fils values published on the programme pages;
+   cash-fare-avoidance figures may be cited but must be explicitly
+   labelled as such and never presented as the baseline. The Etihad
+   Guest valuation table — found on 11 June to derive the baseline
+   from 10×-understated cash-fare rows — is re-labelled accordingly,
+   with unproven rows queued for Fact-Checker re-derivation.
+3. **B15 "No AI prose" public stance rejected** (per the
+   competitor-pattern adoption audit). The publication will not adopt
+   an OMAAT-style public no-AI-authorship claim. The trust posture
+   remains what it has always been: verifiable figures, per-field
+   provenance, named verification dates, and a public corrections
+   log — claims about process the site can actually demonstrate.
+
+— Chairman, 12 June 2026.
 
 ### 2026-05-09 — Brand palette ratification (green canonical)
 

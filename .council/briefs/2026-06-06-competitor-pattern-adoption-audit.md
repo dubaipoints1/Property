@@ -33,7 +33,7 @@ Source: `.council/research/2026-05/competitor-teardown.md` §"Synthesis
 | # | Pattern | Status | Evidence |
 |---|---|---|---|
 | **A1** | Top-of-article fact-tile strip (`Welcome / Fee / APR / Min Salary` tiles above the fold) | **SHIPPED** | `src/components/cards/AtAGlance.astro` used in 55/55 active card MDX files |
-| **A2** | Inline `Value to me: AED X` after every H3 benefit + summing conclusion | **PARTIAL — 12/55** (updated 11 June 2026) | Pilot shipped in PR #231 (fab-cashback, skywards-infinite); cascade wave 1+2 in PR #232 brought it to 12/55 cards. SOP ratified at `.council/sops/value-to-me-convention.md`. Remaining 43 cards: `grep -L "Value to me" src/content/cards/*.mdx` |
+| **A2** | Inline `Value to me: AED X` after every H3 benefit + summing conclusion | **SHIPPED — 55/55** (final wave 12 June 2026) | Pilot shipped in PR #231 (fab-cashback, skywards-infinite); cascade wave 1+2 in PR #232. Lifestyle wave (11 June 2026) added 9: adcb-touchpoints-titanium-gold, 3× ENBD Darna, duo, go4it-gold, priority-banking-visa-infinite, visa-infinite, visa-platinum. Travel/co-brand final wave (12 June 2026) added the last 6: emirates-nbd-marriott-bonvoy-world, share-visa-infinite, share-visa-signature, u-by-emaar-family, u-by-emaar-infinite-emiratis, voyager-world. SOP ratified at `.council/sops/value-to-me-convention.md`. `grep -L "Value to me" src/content/cards/*.mdx` returns empty — A2 closes |
 | **A3** | "Great Card If / Don't Get If" mirrored lists | **SHIPPED** | `src/components/cards/GreatCardIf.astro` used in 55/55 cards |
 | **A4** | Per-image inline caption discipline (every article image carries one assertive caption) | **SHIPPED — partial** | `HeroImage.astro` supports `caption` + `credit` props (2 figcaption emit sites). Editor discipline: every MDX `heroImage` frontmatter declares a caption. Audit needed to confirm every active card with a heroImage carries a caption — `grep -B 2 "src:" src/content/cards/*.mdx \| grep caption` shows partial coverage |
 | **A5** | Image-credit line beneath every press-library image | **SHIPPED** | `src/components/ImageCredit.astro` exists; Charter 2026-05-21 amendment mandates a visible credit line; teardown notes "We are stricter than HfP / UP / OMAAT — and at least as rigorous as TPG" |
@@ -51,7 +51,7 @@ Source: `.council/research/2026-05/competitor-teardown.md` §"Synthesis
 | **B12** | Subject-clustered shelves on homepage (4-card product grids between news blocks) | **SHIPPED** | 7 cluster/shelf hits in `src/pages/index.astro` — "Fresh guides", "Sweet spots", "Wallet" sections each render a 4-card grid; HfP idea adapted |
 | **B13** | Threaded comments under reviews | **DEFERRED** | No comment component exists. Teardown notes "engineering decision required; Astro+Cloudflare Pages doesn't ship comments by default. Tech Lead memo needed for build/buy. Standards Editor + Chairman must approve moderation policy first" |
 | **B14** | Inline editor quote with named attribution | **SHIPPED — passive form** | All 55 card MDXes carry `verifiedBy:` frontmatter (named editor / "DubaiPoints Editorial"). The active inline blockquote with attribution (UP signature) is not yet a convention — needs a brief instance to set precedent |
-| **B15** | "No AI prose" editorial-policy stance | **NOT STARTED — needs Chairman call** | CLAUDE.md / Charter is silent on AI-generated prose. The Charter bans AI-generated photography but not AI-prose. OMAAT's signature footer line ("I write all my own content; there are no ghostwriters or AI at OMAAT!") is a brand-positioning statement worth ratifying or rejecting |
+| **B15** | "No AI prose" editorial-policy stance | **REJECTED — Chairman, 12 June 2026** | CLAUDE.md / Charter is silent on AI-generated prose. The Charter bans AI-generated photography but not AI-prose. OMAAT's signature footer line ("I write all my own content; there are no ghostwriters or AI at OMAAT!") is a brand-positioning statement worth ratifying or rejecting |
 
 ### Tier C — adopt when affiliate enters
 
@@ -138,6 +138,28 @@ Build the `<PressStrip>` component as an empty array reading from
 is empty. The day the first placement arrives, the editor adds an
 entry and the strip lights up. **T2.**
 
+---
+
+> Drafted by travel-experiences-editor on 2026-06-12 (A2 final wave,
+> 6 travel/co-brand cards: marriott-bonvoy-world, share-visa-infinite,
+> share-visa-signature, u-by-emaar-family, u-by-emaar-infinite-emiratis,
+> voyager-world). All figures computed from L2 + published programme
+> baselines per the SOP; nothing personally tested this wave.
+> Verified directly: none — Bonvoy World arithmetic cross-checked against
+> the published 2.5-fil baseline at `programs/marriott-bonvoy.mdx` and the
+> per-USD `earnUnit` in L2 (converted at USD 1 = AED 3.6725).
+> Not-computable declarations: Voyager Miles (welcome + earn — no
+> published AED valuation; Betaqti pattern followed).
+> Open for Fact-Checker: (1) corrected a month/year unit error in the
+> u-by-emaar-infinite-emiratis break-even HotTip (AED 1,575 ÷ 7.5% =
+> AED 21,000/year, not /month); (2) L2 `_features` for share-visa-signature
+> says lounge scope "unlimited" while L3 pros/cons say capped visits —
+> contradiction flagged, not fixed, value line priced conservatively;
+> (3) stale/ambiguous legacy `welcomeBonusValue` fields: share-visa-infinite
+> carries 1500 (structured bonus = AED 1,000), share-visa-signature 5000 and
+> u-by-emaar-infinite-emiratis 25000 (points, not AED) — per SOP these were
+> not quoted.
+
 ### Priority 5 — track A4 + A6-verdict completion
 
 A4 (per-image inline caption discipline) and A6-verdict (question H2
@@ -165,4 +187,33 @@ Owner: section editors. **T2.**
 4. Section editors complete A4 + A6 audit + cascade (2 weeks)
 5. Chairman gate on each batch before merge per Charter §3
 
-End.
+---
+
+> Drafted by lifestyle-culture-editor on 2026-06-11.
+> Scope: A2 Value-to-me cascade, lifestyle wave 3 (9 cards): adcb-touchpoints-titanium-gold,
+> emirates-nbd-darna-select-visa, emirates-nbd-darna-visa-infinite,
+> emirates-nbd-darna-visa-signature, emirates-nbd-duo, emirates-nbd-go4it-gold,
+> emirates-nbd-priority-banking-visa-infinite, emirates-nbd-visa-infinite,
+> emirates-nbd-visa-platinum.
+> Personally tested: none — desk piece; all figures derive from L2 `cards.json`,
+> SOP baselines, and market prices already cited in sibling reviews
+> (cinema AED 40–50, lounge AED 200 walk-in, mall valet AED 50–80, Dubai Ferry
+> AED 50/pair, term-cover AED 150–250/yr per go4it-platinum).
+> Open for Fact-Checker:
+> 1. darna-visa-infinite carried a 12× break-even arithmetic error
+>    ("AED 15,000/month" vs the correct AED 1,575 ÷ 10% ÷ 12 ≈ AED 1,315/month).
+>    Body prose + the keyTakeaways bullet corrected this pass; the fenced
+>    `applyIf` and `editorTake` fields still carry the old AED 15,000/month
+>    figure and need their own review.
+> 2. All three Darna reviews describe the partner network as Emaar
+>    (Dubai Mall, Address/Vida/Rove, Reel); L2 scraped freetext and the ENBD
+>    apply URLs say ALDAR ("Redeem instantly across 1,200 Aldar destinations",
+>    `apply.emiratesnbd.com/en/credit-card/aldar/...`). New sections use neutral
+>    "Darna partner" wording; the Emaar framing needs source verification.
+> 3. emirates-nbd-duo L2 below-gate rate is internally inconsistent
+>    (earnUnit says "otherwise 1.5%", earnRates.everythingElse = 0.5, scraped
+>    freetext says 0.5% on other spends); review body says both. Flagged, not fixed.
+> 4. emirates-nbd-visa-infinite / -platinum L2 earnUnit labelled
+>    "% as ENBD Plus Points" while values are points-per-AED-100 per the issuer
+>    freetext — unit labelling needs review (no AED impact while Plus Points
+>    remain unpriced).

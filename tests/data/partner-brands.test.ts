@@ -76,6 +76,8 @@ test("C1 cards.json validates against the partnerBrands-aware schema", () => {
     "editor-confirmed",
     "editor-corrected",
     "needs-review",
+    // Chairman-ratified 12 June 2026 — mirrors cardsData.ts.
+    "editor-confirmed-null",
   ]);
   const MinimalCard = z
     .object({

@@ -26,7 +26,12 @@ interface ScrapeFile {
 }
 
 interface ProvenanceMap {
-  [key: string]: "scraped" | "editor-confirmed" | "editor-corrected" | "needs-review";
+  [key: string]:
+    | "scraped"
+    | "editor-confirmed"
+    | "editor-corrected"
+    | "needs-review"
+    | "editor-confirmed-null";
 }
 
 interface CardEntry {
@@ -141,8 +146,12 @@ interface MergeOutcome {
  * Merge a scraped draft into the existing card entry.
  *
  * Rules:
- *   - If existing entry has _provenance[field] === "editor-confirmed" or
- *     "editor-corrected", the scrape NEVER overwrites it.
+ *   - If existing entry has _provenance[field] === "editor-confirmed",
+ *     "editor-corrected" or "editor-confirmed-null", the scrape NEVER
+ *     overwrites it. The -null variant (Chairman, 12 June 2026) marks a
+ *     deliberate editor null — e.g. an expired welcome cycle — so the
+ *     next scrape cannot re-pull the stale offer (the PR #207
+ *     rakbank-world regression).
  *   - Fields with _provenance "scraped" or "needs-review" or absent are
  *     replaced with the new scraped value.
  *   - All replaced fields get _provenance = "scraped".
@@ -206,7 +215,11 @@ export function mergeDraft(
   for (const field of SCRAPED_FIELDS) {
     if (!(field in draft)) continue;
     const currentProv = provenance[field];
-    if (currentProv === "editor-confirmed" || currentProv === "editor-corrected") {
+    if (
+      currentProv === "editor-confirmed" ||
+      currentProv === "editor-corrected" ||
+      currentProv === "editor-confirmed-null"
+    ) {
       preservedFields.push(field);
       continue;
     }

@@ -260,14 +260,16 @@ test("schema-2a-0: cards.json validates against the augmented schema", () => {
   );
 });
 
-test("schema-2a-0: 8 cards carry joiningFee", () => {
+test("schema-2a-0: 9 cards carry joiningFee", () => {
+  // 9th added 2026-06-11: etihad-guest-elevate AED 2,625 joining fee,
+  // verified against the live product page + May 2026 KFS (both agree).
   const slugs = Object.entries(cards)
     .filter(([, c]) => (c as { joiningFee?: unknown }).joiningFee !== undefined)
     .map(([s]) => s);
   assert.equal(
     slugs.length,
-    8,
-    `Expected 8 cards with joiningFee, got ${slugs.length}: ${slugs.join(", ")}`,
+    9,
+    `Expected 9 cards with joiningFee, got ${slugs.length}: ${slugs.join(", ")}`,
   );
 });
 

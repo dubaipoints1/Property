@@ -21,6 +21,7 @@ import {
   formatEarnValue,
   topEarnEntry,
   CATEGORY_LABELS_FOR_TOP,
+  compareByWelcomeValue,
 } from "~/lib/cardsDataFormat";
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
@@ -51,12 +52,12 @@ for (const slug of requestedSlugs) {
   if (selectedSlugs.length >= MAX_CARDS) break;
 }
 
-// Default — top-3 by welcomeBonusValue when no ?cards= present.
+// Default — top-3 by AED-normalised welcome value when no ?cards= present.
 const isDefault = selectedSlugs.length === 0;
 const defaultSlugs = isDefault
   ? allCards
       .filter((c) => c.welcomeBonus)
-      .sort((a, b) => (b.welcomeBonusValue ?? 0) - (a.welcomeBonusValue ?? 0))
+      .sort(compareByWelcomeValue)
       .slice(0, 3)
       .map((c) => c.slug)
   : [];
