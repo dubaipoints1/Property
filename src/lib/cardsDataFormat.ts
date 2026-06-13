@@ -553,7 +553,9 @@ export function formatEarnValue(
 interface LoungeFeature {
   type: "lounge_access";
   network: string;
-  scope: "unlimited" | { visits_per_year: number };
+  // "limited" = access exists, capped at an issuer-unpublished visit count
+  // (added 13 June 2026; mirrors the Zod schema in cardsData.ts).
+  scope: "unlimited" | "limited" | { visits_per_year: number };
 }
 
 function loungeFeatureOf(card: CardForComparison): LoungeFeature | null {
@@ -569,6 +571,7 @@ function loungeFeatureOf(card: CardForComparison): LoungeFeature | null {
 function loungeDisplay(f: LoungeFeature | null): string {
   if (!f) return "None";
   if (f.scope === "unlimited") return `${f.network} — unlimited`;
+  if (f.scope === "limited") return `${f.network} — visits capped`;
   if (typeof f.scope === "object" && "visits_per_year" in f.scope) {
     return `${f.network} — ${f.scope.visits_per_year} visits/yr`;
   }
@@ -578,6 +581,10 @@ function loungeDisplay(f: LoungeFeature | null): string {
 function loungeScore(f: LoungeFeature | null): number {
   if (!f) return 0;
   if (f.scope === "unlimited") return Number.POSITIVE_INFINITY;
+  // "limited" (capped, count unknown) ranks below any card with a known
+  // positive visit count and far below unlimited — the conservative,
+  // honest placement when the issuer doesn't publish the cap.
+  if (f.scope === "limited") return 1;
   if (typeof f.scope === "object" && "visits_per_year" in f.scope) {
     return f.scope.visits_per_year;
   }
