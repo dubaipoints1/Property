@@ -68,6 +68,7 @@ const fee = annualFee ?? cardData?.annualFee.amount ?? 0;
 
 const gross = items.reduce((sum, it) => sum + it.aed, 0);
 const net = gross - fee;
+const hasFee = fee > 0;
 
 // Bar weight includes the fee segment so the deduction is to scale.
 const barTotal = gross + fee;
@@ -95,7 +96,7 @@ const netIsCost = net < 0;
 // Full text equivalent for the bar's single aria-label.
 const barAria = [
   ...items.map((it) => `${it.label} ${aed(it.aed)}.`),
-  `Less annual fee ${aed(fee)}.`,
+  ...(hasFee ? [`Less annual fee ${aed(fee)}.`] : ["Free for life, no annual fee."]),
   `${netIsCost ? "Net annual cost" : "Net annual value"} ${aed(net)}.`,
 ].join(" ");
 ---
@@ -112,7 +113,11 @@ const barAria = [
   <div class="dpvb-bluf">
     <div class="dpvb-bluf-label">
       What this card returns in a year,
-      <strong>net of its {aed(fee)} annual fee</strong> — {profile}.
+      {hasFee ? (
+        <Fragment><strong>net of its {aed(fee)} annual fee</strong> — {profile}.</Fragment>
+      ) : (
+        <Fragment><strong>free for life</strong> — {profile}.</Fragment>
+      )}
     </div>
     <div class="dpvb-net" class:list={{ "is-cost": netIsCost }}>
       <div>
@@ -148,15 +153,19 @@ const barAria = [
           );
         })
       }
-      <div
-        class="dpvb-seg is-fee"
-        class:list={{ "is-tight": fee / barTotal < TIGHT }}
-        style={`flex-grow:${fee}`}
-        aria-label={`Less annual fee, ${aed(fee)}`}
-      >
-        <span class="s-val">{aed(fee)}</span>
-        <span class="s-lab">Annual fee</span>
-      </div>
+      {
+        hasFee && (
+          <div
+            class="dpvb-seg is-fee"
+            class:list={{ "is-tight": fee / barTotal < TIGHT }}
+            style={`flex-grow:${fee}`}
+            aria-label={`Less annual fee, ${aed(fee)}`}
+          >
+            <span class="s-val">{aed(fee)}</span>
+            <span class="s-lab">Annual fee</span>
+          </div>
+        )
+      }
     </div>
   </div>
 
@@ -181,10 +190,13 @@ const barAria = [
         </li>
       ))
     }
-    <li class="is-fee">
-      <span class="swatch" style="background:var(--dpvb-fee)"></span>
+    <li class:list={{ "is-fee": hasFee }}>
+      <span class="swatch" style={`background:${hasFee ? "var(--dpvb-fee)" : "var(--dpvb-line)"}`}></span>
       <span class="kind">Fee</span>
-      <span class="label">Annual fee</span>
+      <span class="label">
+        Annual fee
+        {!hasFee && <span class="sub">Free for life</span>}
+      </span>
       <span class="amount">{aed(fee)}</span>
     </li>
     <li class="is-net" class:list={{ "is-cost": netIsCost }}>
