@@ -47,6 +47,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Earn rates" },
@@ -65,6 +66,16 @@ on a fixed set of UAE household categories — and nothing outside them.
 <GreatCardIf card="dib-consumer-cashback" />
 
 <EditorVerdict card="dib-consumer-cashback" />
+
+<AEDValueBreakdown
+  card="dib-consumer-cashback"
+  items={[
+    { kind: "Earn", label: "3% on the household-bills bundle", sub: "Bills household clearing the AED 3,000 gate: AED 2,500 grocery + AED 500 fuel + AED 800 utilities/telecom/mo", aed: 1370 },
+  ]}
+  profile="for a bills-led household clearing the AED 3,000 cycle gate (no school fees in this scenario)"
+  assumes="The bills-household profile worked in the per-benefit section (AED 114/mo cashback). A school-fees household is the best case at up to AED 3,600/yr — not modelled here. Takaful cover and roadside assistance pay only when called and are excluded. The card earns nothing off-list."
+  note="Cashback pays in direct AED. See the per-benefit breakdown below."
+/>
 
 <ProsCons card="dib-consumer-cashback" />
 

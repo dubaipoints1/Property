@@ -54,6 +54,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Earn rates" },
@@ -75,6 +76,17 @@ ceiling that bracket who the card is actually for.
 <GreatCardIf card="adcb-365-cashback" />
 
 <EditorVerdict card="adcb-365-cashback" />
+
+<AEDValueBreakdown
+  card="adcb-365-cashback"
+  items={[
+    { kind: "Earn", label: "Category cashback", sub: "AED 5,000-floor household: AED 3,000 dining/online + AED 2,000 groceries/mo", aed: 3360 },
+    { kind: "Perk", label: "VOX cinema BOGO", sub: "One paired visit/mo, ~AED 40 saved each × 12", aed: 480 },
+  ]}
+  profile="for a household clearing the AED 5,000 monthly floor with spend weighted to dining, online and groceries"
+  assumes="The AED 5,000-floor profile worked in the per-benefit section (AED 3,000 dining/online + AED 2,000 groceries a month) plus a monthly cinema pair. The AED 365 welcome bonus is one-time (year one only) and excluded from this steady-state year-two view. Year one the AED 383.25 fee is waived, so the net is higher."
+  note="Cashback pays in direct AED; perk values are AED-direct. See the per-benefit breakdown below."
+/>
 
 <ProsCons card="adcb-365-cashback" />
 

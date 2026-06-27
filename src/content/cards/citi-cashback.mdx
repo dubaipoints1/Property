@@ -47,6 +47,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Cashback" },
@@ -66,6 +67,18 @@ minimum spend, credited automatically to your card.
 <GreatCardIf card="citi-cashback" />
 
 <EditorVerdict card="citi-cashback" />
+
+<AEDValueBreakdown
+  card="citi-cashback"
+  items={[
+    { kind: "Earn", label: "Uncapped domestic cashback", sub: "AED 5,000/mo general (1%) + AED 2,500/mo groceries (2%)", aed: 1200 },
+    { kind: "Perk", label: "Airport lounge access", sub: "4 flown trips at AED 200 walk-in equivalent (non-AED purchase unlocks it)", aed: 800 },
+    { kind: "Perk", label: "Careem ride + Talabat discount", sub: "Full utilisation: AED 84 ride + AED 168 Talabat/yr", aed: 252 },
+  ]}
+  profile="for a set-and-forget domestic spender who flies four trips and uses the Careem and Talabat perks"
+  assumes="The worked domestic-spend profile (AED 1,200 cashback), four-trip lounge use and full Careem/Talabat utilisation. The 3% non-AED rate nets ~AED 0 after Citi's 2.99% FX fee and is excluded. The AED 150 welcome credit is one-time and excluded from this steady-state view. Year one the AED 315 fee is waived (it waives from year two at AED 9,000 annual spend)."
+  note="Cashback credited automatically in AED; perk values are AED-direct. See the per-benefit breakdown below."
+/>
 
 <ProsCons card="citi-cashback" />
 

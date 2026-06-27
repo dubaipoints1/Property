@@ -47,6 +47,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Earn rates" },
@@ -66,6 +67,18 @@ cashback on dining — with modest rates elsewhere.
 <GreatCardIf card="mashreq-cashback" />
 
 <EditorVerdict card="mashreq-cashback" />
+
+<AEDValueBreakdown
+  card="mashreq-cashback"
+  items={[
+    { kind: "Earn", label: "5% dining cashback (uncapped)", sub: "AED 2,000/mo restaurants and food delivery", aed: 1200 },
+    { kind: "Earn", label: "1% on other UAE and international spend", sub: "AED 3,000/mo of general spend", aed: 360 },
+    { kind: "Earn", label: "0.15% on the bills bundle", sub: "AED 4,000/mo across govt/utilities/fuel/telecom, post 13 Jun 2026 cut", aed: 72 },
+  ]}
+  profile="for a moderate diner who also routes general spend and bills through the card"
+  assumes="The worked spends in the per-benefit section, at the current rates including the 13 June 2026 bills-bundle cut to 0.15%. The AED 500 welcome bonus is one-time and excluded from this steady-state view. No lounge or travel perks on this card."
+  note="Free for life; cashback pays in direct AED. See the per-benefit breakdown below."
+/>
 
 <ProsCons card="mashreq-cashback" />
 

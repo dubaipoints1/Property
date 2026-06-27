@@ -49,6 +49,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Earn rates" },
@@ -68,6 +69,18 @@ built around a monthly choice between two reward modes — Lifestyle or Travel.
 <GreatCardIf card="emirates-islamic-switch-cashback" />
 
 <EditorVerdict card="emirates-islamic-switch-cashback" />
+
+<AEDValueBreakdown
+  card="emirates-islamic-switch-cashback"
+  items={[
+    { kind: "Earn", label: "Lifestyle-mode cashback", sub: "AED 600 fuel (8%) + AED 2,000 supermarkets + AED 1,500 dining (4%)/mo, AED 2,500 floor cleared", aed: 2260 },
+    { kind: "Perk", label: "Airport lounge access", sub: "4 flown trips at AED 200 walk-in equivalent (own spend gate applies)", aed: 800 },
+    { kind: "Perk", label: "Cinema BOGO", sub: "One VOX/Reel pair/mo, ~AED 40 saved each × 12", aed: 480 },
+  ]}
+  profile="for a resident who keeps Lifestyle mode selected, flies four trips and uses the cinema perk"
+  assumes="The Lifestyle-mode profile worked in the per-benefit section, held every month, plus four-trip lounge use and a monthly cinema pair. Figures only hold in months Lifestyle mode is active — Travel-mode months earn a different grid. The AED 500 welcome cashback is one-time and excluded. Golf and valet are AED 0 for non-users and excluded. Year one the AED 313.95 fee is waived (it waives from year two at AED 30,000 annual spend)."
+  note="Cashback pays in direct AED; perk values are AED-direct. See the per-benefit breakdown below."
+/>
 
 <ProsCons card="emirates-islamic-switch-cashback" />
 

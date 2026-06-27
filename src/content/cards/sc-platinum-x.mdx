@@ -47,6 +47,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "cashback", label: "Cashback" },
@@ -66,6 +67,17 @@ you spend each month.
 <GreatCardIf card="sc-platinum-x" />
 
 <EditorVerdict card="sc-platinum-x" />
+
+<AEDValueBreakdown
+  card="sc-platinum-x"
+  items={[
+    { kind: "Earn", label: "Channel cashback (online / mobile wallet)", sub: "Middle tier: AED 8,000/mo total spend (5%), AED 4,000 online + AED 2,000 mobile wallet", aed: 3600 },
+    { kind: "Perk", label: "Unlimited lounge access (20+ lounges)", sub: "4 flown trips at AED 200 walk-in equivalent", aed: 800 },
+  ]}
+  profile="for a middle-tier spender (AED 7,500–15,000/mo) routing spend online and through the mobile wallet"
+  assumes="The worked middle-tier profile (5% rate, AED 300/mo channel cashback) plus four-trip lounge use. Foreign-currency cashback is an open AED 0–3,400 range fully tier-dependent and largely offset by the up-to-2.99% FX fee, so it is excluded. An in-store physical-card swiper earns AED 0 of cashback. Year one the AED 525 fee is waived (SC waives it on meeting its minimum annual spend)."
+  note="Cashback pays in direct AED; perk values are AED-direct. See the per-benefit breakdown below."
+/>
 
 <ProsCons card="sc-platinum-x" />
 
