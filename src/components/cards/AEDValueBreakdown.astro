@@ -1,0 +1,608 @@
+---
+// AED Value-Breakdown module — the visual sibling of the prose
+// "Value to me: AED X" convention. Ported from the Claude Design artifact
+// "AED Value-Breakdown (standalone)" (imported 27 June 2026).
+//
+// Quantitative by design: it renders a proportional segmented bar and a
+// derived NET-of-fee headline, so every item carries a single AED number
+// (not the prose ranges). Numbers are EDITORIAL — passed in as props,
+// traceable to the card's fact-checked review prose / L2, never derived by
+// the component beyond summing. Per Charter §6 the editor commits the
+// per-item figures and the single spend scenario; the component only does
+// arithmetic (gross = Σ items, net = gross − fee).
+//
+// Tokens: the design's --dpvb-* custom properties are scoped to the .dpvb
+// root (not global) — same containment discipline as the design-spike's
+// .sp-* classes — so the live token system is untouched. The navy is the
+// live --green/navy (#1f3a4d); the green data-viz ramp and red-clay fee
+// fill are functional chart colours (cf. the existing --positive/--negative
+// used by ProsCons), not brand chrome.
+import { getCardData } from "~/lib/cardsData";
+
+export interface ValueItem {
+  /** Short category tag shown in the legend: "Earn" | "Bonus" | "Perk". */
+  kind: string;
+  /** Benefit name, e.g. "Airport lounge access". */
+  label: string;
+  /** One-line derivation/assumption, e.g. "4 trips/yr at AED 200 walk-in". */
+  sub?: string;
+  /** Single-scenario AED value for the year. Whole AED. */
+  aed: number;
+}
+
+interface Props {
+  /** Optional card slug → pulls display name + annual fee from L2. */
+  card?: string;
+  /** Override / supply the card name when no slug is given. */
+  cardName?: string;
+  /** Positive value rows (earn / bonus / perk). Fee + net are derived. */
+  items: ValueItem[];
+  /** Annual fee in AED. Falls back to the card's L2 annualFee.amount. */
+  annualFee?: number;
+  /** Tail of the BLUF sentence, e.g. "for a typical UAE-resident spend profile". */
+  profile?: string;
+  /** Assumptions paragraph — the scenario the figures assume. */
+  assumes: string;
+  /** Valuation + verification note, e.g. "Perk values AED-direct. Verified 26 May 2026". */
+  note?: string;
+  /** Methodology link target. */
+  methodologyHref?: string;
+}
+
+const {
+  card: slug,
+  cardName,
+  items,
+  annualFee,
+  profile = "for a typical UAE-resident spend profile",
+  assumes,
+  note,
+  methodologyHref = "/valuations/methodology/",
+} = Astro.props;
+
+const cardData = slug ? getCardData(slug) : undefined;
+if (slug && !cardData) throw new Error(`AEDValueBreakdown: unknown card slug "${slug}"`);
+
+const name = cardName ?? cardData?.name ?? "This card";
+const fee = annualFee ?? cardData?.annualFee.amount ?? 0;
+
+const gross = items.reduce((sum, it) => sum + it.aed, 0);
+const net = gross - fee;
+
+// Bar weight includes the fee segment so the deduction is to scale.
+const barTotal = gross + fee;
+// A segment narrower than ~12% of the bar hides its inline label; the
+// legend below is the canonical text equivalent.
+const TIGHT = 0.12;
+
+// Graduated green ramp for positive segments (largest visual weight first
+// in source order); fee is always red-clay. Index past the ramp reuses the
+// lightest shade.
+const RAMP = [
+  "var(--dpvb-seg-1)",
+  "var(--dpvb-seg-2)",
+  "var(--dpvb-seg-3)",
+  "var(--dpvb-seg-4)",
+  "var(--dpvb-seg-5)",
+];
+const rampOf = (i: number) => RAMP[Math.min(i, RAMP.length - 1)];
+
+const aed = (n: number) =>
+  `AED ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(Math.abs(n))}`;
+
+const netIsCost = net < 0;
+
+// Full text equivalent for the bar's single aria-label.
+const barAria = [
+  ...items.map((it) => `${it.label} ${aed(it.aed)}.`),
+  `Less annual fee ${aed(fee)}.`,
+  `${netIsCost ? "Net annual cost" : "Net annual value"} ${aed(net)}.`,
+].join(" ");
+---
+
+<article class="dpvb" aria-labelledby="dpvb-net-heading">
+  <div class="dpvb-eyebrow">
+    <span class="dot"></span>
+    <span>AED value breakdown</span>
+    <span class="sep" aria-hidden="true">·</span>
+    <span class="card">{name}</span>
+  </div>
+
+  {/* BLUF: the single net number, first */}
+  <div class="dpvb-bluf">
+    <div class="dpvb-bluf-label">
+      What this card returns in a year,
+      <strong>net of its {aed(fee)} annual fee</strong> — {profile}.
+    </div>
+    <div class="dpvb-net" class:list={{ "is-cost": netIsCost }}>
+      <div>
+        <span class="unit">AED</span><span class="value" id="dpvb-net-heading">
+          {new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(Math.abs(net))}
+        </span>
+      </div>
+      <div class="suffix">{netIsCost ? "Net annual cost" : "Net annual value"}</div>
+    </div>
+  </div>
+
+  {/* Segmented bar */}
+  <div class="dpvb-bar-head">
+    <div class="dpvb-bar-title">Where the value comes from</div>
+    <div class="dpvb-bar-gross">Gross before fee · <b>{aed(gross)}</b></div>
+  </div>
+
+  <div class="dpvb-bar-scroll">
+    <div class="dpvb-bar" role="img" aria-label={`Stacked bar. ${barAria}`}>
+      {
+        items.map((it, i) => {
+          const tight = it.aed / barTotal < TIGHT;
+          return (
+            <div
+              class="dpvb-seg"
+              class:list={{ "is-tight": tight }}
+              style={`flex-grow:${it.aed};background:${rampOf(i)}`}
+              aria-label={`${it.label}, ${aed(it.aed)}`}
+            >
+              <span class="s-val">{aed(it.aed)}</span>
+              <span class="s-lab">{it.label}</span>
+            </div>
+          );
+        })
+      }
+      <div
+        class="dpvb-seg is-fee"
+        class:list={{ "is-tight": fee / barTotal < TIGHT }}
+        style={`flex-grow:${fee}`}
+        aria-label={`Less annual fee, ${aed(fee)}`}
+      >
+        <span class="s-val">{aed(fee)}</span>
+        <span class="s-lab">Annual fee</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dpvb-axis">
+    <span>AED 0</span>
+    <span class="net-tick">{netIsCost ? "Net cost" : "Net retained"} · {aed(net)}</span>
+    <span>{aed(gross)} gross</span>
+  </div>
+
+  {/* Itemised legend = text equivalent of the bar */}
+  <ul class="dpvb-legend">
+    {
+      items.map((it, i) => (
+        <li>
+          <span class="swatch" style={`background:${rampOf(i)}`}></span>
+          <span class="kind">{it.kind}</span>
+          <span class="label">
+            {it.label}
+            {it.sub && <span class="sub">{it.sub}</span>}
+          </span>
+          <span class="amount">{aed(it.aed)}</span>
+        </li>
+      ))
+    }
+    <li class="is-fee">
+      <span class="swatch" style="background:var(--dpvb-fee)"></span>
+      <span class="kind">Fee</span>
+      <span class="label">Annual fee</span>
+      <span class="amount">{aed(fee)}</span>
+    </li>
+    <li class="is-net" class:list={{ "is-cost": netIsCost }}>
+      <span class="swatch" style="background:var(--dpvb-navy)"></span>
+      <span class="kind"></span>
+      <span class="label">{netIsCost ? "Net annual cost" : "Net annual value"}</span>
+      <span class="amount">{aed(net)}</span>
+    </li>
+  </ul>
+
+  {/* Assumptions + source */}
+  <div class="dpvb-foot">
+    <div class="dpvb-assume">
+      <span class="tag">Assumes</span>
+      <span>{assumes}</span>
+    </div>
+    {
+      note && (
+        <div class="dpvb-source">
+          <span class="note">{note}</span>
+          <a href={methodologyHref}>Methodology &amp; sources →</a>
+        </div>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .dpvb {
+    /* Scoped tokens — navy is the live --green/navy; the green ramp + clay
+       fee are functional chart colours, not brand chrome. Not global. */
+    --dpvb-navy: #1f3a4d;
+    --dpvb-navy-soft: rgba(31, 58, 77, 0.62);
+    --dpvb-cream: #faf6ef;
+    --dpvb-paper: #fffdf9;
+    --dpvb-green: #2f7d5d;
+    --dpvb-line: rgba(31, 58, 77, 0.16);
+    --dpvb-line-soft: rgba(31, 58, 77, 0.09);
+    --dpvb-seg-1: #2f7d5d;
+    --dpvb-seg-2: #3f9068;
+    --dpvb-seg-3: #54a37e;
+    --dpvb-seg-4: #74b59a;
+    --dpvb-seg-5: #9ec9b6;
+    --dpvb-fee: #b46a55;
+
+    width: 100%;
+    max-width: 680px;
+    margin: 28px 0 32px;
+    background: var(--dpvb-cream);
+    border: 1px solid var(--dpvb-line);
+    border-radius: 14px;
+    padding: 36px 38px 30px;
+    position: relative;
+    overflow: hidden;
+    color: var(--dpvb-navy);
+    font-family: "DM Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .dpvb::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 54px;
+    height: 54px;
+    border-top: 2px solid var(--dpvb-green);
+    border-left: 2px solid var(--dpvb-green);
+    border-top-left-radius: 14px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .dpvb-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dpvb-navy-soft);
+    margin-bottom: 22px;
+  }
+  .dpvb-eyebrow .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--dpvb-green);
+    flex-shrink: 0;
+  }
+  .dpvb-eyebrow .sep {
+    opacity: 0.4;
+  }
+  .dpvb-eyebrow .card {
+    color: var(--dpvb-navy);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+
+  .dpvb-bluf {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 26px;
+    margin-bottom: 26px;
+    border-bottom: 1px solid var(--dpvb-line);
+  }
+  .dpvb-bluf-label {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--dpvb-navy-soft);
+    max-width: 24ch;
+  }
+  .dpvb-bluf-label strong {
+    color: var(--dpvb-navy);
+    font-weight: 600;
+  }
+  .dpvb-net {
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .dpvb-net .unit {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--dpvb-navy-soft);
+    vertical-align: 0.42em;
+    margin-right: 4px;
+  }
+  .dpvb-net .value {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 64px;
+    line-height: 0.9;
+    letter-spacing: -1.5px;
+    color: var(--dpvb-navy);
+    font-variant-numeric: tabular-nums;
+  }
+  .dpvb-net.is-cost .value {
+    color: var(--dpvb-fee);
+  }
+  .dpvb-net .suffix {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--dpvb-green);
+    margin-top: 8px;
+  }
+  .dpvb-net.is-cost .suffix {
+    color: var(--dpvb-fee);
+  }
+
+  .dpvb-bar-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .dpvb-bar-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    color: var(--dpvb-navy);
+  }
+  .dpvb-bar-gross {
+    font-size: 12px;
+    color: var(--dpvb-navy-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .dpvb-bar-gross b {
+    color: var(--dpvb-navy);
+    font-weight: 600;
+  }
+
+  .dpvb-bar {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    height: 56px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--dpvb-line);
+    background: var(--dpvb-paper);
+  }
+  .dpvb-seg {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 12px;
+    min-width: 0;
+    color: #fff;
+    position: relative;
+    border-right: 1px solid rgba(255, 255, 255, 0.22);
+  }
+  .dpvb-seg:last-child {
+    border-right: 0;
+  }
+  .dpvb-seg .s-val {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1;
+    letter-spacing: -0.2px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .dpvb-seg .s-lab {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.92;
+  }
+  .dpvb-seg.is-fee {
+    background: var(--dpvb-fee);
+    border-right: 0;
+  }
+  .dpvb-seg.is-fee .s-val::before {
+    content: "−";
+    margin-right: 1px;
+  }
+  .dpvb-seg.is-fee::before {
+    content: "";
+    position: absolute;
+    left: -1px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: repeating-linear-gradient(180deg, #fff 0 3px, transparent 3px 6px);
+    opacity: 0.5;
+  }
+  .dpvb-seg.is-tight .s-lab {
+    display: none;
+  }
+  .dpvb-seg.is-tight .s-val {
+    font-size: 13px;
+  }
+
+  .dpvb-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--dpvb-navy-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .dpvb-axis .net-tick {
+    color: var(--dpvb-green);
+    font-weight: 600;
+  }
+
+  .dpvb-legend {
+    list-style: none;
+    margin: 26px 0 0;
+    padding: 0;
+  }
+  .dpvb-legend li {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--dpvb-line-soft);
+  }
+  .dpvb-legend li:first-child {
+    border-top: 1px solid var(--dpvb-line-soft);
+  }
+  .dpvb-legend .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .dpvb-legend .kind {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--dpvb-navy-soft);
+    width: 62px;
+    flex-shrink: 0;
+  }
+  .dpvb-legend .label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--dpvb-navy);
+    min-width: 0;
+  }
+  .dpvb-legend .sub {
+    display: block;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--dpvb-navy-soft);
+    margin-top: 1px;
+  }
+  .dpvb-legend .amount {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: -0.2px;
+    color: var(--dpvb-navy);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .dpvb-legend li.is-fee .amount {
+    color: var(--dpvb-fee);
+  }
+  .dpvb-legend li.is-fee .amount::before {
+    content: "−";
+  }
+  .dpvb-legend li.is-net {
+    border-bottom: 0;
+    border-top: 1.5px solid var(--dpvb-navy);
+    margin-top: 4px;
+    padding-top: 15px;
+  }
+  .dpvb-legend li.is-net .label {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .dpvb-legend li.is-net .amount {
+    font-size: 22px;
+    color: var(--dpvb-navy);
+  }
+  .dpvb-legend li.is-net.is-cost .amount {
+    color: var(--dpvb-fee);
+  }
+  .dpvb-legend li.is-net.is-cost .amount::before {
+    content: "−";
+  }
+
+  .dpvb-foot {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--dpvb-line);
+  }
+  .dpvb-assume {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    line-height: 1.55;
+    color: var(--dpvb-navy-soft);
+    margin-bottom: 12px;
+  }
+  .dpvb-assume .tag {
+    flex-shrink: 0;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    font-size: 10px;
+    color: var(--dpvb-green);
+    padding-top: 1px;
+  }
+  .dpvb-source {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    font-size: 11px;
+    color: var(--dpvb-navy-soft);
+  }
+  .dpvb-source .note {
+    font-style: italic;
+  }
+  .dpvb-source a {
+    color: var(--dpvb-navy);
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    border-bottom: 1px solid var(--dpvb-line);
+    padding-bottom: 1px;
+    white-space: nowrap;
+  }
+  .dpvb-source a:hover {
+    border-bottom-color: var(--dpvb-green);
+    color: var(--dpvb-green);
+  }
+
+  @media (max-width: 560px) {
+    .dpvb {
+      padding: 26px 22px 24px;
+      border-radius: 12px;
+    }
+    .dpvb-bluf {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .dpvb-net {
+      text-align: left;
+    }
+    .dpvb-net .value {
+      font-size: 54px;
+    }
+    .dpvb-bar-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .dpvb-bar {
+      min-width: 460px;
+    }
+    .dpvb-legend .kind {
+      width: auto;
+    }
+    .dpvb-legend li {
+      flex-wrap: wrap;
+    }
+    .dpvb-source {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
