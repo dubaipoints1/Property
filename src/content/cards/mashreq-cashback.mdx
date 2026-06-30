@@ -2,7 +2,7 @@
 slug: mashreq-cashback
 cons:
 - Only 1% on general spend (other international and other UAE) — dining is the single standout rate
-- 0.33% on fuel, utilities, telecom, education, government and rental — and Mashreq is cutting this to 0.15% from 13 June 2026
+- Just 0.15% on fuel, utilities, telecom, education, government and rental since Mashreq's 13 June 2026 category cut (down from 0.33%)
 - No lounge access or travel perks — this is a pure cashback card
 - Cashback expires 36 months after earning and is forfeited after 12 months of inactivity
 - 3.85% monthly (46.2% APR) — only worth holding if you clear the balance in full
@@ -12,14 +12,14 @@ pros:
 - Accessible from an AED 5,000 monthly salary
 - AED 500 welcome bonus for new customers on AED 5,000 of spend in the first two months
 - Cashback is plain AED, redeemable from a AED 100 balance
-verifiedBy: DubaiPoints Editorial — verified against the Mashreq Cashback Credit Card product page and Key Facts Statement (effective to 12 June 2026), 26 May 2026
+verifiedBy: DubaiPoints Editorial — bill-bundle rate cut to 0.15% verified against the Mashreq Cashback Credit Card product page on its 13 June 2026 effective date; full card re-verified 26 May 2026
 kicker: A genuinely strong free-for-life dining card — 5% cashback on all restaurants and food delivery, uncapped — but only 1% on most other spend.
 tier: solid
 applyIf: You spend heavily on dining and food delivery and want uncapped cashback with no annual fee.
 skipIf: Your spend is mostly non-dining — 1% on general spend is beaten by a flat-rate cashback card.
 keyTakeaways:
 - 5% cashback on all local and international dining including food delivery — uncapped, with no minimum spend
-- Free for life; 1% on other international and UAE spends, 0.33% on fuel/utilities/telecom (0.15% from 13 Jun 2026)
+- Free for life; 1% on other international and UAE spends, 0.15% on fuel/utilities/telecom since the 13 Jun 2026 cut
 - AED 500 welcome bonus (AED 100 for existing customers) on AED 5,000 of spend in the first two months
 - Accessible from an AED 5,000 salary; cashback redeemable from AED 100, expires after 36 months
 editorTake: >-
@@ -28,8 +28,8 @@ editorTake: >-
   monthly cap and no minimum spend to qualify. For anyone whose discretionary spend
   skews to restaurants and food delivery, that is among the most rewarding
   free-for-life cards in the UAE. Away from dining the card is ordinary: 1% on other
-  international and UAE spends, and just 0.33% on the government/fuel/utilities/telecom
-  bundle — a rate Mashreq is cutting to 0.15% from 13 June 2026. There are no lounge
+  international and UAE spends, and — since Mashreq's 13 June 2026 category cut — just
+  0.15% on the government/fuel/utilities/telecom bundle, down from 0.33%. There are no lounge
   or travel perks; the extras are merchant offers (50% off at Cinépolis, Entertainer
   2-for-1 via Visa). Cashback is plain AED, redeemable from AED 100, but it expires 36
   months after earning and is forfeited after a year of inactivity, so redeem
@@ -47,6 +47,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Earn rates" },
@@ -67,6 +68,18 @@ cashback on dining — with modest rates elsewhere.
 
 <EditorVerdict card="mashreq-cashback" />
 
+<AEDValueBreakdown
+  card="mashreq-cashback"
+  items={[
+    { kind: "Earn", label: "5% dining cashback (uncapped)", sub: "AED 2,000/mo restaurants and food delivery", aed: 1200 },
+    { kind: "Earn", label: "1% on other UAE and international spend", sub: "AED 3,000/mo of general spend", aed: 360 },
+    { kind: "Earn", label: "0.15% on the bills bundle", sub: "AED 4,000/mo across govt/utilities/fuel/telecom, post 13 Jun 2026 cut", aed: 72 },
+  ]}
+  profile="for a moderate diner who also routes general spend and bills through the card"
+  assumes="The worked spends in the per-benefit section, at the current rates including the 13 June 2026 bills-bundle cut to 0.15%. The AED 500 welcome bonus is one-time and excluded from this steady-state view. No lounge or travel perks on this card."
+  note="Free for life; cashback pays in direct AED. See the per-benefit breakdown below."
+/>
+
 <ProsCons card="mashreq-cashback" />
 
 ## Earn rates
@@ -79,10 +92,10 @@ Cashback is paid as a percentage of spend, credited in AED:
 The headline is **5% on all dining** — local and international, including online food
 delivery — with **no monthly cap and no minimum spend** to qualify. That combination
 is rare: most UAE dining-cashback rates are capped. Away from restaurants the card is
-ordinary: 1% on other international and UAE spends, and **0.33%** on government, fuel,
-utilities, education, charity, rental and telecom — a rate Mashreq states will drop to
-**0.15% from 13 June 2026**. Bill payments made through Mashreq's own channels earn
-nothing.
+ordinary: 1% on other international and UAE spends, and — since the 13 June 2026 cut —
+just **0.15%** on government, fuel, utilities, education, charity, rental and telecom,
+down from the 0.33% the card paid until then. Bill payments made through Mashreq's own
+channels earn nothing.
 </HotTip>
 
 ## Fee summary
@@ -105,9 +118,8 @@ one.
 
 ## What you get — per-benefit value
 
-The figures below use the rates that apply **from 13 June 2026**, when the
-published cut to the bills bundle takes effect — not the rates that expire
-this week.
+The figures below use the current rates, **including the 13 June 2026 cut**
+to the bills bundle now in effect.
 
 ### 5% dining cashback (uncapped)
 
@@ -120,7 +132,7 @@ and no minimum spend, a heavier AED 4,000/month dining habit banks
 
 AED 3,000/month of general spend: **Value to me: AED 360/year.**
 
-### 0.15% on the bills bundle (from 13 June 2026)
+### 0.15% on the bills bundle (since 13 June 2026)
 
 Government, utilities, education, charity, fuel, rental and telecom.
 AED 4,000/month across the bundle returns AED 6/month.
@@ -161,8 +173,8 @@ household-bills rail.
 
 - **It's a dining card.** The 5% rate is the reason to hold it; at 1% on general spend
   it is a poor everyday earner. Pair it with a stronger flat-rate or category card.
-- **The 0.33% cut.** From 13 June 2026 the government/fuel/utilities/telecom rate falls
-  to 0.15% — close to nothing on those categories.
+- **The bill-bundle cut.** Since 13 June 2026 the government/fuel/utilities/telecom rate
+  is 0.15%, down from 0.33% — close to nothing on those categories.
 - **Redeem periodically.** Cashback expires after 36 months and is forfeited after a
   year of inactivity — don't let a balance sit.
 - **No travel perks.** No lounge access or travel cover; the extras are merchant offers.
@@ -174,9 +186,9 @@ to justify in the UAE: 5% on every restaurant and food-delivery transaction, unc
 with no minimum spend and a low AED 5,000 salary bar. Used as a dedicated dining card it
 pays back quickly with nothing to lose.
 
-As an only card it disappoints — 1% on general spend and a shrinking 0.33% (soon 0.15%)
-on bills and fuel mean a flat-rate cashback card will out-earn it everywhere except
-restaurants. Hold it for dining; spend elsewhere on something else.
+As an only card it disappoints — 1% on general spend and just 0.15% (cut from 0.33% on
+13 June 2026) on bills and fuel mean a flat-rate cashback card will out-earn it everywhere
+except restaurants. Hold it for dining; spend elsewhere on something else.
 
 ## Bottom line
 

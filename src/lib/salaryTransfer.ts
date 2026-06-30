@@ -201,7 +201,7 @@ export function rankOffers(
     });
 }
 
-function rewardTypeLabel(t: RewardType): string {
+export function rewardTypeLabel(t: RewardType): string {
   switch (t) {
     case "cash":
       return "Cash bonus";

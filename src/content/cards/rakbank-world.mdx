@@ -50,6 +50,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Earn rates" },
@@ -70,6 +71,17 @@ requirement and category caps.
 <GreatCardIf card="rakbank-world" />
 
 <EditorVerdict card="rakbank-world" />
+
+<AEDValueBreakdown
+  card="rakbank-world"
+  items={[
+    { kind: "Earn", label: "10% on supermarket, dining and travel", sub: "AED 2,500 supermarket + AED 1,500 dining + AED 1,000 travel/mo, AED 10,000 gate cleared", aed: 6000 },
+    { kind: "Perk", label: "Airport lounge access", sub: "4 flown trips at AED 200 walk-in equivalent (World Mastercard programme)", aed: 800 },
+  ]}
+  profile="for the disciplined AED 10,000+/month spender who uses the bonus categories and flies four trips"
+  assumes="The worked AED 10,000-gate profile (AED 500/mo category cashback) plus four-trip lounge use. Standard and e-wallet retail cashback is an open range in the prose (a few hundred dirhams for most holders) and is excluded. Careem Plus and airport transfers are not priced by RAKBANK and excluded. Year one the AED 997.50 fee is waived; at this spend level (AED 120,000+/yr) the AED 100,000 waiver also applies in year two."
+  note="Cashback pays in direct AED; perk values are AED-direct. See the per-benefit breakdown below."
+/>
 
 <ProsCons card="rakbank-world" />
 

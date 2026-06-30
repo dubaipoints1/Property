@@ -359,6 +359,38 @@ test("cardComparisonRows: lounge feature absent on one side renders 'None'", () 
   assert.equal(lounge.winner, "left");
 });
 
+test("cardComparisonRows: 'limited' lounge scope renders 'visits capped' and loses to unlimited", () => {
+  // Added 13 June 2026 with the new "limited" scope variant: lounge access
+  // that exists but is capped at an issuer-unpublished count (e.g. the SHARE
+  // Signature) must NOT render as "unlimited" or tie an unlimited card.
+  const unlimited: CardForComparison = {
+    name: "Infinite",
+    annualFee: { amount: 1575 },
+    eligibility: { minSalary: 30000 },
+    earnRates: { everythingElse: 1 },
+    _features: [
+      { type: "lounge_access", network: "Visa Airport Companion", scope: "unlimited" },
+    ],
+  };
+  const limited: CardForComparison = {
+    name: "Signature",
+    annualFee: { amount: 0 },
+    eligibility: { minSalary: 12000 },
+    earnRates: { everythingElse: 1 },
+    _features: [
+      { type: "lounge_access", network: "Visa Airport Companion", scope: "limited" },
+    ],
+  };
+
+  const rows = cardComparisonRows(unlimited, limited);
+  const lounge = rows.find((r) => r.key === "lounge")!;
+  assert.equal(lounge.leftValue, "Visa Airport Companion — unlimited");
+  assert.equal(lounge.rightValue, "Visa Airport Companion — visits capped");
+  // Unlimited (left) beats limited (right); a capped-unknown count never
+  // ties or wins against unlimited.
+  assert.equal(lounge.winner, "left");
+});
+
 // ── Negative case for CardComparison.astro (unknown slug) ───────────────
 // The component itself throws at build time on unknown slugs (see
 // CardComparison.astro line 38–48). That behaviour can't be exercised

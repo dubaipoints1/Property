@@ -48,6 +48,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Earn rates" },
@@ -66,6 +67,16 @@ categories — and nothing outside them.
 <GreatCardIf card="adib-cashback-visa" />
 
 <EditorVerdict card="adib-cashback-visa" />
+
+<AEDValueBreakdown
+  card="adib-cashback-visa"
+  items={[
+    { kind: "Earn", label: "4% cashback on the five categories", sub: "Spread household: AED 2,500 grocery + AED 750 fuel + AED 1,000 dining/mo, inside caps", aed: 2040 },
+  ]}
+  profile="for a household spreading spend across grocery, fuel and dining inside the per-category caps"
+  assumes="The spread-household profile worked in the per-benefit section (AED 100 grocery + AED 30 fuel + AED 40 dining cashback a month). Roadside assistance and free supplementary cards are valued AED 0 in a typical year and excluded. The card earns nothing on general or international spend."
+  note="Cashback pays in direct AED. See the per-benefit breakdown below."
+/>
 
 <ProsCons card="adib-cashback-visa" />
 

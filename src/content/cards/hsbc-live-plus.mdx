@@ -48,6 +48,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Cashback" },
@@ -68,6 +69,18 @@ new UAE arrivals.
 <GreatCardIf card="hsbc-live-plus" />
 
 <EditorVerdict card="hsbc-live-plus" />
+
+<AEDValueBreakdown
+  card="hsbc-live-plus"
+  items={[
+    { kind: "Earn", label: "Category cashback", sub: "AED 1,500 dining (6%) + AED 800 fuel (5%) + AED 2,000 groceries (2%)/mo, AED 3,000 floor cleared", aed: 2040 },
+    { kind: "Perk", label: "Airport lounge access", sub: "4 flown trips at AED 200 walk-in equivalent (USD 1+ international purchase unlocks it)", aed: 800 },
+    { kind: "Perk", label: "Cinema BOGO", sub: "One pair/mo in months you clear the AED 6,000 gate, ~AED 40 saved × 12", aed: 480 },
+  ]}
+  profile="for a household spreading spend across dining, fuel and groceries that flies four trips and uses the cinema perk"
+  assumes="The worked category profile (AED 170/mo cashback inside the AED 200 caps), four-trip lounge use and a monthly cinema pair. Careem Plus and Zomato Gold are not priced by HSBC and excluded (worth their subscription price to readers who'd have paid it). Year one the AED 313.95 fee is waived (it waives from year two at AED 12,000 annual spend)."
+  note="Cashback pays in direct AED; perk values are AED-direct. See the per-benefit breakdown below."
+/>
 
 <ProsCons card="hsbc-live-plus" />
 

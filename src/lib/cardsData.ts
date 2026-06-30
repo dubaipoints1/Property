@@ -211,6 +211,12 @@ const LoungeAccessFeature = z.object({
   network: z.string(), // "DragonPass", "Visa Airport Companion", "Priority Pass", "Marhaba"
   scope: z.union([
     z.literal("unlimited"),
+    // "limited": lounge access exists but is capped at a visit count the
+    // issuer does not publish — distinct from "unlimited" and from a known
+    // visits_per_year. Added 13 June 2026 to resolve the SHARE Signature
+    // contradiction (typed unlimited vs review prose "capped, not unlimited
+    // like the Infinite"); §6 bars inventing a visit number.
+    z.literal("limited"),
     z.object({ visits_per_year: z.number().int().positive() }),
   ]),
   geo: z.array(z.enum(["UAE", "ME", "global"])).default(["UAE"]),
