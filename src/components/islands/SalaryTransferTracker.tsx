@@ -326,7 +326,19 @@ export default function SalaryTransferTracker({ offers }: Props) {
         <span class="applied">{appliedLabel}</span>
       </div>
 
-      {rows.length === 0 ? (
+      {offers.length === 0 ? (
+        <div class="dpst-empty">
+          <div class="mark" aria-hidden="true">
+            ⌀
+          </div>
+          <h4>No verified live offers right now.</h4>
+          <p>
+            We list salary-transfer offers only while we can verify them against
+            the bank's current published terms. None are verified as live today —
+            check back, or see the methodology below for how we source them.
+          </p>
+        </div>
+      ) : rows.length === 0 ? (
         <div class="dpst-empty">
           <div class="mark" aria-hidden="true">
             ⌀

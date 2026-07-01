@@ -1,0 +1,61 @@
+---
+bank: mashreq
+name: "Mashreq — Salary Transfer Joining Bonus (NEO / Current)"
+validFrom: 2026-01-01
+validUntil: 2026-12-31
+tenureMonths: 12
+sharia: false
+creditCardRequired: false
+additionalProductsRequired: []
+salaryBands:
+  - minSalary: 5000
+    maxSalary: 9999
+    rewardAmount: 200
+    rewardType: cash
+    monthsToPayout: 6
+  - minSalary: 10000
+    maxSalary: 19999
+    rewardAmount: 500
+    rewardType: cash
+    monthsToPayout: 6
+  - minSalary: 20000
+    maxSalary: 49999
+    rewardAmount: 1000
+    rewardType: cash
+    monthsToPayout: 6
+  - minSalary: 50000
+    maxSalary: null
+    rewardAmount: 2500
+    rewardType: cash
+    monthsToPayout: 6
+requirements:
+  - "Open a Mashreq or Mashreq NEO Current/Savings account and transfer a net salary above AED 5,000/month."
+  - "Salary must be credited by a UAE-registered employer through recognised salary-transfer channels — remittance, direct transfer, cash or cheque credits do not qualify."
+  - "Bonus is based on the first salary only; maintain the salary transfer to keep it (see clawback)."
+  - "Not available to Mashreq Gold or Private Banking customers, or if a Happiness Account joining bonus was already taken."
+clawbackTerms: |
+  Bonus is credited in 6 equal monthly instalments, each within 90 days of the
+  qualifying salary credit. Any month the salary is not transferred — or falls
+  below AED 5,000 — forfeits that month's instalment. If the salary stops for 2
+  consecutive months within 12 months of the first transfer, all previously paid
+  bonus is clawed back by debiting the account.
+sourceUrl: https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer
+lastVerified: 2026-06-30
+archived: false
+---
+
+## Real-world notes
+
+- Verified 30 June 2026 against Mashreq's published **Bonus on Salary Transfer**
+  Terms & Conditions (PDF) and the live NEO salary-transfer page.
+- The band figures here are the **core joining bonus** from the T&C
+  (AED 200 / 500 / 1,000 / 2,500). Mashreq's marketing headline "up to
+  AED 3,500" bundles additional early-bird / account components not part of this
+  fixed salary-band table — we list only the verifiable per-band bonus.
+- Branded "cashback" by Mashreq, but it is a **fixed AED bonus per salary band**
+  paid as cash to the account over 6 months — not an ongoing percentage cashback.
+- No published hard end date; eligibility is account-open-date based and the
+  structure continues into a "NEO Salary Bonus 2026" T&C effective 1 August 2026.
+  Re-verify periodically; `validUntil` is set to year-end as a conservative marker.
+- The clawback is unusually long-tailed: a 2-month salary-transfer gap inside the
+  first 12 months reverses **all** instalments already paid.
