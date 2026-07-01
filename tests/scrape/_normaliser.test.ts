@@ -534,6 +534,52 @@ test("§10 (2026-05-29) parseFxFee: cash-deposit line must not poison the credit
   );
 });
 
+test("§10 (2026-05-29) parseFxFee: 'Foreign Currency transaction margin' phrasing parses in isolation", () => {
+  // Case (b) of the fenced-contract test matrix: with only the
+  // credit-card transaction-margin line present (no competing cash
+  // line), the parser must still resolve the headline FX fee. Locks in
+  // the exact ADCB SoF label "Foreign Currency transaction margin".
+  const draft = normalise("adcb", stubCard, [
+    synth(
+      "Annual Fee: AED 314.\n\nForeign Currency transaction margin: 2.99% on every non-AED purchase.",
+    ),
+  ]);
+  assert.equal(
+    draft.fxFee,
+    2.99,
+    "'Foreign Currency transaction margin' line must parse to 2.99 on its own",
+  );
+});
+
+test("§10 (2026-05-29) parseFxFee: bare cash-FX line rejected by anti-trigger, not just the floor", () => {
+  // Case (c) of the fenced-contract test matrix. The cash line is set
+  // to a PLAUSIBLE value (2.99% flat) so the 1.5% plausibility floor
+  // cannot be what rejects it — only the anti-trigger context can. This
+  // proves the disambiguation is semantic (this is a cash-advance-in-FX
+  // line, not a purchase margin), not merely a numeric-range accident.
+  // Pre-fix, "Cash deposit/withdrawal in foreign currency: 2.99%" would
+  // have been promoted straight to the card fxFee.
+  const draft = normalise("adcb", stubCard, [
+    synth(
+      "Annual Fee: AED 314.\n\nCash deposit/withdrawal in foreign currency: 2.99% flat.",
+    ),
+  ]);
+  assert.notEqual(
+    draft.fxFee,
+    2.99,
+    "a cash-deposit-in-FX line must never be promoted to the card fxFee, even at a plausible rate",
+  );
+  assert.equal(
+    draft.fxFee,
+    0,
+    "with only a cash-FX line present, fxFee falls through to the 0 default (no-match convention)",
+  );
+  assert.ok(
+    draft._errors.some((e) => /FX fee/i.test(e)),
+    "should emit the 'Could not parse FX fee' warning when only a cash-FX line is present",
+  );
+});
+
 test("C6 multi-tier SOF PDF: annualFee + fxFee return null with needs-review warning", () => {
   // Consolidated SOF / KFS PDFs list every card's tier on one page;
   // the parser must not guess. Both annualFee and fxFee return null
