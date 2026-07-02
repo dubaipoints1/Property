@@ -17,6 +17,20 @@
 //
 // Per Charter §6 (LLM-extraction policy): this script is deterministic.
 // It uses the Pexels REST API directly; no LLM extraction in the loop.
+//
+// ── Editorial imagery kill-list (2 July 2026 strict library review) ──
+// The fetched photo must be VISUALLY REVIEWED before merge. Reject and
+// re-fetch (different query or --pick) anything showing:
+//   - Alcohol: wine / cocktail / champagne glasses, bar scenes — even
+//     incidental table-setting glassware. UAE-market publication.
+//   - Religious architecture (mosques etc.) on card-PRODUCT imagery.
+//     Mosques are acceptable on Islamic BANK hub pages only, where the
+//     established context is respectful, not promotional.
+//   - Too-dark / illegible-at-tile-size frames (photos render at
+//     ~300×190 in listing grids — a moody near-black shot reads as a
+//     broken image).
+// Dining queries: prefer daytime / casual / food-forward framing —
+// "friends lunch daytime", never "evening dining wine".
 
 import fs from "node:fs";
 import path from "node:path";
