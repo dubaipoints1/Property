@@ -205,9 +205,10 @@ const tileCount =
     letter-spacing: -0.4px;
     color: var(--ink);
     line-height: 1.1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
+    /* Values must never clip — "AED 103.95" losing its last digit is a
+       data distortion. Wrap to a second line on narrow tiles instead. */
+    white-space: normal;
+    overflow-wrap: break-word;
   }
   /* Provenance-aware: when L2 `_provenance.eligibility` is "needs-review"
      the tile renders "Pending" in muted italics so an unverified salary
