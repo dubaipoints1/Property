@@ -24,6 +24,9 @@ import { getCollection } from "astro:content";
 
 interface Props {
   title: string;
+  /** On-page H1; falls back to `title`. Pass this without the
+   * "| DubaiPoints" brand suffix — that belongs only in the meta title. */
+  heading?: string;
   description?: string;
   crumb?: string;
   /**
@@ -63,6 +66,7 @@ interface Props {
 
 const {
   title,
+  heading,
   description,
   crumb,
   eyebrow,
@@ -192,7 +196,7 @@ const schema = {
         {readMinutes && <span class="dp-article-eyebrow-read">{readMinutes} min read</span>}
       </div>
     )}
-    <h1>{title}</h1>
+    <h1>{heading ?? title}</h1>
     {(deck || description) && <p class="deck">{deck ?? description}</p>}
   </header>
 
