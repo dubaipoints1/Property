@@ -242,6 +242,51 @@ export function mergeDraft(
       // the raw output for the editor to audit.
       continue;
     }
+    // ── Parse-failure guard (first 12-bank run, 2 July 2026) ─────────
+    // A failed parse produces a DEFAULT (fxFee 0, minSalary 0, earnRates
+    // {everythingElse: 1}), and the normaliser says so in _errors. A
+    // default born from "could not parse" must never overwrite a real
+    // existing value on a needs-review/scraped field — absence of
+    // evidence is not evidence of zero. (The live run proposed fx
+    // 2.99→0 on ADIB, fx 2.54→0 and minSalary 5000→0 on Emirates
+    // Islamic purely because the new banks' pages didn't parse.)
+    const draftErrors: string[] = Array.isArray(draft._errors)
+      ? (draft._errors as string[])
+      : [];
+    const PARSE_FAIL_RX: Partial<Record<string, RegExp>> = {
+      fxFee: /Could not parse FX fee|Multi-tier SOF page — fxFee/,
+      annualFee: /Could not parse annual fee|Multi-tier SOF page — annualFee/,
+      eligibility: /Could not parse minimum salary/,
+      earnRates: /No earn-rate categories detected/,
+    };
+    const failRx = PARSE_FAIL_RX[field];
+    if (
+      failRx &&
+      entry[field] !== undefined &&
+      draftErrors.some((e) => failRx.test(e))
+    ) {
+      preservedFields.push(`${field} (parse failed — default rejected)`);
+      continue;
+    }
+    // ── earnRates information-loss guard ─────────────────────────────
+    // A PARTIAL parse can shrink a richer editor object (live run: SC
+    // Platinum X {online, international, everythingElse: 0, _caps} →
+    // {online, everythingElse: 1}). When the incoming key set is a
+    // strict subset of the existing one, the scrape lost information —
+    // preserve and let the freetext surface whatever changed. Genuine
+    // drift that adds or renames categories (ADCB 365, 2 July) is not a
+    // subset and still proposes normally.
+    if (field === "earnRates" && entry[field] && draft[field]) {
+      const curKeys = Object.keys(entry[field] as Record<string, unknown>);
+      const newKeys = Object.keys(draft[field] as Record<string, unknown>);
+      const isStrictSubset =
+        newKeys.length < curKeys.length &&
+        newKeys.every((k) => curKeys.includes(k));
+      if (isStrictSubset) {
+        preservedFields.push(`${field} (partial parse — information loss rejected)`);
+        continue;
+      }
+    }
     const before = JSON.stringify(entry[field]);
     const after = JSON.stringify(draft[field]);
     if (before !== after) {
