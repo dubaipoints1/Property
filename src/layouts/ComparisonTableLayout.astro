@@ -15,18 +15,21 @@ interface Row {
 
 interface Props {
   title: string;
+  /** On-page H1; falls back to `title`. Pass this without the
+   * "| DubaiPoints" brand suffix — that belongs only in the meta title. */
+  heading?: string;
   description?: string;
   columns: string[];
   rows: Row[];
 }
 
-const { title, description, columns, rows } = Astro.props;
+const { title, heading, description, columns, rows } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
   <header class="dp-pagehead is-narrow">
     <div class="crumb"><a href="/cards/compare/" class="crumb-link">Compare</a></div>
-    <h1>{title}</h1>
+    <h1>{heading ?? title}</h1>
     {description && <p class="deck">{description}</p>}
   </header>
 

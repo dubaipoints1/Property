@@ -32,6 +32,7 @@ const rows = await Promise.all(
 
 <ComparisonTableLayout
   title={`Best UAE miles credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
+  heading={`Best UAE miles credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })})`}
   description="Side-by-side comparison of UAE credit cards earning Skywards Miles, Etihad Guest Miles, and convertible TouchPoints / ENBD Plus / Mashreq Salaam."
   columns={["Annual fee", "FX fee", "Base earn", "Welcome bonus"]}
   rows={rows}
