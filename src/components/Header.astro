@@ -567,6 +567,25 @@ const publicationRows: SubRow[] = [
   font-weight: 400;
 }
 
+/* Mobile: the 3-link uppercase strip can exceed a phone's width
+   (~445px of content vs a 320–430px viewport), which otherwise forces a
+   page-wide horizontal scrollbar on every route. Contain it to the strip
+   and let it scroll horizontally instead; scroll starts at the left so the
+   flagship "Salary-transfer tracker" link is the one on show. */
+@media (max-width: 767.98px) {
+  .dp-tracker-strip {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dp-tracker-strip::-webkit-scrollbar { display: none; }
+  .dp-tracker-strip-inner {
+    justify-content: flex-start;
+    width: max-content;
+    max-width: none;
+  }
+}
+
 /* Very narrow viewports — keep all three but tighten gap. */
 @media (max-width: 380px) {
   .dp-tracker-strip-inner {

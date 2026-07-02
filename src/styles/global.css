@@ -726,6 +726,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 .dp-prose {
   font-size: 19px; line-height: 1.72; color: var(--ink);   /* Stage 1 redesign: 18→19 (2026-05-25); rhythm pass 1.7→1.72 (2026-06-05) */
   max-width: 70ch;                                          /* Stage 1 redesign: 65→70ch */
+  overflow-wrap: break-word;                                /* break long unbroken URLs/strings so they don't overflow the column on mobile */
 }
 @media (max-width: 719.98px) {
   .dp-prose { font-size: 18px; }
@@ -1725,7 +1726,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 /* Article body grid (1fr + 240px sidebar at >=1024px) */
 .dp-article-body-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);   /* minmax(0,…) not 1fr: lets the column shrink below a hero <img>'s intrinsic width instead of blowing the grid past the mobile viewport */
   gap: 32px;
   padding: 0 32px 80px;
   max-width: 1100px;
@@ -1741,7 +1742,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   .dp-article-body-grid { padding: 0 16px 64px; gap: 24px; }
 }
 
-.dp-article-body { max-width: 680px; margin-inline: auto; }
+.dp-article-body { width: 100%; max-width: 680px; margin-inline: auto; min-width: 0; }  /* width:100% (not shrink-to-fit) so margin-inline:auto doesn't size this grid item to max-content and overflow the track on mobile; max-width still centers it in wide desktop columns */
 .dp-article-body .hero-img {
   aspect-ratio: 2 / 1;
   background: repeating-linear-gradient(-45deg, #eceae4 0 8px, #e3e1db 8px 16px);
