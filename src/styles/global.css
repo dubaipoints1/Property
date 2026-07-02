@@ -2393,7 +2393,11 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 .dp-verdict-pill .meta { opacity: 0.7; font-size: 11px; letter-spacing: 0.3px; }
 
 .dp-cr-body-grid {
-  display: grid; grid-template-columns: 1fr; gap: 40px;
+  /* minmax(0,1fr), not bare 1fr: a bare 1fr track can't shrink below its
+     item's min-content, so wide in-article components (e.g. the value-
+     breakdown bar's 460px mobile scroll strip) blow the column past the
+     viewport instead of scrolling inside their own overflow wrapper. */
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px;
   padding: 56px 32px 80px;
   max-width: var(--container-listing); margin: 0 auto;
 }
@@ -2405,7 +2409,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 @media (max-width: 640px) {
   .dp-cr-body-grid { padding: 32px 16px 56px; gap: 28px; }
 }
-.dp-cr-body { max-width: 680px; margin-inline: auto; width: 100%; }
+.dp-cr-body { max-width: 680px; margin-inline: auto; width: 100%; min-width: 0; }
 .dp-cr-body .deck {
   font-family: 'Fraunces', serif;
   font-size: 23px; font-style: italic;
