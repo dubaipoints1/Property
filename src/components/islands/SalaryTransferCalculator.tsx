@@ -170,9 +170,9 @@ export default function SalaryTransferCalculator({ offers }: Props) {
             <p class="text-xs font-semibold uppercase tracking-wide text-brand-600">
               Best for you
             </p>
-            <h3 class="mt-1 text-xl font-semibold text-slate-900">
+            <h2 class="mt-1 text-xl font-semibold text-slate-900">
               {top.offer.bankName}
-            </h3>
+            </h2>
             <p class="text-sm text-slate-700">{top.offer.name}</p>
             <p class="mt-3 text-3xl font-bold text-slate-900">
               {formatAED(top.cashEquivalentAED)}
@@ -205,10 +205,10 @@ export default function SalaryTransferCalculator({ offers }: Props) {
               class={`rounded-lg border p-4 ${STATUS_CLASS[r.status]}`}
             >
               <header class="flex flex-wrap items-baseline justify-between gap-2">
-                <h4 class="font-semibold text-slate-900">
+                <h3 class="font-semibold text-slate-900">
                   <span class="mr-2 text-slate-400">#{idx + 1}</span>
                   {r.offer.bankName} — {r.offer.name}
-                </h4>
+                </h3>
                 <span class="text-xs font-medium uppercase tracking-wide">
                   {STATUS_LABEL[r.status]}
                 </span>

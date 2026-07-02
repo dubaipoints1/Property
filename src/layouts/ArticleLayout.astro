@@ -245,7 +245,7 @@ const schema = {
     <aside class="dp-article-aside">
       {toc.length > 0 && (
         <nav class="dp-toc-card">
-          <h4>In this guide</h4>
+          <div class="dp-rail-heading">In this guide</div>
           <ol>
             {toc.map((t, i) => (
               <li>
@@ -259,7 +259,7 @@ const schema = {
 
       {trendingGuides.length > 0 && (
         <nav class="dp-trending-card" aria-label="Trending guides">
-          <h4>Trending guides</h4>
+          <div class="dp-rail-heading">Trending guides</div>
           <ol>
             {trendingGuides.map((g, i) => (
               <li>
@@ -273,7 +273,7 @@ const schema = {
 
       <aside class="dp-aside-newsletter">
         <span class="eyebrow">The brief</span>
-        <h4>Friday morning, in your inbox.</h4>
+        <div class="dp-rail-heading">Friday morning, in your inbox.</div>
         <p>One email each Friday — salary-transfer changes, new card offers, miles redemptions worth knowing about.</p>
         <a href="/newsletter/" class="cta">Subscribe →</a>
       </aside>

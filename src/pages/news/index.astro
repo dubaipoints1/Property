@@ -167,7 +167,7 @@ const formatCategory = (c: string) =>
     <aside class="intel-aside">
       {trending.length > 0 && (
         <nav class="intel-trending" aria-label="Trending stories">
-          <h4>{posts.length > 0 ? "Trending now" : "From the guides desk"}</h4>
+          <div class="dp-rail-heading">{posts.length > 0 ? "Trending now" : "From the guides desk"}</div>
           <ol>
             {trending.map((item, i) => (
               <li>
@@ -181,7 +181,7 @@ const formatCategory = (c: string) =>
 
       <div class="intel-insider">
         <span class="eyebrow">The brief</span>
-        <h4>Friday morning, in your inbox.</h4>
+        <div class="dp-rail-heading">Friday morning, in your inbox.</div>
         <p>One email each Friday — salary-transfer changes, new card offers, miles redemptions worth knowing about.</p>
         <a href="/newsletter/" class="cta">Subscribe →</a>
       </div>
@@ -479,7 +479,7 @@ const formatCategory = (c: string) =>
     border-radius: 16px;
     padding: 22px;
   }
-  .intel-trending h4 {
+  .intel-trending .dp-rail-heading {
     font-family: 'DM Sans', sans-serif;
     font-size: 11px; letter-spacing: 2.5px;
     text-transform: uppercase; color: var(--green);
@@ -522,7 +522,7 @@ const formatCategory = (c: string) =>
     letter-spacing: 2.5px; text-transform: uppercase;
     color: rgba(255, 255, 255, 0.75);
   }
-  .intel-insider h4 {
+  .intel-insider .dp-rail-heading {
     font-family: 'Fraunces', serif;
     font-weight: 500; font-size: 19px;
     line-height: 1.2; letter-spacing: -0.4px;

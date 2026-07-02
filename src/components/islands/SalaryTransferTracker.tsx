@@ -148,7 +148,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
   const Detail = ({ o }: { o: SalaryTransferOffer }) => (
     <>
       <div class="dpst-fineblock">
-        <h5>Commitment</h5>
+        <div class="dpst-finehead">Commitment</div>
         <div class="dpst-fineitem">
           <span class="k">Holding period</span>
           <span class="v">{o.tenureMonths} months</span>
@@ -162,7 +162,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
         {o.clawbackTerms && <p class="dpst-finenote">{o.clawbackTerms}</p>}
       </div>
       <div class="dpst-fineblock">
-        <h5>Eligibility</h5>
+        <div class="dpst-finehead">Eligibility</div>
         <div class="dpst-fineitem">
           <span class="k">Credit card required</span>
           <span class={`v ${o.creditCardRequired ? "warn" : "ok"}`}>
