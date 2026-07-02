@@ -346,7 +346,7 @@ const schema = {
     <!-- Sticky sidebar -->
     <aside class="dp-cr-aside">
       <div class="dp-spec-card">
-        <h4>At a glance</h4>
+        <h3>At a glance</h3>
         <div class="dp-spec-row"><span class="k">Annual fee</span><span class="v">{annualFee === 0 ? "Free" : formatAED(annualFee)}</span></div>
         <div class="dp-spec-row">
           <span class="k">Min salary</span>
@@ -371,7 +371,7 @@ const schema = {
 
       {earnRows.length > 0 && (
         <div class="dp-spec-card">
-          <h4>Earn rates by category</h4>
+          <h3>Earn rates by category</h3>
           {earnRows.map(([k, v]) => (
             <div class="dp-spec-row">
               <span class="k">{formatEarnKey(k)}</span>
@@ -404,7 +404,7 @@ const schema = {
         });
         return cleanPerks.length > 0 ? (
           <div class="dp-spec-card">
-            <h4>Perks</h4>
+            <h3>Perks</h3>
             <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
               {cleanPerks.slice(0, 6).map((p) => (
                 <li style="font-size: 13px; color: var(--ink-soft); line-height: 1.5; padding-left: 12px; position: relative;">

@@ -216,8 +216,11 @@ test("ProsCons contract: pros eyebrow == 'Pros', cons eyebrow == 'Cons'", () => 
     path.join(COMPONENT_DIR, "ProsCons.astro"),
     "utf8",
   );
-  assert.match(src, /<h3 class="eyebrow">Pros<\/h3>/);
-  assert.match(src, /<h3 class="eyebrow">Cons<\/h3>/);
+  // h2, not h3: the block renders before the first prose h2 on every
+  // review, so h3 created an h1->h3 outline skip on all 55 pages
+  // (2 July 2026 heading-hierarchy audit). Visuals are class-scoped.
+  assert.match(src, /<h2 class="eyebrow">Pros<\/h2>/);
+  assert.match(src, /<h2 class="eyebrow">Cons<\/h2>/);
 });
 
 // ── EditorVerdict contract — Skywards Infinite ───────────────────────────

@@ -158,7 +158,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
           <legend class="sr-only">Select up to {MAX_CARDS} cards</legend>
           {bankGroups.map(([bankName, items]) => (
             <div class="dp-compare-picker-group">
-              <h3>{bankName}</h3>
+              <div class="dp-compare-picker-label">{bankName}</div>
               <ul>
                 {items.map(({ card }) => (
                   <li>
@@ -222,7 +222,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
             </header>
 
             <div class="dp-compare-col-section">
-              <h4>Annual fee</h4>
+              <div class="dp-compare-row-label">Annual fee</div>
               <FeeBlock
                 annualFee={card.annualFee}
                 fxFee={card.fxFee}
@@ -232,12 +232,12 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
             </div>
 
             <div class="dp-compare-col-section">
-              <h4>Top category</h4>
+              <div class="dp-compare-row-label">Top category</div>
               <p class="line">{earnLine(card)}</p>
             </div>
 
             <div class="dp-compare-col-section">
-              <h4>Earn rates</h4>
+              <div class="dp-compare-row-label">Earn rates</div>
               <EarnRateTable
                 earnRates={card.earnRates}
                 earnUnit={card.earnUnit}
@@ -246,7 +246,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
 
             {showWelcome && card.welcomeBonus && (
               <div class="dp-compare-col-section">
-                <h4>Welcome offer</h4>
+                <div class="dp-compare-row-label">Welcome offer</div>
                 <WelcomeBonusCallout
                   welcomeBonus={card.welcomeBonus}
                   welcomeBonusDisplay={wbDisplay}
@@ -255,12 +255,12 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
             )}
 
             <div class="dp-compare-col-section">
-              <h4>Eligibility</h4>
+              <div class="dp-compare-row-label">Eligibility</div>
               <EligibilityChips eligibility={card.eligibility} />
             </div>
 
             <div class="dp-compare-col-section">
-              <h4>Loyalty programme</h4>
+              <div class="dp-compare-row-label">Loyalty programme</div>
               <p class="line">{card.loyaltyProgram ?? "—"}</p>
             </div>
 
@@ -354,7 +354,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 24px;
   }
-  .dp-compare-picker-group h3 {
+  .dp-compare-picker-group .dp-compare-picker-label {
     font-family: "DM Sans", system-ui, sans-serif;
     font-size: 10px;
     font-weight: 700;
@@ -480,7 +480,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     letter-spacing: 0.3px;
     margin-top: 4px;
   }
-  .dp-compare-col-section h4 {
+  .dp-compare-col-section .dp-compare-row-label {
     margin: 0 0 8px;
     font-size: 10px;
     font-weight: 700;

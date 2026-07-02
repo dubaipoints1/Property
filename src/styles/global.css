@@ -368,7 +368,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   display: grid; grid-template-columns: 1.1fr 1.1fr 0.9fr; gap: 28px;
   padding: 22px 16px 24px 66px;
 }
-.dpst-fineblock h5 {
+.dpst-fineblock .dpst-finehead {
   font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
   color: var(--dpst-green); margin: 0 0 10px;
 }
@@ -935,7 +935,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   padding: 14px 16px;
   background: var(--paper);
 }
-.dp-toc h4 {
+.dp-toc .dp-rail-heading {
   font-size: 10px; font-weight: 700; letter-spacing: 2px;
   text-transform: uppercase; color: var(--muted);
   margin-bottom: 10px;
@@ -1324,8 +1324,10 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
 }
 .dp-pagehead .crumb {
-  font-size: 11px; color: var(--muted); font-weight: 500;
-  letter-spacing: 1.5px; text-transform: uppercase;
+  /* Unified with the intel-pagehead crumb idiom (2 July 2026 typography
+     audit): green 700/2.5px everywhere, no second muted-500 variant. */
+  font-size: 11px; color: var(--green); font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
   margin-bottom: 14px;
 }
 .dp-pagehead h1 {
@@ -1820,7 +1822,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   border-radius: 16px;
   padding: 22px;
 }
-.dp-toc-card h4 {
+.dp-toc-card .dp-rail-heading {
   font-family: 'DM Sans', sans-serif;
   font-size: 11px; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--green);
@@ -1856,7 +1858,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   border-radius: 16px;
   padding: 22px;
 }
-.dp-trending-card h4 {
+.dp-trending-card .dp-rail-heading {
   font-family: 'DM Sans', sans-serif;
   font-size: 11px; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--green);
@@ -1903,7 +1905,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   letter-spacing: 2.5px; text-transform: uppercase;
   color: rgba(255, 255, 255, 0.75);
 }
-.dp-aside-newsletter h4 {
+.dp-aside-newsletter .dp-rail-heading {
   font-family: 'Fraunces', serif;
   font-weight: 500;
   font-size: 19px;
@@ -2429,7 +2431,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   border-radius: 16px;
   padding: 22px;
 }
-.dp-spec-card h4 {
+.dp-spec-card h3 {
   font-family: 'DM Sans', sans-serif;
   font-size: 11px; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--green);

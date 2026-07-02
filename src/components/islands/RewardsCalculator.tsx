@@ -18,6 +18,7 @@
 
 import { useEffect, useMemo, useState } from "preact/hooks";
 import type { CardData } from "../../lib/cardsData";
+import { formatEarnValue } from "../../lib/cardsDataFormat";
 
 // ── Public types ─────────────────────────────────────────────────────────
 
@@ -357,7 +358,7 @@ export default function RewardsCalculator({ cards }: Props) {
         aria-label="Monthly spend by category"
       >
         <div class="dp-calc-form-head">
-          <h3>Your monthly spend</h3>
+          <h2>Your monthly spend</h2>
           <p class="dp-calc-total">
             Total: <strong>{fmtAED(totalSpend)}</strong>
           </p>
@@ -420,9 +421,9 @@ export default function RewardsCalculator({ cards }: Props) {
 
       <section class="dp-calc-results" aria-live="polite">
         <header class="dp-calc-results-head">
-          <h3>
+          <h2>
             {netOfFee ? "Top cards — net of fee" : "Top cards — gross reward"}
-          </h3>
+          </h2>
           <p class="dp-calc-results-sub">
             Ranked by AED-equivalent monthly reward at our conservative
             conversion benchmarks. We do not promise these rewards — we show
@@ -469,7 +470,15 @@ export default function RewardsCalculator({ cards }: Props) {
                 <p class="dp-calc-tile-why">
                   Ranks here because{" "}
                   <strong>{CATEGORY_LABELS[r.topCategory].toLowerCase()}</strong>{" "}
-                  is your single biggest contributor at this card's earn rate.
+                  is your single biggest contributor — this card pays{" "}
+                  {formatEarnValue(
+                    (r.card.earnRates as unknown as Record<string, number | undefined>)[
+                      r.topCategory
+                    ] ?? r.card.earnRates.everythingElse,
+                    r.card.earnUnit,
+                    r.card.categories,
+                  )}{" "}
+                  on it.
                 </p>
               )}
 
@@ -525,7 +534,7 @@ export default function RewardsCalculator({ cards }: Props) {
           display: flex; justify-content: space-between; align-items: baseline;
           margin-bottom: 14px;
         }
-        .dp-calc-form-head h3 {
+        .dp-calc-form-head h2 {
           font-family: 'Fraunces', serif; font-weight: 500;
           font-size: 17px; color: var(--ink); margin: 0;
         }
@@ -565,7 +574,7 @@ export default function RewardsCalculator({ cards }: Props) {
         }
         .dp-calc-toggle input { accent-color: var(--green); }
 
-        .dp-calc-results-head h3 {
+        .dp-calc-results-head h2 {
           font-family: 'Fraunces', serif; font-weight: 500;
           font-size: 20px; color: var(--ink); margin: 0 0 6px;
         }

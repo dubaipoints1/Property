@@ -59,7 +59,7 @@ const fmt = (d: Date) =>
           <span class={`dot ${e.archived ? "is-archived" : "is-live"}`} aria-hidden="true"></span>
           <div class="card">
             <header>
-              <h3>{e.headline}</h3>
+              <h2>{e.headline}</h2>
               <span class="when">
                 {fmt(e.validFrom)} – {fmt(e.validUntil)}
                 {!e.archived && <span class="live-tag"> · live</span>}
@@ -154,7 +154,7 @@ const fmt = (d: Date) =>
     gap: 8px;
     margin-bottom: 10px;
   }
-  .dp-hist-timeline h3 {
+  .dp-hist-timeline h2 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
     font-size: 17px;
