@@ -278,8 +278,10 @@ and `LATEST_SCRAPE.md` to main for outside-runner debugging.
 via `tsx`), so type checks there happen at runtime in tests, not via
 `astro check`.
 
-The workflow is currently **hard-coded to `npm run scrape:fab`**.
-Scaling to the other 10 priority banks is the explicit subject of
+The weekly workflow iterates `scripts/scrape/banks.registry.json`
+(fab, enbd, adcb + mashreq, hsbc, rakbank, cbd since 2 July 2026 —
+seven banks). Remaining rollout (DIB, ADIB — Islamic "profit rate"
+parser shapes; Citi, Standard Chartered, Emirates Islamic) follows
 `.council/research/2026-05/scrape-accuracy-brief.md`.
 
 ### Firecrawl credentials — three separate channels

@@ -184,12 +184,23 @@ function parseFxFee(text: string): number | null {
   const antiTriggerRx =
     /\b(?:cash\s+(?:deposit|withdrawal|advance)s?|(?:cash|atm)\s+disbursements?|withdrawal\s+(?:in|on)\s+foreign|deposit\s+(?:in|on)\s+foreign|VAT\s+on\s+(?:the\s+)?(?:FX|foreign)|interest\s+rate|monthly\s+rate|APR|outstanding\s+balance|per\s+month\b|minimum\s+payment)/i;
 
+  // Context window is clipped at line boundaries (±80/+20 char cap
+  // unchanged). In schedule-of-fees tables every fee is one markdown
+  // table row (= one line); the old fixed lookbehind reached into the
+  // PREVIOUS row, so a legitimate "Foreign Currency Transaction Fee |
+  // 3.5%" row sitting directly under "Cash Withdrawal Fee" was rejected
+  // as a cash operation (found onboarding CBD, 2 July 2026). The cash
+  // lines the anti-trigger exists for carry their trigger words on the
+  // SAME line ("Cash deposit/withdrawal in foreign currency"), so line
+  // clipping keeps the §10 ADCB cash-vs-margin guard intact while
+  // long single-line prose keeps the original window behaviour.
   const inAntiContext = (idx: number, matchLen: number): boolean => {
-    const ctx = text.slice(
-      Math.max(0, idx - 80),
-      Math.min(text.length, idx + matchLen + 20),
-    );
-    return antiTriggerRx.test(ctx);
+    const lineStart = text.lastIndexOf("\n", idx) + 1;
+    const lineEndRaw = text.indexOf("\n", idx + matchLen);
+    const lineEnd = lineEndRaw === -1 ? text.length : lineEndRaw;
+    const from = Math.max(lineStart, idx - 80);
+    const to = Math.min(lineEnd, idx + matchLen + 20);
+    return antiTriggerRx.test(text.slice(from, to));
   };
 
   // Forward: trigger then up to 60 chars then digits + %
