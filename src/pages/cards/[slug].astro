@@ -74,7 +74,12 @@ const minSalaryFragment = data.eligibility.invitationOnly
   : "no min salary";
 const earnFragment = top && topLabel ? `${formatEarnValue(top.value, data.earnUnit, data.categories)} ${topLabel}` : null;
 const cardDescription = [
-  `${bankName} ${data.name} review`,
+  // Card names often already start with the bank ("Emirates NBD Go4it
+  // Gold") — only prefix when they don't, else the SERP description
+  // reads "Emirates NBD Emirates NBD Go4it Gold review".
+  data.name.toLowerCase().startsWith(bankName.toLowerCase())
+    ? `${data.name} review`
+    : `${bankName} ${data.name} review`,
   feeFragment,
   minSalaryFragment,
   earnFragment,
