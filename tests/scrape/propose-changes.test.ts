@@ -195,3 +195,102 @@ test("Audit-09 mergeDraft preserves editor-confirmed-null on subsequent scrape",
   assert.ok(outcome.preservedFields.includes("welcomeBonus"));
   assert.equal(entry._provenance?.welcomeBonus, "editor-confirmed-null");
 });
+
+// ── Parse-failure & information-loss guards (first 12-bank run, 2 July 2026) ──
+// The live run proposed parser DEFAULTS over real needs-review values on
+// all four of its typed changes. These tests replicate each case.
+
+test("guard: failed FX parse (default 0) never overwrites an existing fxFee", () => {
+  const existing = {
+    fxFee: 2.99,
+    _provenance: { fxFee: "needs-review" },
+    _lastScraped: null,
+    _lastReviewed: null,
+  } as never;
+  const draft = {
+    fxFee: 0,
+    _errors: ["Could not parse FX fee"],
+  };
+  const { entry, outcome } = mergeDraft("adib-cashback-visa", existing, draft);
+  assert.equal((entry as { fxFee: number }).fxFee, 2.99, "fx preserved");
+  assert.ok(
+    outcome.preservedFields.some((f: string) => f.startsWith("fxFee (parse failed")),
+    "preservation surfaced in the PR body",
+  );
+});
+
+test("guard: Multi-tier SOF fxFee warning also counts as a failed parse", () => {
+  const existing = {
+    fxFee: 3.7,
+    _provenance: { fxFee: "needs-review" },
+    _lastScraped: null,
+    _lastReviewed: null,
+  } as never;
+  const draft = {
+    fxFee: 0,
+    _errors: ["Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation"],
+  };
+  const { entry } = mergeDraft("dib-consumer-cashback", existing, draft);
+  assert.equal((entry as { fxFee: number }).fxFee, 3.7);
+});
+
+test("guard: failed minSalary parse never zeroes an existing eligibility block", () => {
+  const existing = {
+    eligibility: { minSalary: 5000, salaryTransferRequired: false, residencyRequired: true, employmentTypes: ["salaried"] },
+    _provenance: { eligibility: "needs-review" },
+    _lastScraped: null,
+    _lastReviewed: null,
+  } as never;
+  const draft = {
+    eligibility: { minSalary: 0, salaryTransferRequired: false, residencyRequired: true, employmentTypes: ["salaried"] },
+    _errors: ["Could not parse minimum salary"],
+  };
+  const { entry } = mergeDraft("emirates-islamic-switch-cashback", existing, draft);
+  assert.equal(
+    (entry as { eligibility: { minSalary: number } }).eligibility.minSalary,
+    5000,
+    "existing salary band preserved",
+  );
+});
+
+test("guard: partial earnRates parse (strict key subset) is information loss, not drift", () => {
+  const existing = {
+    earnRates: { online: 10, international: 10, everythingElse: 0, _caps: { monthly_max_aed: 1000 } },
+    _provenance: { earnRates: "needs-review" },
+    _lastScraped: null,
+    _lastReviewed: null,
+  } as never;
+  const draft = {
+    earnRates: { online: 10, everythingElse: 1 },
+    _errors: [],
+  };
+  const { entry, outcome } = mergeDraft("sc-platinum-x", existing, draft);
+  assert.deepEqual(
+    (entry as { earnRates: Record<string, unknown> }).earnRates,
+    existing["earnRates" as never],
+    "richer existing earnRates preserved",
+  );
+  assert.ok(
+    outcome.preservedFields.some((f: string) => f.startsWith("earnRates (partial parse")),
+  );
+});
+
+test("guard: real drift with ADDED categories still proposes (ADCB 365 shape)", () => {
+  const existing = {
+    earnRates: { dining: 6, groceries: 5, fuel: 3, everythingElse: 1 },
+    _provenance: { earnRates: "scraped" },
+    _lastScraped: null,
+    _lastReviewed: null,
+  } as never;
+  const draft = {
+    earnRates: { dining: 6, groceries: 3, fuel: 5, entertainment: 5, everythingElse: 1 },
+    _errors: [],
+  };
+  const { entry, outcome } = mergeDraft("adcb-365-cashback", existing, draft);
+  assert.equal(
+    (entry as { earnRates: { groceries: number } }).earnRates.groceries,
+    3,
+    "genuine rebalance still lands as a proposal",
+  );
+  assert.ok(outcome.changedFields.includes("earnRates"));
+});
