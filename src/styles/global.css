@@ -1787,7 +1787,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 }
 
 /* Drop-cap on first paragraph of prose */
-.dp-prose p:first-of-type::first-letter {
+.dp-prose > p:first-of-type::first-letter {
   font-family: 'Fraunces', serif; font-weight: 700;
   font-size: 54px; line-height: 0.9;
   float: left;
@@ -2152,7 +2152,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 }
 
 /* Disable drop-cap on trust pages — policy docs, not editorial features */
-.dp-trust-body .dp-prose p:first-of-type::first-letter {
+.dp-trust-body .dp-prose > p:first-of-type::first-letter {
   font-family: inherit; font-weight: inherit;
   font-size: inherit; line-height: inherit;
   float: none; padding: 0; color: inherit;

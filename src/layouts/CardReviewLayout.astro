@@ -19,13 +19,15 @@ import BaseLayout from "./BaseLayout.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
 import StockImage from "~/components/StockImage.astro";
 import HeroImage from "~/components/cards/HeroImage.astro";
-import JumpToSection from "~/components/cards/JumpToSection.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
 import { earnIsPercentage, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
 import type { CardData } from "~/lib/cardsData";
 
 interface Props {
   title: string;
+  /** On-page H1; falls back to `title`. Pass this without the
+   * "| DubaiPoints" brand suffix — that belongs only in the meta title. */
+  heading?: string;
   description?: string;
   bankName: string;
   /** bank slug (e.g. "fab", "emirates-nbd") — drives per-issuer tint on card-art mock */
@@ -69,9 +71,6 @@ interface Props {
   editorTake?: string;
   category?: string;
   score?: number;
-  /** H2 sections derived from MDX `headings`; chip renders when ≥ 2 entries.
-   * Closes the Head of UX audit's "no jump-nav on card reviews" finding. */
-  tocSections?: Array<{ id: string; label: string }>;
   verdictLabel?: string;
   lastVerified: Date;
   verifiedBy?: string;
@@ -97,6 +96,7 @@ interface Props {
 
 const {
   title,
+  heading,
   description,
   bankName,
   bankSlug,
@@ -129,7 +129,6 @@ const {
   deck,
   welcomeBonus,
   heroImage,
-  tocSections = [],
 } = Astro.props;
 
 // Welcome-bonus headline for the navy-band strap. The page passes the
@@ -271,7 +270,7 @@ const schema = {
           bankName
         )}
       </div>
-      <h1>{title}</h1>
+      <h1>{heading ?? title}</h1>
 
       {(score != null || verdictLabel) && (
         <div class="dp-verdict-pill">
@@ -330,9 +329,11 @@ const schema = {
         amendment.md`.
       -->
 
-      {tocSections.length >= 2 && (
-        <JumpToSection sections={tocSections} />
-      )}
+      <!--
+        Jump-nav renders from inside the MDX body (every review authors
+        its own <JumpToSection> with curated labels) — same rule as the
+        pros/cons note above: layout-side rendering double-renders it.
+      -->
 
       <!-- Editorial prose (MDX slot) -->
       <div class="dp-prose">
