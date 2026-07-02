@@ -278,11 +278,14 @@ and `LATEST_SCRAPE.md` to main for outside-runner debugging.
 via `tsx`), so type checks there happen at runtime in tests, not via
 `astro check`.
 
-The weekly workflow iterates `scripts/scrape/banks.registry.json`
-(fab, enbd, adcb + mashreq, hsbc, rakbank, cbd since 2 July 2026 —
-seven banks). Remaining rollout (DIB, ADIB — Islamic "profit rate"
-parser shapes; Citi, Standard Chartered, Emirates Islamic) follows
-`.council/research/2026-05/scrape-accuracy-brief.md`.
+The weekly workflow iterates `scripts/scrape/banks.registry.json` —
+**all twelve covered banks** as of 2 July 2026 (fab, enbd, adcb,
+mashreq, hsbc, rakbank, cbd, dib, adib, citi, standard-chartered,
+emirates-islamic), completing the rollout in
+`.council/research/2026-05/scrape-accuracy-brief.md`. Islamic banks
+(DIB / ADIB / Emirates Islamic) are handled by the profit-rate
+anti-trigger and the `soc` URL rule in `_normaliser.ts`; per-bank
+gotchas live in `scripts/scrape/banks/<slug>.notes.md`.
 
 ### Firecrawl credentials — three separate channels
 
