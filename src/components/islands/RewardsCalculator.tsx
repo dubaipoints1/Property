@@ -472,9 +472,9 @@ export default function RewardsCalculator({ cards }: Props) {
                   <strong>{CATEGORY_LABELS[r.topCategory].toLowerCase()}</strong>{" "}
                   is your single biggest contributor — this card pays{" "}
                   {formatEarnValue(
-                    (r.card.earnRates as Record<string, number | undefined>)[
+                    (r.card.earnRates as unknown as Record<string, number | undefined>)[
                       r.topCategory
-                    ] ?? 0,
+                    ] ?? r.card.earnRates.everythingElse,
                     r.card.earnUnit,
                     r.card.categories,
                   )}{" "}
