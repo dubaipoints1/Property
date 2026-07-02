@@ -105,7 +105,7 @@ function combine(sources: FetchedSource[]): { text: string; errors: string[] } {
  *  every tier's fees on one page; auto-extracting annualFee or fxFee from
  *  such a corpus is a coin-flip across tiers. */
 const SOF_URL_RX =
-  /\b(?:sof|consolidated|schedule[-_\s]of[-_\s]charges|key[-_\s]facts[-_\s]statements?)\b/i;
+  /\b(?:sof|soc|consolidated|schedule[-_\s]of[-_\s]charges|key[-_\s]facts[-_\s]statements?)\b/i;
 
 /**
  * Heuristic: is this corpus a multi-tier consolidated SOF / KFS PDF?
@@ -182,7 +182,7 @@ function parseFxFee(text: string): number | null {
   // on the fee is a downstream tax line; interest-rate / APR text is a
   // different fee entirely that happens to share prose with FX copy.
   const antiTriggerRx =
-    /\b(?:cash\s+(?:deposit|withdrawal|advance)s?|(?:cash|atm)\s+disbursements?|withdrawal\s+(?:in|on)\s+foreign|deposit\s+(?:in|on)\s+foreign|VAT\s+on\s+(?:the\s+)?(?:FX|foreign)|interest\s+rate|monthly\s+rate|APR|outstanding\s+balance|per\s+month\b|minimum\s+payment)/i;
+    /\b(?:cash\s+(?:deposit|withdrawal|advance)s?|(?:cash|atm)\s+disbursements?|withdrawal\s+(?:in|on)\s+foreign|deposit\s+(?:in|on)\s+foreign|VAT\s+on\s+(?:the\s+)?(?:FX|foreign)|interest\s+rate|profit\s+rate|monthly\s+rate|APR|outstanding\s+balance|per\s+month\b|minimum\s+payment)/i;
 
   // Context window is clipped at line boundaries (±80/+20 char cap
   // unchanged). In schedule-of-fees tables every fee is one markdown

@@ -1089,3 +1089,61 @@ test("CBD One KFS fixture: dense fee table triggers the C6 multi-tier short-circ
     "the needs-editor-confirmation warning must be surfaced",
   );
 });
+
+// ── Islamic-bank onboarding — DIB / ADIB / Emirates Islamic (2 July 2026) ──
+
+test("Islamic SoC fixture: 'soc' URL rule fires C6 — no fee/FX guess from a multi-card schedule", () => {
+  // DIB and Emirates Islamic publish "Schedule of Charges" (SoC) not
+  // "SoF"; the URL rule must treat both tokens as consolidated-schedule
+  // signals. The corpus carries an outdated 3.41% FX line above the
+  // current 3.70% one and per-tier fees — guessing here is the exact
+  // coin-flip C6 exists to prevent.
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "dib-soc-cards.md"),
+  );
+  assert.equal(fixture.status, "ok", `Fixture must load: ${fixture.failReason ?? ""}`);
+  const draft = normalise(
+    "dib",
+    {
+      slug: "dib-consumer-cashback",
+      name: "DIB Consumer Cashback Reward Card",
+      network: "Visa",
+      categories: ["cashback", "Islamic"],
+      loyaltyProgram: "DIB Cashback",
+      salaryTransferRequired: false,
+      urls: { product: "https://www.dib.ae/personal/cards/consumer-reward-card", kfs: null, welcome: null },
+    },
+    [fixture],
+  );
+  assert.equal(draft.fxFee, 0, "fxFee short-circuits on the SoC corpus");
+  assert.ok(
+    draft._errors.some((e: string) => /Multi-tier SOF page — fxFee/.test(e)),
+    "needs-editor-confirmation warning surfaced",
+  );
+});
+
+test("Islamic profit-rate lines never resolve as the FX fee", () => {
+  // "Monthly profit rate on Salam up to 3.25%" is the Murabaha financing
+  // cost — the Islamic analogue of an interest rate — and sits in the
+  // 1.5–5% plausibility band, so only the profit-rate anti-trigger keeps
+  // it out. The genuine 3.70% international-usage fee must win.
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "islamic-profit-rate-fx.md"),
+  );
+  assert.equal(fixture.status, "ok", `Fixture must load: ${fixture.failReason ?? ""}`);
+  const draft = normalise(
+    "dib",
+    {
+      slug: "dib-test-card",
+      name: "DIB Test Card",
+      network: "Visa",
+      categories: ["cashback", "Islamic"],
+      loyaltyProgram: "X",
+      salaryTransferRequired: false,
+      urls: { product: "https://example.com/card", kfs: null, welcome: null },
+    },
+    [fixture],
+  );
+  assert.equal(draft.fxFee, 3.7, "the international-usage fee wins");
+  assert.notEqual(draft.fxFee, 3.25, "the Salam profit rate must never be promoted to FX");
+});
