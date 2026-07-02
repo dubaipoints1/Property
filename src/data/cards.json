@@ -8,7 +8,7 @@
       "annualFee": "editor-corrected",
       "fxFee": "editor-corrected",
       "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
+      "earnRates": "editor-corrected",
       "eligibility": "scraped",
       "applyUrl": "scraped",
       "kfsUrl": "scraped",
@@ -33,11 +33,15 @@
     "fxFee": 2.99,
     "earnRates": {
       "dining": 6,
-      "groceries": 5,
-      "fuel": 3,
-      "online": 6,
+      "groceries": 3,
+      "fuel": 5,
+      "entertainment": 5,
       "international": 1,
-      "everythingElse": 1
+      "everythingElse": 1,
+      "_caps": {
+        "monthly_max_aed": 1000,
+        "min_monthly_spend_to_qualify_aed": 5000
+      }
     },
     "eligibility": {
       "minSalary": 5000,
@@ -49,7 +53,7 @@
     },
     "applyUrl": "https://www.adcb.com/en/personal/cards/credit-cards/365-cashback-card.aspx",
     "kfsUrl": "https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf",
-    "lastVerified": "2026-06-06",
+    "lastVerified": "2026-07-02",
     "sources": [
       "https://www.adcb.com/en/personal/cards/credit-cards/365-cashback-card.aspx",
       "https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf"
@@ -78,7 +82,7 @@
       "threshold_period": "annual",
       "notes": "Per ADCB SoF Ver.46 (Feb 2026): AED 383.25/year, first year free."
     },
-    "welcomeBonus": "AED 365 welcome bonus on card sign-up."
+    "welcomeBonus": "AED 365 welcome bonus — AED 5,000 spend within 45 days of issuance."
   },
   "adcb-betaqti": {
     "_provenance": {
