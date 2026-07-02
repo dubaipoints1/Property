@@ -992,3 +992,100 @@ FX fee: 2.49%.`;
     assert.ok(!/^https?:\/\//i.test(p), `must not be a bare URL: ${p}`);
   }
 });
+
+// ── Bank-onboarding fixtures — Mashreq / CBD / adjacent-row FX (2 July 2026) ──
+// Captured from the live KFS documents during the 2 July fact-check sweep,
+// added while onboarding the mashreq/hsbc/rakbank/cbd scrapers.
+
+test("§10 parseFxFee case (d): FX row directly below a cash-withdrawal table row still parses", () => {
+  // The anti-trigger context is clipped at line boundaries: in a fees
+  // table, "Cash Withdrawal Fee" on the PREVIOUS row must not poison
+  // the legitimate FX row beneath it (found onboarding CBD).
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "fx-adjacent-cash-row.md"),
+  );
+  assert.equal(fixture.status, "ok", `Fixture must load: ${fixture.failReason ?? ""}`);
+  const draft = normalise(
+    "test",
+    {
+      slug: "test-card",
+      name: "Test Card",
+      network: "Visa",
+      categories: ["cashback"],
+      loyaltyProgram: "Test",
+      salaryTransferRequired: false,
+      urls: { product: "https://example.com/card", kfs: null, welcome: null },
+    },
+    [fixture],
+  );
+  assert.equal(
+    draft.fxFee,
+    3.5,
+    "adjacent cash-withdrawal row must not suppress the FX transaction fee",
+  );
+});
+
+test("Mashreq KFS fixture: FX spread 2.89% parses; Cashback card fee resolves to free", () => {
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "mashreq-kfs-cashback.md"),
+  );
+  assert.equal(fixture.status, "ok", `Fixture must load: ${fixture.failReason ?? ""}`);
+  const draft = normalise(
+    "mashreq",
+    {
+      slug: "mashreq-cashback",
+      name: "Mashreq Cashback Credit Card",
+      network: "Visa",
+      categories: ["cashback"],
+      loyaltyProgram: "Mashreq Cashback",
+      salaryTransferRequired: false,
+      urls: {
+        product: "https://www.mashreq.com/en/uae/neo/cards/credit-cards/cashback-credit-card/",
+        kfs: null,
+        welcome: null,
+      },
+    },
+    [fixture],
+  );
+  assert.equal(draft.fxFee, 2.89, "Mashreq 2.89% FX spread must parse from the KFS table");
+  assert.equal(draft.annualFee.amount, 0, "'Free for life' resolves to a zero fee");
+  // Known gap (scrape-accuracy brief §1): the dense single-cell earn blob
+  // ("5% cashback on...dining...") is NOT auto-extracted — it falls through
+  // to free-text for the editor. If this assertion ever fails because
+  // dining === 5, the parser improved: move dining to a positive assertion.
+  assert.notEqual(draft.earnRates.dining, 5, "earn blob stays free-text today");
+});
+
+test("CBD One KFS fixture: dense fee table triggers the C6 multi-tier short-circuit (no FX guess)", () => {
+  // The CBD KFS lists many unrelated fee rows in quick succession; the C6
+  // heuristic classifies the corpus as coin-flip territory and refuses to
+  // auto-extract annualFee/fxFee. That conservative refusal is the
+  // CONTRACT for this bank (see scripts/scrape/banks/cbd.notes.md) — the
+  // editor confirms from _scraped_freetext instead.
+  const fixture = loadFixture(
+    path.join("tests", "scrape", "fixtures", "cbd-kfs-one.md"),
+  );
+  assert.equal(fixture.status, "ok", `Fixture must load: ${fixture.failReason ?? ""}`);
+  const draft = normalise(
+    "cbd",
+    {
+      slug: "cbd-one",
+      name: "CBD One Credit Card",
+      network: "Visa",
+      categories: ["cashback"],
+      loyaltyProgram: "CBD One Cashback",
+      salaryTransferRequired: false,
+      urls: {
+        product: "https://www.cbd.ae/personal/cards/credit-cards/cbd-one",
+        kfs: null,
+        welcome: null,
+      },
+    },
+    [fixture],
+  );
+  assert.equal(draft.fxFee, 0, "fxFee short-circuits to default rather than guessing a tier");
+  assert.ok(
+    draft._errors.some((e: string) => /Multi-tier SOF page — fxFee/.test(e)),
+    "the needs-editor-confirmation warning must be surfaced",
+  );
+});
