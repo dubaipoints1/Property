@@ -1,0 +1,87 @@
+# Phase E.13 — fill the last 12 image gaps (programmes, banks, cards, guides).
+#
+# A 2 July 2026 site-wide visual audit found every remaining StockImage
+# slug that still renders the navy Cover fallback in a photo grid:
+#   - /airlines/ tiles: Accor ALL + Hilton Honors (the only two programmes
+#     without photos, sitting beside four photo tiles)
+#   - /banks/ tiles: DIB + Standard Chartered
+#   - /cards/ tiles: adcb-talabat, and three E.12 seeds whose fetches
+#     failed silently (go4it-gold, manchester-united, visa-flexi) — re-run
+#     here with fresh queries
+#   - homepage "Fresh intel" + /guides/ tiles: the four newest guides
+#
+# Prereq: PEXELS_API_KEY repo secret (already provisioned for E.3–E.12).
+# Run: Actions → seed-images-e13 → Run workflow, branch = working branch.
+# The workflow fetches, validates, and commits images + manifest entries
+# back to that branch.
+
+name: seed-images-e13
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to seed (commits land here)"
+        required: true
+        default: "claude/session-handoff-june-10-9ufa50"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Fetch missing images
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          while IFS='|' read -r slug query alt; do
+            [ -z "$slug" ] && continue
+            echo "::group::$slug"
+            npm run fetch:stock -- \
+              --slug "$slug" \
+              --query "$query" \
+              --orientation landscape \
+              --pick 0 \
+              --alt "$alt" || echo "::warning::fetch failed for $slug"
+            echo "::endgroup::"
+          done <<'SEEDS'
+          programme-accor-all|resort hotel swimming pool palm trees|Resort hotel pool lined with palm trees
+          programme-hilton-honors|luxury hotel suite bedroom interior|Luxury hotel suite bedroom
+          bank-dib|dubai modern islamic architecture|Modern Islamic architecture in Dubai
+          bank-standard-chartered|dubai financial district skyscrapers|Skyscrapers in the Dubai financial district
+          card-adcb-talabat|food delivery rider motorbike city|Food-delivery rider on a motorbike in the city
+          card-emirates-nbd-go4it-gold|friends dining restaurant evening|Friends dining out in the evening
+          card-emirates-nbd-manchester-united|football stadium floodlights night|Football stadium under floodlights at night
+          card-emirates-nbd-visa-flexi|paying online credit card laptop|Paying online with a credit card at a laptop
+          guide-best-entry-level-cards-2026|wallet payment cards close up|Payment cards in a slim wallet
+          guide-best-premium-cards-2026|premium credit card dark close up|Premium payment card close-up
+          guide-best-uae-points-programmes-premium-cabin-2026|business class airplane seat cabin|Business-class airplane cabin seat
+          guide-uae-transfer-ratios-2026|currency exchange rates calculator|Working out currency conversion rates
+          SEEDS
+
+      - name: Validate
+        run: npm run check
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then echo "No new images fetched (is PEXELS_API_KEY set?)."; exit 0; fi
+          git commit \
+            -m "feat(images): Phase E.13 — fill the last 12 image gaps" \
+            -m "Seeds Pexels photos for the programme, bank, card and guide tiles still rendering the navy Cover fallback (2 July 2026 visual audit)."
+          git push origin HEAD:${{ inputs.branch }}
