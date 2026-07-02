@@ -1,0 +1,92 @@
+# Phase E.14 — strict editorial re-fetch: alcohol, religious-imagery and
+# legibility fails.
+#
+# A 2 July 2026 strict review of all 88 stock photos (owner-initiated,
+# triggered by the Go4it Gold wine-table hero) failed 10 images on three
+# grounds:
+#   - Alcohol imagery (wine / cocktails / champagne) — unsuitable for a
+#     UAE-market publication: go4it-gold, adcb-365-cashback, fab-cashback,
+#     fab-world-elite, hsbc-live-plus.
+#   - Religious architecture used as commercial card-product imagery —
+#     mosques remain appropriate on Islamic BANK hub pages (established,
+#     respectful context) but not as product-tile marketing:
+#     adcb-betaqti, dib-consumer-cashback.
+#   - Too dark / unreadable at tile size: go4it-platinum, rakbank-world,
+#     priority-banking-visa-infinite.
+#
+# Replacement queries are alcohol-free, culturally neutral, and matched
+# to each card's actual identity (e.g. Go4it = built-in Nol transit →
+# Dubai Metro). Re-review the fetched set on a contact sheet before
+# merging; iterate with refetch-image.yml --pick if a result is off.
+#
+# Prereq: PEXELS_API_KEY repo secret (provisioned).
+
+name: seed-images-e14
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to seed (commits land here)"
+        required: true
+        default: "claude/session-handoff-june-10-9ufa50"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Re-fetch failed images
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          while IFS='|' read -r slug query alt; do
+            [ -z "$slug" ] && continue
+            echo "::group::$slug"
+            npm run fetch:stock -- \
+              --slug "$slug" \
+              --query "$query" \
+              --orientation landscape \
+              --pick 0 \
+              --alt "$alt" \
+              --replace || echo "::warning::fetch failed for $slug"
+            echo "::endgroup::"
+          done <<'SEEDS'
+          card-emirates-nbd-go4it-gold|dubai metro train station platform|Dubai Metro train at a station platform
+          card-adcb-365-cashback|coffee shop counter barista customer|Paying at a cafe counter
+          card-fab-cashback|shopping bags street daylight|Carrying shopping bags after a retail trip
+          card-fab-world-elite|airport lounge armchairs window apron|Premium airport lounge overlooking the apron
+          card-hsbc-live-plus|friends lunch restaurant daytime casual|Friends at a casual daytime lunch
+          card-emirates-nbd-go4it-platinum|cinema auditorium red seats screen|Cinema auditorium before the film
+          card-rakbank-world|dubai marina promenade evening|Dubai Marina promenade in the evening
+          card-emirates-nbd-priority-banking-visa-infinite|luxury hotel lobby lounge armchairs|Private-lounge interior
+          card-adcb-betaqti|abu dhabi corniche skyline day|Abu Dhabi Corniche skyline
+          card-dib-consumer-cashback|shopping mall interior escalator|Shopping mall interior
+          SEEDS
+
+      - name: Validate
+        run: npm run check
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then echo "No new images fetched (is PEXELS_API_KEY set?)."; exit 0; fi
+          git commit \
+            -m "feat(images): Phase E.14 — strict editorial re-fetch (alcohol / religious-imagery / legibility fails)" \
+            -m "Replaces the 10 stock photos failed by the 2 July 2026 strict library review with alcohol-free, culturally-neutral, card-fit imagery."
+          git push origin HEAD:${{ inputs.branch }}
