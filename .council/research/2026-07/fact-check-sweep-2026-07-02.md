@@ -40,3 +40,16 @@ Notes:
   against.
 
 — Fact-check pass, 2 July 2026 (session-run; Firecrawl primary-source scrapes).
+
+## Addendum — needs-review settlement (2 July 2026, evening)
+
+Settled the fields the new merge guards were protecting, from primary
+sources fetched this session:
+
+| Field | Was | Now | Source |
+|---|---|---|---|
+| adib-cashback-visa.fxFee | 2.99 (needs-review) | **2.3 (editor-corrected)** | ADIB Covered Cards SoC ("Non-AED Transaction Service Fee 2.3%" for all covered cards) + the 15 Jun 2023 notice recording the cut from 3.1%. Fee 99+VAT=103.95 incidentally re-confirmed. L3's five "unconfirmed FX" passages rewritten to the sourced figure. |
+| emirates-islamic-switch-cashback.fxFee | 2.54 (needs-review) | **2.54 (editor-confirmed)** | EI Schedule of Charges — exact match ("2.54% foreign currency transaction in non-UAE dirhams"). |
+| emirates-islamic-switch-cashback.welcomeBonus | valid until 30 June 2026 | **extended to 30 September 2026** | Live product page ("Offer is valid till 30 September 2026"). Earn table (4/4/8-fuel/4-education + caps + AED 2,500 gate) re-confirmed exactly. |
+| emirates-islamic-switch-cashback.eligibility | minSalary 5000 (needs-review) | **unchanged, stays needs-review** | Neither the SoC nor the product page publishes a minimum salary; L3 already states income is assessed at application. No invented figure. |
+| dib-consumer-cashback.annualFee | 210 (editor-confirmed) | **unchanged, flagged** | Wajaha SoC lists Consumer Reward 157.50 / Platinum 208.95 — but Wajaha is the premium-segment schedule. Reconcile against the standard consumer SoC before touching an editor-confirmed value (flag lives in dib.notes.md). |
