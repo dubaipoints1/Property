@@ -319,7 +319,7 @@ const schema = {
 
       {deck && <p class="deck">{deck}</p>}
 
-      <!--
+      {/*
         Phase 2a.2.0 (2026-05-20): the "Our take" callout and the
         pros/cons block were removed from the layout chrome and migrated
         to MDX-invoked components — `<EditorVerdict card="…" />` and
@@ -327,13 +327,15 @@ const schema = {
         rendering would double-render the same content on every page.
         See `.council/briefs/2026-05-20-phase-2a-2-0-pros-cons-verdict-
         amendment.md`.
-      -->
 
-      <!--
         Jump-nav renders from inside the MDX body (every review authors
-        its own <JumpToSection> with curated labels) — same rule as the
-        pros/cons note above: layout-side rendering double-renders it.
-      -->
+        its own JumpToSection with curated labels) — same rule: layout-
+        side rendering double-renders it.
+
+        JSX comment, not an HTML comment: HTML comments ship to the
+        browser, and this note was leaking an internal .council path
+        into the page source of all 55 reviews (2 July 2026 leak audit).
+      */}
 
       <!-- Editorial prose (MDX slot) -->
       <div class="dp-prose">

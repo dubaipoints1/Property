@@ -118,14 +118,13 @@ benefits, so the card is rarely the wrong call independently.
 
 ## Our tracker treatment
 
-Our `salaryTransferOffers` schema currently models cash-bonus cycles
-(`rewardType: cash | voucher | cashback_monthly | points`) and doesn't
-yet have an `interest_bonus` shape — so this offer is **described in
-prose on the [Emirates NBD bank hub](/banks/emirates-nbd/)** rather than
-appearing as a band-and-bonus row in the live
-[tracker](/salary-transfer/). The schema gap is on the technical-lead
-queue; until it lands the prose on the bank hub is canonical for this
-cycle.
+Our tracker is built for offers that pay a fixed cash or voucher bonus
+per salary band, and this cycle pays bonus *interest* instead — a shape
+it can't yet represent honestly as a band-and-bonus row. So this offer
+is **described in prose on the [Emirates NBD bank hub](/banks/emirates-nbd/)**
+rather than in the live [tracker](/salary-transfer/). Support for
+interest-shaped offers is on our list; until then the bank-hub prose is
+canonical for this cycle.
 
 ## Should you take it?
 
