@@ -149,7 +149,8 @@ const schema = {
         </section>
       )}
 
-      <!-- Related cards: auto-populated from cards.json by loyaltyProgram. -->
+      {/* Related cards: auto-populated from the card database by loyaltyProgram.
+         JSX comment — HTML comments ship to the browser (2 July leak audit). */}
       {relatedCards.length > 0 && (
         <section class="dp-prog-related">
           <h2>UAE cards that earn into {currencyName}</h2>
