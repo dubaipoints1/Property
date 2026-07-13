@@ -465,6 +465,139 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   .dpst-bands { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ── Salary-transfer calculator island (.dpsc) ──────────────────────────
+   House-idiom re-skin of SalaryTransferCalculator.tsx (July 2026
+   typography audit). The island was the last surface still carrying the
+   pre-handoff Tailwind slate palette and the retired electric-blue
+   `brand-*` tokens — the one page on the site that didn't match.
+   Fraunces headings, DM Sans UI, --green primary / --gold trust accents,
+   mirroring the .dpst tracker idiom above. */
+.dpsc {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 28px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+.dpsc-form {
+  display: flex; flex-direction: column; gap: 22px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px 22px 24px;
+  align-self: start;
+}
+.dpsc-label {
+  display: block;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.dpsc-input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 9px 12px;
+  font-family: inherit;
+  /* 16px minimum keeps iOS Safari from auto-zooming on focus — same
+     defence as the hero email input and the Pagefind search box. */
+  font-size: 16px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.dpsc-hint { margin-top: 6px; font-size: 12px; color: var(--muted); }
+.dpsc-checks { display: flex; flex-direction: column; gap: 8px; }
+.dpsc-check {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: var(--ink-soft);
+  cursor: pointer;
+}
+.dpsc-check input { accent-color: var(--green); }
+.dpsc-results { display: flex; flex-direction: column; gap: 16px; }
+.dpsc-best {
+  background: var(--paper);
+  border: 1px solid rgba(184, 132, 42, 0.45);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  padding: 18px 22px 20px;
+}
+.dpsc-best-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 6px;
+}
+.dpsc-best h2 {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: clamp(18px, 3vw, 22px);
+  letter-spacing: -0.3px; color: var(--ink);
+  margin: 0;
+}
+.dpsc-best-offer { font-size: 14px; color: var(--ink-soft); margin: 2px 0 0; }
+.dpsc-best-figure {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: 32px; letter-spacing: -0.6px;
+  color: var(--ink); margin: 14px 0 0;
+  font-variant-numeric: tabular-nums;
+}
+.dpsc-best-figure .unit {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px; font-weight: 500; letter-spacing: 0;
+  color: var(--muted); margin-left: 8px;
+}
+.dpsc-best-basis { font-size: 13px; color: var(--ink-soft); margin: 8px 0 0; line-height: 1.5; }
+.dpsc-empty {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 10px 10px 0;
+  padding: 16px 20px;
+  font-size: 14px; color: var(--ink-soft); line-height: 1.55;
+}
+.dpsc-rows { display: flex; flex-direction: column; gap: 12px; }
+.dpsc-row {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--line);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px 16px;
+}
+.dpsc-row.is-eligible { border-left-color: var(--green); }
+.dpsc-row.is-warning { border-left-color: var(--gold); }
+.dpsc-row.is-disqualified { opacity: 0.62; }
+.dpsc-row-head {
+  display: flex; flex-wrap: wrap;
+  align-items: baseline; justify-content: space-between;
+  gap: 6px 12px;
+}
+.dpsc-row-head h3 {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 17px; letter-spacing: -0.2px;
+  color: var(--ink); margin: 0;
+}
+.dpsc-rank { color: var(--muted); font-family: 'DM Sans', system-ui, sans-serif; font-size: 13px; font-weight: 600; margin-right: 8px; }
+.dpsc-status {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted);
+}
+.dpsc-row.is-eligible .dpsc-status { color: var(--green); }
+.dpsc-row.is-warning .dpsc-status { color: var(--gold); }
+.dpsc-row-value { margin-top: 8px; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.dpsc-row-value .face { color: var(--muted); }
+.dpsc-breakdown {
+  list-style: none; padding: 0; margin: 8px 0 0;
+  display: flex; flex-direction: column; gap: 3px;
+  font-size: 12px; color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.dpsc-breakdown .req { color: var(--muted); }
+.dpsc-reasons { margin: 8px 0 0; padding-left: 18px; font-size: 12px; color: var(--ink-soft); display: flex; flex-direction: column; gap: 3px; }
+@media (max-width: 900px) {
+  .dpsc { grid-template-columns: 1fr; gap: 20px; }
+}
+
 /* ════════════════════════════════════════════════════════════════════════
    Editorial article shell — shared by CardReview, Guide, Comparison,
    BankHub, AirlineProgram, salary-transfer slug pages, etc.

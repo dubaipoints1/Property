@@ -157,7 +157,10 @@ const fmt = (d: Date) =>
   .dp-hist-timeline h2 {
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: 17px;
+    /* Match .dp-offer-head h2 on the live /salary-transfer/<bank>/ pages —
+       the same offer name rendered 17px here vs 22px there (July 2026
+       typography audit). One offer, one heading scale. */
+    font-size: clamp(18px, 3vw, 22px);
     letter-spacing: -0.3px;
     color: var(--ink);
     margin: 0;
