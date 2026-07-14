@@ -45,15 +45,14 @@ import EditorVerdict from "~/components/cards/EditorVerdict.astro";
 import ProsCons from "~/components/cards/ProsCons.astro";
 import AtAGlance from "~/components/cards/AtAGlance.astro";
 import GreatCardIf from "~/components/cards/GreatCardIf.astro";
-import KeyTakeaways from "~/components/cards/KeyTakeaways.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
 import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 
 <JumpToSection sections={[
-  { id: "earn-rates", label: "Cashback" },
+  { id: "cashback", label: "Cashback" },
   { id: "fee-summary", label: "Fee summary" },
-  { id: "welcome-bonus-breakdown", label: "Welcome cashback" },
+  { id: "welcome-cashback-breakdown", label: "Welcome cashback" },
   { id: "key-conditions-to-know", label: "Key conditions" },
   { id: "watch-out-for", label: "Watch out for" },
 ]} />
@@ -61,8 +60,6 @@ import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
 The HSBC Live+ is a cashback Visa Signature built around high everyday category rates,
 a low FX fee and a strong lifestyle-and-travel perk stack — with genuine appeal for
 new UAE arrivals.
-
-<KeyTakeaways card="hsbc-live-plus" />
 
 <AtAGlance card="hsbc-live-plus" />
 

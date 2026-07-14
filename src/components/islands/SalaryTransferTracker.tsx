@@ -552,8 +552,11 @@ export default function SalaryTransferTracker({ offers }: Props) {
           · each offer verified against the bank's published terms
         </span>
         <span>
+          {/* Absolute path + hash: the tracker also renders on the five
+              /salary-transfer/aed-* band pages, where a bare #methodology
+              has no target (July 2026 anchor audit). */}
           Verdicts are DubaiPoints' own ·{" "}
-          <a href="#methodology">Methodology →</a>
+          <a href="/salary-transfer/#methodology">Methodology →</a>
         </span>
       </div>
     </section>
