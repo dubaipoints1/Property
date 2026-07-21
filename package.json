@@ -4,9 +4,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
+  "start": "astro dev",
+  "dev": "astro dev",
+  "build": "astro build",
+  "postbuild": "pagefind",
+  "preview": "astro preview",
+  "check": "astro check"
+}
     "postbuild": "pagefind --site dist",
     "preview": "astro preview",
     "astro": "astro",
