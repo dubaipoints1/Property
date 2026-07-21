@@ -1,4 +1,21 @@
 ---
+// Add this import at the top
+import ThemeToggle from "~/components/ThemeToggle.astro";
+---
+
+<!-- In the desktop actions div, after the Subscribe button: -->
+<div class="dp-header-actions">
+  <a href="/search/" class="dp-icon-btn" aria-label="Search">...</a>
+  <ThemeToggle />
+  <a href="/newsletter/" class="dp-header-subscribe">Subscribe</a>
+</div>
+
+<!-- Also add to mobile overlay head (after search icon): -->
+<div class="dp-nav-overlay-head">
+  <!-- ... close button + wordmark ... -->
+  <ThemeToggle />
+</div>
+---
 // Header — Claude Design (handoff bundle, polished pass).
 // Idiom from dubaipoints/project/Homepage.html (desktop chrome) +
 // dubaipoints/project/templates/menus.jsx (mobile full-screen overlay).
