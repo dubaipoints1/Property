@@ -2939,3 +2939,74 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   .dp-conditions dt { font-size: 14px; }
   .dp-conditions dd { font-size: 15px; line-height: 1.5; }
 }
+/* ════════════════════════════════════════════════════════════════════════
+   DARK MODE — July 2026
+   Toggle via data-theme="dark" on <html>. All transitions smooth.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Smooth transition between themes */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+html * {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Dark palette overrides */
+[data-theme="dark"] {
+  --bg:        #0f1419;
+  --paper:     #1a1f2e;
+  --shade-1:   #242b3d;
+  --shade-2:   #2d3548;
+  
+  --navy:      #c5d1e0;          /* inverted: light text on dark */
+  --navy-deep: #0a0e17;
+  
+  --ink:       #e8ecf1;
+  --ink-soft:  #9aa5b8;
+  --muted:     #5c667a;
+  
+  --line:      #2a3142;
+  --line-soft: #1e2535;
+  
+  --green:     #7dd3c0;          /* brighter mint for dark bg */
+  --green-band:#5fb88a;
+  --mint:      #7dd3c0;
+  --mint-soft: rgba(125, 211, 192, 0.08);
+  
+  --link:      #6ba3f5;
+  --link-deep: #4a8de0;
+  --link-soft: rgba(107, 163, 245, 0.1);
+}
+
+/* Dark mode specific adjustments */
+[data-theme="dark"] .dp-header {
+  background: var(--paper);
+  border-bottom-color: var(--line);
+}
+[data-theme="dark"] .dp-footer {
+  background: #0a0e17;
+}
+[data-theme="dark"] .hp-wallet-band {
+  background: #0a0e17;
+}
+[data-theme="dark"] .hp-news-band {
+  background: linear-gradient(135deg, #1a3a4d 0%, #0f1f2e 100%);
+}
+[data-theme="dark"] .dp-story-card,
+[data-theme="dark"] .hp-intel-card,
+[data-theme="dark"] .hp-miles-tile {
+  background: var(--paper);
+  border-color: var(--line);
+}
+[data-theme="dark"] .hp-hero-media,
+[data-theme="dark"] .hp-wallet-media {
+  background: var(--shade-1);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html, html * {
+    transition: none !important;
+  }
+}
