@@ -73,6 +73,18 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8" />
+<!-- Theme initialization — MUST run before any styles to prevent flash -->
+  <script is:inline>
+    (function() {
+      const saved = localStorage.getItem('dp-theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/logo-mark.svg" />
