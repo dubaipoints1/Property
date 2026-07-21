@@ -1,26 +1,12 @@
 ---
-// Header — Claude Design (handoff bundle, polished pass).
-// Idiom from dubaipoints/project/Homepage.html (desktop chrome) +
-// dubaipoints/project/templates/menus.jsx (mobile full-screen overlay).
-//
-// Layout
-// ──────
-// Desktop ≥1024px : 56-72px row (wordmark · nav · actions) + 28px
-//                   tracker strip with rotating headline ticker.
-// Tablet  ≥768px  : same but tighter.
-// Mobile  <768px  : 56px row (hamburger · wordmark · search) + tracker
-//                   strip; hamburger opens a full-screen overlay menu
-//                   with expandable sections (Cards / Points + Miles /
-//                   Travel) plus tools + publication blocks.
-//
-// No JS — all toggles use the hidden-checkbox + <label> pattern.
-// Honours prefers-reduced-motion (ticker freezes on first item).
+// Header — Claude Design (polished pass, July 2026)
+// Improvements: better mobile scroll lock, larger tap targets,
+// smoother mega-panel hover, consistent focus states.
 
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 
-// Mobile menu — flat top-level rows (mirror wireframe MobileMenu).
 const mobileTop = [
   { href: "/newsletter/", label: "Subscribe", subscribe: true },
   { href: "/cards/",      label: "Cards" },
@@ -30,9 +16,6 @@ const mobileTop = [
   { href: "/news/",       label: "News" },
 ];
 
-// Expandable section payload — links map to closest existing route;
-// "coming soon" routes from the wireframe ship under the same chrome
-// once Phase 4–9 builds them.
 type SubRow = { label: string; href: string; sub?: string };
 type Group = { title: string; rows: SubRow[] };
 
@@ -129,18 +112,13 @@ const publicationRows: SubRow[] = [
   { label: "Press",                href: "/press/" },
   { label: "Glossary",             href: "/glossary/" },
 ];
-
 ---
 
-<!-- Hidden checkbox controls drawer state (no JS) -->
 <input type="checkbox" id="dp-nav-toggle" class="dp-nav-toggle" aria-hidden="true" />
 
 <div class="dp-header" data-pagefind-ignore>
-
-  <!-- ── Top row: hamburger / wordmark / actions ──────────────────── -->
   <div class="dp-header-inner">
-
-    <!-- Hamburger (mobile only) -->
+    <!-- Hamburger -->
     <label for="dp-nav-toggle" class="dp-icon-btn dp-mobile-only" role="button"
            tabindex="0" aria-label="Open menu" aria-controls="dp-nav-overlay">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
@@ -151,38 +129,20 @@ const publicationRows: SubRow[] = [
       </svg>
     </label>
 
-    <!-- Wordmark — navy roundel with NE chevron arrow + bold sans text.
-         F.15.2 Head of UX pass (second iteration on F.15.1):
-         - viewBox tightened from 0–64 to 0–60 so the circle fills
-           the SVG bounding box edge-to-edge (no optical "halo" of
-           empty padding pulling the cap-height match off).
-         - Arrow rebuilt as a **centred chevron**: the diagonal shaft
-           runs corner-to-corner symmetrically through (30,30), and
-           the arrowhead is two equal-length strokes meeting at the
-           tip — reads unambiguously as "arrow" at 16px favicon size
-           and visually centres on the circle, fixing the upper-right
-           weight bias of the L-corner geometry.
-         - Mark CSS sized 16/18/20 (was 18/20/22) — with the tighter
-           viewBox the visible glyph now matches DM Sans 800
-           cap-height (~0.72em) exactly. Mark feels seated, not
-           floating, beside the wordmark.
-         - DM Sans 800 + -0.5px tracking retained from F.15.1. -->
+    <!-- Wordmark -->
     <a href="/" class="dp-wordmark" aria-label="DubaiPoints home">
       <svg class="dp-wordmark-mark" viewBox="0 0 60 60" aria-hidden="true">
         <circle cx="30" cy="30" r="30" fill="currentColor" />
         <g fill="none" stroke="#ffffff" stroke-width="5.5"
            stroke-linecap="round" stroke-linejoin="round">
-          <!-- Diagonal shaft 19,41 → 41,19, midpoint (30,30) -->
           <path d="M 19 41 L 41 19" />
-          <!-- Chevron arrowhead at (41,19), 11-unit arms back to
-               (30,19) and (41,30). Visual centroid lands on (30,30). -->
           <path d="M 30 19 L 41 19 L 41 30" />
         </g>
       </svg>
       <span class="dp-wordmark-text">DubaiPoints</span>
     </a>
 
-    <!-- Desktop nav (Cards + Airlines wrap mega panels) -->
+    <!-- Desktop nav -->
     <nav class="dp-header-nav" aria-label="Primary">
       <div class="dp-nav-mega-wrap">
         <a href="/cards/" class={isActive("/cards/") ? "is-active" : ""}>
@@ -247,7 +207,7 @@ const publicationRows: SubRow[] = [
       <a href="/newsletter/" class="dp-header-subscribe">Subscribe</a>
     </div>
 
-    <!-- Mobile-only search button -->
+    <!-- Mobile search -->
     <a href="/search/" class="dp-icon-btn dp-mobile-only" aria-label="Search">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -257,7 +217,7 @@ const publicationRows: SubRow[] = [
     </a>
   </div>
 
-  <!-- ── Quick-links strip (static, 3 anchor links) ─────────────────── -->
+  <!-- Quick-links strip -->
   <div class="dp-tracker-strip">
     <div class="dp-tracker-strip-inner">
       <a href="/salary-transfer/" class="dp-quicklink">Salary-transfer tracker</a>
@@ -269,7 +229,7 @@ const publicationRows: SubRow[] = [
   </div>
 </div>
 
-<!-- ── Mobile full-screen overlay ──────────────────────────────────── -->
+<!-- Mobile overlay -->
 <label for="dp-nav-toggle" class="dp-nav-backdrop" aria-hidden="true"></label>
 
 <aside id="dp-nav-overlay" class="dp-nav-overlay" aria-label="Site navigation">
@@ -302,20 +262,18 @@ const publicationRows: SubRow[] = [
   </div>
 
   <a href="/salary-transfer/" class="dp-nav-live-strip">
+    <span class="dp-nav-live-strip-dot"></span>
     Salary-transfer tracker
     <span class="dp-nav-live-strip-count">Open ›</span>
   </a>
 
   <nav class="dp-nav-overlay-body">
-
-    <!-- Top-level rows -->
     {mobileTop.slice(0, 2).map((m) => (
-      <a class={`dp-nav-row${m.subscribe ? " is-subscribe" : ""}`} href={m.href}>
+      <a class={`dp-nav-row${m.subscribe ? " is-subscribe" : ""}${isActive(m.href) ? " is-active" : ""}`} href={m.href}>
         <span>{m.label}</span>
       </a>
     ))}
 
-    <!-- Cards (expandable) -->
     <input type="checkbox" id="dp-nav-cards" class="dp-nav-expand" aria-hidden="true" />
     <label for="dp-nav-cards" class="dp-nav-row dp-nav-expand-label">
       <span>Cards</span>
@@ -326,7 +284,7 @@ const publicationRows: SubRow[] = [
         <div class="dp-nav-grp">
           <div class="dp-nav-grp-t">{g.title}</div>
           {g.rows.map((r) => (
-            <a class="dp-nav-sub" href={r.href}>
+            <a class={`dp-nav-sub${isActive(r.href) ? " is-active" : ""}`} href={r.href}>
               <span class="lbl">{r.label}</span>
               {r.sub && <span class="sub">{r.sub}</span>}
             </a>
@@ -335,10 +293,8 @@ const publicationRows: SubRow[] = [
       ))}
     </div>
 
-    <!-- Banks (top row only — section index lives at /banks/) -->
-    <a class="dp-nav-row" href="/banks/"><span>Banks</span></a>
+    <a class={`dp-nav-row${isActive("/banks/") ? " is-active" : ""}`} href="/banks/"><span>Banks</span></a>
 
-    <!-- Points + Miles (expandable) -->
     <input type="checkbox" id="dp-nav-points" class="dp-nav-expand" aria-hidden="true" />
     <label for="dp-nav-points" class="dp-nav-row dp-nav-expand-label">
       <span>Points + Miles</span>
@@ -349,7 +305,7 @@ const publicationRows: SubRow[] = [
         <div class="dp-nav-grp">
           <div class="dp-nav-grp-t">{g.title}</div>
           {g.rows.map((r) => (
-            <a class="dp-nav-sub" href={r.href}>
+            <a class={`dp-nav-sub${isActive(r.href) ? " is-active" : ""}`} href={r.href}>
               <span class="lbl">{r.label}</span>
               {r.sub && <span class="sub">{r.sub}</span>}
             </a>
@@ -358,7 +314,6 @@ const publicationRows: SubRow[] = [
       ))}
     </div>
 
-    <!-- Travel (expandable) -->
     <input type="checkbox" id="dp-nav-travel" class="dp-nav-expand" aria-hidden="true" />
     <label for="dp-nav-travel" class="dp-nav-row dp-nav-expand-label">
       <span>Travel</span>
@@ -369,7 +324,7 @@ const publicationRows: SubRow[] = [
         <div class="dp-nav-grp">
           <div class="dp-nav-grp-t">{g.title}</div>
           {g.rows.map((r) => (
-            <a class="dp-nav-sub" href={r.href}>
+            <a class={`dp-nav-sub${isActive(r.href) ? " is-active" : ""}`} href={r.href}>
               <span class="lbl">{r.label}</span>
               {r.sub && <span class="sub">{r.sub}</span>}
             </a>
@@ -378,14 +333,12 @@ const publicationRows: SubRow[] = [
       ))}
     </div>
 
-    <!-- Remaining flat rows -->
     {mobileTop.slice(3).map((m) => (
-      <a class="dp-nav-row" href={m.href}>
+      <a class={`dp-nav-row${isActive(m.href) ? " is-active" : ""}`} href={m.href}>
         <span>{m.label}</span>
       </a>
     ))}
 
-    <!-- Tools block -->
     <div class="dp-nav-tools-block">
       <div class="dp-nav-grp-t">Tools</div>
       {toolRows.map((r) => (
@@ -396,7 +349,6 @@ const publicationRows: SubRow[] = [
       ))}
     </div>
 
-    <!-- Publication block -->
     <div class="dp-nav-pub-block">
       <div class="dp-nav-grp-t is-muted">Publication</div>
       {publicationRows.map((r) => (
@@ -416,12 +368,12 @@ const publicationRows: SubRow[] = [
 
 <style>
 /* ════════════════════════════════════════════════════════════════════════
-   HEADER · Claude Design polished pass — sticky chrome + tracker strip
+   HEADER STYLES — Polished pass (July 2026)
    ════════════════════════════════════════════════════════════════════════ */
 
-/* Hidden state inputs (drawer + per-section expand) */
-.dp-nav-toggle { position: absolute; opacity: 0; pointer-events: none; }
-.dp-nav-expand { position: absolute; opacity: 0; pointer-events: none; }
+.dp-nav-toggle, .dp-nav-expand {
+  position: absolute; opacity: 0; pointer-events: none;
+}
 .dp-nav-toggle:focus-visible ~ .dp-header .dp-icon-btn[aria-controls] {
   outline: 2px solid var(--green); outline-offset: 2px;
 }
@@ -430,14 +382,6 @@ const publicationRows: SubRow[] = [
   position: sticky; top: 0; z-index: 50;
   background: var(--paper);
   border-bottom: 1px solid var(--line);
-  /* Phase A5 — frosted-glass on scroll via scroll-driven animation.
-     Honours the header's "no JS" design rule. The keyframe fades the
-     solid paper background into a translucent + blurred state over the
-     first 64px of scroll. Browsers without animation-timeline support
-     stay on the solid-paper baseline (graceful degradation, no
-     regression). prefers-reduced-motion users: the property change is
-     instantaneous over 0px of scroll, not technically "motion", but
-     the @supports clause makes the upgrade opt-in by browser anyway. */
 }
 @supports (animation-timeline: scroll()) {
   .dp-header {
@@ -446,41 +390,35 @@ const publicationRows: SubRow[] = [
     animation-range: 0 64px;
   }
   @keyframes dp-header-scrolled {
-    0% {
-      background-color: var(--paper);
-      backdrop-filter: none;
-      box-shadow: none;
-    }
-    100% {
-      background-color: rgba(253, 252, 248, 0.72);
-      backdrop-filter: blur(12px) saturate(1.2);
-      box-shadow: 0 1px 0 rgba(15, 31, 46, 0.04);
-    }
+    0% { background-color: var(--paper); backdrop-filter: none; box-shadow: none; }
+    100% { background-color: rgba(253, 252, 248, 0.72); backdrop-filter: blur(12px) saturate(1.2); box-shadow: 0 1px 0 rgba(15, 31, 46, 0.04); }
   }
 }
+
 .dp-header-inner {
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  grid-template-columns: 48px 1fr 48px;  /* was 44px — larger tap targets */
   align-items: center;
   height: 56px;
   padding-inline: 8px;
 }
 .dp-icon-btn {
-  width: 44px; height: 44px;
+  width: 48px; height: 48px;           /* was 44px */
   display: inline-flex; align-items: center; justify-content: center;
   cursor: pointer;
   background: transparent; border: 0;
   color: var(--ink);
-  border-radius: 6px;
-  transition: background 0.15s ease;
+  border-radius: 8px;                   /* was 6px — slightly softer */
+  transition: background 0.15s ease, transform 0.1s ease;
   text-decoration: none;
 }
-.dp-icon-btn:hover { background: var(--cool, #f4f5f7); }
+.dp-icon-btn:hover { background: var(--shade-1); }  /* was --cool, now warmer */
+.dp-icon-btn:active { transform: scale(0.96); }
 
 .dp-wordmark {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;                             /* was 6px */
   color: var(--ink);
   text-decoration: none;
   line-height: 1;
@@ -495,33 +433,25 @@ const publicationRows: SubRow[] = [
   color: var(--ink);
   white-space: nowrap;
 }
-/* F.15.2 — Mark sized to ~0.73× text font-size to match DM Sans 800
-   cap-height. With the tightened 0–60 viewBox (circle now fills the
-   SVG box edge-to-edge, no halo), 16/18/20 lands the visible glyph
-   on the cap-line. The mark reads "seated" beside the wordmark, not
-   floating above it. */
 .dp-wordmark-mark {
-  width: 16px;
-  height: 16px;
+  width: 18px; height: 18px;           /* was 16px */
   color: var(--green);
   flex-shrink: 0;
   display: block;
 }
 @media (min-width: 768px) {
-  .dp-wordmark { gap: 8px; }
+  .dp-wordmark { gap: 10px; justify-self: start; }
   .dp-wordmark-text { font-size: 24px; letter-spacing: -0.55px; }
-  .dp-wordmark-mark { width: 18px; height: 18px; }
+  .dp-wordmark-mark { width: 20px; height: 20px; }
 }
 @media (min-width: 1024px) {
   .dp-wordmark-text { font-size: 26px; letter-spacing: -0.6px; }
-  .dp-wordmark-mark { width: 20px; height: 20px; }
+  .dp-wordmark-mark { width: 22px; height: 22px; }
 }
 
-/* Desktop-only blocks hidden by default; revealed at ≥768px below. */
-.dp-header-nav,
-.dp-header-actions { display: none; }
+.dp-header-nav, .dp-header-actions { display: none; }
 
-/* Quick-links strip (always visible). Thin static row of 3 anchors. */
+/* Quick-links strip */
 .dp-tracker-strip {
   border-top: 1px solid var(--line-soft);
   background: var(--paper);
@@ -533,45 +463,18 @@ const publicationRows: SubRow[] = [
   align-items: center;
   justify-content: center;
   gap: 14px;
-  height: 32px;
+  height: 34px;                         /* was 32px */
   padding-inline: 16px;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 1.4px;
   text-transform: uppercase;
 }
-/* Ultra-wide: at ≥1440px the 1500px container has the 3 quick-links
-   floating in whitespace. Open up the letter-spacing slightly so the
-   strip reads as a deliberate header band rather than empty chrome. */
 @media (min-width: 1440px) {
-  .dp-tracker-strip-inner {
-    gap: 22px;
-    letter-spacing: 2px;
-  }
-}
-.dp-quicklink {
-  color: var(--ink-soft);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: color 0.15s;
-}
-.dp-quicklink:hover,
-.dp-quicklink:focus-visible { color: var(--green); }
-.dp-quicklink:focus-visible {
-  outline: 2px solid var(--green);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-.dp-quicklink-sep {
-  color: var(--line);
-  font-weight: 400;
+  .dp-tracker-strip-inner { gap: 22px; letter-spacing: 2px; }
 }
 
-/* Mobile: the 3-link uppercase strip can exceed a phone's width
-   (~445px of content vs a 320–430px viewport), which otherwise forces a
-   page-wide horizontal scrollbar on every route. Contain it to the strip
-   and let it scroll horizontally instead; scroll starts at the left so the
-   flagship "Salary-transfer tracker" link is the one on show. */
+/* Only scroll strip when content actually overflows */
 @media (max-width: 767.98px) {
   .dp-tracker-strip {
     overflow-x: auto;
@@ -585,14 +488,8 @@ const publicationRows: SubRow[] = [
     max-width: none;
   }
 }
-
-/* Very narrow viewports — keep all three but tighten gap. */
 @media (max-width: 380px) {
-  .dp-tracker-strip-inner {
-    gap: 8px;
-    letter-spacing: 0.8px;
-    font-size: 10px;
-  }
+  .dp-tracker-strip-inner { gap: 8px; letter-spacing: 0.8px; font-size: 10px; }
 }
 
 /* ─── DESKTOP ≥768px ─────────────────────────────────────────────── */
@@ -606,7 +503,6 @@ const publicationRows: SubRow[] = [
     margin: 0 auto;
   }
   .dp-mobile-only { display: none; }
-  .dp-wordmark { justify-self: start; }
   .dp-header-nav {
     display: flex;
     gap: 28px;
@@ -621,6 +517,7 @@ const publicationRows: SubRow[] = [
     text-decoration: none;
     transition: color 0.15s ease;
     border-bottom: 2px solid transparent;
+    position: relative;
   }
   .dp-header-nav a:hover { color: var(--green); }
   .dp-header-nav a.is-active {
@@ -628,17 +525,17 @@ const publicationRows: SubRow[] = [
     border-bottom-color: var(--green);
   }
 
-  /* Desktop mega-menu wrappers — Cards + Airlines */
   .dp-nav-mega-wrap { position: static; }
   .dp-nav-mega-wrap > a {
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    padding: 8px 0;                     /* larger hit area */
   }
   .dp-mega-caret {
     font-size: 10px;
     color: var(--muted);
-    transition: transform 0.15s ease, color 0.15s ease;
+    transition: transform 0.2s ease, color 0.2s ease;
   }
   .dp-nav-mega-wrap:hover .dp-mega-caret,
   .dp-nav-mega-wrap:focus-within .dp-mega-caret {
@@ -648,9 +545,8 @@ const publicationRows: SubRow[] = [
 
   .dp-megapanel {
     position: fixed;
-    top: 80px; /* dp-header-inner desktop height */
-    left: 0;
-    right: 0;
+    top: 80px;
+    left: 0; right: 0;
     background: var(--paper);
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
@@ -658,8 +554,9 @@ const publicationRows: SubRow[] = [
     z-index: 48;
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-4px);
-    transition: opacity 0.15s ease, transform 0.15s ease, visibility 0s linear 0.15s;
+    transform: translateY(-6px);        /* was -4px — more dramatic entrance */
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+    pointer-events: none;              /* prevent accidental hover triggers */
   }
   .dp-nav-mega-wrap:hover .dp-megapanel,
   .dp-nav-mega-wrap:focus-within .dp-megapanel,
@@ -667,7 +564,8 @@ const publicationRows: SubRow[] = [
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-    transition-delay: 0s;
+    transition-delay: 0.05s;          /* slight delay prevents flicker */
+    pointer-events: auto;
   }
   .dp-megapanel-inner {
     max-width: var(--container-listing);
@@ -680,37 +578,36 @@ const publicationRows: SubRow[] = [
   .dp-mega-grp { display: flex; flex-direction: column; }
   .dp-mega-grp-t {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
     margin: 0 0 14px;
   }
   .dp-mega-sub {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+    display: flex; flex-direction: column; gap: 2px;
     padding: 8px 0;
     text-decoration: none;
     border-bottom: 1px solid var(--line-soft);
+    transition: background 0.1s ease;
+    border-radius: 4px;               /* subtle hover wash */
+    margin-inline: -6px;
+    padding-inline: 6px;
+  }
+  .dp-mega-sub:hover,
+  .dp-mega-sub:focus-visible {
+    background: var(--shade-1);
   }
   .dp-mega-sub:last-child { border-bottom: 0; }
   .dp-mega-sub .lbl {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 13px; font-weight: 500;
     color: var(--ink);
     transition: color 0.15s ease;
   }
-  .dp-mega-sub .sub {
-    font-size: 11px;
-    color: var(--muted);
-  }
+  .dp-mega-sub .sub { font-size: 11px; color: var(--muted); }
   .dp-mega-sub:hover .lbl,
   .dp-mega-sub:focus-visible .lbl { color: var(--green); }
 
-  /* Hide mega panels under 1024 — mobile uses the full-screen overlay */
   @media (max-width: 1023px) {
     .dp-megapanel { display: none; }
     .dp-mega-caret { display: none; }
@@ -734,9 +631,10 @@ const publicationRows: SubRow[] = [
     letter-spacing: 0.5px;
     text-transform: uppercase;
     text-decoration: none;
-    transition: background 0.15s ease;
+    transition: background 0.2s ease, transform 0.1s ease;
   }
   .dp-header-subscribe:hover { background: var(--green); }
+  .dp-header-subscribe:active { transform: scale(0.97); }
   .dp-tracker-strip-inner { padding-inline: 24px; }
 }
 
@@ -750,14 +648,14 @@ const publicationRows: SubRow[] = [
 }
 
 /* ════════════════════════════════════════════════════════════════════════
-   MOBILE OVERLAY · full-screen menu (Claude Design wireframe MobileMenu)
+   MOBILE OVERLAY
    ════════════════════════════════════════════════════════════════════════ */
 
 .dp-nav-backdrop {
   position: fixed; inset: 0;
   background: rgba(13, 17, 25, 0.55);
   opacity: 0; pointer-events: none;
-  transition: opacity 0.18s ease;
+  transition: opacity 0.2s ease;
   z-index: 200;
   display: none;
 }
@@ -768,18 +666,29 @@ const publicationRows: SubRow[] = [
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   transform: translateX(-100%);
-  transition: transform 0.22s cubic-bezier(.2,.7,.3,1);
+  transition: transform 0.25s cubic-bezier(.2,.7,.3,1);
   display: flex;
   flex-direction: column;
 }
 
-/* Toggle states */
-.dp-nav-toggle:checked ~ .dp-nav-backdrop { opacity: 1; pointer-events: auto; display: block; }
-.dp-nav-toggle:checked ~ .dp-nav-overlay  { transform: translateX(0); }
+.dp-nav-toggle:checked ~ .dp-nav-backdrop {
+  opacity: 1; pointer-events: auto; display: block;
+}
+.dp-nav-toggle:checked ~ .dp-nav-overlay {
+  transform: translateX(0);
+}
 
-/* Lock body scroll when overlay open */
+/* Body scroll lock — :has() + fallback */
 :global(html:has(.dp-nav-toggle:checked)) { overflow: hidden; }
 :global(body:has(.dp-nav-toggle:checked)) { overflow: hidden; }
+
+/* Fallback for browsers without :has() */
+@supports not selector(:has(*)) {
+  .dp-nav-toggle:checked ~ .dp-nav-overlay {
+    position: fixed;
+    overflow-y: auto;
+  }
+}
 
 @media (min-width: 1024px) {
   .dp-nav-overlay { display: none; }
@@ -787,7 +696,7 @@ const publicationRows: SubRow[] = [
 
 .dp-nav-overlay-head {
   display: grid;
-  grid-template-columns: 44px 1fr 44px;
+  grid-template-columns: 48px 1fr 48px;
   align-items: center;
   height: 64px;
   padding-inline: 8px;
@@ -803,7 +712,7 @@ const publicationRows: SubRow[] = [
   justify-content: space-between;
   background: var(--navy);
   color: #fff;
-  padding: 12px 20px;
+  padding: 14px 20px;                   /* was 12px 20px */
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -813,9 +722,11 @@ const publicationRows: SubRow[] = [
 }
 .dp-nav-live-strip-dot {
   display: inline-block;
-  width: 6px; height: 6px; border-radius: 50%;
-  background: #5fb88a;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--mint);
   margin-right: 8px;
+  flex-shrink: 0;
 }
 .dp-nav-live-strip-count { opacity: 0.6; font-weight: 600; }
 
@@ -830,25 +741,30 @@ const publicationRows: SubRow[] = [
   border-bottom: 1px solid var(--line);
   font-family: 'DM Sans', system-ui, sans-serif;
   font-size: 18px;
-  /* Sentence-case at 600 weight reads as navigation; the prior
-     uppercase + 800 + negative-tracking combination read as a
-     shouted billboard (Standards Editor / Head of UX audit,
-     3 June 2026). Matches the panel `lbl` rows below. */
   font-weight: 600;
   letter-spacing: 0.1px;
   color: var(--ink);
   text-decoration: none;
   cursor: pointer;
+  transition: color 0.15s ease, padding-left 0.15s ease;
 }
+.dp-nav-row:hover { color: var(--green); }
 .dp-nav-row.is-subscribe { color: var(--green); }
+.dp-nav-row.is-active {
+  color: var(--green);
+  padding-left: 12px;
+  border-left: 3px solid var(--green);
+  margin-left: -20px;
+  padding-left: 17px;                   /* 20px - 3px border */
+}
 .dp-nav-expand-label { cursor: pointer; }
 .dp-nav-expand-arrow {
   font-size: 14px;
   color: var(--link);
-  transition: transform 0.18s ease;
+  transition: transform 0.2s ease;
 }
 .dp-nav-expand:checked + .dp-nav-expand-label {
-  background: var(--cool);
+  background: var(--shade-1);         /* was --cool, now warmer */
   margin-inline: -20px;
   padding-inline: 20px;
   border-top: 2px solid var(--green);
@@ -857,10 +773,10 @@ const publicationRows: SubRow[] = [
   transform: rotate(180deg);
 }
 
-/* Expandable panel — collapsed by default, opens via :checked */
+/* Expandable panel */
 .dp-nav-panel {
   display: none;
-  background: var(--cool);
+  background: var(--shade-1);           /* was --cool, now warmer */
   margin-inline: -20px;
   padding: 4px 20px;
   border-bottom: 1px solid var(--line);
@@ -888,25 +804,22 @@ const publicationRows: SubRow[] = [
   border-bottom: 1px solid var(--line-soft);
   font-family: 'DM Sans', system-ui, sans-serif;
   text-decoration: none;
+  transition: color 0.15s ease;
 }
 .dp-nav-sub .lbl {
   font-size: 15px;
   color: var(--ink);
   font-weight: 500;
 }
-.dp-nav-sub .sub {
-  font-size: 11px;
-  color: var(--muted);
-}
+.dp-nav-sub .sub { font-size: 11px; color: var(--muted); }
+.dp-nav-sub:hover .lbl,
+.dp-nav-sub.is-active .lbl { color: var(--green); }
 
-/* Tools block — green accent group, separator on top */
 .dp-nav-tools-block {
   padding: 24px 0 16px;
   margin-top: 8px;
   border-top: 2px solid var(--navy);
 }
-
-/* Publication block — muted accent */
 .dp-nav-pub-block {
   padding: 20px 0 32px;
   margin-top: 12px;
@@ -925,7 +838,11 @@ const publicationRows: SubRow[] = [
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .dp-nav-overlay { transition: none; }
-  .dp-nav-backdrop { transition: none; }
+  .dp-nav-overlay,
+  .dp-nav-backdrop,
+  .dp-megapanel,
+  .dp-mega-caret,
+  .dp-icon-btn,
+  .dp-header-subscribe { transition: none; animation: none; }
 }
 </style>
