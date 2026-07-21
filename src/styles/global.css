@@ -2939,3 +2939,55 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   .dp-conditions dt { font-size: 14px; }
   .dp-conditions dd { font-size: 15px; line-height: 1.5; }
 }
+/* ════════════════════════════════════════════════════════════════════════
+   IMAGE SKELETON / LOADING STATES — July 2026
+   Prevents layout shift while StockImage loads or falls back to SVG.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Skeleton pulse animation */
+@keyframes dp-skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+/* Any image container with data-loading */
+.dp-img-wrap {
+  position: relative;
+  background: var(--shade-1);
+  overflow: hidden;
+}
+.dp-img-wrap[data-loading="true"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--shade-2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: dp-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* StockImage SVG fallback: ensure it fills container */
+:global(svg.dp-cover) {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Smooth image fade-in when loaded */
+.dp-img-wrap img {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.dp-img-wrap img[data-loaded="true"],
+.dp-img-wrap img:not([data-loading]) {
+  opacity: 1;
+}
+
+/* Hero-specific: larger skeleton */
+.hp-hero-media.dp-img-wrap {
+  background: var(--shade-2);
+}
