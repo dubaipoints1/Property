@@ -2939,3 +2939,51 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   .dp-conditions dt { font-size: 14px; }
   .dp-conditions dd { font-size: 15px; line-height: 1.5; }
 }
+/* ════════════════════════════════════════════════════════════════════════
+   VISUAL POLISH PATCH — July 2026
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* 1. Fix container overflow on mobile */
+:root {
+  --container-listing: min(92vw, clamp(1180px, 1180px + (100vw - 1600px) * 0.4, 1500px));
+}
+
+/* 2. Better main padding + use container token */
+.dp-main:not(.is-full) {
+  max-width: var(--container-listing);
+  padding: 2.5rem 1.5rem;
+}
+@media (max-width: 640px) {
+  .dp-main:not(.is-full) { padding: 1.5rem 1rem; }
+}
+
+/* 3. Smooth scroll */
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* 4. Visible focus on dark bands */
+.dp-band-navy *:focus-visible,
+.dp-band-green *:focus-visible {
+  outline-color: white;
+}
+
+/* 5. Softer card hover */
+.dp-story-card:hover {
+  box-shadow: 0 8px 24px rgba(15, 31, 46, 0.10);
+}
+
+/* 6. Tighter feed row on tablet */
+.dp-feed-row {
+  grid-template-columns: 80px 1fr 180px 90px;
+  gap: 20px;
+}
+
+/* 7. Better reading measure */
+.dp-prose { max-width: 65ch; }
+
+/* 8. Slightly larger touch targets on mobile */
+@media (max-width: 640px) {
+  .dp-tabs { gap: 20px; }
+  .dp-tab { padding: 14px 0; font-size: 15px; }
+  .dp-filter-pill { padding: 10px 16px; }
+}
