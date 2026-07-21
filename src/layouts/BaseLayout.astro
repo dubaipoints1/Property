@@ -8,13 +8,8 @@ interface Props {
   title: string;
   description?: string;
   fullWidth?: boolean;
-  /** Override the default OG image for a specific page (absolute or root path). */
   ogImage?: string;
-  /** og:type — "website" (default) or "article" for editorial pages. */
   ogType?: "website" | "article";
-  /** Per-page structured data (Product / Article / NewsArticle / Organization /
-   * BreadcrumbList) injected before the default WebSite + Organization graph.
-   * Layout components compose the right shape and hand it through. */
   schema?: unknown;
 }
 
@@ -34,9 +29,6 @@ const ogImageUrl = ogImage
   ? new URL(ogImage, Astro.site).toString()
   : new URL("/og-default.svg", Astro.site).toString();
 
-// Default WebSite + Organization graph rendered on every page.
-// Per-page schema (Product / Article / etc.) renders before this so
-// search engines see the page-specific entity first.
 const defaultGraph = {
   "@context": "https://schema.org",
   "@graph": [
@@ -45,8 +37,7 @@ const defaultGraph = {
       "@id": `${siteUrl}/#website`,
       url: `${siteUrl}/`,
       name: siteName,
-      description:
-        "UAE-focused points-and-miles publication. AED-first credit-card reviews, salary-transfer tracker, loyalty-programme guides.",
+      description: "UAE-focused points-and-miles publication. AED-first credit-card reviews, salary-transfer tracker, loyalty-programme guides.",
       inLanguage: "en-AE",
       publisher: { "@id": `${siteUrl}/#organization` },
     },
@@ -61,11 +52,6 @@ const defaultGraph = {
   ],
 };
 
-// PR-D (29 May 2026): Cloudflare Web Analytics token now gated behind
-// PUBLIC_CF_BEACON_TOKEN env var. Build-time env injection only —
-// the publisher sets this in Cloudflare Pages → Environment Variables.
-// Without it, the beacon is omitted entirely rather than rendering
-// a broken script with the literal "REPLACE_WITH_…" placeholder.
 const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefined;
 ---
 
@@ -96,14 +82,11 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Font loading: preconnect first, then non-blocking stylesheet.
-         Weights pruned to in-use axes only (~9 files vs 14). -->
+    <!-- Fonts: DM Sans + Fraunces (pruned weights) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=swap"
-    />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=swap" />
+
     {schema && <SchemaJsonLd schema={schema} />}
     <SchemaJsonLd schema={defaultGraph} />
 
@@ -125,14 +108,13 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     </main>
     <Footer />
 
-    <!-- Back-to-top — visible after 600px scroll, click smooths to top -->
+    <!-- Back-to-top button -->
     <button id="dp-to-top" class="dp-to-top" type="button" aria-label="Back to top">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
-           stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
-           stroke-linejoin="round" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <polyline points="6 14 12 8 18 14"></polyline>
       </svg>
     </button>
+
     <script is:inline>
       (function () {
         var btn = document.getElementById('dp-to-top');
