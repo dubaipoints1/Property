@@ -245,7 +245,7 @@ const milesTiles = allPrograms
         <div class="hp-miles-tile-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         </div>
-        <div class="hp-miles-tile-head"><span class="eyebrow">Verified per offer</span></div>
+        <div class="hp-miles-tile-head"><span class="hp-live-pill"><span class="dot" aria-hidden="true"></span>Live</span></div>
         <h3 class="hp-miles-tile-title">Salary-transfer offers</h3>
         <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Live</span>Band-by-band cash and rate offers across UAE banks.</p>
         <span class="hp-miles-tile-cta">Open the tracker →</span>
@@ -380,6 +380,7 @@ const milesTiles = allPrograms
           <div class="hp-miles-tile-head">
             <span class="eyebrow">{p.data.region}</span>
             <span class="currency">{p.data.currencyName}</span>
+            {p.id === "skywards" && <span class="hp-uae-fav">UAE favourite</span>}
           </div>
           <h3 class="hp-miles-tile-title">{p.data.name}</h3>
           {p.data.sweetSpots[0] && (
@@ -455,8 +456,10 @@ const milesTiles = allPrograms
   /* ── Hero ─────────────────────────────────────────────────────────── */
   .dp-pagehead.is-hero {
     background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
-    padding: 56px 32px 48px;
+    padding: 32px 32px 48px;
   }
+  /* Concept A: thick ink hairline anchors the hero (editorial masthead rule) */
+  .hp-hero-grid { border-top: 3px solid var(--ink); padding-top: 32px; }
   .hp-hero-grid {
     max-width: var(--container-listing);
     margin: 0 auto;
@@ -588,10 +591,11 @@ const milesTiles = allPrograms
 
   /* ── Stats band ──────────────────────────────────────────────────── */
   .hp-stats-band {
-    background: var(--bg);
-    border-top: 1px solid var(--line);
+    /* Concept A: no filled band — the rules carry the visual weight */
+    background: transparent;
+    border-top: 1px solid var(--ink);
     border-bottom: 1px solid var(--line);
-    padding: 32px 32px;                 /* was 24px — more breathing room */
+    padding: 28px 32px;
   }
   .hp-stats-grid {
     max-width: var(--container-listing);
@@ -602,9 +606,11 @@ const milesTiles = allPrograms
   }
   .hp-stat {
     display: grid;
-    gap: 6px;                           /* was 4px */
-    text-align: center;                   /* centered feels more intentional */
+    gap: 6px;
+    text-align: center;
   }
+  /* Concept A: hairline dividers between the four figures */
+  .hp-stat + .hp-stat { border-left: 1px solid var(--line); }
   .hp-stat-value {
     font-family: 'Fraunces', serif;
     font-weight: 500;
@@ -615,9 +621,11 @@ const milesTiles = allPrograms
   }
   .hp-stat-label {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 12px;
-    color: var(--ink-soft);
-    letter-spacing: 0.2px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
   }
 
   /* ── Wayfinder / Miles band (shared) ─────────────────────────────── */
@@ -680,6 +688,55 @@ const milesTiles = allPrograms
   }
   .hp-miles-tile.is-wayfinder:hover {
     border-left-color: var(--ink);
+  }
+  /* Concept A: the wayfinder is one flush bordered grid — internal
+     hairlines, no per-tile card chrome, no shadows. */
+  .hp-miles-band.is-wayfinder .hp-miles-grid {
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder {
+    border: none;
+    border-left: 1px solid var(--line);
+    border-radius: 0;
+    background: var(--paper);
+    min-height: 200px;
+    transition: background 0.15s ease;
+  }
+  .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder:first-child { border-left: none; }
+  .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder:hover {
+    transform: none;
+    box-shadow: none;
+    background: var(--shade-1);
+  }
+  /* Gold live pill — tracker tile only (gold = trust accent) */
+  .hp-live-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184, 132, 42, 0.45);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .hp-live-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold);
+  }
+  /* Gold UAE-favourite badge — Skywards only */
+  .hp-uae-fav {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184, 132, 42, 0.45);
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin-left: auto;
   }
   /* Wayfinder icon */
   .hp-miles-tile-icon {
@@ -1311,6 +1368,8 @@ const milesTiles = allPrograms
     .hp-wallet-grid { grid-template-columns: 1fr; gap: 32px; }
     .hp-wallet-media { order: -1; }
     .hp-miles-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder:nth-child(odd) { border-left: none; }
+    .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder:nth-child(n+3) { border-top: 1px solid var(--line); }
   }
   @media (max-width: 640px) {
     .dp-pagehead.is-hero { padding: 40px 20px 32px; }
@@ -1325,6 +1384,8 @@ const milesTiles = allPrograms
     .hp-intel-card.is-side { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
     .hp-intel-card.is-side .hp-intel-card-image-wrap { aspect-ratio: 3 / 2; height: auto; }
     .hp-miles-grid { grid-template-columns: 1fr; }
+    .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder { border-left: none; }
+    .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder + .hp-miles-tile.is-wayfinder { border-top: 1px solid var(--line); }
     .hp-news-band { margin: 24px 16px 48px; padding: 48px 24px 56px; border-radius: 24px; }
     .hp-hero-chip { left: 12px; right: 12px; bottom: 12px; }
     .hp-wallet-stat { right: 14px; bottom: 14px; min-width: 130px; padding: 12px 14px; }
