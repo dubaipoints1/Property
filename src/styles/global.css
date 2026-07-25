@@ -3158,10 +3158,14 @@ html * {
   --line:      #2a3142;
   --line-soft: #1e2535;
 
-  --green:     #7dd3c0;          /* brighter mint for dark bg */
-  --green-band:#5fb88a;
-  --mint:      #7dd3c0;
-  --mint-soft: rgba(125, 211, 192, 0.08);
+  /* Dark accents derive from the brand navy #1f3a4d, lightened for
+     contrast on dark surfaces — NOT a new hue. The original dark palette
+     (PR #274) substituted teal #7dd3c0 here; Chairman ruling 25 July
+     2026: off-brand, removed. Gold stays the sole secondary accent. */
+  --green:     #8fb3cc;          /* lightened brand navy for dark bg */
+  --green-band:#6f95ad;
+  --mint:      #8fb3cc;
+  --mint-soft: rgba(143, 179, 204, 0.08);
 
   --link:      #6ba3f5;
   --link-deep: #4a8de0;
@@ -3212,7 +3216,7 @@ html * {
 [data-theme="dark"] .hp-news-band .btn.primary {
   color: #0f1419;
 }
-[data-theme="dark"] .hp-hero-form-cta:hover { background: #94dccb; }
+[data-theme="dark"] .hp-hero-form-cta:hover { background: #a3c4da; }
 /* The frosted-glass scrolled header keyframe bakes in a light paper
    colour; keep the header solid dark instead. */
 @supports (animation-timeline: scroll()) {
