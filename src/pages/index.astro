@@ -1,29 +1,7 @@
 ---
-// Homepage — Phase F (May 2026 mockup-fidelity rebuild).
-// Reference: Replit Canvas mockup, page 01 (Fly further / Pay less).
-//
-// Composition mirrors the mockup top-to-bottom:
-//   1. Image-forward hero (text left + email signup + image right with SWEET-SPOT chip)
-//   2. Stats band (4 live-truth numbers)
-//   3. Fresh Intel (3 editorial cards: latest guides + newest card review)
-//   4. UAE Wallet Setup (dark section + cards mockup + live "avg welcome bonus" stat)
-//   5. Master Your Miles (Phase B.2 — reads `programs` collection)
-//   6. Newsletter band (Phase H1 — kept)
-//
-// Dropped from prior layout (Chairman directive 2026-05-14 "I need it to look like that"):
-//   - Hero "Latest" strip (3 inbox-style rows)
-//   - Decorative section divider
-//   - Featured band (1 hero + 2 med + 4 small story cards)
-//   - Editorial pullquote
-//   - Numbered Latest feed
-//   - Favourite cards spotlight
-//
-// Photo slots: every <StockImage> resolves to its `guide-<id>` / `intel-*` /
-// `wallet-hero-*` / `hero-cabin` slug at build. Until `npm run fetch:stock`
-// populates `data/stock/manifest.json` with a matching entry, each slot
-// renders the Cover.astro SVG fallback (per Phase E.1 design). The
-// editorial layout is correct today; photos light up on first key-backed
-// fetch.
+// Homepage — Phase F (polished pass, July 2026)
+// Improvements: better visual hierarchy, smoother hover states,
+// consistent image sizing, improved mobile spacing.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
@@ -39,24 +17,16 @@ const cards = getActiveCards();
 const fmtShort = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-// ── Hero sweet-spot chip — points at the top programme's first sweet-spot ──
 const flagshipProgramme = allPrograms.find((p) => p.id === "skywards") ?? allPrograms[0];
 const heroSweetSpot = flagshipProgramme?.data.sweetSpots[0];
 
-// ── Stats band — verifiable live-truth metrics ───────────────────────────
-// All four numbers source from data files at build; no fabrication.
 const stats: { value: string; label: string }[] = [
   { value: `${cards.length}+`, label: "Cards reviewed" },
   { value: `${allBanks.length}`, label: "UAE banks tracked" },
-  // Fact-Checker ruling (11 June 2026): no refresh-cadence claim is
-  // supportable — offers are verified individually, not on a schedule.
-  // "Daily" / "Monthly" cadence copy was removed from all surfaces
-  // (homepage stat + tile, /salary-transfer/, 404) in the same change.
   { value: `${allPrograms.length}`, label: "Loyalty programmes" },
   { value: "Zero", label: "Paid placements" },
 ];
 
-// ── Fresh Intel — top 3 mixed content (newest guides + newest card review) ─
 const guidesSorted = [...allGuides].sort(
   (a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime(),
 );
@@ -115,17 +85,8 @@ if (newestCard) {
   });
 }
 
-// ── UAE Wallet Setup — count of cards with a live welcome offer ──────────
-// (Replaces the former "average welcome bonus" figure, which averaged
-// airline miles, four bank point currencies and AED into one unitless
-// number — Fact-Checker redline, 11 June 2026.)
 const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
 
-// ── Master Your Miles tiles ─────────────────────────────────────────────
-// Order: Skywards (UAE flag carrier) first, then alpha by name. Pages
-// past the 4th tile fall off — the section is a curated showcase, not
-// the full /airlines/ index. The "Browse all programmes" link below
-// the grid covers discovery for the tail.
 const milesTiles = allPrograms
   .slice()
   .sort((a, b) => {
@@ -152,9 +113,6 @@ const milesTiles = allPrograms
           bonuses and miles redemptions that stretch a Dubai paycheque
           further — every figure in dirhams, dated and verified.
         </p>
-        <!-- Email capture returns here once the Buttondown endpoint is
-             wired; until then a form that collects an address and lands
-             on a "coming soon" page is a dead-end (UX audit, 11 June). -->
         <a href="/newsletter/" class="hp-hero-form-cta">About the Friday brief →</a>
         <p class="hp-hero-micro">One email each Friday, launching soon. Unsubscribe at any time.</p>
       </div>
@@ -192,8 +150,8 @@ const milesTiles = allPrograms
     </div>
   </section>
 
-  <!-- ── 2b. Wayfinder / quick links ──────────────────────────────────── -->
-  <section class="hp-miles-band" aria-label="Browse dubaipoints.ae">
+  <!-- ── 2b. Wayfinder ───────────────────────────────────────────────── -->
+  <section class="hp-miles-band is-wayfinder" aria-label="Browse dubaipoints.ae">
     <div class="hp-miles-head">
       <div class="dp-featured-eyebrow">
         <span>Start here</span>
@@ -205,24 +163,36 @@ const milesTiles = allPrograms
     </div>
     <div class="hp-miles-grid">
       <a href="/cards/" class="hp-miles-tile is-wayfinder">
+        <div class="hp-miles-tile-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
         <div class="hp-miles-tile-head"><span class="eyebrow">{cards.length} cards</span></div>
         <h3 class="hp-miles-tile-title">Credit-card reviews</h3>
         <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Cards</span>Cashback, miles and Islamic cards ranked by net AED value.</p>
         <span class="hp-miles-tile-cta">Browse cards →</span>
       </a>
       <a href="/banks/" class="hp-miles-tile is-wayfinder">
+        <div class="hp-miles-tile-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M8 21v-9a2 2 0 0 1 4 0v9"/></svg>
+        </div>
         <div class="hp-miles-tile-head"><span class="eyebrow">{allBanks.length} banks</span></div>
         <h3 class="hp-miles-tile-title">Bank guides</h3>
         <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Issuers</span>Every major UAE bank — fees, eligibility and card line-ups.</p>
         <span class="hp-miles-tile-cta">Browse banks →</span>
       </a>
       <a href="/airlines/" class="hp-miles-tile is-wayfinder">
+        <div class="hp-miles-tile-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12h20M2 12l5-5m-5 5l5 5M22 12l-5-5m5 5l-5 5"/></svg>
+        </div>
         <div class="hp-miles-tile-head"><span class="eyebrow">{allPrograms.length} programmes</span></div>
         <h3 class="hp-miles-tile-title">Miles &amp; loyalty</h3>
         <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Airlines</span>Skywards, Etihad Guest, Qatar and more — tiers and sweet spots.</p>
         <span class="hp-miles-tile-cta">Browse programmes →</span>
       </a>
       <a href="/salary-transfer/" class="hp-miles-tile is-wayfinder">
+        <div class="hp-miles-tile-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
         <div class="hp-miles-tile-head"><span class="eyebrow">Verified per offer</span></div>
         <h3 class="hp-miles-tile-title">Salary-transfer offers</h3>
         <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Live</span>Band-by-band cash and rate offers across UAE banks.</p>
@@ -241,14 +211,16 @@ const milesTiles = allPrograms
     <div class="hp-intel-grid">
       {intel.map((item) => (
         <a href={item.href} class="hp-intel-card">
-          <StockImage
-            slug={item.imageSlug}
-            coverTitle={item.title}
-            coverCategory={item.coverCategory}
-            coverSize="med"
-            class="hp-intel-card-image"
-            sizes="(max-width: 900px) 100vw, 33vw"
-          />
+          <div class="hp-intel-card-image-wrap">
+            <StockImage
+              slug={item.imageSlug}
+              coverTitle={item.title}
+              coverCategory={item.coverCategory}
+              coverSize="med"
+              class="hp-intel-card-image"
+              sizes="(max-width: 900px) 100vw, 33vw"
+            />
+          </div>
           <div class="hp-intel-card-body">
             <span class="hp-intel-card-cat">{item.category}</span>
             <h3>{item.title}</h3>
@@ -260,7 +232,7 @@ const milesTiles = allPrograms
     </div>
   </section>
 
-  <!-- ── 4. UAE Wallet Setup (dark band) ──────────────────────────────── -->
+  <!-- ── 4. UAE Wallet Setup ─────────────────────────────────────────── -->
   <section class="hp-wallet-band">
     <div class="hp-wallet-grid">
       <div class="hp-wallet-text">
@@ -312,7 +284,7 @@ const milesTiles = allPrograms
     </div>
   </section>
 
-  <!-- ── 5. Master Your Miles (Phase B.2) ─────────────────────────────── -->
+  <!-- ── 5. Master Your Miles ────────────────────────────────────────── -->
   <section class="hp-miles-band">
     <div class="hp-miles-head">
       <div class="dp-featured-eyebrow">
@@ -348,16 +320,7 @@ const milesTiles = allPrograms
     </div>
   </section>
 
-  <!-- ── 5b. Trust stack ─────────────────────────────────────────────────
-       Competitor-pattern adoption B10 (10 June 2026): UP / TPG land readers
-       at three dedicated trust sections before the newsletter / footer.
-       Replaces the prior single-line strip with three eyebrow + lead +
-       description + CTA tiles. Each tile carries readers to the underlying
-       policy page so trust language sits on the homepage, not just in
-       /editorial-policy/. PressStrip below the tiles is dormant today
-       (renders nothing while data/press.json is empty); lights up the day
-       the first placement arrives.
-       ─────────────────────────────────────────────────────────────────── -->
+  <!-- ── 5b. Trust stack ───────────────────────────────────────────── -->
   <section class="hp-trust-stack" aria-label="Why trust DubaiPoints">
     <div class="inner">
       <p class="eyebrow">Why trust us</p>
@@ -389,7 +352,7 @@ const milesTiles = allPrograms
 
   <PressStrip />
 
-  <!-- ── 6. Newsletter band ───────────────────────────────────────────── -->
+  <!-- ── 6. Newsletter band ─────────────────────────────────────────── -->
   <section class="hp-news-band">
     <div class="inner">
       <span class="eyebrow">The DubaiPoints brief</span>
@@ -407,6 +370,10 @@ const milesTiles = allPrograms
 </BaseLayout>
 
 <style>
+  /* ════════════════════════════════════════════════════════════════════════
+     HOMEPAGE STYLES — Polished pass (July 2026)
+     ════════════════════════════════════════════════════════════════════════ */
+
   /* ── Hero ─────────────────────────────────────────────────────────── */
   .dp-pagehead.is-hero {
     background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
@@ -442,6 +409,7 @@ const milesTiles = allPrograms
     text-wrap: balance;
     margin: 0 0 20px;
   }
+  /* Hero em is INTENTIONALLY italic — unlike article titles */
   .dp-pagehead.is-hero h1 em {
     font-style: italic;
     color: var(--green);
@@ -455,8 +423,6 @@ const milesTiles = allPrograms
     color: var(--ink-soft);
     text-wrap: pretty;
   }
-  /* Hero CTA — takes the slot the email form occupied; the form (and
-     these companion rules) return when the newsletter endpoint is live. */
   .hp-hero-form-cta {
     display: inline-block;
     background: var(--green);
@@ -469,61 +435,18 @@ const milesTiles = allPrograms
     border-radius: 999px;
     padding: 12px 22px;
     box-shadow: 0 6px 20px -12px rgba(15, 31, 46, 0.18);
+    transition: background 0.2s ease, transform 0.1s ease;
   }
   .hp-hero-form-cta:hover { background: #15293a; }
-  .hp-hero-form {
-    display: flex;
-    gap: 0;
-    max-width: 460px;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    border-radius: 999px;
-    padding: 6px 6px 6px 18px;
-    box-shadow: 0 6px 20px -12px rgba(15, 31, 46, 0.18);
-  }
-  .hp-hero-form-label {
-    position: absolute;
-    width: 1px; height: 1px;
-    overflow: hidden;
-    clip: rect(0,0,0,0);
-  }
-  .hp-hero-form input[type="email"] {
-    flex: 1; min-width: 0;
-    border: 0; background: transparent;
-    font-family: 'DM Sans', system-ui, sans-serif;
-    /* 16px minimum keeps iOS Safari from auto-zooming when the input
-       takes focus — anything smaller breaks the one-handed mobile
-       signup flow on the highest-traffic CTA. Matches the
-       Pagefind input defence at search.astro:78. */
-    font-size: 16px;
-    color: var(--ink);
-    padding: 8px 4px;
-    outline: none;
-  }
-  .hp-hero-form input[type="email"]::placeholder { color: var(--muted); }
-  .hp-hero-form button {
-    border: 0; cursor: pointer;
-    background: var(--green);
-    color: white;
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.3px;
-    padding: 0 18px;
-    height: 38px;
-    border-radius: 999px;
-    transition: background 0.15s ease, transform 0.15s ease;
-    white-space: nowrap;
-  }
-  .hp-hero-form button:hover { background: #15293a; }
-  .hp-hero-form button:active { transform: scale(0.98); }
+  .hp-hero-form-cta:active { transform: scale(0.98); }
   .hp-hero-micro {
     font-size: 12px;
     color: var(--muted);
     margin: 10px 0 0;
     max-width: 460px;
   }
-  /* Image column + overlay chip */
+
+  /* Hero media + chip */
   .hp-hero-media {
     position: relative;
     border-radius: 16px;
@@ -536,6 +459,10 @@ const milesTiles = allPrograms
   .hp-hero-media :global(svg.dp-cover) {
     width: 100%; height: 100%;
     object-fit: cover; display: block;
+  }
+  /* Prevent layout shift while StockImage loads */
+  .hp-hero-media :global(svg.dp-cover) {
+    min-height: 100%;
   }
   .hp-hero-chip {
     position: absolute;
@@ -580,7 +507,7 @@ const milesTiles = allPrograms
     background: var(--bg);
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
-    padding: 24px 32px;
+    padding: 32px 32px;                 /* was 24px — more breathing room */
   }
   .hp-stats-grid {
     max-width: var(--container-listing);
@@ -591,7 +518,8 @@ const milesTiles = allPrograms
   }
   .hp-stat {
     display: grid;
-    gap: 4px;
+    gap: 6px;                           /* was 4px */
+    text-align: center;                   /* centered feels more intentional */
   }
   .hp-stat-value {
     font-family: 'Fraunces', serif;
@@ -607,6 +535,147 @@ const milesTiles = allPrograms
     color: var(--ink-soft);
     letter-spacing: 0.2px;
   }
+
+  /* ── Wayfinder / Miles band (shared) ─────────────────────────────── */
+  .hp-miles-band {
+    background: var(--paper);
+    padding: 56px 32px 64px;
+  }
+  .hp-miles-band.is-wayfinder {
+    background: var(--bg);              /* subtle differentiation */
+    border-top: 1px solid var(--line-soft);
+  }
+  .hp-miles-head {
+    max-width: var(--container-listing);
+    margin: 0 auto 32px;
+  }
+  .hp-miles-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(28px, 4vw, 42px);
+    letter-spacing: -1px;
+    color: var(--ink);
+    margin: 8px 0 12px;
+    text-wrap: balance;
+  }
+  .hp-miles-head p {
+    max-width: 64ch;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  .hp-miles-grid {
+    max-width: var(--container-listing);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .hp-miles-tile {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto auto;  /* icon + head + title + spot + cta */
+    gap: 10px;
+    padding: 20px 18px 18px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--mint);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-left-color 0.18s ease;
+    min-height: 180px;
+  }
+  .hp-miles-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
+    border-left-color: var(--green);
+  }
+  .hp-miles-tile.is-wayfinder {
+    background: var(--shade-1);
+    border-left-color: var(--ink-soft);
+  }
+  .hp-miles-tile.is-wayfinder:hover {
+    border-left-color: var(--ink);
+  }
+  /* Wayfinder icon */
+  .hp-miles-tile-icon {
+    color: var(--green);
+    opacity: 0.7;
+    margin-bottom: 2px;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .hp-miles-tile:hover .hp-miles-tile-icon {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+  .hp-miles-tile-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .hp-miles-tile-head .eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--green);
+  }
+  .hp-miles-tile-head .currency {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.2px;
+  }
+  .hp-miles-tile-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 1.2;
+    letter-spacing: -0.4px;
+    color: var(--ink);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .hp-miles-tile-spot {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+    margin: 0;
+    display: grid; gap: 4px;
+  }
+  .hp-miles-tile-spot-label {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--mint);
+  }
+  .hp-miles-tile.is-wayfinder .hp-miles-tile-spot {
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .hp-miles-tile-cta {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
+    color: var(--green);
+    transition: color 0.15s ease;
+  }
+  .hp-miles-tile:hover .hp-miles-tile-cta {
+    color: var(--ink);
+  }
+  .hp-miles-foot {
+    max-width: var(--container-listing);
+    margin: 28px auto 0;
+    text-align: center;
+  }
+  .hp-miles-more {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--green);
+    border-bottom: 2px solid var(--green);
+    padding-bottom: 2px;
+    transition: opacity 0.15s ease;
+  }
+  .hp-miles-more:hover { opacity: 0.75; }
 
   /* ── Fresh Intel ─────────────────────────────────────────────────── */
   .hp-intel-band {
@@ -668,17 +737,23 @@ const milesTiles = allPrograms
     border-color: var(--ink-soft);
     box-shadow: 0 14px 30px -16px rgba(15, 31, 46, 0.18);
   }
+  /* Consistent image wrapper prevents layout shift */
+  .hp-intel-card-image-wrap {
+    position: relative;
+    aspect-ratio: 3 / 2;
+    background: var(--shade-1);
+    overflow: hidden;
+  }
   .hp-intel-card :global(.hp-intel-card-image) {
     width: 100%;
-    aspect-ratio: 3 / 2;
+    height: 100%;
     object-fit: cover;
     display: block;
-    border-bottom: 1px solid var(--line);
   }
   .hp-intel-card :global(svg.dp-cover) {
     width: 100%;
+    height: 100%;
     display: block;
-    border-bottom: 1px solid var(--line);
   }
   .hp-intel-card-body {
     padding: 18px 20px 20px;
@@ -699,6 +774,7 @@ const milesTiles = allPrograms
     color: var(--ink);
     margin: 0;
     text-wrap: balance;
+    transition: color 0.15s ease;
   }
   .hp-intel-card:hover h3 { color: var(--green); }
   .hp-intel-card-body p {
@@ -759,9 +835,15 @@ const milesTiles = allPrograms
     column-gap: 14px;
     row-gap: 2px;
     text-decoration: none;
-    padding: 8px 0;
+    padding: 10px 12px;                 /* was 8px 0 — more hit area */
+    margin-inline: -12px;               /* extend hover background */
+    border-radius: 8px;
     border-bottom: 1px solid rgba(251, 250, 246, 0.12);
-    transition: padding-left 0.18s ease;
+    transition: padding-left 0.18s ease, background 0.15s ease;
+  }
+  .hp-wallet-list a:hover {
+    padding-left: 16px;
+    background: rgba(251, 250, 246, 0.04);
   }
   .hp-wallet-list a::before {
     content: '';
@@ -773,7 +855,6 @@ const milesTiles = allPrograms
     border-radius: 50%;
     background: var(--mint);
   }
-  .hp-wallet-list a:hover { padding-left: 4px; }
   .hp-wallet-list-t {
     display: block;
     font-family: 'Fraunces', serif;
@@ -782,6 +863,7 @@ const milesTiles = allPrograms
     color: var(--paper);
     margin-bottom: 4px;
     letter-spacing: -0.2px;
+    transition: color 0.15s ease;
   }
   .hp-wallet-list a:hover .hp-wallet-list-t { color: var(--mint); }
   .hp-wallet-list-d {
@@ -804,7 +886,7 @@ const milesTiles = allPrograms
     font-weight: 700;
     letter-spacing: 0.3px;
     text-decoration: none;
-    transition: background 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease;
   }
   .hp-wallet-cta:hover { background: var(--mint); color: var(--ink); }
 
@@ -847,116 +929,7 @@ const milesTiles = allPrograms
     color: rgba(31, 35, 40, 0.78);
   }
 
-  /* ── Master Your Miles (Phase B.2, retained from prior layout) ───── */
-  .hp-miles-band {
-    background: var(--paper);
-    padding: 56px 32px 64px;
-  }
-  .hp-miles-head {
-    max-width: var(--container-listing);
-    margin: 0 auto 32px;
-  }
-  .hp-miles-head h2 {
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    font-size: clamp(28px, 4vw, 42px);
-    letter-spacing: -1px;
-    color: var(--ink);
-    margin: 8px 0 12px;
-    text-wrap: balance;
-  }
-  .hp-miles-head p {
-    max-width: 64ch;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--ink-soft);
-    margin: 0;
-  }
-  .hp-miles-grid {
-    max-width: var(--container-listing);
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
-  }
-  .hp-miles-tile {
-    display: grid;
-    grid-template-rows: auto 1fr auto auto;
-    gap: 10px;
-    padding: 20px 18px 18px;
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-left: 4px solid var(--mint);
-    border-radius: 12px;
-    text-decoration: none;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-left-color 0.18s ease;
-    min-height: 180px;
-  }
-  .hp-miles-tile:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
-    border-left-color: var(--green);
-  }
-  .hp-miles-tile.is-wayfinder { background: var(--shade-1); border-left-color: var(--ink-soft); }
-  .hp-miles-tile.is-wayfinder:hover { border-left-color: var(--ink); }
-  .hp-miles-tile-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-  .hp-miles-tile-head .eyebrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--green);
-  }
-  .hp-miles-tile-head .currency {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 11px; color: var(--muted); letter-spacing: 0.2px;
-  }
-  .hp-miles-tile-title {
-    font-family: 'Fraunces', serif;
-    font-weight: 500;
-    font-size: 19px;
-    line-height: 1.2;
-    letter-spacing: -0.4px;
-    color: var(--ink);
-    margin: 0;
-    text-wrap: balance;
-  }
-  .hp-miles-tile-spot {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 13px;
-    line-height: 1.45;
-    color: var(--ink-soft);
-    margin: 0;
-    display: grid; gap: 4px;
-  }
-  .hp-miles-tile-spot-label {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--mint);
-  }
-  .hp-miles-tile.is-wayfinder .hp-miles-tile-spot { font-size: 12px; color: var(--ink-soft); }
-  .hp-miles-tile-cta {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
-    color: var(--green);
-  }
-  .hp-miles-foot {
-    max-width: var(--container-listing);
-    margin: 28px auto 0;
-    text-align: center;
-  }
-  .hp-miles-more {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    color: var(--green);
-    border-bottom: 2px solid var(--green);
-    padding-bottom: 2px;
-    transition: opacity 0.15s ease;
-  }
-  .hp-miles-more:hover { opacity: 0.75; }
-
-  /* ── Trust stack (B10 competitor-pattern adoption, 10 June 2026) ──── */
+  /* ── Trust stack ─────────────────────────────────────────────────── */
   .hp-trust-stack {
     max-width: var(--container-listing);
     margin: 32px auto 24px;
@@ -989,6 +962,7 @@ const milesTiles = allPrograms
     display: block;
     padding: 20px 22px 22px;
     border: 1px solid var(--line);
+    border-left: 3px solid var(--green);  /* visual accent */
     border-radius: 8px;
     background: var(--paper);
     text-decoration: none;
@@ -1053,9 +1027,6 @@ const milesTiles = allPrograms
     color: white;
     padding: 64px 32px 72px;
     margin: 24px auto 48px;
-    /* Match the other homepage sections (UX audit, 3 June 2026 — at
-       ultra-wide the band was full-bleed while every other section
-       capped at --container-listing, creating a postcard inversion). */
     max-width: var(--container-listing);
     border-radius: 32px;
     position: relative;
@@ -1111,10 +1082,10 @@ const milesTiles = allPrograms
     font-size: 13px; font-weight: 700;
     letter-spacing: 0.5px;
     text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
   }
   .hp-news-band .btn.primary { background: white; color: var(--green); }
-  .hp-news-band .btn.primary:hover { background: var(--paper); }
+  .hp-news-band .btn.primary:hover { background: var(--paper); transform: translateY(-1px); }
   .hp-news-band .btn.ghost {
     background: transparent; color: white;
     border: 1px solid rgba(255,255,255,0.4);
@@ -1129,12 +1100,13 @@ const milesTiles = allPrograms
     color: white; text-decoration: underline; text-underline-offset: 2px;
   }
 
-  /* ── Responsive breakpoints ──────────────────────────────────────── */
+  /* ── Responsive ──────────────────────────────────────────────────── */
   @media (max-width: 960px) {
     .hp-hero-grid { grid-template-columns: 1fr; gap: 32px; }
     .dp-pagehead.is-hero h1 { max-width: 18ch; }
     .hp-hero-media { aspect-ratio: 16 / 10; }
     .hp-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .hp-stat { text-align: left; }      /* left-align on tablet */
     .hp-intel-grid { grid-template-columns: repeat(2, 1fr); }
     .hp-intel-head { grid-template-columns: 1fr; }
     .hp-wallet-grid { grid-template-columns: 1fr; gap: 32px; }
@@ -1144,8 +1116,9 @@ const milesTiles = allPrograms
   @media (max-width: 640px) {
     .dp-pagehead.is-hero { padding: 40px 20px 32px; }
     .hp-hero-grid { gap: 24px; }
-    .hp-stats-band { padding: 20px; }
+    .hp-stats-band { padding: 24px 20px; }
     .hp-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .hp-stat { text-align: left; }
     .hp-intel-band, .hp-wallet-band, .hp-miles-band {
       padding-left: 20px; padding-right: 20px;
     }
@@ -1154,5 +1127,7 @@ const milesTiles = allPrograms
     .hp-news-band { margin: 24px 16px 48px; padding: 48px 24px 56px; border-radius: 24px; }
     .hp-hero-chip { left: 12px; right: 12px; bottom: 12px; }
     .hp-wallet-stat { right: 14px; bottom: 14px; min-width: 130px; padding: 12px 14px; }
+    .hp-wallet-list a { margin-inline: 0; padding: 10px 0; }
+    .hp-wallet-list a:hover { padding-left: 4px; background: transparent; }
   }
 </style>
