@@ -8,6 +8,8 @@ import StockImage from "~/components/StockImage.astro";
 import PressStrip from "~/components/PressStrip.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
+import { getLiveOffers } from "~/lib/offerAdapter";
+import { formatAED } from "~/lib/salaryTransfer";
 
 const allGuides = await getCollection("guides");
 const allPrograms = await getCollection("programs");
@@ -87,6 +89,26 @@ if (newestCard) {
 
 const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
 
+// ── Live tracker teaser (July 2026 homepage blend — "data desk" row) ──
+// Real rows from the salaryTransferOffers collection; the section renders
+// only while genuinely live offers exist (honest emptiness otherwise).
+const liveOffers = await getLiveOffers();
+const fmtVerified = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+const offerRows = liveOffers.map((o) => {
+  const best = o.salaryBands.reduce((a, b) => (b.rewardAmount > a.rewardAmount ? b : a));
+  const minBand = o.salaryBands.reduce((a, b) => (b.minSalary < a.minSalary ? b : a));
+  return {
+    bankSlug: o.bankSlug,
+    bankName: o.bankName,
+    upTo: `${formatAED(best.rewardAmount)} ${best.rewardType === "cash" ? "cash" : best.rewardType.replace("_", " ")}`,
+    from: `${formatAED(minBand.minSalary)}+ salary`,
+    bands: o.salaryBands.length,
+    sharia: o.sharia,
+    verified: fmtVerified(o.lastVerified),
+  };
+});
+
 const milesTiles = allPrograms
   .slice()
   .sort((a, b) => {
@@ -150,6 +172,36 @@ const milesTiles = allPrograms
     </div>
   </section>
 
+  <!-- ── 2a. Live tracker teaser (July 2026 blend — data desk row) ───── -->
+  {offerRows.length > 0 && (
+    <section class="hp-tracker-teaser" aria-label="Live salary-transfer offers">
+      <div class="inner">
+        <div class="head">
+          <div>
+            <p class="eyebrow">Live data desk</p>
+            <h2>Salary-transfer offers, verified.</h2>
+          </div>
+          <a href="/salary-transfer/" class="hp-intel-more">Open the full tracker →</a>
+        </div>
+        <ul class="rows">
+          {offerRows.map((r) => (
+            <li>
+              <a href={`/salary-transfer/${r.bankSlug}/`} class="row">
+                <span class="bank">{r.bankName}</span>
+                <span class="deal">
+                  up to <strong>{r.upTo}</strong> · {r.bands} salary bands · from {r.from}
+                  {r.sharia ? " · Sharia-compliant" : ""}
+                </span>
+                <span class="chip">Verified {r.verified}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="foot">Every band checked against the bank's published terms. Offers change without notice — verify before applying.</p>
+      </div>
+    </section>
+  )}
+
   <!-- ── 2b. Wayfinder ───────────────────────────────────────────────── -->
   <section class="hp-miles-band is-wayfinder" aria-label="Browse dubaipoints.ae">
     <div class="hp-miles-head">
@@ -208,27 +260,53 @@ const milesTiles = allPrograms
       <p>Latest reviews, sweet spots and banking moves — every claim verified against the issuer's Schedule of Charges.</p>
       <a href="/guides/" class="hp-intel-more">All guides →</a>
     </div>
-    <div class="hp-intel-grid">
-      {intel.map((item) => (
-        <a href={item.href} class="hp-intel-card">
+    {/* Newspaper-front-page layout (July 2026 blend): one dominant
+        image-led lead story + two stacked secondaries, replacing the
+        three equal columns. Image first — the lead photo is the
+        section's visual anchor. */}
+    <div class="hp-intel-grid is-lead-layout">
+      {intel[0] && (
+        <a href={intel[0].href} class="hp-intel-card is-lead">
           <div class="hp-intel-card-image-wrap">
             <StockImage
-              slug={item.imageSlug}
-              coverTitle={item.title}
-              coverCategory={item.coverCategory}
-              coverSize="med"
+              slug={intel[0].imageSlug}
+              coverTitle={intel[0].title}
+              coverCategory={intel[0].coverCategory}
+              coverSize="hero"
               class="hp-intel-card-image"
-              sizes="(max-width: 900px) 100vw, 33vw"
+              loading="eager"
+              sizes="(max-width: 900px) 100vw, 60vw"
             />
           </div>
           <div class="hp-intel-card-body">
-            <span class="hp-intel-card-cat">{item.category}</span>
-            <h3>{item.title}</h3>
-            <p>{item.excerpt}</p>
-            <span class="hp-intel-card-meta">{item.meta}</span>
+            <span class="hp-intel-card-cat">{intel[0].category}</span>
+            <h3>{intel[0].title}</h3>
+            <p>{intel[0].excerpt}</p>
+            <span class="hp-intel-card-meta">{intel[0].meta}</span>
           </div>
         </a>
-      ))}
+      )}
+      <div class="hp-intel-side">
+        {intel.slice(1).map((item) => (
+          <a href={item.href} class="hp-intel-card is-side">
+            <div class="hp-intel-card-image-wrap">
+              <StockImage
+                slug={item.imageSlug}
+                coverTitle={item.title}
+                coverCategory={item.coverCategory}
+                coverSize="med"
+                class="hp-intel-card-image"
+                sizes="(max-width: 900px) 100vw, 25vw"
+              />
+            </div>
+            <div class="hp-intel-card-body">
+              <span class="hp-intel-card-cat">{item.category}</span>
+              <h3>{item.title}</h3>
+              <span class="hp-intel-card-meta">{item.meta}</span>
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -677,6 +755,89 @@ const milesTiles = allPrograms
   }
   .hp-miles-more:hover { opacity: 0.75; }
 
+  /* ── Live tracker teaser (July 2026 blend) ───────────────────────── */
+  .hp-tracker-teaser {
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 44px 32px 40px;
+  }
+  .hp-tracker-teaser .inner {
+    max-width: var(--container-listing);
+    margin: 0 auto;
+  }
+  .hp-tracker-teaser .head {
+    display: flex; align-items: end; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .hp-tracker-teaser .eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 6px;
+  }
+  .hp-tracker-teaser h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3.2vw, 34px);
+    letter-spacing: -0.8px;
+    color: var(--ink);
+    margin: 0;
+  }
+  .hp-tracker-teaser .rows {
+    list-style: none; margin: 0; padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .hp-tracker-teaser .rows li + li { border-top: 1px solid var(--line); }
+  .hp-tracker-teaser .row {
+    display: grid;
+    grid-template-columns: minmax(180px, 240px) 1fr auto;
+    align-items: baseline;
+    gap: 10px 20px;
+    padding: 16px 20px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .hp-tracker-teaser .row:hover { background: var(--shade-1); }
+  .hp-tracker-teaser .bank {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+  }
+  .hp-tracker-teaser .deal {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .hp-tracker-teaser .deal strong { color: var(--ink); font-weight: 700; }
+  .hp-tracker-teaser .chip {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184, 132, 42, 0.45);
+    border-radius: 999px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+  .hp-tracker-teaser .foot {
+    margin: 12px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  @media (max-width: 720px) {
+    .hp-tracker-teaser { padding: 32px 20px 28px; }
+    .hp-tracker-teaser .row { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
+    .hp-tracker-teaser .chip { justify-self: start; }
+  }
+
   /* ── Fresh Intel ─────────────────────────────────────────────────── */
   .hp-intel-band {
     padding: 56px 32px 48px;
@@ -721,6 +882,36 @@ const milesTiles = allPrograms
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
+  /* Newspaper lead layout (July 2026 blend): dominant image-led lead
+     story left, two stacked secondaries right. */
+  .hp-intel-grid.is-lead-layout {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: stretch;
+  }
+  .hp-intel-card.is-lead .hp-intel-card-image-wrap { aspect-ratio: 16 / 10; }
+  .hp-intel-card.is-lead h3 {
+    font-size: clamp(22px, 2.4vw, 28px);
+    line-height: 1.2;
+  }
+  .hp-intel-card.is-lead .hp-intel-card-body { padding: 22px 24px 24px; gap: 10px; }
+  .hp-intel-card.is-lead .hp-intel-card-body p { font-size: 14px; line-height: 1.55; }
+  .hp-intel-side {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    min-width: 0;
+  }
+  .hp-intel-card.is-side {
+    grid-template-rows: none;
+    grid-template-columns: 44% minmax(0, 1fr);
+  }
+  .hp-intel-card.is-side .hp-intel-card-image-wrap {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 130px;
+  }
+  .hp-intel-card.is-side .hp-intel-card-body { padding: 16px 18px; gap: 6px; align-content: start; }
+  .hp-intel-card.is-side h3 { font-size: 17px; line-height: 1.25; }
   .hp-intel-card {
     display: grid;
     grid-template-rows: auto 1fr;
@@ -1108,6 +1299,8 @@ const milesTiles = allPrograms
     .hp-stats-grid { grid-template-columns: repeat(2, 1fr); }
     .hp-stat { text-align: left; }      /* left-align on tablet */
     .hp-intel-grid { grid-template-columns: repeat(2, 1fr); }
+    .hp-intel-grid.is-lead-layout { grid-template-columns: 1fr; }
+    .hp-intel-side { grid-template-rows: none; }
     .hp-intel-head { grid-template-columns: 1fr; }
     .hp-wallet-grid { grid-template-columns: 1fr; gap: 32px; }
     .hp-wallet-media { order: -1; }
@@ -1123,6 +1316,8 @@ const milesTiles = allPrograms
       padding-left: 20px; padding-right: 20px;
     }
     .hp-intel-grid { grid-template-columns: 1fr; }
+    .hp-intel-card.is-side { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .hp-intel-card.is-side .hp-intel-card-image-wrap { aspect-ratio: 3 / 2; height: auto; }
     .hp-miles-grid { grid-template-columns: 1fr; }
     .hp-news-band { margin: 24px 16px 48px; padding: 48px 24px 56px; border-radius: 24px; }
     .hp-hero-chip { left: 12px; right: 12px; bottom: 12px; }
