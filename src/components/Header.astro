@@ -3,6 +3,8 @@
 // Improvements: better mobile scroll lock, larger tap targets,
 // smoother mega-panel hover, consistent focus states.
 
+import ThemeToggle from "~/components/ThemeToggle.astro";
+
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
@@ -204,6 +206,7 @@ const publicationRows: SubRow[] = [
           <line x1="16.5" y1="16.5" x2="21" y2="21" />
         </svg>
       </a>
+      <ThemeToggle />
       <a href="/newsletter/" class="dp-header-subscribe">Subscribe</a>
     </div>
 
@@ -259,6 +262,7 @@ const publicationRows: SubRow[] = [
         <line x1="16.5" y1="16.5" x2="21" y2="21" />
       </svg>
     </a>
+    <ThemeToggle />
   </div>
 
   <a href="/salary-transfer/" class="dp-nav-live-strip">
@@ -635,6 +639,16 @@ const publicationRows: SubRow[] = [
   }
   .dp-header-subscribe:hover { background: var(--green); }
   .dp-header-subscribe:active { transform: scale(0.97); }
+  /* Dark theme: --ink and --green invert to light values, so the pill's
+     white text would sit on a light background. Scoped here (not in the
+     global dark block) so it outranks the base rule above. */
+  :global([data-theme="dark"]) .dp-header-subscribe {
+    background: #16202c;
+  }
+  :global([data-theme="dark"]) .dp-header-subscribe:hover {
+    background: var(--green);
+    color: #0f1419;
+  }
   .dp-tracker-strip-inner { padding-inline: 24px; }
 }
 
@@ -696,7 +710,8 @@ const publicationRows: SubRow[] = [
 
 .dp-nav-overlay-head {
   display: grid;
-  grid-template-columns: 48px 1fr 48px;
+  /* 4th column added for the theme toggle (July 2026) */
+  grid-template-columns: 48px 1fr 48px 48px;
   align-items: center;
   height: 64px;
   padding-inline: 8px;

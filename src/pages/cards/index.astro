@@ -75,7 +75,11 @@ function topEarnRate(card: typeof cards[number]["card"]): string | null {
     }
   }
   if (!best) return null;
-  return `${formatEarnValue(best.value, card.earnUnit, card.categories)} on ${best.label}`;
+  // De-camelCase the L2 key for the sentence — "everythingElse" was
+  // leaking verbatim into the reader-facing "Top earn rate" column on
+  // ~20 rows (July 2026 structure audit): "1.5% on everythingElse".
+  const label = best.label.replace(/([A-Z])/g, " $1").toLowerCase();
+  return `${formatEarnValue(best.value, card.earnUnit, card.categories)} on ${label}`;
 }
 
 // Perk chips — up to 2 short scan-affordances. Prefers typed `_features`
@@ -564,7 +568,18 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     color: var(--ink);
     line-height: 1.3;
   }
-  .cards-row-value.is-bonus { color: var(--green); }
+  .cards-row-value.is-bonus {
+    color: var(--green);
+    /* Some L2 welcomeBonus.headline strings run to full terms paragraphs
+       (ADCB Shukran, EI Switch, Mashreq Cashback) — unclamped they tripled
+       the row height and broke the list rhythm (July 2026 structure
+       audit). Clamp the cell; the full conditions live on the review page
+       a click away. */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
   .cards-row-cta {
     display: grid; gap: 4px; justify-items: end;
   }

@@ -21,6 +21,8 @@ import StockImage from "~/components/StockImage.astro";
 import HeroImage from "~/components/cards/HeroImage.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
 import { earnIsPercentage, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
+import { getActiveCards } from "~/lib/cardsData";
+import { getCollection } from "astro:content";
 import type { CardData } from "~/lib/cardsData";
 
 interface Props {
@@ -161,6 +163,40 @@ const fmtScore = (s?: number) => {
   if (s == null) return null;
   return s.toFixed(1).replace(/\.0$/, "");
 };
+
+// ── Related reviews (recirculation) ──────────────────────────────────
+// Card reviews are the core product and the highest-count page type, but
+// a reader finishing one had no on-page path to another — a pages-per-
+// session leak the sibling layouts (Article / BankHub / AirlineProgram)
+// already close. Mirror the ArticleLayout related-guides footer; it
+// reuses the shared `.dp-article-related*` styles in global.css, so no
+// new CSS. Relatedness ranks shared hub category first (the strongest
+// cross-shop signal — a cashback reader wants other cashback cards),
+// then same issuer, then freshness. The current card is always excluded.
+const relatedBanks = await getCollection("banks");
+const relatedBankName = (bankId: string) =>
+  relatedBanks.find((b) => b.id === bankId)?.data.name ?? bankId;
+const relatedDescriptor = (c: CardData) =>
+  welcomeBonusHeadline(c.welcomeBonus) ||
+  (c.annualFee.amount === 0
+    ? "No annual fee"
+    : `${formatAED(c.annualFee.amount)} annual fee`);
+const relatedCards = getActiveCards()
+  .filter((c) => c.slug !== slug)
+  .map((c) => {
+    let relScore = 0;
+    if (category && c.categories?.[0] === category) relScore += 2;
+    if (bankSlug && c.bank === bankSlug) relScore += 1;
+    return { c, relScore };
+  })
+  .sort(
+    (a, b) =>
+      b.relScore - a.relScore ||
+      new Date(b.c.lastVerified).getTime() -
+        new Date(a.c.lastVerified).getTime(),
+  )
+  .slice(0, 3)
+  .map(({ c }) => c);
 
 // Stock photograph lookup. Each card may have an editorial photograph
 // registered in data/stock/manifest.json under `card-<slug>` (e.g.
@@ -427,6 +463,34 @@ const schema = {
          pass it) but is unused here. */}
     </aside>
   </div>
+
+  <!-- Related reviews (recirculation) — reuses shared .dp-article-related* -->
+  {relatedCards.length > 0 && (
+    <section class="dp-article-related" aria-label="Related card reviews">
+      <div class="dp-article-related-head">
+        <span class="eyebrow">Related</span>
+        <h2>More card reviews</h2>
+      </div>
+      <div class="dp-article-related-grid">
+        {relatedCards.map((c) => (
+          <a href={`/cards/${c.slug}/`} class="dp-article-related-card">
+            <StockImage
+              slug={`card-${c.slug}`}
+              coverTitle={c.name}
+              coverCategory="Review"
+              coverSize="med"
+              sizes="(max-width: 900px) 100vw, 33vw"
+            />
+            <div class="body">
+              <span class="cat">{relatedBankName(c.bank)} · {c.categories?.[0] ?? "Cards"}</span>
+              <h3>{c.name}</h3>
+              <p>{relatedDescriptor(c)}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   <!-- Sources footer -->
   {sources.length > 0 && (

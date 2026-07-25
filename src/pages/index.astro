@@ -8,6 +8,8 @@ import StockImage from "~/components/StockImage.astro";
 import PressStrip from "~/components/PressStrip.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
+import { getLiveOffers } from "~/lib/offerAdapter";
+import { formatAED } from "~/lib/salaryTransfer";
 
 const allGuides = await getCollection("guides");
 const allPrograms = await getCollection("programs");
@@ -87,6 +89,26 @@ if (newestCard) {
 
 const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
 
+// ── Live tracker teaser (July 2026 homepage blend — "data desk" row) ──
+// Real rows from the salaryTransferOffers collection; the section renders
+// only while genuinely live offers exist (honest emptiness otherwise).
+const liveOffers = await getLiveOffers();
+const fmtVerified = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+const offerRows = liveOffers.map((o) => {
+  const best = o.salaryBands.reduce((a, b) => (b.rewardAmount > a.rewardAmount ? b : a));
+  const minBand = o.salaryBands.reduce((a, b) => (b.minSalary < a.minSalary ? b : a));
+  return {
+    bankSlug: o.bankSlug,
+    bankName: o.bankName,
+    upTo: `${formatAED(best.rewardAmount)} ${best.rewardType === "cash" ? "cash" : best.rewardType.replace("_", " ")}`,
+    from: `${formatAED(minBand.minSalary)}+ salary`,
+    bands: o.salaryBands.length,
+    sharia: o.sharia,
+    verified: fmtVerified(o.lastVerified),
+  };
+});
+
 const milesTiles = allPrograms
   .slice()
   .sort((a, b) => {
@@ -150,6 +172,36 @@ const milesTiles = allPrograms
     </div>
   </section>
 
+  <!-- ── 2a. Live tracker teaser (July 2026 blend — data desk row) ───── -->
+  {offerRows.length > 0 && (
+    <section class="hp-tracker-teaser" aria-label="Live salary-transfer offers">
+      <div class="inner">
+        <div class="head">
+          <div>
+            <p class="eyebrow">Live data desk</p>
+            <h2>Salary-transfer offers, verified.</h2>
+          </div>
+          <a href="/salary-transfer/" class="hp-intel-more">Open the full tracker →</a>
+        </div>
+        <ul class="rows">
+          {offerRows.map((r) => (
+            <li>
+              <a href={`/salary-transfer/${r.bankSlug}/`} class="row">
+                <span class="bank">{r.bankName}</span>
+                <span class="deal">
+                  up to <strong>{r.upTo}</strong> · {r.bands} salary bands · from {r.from}
+                  {r.sharia ? " · Sharia-compliant" : ""}
+                </span>
+                <span class="chip">Verified {r.verified}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="foot">Every band checked against the bank's published terms. Offers change without notice — verify before applying.</p>
+      </div>
+    </section>
+  )}
+
   <!-- ── 2b. Wayfinder ───────────────────────────────────────────────── -->
   <section class="hp-miles-band is-wayfinder" aria-label="Browse dubaipoints.ae">
     <div class="hp-miles-head">
@@ -193,7 +245,7 @@ const milesTiles = allPrograms
         <div class="hp-miles-tile-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         </div>
-        <div class="hp-miles-tile-head"><span class="eyebrow">Verified per offer</span></div>
+        <div class="hp-miles-tile-head"><span class="hp-live-pill"><span class="dot" aria-hidden="true"></span>Live</span></div>
         <h3 class="hp-miles-tile-title">Salary-transfer offers</h3>
         <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Live</span>Band-by-band cash and rate offers across UAE banks.</p>
         <span class="hp-miles-tile-cta">Open the tracker →</span>
@@ -208,27 +260,53 @@ const milesTiles = allPrograms
       <p>Latest reviews, sweet spots and banking moves — every claim verified against the issuer's Schedule of Charges.</p>
       <a href="/guides/" class="hp-intel-more">All guides →</a>
     </div>
-    <div class="hp-intel-grid">
-      {intel.map((item) => (
-        <a href={item.href} class="hp-intel-card">
+    {/* Newspaper-front-page layout (July 2026 blend): one dominant
+        image-led lead story + two stacked secondaries, replacing the
+        three equal columns. Image first — the lead photo is the
+        section's visual anchor. */}
+    <div class="hp-intel-grid is-lead-layout">
+      {intel[0] && (
+        <a href={intel[0].href} class="hp-intel-card is-lead">
           <div class="hp-intel-card-image-wrap">
             <StockImage
-              slug={item.imageSlug}
-              coverTitle={item.title}
-              coverCategory={item.coverCategory}
-              coverSize="med"
+              slug={intel[0].imageSlug}
+              coverTitle={intel[0].title}
+              coverCategory={intel[0].coverCategory}
+              coverSize="hero"
               class="hp-intel-card-image"
-              sizes="(max-width: 900px) 100vw, 33vw"
+              loading="eager"
+              sizes="(max-width: 900px) 100vw, 60vw"
             />
           </div>
           <div class="hp-intel-card-body">
-            <span class="hp-intel-card-cat">{item.category}</span>
-            <h3>{item.title}</h3>
-            <p>{item.excerpt}</p>
-            <span class="hp-intel-card-meta">{item.meta}</span>
+            <span class="hp-intel-card-cat">{intel[0].category}</span>
+            <h3>{intel[0].title}</h3>
+            <p>{intel[0].excerpt}</p>
+            <span class="hp-intel-card-meta">{intel[0].meta}</span>
           </div>
         </a>
-      ))}
+      )}
+      <div class="hp-intel-side">
+        {intel.slice(1).map((item) => (
+          <a href={item.href} class="hp-intel-card is-side">
+            <div class="hp-intel-card-image-wrap">
+              <StockImage
+                slug={item.imageSlug}
+                coverTitle={item.title}
+                coverCategory={item.coverCategory}
+                coverSize="med"
+                class="hp-intel-card-image"
+                sizes="(max-width: 900px) 100vw, 25vw"
+              />
+            </div>
+            <div class="hp-intel-card-body">
+              <span class="hp-intel-card-cat">{item.category}</span>
+              <h3>{item.title}</h3>
+              <span class="hp-intel-card-meta">{item.meta}</span>
+            </div>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -302,6 +380,7 @@ const milesTiles = allPrograms
           <div class="hp-miles-tile-head">
             <span class="eyebrow">{p.data.region}</span>
             <span class="currency">{p.data.currencyName}</span>
+            {p.id === "skywards" && <span class="hp-uae-fav">UAE favourite</span>}
           </div>
           <h3 class="hp-miles-tile-title">{p.data.name}</h3>
           {p.data.sweetSpots[0] && (
@@ -377,14 +456,19 @@ const milesTiles = allPrograms
   /* ── Hero ─────────────────────────────────────────────────────────── */
   .dp-pagehead.is-hero {
     background: linear-gradient(to bottom, var(--shade-1) 0%, var(--paper) 100%);
-    padding: 56px 32px 48px;
+    padding: 32px 32px 48px;
   }
+  /* Concept A: thick ink hairline anchors the hero (editorial masthead rule) */
+  .hp-hero-grid { border-top: 3px solid var(--ink); padding-top: 32px; }
   .hp-hero-grid {
     max-width: var(--container-listing);
     margin: 0 auto;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    gap: 48px;
+    /* Concept-A hero (July 2026 blend, round 2): the editorial photo is
+       the dominant half — image column widened 1.05fr → 1.45fr and the
+       media box made taller below. "Hero image big." */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr);
+    gap: 40px;
     align-items: center;
   }
   .hp-hero-text { text-align: left; }
@@ -451,7 +535,10 @@ const milesTiles = allPrograms
     position: relative;
     border-radius: 16px;
     overflow: hidden;
+    /* Taller, wider hero photo (Concept A). min-height keeps presence
+       on short viewports; 4/3 kept as the natural crop. */
     aspect-ratio: 4 / 3;
+    min-height: 460px;
     background: var(--shade-1);
     box-shadow: 0 22px 44px -22px rgba(15, 31, 46, 0.22);
   }
@@ -504,10 +591,11 @@ const milesTiles = allPrograms
 
   /* ── Stats band ──────────────────────────────────────────────────── */
   .hp-stats-band {
-    background: var(--bg);
-    border-top: 1px solid var(--line);
+    /* Concept A: no filled band — the rules carry the visual weight */
+    background: transparent;
+    border-top: 1px solid var(--ink);
     border-bottom: 1px solid var(--line);
-    padding: 32px 32px;                 /* was 24px — more breathing room */
+    padding: 28px 32px;
   }
   .hp-stats-grid {
     max-width: var(--container-listing);
@@ -518,9 +606,11 @@ const milesTiles = allPrograms
   }
   .hp-stat {
     display: grid;
-    gap: 6px;                           /* was 4px */
-    text-align: center;                   /* centered feels more intentional */
+    gap: 6px;
+    text-align: center;
   }
+  /* Concept A: hairline dividers between the four figures */
+  .hp-stat + .hp-stat { border-left: 1px solid var(--line); }
   .hp-stat-value {
     font-family: 'Fraunces', serif;
     font-weight: 500;
@@ -531,9 +621,11 @@ const milesTiles = allPrograms
   }
   .hp-stat-label {
     font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 12px;
-    color: var(--ink-soft);
-    letter-spacing: 0.2px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
   }
 
   /* ── Wayfinder / Miles band (shared) ─────────────────────────────── */
@@ -596,6 +688,55 @@ const milesTiles = allPrograms
   }
   .hp-miles-tile.is-wayfinder:hover {
     border-left-color: var(--ink);
+  }
+  /* Concept A: the wayfinder is one flush bordered grid — internal
+     hairlines, no per-tile card chrome, no shadows. */
+  .hp-miles-band.is-wayfinder .hp-miles-grid {
+    gap: 0;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder {
+    border: none;
+    border-left: 1px solid var(--line);
+    border-radius: 0;
+    background: var(--paper);
+    min-height: 200px;
+    transition: background 0.15s ease;
+  }
+  .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder:first-child { border-left: none; }
+  .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder:hover {
+    transform: none;
+    box-shadow: none;
+    background: var(--shade-1);
+  }
+  /* Gold live pill — tracker tile only (gold = trust accent) */
+  .hp-live-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184, 132, 42, 0.45);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .hp-live-pill .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--gold);
+  }
+  /* Gold UAE-favourite badge — Skywards only */
+  .hp-uae-fav {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184, 132, 42, 0.45);
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin-left: auto;
   }
   /* Wayfinder icon */
   .hp-miles-tile-icon {
@@ -677,6 +818,89 @@ const milesTiles = allPrograms
   }
   .hp-miles-more:hover { opacity: 0.75; }
 
+  /* ── Live tracker teaser (July 2026 blend) ───────────────────────── */
+  .hp-tracker-teaser {
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 44px 32px 40px;
+  }
+  .hp-tracker-teaser .inner {
+    max-width: var(--container-listing);
+    margin: 0 auto;
+  }
+  .hp-tracker-teaser .head {
+    display: flex; align-items: end; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .hp-tracker-teaser .eyebrow {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 6px;
+  }
+  .hp-tracker-teaser h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(24px, 3.2vw, 34px);
+    letter-spacing: -0.8px;
+    color: var(--ink);
+    margin: 0;
+  }
+  .hp-tracker-teaser .rows {
+    list-style: none; margin: 0; padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .hp-tracker-teaser .rows li + li { border-top: 1px solid var(--line); }
+  .hp-tracker-teaser .row {
+    display: grid;
+    grid-template-columns: minmax(180px, 240px) 1fr auto;
+    align-items: baseline;
+    gap: 10px 20px;
+    padding: 16px 20px;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .hp-tracker-teaser .row:hover { background: var(--shade-1); }
+  .hp-tracker-teaser .bank {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    letter-spacing: -0.3px;
+    color: var(--ink);
+  }
+  .hp-tracker-teaser .deal {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .hp-tracker-teaser .deal strong { color: var(--ink); font-weight: 700; }
+  .hp-tracker-teaser .chip {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184, 132, 42, 0.45);
+    border-radius: 999px;
+    padding: 4px 10px;
+    white-space: nowrap;
+  }
+  .hp-tracker-teaser .foot {
+    margin: 12px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  @media (max-width: 720px) {
+    .hp-tracker-teaser { padding: 32px 20px 28px; }
+    .hp-tracker-teaser .row { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
+    .hp-tracker-teaser .chip { justify-self: start; }
+  }
+
   /* ── Fresh Intel ─────────────────────────────────────────────────── */
   .hp-intel-band {
     padding: 56px 32px 48px;
@@ -721,6 +945,36 @@ const milesTiles = allPrograms
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
   }
+  /* Newspaper lead layout (July 2026 blend): dominant image-led lead
+     story left, two stacked secondaries right. */
+  .hp-intel-grid.is-lead-layout {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    align-items: stretch;
+  }
+  .hp-intel-card.is-lead .hp-intel-card-image-wrap { aspect-ratio: 16 / 10; }
+  .hp-intel-card.is-lead h3 {
+    font-size: clamp(22px, 2.4vw, 28px);
+    line-height: 1.2;
+  }
+  .hp-intel-card.is-lead .hp-intel-card-body { padding: 22px 24px 24px; gap: 10px; }
+  .hp-intel-card.is-lead .hp-intel-card-body p { font-size: 14px; line-height: 1.55; }
+  .hp-intel-side {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    min-width: 0;
+  }
+  .hp-intel-card.is-side {
+    grid-template-rows: none;
+    grid-template-columns: 44% minmax(0, 1fr);
+  }
+  .hp-intel-card.is-side .hp-intel-card-image-wrap {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 130px;
+  }
+  .hp-intel-card.is-side .hp-intel-card-body { padding: 16px 18px; gap: 6px; align-content: start; }
+  .hp-intel-card.is-side h3 { font-size: 17px; line-height: 1.25; }
   .hp-intel-card {
     display: grid;
     grid-template-rows: auto 1fr;
@@ -1108,10 +1362,14 @@ const milesTiles = allPrograms
     .hp-stats-grid { grid-template-columns: repeat(2, 1fr); }
     .hp-stat { text-align: left; }      /* left-align on tablet */
     .hp-intel-grid { grid-template-columns: repeat(2, 1fr); }
+    .hp-intel-grid.is-lead-layout { grid-template-columns: 1fr; }
+    .hp-intel-side { grid-template-rows: none; }
     .hp-intel-head { grid-template-columns: 1fr; }
     .hp-wallet-grid { grid-template-columns: 1fr; gap: 32px; }
     .hp-wallet-media { order: -1; }
     .hp-miles-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder:nth-child(odd) { border-left: none; }
+    .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder:nth-child(n+3) { border-top: 1px solid var(--line); }
   }
   @media (max-width: 640px) {
     .dp-pagehead.is-hero { padding: 40px 20px 32px; }
@@ -1123,7 +1381,11 @@ const milesTiles = allPrograms
       padding-left: 20px; padding-right: 20px;
     }
     .hp-intel-grid { grid-template-columns: 1fr; }
+    .hp-intel-card.is-side { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .hp-intel-card.is-side .hp-intel-card-image-wrap { aspect-ratio: 3 / 2; height: auto; }
     .hp-miles-grid { grid-template-columns: 1fr; }
+    .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder { border-left: none; }
+    .hp-miles-band.is-wayfinder .hp-miles-tile.is-wayfinder + .hp-miles-tile.is-wayfinder { border-top: 1px solid var(--line); }
     .hp-news-band { margin: 24px 16px 48px; padding: 48px 24px 56px; border-radius: 24px; }
     .hp-hero-chip { left: 12px; right: 12px; bottom: 12px; }
     .hp-wallet-stat { right: 14px; bottom: 14px; min-width: 130px; padding: 12px 14px; }

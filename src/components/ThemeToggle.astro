@@ -1,10 +1,11 @@
 ---
-// ThemeToggle — sun/moon button with localStorage persistence
-// Uses inline script for zero-JS-flash on load
+// ThemeToggle — sun/moon button with localStorage persistence.
+// Class-based binding (not an id): the header renders one instance in
+// the desktop actions and one in the mobile overlay head, and duplicate
+// ids would leave the second button dead.
 ---
 
 <button
-  id="dp-theme-toggle"
   class="dp-theme-toggle"
   type="button"
   aria-label="Toggle dark mode"
@@ -65,16 +66,17 @@
 
 <script is:inline>
   (function() {
-    const toggle = document.getElementById('dp-theme-toggle');
-    if (!toggle) return;
-    
-    toggle.addEventListener('click', function() {
-      const html = document.documentElement;
-      const isDark = html.getAttribute('data-theme') === 'dark';
-      const next = isDark ? 'light' : 'dark';
-      
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('dp-theme', next);
+    // Bind every instance once — the component renders twice (desktop
+    // actions + mobile overlay) and this inline script runs per render.
+    document.querySelectorAll('.dp-theme-toggle:not([data-bound])').forEach(function (toggle) {
+      toggle.setAttribute('data-bound', '');
+      toggle.addEventListener('click', function() {
+        const html = document.documentElement;
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        const next = isDark ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('dp-theme', next);
+      });
     });
   })();
 </script>

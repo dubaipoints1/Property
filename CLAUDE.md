@@ -454,6 +454,34 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-07-25 — Dark mode ratified; no-third-hue rule; v0 mockup-only workflow
+
+On site-owner/Chairman direction (25 July 2026), three rulings from the
+July design pass:
+
+1. **Dark mode ratified.** The community-contributed dark theme
+   (PRs #273–#275 by @sweater9, completed on PR #270) ships site-wide:
+   a header toggle plus automatic switching from the visitor's system
+   preference, persisted in localStorage. Dark surfaces derive from the
+   ink/navy family.
+2. **No-third-hue rule.** The two-accent system is closed: every accent
+   in every theme must derive from the brand navy (`#1f3a4d` family) or
+   the gold trust accent (`#b8842a`). The dark palette's original teal
+   (`#7dd3c0`) was ruled off-brand and replaced with lightened brand
+   navy (`#8fb3cc`). Any future colour outside these two families —
+   from any contributor or design tool — requires an explicit Chairman
+   ruling before merge.
+3. **AI design tools produce mockups, not code.** v0 (and peers) may be
+   used for design exploration; their output is treated as a visual
+   reference only. Generated code never enters the repo — winning
+   concepts are rebuilt in the house `.dp-*`/token idiom, validated
+   (check / tests / build / rendered probes), and shipped through the
+   normal review. Placeholder editorial copy in mockups (invented
+   figures, bios, methodologies, reader counts) must never survive
+   translation; all figures come from L2/dossier data per §6.
+
+— Chairman, 25 July 2026.
+
 ### 2026-06-12 — Three Chairman rulings (provenance sentinel; valuation baseline; AI-prose stance)
 
 On site-owner/Chairman direction (12 June 2026), three open briefs are
