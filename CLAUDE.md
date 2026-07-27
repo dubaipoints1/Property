@@ -139,6 +139,8 @@ interest disclosures are mandatory per the same file.
 | `travel-experiences-editor` | Skywards/Etihad/hotel + Dubai experiences | Read, Write, Edit, Glob, Grep, narrow Bash |
 | `business-realestate-editor` | Banks, salary-transfer, Golden Visa, freezones | Read, Write, Edit, Glob, Grep, narrow Bash |
 | `lifestyle-culture-editor` | Dining, DSF, Ramadan, expat onboarding | Read, Write, Edit, Glob, Grep, narrow Bash |
+| `airline-news-editor` | Airline & airline-loyalty news desk (UAE nexus) | Read, Write, Edit, Glob, Grep, narrow Bash |
+| `hotel-news-editor` | Hotel-loyalty & property news desk (UAE/GCC nexus) | Read, Write, Edit, Glob, Grep, narrow Bash |
 | `technical-lead` | Schema, sitemap, perf, deploy | Read, Write, Edit, Bash, Glob, Grep |
 | `fact-checker` | Verifies every claim against primary source | Read, Edit, Glob, Grep, WebFetch |
 | `standards-editor` | House voice, copy chief, kill-list, microcopy review | Read, Edit, Glob, Grep |
@@ -453,6 +455,40 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-07-27 — Travel news desks ratified; sourcing ladder; news track
+
+On Chairman ratification of the 27 July council session
+(`.council/sessions/2026-07-27-travel-news-desks-strategy.md`, synthesis
+alongside), four rulings:
+
+1. **Two news desks join the Council**: `airline-news-editor` and
+   `hotel-news-editor`, specced in
+   `.council/research/2026-07/travel-desks-spec.md`. Boundary rule:
+   **currency governs** — the desk whose points currency moves owns the
+   story. Cadence ceilings: 2–3 airline and 1–2 hotel stories/week.
+   Neither desk holds Firecrawl (§2 unchanged); both consume
+   Head-of-Research monitoring output.
+2. **News sourcing ladder ratified**
+   (`.council/research/2026-07/news-sourcing-policy.md`): primary
+   sources are the only citable fact base; competitor coverage
+   (HfP/TPG/OMAAT) is story discovery and credit only — never a number,
+   never structure. Attribution posture: primary-first, with named
+   credit ("first reported by …") whenever a fact could not be
+   independently verified. Content laundering is a §10 kill-list
+   offence.
+3. **News track through the gates**
+   (`.council/research/2026-07/editorial-strategy-2026-h2.md`): story
+   templates are Stage-4/5.5-approved once rather than per-post;
+   Fact-Checker is never waived; Standards samples after a ten-post
+   ramp; the Chairman gate remains mandatory via a five-line same-day
+   rubric.
+4. **Honest-nav rule**: navigation may only link to content types that
+   exist; de-scoped Travel rows (hotel programme profiles, staycations
+   pillar, route pages) return only behind real briefs on the strategy
+   doc's schedule.
+
+— Chairman, 27 July 2026.
 
 ### 2026-07-25 — Dark mode ratified; no-third-hue rule; v0 mockup-only workflow
 
