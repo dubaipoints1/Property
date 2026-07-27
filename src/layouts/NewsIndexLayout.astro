@@ -69,9 +69,28 @@ const formatCategory = (c: string) =>
   c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
 const searchInputId = `news-search-input-${activeDesk}`;
+
+// Per-desk RSS: each desk index advertises its own feed, so a reader who
+// only wants one beat can subscribe to exactly that (2026-07-27 council
+// follow-up). The "all" index keeps the site-wide feed.
+const FEED_BY_DESK: Record<Props["activeDesk"], string> = {
+  all: "/rss.xml",
+  banking: "/news/banking/rss.xml",
+  airline: "/news/airlines/rss.xml",
+  hotel: "/news/hotels/rss.xml",
+};
+const feedHref = FEED_BY_DESK[activeDesk];
+const feedLabel = activeDesk === "all" ? "DubaiPoints" : `DubaiPoints — ${heading}`;
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
+  <link
+    slot="head"
+    rel="alternate"
+    type="application/rss+xml"
+    title={feedLabel}
+    href={feedHref}
+  />
   <header class="intel-pagehead">
     <div class="intel-pagehead-inner">
       <div class="crumb">{crumb}</div>
@@ -88,6 +107,14 @@ const searchInputId = `news-search-input-${activeDesk}`;
             ),
           )}
         </div>
+        <a class="intel-feed" href={feedHref} title="Subscribe to this desk by RSS">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+            <circle cx="6.2" cy="17.8" r="2.2"/>
+            <path d="M4 10.2v3.1c3.7 0 6.7 3 6.7 6.7h3.1c0-5.4-4.4-9.8-9.8-9.8z"/>
+            <path d="M4 4v3.1c7.1 0 12.9 5.8 12.9 12.9H20C20 11.2 12.8 4 4 4z"/>
+          </svg>
+          RSS
+        </a>
         <form class="intel-search" action="/" method="get" role="search">
           <label class="intel-search-label" for={searchInputId}>Search</label>
           {/* Visible magnifier — sits inside the pill so taps on it
@@ -248,6 +275,19 @@ const searchInputId = `news-search-input-${activeDesk}`;
   }
   .intel-tab:hover { background: var(--shade-1); color: var(--ink); }
   .intel-tab.is-active { background: var(--ink); color: var(--paper); cursor: default; }
+  .intel-feed {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 12px;
+    text-decoration: none;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .intel-feed:hover { color: var(--gold); border-color: rgba(184, 132, 42, 0.45); }
 
   .intel-search {
     display: flex; align-items: center;
