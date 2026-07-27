@@ -100,6 +100,11 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:locale" content="en_AE" />
 
+    {/* Per-page <head> extras (RSS autodiscovery on the news desks,
+        2026-07-27). Named slot: pages pass <link slot="head" …>; without
+        this the element renders nowhere at all. */}
+    <slot name="head" />
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
