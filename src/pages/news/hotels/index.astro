@@ -1,0 +1,41 @@
+---
+// Hotel desk — beat-filtered news index (2026-07-27 council session
+// `travel-news-desks-strategy`). Zero posts at launch: the honest
+// empty state below is deliberate (house precedent:
+// SalaryTransferHistoryLayout's .dp-hist-empty, 10 June 2026 audit) —
+// the nav row "Hotel news" now points at a page that says plainly the
+// desk hasn't filed yet, instead of dumping the reader into a mixed
+// banking feed.
+
+import NewsIndexLayout from "~/layouts/NewsIndexLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("news", (p) => p.data.beat === "hotel"))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+
+<NewsIndexLayout
+  title="UAE hotel & loyalty news | DubaiPoints"
+  description="Hotel-loyalty news for UAE residents: Marriott Bonvoy and hotel-programme changes, promotions and UAE property openings — every figure in AED, every claim sourced."
+  crumb="DubaiPoints / News / Hotels"
+  heading="The hotel desk."
+  deck="Hotel-programme moves — Bonvoy promotions, devaluations and the UAE hotel scene — filtered for what actually changes a stay priced in AED."
+  posts={posts}
+  activeDesk="hotel"
+>
+  <Fragment slot="empty">
+    <span class="news-empty-eyebrow">Hotel desk · no stories yet</span>
+    <h2>No hotel stories filed yet.</h2>
+    <p>
+      The hotel desk is new and hasn't filed its first story. When a
+      Bonvoy promotion, a points devaluation or a UAE property opening
+      worth your attention lands, it appears here — not before. Until
+      then the <a href="/airlines/marriott-bonvoy/">Marriott Bonvoy
+      guide</a> carries the current earn rates and card links.
+    </p>
+    <div class="news-empty-ctas">
+      <a href="/newsletter/" class="news-empty-cta">Subscribe to the Friday brief →</a>
+      <a href="/rss.xml" class="news-empty-cta is-ghost">RSS feed →</a>
+    </div>
+  </Fragment>
+</NewsIndexLayout>

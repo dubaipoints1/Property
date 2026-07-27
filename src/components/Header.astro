@@ -77,24 +77,25 @@ const pointsPanel: Group[] = [
   ]},
 ];
 
+// Travel panel — honest-nav pass, 2026-07-27 council session
+// `travel-news-desks-strategy`. Every row now points at a route whose
+// content type actually exists: news rows go to the beat-filtered desk
+// indexes, programme rows to the programme directory. De-scoped until
+// their content types ship (return via new briefs, Chairman gate):
+// "Hotel reviews", "UAE staycations", and the whole "Routes &
+// destinations" group — those rows previously dumped readers into
+// /airlines/ or /deals/ and promised sections the site doesn't have.
 const travelPanel: Group[] = [
   { title: "Airlines", rows: [
-    { label: "Airline news",     href: "/news/" },
-    { label: "Airline reviews",  href: "/airlines/" },
-    { label: "Airline deals",    href: "/deals/", sub: "From DXB / AUH / SHJ" },
-    { label: "All airline stories", href: "/airlines/" },
+    { label: "Airline news",        href: "/news/airlines/" },
+    { label: "Airline programmes",  href: "/airlines/" },
+    { label: "Airline deals",       href: "/deals/", sub: "From DXB / AUH / SHJ" },
+    { label: "All airline stories", href: "/news/airlines/" },
   ]},
   { title: "Hotels", rows: [
-    { label: "Hotel news",       href: "/news/" },
-    { label: "Hotel reviews",    href: "/airlines/" },
-    { label: "UAE staycations",  href: "/deals/" },
-    { label: "All hotel stories", href: "/airlines/" },
-  ]},
-  { title: "Routes & destinations", rows: [
-    { label: "From Dubai",       href: "/airlines/" },
-    { label: "From Abu Dhabi",   href: "/airlines/" },
-    { label: "GCC weekend",      href: "/deals/" },
-    { label: "Long-haul awards", href: "/airlines/" },
+    { label: "Hotel news",        href: "/news/hotels/" },
+    { label: "Hotel programmes",  href: "/airlines/" },
+    { label: "All hotel stories", href: "/news/hotels/" },
   ]},
 ];
 
