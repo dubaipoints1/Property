@@ -128,11 +128,19 @@ if (!FIRECRAWL_KEY) {
       state.credits.used += 1;
       state.lastScraped[page.id] = todayKey;
       const md = out?.data?.markdown ?? "";
+      // Only links on the press site's own domain count as headlines —
+      // the first live run surfaced social-chrome links ("Visit our
+      // Facebook page") as stories. Registrable-domain match, crude but
+      // right for these targets (news.marriott.com ⊂ marriott.com etc.).
+      const baseDomain = new URL(page.url).hostname.replace(/^www\./, "").split(".").slice(-2).join(".");
       // headline-ish links: markdown [text](url) with text > 40 chars
       const links = [...md.matchAll(/\[([^\]]{40,160})\]\((https?:\/\/[^)]+)\)/g)].slice(0, 30);
       for (const [, text, href] of links) {
         const title = text.replace(/\s+/g, " ").replace(/\\+/g, "").trim();
-        if (/subscribe|cookie|privacy|download|contact|about /i.test(title)) continue;
+        let linkHost = "";
+        try { linkHost = new URL(href).hostname; } catch { continue; }
+        if (!linkHost.endsWith(baseDomain)) continue;
+        if (/subscribe|cookie|privacy|download|contact|about |visit our|opens in new window|rss feed|follow us|social|media centre|newsroom|annual report|help centre|careers/i.test(title)) continue;
         remember(page.id, href, {
           tier: "press", source: page.name, sourceId: page.id, beat: page.beat,
           title, link: href, date: "",
