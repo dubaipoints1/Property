@@ -23,6 +23,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: news-monitor
@@ -44,6 +45,20 @@ jobs:
         env:
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
         run: node scripts/news-monitor/monitor.mjs
+
+      - name: Open digest issue
+        if: hashFiles('.council/monitoring/digest-*.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest=$(ls -t .council/monitoring/digest-*.md | head -1)
+          # only raise an issue for a digest created in this run
+          if [ -n "$(git status --porcelain "$latest")" ]; then
+            gh issue create \
+              --title "News digest: $(basename "$latest" .md | sed 's/digest-//')" \
+              --body-file "$latest" \
+              --label "news-digest" || echo "issue creation failed (label may not exist) — digest still committed"
+          fi
 
       - name: Commit digest + state
         run: |

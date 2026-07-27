@@ -33,10 +33,19 @@ const RSS_FEEDS = [
 
 // ── Tier 2: press-room indexes via Firecrawl (credit-metered) ─────────
 const PRESS_PAGES = [
+  // airline beat
   { id: "emirates", name: "Emirates Media Centre", url: "https://www.emirates.com/media-centre/", beat: "airline" },
   { id: "etihad", name: "Etihad News", url: "https://www.etihad.com/en-ae/news", beat: "airline" },
+  { id: "qatar", name: "Qatar Airways Press", url: "https://www.qatarairways.com/press-releases/en-ww", beat: "airline" },
+  // hotel beat
   { id: "marriott", name: "Marriott News Center", url: "https://news.marriott.com/", beat: "hotel" },
   { id: "hilton", name: "Hilton Newsroom", url: "https://stories.hilton.com/", beat: "hotel" },
+  { id: "accor", name: "Accor Press Releases", url: "https://press.accor.com/", beat: "hotel" },
+  // banking beat (offer launches; fee/rate drift is covered separately
+  // by the monthly card scrape's diff)
+  { id: "enbd", name: "Emirates NBD News", url: "https://www.emiratesnbd.com/en/media-centre", beat: "banking" },
+  { id: "adcb", name: "ADCB Media Centre", url: "https://www.adcb.com/en/about-us/media-centre/", beat: "banking" },
+  { id: "fab", name: "FAB Newsroom", url: "https://www.bankfab.com/en-ae/about-fab/group/news", beat: "banking" },
 ];
 
 // UAE-relevance filter for RSS titles (press pages pass everything —
@@ -106,10 +115,18 @@ if (!FIRECRAWL_KEY) {
 } else if (state.credits.used >= CREDIT_CAP) {
   console.error(`[press] monthly credit cap reached (${state.credits.used}/${CREDIT_CAP}) — skipping press tier`);
 } else {
+  const todayKey = now.toISOString().slice(0, 10);
   for (const page of PRESS_PAGES) {
+    // once per target per day — the workflow runs twice daily but each
+    // press page only spends a credit on its first run of the day
+    if ((state.lastScraped ??= {})[page.id] === todayKey) {
+      console.log(`[press] ${page.id} already scraped today — skip`);
+      continue;
+    }
     try {
       const out = await firecrawlScrape(page.url);
       state.credits.used += 1;
+      state.lastScraped[page.id] = todayKey;
       const md = out?.data?.markdown ?? "";
       // headline-ish links: markdown [text](url) with text > 40 chars
       const links = [...md.matchAll(/\[([^\]]{40,160})\]\((https?:\/\/[^)]+)\)/g)].slice(0, 30);
