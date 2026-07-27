@@ -535,12 +535,15 @@ const milesTiles = allPrograms
     position: relative;
     border-radius: 16px;
     overflow: hidden;
-    /* Taller, wider hero photo (Concept A). min-height keeps presence
-       on short viewports; 4/3 kept as the natural crop. */
+    /* Taller, wider hero photo (Concept A). min-height is desktop-only —
+       with the 16/10 mobile aspect it forced the box to 736px wide at a
+       390px viewport (26 July 2026 mobile-overflow report). */
     aspect-ratio: 4 / 3;
-    min-height: 460px;
     background: var(--shade-1);
     box-shadow: 0 22px 44px -22px rgba(15, 31, 46, 0.22);
+  }
+  @media (min-width: 961px) {
+    .hp-hero-media { min-height: 460px; }
   }
   .hp-hero-media :global(.hp-hero-image),
   .hp-hero-media :global(svg.dp-cover) {
@@ -1361,6 +1364,9 @@ const milesTiles = allPrograms
     .hp-hero-media { aspect-ratio: 16 / 10; }
     .hp-stats-grid { grid-template-columns: repeat(2, 1fr); }
     .hp-stat { text-align: left; }      /* left-align on tablet */
+    /* 2-col wrap: only the second column carries a divider */
+    .hp-stat + .hp-stat { border-left: none; }
+    .hp-stat:nth-child(even) { border-left: 1px solid var(--line); padding-left: 16px; }
     .hp-intel-grid { grid-template-columns: repeat(2, 1fr); }
     .hp-intel-grid.is-lead-layout { grid-template-columns: 1fr; }
     .hp-intel-side { grid-template-rows: none; }
