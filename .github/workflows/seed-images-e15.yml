@@ -1,0 +1,86 @@
+# Phase E.15 — imagery for the July 2026 news desks and the first
+# airline deal.
+#
+# Six slots have no photo: four news stories written this month (two
+# banking, one airline, one hotel) plus the airline-desk story and the
+# Etihad fare-sale deal entry. Until they are seeded, each renders the
+# Cover.astro SVG fallback, which reads as a placeholder on a desk that
+# is otherwise current.
+#
+# Query discipline carried over from the E.14 strict review:
+#   - No alcohol imagery (UAE market).
+#   - No religious architecture used as commercial product imagery.
+#   - Bright enough to stay legible at tile size.
+#   - Matched to what the story is actually about, not a generic
+#     travel stock mood — a fare-sale deal gets an airport/booking
+#     scene, a hotel-points promo gets a hotel interior.
+#
+# Review the fetched set on a contact sheet before merging; iterate with
+# refetch-image.yml (--pick N) on any result that misses.
+#
+# Prereq: PEXELS_API_KEY repo secret (provisioned).
+
+name: seed-images-e15
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to seed (commits land here)"
+        required: true
+        default: "claude/session-handoff-june-10-9ufa50"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Fetch news + deal imagery
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          while IFS='|' read -r slug query alt; do
+            [ -z "$slug" ] && continue
+            echo "::group::$slug"
+            npm run fetch:stock -- \
+              --slug "$slug" \
+              --query "$query" \
+              --orientation landscape \
+              --pick 0 \
+              --alt "$alt" || echo "::warning::fetch failed for $slug"
+            echo "::endgroup::"
+          done <<'SEEDS'
+          news-skywards-summer-redemption-push-dss-5-million-miles|dubai mall shopping retail interior bright|Shoppers in a bright Dubai mall interior
+          news-etihad-fare-sale-book-by-31-july-2026|airport departure board terminal travellers|Departure board in an airport terminal
+          news-marriott-bonvoy-skywards-5000-points-one-stay|hotel reception check in desk lobby|Checking in at a hotel reception desk
+          news-adcb-365-cashback-earn-table-rebalance-2026|petrol station fuel pump car daylight|Refuelling at a service station in daylight
+          news-emirates-islamic-switch-welcome-extended-30-september|supermarket checkout groceries counter|Paying at a supermarket checkout
+          deal-etihad-fare-sale-july-2026|airplane window wing clouds daylight|Aircraft wing above the clouds in daylight
+          SEEDS
+
+      - name: Validate
+        run: npm run check
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then echo "No new images fetched (is PEXELS_API_KEY set?)."; exit 0; fi
+          git commit \
+            -m "feat(images): Phase E.15 — imagery for the July news desks and the first airline deal" \
+            -m "Seeds the six unphotographed slots: four July news stories, the airline-desk fare-sale story, and the Etihad fare-sale deal entry. Queries follow the E.14 strict rules (no alcohol, no religious architecture as product imagery, legible at tile size)."
+          git push origin HEAD:${{ inputs.branch }}
