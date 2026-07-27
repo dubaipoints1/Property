@@ -1,6 +1,7 @@
 ---
-import { getCollection, getEntry, render } from "astro:content";
+import { getCollection, render } from "astro:content";
 import ArticleLayout from "~/layouts/ArticleLayout.astro";
+import { resolveDealIssuer } from "~/lib/dealIssuer";
 
 export async function getStaticPaths() {
   const deals = await getCollection("deals");
@@ -12,7 +13,7 @@ export async function getStaticPaths() {
 
 const { deal } = Astro.props;
 const { Content, headings } = await render(deal);
-const bank = await getEntry(deal.data.bank);
+const issuer = await resolveDealIssuer(deal);
 
 const toc = headings
   .filter((h) => h.depth === 2)
@@ -35,7 +36,7 @@ const deck = isLive
 <ArticleLayout
   title={`${deal.data.title} | DubaiPoints`}
   heading={deal.data.title}
-  description={`${deal.data.title} — ${bank?.data.name ?? "UAE issuer"} ${formatCategory(deal.data.category).toLowerCase()} deal, ${isLive ? `live until ${expiresStr}` : `expired ${expiresStr}`}. AED-first verdict from DubaiPoints.`}
+  description={`${deal.data.title} — ${issuer.name} ${formatCategory(deal.data.category).toLowerCase()} deal, ${isLive ? `live until ${expiresStr}` : `expired ${expiresStr}`}. AED-first verdict from DubaiPoints.`}
   crumb={`DubaiPoints / Deals / ${formatCategory(deal.data.category)}`}
   eyebrow={`DEAL · ${formatCategory(deal.data.category).toUpperCase()}`}
   deck={deck}
@@ -44,7 +45,7 @@ const deck = isLive
   showHero
   heroSlug={`deal-${deal.id}`}
   heroCategory="Deal"
-  heroLabel={`Deal · ${bank?.data.name ?? "Issuer"}`}
+  heroLabel={`Deal · ${issuer.name}`}
 >
   <Content />
 </ArticleLayout>

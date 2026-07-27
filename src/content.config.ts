@@ -7,6 +7,10 @@ const DEAL_CATEGORY = z.enum([
   "transfer-bonus",
   "spend-promo",
   "fee-waiver",
+  // Travel-desk variants (2026-07-27 council follow-up): airline and
+  // hotel offers are not bank products and need their own categories.
+  "fare-sale",
+  "points-promo",
   "other",
 ]);
 const REWARD_TYPE = z.enum(["cash", "voucher", "cashback_monthly", "points"]);
@@ -135,14 +139,44 @@ const programs = defineCollection({
   }),
 });
 
+// Deals carry ONE issuer, which is either a UAE bank (card offers — the
+// original shape) or a loyalty programme (airline/hotel offers — added
+// 2026-07-27 when the Travel nav's "Airline deals" row had nowhere real
+// to point; the `programs` collection covers both airline and hotel
+// programmes). Exactly one must be set: a deal with neither has no
+// issuer to attribute, and one with both is ambiguous about whose offer
+// it is. `.superRefine` gives a message naming the file's own fields
+// rather than a bare union error.
 const deals = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/deals" }),
-  schema: z.object({
-    title: z.string(),
-    bank: reference("banks"),
-    expiresOn: z.coerce.date(),
-    category: DEAL_CATEGORY,
-  }),
+  schema: z
+    .object({
+      title: z.string(),
+      /** UAE bank issuing a card offer. Mutually exclusive with `program`. */
+      bank: reference("banks").optional(),
+      /** Airline/hotel loyalty programme running the offer. Mutually exclusive with `bank`. */
+      program: reference("programs").optional(),
+      expiresOn: z.coerce.date(),
+      category: DEAL_CATEGORY,
+    })
+    .superRefine((data, ctx) => {
+      const hasBank = data.bank !== undefined;
+      const hasProgram = data.program !== undefined;
+      if (!hasBank && !hasProgram) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "A deal needs an issuer: set either `bank` (card offers) or `program` (airline/hotel offers).",
+        });
+      }
+      if (hasBank && hasProgram) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Set `bank` OR `program`, not both — a deal is attributed to a single issuer.",
+        });
+      }
+    }),
 });
 
 const guides = defineCollection({

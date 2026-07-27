@@ -15,7 +15,8 @@
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
-import { getCollection, getEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import { resolveDealIssuer } from "~/lib/dealIssuer";
 
 const todayMs = Date.now();
 
@@ -25,8 +26,8 @@ const liveDeals = (await getCollection("deals"))
 
 const dealsWithBank = await Promise.all(
   liveDeals.map(async (d) => {
-    const bank = await getEntry(d.data.bank);
-    return { entry: d, bankName: bank?.data.name ?? d.data.bank.id };
+    const issuer = await resolveDealIssuer(d);
+    return { entry: d, bankName: issuer.name };
   }),
 );
 
