@@ -1,0 +1,58 @@
+# News-desk monitoring — twice-daily discovery sweep for the airline and
+# hotel news desks (council session 2026-07-27-travel-news-desks-strategy;
+# sourcing ladder in .council/research/2026-07/news-sourcing-policy.md).
+#
+# Runs in Actions because the press hosts (Emirates, Etihad, Marriott,
+# Hilton) are unreachable from Claude Code web-session egress. Commits
+# the digest + state straight to main (same precedent as scrape.yml's
+# LATEST_RUN.log). Digests live under .council/monitoring/ and are not
+# part of the site build.
+#
+# Credit governance: the script enforces a 500-credit/month Firecrawl
+# cap from its own state file; the RSS tier is free and always runs.
+
+name: news-monitor
+
+on:
+  schedule:
+    # 05:07 and 13:07 UTC — 09:07 and 17:07 UAE time (off-minute per
+    # scheduling hygiene; catches overnight US-blog posts and the
+    # Gulf-morning press drops).
+    - cron: "7 5,13 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: news-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Run monitoring sweep
+        env:
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        run: node scripts/news-monitor/monitor.mjs
+
+      - name: Commit digest + state
+        run: |
+          git config user.name "dubaipoints-news-monitor"
+          git config user.email "info@dubaipoints.ae"
+          git add .council/monitoring/ data/news-monitor/ || true
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+          else
+            git commit -m "monitor: news discovery digest ($(date -u +%Y-%m-%d\ %H:%M) UTC)"
+            git push origin main
+          fi
