@@ -106,3 +106,55 @@ deal-update. relatedPrograms: marriott-bonvoy.
   LFAL's structure or any figure not listed above.
 - No invented facts. Anything not in this digest requires a new
   verification pass before print.
+
+---
+
+## Story C (airline beat) — Etihad's "You deserve a break" fare sale, book by 31 July
+
+**Primary source (scraped live, 27 July, en-AE storefront):**
+- https://www.etihad.com/en-ae/offers
+
+**Verified facts (from the AE offers page itself):**
+- Banner terms: **"Book your flights by 31 July 2026 for travel until
+  November 2026"** (T&Cs linked on-page).
+- Sample published round-trip Economy fares ex-**Abu Dhabi**, inclusive
+  of taxes and surcharges, with the Etihad Guest Miles alternative
+  shown alongside each:
+  - Mumbai — **AED 1,050** or 35,735 Miles
+  - Cairo — **AED 1,060** or 36,082 Miles
+  - Rome — **AED 2,290** or 77,942 Miles
+  - Bangkok — **AED 2,650** or 90,192 Miles
+  - New York (JFK) — **AED 3,480** or 118,243 Miles
+  - London (LHR) — **AED 3,520** or 119,806 Miles
+- Page states the schedule is subject to change and local operating
+  conditions.
+
+**⚠️ Discovery-vs-primary conflict — the desk MUST NOT repeat the
+aggregator framing.** Time Out Dubai (21 July) reported a "20% off
+global sale, book by 26 July, travel 15 Aug – 30 Nov". Etihad's own AE
+page on 27 July shows neither the 20% headline nor the 26 July date —
+that window has closed. Only the "book by 31 July / travel to November"
+sale with the fares above is verifiable today. Publish the primary;
+do not cite the lapsed 20% claim.
+
+**Analysis hook (DP-native):** Etihad publishes cash AND Miles prices
+side by side, which lets us compute the implied value the airline itself
+puts on a Mile: AED 1,050 ÷ 35,735 = **2.94 fils** (Mumbai);
+AED 3,520 ÷ 119,806 = **2.94 fils** (London); JFK the same 2.94. A flat
+~2.94 fils across the board means these are fixed-rate "Miles as
+currency" prices, NOT award-chart redemptions — and they sit *above*
+our 2.8-fils Etihad Guest working value, so paying cash and earning
+Miles beats spending Miles at this rate. That is the story competitors
+running the press release will not write.
+(Cross-link: /airlines/etihad-guest/ and /valuations/.)
+
+**Beat call:** airline (Etihad Guest currency + fare promo).
+Category: deal-update. relatedPrograms: etihad-guest.
+
+**Note for the Chairman — structural gap:** this cannot be filed in the
+`deals` collection, whose schema requires `bank: reference("banks")`.
+The Travel nav's "Airline deals" row currently points at /deals/, which
+is bank-offer-shaped by design. Either the deals schema grows an
+airline/hotel variant (T3) or airline promos live permanently on the
+news desks and the nav row is relabelled. Decision deferred to the
+owner.
