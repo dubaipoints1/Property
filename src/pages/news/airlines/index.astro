@@ -1,0 +1,37 @@
+---
+// Airline desk — beat-filtered news index (2026-07-27 council session
+// `travel-news-desks-strategy`). Skywards, Etihad Guest, Gulf-carrier
+// and route news with a UAE-resident angle.
+
+import NewsIndexLayout from "~/layouts/NewsIndexLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("news", (p) => p.data.beat === "airline"))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+
+<NewsIndexLayout
+  title="UAE airline & miles news | DubaiPoints"
+  description="Airline news for UAE residents: Emirates Skywards, Etihad Guest and Gulf-carrier programme changes, promotions and devaluations — every figure in AED, every claim sourced."
+  crumb="DubaiPoints / News / Airlines"
+  heading="The airline desk."
+  deck="Skywards, Etihad Guest and Gulf-carrier news that changes what a UAE resident should earn or burn — every figure in AED, every claim sourced."
+  posts={posts}
+  activeDesk="airline"
+>
+  <Fragment slot="empty">
+    <span class="news-empty-eyebrow">Airline desk · no stories yet</span>
+    <h2>No airline stories filed yet.</h2>
+    <p>
+      When Skywards, Etihad Guest or a Gulf carrier moves — a promotion,
+      a devaluation, a partner change worth a UAE resident's attention —
+      the story files here. Until then the
+      <a href="/airlines/">airline programme guides</a> carry the current
+      earn rates and sweet spots.
+    </p>
+    <div class="news-empty-ctas">
+      <a href="/newsletter/" class="news-empty-cta">Subscribe to the Friday brief →</a>
+      <a href="/rss.xml" class="news-empty-cta is-ghost">RSS feed →</a>
+    </div>
+  </Fragment>
+</NewsIndexLayout>

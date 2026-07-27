@@ -237,6 +237,17 @@ const NEWS_CATEGORY = z.enum([
   "salary-transfer",
 ]);
 
+// ── News desks (2026-07-27 council session: travel-news-desks-strategy) ──
+// `beat` is a second, orthogonal axis to `category`. Category answers
+// "what kind of story is this?" (deal-update, programme-change, …);
+// beat answers "which desk filed it?" (banking / airline / hotel). The
+// two must not be conflated: a Skywards devaluation is an *airline*-beat
+// *programme-change*. Beat is optional — publication-level posts (e.g.
+// the newsroom launch note) carry no beat and appear only on /news/.
+// Beat-filtered indexes live at /news/banking/, /news/airlines/,
+// /news/hotels/.
+const NEWS_BEAT = z.enum(["banking", "airline", "hotel"]);
+
 const news = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/news" }),
   schema: z.object({
@@ -245,6 +256,7 @@ const news = defineCollection({
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
     category: NEWS_CATEGORY.default("news"),
+    beat: NEWS_BEAT.optional(),
     relatedCards: z.array(reference("cards")).default([]),
     relatedPrograms: z.array(reference("programs")).default([]),
     relatedBanks: z.array(reference("banks")).default([]),
