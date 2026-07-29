@@ -79,6 +79,15 @@
 //   node -e 'const m=require("./data/stock/manifest.json");const b={};
 //   for(const e of m.entries){if(e.source_id)(b[e.source_id]??=[]).push(e.slug)}
 //   console.log(Object.entries(b).filter(([,v])=>v.length>1))'
+// Run that check BEFORE accepting a replacement, not only after. While
+// fixing one duplicate pair the audit created a third — a refetch
+// returned the exact photo already sitting on a sibling card. With 21
+// retail images drawing on the same stock pool, collisions are likely
+// rather than unlucky.
+//
+// Note on --pick: the fetcher requests five results and indexes 0-4.
+// An out-of-range pick errors the job and commits nothing, which from
+// the dispatch side looks identical to a slow run. Keep picks to 0-3.
 // Dining queries: prefer daytime / casual / food-forward framing —
 // "friends lunch daytime", never "evening dining wine".
 

@@ -412,6 +412,71 @@ a slow run. Over-specified queries ("shopping trolley cart groceries
 close up bright neutral") are the usual cause; prefer two or three
 plain words.
 
+---
+
+## Round 5 — the mosque ruling, executed
+
+Chairman ruling received: **replace**. All three Islamic-bank hubs now
+carry secular imagery, and the set holds together editorially:
+
+| Bank | Now | Rationale |
+|---|---|---|
+| Emirates Islamic | Mashrabiya oriel on banded ablaq stone | Islamic architectural *heritage*, no place of worship |
+| ADIB | Modern Abu Dhabi tower at dusk | Matches the register of the nine conventional bank hubs |
+| DIB | **Al Fahidi wind tower**, Dubai | Unmistakably Emirati, secular, distinct from four existing modern-Dubai towers |
+
+The cultural link to Islamic banking survives; the Shahada above a
+product grid does not.
+
+## Round 5 — duplicates, properly counted
+
+The round-3 duplicate check was **wrong**. It hashed files, which only
+catches identical bytes. Checking `source_id` found two pairs quietly
+running the same Pexels photograph at different resolutions:
+
+- `4124939` — the Italian supermarket, on **both** `card-citi-cashback`
+  and `card-dib-consumer-cashback`
+- `33497885` — the passport/boarding-pass shot, on both
+  `guide-expat-starter-points-101` and
+  `news-emirates-skywards-season-of-rewards-2026`
+
+Then, replacing the first pair, **I created a third**: the Citi refetch
+returned `7879896`, the exact photo already on
+`card-emirates-nbd-lulu-247-titanium`. With 21 retail images drawing on
+the same stock pool, collisions are likely rather than unlucky.
+
+**Check incoming source_id against the manifest before accepting a
+replacement**, not only after. Library now: zero shared source IDs.
+
+## Round 5 — further fixes
+
+- `card-citi-cashback` — Italian supermarket → (dup) → Slavic folk
+  still life → bright modern counter with vegetables. Three rounds.
+- `card-dib-consumer-cashback` — Italian supermarket → stacked bread
+  loaves.
+- `news-emirates-skywards-season-of-rewards-2026` — shared passport
+  photo → an **AIR ALBANIA** aircraft, too dark → Emirates 777-300ER
+  (A6-ENH). Wrong-brand failure number five.
+
+### Checked and kept
+
+- `card-adcb-lulu-platinum` — family at a produce counter. People-led
+  rather than object-led, but no masks, no foreign signage, place reads
+  as ambiguous. Fits a LuLu supermarket co-brand.
+- `card-emirates-nbd-noon-one` — unbranded parcel, hands only. Correct
+  for a noon co-brand.
+- `card-adcb-shukran` — children's clothing, which fits Shukran
+  (Landmark's Babyshop). Hangers carry small **NEXT** branding, a UK
+  competitor, but it is barely legible at any render size. Borderline,
+  logged not churned — same treatment as the Diners Club stemware.
+
+### Operational note
+
+`--pick 4` exceeds the fetcher's result set: it requests five results
+and indexes 0–4, but an out-of-range pick errors the job and commits
+nothing, which from the dispatch side looks identical to a slow run.
+Keep picks to 0–3.
+
 ## Method note for the next audit
 
 Metadata screening caught findings 1, 3, 4 and 5 — query text against
