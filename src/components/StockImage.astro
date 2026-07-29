@@ -55,7 +55,26 @@ const isAi = entry?.source === "ai-generated";
 ---
 
 {entry ? (
-  <>
+  isAi ? (
+    <span class="dp-ai-figure">
+      <img
+        src={`/${entry.file}`}
+        alt={entry.alt}
+        width={entry.width}
+        height={entry.height}
+        loading={loading}
+        decoding="async"
+        sizes={sizes}
+        class={className}
+        data-stock-slug={entry.slug}
+        data-stock-source={entry.source}
+        data-ai-generated="true"
+      />
+      <span class="dp-ai-label" data-image-ai-label>
+        Illustration: generated with {entry.generator} · not a photograph
+      </span>
+    </span>
+  ) : (
     <img
       src={`/${entry.file}`}
       alt={entry.alt}
@@ -67,28 +86,52 @@ const isAi = entry?.source === "ai-generated";
       class={className}
       data-stock-slug={entry.slug}
       data-stock-source={entry.source}
-      data-ai-generated={isAi ? "true" : undefined}
     />
-    {isAi && (
-      <span class="dp-ai-label" data-image-ai-label>
-        Illustration: generated with {entry.generator} · not a photograph
-      </span>
-    )}
-  </>
+  )
 ) : (
   <Cover title={coverTitle} category={coverCategory} size={coverSize} />
 )}
 
 <style>
-  /* Disclosure, not decoration — sits under the image it labels and
-     never competes with the headline beside it. */
-  .dp-ai-label {
+  /* The label rides ON the image rather than under it.
+
+     In-flow it wrapped to two lines inside a listing tile and pushed
+     that card's eyebrow and headline ~30px below its neighbours' —
+     every card grid on the site broke its rhythm around a single AI
+     image. Overlaid, the disclosure travels with the image everywhere
+     it appears and costs no layout.
+
+     Only ai-generated entries get this wrapper; photographs keep the
+     bare <img> they have always rendered, so the 105 photo entries
+     carry no regression risk from this change. */
+  .dp-ai-figure {
+    position: relative;
     display: block;
+    line-height: 0;
+  }
+  .dp-ai-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 26px 12px 9px;
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 11px;
     font-style: italic;
-    line-height: 1.4;
-    color: var(--muted);
-    margin: 6px 0 0;
+    line-height: 1.35;
+    color: #fff;
+    text-align: left;
+    /* Scrim tuned against the first real image — a bright gold frame
+       where a 62% gradient left white italic text barely readable.
+       The dark stop has to reach full strength behind the text itself,
+       not just at the image edge. */
+    background: linear-gradient(
+      to top,
+      rgb(0 0 0 / 82%) 0%,
+      rgb(0 0 0 / 72%) 55%,
+      rgb(0 0 0 / 0%) 100%
+    );
+    text-shadow: 0 1px 2px rgb(0 0 0 / 55%);
+    pointer-events: none;
   }
 </style>
