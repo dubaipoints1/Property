@@ -29,6 +29,17 @@
 //   - Too-dark / illegible-at-tile-size frames (photos render at
 //     ~300×190 in listing grids — a moody near-black shot reads as a
 //     broken image).
+//   - WRONG CLIMATE OR PLACE. Added after the 2026-07-29 relevance
+//     audit, where both rejects matched their topic perfectly and
+//     failed on geography: a thatched-hut tropical resort for a UAE
+//     beach-club perk, and a couple in padded winter coats under a grey
+//     sky in a concrete car park for a grocery cashback card. Snow,
+//     bare deciduous trees, overcast European light and cold-weather
+//     clothing all break a Dubai-first publication. Subject match is
+//     not enough — the frame has to be plausibly Gulf, or neutral
+//     enough that place doesn't read at all.
+//   - Crowded people-led scenes where the library is object-led. Faces
+//     pull focus in a grid of still-life; prefer the object.
 // Dining queries: prefer daytime / casual / food-forward framing —
 // "friends lunch daytime", never "evening dining wine".
 

@@ -84,6 +84,14 @@ is rejected regardless of how well it renders.
 - **No symbols invented by the model.** Arrows, equals signs and
   glyphs are editorial claims. Exclude them explicitly; they carry
   meaning nobody briefed.
+- **Right subject is not enough — the place has to work too.** The
+  2026-07-29 relevance audit rejected two *correctly-matched* stock
+  images purely on geography: a thatched-hut tropical resort for a UAE
+  beach-club perk, and a couple in padded winter coats under a grey sky
+  for a grocery card. Snow, bare deciduous trees, overcast European
+  light and cold-weather clothing all break a Dubai-first publication.
+  Brief for Gulf-plausible or place-neutral, and check the background,
+  the sky and what people are wearing — not just the subject.
 
 ## 4. The permit/ban line is not negotiable
 

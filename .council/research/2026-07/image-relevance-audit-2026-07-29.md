@@ -165,6 +165,45 @@ merely inoffensive:
   at 2% is the card's top published rate, and the supermarket slot is
   already taken by its sibling. Left as is.
 
+---
+
+## Outcomes — all four actionable findings fixed and visually verified
+
+| Slug | Was | Now | Rounds |
+|---|---|---|---|
+| `guide-dubai-brunch-…` | Wine glass + champagne bucket | Overhead brunch spread, no glassware | 1 |
+| `card-adcb-essential-cashback` | Cinema popcorn + tickets | Unbranded card at a shop terminal | 1 |
+| `card-fab-elite` | Luxury watch boutique | Premium gym interior | 2 |
+| `card-rakbank-world` | Marina promenade at evening | Market produce close-up | 2 |
+
+Every replacement was opened and looked at before acceptance. Two
+needed a second round, and **both second rounds were forced by
+geography, not by topic** — see below.
+
+### The lesson worth keeping: subject match is not relevance
+
+The first `card-fab-elite` replacement was a resort pool with sun
+loungers. Perfectly on-topic for a beach-club perk — and visibly
+tropical, all thatched palapas and casuarina trees. It implied overseas
+leisure travel to readers of a Dubai-first publication.
+
+The first `card-rakbank-world` replacement was worse: a couple loading
+groceries into a car boot, both in **padded winter coats** under a grey
+sky in a concrete car park. Correct subject. Wrong hemisphere.
+
+Neither failure was detectable from the query, the alt text, or the
+topic mapping. Both required looking. The rule is now written into
+`fetch-stock.ts` beside the alcohol and religious-architecture rules,
+and into the AI art-direction SOP §3:
+
+> Snow, bare deciduous trees, overcast European light and cold-weather
+> clothing all break a Dubai-first publication. Check the background,
+> the sky, and what people are wearing — not just the subject.
+
+A second rule joined it: the library is **object-led**. The car-park
+image put two faces front-and-centre in a grid of still-life, and read
+as downmarket next to its neighbours.
+
 ## Method note for the next audit
 
 Metadata screening caught findings 1, 3, 4 and 5 — query text against
