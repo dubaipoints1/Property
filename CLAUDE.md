@@ -347,9 +347,29 @@ enforced in code, not by habit:
   (`ImageCredit.astro` also splits photo credits from AI labels, but it
   is not currently mounted on any page.)
 
-`FAL_KEY` is a separate credential from everything else: set it in
-`.env` for local runs and as a repo Actions secret if an imagery
-workflow ever needs it. There is no MCP channel for it.
+### fal.ai credentials — two channels, and only one of them works from a web session
+
+`FAL_KEY` is separate from every other credential in this repo. Unlike
+Firecrawl there is **no MCP channel** — fal.ai is a plain REST API, not
+a connector, so there is nothing to "enable" inside Claude Code.
+
+| Channel | Used by | Where to configure | Works? |
+|---|---|---|---|
+| GitHub Actions secret | `.github/workflows/gen-ai-image.yml` (manual dispatch) | Repo settings → Secrets → Actions → `FAL_KEY` | ✅ |
+| Local dev shell | `npm run gen:ai` from a workstation | `.env` or shell export | ✅ |
+| Claude Code web session env var | — | — | ❌ see below |
+
+Setting `FAL_KEY` in the Claude Code environment config does **not**
+enable generation from a web session: `fal.run` returns `000` (no
+resolve) from the runtime, the same allowlist class as
+`api.pexels.com`. That is why every Pexels seed has gone through
+Actions rather than a local `npm run fetch:stock`, and AI generation
+inherits the identical constraint. GitHub's runners use different
+egress and are unaffected.
+
+Add `fal.run` to the allowlist request in the network-allowlist
+section below if in-session generation ever becomes worth having; it
+is not required for the pipeline to work.
 
 ## Content collections
 
@@ -442,6 +462,17 @@ Confirmed status as of 2026-05-24:
 | `www.emirates.com` | 403 | Emirates Media Centre — primary press library |
 | `www.etihad.com` | 403 | Etihad press kit |
 | `media.flydubai.com` | 000 | flydubai press centre |
+
+Re-confirmed 2026-07-29, and two API hosts added:
+
+| Host | Status | Use case blocked |
+|---|---|---|
+| `api.pexels.com` | 000 | `npm run fetch:stock` from a web session |
+| `fal.run` / `fal.ai` | 000 | `npm run gen:ai` from a web session |
+
+Both have a working Actions channel (`seed-images-*.yml`,
+`refetch-image.yml`, `gen-ai-image.yml`), so neither blocks the
+imagery pipeline — they only block running it in-session.
 
 **Operational consequences:**
 
