@@ -204,6 +204,54 @@ A second rule joined it: the library is **object-led**. The car-park
 image put two faces front-and-centre in a grid of still-life, and read
 as downmarket next to its neighbours.
 
+---
+
+## Round 2 — the GCC/UAE pass
+
+The first round screened by rule and topic, and inspected only where
+those flagged something. On owner direction ("keep it GCC UAE based;
+understand the context of the article") a second pass ran specifically
+for **place**.
+
+Scale of the exposure: **60 of 106 entries carry no place anchor** in
+their query or alt text. Over half the library was topically verified
+but geographically unverified — including images this audit had already
+passed in round 1.
+
+### Found and fixed
+
+**`card-adcb-talabat` — a competitor's branding on a co-brand card.**
+The rider's delivery box read **"99 food"**, a Latin American delivery
+brand, on the review page for the **ADCB Talabat** card. Talabat is the
+UAE incumbent. Beyond geography, this illustrated a co-brand product
+with its rival's mark. Replaced with an unbranded takeaway meal.
+(First replacement was rejected too — brand-clean and place-neutral,
+but dim and murky, failing the tile-legibility rule.)
+
+**`programme-accor-all` — Bali, alcohol signage, and swimwear.** A
+Balinese resort with thatched pavilions, a **"HAPPY HOUR"** sign on the
+swim-up bar, and swimmers in frame. Three separate problems in one
+image, live on a programme page. Replaced with a graphic warm-stone
+hotel facade — also the only hotel *exterior* in a library otherwise
+full of hotel interiors.
+
+**`card-fab-elite` — corrected, over-corrected, then reverted.** The
+gym interior accepted earlier the same day had bare trees and iced
+water visible through its glass wall. Attempting to fix it object-led
+produced rusty 5kg plates that read budget-municipal on a card selling
+concierge and valet; a third attempt returned a spa with two people in
+swimwear and a **Russian-language** display. The wide gym interior was
+restored and its minor window accepted. Recorded because the churn was
+avoidable: the fix traded a small flaw for larger ones.
+
+### Noted, not actioned
+
+`card-emirates-nbd-diners-club` shows empty stemware, blurred, in the
+background of a mezze spread. The kill-list names "even incidental
+table-setting glassware", but the drink in shot reads as ayran and the
+subject is unambiguously food. Flagged as borderline rather than
+churned — a judgement to confirm at the next standards review.
+
 ## Method note for the next audit
 
 Metadata screening caught findings 1, 3, 4 and 5 — query text against
