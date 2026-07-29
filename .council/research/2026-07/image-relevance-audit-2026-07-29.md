@@ -252,6 +252,67 @@ table-setting glassware", but the drink in shot reads as ayran and the
 subject is unambiguously food. Flagged as borderline rather than
 churned — a judgement to confirm at the next standards review.
 
+---
+
+## Round 3 — brand identity
+
+On owner direction ("what brand or name is it… context and what it is
+is important, can't be random"), a third pass checked whether every
+brand-specific page shows the **named brand**.
+
+This is the worst failure mode in the set, because it looks fine until
+you read the livery.
+
+### Found
+
+**`news-etihad-fare-sale-book-by-31-july-2026` was a Lufthansa
+aircraft.** An A350-900 named *Dortmund*, German registration, crane
+tail, parked at **Munich** T2 (gates 255/256 visible) — illustrating an
+**Etihad** fare sale. A European competitor at a European hub on a UAE
+carrier's story. Replaced with a genuine Etihad A380 (A6-APF).
+
+**`card-emirates-nbd-etihad-guest-inspire` was a byte-identical
+duplicate** of `programme-etihad-guest` — the same photograph doing two
+jobs on two pages. Correct brand, but duplicate images across pages
+read as a template rather than a publication. Confirmed by hashing the
+whole library; it was the only duplicate pair in 106 files.
+
+Together with round 2's `card-adcb-talabat` — a **"99 food"** box, a
+Latin American delivery brand, on the **Talabat** co-brand card — that
+is three brand-identity failures, none of which any metadata check
+could have caught.
+
+### Verified correct, and worth recording as such
+
+Spot-checking the brand-critical set found the rest sound:
+
+| Page | Shows | Verdict |
+|---|---|---|
+| `programme-skywards` | Emirates 777, full livery | ✅ |
+| `programme-etihad-guest` | Etihad 787, F1 Abu Dhabi livery | ✅ |
+| `programme-qatar-privilege-club` | Qatar Airways 777 | ✅ |
+| `card-emirates-nbd-skywards-infinite` | Emirates A380 | ✅ |
+| `programme-marriott-bonvoy` | Gulf luxury lobby — mashrabiya screens, palms, sea | ✅ |
+
+### The rule
+
+Written into the `fetch-stock.ts` kill-list:
+
+> A named page must show the named thing. Check the tail, the fascia,
+> the delivery box, the shopfront — anything carrying a mark. A
+> competitor's mark on a co-brand page is worse than a generic image:
+> it is not merely irrelevant, it is wrong about the product.
+
+Plus a duplicate check — `md5sum public/images/stock/*.jpg` — since
+nothing else surfaces a shared file.
+
+### Still unverified
+
+Rounds 2 and 3 inspected the highest-risk entries, not all 60
+place-unanchored ones. Category coherence (does a hotel page show a
+hotel, an airline page an aircraft) held everywhere it was checked, but
+"checked" is not "all". The remainder is real outstanding exposure.
+
 ## Method note for the next audit
 
 Metadata screening caught findings 1, 3, 4 and 5 — query text against

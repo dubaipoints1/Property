@@ -40,6 +40,20 @@
 //     enough that place doesn't read at all.
 //   - Crowded people-led scenes where the library is object-led. Faces
 //     pull focus in a grid of still-life; prefer the object.
+//   - THE WRONG BRAND. The single worst failure mode, because it looks
+//     fine until you read the livery. A named page must show the named
+//     thing: an Etihad story takes an Etihad aircraft, a Talabat
+//     co-brand takes Talabat's world. The 2026-07-29 audit found a
+//     LUFTHANSA A350 at Munich illustrating an Etihad fare sale, and a
+//     rider carrying a "99 food" box (a Latin American brand) on the
+//     ADCB Talabat card review. Check the tail, the fascia, the
+//     delivery box, the shopfront — anything carrying a mark.
+//   - A COMPETITOR'S MARK on a co-brand page is worse than a generic
+//     image. It is not merely irrelevant; it is wrong about the
+//     product.
+// Also: no two slugs share a file. Duplicate images across pages read
+// as a template, not a publication — `md5sum public/images/stock/*.jpg`
+// catches it.
 // Dining queries: prefer daytime / casual / food-forward framing —
 // "friends lunch daytime", never "evening dining wine".
 
