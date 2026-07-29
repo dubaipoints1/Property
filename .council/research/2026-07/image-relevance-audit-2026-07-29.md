@@ -277,10 +277,22 @@ jobs on two pages. Correct brand, but duplicate images across pages
 read as a template rather than a publication. Confirmed by hashing the
 whole library; it was the only duplicate pair in 106 files.
 
+**`card-fab-etihad-guest-infinite` showed no airline at all.** A dark
+night shot through a terminal window, heavy orange flare, an
+unidentifiable white aircraft at a stand — on a premium **Etihad**
+co-brand. It failed twice over: no Etihad marking anywhere in frame,
+and far too dark to read at tile size. Replaced with an Etihad 787
+Dreamliner (A6-BNB) in standard livery against blue sky.
+
 Together with round 2's `card-adcb-talabat` — a **"99 food"** box, a
 Latin American delivery brand, on the **Talabat** co-brand card — that
-is three brand-identity failures, none of which any metadata check
+is four brand-identity failures, none of which any metadata check
 could have caught.
+
+The four Etihad-facing pages now carry four *distinct* Etihad
+aircraft: the F1 787 (A6-BLV) on the programme, the A380 (A6-APF) on
+the fare-sale story, the "Choose Thailand" 787 (A6-BLO) on Inspire, and
+the standard-livery 787 (A6-BNB) on FAB Infinite.
 
 ### Verified correct, and worth recording as such
 
