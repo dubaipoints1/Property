@@ -21,6 +21,14 @@
 #   5. Alt: descriptive alt text
 #   6. Run, then REVIEW THE RENDERED PAGE before merging.
 #
+# PLAN BEFORE YOU DISPATCH. Each run costs a fal.ai credit. The first
+# real image took four dispatches because the brief described the
+# concept and not the composition, and because a model problem was
+# re-worded twice instead of being switched. Write the six-field brief
+# in .council/sops/ai-illustration-art-direction.md §2 first, check it
+# against §3 and §4, then run once. Two failures on one slot means
+# changing a structural variable, never re-rolling the same prompt.
+#
 # ── What this will refuse ───────────────────────────────────────────
 # Per the amendment, AI imagery illustrates and never documents. The
 # script's subject guard rejects prompts naming a real issuer, carrier,
@@ -57,9 +65,9 @@ on:
         required: true
         type: string
       model:
-        description: "fal.ai model"
+        description: "fal.ai model (recraft-v3 matches the house register)"
         required: false
-        default: "fal-ai/flux/dev"
+        default: "fal-ai/recraft-v3"
         type: string
       size:
         description: "Image size preset"

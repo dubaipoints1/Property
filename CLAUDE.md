@@ -331,7 +331,17 @@ npm run gen:ai -- --slug guide-fx-concept --prompt "..." --alt "..." [--model fa
 
 They land in different places on purpose: photographs at
 `public/images/stock/`, illustration at `public/images/ai/` with
-`source: "ai-generated"`. The 2026-07-29 amendment's guarantees are
+`source: "ai-generated"`.
+
+**Before generating anything, read
+`.council/sops/ai-illustration-art-direction.md`.** fal.ai bills per
+render and the house register is photographic, not flat vector — the
+first real image cost four dispatches because the brief described a
+concept instead of a composition, and because a model problem was
+re-worded twice rather than switched. The SOP carries the six-field
+brief, the composition rules, and the rule that two identical failures
+mean changing the model rather than the adjectives. Default model is
+`fal-ai/recraft-v3`. The 2026-07-29 amendment's guarantees are
 enforced in code, not by habit:
 
 - The manifest schema **rejects** an AI entry missing `generator` or

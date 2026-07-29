@@ -85,19 +85,21 @@ const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), 
 const MANIFEST_PATH = path.join(REPO_ROOT, "data/stock/manifest.json");
 const AI_DIR = path.join(REPO_ROOT, "public/images/ai");
 
-const DEFAULT_MODEL = "fal-ai/flux/dev";
+// recraft-v3 defaults to a realistic-image style and produces the macro
+// still-life register the stock library actually uses. flux/dev was the
+// original default and returned soft, out-of-focus output across three
+// consecutive prompts explicitly demanding crisp geometry — a model
+// characteristic, not a wording problem. See
+// .council/sops/ai-illustration-art-direction.md §5.
+const DEFAULT_MODEL = "fal-ai/recraft-v3";
 const DEFAULT_SIZE = "landscape_16_9";
 
-/** Fallback dimensions per fal image_size preset, used when the API
- *  response omits width/height (some models return url only). */
-const SIZE_DIMENSIONS: Record<string, { width: number; height: number }> = {
-  landscape_16_9: { width: 1344, height: 768 },
-  landscape_4_3: { width: 1152, height: 896 },
-  square_hd: { width: 1024, height: 1024 },
-  square: { width: 512, height: 512 },
-  portrait_4_3: { width: 896, height: 1152 },
-  portrait_16_9: { width: 768, height: 1344 },
-};
+// Delivery budget. The stock library averages ~250KB; a raw fal render
+// arrives at 1.7MB and 1820px wide, which is a real page-weight
+// regression on a site whose images are its heaviest asset. Renders are
+// resized down to MAX_WIDTH and re-encoded before they land.
+const MAX_WIDTH = 1600;
+const JPEG_QUALITY = 82;
 
 // Negative prompting is standard practice — "no logos, no text" is how
 // an editor asks for clean illustration, and it must not read as a
@@ -246,12 +248,40 @@ async function falGenerate(args: CliArgs, model: string, key: string): Promise<F
   return (await res.json()) as FalResponse;
 }
 
-async function downloadFile(url: string, dest: string): Promise<void> {
+/** Download, normalise for delivery, and report the TRUE dimensions of
+ *  what actually landed on disk.
+ *
+ *  Dimensions are measured, never assumed. fal's response omits
+ *  width/height on some models (recraft-v3 among them), and an earlier
+ *  version of this script fell back to a per-preset lookup table — which
+ *  recorded 1344x768 for a file that was really 1820x1024, so every
+ *  <img> got a wrong intrinsic size. The file is the only honest source
+ *  for its own dimensions. */
+async function downloadImage(
+  url: string,
+  dest: string,
+): Promise<{ width: number; height: number; bytes: number }> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Download failed: ${res.status} ${res.statusText}`);
-  const buf = Buffer.from(await res.arrayBuffer());
+  const raw = Buffer.from(await res.arrayBuffer());
+
+  const { default: sharp } = await import("sharp");
+  const source = sharp(raw);
+  const meta = await source.metadata();
+
+  const processed = await source
+    .resize({ width: Math.min(meta.width ?? MAX_WIDTH, MAX_WIDTH), withoutEnlargement: true })
+    .jpeg({ quality: JPEG_QUALITY, progressive: true, mozjpeg: true })
+    .toBuffer();
+
+  const final = await sharp(processed).metadata();
+  if (!final.width || !final.height) {
+    throw new Error("Could not read dimensions from the generated image");
+  }
+
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.writeFileSync(dest, buf);
+  fs.writeFileSync(dest, processed);
+  return { width: final.width, height: final.height, bytes: processed.length };
 }
 
 async function main(): Promise<void> {
@@ -304,9 +334,7 @@ async function main(): Promise<void> {
   const dest = path.join(AI_DIR, filename);
 
   console.log(`Downloading result → public/${file}`);
-  await downloadFile(image.url, dest);
-
-  const fallback = SIZE_DIMENSIONS[args.size ?? DEFAULT_SIZE] ?? SIZE_DIMENSIONS[DEFAULT_SIZE];
+  const { width, height, bytes } = await downloadImage(image.url, dest);
   const label = generatorLabel(model);
 
   const entry: ManifestEntry = {
@@ -317,8 +345,8 @@ async function main(): Promise<void> {
     photographer: label,
     licence: "AI-generated illustration — created for DubaiPoints, labelled on every rendered page",
     file,
-    width: image.width ?? fallback.width,
-    height: image.height ?? fallback.height,
+    width,
+    height,
     alt: args.alt,
     fetched_at: new Date().toISOString().slice(0, 10),
     usage_hint: args.usage,
@@ -334,7 +362,7 @@ async function main(): Promise<void> {
   manifest.entries.sort((a, b) => a.slug.localeCompare(b.slug));
   saveManifest(manifest);
 
-  console.log(`✓ ${args.slug} (${entry.width}×${entry.height}) — ${label}`);
+  console.log(`✓ ${args.slug} (${entry.width}×${entry.height}, ${Math.round(bytes / 1024)}KB) — ${label}`);
   console.log(`  Renders as: "Illustration: generated with ${label} · not a photograph"`);
   console.log(`  Manifest: ${MANIFEST_PATH}`);
 }
