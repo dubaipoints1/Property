@@ -180,8 +180,7 @@ Meta title patterns:
   inclusive figure at the data layer before display; the inclusive
   figure carries an "(incl. VAT)" tag on the card review, AtAGlance
   tile, and comparison table.
-- **An image without a verifiable license.** No AI-generated photography
-  under any circumstances. Bank or airline imagery from a public press
+- **An image without a verifiable license.** Bank or airline imagery from a public press
   / media library (e.g. `emirates.com/media-centre/media-library/`,
   Etihad / Qatar / Saudia / flydubai press centres, bank press kits
   published on issuer websites) is usable under the standard editorial-
@@ -195,5 +194,20 @@ Meta title patterns:
   Every published image carries a visible credit line on the page.
   Source URL + credit-line string + date-sourced live in LIBRARY.md —
   not in JSDoc, not in frontmatter, not in commit messages.
+- **An AI-generated image used as documentation, or shipped
+  unlabelled.** Per the 2026-07-29 Charter amendment, AI generation is
+  permitted for *illustration* — abstract or conceptual art, generic
+  unbranded scenes, diagrammatic art — and banned for anything a reader
+  could mistake for evidence: card art or plastic of a real product, a
+  named carrier's cabin / seat / livery / lounge, a named hotel
+  property, a bank branch, a document or screenshot, any real person,
+  or an identifiable landmark framed as a documentary record. Every AI
+  image renders a visible "Illustration: generated with `<model>` · not
+  a photograph" credit and carries `source: "ai-generated"` plus the
+  generating model and the full prompt in
+  `data/stock/manifest.json`. Missing label, missing prompt, or a
+  banned subject is a kill. AI-generated brand marks and logos remain
+  banned outright (2026-05-29 amendment). Sourcing preference order:
+  issuer press library → licensed stock → AI illustration.
 
 End.

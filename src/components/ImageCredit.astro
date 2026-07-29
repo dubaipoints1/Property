@@ -12,8 +12,16 @@
 // Renders nothing if no slug resolves to a manifest entry (silent
 // fallback so pages with Cover.astro SVG fallbacks don't show a
 // dangling "Photo by undefined" line).
+//
+// AI-generated entries (2026-07-29 Charter amendment) render on their
+// own line as "Illustration: generated with <model> · not a
+// photograph". They are deliberately NOT folded into the photo credit:
+// the whole basis of the amendment is that a reader can always tell at
+// a glance which images are records and which are drawings. Photo
+// credits stay first because they are the ones carrying attribution
+// obligations.
 
-import { getStockEntry } from "../lib/stockManifest";
+import { getStockEntry, isAiGenerated, type StockEntry } from "../lib/stockManifest";
 
 interface Props {
   slug?: string;
@@ -24,21 +32,29 @@ interface Props {
 const { slug, slugs, class: className } = Astro.props;
 
 const allSlugs = slug ? [slug] : (slugs ?? []);
-const entries = allSlugs
+const entries: StockEntry[] = allSlugs
   .map((s) => getStockEntry(s))
-  .filter((e): e is NonNullable<typeof e> => Boolean(e));
+  .filter((e): e is StockEntry => Boolean(e));
+
+const photos = entries.filter((e) => !isAiGenerated(e));
+const illustrations = entries.filter(isAiGenerated);
+
+// De-duplicate by model — three illustrations from one model read as
+// one label, not three repetitions of the same sentence.
+const generators = [...new Set(illustrations.map((e) => e.generator ?? e.photographer))];
 
 const sourceLabel: Record<string, string> = {
   pexels: "Pexels",
   unsplash: "Unsplash",
   editorial: "Editorial",
+  "ai-generated": "AI illustration",
 };
 ---
 
-{entries.length > 0 && (
+{photos.length > 0 && (
   <p class={`dp-image-credit ${className ?? ""}`}>
-    {entries.length === 1 ? "Photo" : "Photos"}:
-    {entries.map((entry, i) => (
+    {photos.length === 1 ? "Photo" : "Photos"}:
+    {photos.map((entry, i) => (
       <>
         {i > 0 ? "; " : " "}
         {entry.photographer_url ? (
@@ -54,6 +70,13 @@ const sourceLabel: Record<string, string> = {
         )}
       </>
     ))}
+  </p>
+)}
+
+{illustrations.length > 0 && (
+  <p class={`dp-image-credit is-ai ${className ?? ""}`} data-image-ai-label>
+    {illustrations.length === 1 ? "Illustration" : "Illustrations"}: generated with{" "}
+    {generators.join(", ")} · not a photograph
   </p>
 )}
 
@@ -74,5 +97,10 @@ const sourceLabel: Record<string, string> = {
   .dp-image-credit a:hover {
     color: var(--ink);
     text-decoration-color: var(--ink-soft);
+  }
+  /* The AI label is a disclosure, not decoration — italic so it reads
+     as an editorial note rather than an attribution link. */
+  .dp-image-credit.is-ai {
+    font-style: italic;
   }
 </style>

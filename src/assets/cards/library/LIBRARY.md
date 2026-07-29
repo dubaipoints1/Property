@@ -9,8 +9,20 @@ SectionBreak `image="…"` prop both resolve here at build time via
 
 ## Policy
 
-- **No AI-generated photography.** Period. The kill-list entry in
-  `.council/01_editorial_standards.md` §10 is load-bearing.
+- **No AI-generated card art or product photography.** Per the
+  2026-07-29 Charter amendment, AI generation is permitted for
+  *illustration* but banned for anything a reader could mistake for
+  evidence — and on card-review pages that ban covers the whole
+  product surface: card faces and plastic, a named carrier's cabin /
+  seat / livery / lounge, a named hotel property, a bank branch, a
+  document or screenshot, any real person. In practice **this library
+  takes no AI images**: every file here sits beside a factual claim
+  about a real product. Conceptual AI illustration belongs in the
+  stock manifest (`data/stock/manifest.json`, `source:
+  "ai-generated"`), labelled "Illustration: generated with `<model>`
+  · not a photograph", never here. AI-generated brand marks and logos
+  remain banned outright (2026-05-29 amendment). The kill-list entry
+  in `.council/01_editorial_standards.md` §10 is load-bearing.
 - **Every entry below carries a verifiable license.** Source URL,
   license type, and clearance date are recorded per-image in the
   table below.

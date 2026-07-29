@@ -18,6 +18,15 @@
 //     loading="eager"                       // <img> attr (default lazy)
 //   />
 
+// AI-generated entries (2026-07-29 amendment) render their "not a
+// photograph" label here rather than through <ImageCredit>, because
+// <ImageCredit> is not currently mounted on any page — a label routed
+// only through it would be a policy with no rendering path. Emitting
+// it beside the <img> means the label ships with the image wherever
+// the image ships, which is what the amendment actually promises.
+// Photographs are unaffected: the label element only exists for
+// ai-generated entries, so no existing layout gains a node.
+
 import { getStockEntry } from "../lib/stockManifest";
 import Cover from "./Cover.astro";
 
@@ -42,21 +51,44 @@ const {
 } = Astro.props;
 
 const entry = getStockEntry(slug);
+const isAi = entry?.source === "ai-generated";
 ---
 
 {entry ? (
-  <img
-    src={`/${entry.file}`}
-    alt={entry.alt}
-    width={entry.width}
-    height={entry.height}
-    loading={loading}
-    decoding="async"
-    sizes={sizes}
-    class={className}
-    data-stock-slug={entry.slug}
-    data-stock-source={entry.source}
-  />
+  <>
+    <img
+      src={`/${entry.file}`}
+      alt={entry.alt}
+      width={entry.width}
+      height={entry.height}
+      loading={loading}
+      decoding="async"
+      sizes={sizes}
+      class={className}
+      data-stock-slug={entry.slug}
+      data-stock-source={entry.source}
+      data-ai-generated={isAi ? "true" : undefined}
+    />
+    {isAi && (
+      <span class="dp-ai-label" data-image-ai-label>
+        Illustration: generated with {entry.generator} · not a photograph
+      </span>
+    )}
+  </>
 ) : (
   <Cover title={coverTitle} category={coverCategory} size={coverSize} />
 )}
+
+<style>
+  /* Disclosure, not decoration — sits under the image it labels and
+     never competes with the headline beside it. */
+  .dp-ai-label {
+    display: block;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 11px;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--muted);
+    margin: 6px 0 0;
+  }
+</style>

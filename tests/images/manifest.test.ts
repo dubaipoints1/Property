@@ -23,6 +23,8 @@ interface Entry {
   height: number;
   alt: string;
   fetched_at: string;
+  generator?: string;
+  prompt?: string;
 }
 
 interface Manifest {
@@ -67,8 +69,30 @@ test("every entry has required attribution fields", () => {
       `entry "${entry.slug}" missing licence`);
     assert.ok(entry.alt && entry.alt.length > 0,
       `entry "${entry.slug}" missing alt text`);
-    assert.ok(["pexels", "unsplash", "editorial"].includes(entry.source),
+    assert.ok(["pexels", "unsplash", "editorial", "ai-generated"].includes(entry.source),
       `entry "${entry.slug}" has invalid source: ${entry.source}`);
+  }
+});
+
+// The 2026-07-29 amendment's guarantee is that no AI image ships
+// without a named model and its full prompt — the model drives the
+// visible "not a photograph" label, the prompt is the provenance
+// record. Both are enforced at manifest load; this covers the same
+// ground under `npm test` so a bad entry fails before the build.
+test("ai-generated entries carry generator + prompt and live under images/ai/", () => {
+  const manifest = loadManifest();
+  for (const entry of manifest.entries) {
+    if (entry.source !== "ai-generated") {
+      assert.ok(!entry.generator && !entry.prompt,
+        `entry "${entry.slug}" carries generator/prompt but is not ai-generated`);
+      continue;
+    }
+    assert.ok(entry.generator && entry.generator.length > 0,
+      `ai entry "${entry.slug}" must name the generating model`);
+    assert.ok(entry.prompt && entry.prompt.length > 0,
+      `ai entry "${entry.slug}" must record the full generating prompt`);
+    assert.ok(entry.file.startsWith("images/ai/"),
+      `ai entry "${entry.slug}" must live under images/ai/, got "${entry.file}"`);
   }
 });
 
@@ -102,7 +126,7 @@ test("every entry's file path resolves to a real file on disk", () => {
 test("file paths conform to allowed locations", () => {
   const manifest = loadManifest();
   for (const entry of manifest.entries) {
-    assert.match(entry.file, /^(images\/stock|cover)\/[a-z0-9-]+\.(jpg|jpeg|png|webp)$/,
+    assert.match(entry.file, /^(images\/stock|images\/ai|cover)\/[a-z0-9-]+\.(jpg|jpeg|png|webp)$/,
       `entry "${entry.slug}" file path "${entry.file}" not in allowed locations`);
   }
 });
