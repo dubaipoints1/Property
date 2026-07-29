@@ -85,7 +85,13 @@ const REPO_ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), 
 const MANIFEST_PATH = path.join(REPO_ROOT, "data/stock/manifest.json");
 const AI_DIR = path.join(REPO_ROOT, "public/images/ai");
 
-const DEFAULT_MODEL = "fal-ai/flux/dev";
+// recraft-v3 defaults to a realistic-image style and produces the macro
+// still-life register the stock library actually uses. flux/dev was the
+// original default and returned soft, out-of-focus output across three
+// consecutive prompts explicitly demanding crisp geometry — a model
+// characteristic, not a wording problem. See
+// .council/sops/ai-illustration-art-direction.md §5.
+const DEFAULT_MODEL = "fal-ai/recraft-v3";
 const DEFAULT_SIZE = "landscape_16_9";
 
 // Delivery budget. The stock library averages ~250KB; a raw fal render
