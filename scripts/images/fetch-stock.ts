@@ -66,6 +66,11 @@
 //     returns these by default and one reached the ENBD Duo review
 //     during the 2026-07-29 audit. We publish card reviews, not
 //     hardship illustrations; shoot the spend, not the anxiety.
+//   - DATED IMAGERY, above all COVID-era face masks and disposable
+//     gloves. Stock libraries are still full of 2020-21 shoots and they
+//     read instantly as old — the LuLu 247 Platinum card was carrying a
+//     masked shopper in 2026. Also watch for obsolete phone handsets
+//     and pre-transition brand marks.
 // Also: no two slugs share a file. Duplicate images across pages read
 // as a template, not a publication — `md5sum public/images/stock/*.jpg`
 // catches it.
