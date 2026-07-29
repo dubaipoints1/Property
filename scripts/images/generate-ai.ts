@@ -99,11 +99,49 @@ const SIZE_DIMENSIONS: Record<string, { width: number; height: number }> = {
   portrait_16_9: { width: 768, height: 1344 },
 };
 
+// Negative prompting is standard practice — "no logos, no text" is how
+// an editor asks for clean illustration, and it must not read as a
+// request for a logo.
+//
+// Rather than stripping words (which is both too greedy and not greedy
+// enough — it either eats a banned subject sitting after the negated
+// clause, or stops short of a second item in an "x or y" list), each
+// MATCH is tested for whether a negator governs it: scan back from the
+// match within the same clause, stopping at any , . or ; boundary. A
+// rule fires unless every one of its matches is negated. So
+// "Emirates cabin, no logos" still fires on the carrier, and
+// "no text, photorealistic bank statement" still fires on the
+// document — the negator only covers what it actually governs.
+const NEGATOR = /\b(?:no|not|without|avoid(?:ing)?|excluding|free of)\b[^,.;]*$/i;
+
+function isNegated(subject: string, matchIndex: number): boolean {
+  const clauseStart = Math.max(
+    subject.lastIndexOf(",", matchIndex),
+    subject.lastIndexOf(".", matchIndex),
+    subject.lastIndexOf(";", matchIndex),
+  );
+  const preceding = subject.slice(clauseStart + 1, matchIndex);
+  return NEGATOR.test(preceding);
+}
+
+/** True when the rule matches at least once un-negated. */
+function firesOn(pattern: RegExp, subject: string): boolean {
+  const global = new RegExp(pattern.source, pattern.flags.includes("g") ? pattern.flags : pattern.flags + "g");
+  let match: RegExpExecArray | null;
+  while ((match = global.exec(subject)) !== null) {
+    if (!isNegated(subject, match.index)) return true;
+    if (match.index === global.lastIndex) global.lastIndex++; // zero-width guard
+  }
+  return false;
+}
+
 // Subjects an AI image may not depict — the documentation side of the
 // amendment's line. Matched case-insensitively against the prompt.
+// Note the `s?` suffixes: a guard that catches "logo" but waves
+// "logos" through is not a guard.
 const BANNED_SUBJECTS: Array<{ pattern: RegExp; why: string }> = [
   {
-    pattern: /\b(credit|debit)\s+card\s+(face|art|design|mockup|render)|\bcard\s+plastic\b/i,
+    pattern: /\b(credit|debit)\s+cards?\s+(faces?|art|designs?|mockups?|renders?)|\bcard\s+plastic\b/i,
     why: "card art / plastic of a real product — a card face is a factual claim; source it from the issuer",
   },
   {
@@ -119,11 +157,11 @@ const BANNED_SUBJECTS: Array<{ pattern: RegExp; why: string }> = [
     why: "a named bank — branches, branded environments and documents are not illustratable",
   },
   {
-    pattern: /\b(bank statement|fee schedule|screenshot|app screen|receipt|invoice|passport|emirates id|visa stamp)\b/i,
+    pattern: /\b(bank statements?|fee schedules?|screenshots?|app screens?|receipts?|invoices?|passports?|emirates id|visa stamps?)\b/i,
     why: "a document or screenshot — readers read these as records",
   },
   {
-    pattern: /\b(portrait|headshot|photorealistic (man|woman|person)|ceo|executive)\b/i,
+    pattern: /\b(portraits?|headshots?|photorealistic (man|men|woman|women|person|people)|ceo|executives?)\b/i,
     why: "a real or realistic person presented as one",
   },
   {
@@ -131,7 +169,7 @@ const BANNED_SUBJECTS: Array<{ pattern: RegExp; why: string }> = [
     why: "an identifiable landmark that reads as a documentary record — use a licensed photograph",
   },
   {
-    pattern: /\b(logo|logotype|wordmark|brand mark|emblem)\b/i,
+    pattern: /\b(logos?|logotypes?|wordmarks?|brand marks?|emblems?|branding)\b/i,
     why: "a brand mark — AI-generated logos are banned outright (2026-05-29 amendment)",
   },
 ];
@@ -167,7 +205,7 @@ function parseArgs(argv: string[]): CliArgs {
 /** Refuse prompts that would produce documentation rather than
  *  illustration. Returns the reasons, empty when the prompt is clean. */
 export function bannedSubjects(prompt: string): string[] {
-  return BANNED_SUBJECTS.filter((rule) => rule.pattern.test(prompt)).map((rule) => rule.why);
+  return BANNED_SUBJECTS.filter((rule) => firesOn(rule.pattern, prompt)).map((rule) => rule.why);
 }
 
 function loadManifest(): Manifest {
