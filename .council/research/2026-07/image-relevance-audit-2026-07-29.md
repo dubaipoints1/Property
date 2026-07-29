@@ -365,6 +365,53 @@ place-unanchored ones. Category coherence (does a hotel page show a
 hotel, an airline page an aircraft) held everywhere it was checked, but
 "checked" is not "all". The remainder is real outstanding exposure.
 
+---
+
+## Round 4 — the pandemic-imagery problem
+
+**`card-emirates-nbd-lulu-247-platinum` needed four attempts**, and the
+reason is worth recording because it will recur:
+
+| Attempt | Result |
+|---|---|
+| Original | Masked shopper, disposable glove, **Cyrillic** price signage |
+| 1 | **Chinese** supermarket — aisle signs in Chinese throughout |
+| 2 | (no results — over-specified query, silent no-op) |
+| 3 | **Masked** shopper again, at a freezer cabinet |
+| 4 | Overhead produce flat-lay — accepted |
+
+Two of four returned **COVID-era face masks**. Stock libraries remain
+saturated with 2020–21 shoots, and in 2026 a mask reads instantly as an
+old photograph. A third returned foreign-language signage.
+
+The common cause: **any query that names a shop returns whichever
+country the photographer stood in, in whatever year they shot it.**
+Supermarket interiors are the worst offenders.
+
+The fix is the same structural move that settled `card-adcb-talabat`,
+`card-emirates-nbd-duo` and `card-rakbank-world`: stop photographing
+the *place* and photograph the *thing*. Object-led frames carry no
+signage, no faces, no masks and no country. It should have been applied
+on attempt two rather than attempt four.
+
+Two rules added to the `fetch-stock.ts` kill-list from this round:
+
+> **Dated imagery** — above all COVID-era face masks and disposable
+> gloves; also obsolete handsets and pre-transition brand marks.
+
+> **Debt-distress imagery** — worried faces, paperwork piles, "FINAL
+> NOTICE" letters. A "household bills" query returns these by default.
+> We publish card reviews, not hardship illustrations.
+
+### Operational note
+
+`refetch-image.yml` is **silent on a no-results fetch** — it logs a
+warning and exits clean, committing nothing. "No new commit" is the
+only signal that a query matched nothing, which is easy to mistake for
+a slow run. Over-specified queries ("shopping trolley cart groceries
+close up bright neutral") are the usual cause; prefer two or three
+plain words.
+
 ## Method note for the next audit
 
 Metadata screening caught findings 1, 3, 4 and 5 — query text against
