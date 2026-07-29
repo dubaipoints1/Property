@@ -71,9 +71,14 @@
 //     read instantly as old — the LuLu 247 Platinum card was carrying a
 //     masked shopper in 2026. Also watch for obsolete phone handsets
 //     and pre-transition brand marks.
-// Also: no two slugs share a file. Duplicate images across pages read
-// as a template, not a publication — `md5sum public/images/stock/*.jpg`
-// catches it.
+// Also: no two slugs share a photograph. Duplicate images across pages
+// read as a template, not a publication. Check by SOURCE ID, not file
+// hash — the 2026-07-29 audit's md5 pass reported "zero duplicates"
+// while two pairs were quietly running the same Pexels photo at
+// different resolutions (different bytes, identical picture):
+//   node -e 'const m=require("./data/stock/manifest.json");const b={};
+//   for(const e of m.entries){if(e.source_id)(b[e.source_id]??=[]).push(e.slug)}
+//   console.log(Object.entries(b).filter(([,v])=>v.length>1))'
 // Dining queries: prefer daytime / casual / food-forward framing —
 // "friends lunch daytime", never "evening dining wine".
 
