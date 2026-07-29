@@ -315,6 +315,42 @@ read credentials at container boot.
 > Head of Research) do not inherit them, so Firecrawl work must run
 > in the orchestrating session or via the GitHub Actions channel.
 
+## Imagery pipeline
+
+Every image on the site is a row in `data/stock/manifest.json`, loaded
+and Zod-validated at module load by `src/lib/stockManifest.ts` — same
+fail-fast contract as `cards.json`. Two scripts write to it:
+
+```bash
+# Licensed photography (Pexels). PEXELS_API_KEY=skip for a dry run.
+npm run fetch:stock -- --slug bank-adcb --query "..." --alt "..."
+
+# AI illustration (fal.ai). FAL_KEY=skip for a dry run.
+npm run gen:ai -- --slug guide-fx-concept --prompt "..." --alt "..." [--model fal-ai/flux/dev]
+```
+
+They land in different places on purpose: photographs at
+`public/images/stock/`, illustration at `public/images/ai/` with
+`source: "ai-generated"`. The 2026-07-29 amendment's guarantees are
+enforced in code, not by habit:
+
+- The manifest schema **rejects** an AI entry missing `generator` or
+  `prompt`, or one filed outside `images/ai/`.
+- `generate-ai.ts` **refuses** prompts naming a real issuer, carrier,
+  hotel brand, product surface, document, person, or brand mark
+  (`bannedSubjects()`, covered by `tests/images/ai-subject-guard.test.ts`).
+  The regex is a tripwire for the obvious cases — an image that could
+  be mistaken for evidence is a §10 kill whether or not it fired.
+- `StockImage.astro` renders the "Illustration: generated with … · not
+  a photograph" label for any AI entry, so the label travels with the
+  image rather than depending on a call site remembering it.
+  (`ImageCredit.astro` also splits photo credits from AI labels, but it
+  is not currently mounted on any page.)
+
+`FAL_KEY` is a separate credential from everything else: set it in
+`.env` for local runs and as a repo Actions secret if an imagery
+workflow ever needs it. There is no MCP channel for it.
+
 ## Content collections
 
 Eight collections are declared in `src/content.config.ts` using the
@@ -455,6 +491,82 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-07-29 — AI-generated imagery permitted for illustration, never for documentation
+
+On site-owner/Chairman direction (29 July 2026), the §10 kill-list
+entry "No AI-generated photography under any circumstances" is
+**repealed and replaced**. The owner's reasoning, recorded verbatim as
+the basis of the ruling: search engines do not penalise AI-generated
+imagery, and generating a specific image beats settling for a generic
+stock photograph that is only loosely about the story.
+
+The replacement rule is not "AI images are fine." It is a line drawn
+by **what the image claims to be**:
+
+**Permitted — illustration.** An AI-generated image may be used where
+it depicts nothing a reader could mistake for evidence: abstract or
+conceptual editorial art, generic non-branded scenes (a nondescript
+airport gate, an unbranded card on a desk, a generic city skyline used
+as mood), diagrammatic or explanatory art, seasonal/editorial-calendar
+motifs. This is the same job stock photography does today — done
+better, because the image can be made to match the actual story.
+
+**Banned — documentation.** An AI-generated image may never depict a
+real, identifiable, verifiable thing. Specifically prohibited:
+
+- **Card art or plastic** of any real product. A card face is a factual
+  claim about a product the reader can hold; ours comes from the
+  issuer or not at all.
+- **A named carrier's cabin, seat, livery, or lounge.** If the piece
+  says "Emirates First", the picture is from the Emirates media
+  library or there is no picture.
+- **A named hotel property, its rooms, lobby, or grounds.**
+- **A bank branch, a real document, a statement, a screenshot, or a
+  fee schedule.**
+- **Any real person** — executive, staff member, reader, or a
+  photorealistic invented person presented as one.
+- **Identifiable UAE landmarks framed as documentary** (e.g. an image
+  implying "this is the DXB Concourse A lounge today"). Landmark
+  imagery used openly as mood art is fine; a landmark standing in as a
+  factual record is not.
+
+**Labelling is non-negotiable and visible.** Every AI image renders a
+credit line naming it as one — "Illustration: generated with
+`<model>` · not a photograph" — in the same slot the photographer
+credit occupies. There is no unlabelled AI image on this site. A
+missing label is a §10 kill.
+
+**Provenance, same standard as everything else.** AI entries carry
+`source: "ai-generated"` in `data/stock/manifest.json` with the
+generating model and the **full prompt** recorded. The prompt is the
+provenance record — it does for an AI image what the source URL does
+for a stock photo: it lets anyone reconstruct where the picture came
+from. The manifest schema enforces both fields; a missing generator or
+prompt fails module load.
+
+**Sourcing preference order is unchanged.** Issuer press library →
+licensed stock (Pexels/Unsplash) → AI illustration. AI is the answer
+when no honest photograph of the concept exists, not the default
+because it is faster.
+
+**Unchanged by this amendment:** no AI-generated brand marks or logos,
+ever (2026-05-29 amendment stands). The §6 LLM-extraction ban on typed
+numerics stands — an image is not a source. The public trust posture
+on `/editorial-policy/` gains an image-provenance paragraph stating
+this policy plainly rather than leaving readers to infer it.
+
+Reasoning for the guardrail, for the record: the publication's
+credibility rests on figures a reader can trace — per-field provenance,
+named verification dates, a public corrections log. Illustration has
+never carried that weight; a mood photograph of a skyline proves
+nothing today either. What would damage the site is an AI image that
+*looks* like evidence — a fabricated cabin, an invented card face. The
+permit/ban line above is drawn precisely there, so the change buys
+better-matched art without touching the thing the trust is actually
+built on.
+
+— Chairman, 29 July 2026.
 
 ### 2026-07-27 — Travel news desks ratified; sourcing ladder; news track
 
@@ -621,6 +733,8 @@ provided:
 
 AI-generated photography remains banned without exception. The
 "no payment for recommendations" affiliate posture is unchanged.
+_(The AI-photography sentence is superseded by the 2026-07-29
+amendment below; the press-library terms in this entry stand.)_
 
 Reasoning: the prior wording exposed the publication to a permission-
 email bottleneck that delayed publication of factually-correct,

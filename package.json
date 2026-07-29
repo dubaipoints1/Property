@@ -25,7 +25,8 @@
     "scrape:standard-chartered": "tsx scripts/scrape/standard-chartered.ts",
     "scrape:emirates-islamic": "tsx scripts/scrape/emirates-islamic.ts",
     "scrape:propose": "tsx scripts/scrape/propose-changes.ts",
-    "fetch:stock": "tsx scripts/images/fetch-stock.ts"
+    "fetch:stock": "tsx scripts/images/fetch-stock.ts",
+    "gen:ai": "tsx scripts/images/generate-ai.ts"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
