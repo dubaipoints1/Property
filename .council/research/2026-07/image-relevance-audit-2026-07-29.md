@@ -294,6 +294,34 @@ aircraft: the F1 787 (A6-BLV) on the programme, the A380 (A6-APF) on
 the fare-sale story, the "Choose Thailand" 787 (A6-BLO) on Inspire, and
 the standard-livery 787 (A6-BNB) on FAB Infinite.
 
+### The systemic one: real card faces
+
+**`deal-enbd-skywards-welcome-q2-2026` showed a rival bank's actual
+product.** A real **XP Investimentos** card — a Brazilian investment
+brokerage — photographed in its original packaging with Portuguese
+marketing copy still legible ("*Chegou o seu cartão XP*"), illustrating
+an **Emirates NBD Skywards** welcome-bonus offer.
+
+This is the strongest form of the brand error. Charter §10 treats card
+art as a factual claim about a product; another issuer's plastic on our
+page about ENBD's offer is a claim that is simply false. It was also
+near-black, failing tile legibility. Replaced with an Emirates 777
+(A6-ECI).
+
+**`card-emirates-nbd-duo` carried a Discover card** — faint, on the
+magstripe side, but a real US issuer's product on an ENBD review.
+Replaced with generic mock cards.
+
+Checking the rest of the card-photography set found the risk is real
+but not universal: `guide-best-premium-cards-2026` uses a proper
+generic mock ("CREDIT CARD / 1234 5678 / NAME SURNAME"), which is
+exactly the safe pattern.
+
+**Every "credit card" stock query is a live minefield** — seven
+manifest entries use one. The rule is now in the kill-list: prefer
+generic mock cards, or avoid card photography entirely and shoot the
+spend instead.
+
 ### Verified correct, and worth recording as such
 
 Spot-checking the brand-critical set found the rest sound:

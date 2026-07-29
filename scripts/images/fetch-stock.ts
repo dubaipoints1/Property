@@ -51,6 +51,16 @@
 //   - A COMPETITOR'S MARK on a co-brand page is worse than a generic
 //     image. It is not merely irrelevant; it is wrong about the
 //     product.
+//   - A REAL, IDENTIFIABLE CARD FACE belonging to any issuer. Every
+//     "credit card" query is a live minefield: the 2026-07-29 audit
+//     found an XP Investimentos card (a Brazilian brokerage) still in
+//     its Portuguese-language packaging illustrating an Emirates NBD
+//     Skywards offer, and a Discover card back on the ENBD Duo review.
+//     Charter §10 treats card art as a factual claim about a product,
+//     so another issuer's plastic on our review of a different card is
+//     a claim that is simply false. Prefer generic mock cards — the
+//     ones printed "CREDIT CARD / 1234 5678 / NAME SURNAME" — or avoid
+//     card photography entirely and shoot the spend instead.
 // Also: no two slugs share a file. Duplicate images across pages read
 // as a template, not a publication — `md5sum public/images/stock/*.jpg`
 // catches it.
