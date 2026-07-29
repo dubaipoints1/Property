@@ -310,7 +310,19 @@ near-black, failing tile legibility. Replaced with an Emirates 777
 
 **`card-emirates-nbd-duo` carried a Discover card** — faint, on the
 magstripe side, but a real US issuer's product on an ENBD review.
-Replaced with generic mock cards.
+
+Its replacement took three attempts and the middle one was the worst
+image produced in this entire audit: chasing "household utility bills"
+returned **two people looking distressed over a pile of paperwork with
+a "FINAL" demand notice** in shot. Debt-distress imagery on a
+credit-card review is actively off-message, and it was briefly live on
+the branch preview. That was an authoring error, not a tool failure —
+the query invited it.
+
+Settled on an object-led grocery shot (hands only, no faces, neutral
+kitchen), matching the card's 5% groceries rate. The structural lesson:
+when a slot resists, stop re-rolling the same *idea* and change what is
+being photographed.
 
 Checking the rest of the card-photography set found the risk is real
 but not universal: `guide-best-premium-cards-2026` uses a proper

@@ -61,6 +61,11 @@
 //     a claim that is simply false. Prefer generic mock cards — the
 //     ones printed "CREDIT CARD / 1234 5678 / NAME SURNAME" — or avoid
 //     card photography entirely and shoot the spend instead.
+//   - DEBT-DISTRESS IMAGERY on a product page. Worried faces, piles of
+//     paperwork, "FINAL NOTICE" letters. A "household bills" query
+//     returns these by default and one reached the ENBD Duo review
+//     during the 2026-07-29 audit. We publish card reviews, not
+//     hardship illustrations; shoot the spend, not the anxiety.
 // Also: no two slugs share a file. Duplicate images across pages read
 // as a template, not a publication — `md5sum public/images/stock/*.jpg`
 // catches it.
