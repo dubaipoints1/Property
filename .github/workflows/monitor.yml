@@ -1,0 +1,108 @@
+# Event-driven change monitoring — reads Firecrawl monitor results and
+# routes them (design: .council/research/2026-08/monitoring-design.md).
+#
+# Firecrawl does the watching on its own schedule. This job reads what it
+# found, writes a digest, opens an issue, and — for fee-document and
+# product-page changes — dispatches the EXISTING deterministic scraper for
+# just the affected bank.
+#
+# That last step is the point of the whole thing: instead of sweeping all
+# 12 banks quarterly and hoping, we scrape the one bank that actually
+# changed, the day it changes. The scrape, the PR and the Chairman merge
+# gate are all unchanged.
+#
+# What this workflow does NOT do: write any figure. Charter §6 keeps typed
+# numerics on deterministic regex parsers. Monitors report that something
+# moved; scripts/scrape/ decides what it now is.
+#
+# Offers changes are deliberately alert-only — typed editor fields
+# (welcomeBonus, annualFeeWaiver, _features) are never written by the
+# scraper, so those route to an editor and to the deals desk.
+
+name: monitor
+
+on:
+  schedule:
+    # 04:23 UTC — after the 03:00/04:00/05:00 monitor checks have run.
+    # Off-minute per the scheduling hygiene used by news-monitor.
+    - cron: "23 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: monitor
+  cancel-in-progress: false
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Poll monitor results
+        id: poll
+        env:
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        run: node scripts/monitor/poll.mjs
+
+      - name: Open card-change issue
+        if: hashFiles('.council/monitoring/card-change-*.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest=$(ls -t .council/monitoring/card-change-*.md | head -1)
+          # only raise an issue for a digest created in this run
+          if [ -n "$(git status --porcelain "$latest")" ]; then
+            gh issue create \
+              --title "Card change signals: $(basename "$latest" .md | sed 's/card-change-//')" \
+              --body-file "$latest" \
+              --label "card-change" || echo "issue creation failed (label may not exist) — digest still committed"
+          fi
+
+      - name: Open news digest issue
+        if: hashFiles('.council/monitoring/digest-*.md') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest=$(ls -t .council/monitoring/digest-*.md | head -1)
+          if [ -n "$(git status --porcelain "$latest")" ]; then
+            gh issue create \
+              --title "News digest: $(basename "$latest" .md | sed 's/digest-//')" \
+              --body-file "$latest" \
+              --label "news-digest" || echo "issue creation failed — digest still committed"
+          fi
+
+      - name: Dispatch targeted scrape for changed banks
+        if: steps.poll.outputs.banks != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Reuses the single-bank `bank` input already present on
+          # scrape.yml — no new scraping code, no new data path.
+          for BANK in ${{ steps.poll.outputs.banks }}; do
+            echo "Dispatching scrape for $BANK"
+            gh workflow run scrape.yml -f bank="$BANK" \
+              || echo "dispatch failed for $BANK"
+          done
+
+      - name: Commit digests + state
+        run: |
+          git config user.name "dubaipoints-monitor"
+          git config user.email "info@dubaipoints.ae"
+          git add .council/monitoring/ data/monitor/ || true
+          if git diff --cached --quiet; then
+            echo "Nothing new to commit."
+          else
+            git commit -m "monitor: change signals ($(date -u +%Y-%m-%d\ %H:%M) UTC)"
+            git push origin main
+          fi

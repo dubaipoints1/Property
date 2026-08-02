@@ -289,6 +289,61 @@ emirates-islamic), completing the rollout in
 anti-trigger and the `soc` URL rule in `_normaliser.ts`; per-bank
 gotchas live in `scripts/scrape/banks/<slug>.notes.md`.
 
+## Monitoring (event-driven, since 2026-08)
+
+Scheduled scraping used to be the only way we learned that a bank had
+changed anything — which is why the ADCB FX error (0.525% published
+against a Schedule of Fees saying 2.99%) sat live until a sweep caught
+it. Four Firecrawl monitors now watch the sources directly and the
+scrape runs *in response*:
+
+| Monitor | URLs | Cadence | On change |
+|---|---|---|---|
+| `dubaipoints-fee-docs` | 10 KFS / SoF documents | daily | issue + auto-scrape that bank |
+| `dubaipoints-product-pages` | 52 card product pages | weekly | issue + auto-scrape that bank |
+| `dubaipoints-offers` | bank offers/promotions pages | daily | issue → editor, **no** auto-scrape |
+| `dubaipoints-press-rooms` | 9 issuer press indexes | daily | news digest → desks |
+
+```
+scripts/monitor/setup.mjs            # idempotent provisioning (FIRECRAWL_API_KEY=skip to dry-run)
+scripts/monitor/poll.mjs             # reads check results, routes them, emits banks to scrape
+scripts/monitor/discover-offers.mjs  # one-off offers-URL discovery, human-confirmed
+scripts/monitor/offers.registry.json # confirmed offers URLs (per bank, not per card)
+data/monitor/monitors.json           # monitor IDs (committed)
+data/monitor/state.json              # seen checks, baseline flags, reported credits
+.github/workflows/monitor.yml        # daily poll → issue → gh workflow run scrape.yml -f bank=<slug>
+```
+
+**The §6 boundary is the whole design.** Firecrawl offers JSON-mode
+change tracking that would hand us
+`{"annualFee": {"previous": "AED 500", "current": "AED 750"}}` directly.
+That is LLM extraction and we **do not use it**. Monitors run in
+markdown mode — a deterministic unified diff. The `goal` on each monitor
+drives Firecrawl's judge, used *only* to suppress alert noise; its
+opinion never becomes a fact. Every number still comes from the regex
+parsers in `scripts/scrape/_lib.ts` / `_normaliser.ts`.
+
+The monitor answers *"did something move?"*. The scraper answers *"what
+is it now?"*. Those stay separate, and nothing in `scripts/monitor/`
+writes to `cards.json`.
+
+**Offers are alert-only** because the merge contract says typed editor
+fields (`welcomeBonus`, `annualFeeWaiver`, `_features`) are never
+written by the scraper — it emits free text under `_scraped_freetext.*`
+for an editor to type up. An offers change is a human's job, and also
+tells the deals desk something is worth filing.
+
+**Budget.** Verified pricing: 1 credit per URL per check, plus 1 per
+changed page the judge validates. Design estimate ≈794/month with offers
+unpopulated, ≈1,154 once offers land — against the 5,000/month Hobby
+plan. `setup.mjs` aborts if the API's own `estimatedCreditsPerMonth`
+exceeds `MAX_ESTIMATED_CREDITS` (1,600), which guards against PDF
+documents billing per page rather than per URL.
+
+`scrape.yml` dropped from monthly to **quarterly** as the backstop for
+what monitors structurally cannot see: a restructured page, a moved URL,
+a monitor that silently stopped.
+
 ### Firecrawl credentials — three separate channels
 
 The same Firecrawl Hobby subscription (5,000 credits/month, refreshed
