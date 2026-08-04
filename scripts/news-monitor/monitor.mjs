@@ -1,27 +1,27 @@
-// News-desk monitoring pipeline — runs in GitHub Actions (the only egress
-// that reaches the press hosts; see .council/research/2026-07/
-// news-sourcing-policy.md). Two tiers per the sourcing ladder:
+// News-desk RSS discovery — tier 1 of the sourcing ladder (see
+// .council/research/2026-07/news-sourcing-policy.md).
 //
-//   1. Competitor/aggregator RSS (free, plain fetch) — DISCOVERY ONLY.
-//      Titles + links land in the digest for the desks to chase via
-//      primary sources. Never a fact base.
-//   2. Press-room index pages via Firecrawl (credit-metered) — primary
-//      discovery. New headlines diffed against the committed state file.
+// Competitor/aggregator RSS (free, plain fetch) — DISCOVERY ONLY. Titles
+// and links land in the digest for the desks to chase via primary
+// sources. Never a fact base.
+//
+// The press-room tier that used to live here moved to native Firecrawl
+// monitors on 2026-08 (scripts/monitor/, provisioned by setup.mjs as
+// "dubaipoints-press-rooms"). The hand-rolled version scraped each press
+// index and diffed headline links itself, which is what surfaced "Visit
+// our Facebook page" as a story on its first live run; Firecrawl's own
+// diff plus goal judging does that job properly. Press findings still
+// land at .council/monitoring/digest-<stamp>.md, so nothing downstream
+// changed.
+//
+// This file is now free to run — no Firecrawl key, no credit cap.
 //
 // Output: .council/monitoring/digest-<date>.md (only when something new)
-// plus updated state in data/news-monitor/state.json. The digest is the
-// input the airline-news / hotel-news desks work from; nothing here
-// publishes anything.
-//
-// Credit governance: hard monthly cap (CREDIT_CAP) tracked in the state
-// file; Firecrawl tier is skipped once the cap is reached (RSS tier
-// always runs). Cap per the ratified sourcing policy: 500/month.
+// plus updated state in data/news-monitor/state.json.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 
 const STATE_PATH = "data/news-monitor/state.json";
-const CREDIT_CAP = 500;
-const FIRECRAWL_KEY = process.env.FIRECRAWL_API_KEY;
 
 // ── Tier 1: RSS discovery (free) ──────────────────────────────────────
 const RSS_FEEDS = [
@@ -31,35 +31,15 @@ const RSS_FEEDS = [
   { id: "tpg", name: "The Points Guy", url: "https://thepointsguy.com/feed/" },
 ];
 
-// ── Tier 2: press-room indexes via Firecrawl (credit-metered) ─────────
-const PRESS_PAGES = [
-  // airline beat
-  { id: "emirates", name: "Emirates Media Centre", url: "https://www.emirates.com/media-centre/", beat: "airline" },
-  { id: "etihad", name: "Etihad News", url: "https://www.etihad.com/en-ae/news", beat: "airline" },
-  { id: "qatar", name: "Qatar Airways Press", url: "https://www.qatarairways.com/press-releases/en-ww", beat: "airline" },
-  // hotel beat
-  { id: "marriott", name: "Marriott News Center", url: "https://news.marriott.com/", beat: "hotel" },
-  { id: "hilton", name: "Hilton Newsroom", url: "https://stories.hilton.com/", beat: "hotel" },
-  { id: "accor", name: "Accor Press Releases", url: "https://press.accor.com/", beat: "hotel" },
-  // banking beat (offer launches; fee/rate drift is covered separately
-  // by the monthly card scrape's diff)
-  { id: "enbd", name: "Emirates NBD News", url: "https://www.emiratesnbd.com/en/media-centre", beat: "banking" },
-  { id: "adcb", name: "ADCB Media Centre", url: "https://www.adcb.com/en/about-us/media-centre/", beat: "banking" },
-  { id: "fab", name: "FAB Newsroom", url: "https://www.bankfab.com/en-ae/about-fab/group/news", beat: "banking" },
-];
-
 // UAE-relevance filter for RSS titles (press pages pass everything —
 // they are already first-party and low-volume).
 const RELEVANT = /\b(uae|dubai|abu dhabi|sharjah|dxb|auh|dwc|shj|emirates|skywards|etihad|flydubai|air arabia|qatar airways|avios|privilege club|alfursan|saudia|gcc|bonvoy|rotana|jumeirah|address hotels|staycation)\b/i;
 
 const state = existsSync(STATE_PATH)
   ? JSON.parse(readFileSync(STATE_PATH, "utf8"))
-  : { seen: {}, credits: { month: "", used: 0 } };
+  : { seen: {} };
 
 const now = new Date();
-const monthKey = now.toISOString().slice(0, 7);
-if (state.credits.month !== monthKey) state.credits = { month: monthKey, used: 0 };
-
 const newItems = [];
 
 function remember(sourceId, key, item) {
@@ -98,62 +78,6 @@ for (const feed of RSS_FEEDS) {
   }
 }
 
-// Tier 2 — press rooms via Firecrawl
-async function firecrawlScrape(url) {
-  const res = await fetch("https://api.firecrawl.dev/v2/scrape", {
-    method: "POST",
-    headers: { authorization: `Bearer ${FIRECRAWL_KEY}`, "content-type": "application/json" },
-    body: JSON.stringify({ url, formats: ["links", "markdown"], onlyMainContent: true }),
-    signal: AbortSignal.timeout(90000),
-  });
-  if (!res.ok) throw new Error(`Firecrawl HTTP ${res.status}`);
-  return res.json();
-}
-
-if (!FIRECRAWL_KEY) {
-  console.error("[press] FIRECRAWL_API_KEY unset — skipping press tier");
-} else if (state.credits.used >= CREDIT_CAP) {
-  console.error(`[press] monthly credit cap reached (${state.credits.used}/${CREDIT_CAP}) — skipping press tier`);
-} else {
-  const todayKey = now.toISOString().slice(0, 10);
-  for (const page of PRESS_PAGES) {
-    // once per target per day — the workflow runs twice daily but each
-    // press page only spends a credit on its first run of the day
-    if ((state.lastScraped ??= {})[page.id] === todayKey) {
-      console.log(`[press] ${page.id} already scraped today — skip`);
-      continue;
-    }
-    try {
-      const out = await firecrawlScrape(page.url);
-      state.credits.used += 1;
-      state.lastScraped[page.id] = todayKey;
-      const md = out?.data?.markdown ?? "";
-      // Only links on the press site's own domain count as headlines —
-      // the first live run surfaced social-chrome links ("Visit our
-      // Facebook page") as stories. Registrable-domain match, crude but
-      // right for these targets (news.marriott.com ⊂ marriott.com etc.).
-      const baseDomain = new URL(page.url).hostname.replace(/^www\./, "").split(".").slice(-2).join(".");
-      // headline-ish links: markdown [text](url) with text > 40 chars
-      const links = [...md.matchAll(/\[([^\]]{40,160})\]\((https?:\/\/[^)]+)\)/g)].slice(0, 30);
-      for (const [, text, href] of links) {
-        const title = text.replace(/\s+/g, " ").replace(/\\+/g, "").trim();
-        let linkHost = "";
-        try { linkHost = new URL(href).hostname; } catch { continue; }
-        if (!linkHost.endsWith(baseDomain)) continue;
-        if (/subscribe|cookie|privacy|download|contact|about |visit our|opens in new window|rss feed|follow us|social|media centre|newsroom|annual report|help centre|careers/i.test(title)) continue;
-        remember(page.id, href, {
-          tier: "press", source: page.name, sourceId: page.id, beat: page.beat,
-          title, link: href, date: "",
-          note: "PRIMARY source — scrape the linked release for the fact base.",
-        });
-      }
-      console.log(`[press] ${page.id} ok (credits used: ${state.credits.used})`);
-    } catch (e) {
-      console.error(`[press] ${page.id} failed: ${String(e).slice(0, 120)}`);
-    }
-  }
-}
-
 // ── Output ────────────────────────────────────────────────────────────
 mkdirSync("data/news-monitor", { recursive: true });
 writeFileSync(STATE_PATH, JSON.stringify(state, null, 2));
@@ -172,19 +96,17 @@ const lines = [
   "",
   "_Auto-generated by scripts/news-monitor/monitor.mjs (GitHub Actions)._",
   "_RSS items are DISCOVERY ONLY — the sourcing ladder requires primary_",
-  "_verification of every fact before publication. Press items are_",
-  "_first-party headlines; scrape the linked release for the fact base._",
+  "_verification of every fact before publication._",
   "",
-  `Firecrawl credits used this month: ${state.credits.used}/${CREDIT_CAP}`,
+  "_Press-room findings arrive separately, from the Firecrawl monitors_",
+  "_polled by scripts/monitor/poll.mjs, in a digest at this same path._",
   "",
 ];
-for (const tier of ["press", "rss"]) {
-  const items = newItems.filter((i) => i.tier === tier);
-  if (!items.length) continue;
-  lines.push(tier === "press" ? "## Press rooms (primary)" : "## Aggregator RSS (discovery only)", "");
-  for (const i of items) {
+{
+  lines.push("## Aggregator RSS (discovery only)", "");
+  for (const i of newItems) {
     lines.push(`- **${i.title}**`);
-    lines.push(`  ${i.source}${i.beat ? ` · beat: ${i.beat}` : ""}${i.date ? ` · ${i.date}` : ""}`);
+    lines.push(`  ${i.source}${i.date ? ` · ${i.date}` : ""}`);
     lines.push(`  ${i.link}`);
     lines.push(`  _${i.note}_`);
     lines.push("");

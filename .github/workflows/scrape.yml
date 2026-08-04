@@ -1,15 +1,28 @@
-# Monthly card-data refresh — "always on" since 2026-05-08.
+# Quarterly card-data sweep — the safety net beneath the monitors.
 #
-# Runs on the 1st of every month at 23:00 UTC, on workflow_dispatch (with
-# optional single-bank override), and on any direct edit to this file,
-# scraper code, or a per-bank URL config (path-scoped push trigger).
+# Runs on the 1st of Jan/Apr/Jul/Oct at 23:00 UTC, on workflow_dispatch
+# (with optional single-bank override), and on any direct edit to this
+# file, scraper code, or a per-bank URL config (path-scoped push trigger).
 #
-# Cadence rationale: UAE banks update KFS / Schedule of Charges quarterly
-# typically; welcome offers shift seasonally (DSF, Ramadan, summer).
-# Monthly is the lowest cadence that catches seasonal change windows
-# without burning Firecrawl credits on weekly no-ops. Use the
-# `workflow_dispatch` button (Actions tab → scrape → Run workflow) for
-# any "I just saw a change, push it now" run between scheduled runs.
+# Cadence rationale (revised 2026-08): this used to run monthly and was
+# the ONLY thing that ever noticed a bank changing its fees — which is
+# why the ADCB FX error (0.525% published against a Schedule of Fees
+# saying 2.99%) sat live until a sweep happened to catch it.
+#
+# Firecrawl monitors are now the primary trigger: they watch the fee
+# documents daily and the product pages weekly, and
+# .github/workflows/monitor.yml dispatches THIS workflow with a single
+# `bank` input the day something actually moves. See
+# .council/research/2026-08/monitoring-design.md.
+#
+# This scheduled sweep is therefore the backstop, not the mechanism. It
+# catches what monitors structurally cannot: a page that was restructured
+# rather than edited, a URL that moved, a monitor that silently stopped.
+# Quarterly is enough for that job and stops us paying monthly for a full
+# 12-bank sweep that the monitors have usually already pre-empted.
+#
+# Use the `workflow_dispatch` button (Actions tab → scrape → Run workflow)
+# for any "I just saw a change, push it now" run.
 #
 # Iterates the bank registry at scripts/scrape/banks.registry.json. New
 # banks are added by appending to that JSON; this workflow file does not
@@ -22,9 +35,9 @@ name: scrape
 
 on:
   schedule:
-    # 1st of every month at 23:00 UTC. Switch to "0 23 1,15 * *" for
-    # fortnightly (1st and 15th); switch to "0 23 * * 0" for weekly.
-    - cron: "0 23 1 * *"
+    # 1st of Jan/Apr/Jul/Oct at 23:00 UTC. Switch to "0 23 1 * *" for
+    # monthly if the monitors are ever taken offline.
+    - cron: "0 23 1 1,4,7,10 *"
   workflow_dispatch:
     inputs:
       bank:

@@ -1,0 +1,4 @@
+{
+  "_doc": "Bank offers / promotions landing pages, watched daily by the 'offers' monitor (scripts/monitor/setup.mjs). Offers are a per-BANK surface, not per-card, which is why they live here rather than as a field on scripts/scrape/banks/<slug>.urls.json. Populate by running `node scripts/monitor/discover-offers.mjs` and CONFIRMING each candidate by hand — a monitor pointed at the wrong page is worse than no monitor, because we would then trust it. Entries here are alert-only: per the scrape merge contract, typed editor fields (welcomeBonus, annualFeeWaiver, _features) are never written by the scraper, so an offers change routes to an editor and to the deals desk, never to cards.json.",
+  "banks": []
+}

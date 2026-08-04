@@ -1,15 +1,16 @@
-# News-desk monitoring — twice-daily discovery sweep for the airline and
-# hotel news desks (council session 2026-07-27-travel-news-desks-strategy;
+# News-desk RSS discovery — twice-daily sweep for the airline and hotel
+# news desks (council session 2026-07-27-travel-news-desks-strategy;
 # sourcing ladder in .council/research/2026-07/news-sourcing-policy.md).
 #
-# Runs in Actions because the press hosts (Emirates, Etihad, Marriott,
-# Hilton) are unreachable from Claude Code web-session egress. Commits
-# the digest + state straight to main (same precedent as scrape.yml's
-# LATEST_RUN.log). Digests live under .council/monitoring/ and are not
-# part of the site build.
+# Runs in Actions because the aggregator hosts are unreachable from
+# Claude Code web-session egress. Commits the digest + state straight to
+# main (same precedent as scrape.yml's LATEST_RUN.log). Digests live
+# under .council/monitoring/ and are not part of the site build.
 #
-# Credit governance: the script enforces a 500-credit/month Firecrawl
-# cap from its own state file; the RSS tier is free and always runs.
+# Free to run as of 2026-08: the press-room tier moved to native
+# Firecrawl monitors (.github/workflows/monitor.yml), so this job needs
+# no Firecrawl key and has no credit cap. RSS remains discovery-only per
+# the sourcing ladder.
 
 name: news-monitor
 
@@ -41,9 +42,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
-      - name: Run monitoring sweep
-        env:
-          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+      - name: Run RSS discovery sweep
         run: node scripts/news-monitor/monitor.mjs
 
       - name: Open digest issue

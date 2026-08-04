@@ -29,6 +29,65 @@
 //   - Too-dark / illegible-at-tile-size frames (photos render at
 //     ~300×190 in listing grids — a moody near-black shot reads as a
 //     broken image).
+//   - WRONG CLIMATE OR PLACE. Added after the 2026-07-29 relevance
+//     audit, where both rejects matched their topic perfectly and
+//     failed on geography: a thatched-hut tropical resort for a UAE
+//     beach-club perk, and a couple in padded winter coats under a grey
+//     sky in a concrete car park for a grocery cashback card. Snow,
+//     bare deciduous trees, overcast European light and cold-weather
+//     clothing all break a Dubai-first publication. Subject match is
+//     not enough — the frame has to be plausibly Gulf, or neutral
+//     enough that place doesn't read at all.
+//   - Crowded people-led scenes where the library is object-led. Faces
+//     pull focus in a grid of still-life; prefer the object.
+//   - THE WRONG BRAND. The single worst failure mode, because it looks
+//     fine until you read the livery. A named page must show the named
+//     thing: an Etihad story takes an Etihad aircraft, a Talabat
+//     co-brand takes Talabat's world. The 2026-07-29 audit found a
+//     LUFTHANSA A350 at Munich illustrating an Etihad fare sale, and a
+//     rider carrying a "99 food" box (a Latin American brand) on the
+//     ADCB Talabat card review. Check the tail, the fascia, the
+//     delivery box, the shopfront — anything carrying a mark.
+//   - A COMPETITOR'S MARK on a co-brand page is worse than a generic
+//     image. It is not merely irrelevant; it is wrong about the
+//     product.
+//   - A REAL, IDENTIFIABLE CARD FACE belonging to any issuer. Every
+//     "credit card" query is a live minefield: the 2026-07-29 audit
+//     found an XP Investimentos card (a Brazilian brokerage) still in
+//     its Portuguese-language packaging illustrating an Emirates NBD
+//     Skywards offer, and a Discover card back on the ENBD Duo review.
+//     Charter §10 treats card art as a factual claim about a product,
+//     so another issuer's plastic on our review of a different card is
+//     a claim that is simply false. Prefer generic mock cards — the
+//     ones printed "CREDIT CARD / 1234 5678 / NAME SURNAME" — or avoid
+//     card photography entirely and shoot the spend instead.
+//   - DEBT-DISTRESS IMAGERY on a product page. Worried faces, piles of
+//     paperwork, "FINAL NOTICE" letters. A "household bills" query
+//     returns these by default and one reached the ENBD Duo review
+//     during the 2026-07-29 audit. We publish card reviews, not
+//     hardship illustrations; shoot the spend, not the anxiety.
+//   - DATED IMAGERY, above all COVID-era face masks and disposable
+//     gloves. Stock libraries are still full of 2020-21 shoots and they
+//     read instantly as old — the LuLu 247 Platinum card was carrying a
+//     masked shopper in 2026. Also watch for obsolete phone handsets
+//     and pre-transition brand marks.
+// Also: no two slugs share a photograph. Duplicate images across pages
+// read as a template, not a publication. Check by SOURCE ID, not file
+// hash — the 2026-07-29 audit's md5 pass reported "zero duplicates"
+// while two pairs were quietly running the same Pexels photo at
+// different resolutions (different bytes, identical picture):
+//   node -e 'const m=require("./data/stock/manifest.json");const b={};
+//   for(const e of m.entries){if(e.source_id)(b[e.source_id]??=[]).push(e.slug)}
+//   console.log(Object.entries(b).filter(([,v])=>v.length>1))'
+// Run that check BEFORE accepting a replacement, not only after. While
+// fixing one duplicate pair the audit created a third — a refetch
+// returned the exact photo already sitting on a sibling card. With 21
+// retail images drawing on the same stock pool, collisions are likely
+// rather than unlucky.
+//
+// Note on --pick: the fetcher requests five results and indexes 0-4.
+// An out-of-range pick errors the job and commits nothing, which from
+// the dispatch side looks identical to a slow run. Keep picks to 0-3.
 // Dining queries: prefer daytime / casual / food-forward framing —
 // "friends lunch daytime", never "evening dining wine".
 
