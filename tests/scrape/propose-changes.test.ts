@@ -98,6 +98,65 @@ test("Audit-09 mergeDraft preserves editor-confirmed welcomeBonus on subsequent 
   assert.ok(!outcome.changedFields.includes("welcomeBonus"));
 });
 
+// ── lastVerified freshness exemption (2026-08-04) ─────────────────────
+// The provenance guard preserves editor-confirmed fields against every
+// future scrape, which is right for values and wrong for the freshness
+// stamp. Marked editor-confirmed, lastVerified could never advance, so
+// the 90-day staleness chip became unclearable by any automated means —
+// 31 cards were two weeks from going amber with no way to refresh them.
+//
+// Both halves matter. The first test proves the exemption works; the
+// second proves it did not widen into a hole in the guard.
+test("mergeDraft refreshes editor-confirmed lastVerified — it is a freshness stamp, not a value", () => {
+  const existing = {
+    annualFee: 525,
+    lastVerified: "2026-05-20",
+    _provenance: {
+      annualFee: "editor-confirmed" as const,
+      lastVerified: "editor-confirmed" as const,
+    },
+    _lastScraped: "2026-05-20",
+    _lastReviewed: "2026-05-20",
+  };
+  const draft = { annualFee: 999, lastVerified: "2026-08-04" };
+
+  const { entry, outcome } = mergeDraft("emirates-nbd-duo", existing, draft);
+
+  assert.equal(
+    entry.lastVerified,
+    "2026-08-04",
+    "a scrape that re-read the source has re-verified the card — the date must advance",
+  );
+  assert.ok(outcome.changedFields.includes("lastVerified"));
+  assert.ok(!outcome.preservedFields.includes("lastVerified"));
+});
+
+test("mergeDraft exemption is narrow — editor-confirmed VALUES are still preserved", () => {
+  const existing = {
+    annualFee: 525,
+    fxFee: 2.99,
+    lastVerified: "2026-05-20",
+    _provenance: {
+      annualFee: "editor-confirmed" as const,
+      fxFee: "editor-corrected" as const,
+      lastVerified: "editor-confirmed" as const,
+    },
+    _lastScraped: "2026-05-20",
+    _lastReviewed: "2026-05-20",
+  };
+  // A scrape proposing a wrong fee — the 2026-05-29 ADCB failure class.
+  const draft = { annualFee: 999, fxFee: 0.525, lastVerified: "2026-08-04" };
+
+  const { entry, outcome } = mergeDraft("adcb-traveller", existing, draft);
+
+  assert.equal(entry.annualFee, 525, "editor-confirmed annualFee must not be overwritten");
+  assert.equal(entry.fxFee, 2.99, "editor-corrected fxFee must not be overwritten");
+  assert.ok(outcome.preservedFields.includes("annualFee"));
+  assert.ok(outcome.preservedFields.includes("fxFee"));
+  // …while the freshness stamp still advanced in the same merge.
+  assert.equal(entry.lastVerified, "2026-08-04");
+});
+
 test("Audit-09 mergeDraft falls back to string welcomeBonus when normaliser couldn't structure it", () => {
   const draft = {
     welcomeBonus:

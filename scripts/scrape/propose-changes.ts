@@ -200,6 +200,30 @@ export function isPlausibleWelcomeBonus(value: unknown): boolean {
   return true;
 }
 
+// ── Fields exempt from the editor-confirmed freeze ────────────────────
+//
+// The provenance guard below preserves editor-confirmed / -corrected /
+// -confirmed-null fields against every future scrape. That is exactly
+// right for VALUES: it is what stops a scraper clobbering an editor's
+// corrected fxFee, and it is the mechanism that has protected the
+// 2026-05-29 ADCB correction ever since.
+//
+// `lastVerified` is not a value. It is a freshness STAMP — the date we
+// last read the source — and freezing it inverts the field's purpose.
+// Once marked editor-confirmed the date could never advance again, so
+// the 90-day staleness chip on SpecCard.astro became unclearable by any
+// automated means. Found 2026-08-04, when 31 cards (28 ENBD, 3 FAB)
+// verified on 2026-05-20 were two weeks from going amber with no
+// mechanism able to refresh them.
+//
+// A scrape that genuinely re-read the source has, by definition,
+// re-verified the card. That is what this field records, so it is
+// allowed to advance regardless of provenance.
+//
+// Keep this set NARROW. Anything that asserts something about the
+// product belongs behind the guard, not here.
+const ALWAYS_REFRESHABLE = new Set(["lastVerified"]);
+
 export function mergeDraft(
   slug: string,
   existing: CardEntry | undefined,
@@ -216,9 +240,10 @@ export function mergeDraft(
     if (!(field in draft)) continue;
     const currentProv = provenance[field];
     if (
-      currentProv === "editor-confirmed" ||
-      currentProv === "editor-corrected" ||
-      currentProv === "editor-confirmed-null"
+      !ALWAYS_REFRESHABLE.has(field) &&
+      (currentProv === "editor-confirmed" ||
+        currentProv === "editor-corrected" ||
+        currentProv === "editor-confirmed-null")
     ) {
       preservedFields.push(field);
       continue;

@@ -241,7 +241,18 @@ rules in
 `scripts/scrape/propose-changes.ts` are load-bearing:
 
 - Editor-confirmed / editor-corrected fields are **never**
-  overwritten by a scrape.
+  overwritten by a scrape — with one deliberate exemption below.
+- **`lastVerified` always refreshes**, whatever its provenance
+  (`ALWAYS_REFRESHABLE` in `scripts/scrape/propose-changes.ts`). It is
+  a freshness *stamp*, not a claim about the product, and freezing it
+  inverts its purpose: once marked `editor-confirmed` the date could
+  never advance, so the 90-day staleness chip on `SpecCard.astro`
+  became unclearable by any automated means. Found 2026-08-04 with 31
+  cards two weeks from going amber and no mechanism able to refresh
+  them. A scrape that re-read the source *has* re-verified the card,
+  which is exactly what the field records. Keep that set narrow —
+  anything asserting something about the product stays behind the
+  guard.
 - Typed editor fields (`welcomeBonus`, `annualFeeWaiver`,
   `_features`) are not written by the scraper directly. The
   scraper produces free-text equivalents that land under
