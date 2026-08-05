@@ -27,7 +27,7 @@
     }
   ],
   "_pending": {
-    "_doc": "Candidates that have been fetched but did not meet the admission standard. Verdicts reflect re-verify run 30990596839 (which followed the detector widening) and, where unchanged, run 30988856840. Not watched. A candidate needs two strong signals — AED amount, minimum salary, band language, clawback wording — on a reachable page that mentions salary transfer. Nothing here currently qualifies; the remaining work is locating better URLs by hand rather than re-running the tool.",
+    "_doc": "Candidates that have been fetched but did not meet the admission standard, plus URLs sourced from council briefs and awaiting their first verify. Verdicts reflect runs 30988856840 and 30990596839. Not watched. A candidate needs two strong signals — AED amount, minimum salary, band language, clawback wording — on a reachable page that mentions salary transfer. NOTE: URL discovery is not the only source of candidates. ADCB's live page sat in an open brief for two months while both discovery runs reported 'no candidate found'; check .council/briefs/ before concluding a bank has no reachable offer page.",
     "adib": {
       "urls": [
         "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf"
@@ -36,11 +36,12 @@
     },
     "rakbank": {
       "urls": [
+        "https://www.rakbank.ae/en/landing-page/accounts/accounts-lp",
         "https://www.rakbank.ae/en/everyday-banking/salary-transfer",
         "https://www.rakbank.ae/en/everyday-banking/salary-transfer/rak-more",
         "https://www.rakbank.ae/en/islamic/personal/everyday-banking/accounts-facilities/salary-transfer"
       ],
-      "verdict": "WEAK on all three (unchanged across runs 30988856840 and 30990596839) — reachable and about salary transfer, but almost no offer detail; only /rak-more returns a minimum salary of AED 5,000. Likely marketing pages with the terms in a document not yet located, or content rendered client-side. RAKBANK's previous sourceUrl 404'd, so these paths are at least current."
+      "verdict": "AWAITING VERIFY on the accounts-lp URL, which comes from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md (status: open) alongside /rak-more — both recorded live on 30 May 2026 after rakbank.ae/personal/accounts/salary-transfer returned 404. The brief quotes 'up to AED 4,000 cashback on salary transfer'. Previous verdicts (retained): all three discovery paths WEAK across runs 30988856840 and 30990596839 — reachable and on-topic but almost no offer detail, only /rak-more returning a minimum salary of AED 5,000."
     },
     "standard-chartered": {
       "urls": [
@@ -50,9 +51,10 @@
     },
     "adcb": {
       "urls": [
+        "https://www.adcb.com/en/personal/promotions/switch-nine-salary-transfer",
         "https://www.adcb.com/Images/SpecialTermsAndConditions-IB-SalaryTransfer-E-A-V1-Mar17_tcm9-92619.pdf"
       ],
-      "verdict": "WEAK (unchanged across both runs) — reachable, carries AED 12,000, but no bands or clawback, and the document is dated March 2017. ADCB's previous sourceUrl 404'd and no current page was found by either discovery run. Needs manual sourcing."
+      "verdict": "AWAITING VERIFY. The switch-nine URL comes from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md (status: open), which recorded it as the LIVE replacement after adcb.com/en/personal/promotions/salary-transfer returned 404 — confirmed 200 OK on 30 May 2026. Neither discovery run ever surfaced it; the map search never reached a /promotions/switch-nine-* path, which is a real limitation of URL discovery rather than a gap in ADCB's site. Previous verdict on the Mar-2017 PDF (retained below): WEAK — reachable, AED 12,000, no bands or clawback."
     },
     "emirates-islamic": {
       "urls": [
