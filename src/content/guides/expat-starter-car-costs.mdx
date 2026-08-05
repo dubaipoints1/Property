@@ -166,17 +166,19 @@ review.
   <h4>Worked example</h4>
   <div class="dp-example-head">
     <span class="dp-example-mark" role="img" aria-label="Modcare logo">
-      <img src="/logos/partners/modcare.svg" alt="" width="150" height="26" loading="lazy" decoding="async" />
+      <img src="/logos/partners/modcare.svg" alt="" width="46" height="46" loading="lazy" decoding="async" />
     </span>
     <span>
       <span class="dp-example-name">Modcare</span>
       <span class="dp-example-meta">Paint protection and detailing · Al Quoz Industrial Area 2, Dubai</span>
     </span>
   </div>
-  <p>
-    <a href="https://modcare.ae/">modcare.ae</a> ·
-    <a href="https://modcare.ae/paint-protection-film/">Paint protection film packages</a>
-  </p>
+  {/* Kept on ONE line deliberately. Break this across lines and MDX
+      re-parses the bare text as markdown and wraps it in a second <p>,
+      producing invalid nested <p> tags — the browser then auto-closes
+      the outer one, the anchors end up in an unclassed inner <p>, and
+      the styling below silently stops applying. */}
+  <p class="dp-example-links">Sources: <a href="https://modcare.ae/">modcare.ae</a> · <a href="https://modcare.ae/paint-protection-film/">paint protection film packages</a>, read 5 August 2026</p>
 </div>
 
 Two things in their published material generalise to any installer you

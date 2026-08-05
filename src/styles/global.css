@@ -1971,19 +1971,39 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 14px;
+  /* Tight. Supplied marks usually carry their own internal whitespace,
+     so generous plaque padding on top of it strands a small glyph in a
+     large empty box. */
+  padding: 7px 9px;
   background: #ffffff;
   border: 1px solid var(--line);
   border-radius: 8px;
 }
 /* Wordmarks are wide, icon marks are square — pin the height and let the
-   width follow, so either shape sits on the same baseline. */
+   width follow, so either shape sits on the same baseline. Always declare
+   width/height on the <img> matching the asset's real ratio: these are
+   lazy-loaded below the fold, and a wrong ratio reserves the wrong box
+   and shifts the layout when the mark finally paints. */
 .dp-example-mark img {
   display: block;
-  height: 26px;
+  height: 46px;
   width: auto;
   max-width: 150px;
   object-fit: contain;
+}
+/* Citation links, not a call to action.
+   Left at prose defaults these render 19px semibold — LARGER than the
+   18px business name above them — which turns a source citation into the
+   loudest element on the page and reads as advertorial. Held below the
+   name deliberately. */
+.dp-example-links {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.dp-pullbox .dp-example-links a {
+  font-size: 14px;
+  font-weight: 500;
 }
 .dp-example-name {
   display: block;
