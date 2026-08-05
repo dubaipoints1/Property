@@ -26,6 +26,19 @@
 #     url:    direct URL to the .svg or .png asset
 #     name:   display name, used in the commit message only
 
+#
+# On the `push:` trigger below — this is the repo's existing workaround,
+# not a new idea. GitHub only dispatches a workflow_dispatch workflow
+# that already exists on the DEFAULT branch; dispatching this file from a
+# feature branch returns a bare 404. Every seed-images-eNN.yml here
+# carries the same push-on-claude/** trigger for the same reason.
+#
+# Consequence: on a push trigger the `inputs.*` context is empty, so the
+# defaults below act as the bootstrap payload. They are set to the first
+# application (Modcare) so this file can run before it reaches main.
+# Once merged, dispatch normally with real inputs and the fallbacks are
+# never consulted again.
+
 name: fetch-partner-logo
 
 on:
@@ -33,20 +46,25 @@ on:
     inputs:
       branch:
         description: "Branch to commit to"
-        required: true
+        required: false
         type: string
       slug:
         description: "Kebab-case filename without extension (e.g. modcare)"
-        required: true
+        required: false
         type: string
       url:
         description: "Direct URL to the logo asset (.svg or .png)"
-        required: true
+        required: false
         type: string
       name:
         description: "Display name (commit message only)"
-        required: true
+        required: false
         type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/fetch-partner-logo.yml"
 
 permissions:
   contents: write
@@ -54,25 +72,30 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: ${{ inputs.branch || github.ref_name }}
+      SLUG: ${{ inputs.slug || 'modcare' }}
+      ASSET_URL: ${{ inputs.url || 'https://modcare.ae/wp-content/uploads/2023/09/Modcarelogo-singular-min.svg' }}
+      DISPLAY_NAME: ${{ inputs.name || 'Modcare' }}
     steps:
       - name: Checkout target branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.branch }}
+          ref: ${{ env.TARGET_BRANCH }}
           fetch-depth: 1
 
+      # Values are read from the environment, never interpolated into the
+      # shell with ${{ }}. A URL is attacker-controllable input and
+      # pasting it straight into a run: block is a command-injection hole.
       - name: Validate slug
         run: |
-          case "${{ inputs.slug }}" in
+          case "$SLUG" in
             *[!a-z0-9-]*|"")
-              echo "slug must be kebab-case [a-z0-9-]+ — got '${{ inputs.slug }}'"
+              echo "slug must be kebab-case [a-z0-9-]+ — got '$SLUG'"
               exit 1 ;;
           esac
 
       - name: Download asset
-        env:
-          ASSET_URL: ${{ inputs.url }}
-          SLUG: ${{ inputs.slug }}
         run: |
           set -euo pipefail
           mkdir -p public/logos/partners
@@ -137,7 +160,7 @@ jobs:
             exit 0
           fi
           git commit \
-            -m "feat(logos): add ${{ inputs.name }} partner mark" \
-            -m "Source: ${{ inputs.url }}" \
+            -m "feat(logos): add $DISPLAY_NAME partner mark" \
+            -m "Source: $ASSET_URL" \
             -m "Non-issuer mark per the 2026-08-05 Charter amendment. Logged in public/logos/LICENSES.md. Fetched via Actions because the web session cannot reach third-party image hosts."
-          git push origin HEAD:${{ inputs.branch }}
+          git push origin "HEAD:$TARGET_BRANCH"
