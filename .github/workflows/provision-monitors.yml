@@ -112,9 +112,14 @@ jobs:
       - name: Assert the dry run wrote nothing
         if: inputs.dry_run == true
         run: |
-          if [ -n "$(git status --porcelain)" ]; then
+          # Scoped to the paths setup.mjs could actually touch. An unscoped
+          # `git status` also sees provision-output.txt, which this workflow
+          # creates itself via tee — run 30993455568 failed on exactly that,
+          # reporting its own log file as an unexpected write. discover.yml's
+          # equivalent assertion was scoped from the start; this one was not.
+          if [ -n "$(git status --porcelain -- data/ scripts/ src/)" ]; then
             echo "::error::dry run modified tracked files — it must only report."
-            git status --porcelain
+            git status --porcelain -- data/ scripts/ src/
             exit 1
           fi
           echo "Working tree clean — dry run reported only."
