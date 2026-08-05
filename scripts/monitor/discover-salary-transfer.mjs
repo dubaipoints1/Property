@@ -80,8 +80,27 @@ const LEADING_MARKET = /:\/\/[^/]+\/(?!ae\/|en\/)[a-z]{2}\//i;
 const NAMED_MARKET = /\/(egypt|nigeria|pakistan|india|kenya|nepal|bahrain|qatar|oman|kuwait|jordan|lebanon)\//i;
 
 // Arabic mirrors of pages whose /en/ equivalent is already surfaced —
-// a pure duplicate, so dropping it removes no information.
-const NON_EN_LOCALE = /\/ar\//i;
+// a pure duplicate, so dropping it removes no information. Matches both
+// /ar/ and the /ar-ae/ form: FAB uses the latter, and run 31003139057
+// slipped its Arabic salary-transfer-account page through on that.
+const NON_EN_LOCALE = /\/ar(-[a-z]{2})?\//i;
+
+// Loans secured against a salary transfer. These carry "salary transfer"
+// in the name and are NOT transfer bonuses — the same category error as
+// CBD's salary-advance PDF, in different words. Run 31003139057 surfaced
+// ENBD's salary-transfer-loans-for-expats and RAKBANK's
+// personal-finance-salary-transfer.
+const SALARY_BACKED_LOAN = /salary-?transfer-?loans?|personal-?finance-?salary|salary-?transfer-?(personal-?)?finance/i;
+
+// Letter templates and application forms an employer or customer fills
+// in. Not an offer and carry no terms: EIB_Salary_Transfer_Letter_Format,
+// sc.com/global/av/ae-salary-transfer-format, ENBD's
+// salary-transfer-letter-format.
+const FORM_TEMPLATE = /letter[-_]?format|transfer[-_]?format|[-_]form(at)?\.pdf$/i;
+
+// Editorial debris and non-offer documents. "-delete" is a page the bank
+// forgot to unpublish; "winners" is a prize list, not terms.
+const NOT_AN_OFFER = /-delete(\/|$)|winners/i;
 
 // Salary ADVANCE and payroll LOANS are credit products, not
 // salary-transfer bonuses. CBD's only candidate was salaryadvance_t-c.pdf.
@@ -95,7 +114,17 @@ const B2B = /\/business(-banking)?\/|payroll-solutions?/i;
 const NOT_DURABLE = /\.(jpg|jpeg|png|gif|svg)$|\/archive|\/expired|\/\d{4}\//i;
 
 export const SALARY_TRANSFER_REJECT = new RegExp(
-  [LEADING_MARKET, NAMED_MARKET, NON_EN_LOCALE, CREDIT_PRODUCT, B2B, NOT_DURABLE]
+  [
+    LEADING_MARKET,
+    NAMED_MARKET,
+    NON_EN_LOCALE,
+    CREDIT_PRODUCT,
+    SALARY_BACKED_LOAN,
+    FORM_TEMPLATE,
+    NOT_AN_OFFER,
+    B2B,
+    NOT_DURABLE,
+  ]
     .map((r) => r.source)
     .join("|"),
   "i",
