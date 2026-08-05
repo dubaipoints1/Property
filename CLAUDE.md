@@ -646,6 +646,58 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-08-05 — §10 logo-sourcing extended to non-issuer marks
+
+On site-owner/Chairman direction (5 August 2026), §10 logo sourcing gains
+a second, narrower lane. The 2026-05-29 amendment legislated **issuer**
+marks — banks, airlines, loyalty programmes the publication reviews — and
+accepted only Wikimedia Commons {{PD-textlogo}} assets or an issuer's own
+published brand kit. It never contemplated a **non-issuer**: an ordinary
+company named as an illustrative example inside a guide. This closes that
+gap rather than weakening the issuer rule.
+
+**Permitted.** A non-issuer company's own mark, taken from its own
+website, may be displayed to identify that company where a piece names it
+as a worked example — provided all of:
+
+1. No payment, affiliate arrangement or ownership interest, **disclosed
+   inline in the piece**.
+2. The mark is unmodified and rendered **nominatively** — adjacent to the
+   business name, at modest size. Not a hero badge, not a partner wall.
+3. Source URL and date logged in `public/logos/LICENSES.md`, in the same
+   commit as the asset.
+4. Takedown honoured within 24 hours.
+5. Filed under `public/logos/partners/`, never `banks/` or `airlines/`.
+
+**Unchanged, and this is the load-bearing part.** The issuer standard is
+untouched. A bank mark that fails the 2026-05-29 replacement rule stays a
+text placeholder — ADIB, DIB, CBD, Emirates Islamic and RAKBANK continue
+to render as text, and this amendment is **not** a licence to source them
+from issuer websites instead. No AI-generated marks, ever. The separate
+directories exist so the weaker basis cannot migrate into the stronger
+one by someone reading one row of a table.
+
+Recorded plainly, because the record is the point: a `partners/` mark
+rests on a **weaker licence basis** than anything in the issuer source
+log. It is the company's copyrighted artwork, used nominatively without a
+written grant. The publication accepts that exposure for a named example
+in a guide, having judged the nominative use and the 24-hour takedown
+commitment proportionate. It would not accept it at scale.
+
+This amendment **partially reverses** the same-day ruling on
+`.council/briefs/2026-08-05-uae-car-running-costs-guide.md`, which cut the
+Modcare block to citation links only on Standards Editor and SEO
+Strategist advice. Those objections were about advertorial *shape*, and a
+logo is a stronger endorsement signal than the phone number that was
+removed. The Chairman was advised of that and directed the change
+regardless. The disclosure-above-example ordering from that ruling
+**stands** and is not affected.
+
+First application: `partners/modcare` in
+`src/content/guides/expat-starter-car-costs.mdx`.
+
+— Chairman, 5 August 2026.
+
 ### 2026-07-29 — AI-generated imagery permitted for illustration, never for documentation
 
 On site-owner/Chairman direction (29 July 2026), the §10 kill-list

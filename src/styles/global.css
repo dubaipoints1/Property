@@ -1947,6 +1947,63 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   margin: 0 0 12px; font-weight: 700;
 }
 
+/* Worked-example header — a third-party mark beside the business name.
+   Used inside .dp-pullbox where a guide names a real company as an
+   illustrative example (Charter §10, 2026-08-05 amendment).
+
+   The mark sits on a FIXED white plaque rather than inheriting the box
+   background. We do not control a third party's artwork: most marks are
+   drawn as dark ink on white with no light-theme variant, and dropping
+   one straight onto the dark-mode --shade-1 (#242b3d) renders it
+   invisible. The plaque costs one small rectangle and makes the mark
+   behave identically in both themes.
+
+   Sized deliberately small. This identifies the business nominatively
+   beside its name; it is not a hero badge or an endorsement device. */
+.dp-example-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.dp-example-mark {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+/* Wordmarks are wide, icon marks are square — pin the height and let the
+   width follow, so either shape sits on the same baseline. */
+.dp-example-mark img {
+  display: block;
+  height: 26px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+}
+.dp-example-name {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.dp-example-meta {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+@media (max-width: 480px) {
+  .dp-example-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+}
+
 /* Article sticky sidebar (TOC + Related) */
 .dp-article-aside { display: flex; flex-direction: column; gap: 24px; }
 @media (min-width: 1024px) {

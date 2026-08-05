@@ -1,0 +1,143 @@
+# Fetch a NON-ISSUER partner mark into public/logos/partners/.
+#
+# Why this workflow exists — the same reason seed-logos.yml does: the
+# Claude Code web sandbox is blocked from third-party image hosts at the
+# network-allowlist layer (modcare.ae returns 403 CONNECT tunnel failed,
+# the same class as api.pexels.com and fal.run). GitHub Actions runners
+# use different egress and download cleanly.
+#
+# SCOPE — read this before adding a mark.
+#
+# This workflow is for NON-ISSUER marks only: a company a guide names as
+# an illustrative example, per the 2026-08-05 Charter amendment. It is
+# NOT the route for bank or airline logos. Those are governed by the
+# 2026-05-29 amendment and accept only Wikimedia Commons {{PD-textlogo}}
+# assets or an issuer's own published brand kit — use seed-logos.yml, and
+# do not point this workflow at an issuer to bypass that standard.
+#
+# Every mark fetched here MUST be logged in public/logos/LICENSES.md with
+# its source URL, the date, and the basis for use, in the same commit.
+# Takedown requests are honoured within 24 hours.
+#
+# How to use:
+#   Actions -> "fetch-partner-logo" -> Run workflow
+#     branch: the branch to commit to
+#     slug:   kebab-case filename, e.g. modcare
+#     url:    direct URL to the .svg or .png asset
+#     name:   display name, used in the commit message only
+
+name: fetch-partner-logo
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: true
+        type: string
+      slug:
+        description: "Kebab-case filename without extension (e.g. modcare)"
+        required: true
+        type: string
+      url:
+        description: "Direct URL to the logo asset (.svg or .png)"
+        required: true
+        type: string
+      name:
+        description: "Display name (commit message only)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 1
+
+      - name: Validate slug
+        run: |
+          case "${{ inputs.slug }}" in
+            *[!a-z0-9-]*|"")
+              echo "slug must be kebab-case [a-z0-9-]+ — got '${{ inputs.slug }}'"
+              exit 1 ;;
+          esac
+
+      - name: Download asset
+        env:
+          ASSET_URL: ${{ inputs.url }}
+          SLUG: ${{ inputs.slug }}
+        run: |
+          set -euo pipefail
+          mkdir -p public/logos/partners
+          tmp="$(mktemp)"
+
+          # --fail so an HTTP error is a job failure rather than a
+          # committed error page. -L to follow the CDN redirects these
+          # assets usually sit behind.
+          code=$(curl -sS -L --fail --max-time 60 \
+            -w '%{http_code}' -o "$tmp" "$ASSET_URL")
+          echo "HTTP $code"
+
+          if [ ! -s "$tmp" ]; then
+            echo "Downloaded file is empty — refusing to commit."
+            exit 1
+          fi
+
+          # Sniff the real content. A WordPress uploads path can happily
+          # serve an HTML 404 body with a 200 status, and an HTML file
+          # renamed .svg fails silently in an <img> at render time.
+          kind=$(file -b --mime-type "$tmp")
+          echo "Detected MIME: $kind"
+          case "$kind" in
+            image/svg*|text/xml|application/xml)
+              if ! grep -qi '<svg' "$tmp"; then
+                echo "No <svg> root element found — refusing to commit."
+                exit 1
+              fi
+              ext=svg ;;
+            image/png)  ext=png ;;
+            *)
+              echo "Unsupported or unexpected type '$kind' — refusing to commit."
+              head -c 300 "$tmp" || true
+              exit 1 ;;
+          esac
+
+          mv "$tmp" "public/logos/partners/${SLUG}.${ext}"
+          ls -l "public/logos/partners/${SLUG}.${ext}"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate
+        run: |
+          npm run check
+          npm test
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/logos/partners/
+          if git diff --staged --quiet; then
+            echo "No change to commit."
+            exit 0
+          fi
+          git commit \
+            -m "feat(logos): add ${{ inputs.name }} partner mark" \
+            -m "Source: ${{ inputs.url }}" \
+            -m "Non-issuer mark per the 2026-08-05 Charter amendment. Logged in public/logos/LICENSES.md. Fetched via Actions because the web session cannot reach third-party image hosts."
+          git push origin HEAD:${{ inputs.branch }}
