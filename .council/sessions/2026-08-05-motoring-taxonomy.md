@@ -5,7 +5,7 @@ topic: Does motoring enter the content taxonomy, and does the car-running-costs 
 convened: 2026-08-05
 participants: fact-checker, standards-editor, business-realestate-editor, seo-strategist
 deliverable-shape: brief
-status: open
+status: ratified — all three decision questions answered, 5 August 2026
 ---
 
 # Council session: motoring in the taxonomy
