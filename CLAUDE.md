@@ -658,10 +658,17 @@ gap rather than weakening the issuer rule.
 
 **Permitted.** A non-issuer company's own mark, taken from its own
 website, may be displayed to identify that company where a piece names it
-as a worked example — provided all of:
+as a worked example **or recommends it** — provided all of:
 
 1. No payment, affiliate arrangement or ownership interest, **disclosed
    inline in the piece**.
+1a. Where the piece **recommends** rather than merely illustrates, the
+   disclosure states the **basis** for the recommendation in the same
+   breath. This publication does not issue unsourced endorsements: a
+   recommendation resting on an editor's first-hand experience says so
+   and says it is not a comparative test. A recommendation implying
+   testing or a survey of the market that did not happen is a §10 kill,
+   whatever the commercial arrangement.
 2. The mark is unmodified and rendered **nominatively** — adjacent to the
    business name, at modest size. Not a hero badge, not a partner wall.
 3. Source URL and date logged in `public/logos/LICENSES.md`, in the same

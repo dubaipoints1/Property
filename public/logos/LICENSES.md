@@ -81,8 +81,10 @@ that has not changed.
 
 Conditions, all of them:
 
-1. The company is named as an example in editorial copy, with no payment,
-   affiliate arrangement or ownership interest — disclosed in the piece.
+1. The company is named as an example **or recommended** in editorial
+   copy, with no payment, affiliate arrangement or ownership interest —
+   disclosed in the piece. Where it is a recommendation, the disclosure
+   also states the basis for it.
 2. The mark is used **unmodified** and rendered **nominatively**, adjacent
    to the business name at a modest size. Not a hero badge.
 3. Source URL and date logged below, in the same commit as the asset.
