@@ -1,39 +1,66 @@
 {
-  "_doc": "Bank salary-transfer offer pages and their T&C documents, watched weekly by the 'salary-transfer' monitor (scripts/monitor/setup.mjs). Like offers, this is a per-BANK surface rather than per-card, which is why it lives here and not on scripts/scrape/banks/<slug>.urls.json. Populate by confirming each URL BY HAND — a monitor pointed at the wrong page is worse than no monitor, because we would then trust it. Entries here are alert-only and are never auto-scraped: the salaryTransferOffers collection is entirely typed editor content (salary bands, reward amounts, clawback terms) with no free-text scraper equivalent at all, so a change routes to the business-realestate editor and the deals desk to be typed up against the source. Cadence is weekly rather than daily because salary-transfer promotions move on quarterly campaign cycles; see the credit budget in CLAUDE.md.",
-  "_admission_standard": "A URL enters this file only with TWO independent signals: an editor verified it as a live entry's sourceUrl, AND discovery independently re-surfaced it. Plausibility is not enough — salaryTransferOfferHistory records that adcb.com/en/personal/promotions/salary-transfer and rakbank.ae/personal/accounts/salary-transfer both returned 404 on re-verification (30 June 2026) despite reading like perfectly ordinary salary-transfer URLs. Candidates awaiting evidence are listed in _pending below rather than added here.",
+  "_doc": "Bank salary-transfer offer pages and their T&C documents, watched weekly by the 'salary-transfer' monitor (scripts/monitor/setup.mjs). Like offers, this is a per-BANK surface rather than per-card, which is why it lives here and not on scripts/scrape/banks/<slug>.urls.json. Entries here are alert-only and are never auto-scraped: the salaryTransferOffers collection is entirely typed editor content (salary bands, reward amounts, clawback terms) with no free-text scraper equivalent at all, so a change routes to the business-realestate editor and the deals desk to be typed up against the source. Cadence is weekly rather than daily because salary-transfer promotions move on quarterly campaign cycles; see the credit budget in CLAUDE.md.",
+  "_admission_standard": "A URL enters `banks` only on evidence, never on plausibility. Either (a) two independent signals — an editor verified it as a live entry's sourceUrl AND discovery independently re-surfaced it — or (b) scripts/monitor/verify-candidates.ts fetched it and returned SUPPORTED. Plausibility is not enough: salaryTransferOfferHistory records that adcb.com/en/personal/promotions/salary-transfer and rakbank.ae/personal/accounts/salary-transfer both returned 404 on re-verification (30 June 2026) despite reading like perfectly ordinary salary-transfer URLs. Candidates that fail stay in _pending with their verdict recorded.",
   "banks": [
     {
       "bank": "enbd",
-      "urls": ["https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more"],
-      "_evidence": "Live sourceUrl of src/content/salaryTransferOffers/emirates-nbd-ongoing-2026.mdx; independently re-surfaced by discovery runs 30982700538 and 30985646889."
+      "urls": [
+        "https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more",
+        "https://www.emiratesnbd.com/-/media/enbd/files/pdf/transfer_your_salary_win_rewards_tc.pdf"
+      ],
+      "_evidence": "Campaign page: live sourceUrl of emirates-nbd-ongoing-2026.mdx, re-surfaced by discovery runs 30982700538 and 30985646889. T&C PDF: verify run 30988856840 returned SUPPORTED (AED 5000, minSalary 5000). Landing page + T&C pair, which is the shape this surface wants."
     },
     {
       "bank": "mashreq",
-      "urls": ["https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer"],
-      "_evidence": "Live sourceUrl of src/content/salaryTransferOffers/mashreq-2026.mdx; independently re-surfaced by discovery runs 30982700538 and 30985646889."
+      "urls": [
+        "https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer",
+        "https://www.mashreq.com/en/uae/gold/banking-solutions/account-deposits/current-accounts/salary-transfer"
+      ],
+      "_evidence": "NEO page: live sourceUrl of mashreq-2026.mdx, re-surfaced by both discovery runs. Gold page: verify run 30988856840 returned SUPPORTED with the strongest signal set of any candidate (AED 50000, minSalary 25000, band language present)."
+    },
+    {
+      "bank": "dib",
+      "urls": ["https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf"],
+      "_evidence": "Verify run 30988856840 returned SUPPORTED (AED 8000, minSalary 8000). NOTE: this is NOT the dib-xtra-tc.pdf cited by the live dib-xtra-2026.mdx entry, whose bands start at AED 5,000. Two distinct documents both carrying salary-transfer terms — watching this one is safe, but which is current is an editorial question flagged to the business-realestate desk."
     }
   ],
   "_pending": {
-    "_doc": "Discovery candidates that resolve plausibly but have NOT been fetched and confirmed. Not watched. Promote to `banks` only once scripts/monitor/verify-candidates.mjs shows the URL reachable and carrying salary-transfer content.",
-    "rakbank": [
-      "https://www.rakbank.ae/en/everyday-banking/salary-transfer",
-      "https://www.rakbank.ae/en/everyday-banking/salary-transfer/rak-more",
-      "https://www.rakbank.ae/en/islamic/personal/everyday-banking/accounts-facilities/salary-transfer"
-    ],
-    "adib": [
-      "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf"
-    ],
-    "standard-chartered": ["https://www.sc.com/ae/save/salary-account/apply"],
-    "enbd": [
-      "https://www.emiratesnbd.com/-/media/enbd/files/pdf/transfer_your_salary_win_rewards_tc.pdf",
-      "https://www.emiratesnbd.com/en/campaigns/abu-dhabi-open-salary-transfer-account"
-    ],
-    "mashreq": [
-      "https://www.mashreq.com/en/uae/gold/banking-solutions/account-deposits/current-accounts/salary-transfer"
-    ],
-    "dib": ["https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf"],
-    "adcb": ["https://www.adcb.com/Images/SpecialTermsAndConditions-IB-SalaryTransfer-E-A-V1-Mar17_tcm9-92619.pdf"],
-    "emirates-islamic": ["https://www.emiratesislamic.ae/en/soc/payroll-card"],
-    "_no_candidate": ["cbd", "citi", "fab", "hsbc"]
+    "_doc": "Candidates that have been fetched but did not meet the admission standard. Verdicts from verify run 30988856840 (scripts/monitor/verify-candidates.ts). Not watched. Re-verify after the detector fix, or locate the right URL by hand.",
+    "adib": {
+      "urls": [
+        "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf"
+      ],
+      "verdict": "NO SALARY-TRANSFER CONTENT — but this was a DETECTOR false negative, not a bad URL. The document carried AED 3,000 and is literally named salary-bonus-program-tcs; the regex only knew the phrase 'salary transfer'. mentionsSalaryTransfer now also matches 'salary bonus' / 'salary credit' / 'WPS salary'. Re-run verify to get a true verdict."
+    },
+    "rakbank": {
+      "urls": [
+        "https://www.rakbank.ae/en/everyday-banking/salary-transfer",
+        "https://www.rakbank.ae/en/everyday-banking/salary-transfer/rak-more",
+        "https://www.rakbank.ae/en/islamic/personal/everyday-banking/accounts-facilities/salary-transfer"
+      ],
+      "verdict": "WEAK on all three — reachable and about salary transfer, but almost no offer detail (only /rak-more returned a minimum salary of AED 5,000). Likely marketing pages with the terms in a document not yet located, or content rendered client-side. Worth a human look; RAKBANK's previous sourceUrl 404'd, so these paths are the current ones."
+    },
+    "standard-chartered": {
+      "urls": ["https://www.sc.com/ae/save/salary-account/apply"],
+      "verdict": "NO SALARY-TRANSFER CONTENT — an application form carries little prose. The landing page without /apply is the better watch target and was not proposed; locate by hand."
+    },
+    "adcb": {
+      "urls": [
+        "https://www.adcb.com/Images/SpecialTermsAndConditions-IB-SalaryTransfer-E-A-V1-Mar17_tcm9-92619.pdf"
+      ],
+      "verdict": "WEAK — reachable, carries AED 12,000, but no bands or clawback, and the document is dated March 2017. ADCB's previous sourceUrl 404'd and no current page was found. Needs manual sourcing."
+    },
+    "emirates-islamic": {
+      "urls": ["https://www.emiratesislamic.ae/en/soc/payroll-card"],
+      "verdict": "NO SALARY-TRANSFER CONTENT — a WPS prepaid card for employees, not a salary-transfer offer, as suspected when it was proposed. The AED=3 signal is a spurious parse. Emirates Islamic's archived sourceUrl was never primary-source-verified either; needs manual sourcing."
+    },
+    "enbd_secondary": {
+      "urls": ["https://www.emiratesnbd.com/en/campaigns/abu-dhabi-open-salary-transfer-account"],
+      "verdict": "UNREACHABLE — Firecrawl HTTP 408 timeout. A transient failure rather than a dead page; re-verify before judging it."
+    },
+    "_no_candidate": {
+      "banks": ["cbd", "citi", "fab", "hsbc"],
+      "note": "Neither discovery run found any candidate, including the retry pass with a second search term. FAB matters most, being the largest UAE bank. These need manual location."
+    }
   }
 }

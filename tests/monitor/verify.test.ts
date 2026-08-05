@@ -11,6 +11,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 import { signalsFor, verdictFor } from "../../scripts/monitor/verify-candidates.ts";
 
@@ -75,6 +76,33 @@ test("a payroll card is not mistaken for a salary-transfer offer", () => {
   assert.notEqual(verdict, "SUPPORTED");
 });
 
+test("alternative product namings are recognised", () => {
+  // Regression from verify run 30988856840: ADIB's
+  // salary-bonus-program-tcs-en.pdf came back NO SALARY-TRANSFER CONTENT
+  // because the detector only knew the phrase "salary transfer". UAE banks
+  // brand this several ways, and missing one reports "no offer" — the
+  // wrong answer, and one that would have quietly dropped a real bank.
+  for (const phrase of [
+    "Salary Bonus Program terms and conditions",
+    "credit your salary to the account",
+    "WPS salary processing",
+    "salary credit bonus",
+  ]) {
+    assert.ok(
+      signalsFor(phrase).mentionsSalaryTransfer,
+      `not recognised as salary-transfer content: "${phrase}"`,
+    );
+  }
+});
+
+test("ADIB's real document shape now reads as offer content", () => {
+  // Fixture mirrors what the run reported: a salary-bonus T&C with an AED
+  // figure but no band table. Should no longer be NO SALARY-TRANSFER
+  // CONTENT.
+  const adib = "Salary Bonus Program Terms and Conditions. Bonus of AED 3,000 payable.";
+  assert.notEqual(verdictFor("ok", signalsFor(adib)), "NO SALARY-TRANSFER CONTENT");
+});
+
 test("a page that merely names salary transfer is WEAK, not SUPPORTED", () => {
   // Guards against admitting a nav page or a stub that happens to carry
   // the phrase but none of the offer detail.
@@ -91,4 +119,30 @@ test("two strong signals are required to reach SUPPORTED", () => {
     Boolean,
   ).length;
   assert.equal(verdictFor("ok", s), strong >= 2 ? "SUPPORTED" : "WEAK — mentions salary transfer but carries little offer detail");
+});
+
+test("the shipped registry's pending block is readable by the verify script", () => {
+  // Regression: _pending entries were bare arrays, then gained recorded
+  // verdicts and became {urls, verdict} objects. A reader that only knew
+  // the array form silently reported zero candidates — a dry run showing
+  // "~0 credits" rather than an error, which is the kind of failure that
+  // looks like success.
+  const reg = JSON.parse(readFileSync("scripts/monitor/salary-transfer.registry.json", "utf8"));
+  let found = 0;
+  for (const [bank, entry] of Object.entries<any>(reg._pending ?? {})) {
+    if (bank.startsWith("_")) continue;
+    const urls = Array.isArray(entry) ? entry : entry?.urls;
+    assert.ok(Array.isArray(urls), `_pending.${bank} has no readable urls array`);
+    found += urls.length;
+  }
+  assert.ok(found > 0, "no pending candidates readable");
+});
+
+test("every admitted URL carries recorded evidence", () => {
+  // The admission standard is only real if each entry says why it qualified.
+  const reg = JSON.parse(readFileSync("scripts/monitor/salary-transfer.registry.json", "utf8"));
+  for (const b of reg.banks ?? []) {
+    assert.ok(b.urls?.length, `${b.bank} has no urls`);
+    assert.ok(b._evidence?.length > 40, `${b.bank} has no substantive _evidence`);
+  }
 });
