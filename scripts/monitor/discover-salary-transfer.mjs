@@ -45,11 +45,22 @@ export const SALARY_TRANSFER_PATTERNS = [
 // in tests/monitor/discover.test.ts, which use those exact URLs.
 //
 // Non-UAE markets. These banks publish the same product across many
-// countries and the map surfaces all of them: Standard Chartered offered
-// sc.com/ng/save/salary-account (Nigeria) and Mashreq offered an Egypt
-// payroll-loans page. Matched as whole path segments so a two-letter code
-// cannot fire inside a longer word.
-const FOREIGN_MARKET = /\/(ng|eg|egypt|pk|in|uk|sg|hk|ke|bh|qa|om|kw|lb|jo)\//i;
+// countries and the map surfaces all of them.
+//
+// Enumerating the foreign codes does not hold: run 30982700538 returned
+// sc.com/ng/ (Nigeria), and once the retry pass was added run 30985646889
+// returned sc.com/np/ (Nepal) — Standard Chartered publishes ~60 markets,
+// so a deny-list will always be one country behind.
+//
+// Inverted instead: a two-letter segment immediately after the host is a
+// market code, and anything that is not /ae/ is foreign. /en/ is exempted
+// because it is a language segment, not a market — Mashreq uses
+// /en/uae/… and /en/egypt/…, so the language comes first there and the
+// market is a full word, caught by NAMED_MARKET below.
+const LEADING_MARKET = /:\/\/[^/]+\/(?!ae\/|en\/)[a-z]{2}\//i;
+
+// Markets written as full words rather than codes.
+const NAMED_MARKET = /\/(egypt|nigeria|pakistan|india|kenya|nepal|bahrain|qatar|oman|kuwait|jordan|lebanon)\//i;
 
 // Arabic mirrors of pages whose /en/ equivalent is already surfaced —
 // a pure duplicate, so dropping it removes no information.
@@ -67,7 +78,7 @@ const B2B = /\/business(-banking)?\/|payroll-solutions?/i;
 const NOT_DURABLE = /\.(jpg|jpeg|png|gif|svg)$|\/archive|\/expired|\/\d{4}\//i;
 
 export const SALARY_TRANSFER_REJECT = new RegExp(
-  [FOREIGN_MARKET, NON_EN_LOCALE, CREDIT_PRODUCT, B2B, NOT_DURABLE]
+  [LEADING_MARKET, NAMED_MARKET, NON_EN_LOCALE, CREDIT_PRODUCT, B2B, NOT_DURABLE]
     .map((r) => r.source)
     .join("|"),
   "i",

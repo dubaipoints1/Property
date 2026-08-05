@@ -122,12 +122,50 @@ test("a malformed URL does not throw", () => {
 // something merely similar to it.
 
 test("non-UAE market pages are rejected", () => {
-  // Standard Chartered's ONLY candidate was Nigeria; Mashreq offered Egypt.
+  // Standard Chartered's ONLY candidate in run 1 was Nigeria; the retry
+  // pass in run 2 then surfaced Nepal. Mashreq offered Egypt. The rule is
+  // inverted (anything but /ae/) precisely because enumerating ~60 SC
+  // markets would always be one country behind.
   const foreign = [
     "https://www.sc.com/ng/save/salary-account",
+    "https://www.sc.com/np/deposits/payroll-plus-account",
     "https://www.mashreq.com/en/egypt/personal/loans/personal-loans/payroll-loans",
   ];
   assert.deepEqual(rank(foreign, SALARY_TRANSFER_CONFIG), []);
+});
+
+test("a market code never seen before is still rejected", () => {
+  // The point of inverting the rule: these are not in any list.
+  const unseen = [
+    "https://www.sc.com/bw/save/salary-account",
+    "https://www.sc.com/zm/save/salary-account",
+  ];
+  assert.deepEqual(rank(unseen, SALARY_TRANSFER_CONFIG), []);
+});
+
+test("the UAE market segment survives", () => {
+  // sc.com/ae/… is the real Standard Chartered page — run 2 found it via
+  // the retry pass. If the market rule ever rejects this, the only
+  // candidate we have for that bank disappears.
+  const ae = "https://www.sc.com/ae/save/salary-account/apply";
+  assert.deepEqual(rank([ae], SALARY_TRANSFER_CONFIG), [ae]);
+});
+
+test("a leading /en/ language segment is not treated as a market", () => {
+  // Mashreq puts language first (/en/uae/…). Rejecting two-letter leading
+  // segments naively would drop its genuine candidates.
+  const en = "https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer";
+  assert.deepEqual(rank([en], SALARY_TRANSFER_CONFIG), [en]);
+});
+
+test("non-market paths beginning with letters are unaffected", () => {
+  // /docs/, /Images/ and /-/media/ must not look like market codes.
+  const paths = [
+    "https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf",
+    "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf",
+  ];
+  const kept = rank(paths, { ...SALARY_TRANSFER_CONFIG, limit: 20 });
+  for (const p of paths) assert.ok(kept.includes(p), `${p} was wrongly rejected`);
 });
 
 test("a two-letter market code does not fire inside a longer word", () => {
