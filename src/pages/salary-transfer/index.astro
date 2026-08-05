@@ -5,11 +5,26 @@
 // it in the new tools chrome (pagehead with stats strip + toolbar + table
 // + methodology footer).
 
+import { getCollection } from "astro:content";
+
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
 import { getLiveOffers } from "~/lib/offerAdapter";
 
 const offers = await getLiveOffers();
+
+// Coverage, stated rather than implied. "Banks tracked: 2" alone reads
+// either as "we cover two" or "only two banks run an offer" — and the
+// second reading is false. The denominator is the banks the publication
+// actually covers, so the gap is visible on the page instead of being
+// something a reader could only find by counting rows.
+//
+// This is deliberately derived, not hardcoded: an offer added for a
+// tenth bank moves the numerator without anyone remembering to edit copy.
+const allBanks = await getCollection("banks");
+const trackedBanks = new Set(offers.map((o) => o.bankSlug));
+const coveredCount = allBanks.length;
+const untrackedCount = coveredCount - trackedBanks.size;
 
 const bands = [
   { slug: "aed-5000-to-8000",   label: "AED 5,000 – 8,000" },
@@ -34,21 +49,31 @@ const newestVerification = offers.length
 
 <BaseLayout
   title="UAE salary transfer offers — live tracker | DubaiPoints"
-  description="All live UAE salary transfer cash bonuses, voucher offers, and combined card+salary promotions, filterable by salary band and reward type."
+  description="UAE salary-transfer cash bonuses, voucher offers and combined card+salary promotions, verified against issuer T&Cs and filterable by salary band and reward type."
   fullWidth
 >
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Salary-transfer tracker</div>
     <h1>The salary-transfer tracker.</h1>
-    <p>Every UAE bank's salary-transfer offer in one table, verified against issuer T&amp;Cs and dated per offer. Filter by salary band, reward type, or specific bank.</p>
+    <p>Every salary-transfer offer we have verified against the issuer's own T&amp;Cs, dated per offer. Filter by salary band, reward type, or specific bank.</p>
 
     <div class="dp-tools-stats">
-      <span><span class="lbl">Banks tracked:</span> <strong>{new Set(offers.map((o) => o.bankSlug)).size}</strong></span>
+      <span><span class="lbl">Banks tracked:</span> <strong>{trackedBanks.size} of {coveredCount}</strong></span>
       <span><span class="lbl">Live offers:</span> <strong>{offers.length}</strong></span>
       {newestVerification && (
         <span><span class="lbl">Newest verification:</span> <strong>{fmtFull(newestVerification)}</strong></span>
       )}
     </div>
+
+    {untrackedCount > 0 && (
+      <p class="dp-coverage-note">
+        <strong>Coverage gap.</strong> {untrackedCount} of the {coveredCount} banks
+        we cover {untrackedCount === 1 ? "has" : "have"} no verified salary-transfer
+        offer in the tracker yet. That means we have not confirmed one against the
+        bank's published terms — not that no offer exists. Treat this table as what
+        we can evidence, not as the whole UAE market.
+      </p>
+    )}
   </div>
 
   <!-- Preact island handles filter UI + sortable table -->

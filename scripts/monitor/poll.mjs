@@ -6,6 +6,7 @@
 // Routing:
 //   fee-docs, product-pages  → card digest + auto-scrape the affected bank
 //   offers                   → card digest, editor-routed, NO auto-scrape
+//   salary-transfer          → its own digest, editor-routed, NO auto-scrape
 //   press-rooms              → news digest at the path the desks already read
 //
 // Why offers never auto-scrape: per the scrape merge contract, typed
@@ -13,6 +14,14 @@
 // written by the scraper — it emits free text under _scraped_freetext.*
 // for an editor to type up by hand. An offers change is therefore a
 // human's job, and dispatching a scrape would fight that contract.
+//
+// Salary-transfer is the same rule with no exception to argue about: the
+// salaryTransferOffers collection is *entirely* typed editor content —
+// salary bands, reward amounts, payout months, clawback terms — and the
+// scraper has no free-text equivalent for any of it. It gets its own
+// digest rather than the card one because nothing in it reaches
+// cards.json, and filing it under "card data change" would misdescribe
+// the work it is asking an editor to do.
 //
 // Why nothing here writes a number: Charter §6. The monitor reports that
 // something moved; the deterministic parsers in scripts/scrape/ decide
@@ -25,16 +34,20 @@
 
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync, appendFileSync } from "node:fs";
 
+import {
+  AUTO_SCRAPE,
+  NEWS,
+  SALARY_TRANSFER,
+  OFFERS_REGISTRY,
+  SALARY_TRANSFER_REGISTRY,
+  registryUrlToBank,
+} from "./_routing.mjs";
+
 const KEY = process.env.FIRECRAWL_API_KEY;
 const API = "https://api.firecrawl.dev/v2/monitor";
 const MONITORS_PATH = "data/monitor/monitors.json";
 const STATE_PATH = "data/monitor/state.json";
 const BANKS_DIR = "scripts/scrape/banks";
-
-/** Monitors whose changes justify re-running the deterministic scraper. */
-const AUTO_SCRAPE = new Set(["fee-docs", "product-pages"]);
-/** Monitors that belong to the news desks rather than the card pipeline. */
-const NEWS = new Set(["press-rooms"]);
 
 if (!KEY) {
   console.error("FIRECRAWL_API_KEY unset — nothing to poll.");
@@ -67,18 +80,9 @@ function urlToBank() {
   return map;
 }
 
-function offersUrlToBank() {
-  const path = "scripts/monitor/offers.registry.json";
-  const map = new Map();
-  if (!existsSync(path)) return map;
-  for (const b of JSON.parse(readFileSync(path, "utf8")).banks ?? []) {
-    for (const u of b.urls ?? []) map.set(u, b.bank);
-  }
-  return map;
-}
-
 const bankOf = urlToBank();
-const offerBankOf = offersUrlToBank();
+const offerBankOf = registryUrlToBank(OFFERS_REGISTRY);
+const salaryBankOf = registryUrlToBank(SALARY_TRANSFER_REGISTRY);
 
 async function api(path) {
   const res = await fetch(`${API}${path}`, {
@@ -91,6 +95,7 @@ async function api(path) {
 
 const cardFindings = [];
 const newsFindings = [];
+const salaryFindings = [];
 const banksToScrape = new Set();
 let creditsThisPoll = 0;
 
@@ -146,11 +151,16 @@ for (const [key, mon] of Object.entries(monitors)) {
       const finding = {
         monitor: key,
         url: page.url,
-        bank: bankOf.get(page.url) ?? offerBankOf.get(page.url) ?? null,
+        bank:
+          bankOf.get(page.url) ??
+          offerBankOf.get(page.url) ??
+          salaryBankOf.get(page.url) ??
+          null,
         reason: page?.judgment?.reason ?? "",
         diff: page?.diff?.text ?? "",
       };
       if (NEWS.has(key)) newsFindings.push(finding);
+      else if (SALARY_TRANSFER.has(key)) salaryFindings.push(finding);
       else cardFindings.push(finding);
 
       if (AUTO_SCRAPE.has(key) && finding.bank) banksToScrape.add(finding.bank);
@@ -203,6 +213,24 @@ if (cardFindings.length) {
     ),
   );
   console.log(`Wrote ${path} (${cardFindings.length} findings)`);
+}
+
+if (salaryFindings.length) {
+  const path = `.council/monitoring/salary-transfer-change-${stamp}.md`;
+  writeFileSync(
+    path,
+    renderFindings(
+      salaryFindings,
+      "Salary-transfer offer change signals",
+      "_CHANGE SIGNAL ONLY. Diffs and judge reasoning below are context for a human._\n" +
+        "_Nothing here is auto-applied: the salaryTransferOffers collection is typed_\n" +
+        "_editor content end to end (salary bands, reward amounts, payout months,_\n" +
+        "_clawback terms) and every field must be read off the source and typed up_\n" +
+        "_by hand, then dated with a fresh lastVerified (Charter §6)._\n\n" +
+        "_Owner: business-realestate-editor. Copy the deals desk._",
+    ),
+  );
+  console.log(`Wrote ${path} (${salaryFindings.length} findings)`);
 }
 
 if (newsFindings.length) {

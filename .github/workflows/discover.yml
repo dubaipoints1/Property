@@ -1,0 +1,110 @@
+# Registry-URL discovery — manual dispatch, proposes only.
+#
+# Runs scripts/monitor/discover-<surface>.mjs on Actions rather than in a
+# Claude Code session. Two reasons that matters: bank hosts return 000 on
+# the web-session network allowlist (CLAUDE.md §"Network allowlist"), and
+# the Firecrawl MCP server is gated at the permission layer. Actions has
+# different egress and uses the FIRECRAWL_API_KEY repo secret directly,
+# the same channel monitor.yml and scrape.yml already run on.
+#
+# WHAT THIS DOES NOT DO: write a registry. monitor.yml ends by committing
+# digests and state; this one commits nothing and holds a read-only token.
+# Discovery PROPOSES candidate URLs and a human confirms them, because a
+# monitor pointed at a guessed page is worse than no monitor — we would
+# then trust it. Both registry _doc fields say exactly this.
+#
+# Output lands in the run's job summary (readable without downloading)
+# and as an artifact.
+#
+# Cost: one Firecrawl map call per bank, ~12 credits per dispatch.
+
+name: discover
+
+on:
+  workflow_dispatch:
+    inputs:
+      surface:
+        description: "Which registry surface to discover URLs for"
+        required: true
+        default: salary-transfer
+        type: choice
+        options:
+          - salary-transfer
+          - offers
+      ref:
+        description: "Branch/ref to run the discovery scripts from"
+        required: false
+        default: ""
+        type: string
+
+# Read-only: this workflow must never write to the repo.
+permissions:
+  contents: read
+
+concurrency:
+  group: discover-${{ inputs.surface }}
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Unlike monitor.yml (which pins main), this runs whatever ref
+          # you dispatch against, so discovery can be exercised from a
+          # feature branch before the scripts reach the default branch.
+          ref: ${{ inputs.ref || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Run discovery
+        env:
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        run: |
+          set -o pipefail
+          script="scripts/monitor/discover-${{ inputs.surface }}.mjs"
+          if [ ! -f "$script" ]; then
+            echo "::error::$script not found on this ref (${{ inputs.ref || github.ref }})."
+            exit 1
+          fi
+          if [ -z "$FIRECRAWL_API_KEY" ]; then
+            echo "::error::FIRECRAWL_API_KEY secret is unset — set it in repo settings."
+            exit 1
+          fi
+          node "$script" 2>&1 | tee discovery-output.txt
+
+      - name: Publish candidates to the job summary
+        if: always() && hashFiles('discovery-output.txt') != ''
+        run: |
+          {
+            echo "## Candidate ${{ inputs.surface }} URLs"
+            echo
+            echo "Review each one. Confirmed URLs go into the registry **by hand** —"
+            echo "nothing here is written automatically."
+            echo
+            echo '```'
+            cat discovery-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        if: always() && hashFiles('discovery-output.txt') != ''
+        with:
+          name: discovery-${{ inputs.surface }}
+          path: discovery-output.txt
+          retention-days: 30
+
+      - name: Assert nothing was written
+        run: |
+          # Discovery proposes and does not commit. If a future edit makes
+          # a discover script write a registry, this fails loudly rather
+          # than the change passing unnoticed.
+          if [ -n "$(git status --porcelain -- scripts/ src/ data/)" ]; then
+            echo "::error::discovery modified tracked files — it must only propose."
+            git status --porcelain -- scripts/ src/ data/
+            exit 1
+          fi
+          echo "Working tree clean — discovery proposed only."

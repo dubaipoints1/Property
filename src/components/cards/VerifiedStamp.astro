@@ -3,12 +3,14 @@
 // verified, with an amber drift flag when older than 90 days.
 //
 // Charter §"Editorial guarantees": every card has a `lastVerified` date;
-// UI flags entries older than 90 days. The 90-day threshold is the same
-// one used by RewardsCalculator (NINETY_DAYS_MS) and the calculator-page
-// drift-risk warning.
+// UI flags entries older than 90 days. The threshold lives in
+// ~/lib/verification and is shared with SpecCard, RewardsCalculator and
+// the salary-transfer tracker.
 //
 // Tokens only — no Tailwind utilities. Green dot when fresh, amber dot
 // (using --gold) when stale.
+
+import { isStale as isStaleAt } from "~/lib/verification";
 
 interface Props {
   lastVerified: Date | string;
@@ -18,11 +20,9 @@ interface Props {
 
 const { lastVerified, now } = Astro.props;
 
-const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
 const verifiedAt =
   lastVerified instanceof Date ? lastVerified : new Date(lastVerified);
-const refTime = (now ?? new Date()).getTime();
-const isStale = refTime - verifiedAt.getTime() > NINETY_DAYS_MS;
+const isStale = isStaleAt(verifiedAt, now ?? new Date());
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", {

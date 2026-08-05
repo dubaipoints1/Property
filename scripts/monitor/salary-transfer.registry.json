@@ -1,0 +1,4 @@
+{
+  "_doc": "Bank salary-transfer offer pages and their T&C documents, watched weekly by the 'salary-transfer' monitor (scripts/monitor/setup.mjs). Like offers, this is a per-BANK surface rather than per-card, which is why it lives here and not on scripts/scrape/banks/<slug>.urls.json. Populate by confirming each URL BY HAND — a monitor pointed at the wrong page is worse than no monitor, because we would then trust it. Entries here are alert-only and are never auto-scraped: the salaryTransferOffers collection is entirely typed editor content (salary bands, reward amounts, clawback terms) with no free-text scraper equivalent at all, so a change routes to the business-realestate editor and the deals desk to be typed up against the source. Cadence is weekly rather than daily because salary-transfer promotions move on quarterly campaign cycles; see the credit budget in CLAUDE.md.",
+  "banks": []
+}

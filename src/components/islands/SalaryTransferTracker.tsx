@@ -5,6 +5,7 @@ import {
   daysUntil,
   findBand,
 } from "../../lib/salaryTransfer";
+import { isStale } from "../../lib/verification";
 
 // Salary-Transfer Tracker island. Markup + styling ported from the Claude
 // Design artifact "Salary-Transfer Tracker (standalone)" (imported 27 June
@@ -198,9 +199,17 @@ export default function SalaryTransferTracker({ offers }: Props) {
           </svg>{" "}
           Source-verified
         </div>
-        <div class="vdate">
+        <div class={`vdate${isStale(o.lastVerified) ? " is-stale" : ""}`}>
           Last checked <b>{fmtDate(o.lastVerified)}</b> against the bank's
           published terms.
+          {isStale(o.lastVerified) && (
+            <>
+              {" "}
+              <span class="drift">
+                More than 90 days ago — pending re-verification.
+              </span>
+            </>
+          )}
         </div>
         <a href={o.sourceUrl} target="_blank" rel="noopener">
           View source document →

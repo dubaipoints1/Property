@@ -305,7 +305,7 @@ gotchas live in `scripts/scrape/banks/<slug>.notes.md`.
 Scheduled scraping used to be the only way we learned that a bank had
 changed anything — which is why the ADCB FX error (0.525% published
 against a Schedule of Fees saying 2.99%) sat live until a sweep caught
-it. Four Firecrawl monitors now watch the sources directly and the
+it. Five Firecrawl monitors now watch the sources directly and the
 scrape runs *in response*:
 
 | Monitor | URLs | Cadence | On change |
@@ -313,17 +313,36 @@ scrape runs *in response*:
 | `dubaipoints-fee-docs` | 10 KFS / SoF documents | daily | issue + auto-scrape that bank |
 | `dubaipoints-product-pages` | 52 card product pages | weekly | issue + auto-scrape that bank |
 | `dubaipoints-offers` | bank offers/promotions pages | daily | issue → editor, **no** auto-scrape |
+| `dubaipoints-salary-transfer` | bank salary-transfer pages + T&Cs | weekly | issue → editor, **no** auto-scrape |
 | `dubaipoints-press-rooms` | 9 issuer press indexes | daily | news digest → desks |
 
 ```
 scripts/monitor/setup.mjs            # idempotent provisioning (FIRECRAWL_API_KEY=skip to dry-run)
 scripts/monitor/poll.mjs             # reads check results, routes them, emits banks to scrape
+scripts/monitor/_routing.mjs         # routing sets + registry readers (pure; tests/monitor/)
+scripts/monitor/_discover.mjs        # shared discovery core (map → rank → propose)
 scripts/monitor/discover-offers.mjs  # one-off offers-URL discovery, human-confirmed
+scripts/monitor/discover-salary-transfer.mjs # ditto for salary-transfer; KEEPS T&C PDFs
 scripts/monitor/offers.registry.json # confirmed offers URLs (per bank, not per card)
+scripts/monitor/salary-transfer.registry.json # confirmed salary-transfer URLs (per bank)
 data/monitor/monitors.json           # monitor IDs (committed)
 data/monitor/state.json              # seen checks, baseline flags, reported credits
 .github/workflows/monitor.yml        # daily poll → issue → gh workflow run scrape.yml -f bank=<slug>
 ```
+
+Both registries ship **empty**. `setup.mjs` skips a monitor with no URLs,
+so `offers` and `salary-transfer` are provisioned only once someone has
+confirmed each URL by hand — a monitor pointed at a guessed page is worse
+than none, because we would then trust it. The `discover-*.mjs` scripts
+propose candidates (~12 credits, one map call per bank); they never write
+a registry.
+
+The two surfaces reject different things, and the inversion is
+deliberate: offers discovery drops `.pdf` / `/terms` / `/tnc` as noise
+around the landing page, while salary-transfer discovery **keeps** them,
+because the salary bands, payout months and clawback terms live in the
+T&C document (DIB's shipped `sourceUrl` is a PDF). Collapsing the two
+reject rules into one fails `tests/monitor/discover.test.ts`.
 
 **The §6 boundary is the whole design.** Firecrawl offers JSON-mode
 change tracking that would hand us
@@ -344,12 +363,28 @@ written by the scraper — it emits free text under `_scraped_freetext.*`
 for an editor to type up. An offers change is a human's job, and also
 tells the deals desk something is worth filing.
 
+**Salary-transfer is alert-only for the same reason, with no exception to
+argue about.** The `salaryTransferOffers` collection is typed editor
+content end to end — salary bands, reward amounts, payout months,
+clawback terms — and the scraper has no free-text equivalent for any of
+it. Changes land in their own digest
+(`.council/monitoring/salary-transfer-change-*.md`) rather than the card
+one, because nothing in them reaches `cards.json`; owner is the
+business-realestate editor, copy to the deals desk.
+
+That both editor-typed monitors stay off the auto-scrape path is now an
+asserted invariant, not a convention: `tests/monitor/routing.test.ts`
+fails if either is added to `AUTO_SCRAPE`.
+
 **Budget.** Verified pricing: 1 credit per URL per check, plus 1 per
-changed page the judge validates. Design estimate ≈794/month with offers
-unpopulated, ≈1,154 once offers land — against the 5,000/month Hobby
-plan. `setup.mjs` aborts if the API's own `estimatedCreditsPerMonth`
-exceeds `MAX_ESTIMATED_CREDITS` (1,600), which guards against PDF
-documents billing per page rather than per URL.
+changed page the judge validates. Design estimate ≈794/month with both
+editor-typed registries unpopulated, ≈1,154 once offers land, plus
+≈4.3/URL/month for salary-transfer (weekly — these promotions move on
+quarterly campaign cycles, so daily would buy nothing for 7× the
+credits). Against the 5,000/month Hobby plan. `setup.mjs` aborts if the
+API's own `estimatedCreditsPerMonth` exceeds `MAX_ESTIMATED_CREDITS`
+(1,600), which guards against PDF documents billing per page rather than
+per URL.
 
 `scrape.yml` dropped from monthly to **quarterly** as the backstop for
 what monitors structurally cannot see: a restructured page, a moved URL,
@@ -549,6 +584,18 @@ Re-confirmed 2026-07-29, and two API hosts added:
 Both have a working Actions channel (`seed-images-*.yml`,
 `refetch-image.yml`, `gen-ai-image.yml`), so neither blocks the
 imagery pipeline — they only block running it in-session.
+
+Added 2026-08-05:
+
+| Host | Status | Use case blocked |
+|---|---|---|
+| `*.dubaipoints.pages.dev` | 403 | Reading a Cloudflare Pages **preview deploy** from a web session |
+
+The Cloudflare Pages bot posts a preview URL on every PR, so it reads as
+though a session could open it and check the rendered result. It cannot.
+Verify against the local `dist/` after `npm run build` instead — Pages
+deploys that same artifact, so the built HTML is the honest substitute.
+Reviewing a preview visually remains a workstation task.
 
 **Operational consequences:**
 
