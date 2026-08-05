@@ -4,6 +4,22 @@ Owner: Head of UX, with Standards Editor on the label and Chairman on
 the permit/ban line. Governs every image generated under the
 2026-07-29 Charter amendment.
 
+**Scope — this document briefs GENERATION, not selection.** Everything
+below, and §2's "muted, never saturated" palette rule in particular,
+tells you how to write an AI prompt. It is **not** a filter for choosing
+licensed stock. §1 describes the existing library so an AI render can be
+briefed to sit beside it; it does not claim the library is uniformly
+muted, and it is not. `guide-expat-starter-banking-basics` (neon-lit DIFC
+towers at night) and `guide-expat-starter-avoid-mistakes` (emerald marina
+water under hard blue sky) are both highly saturated and both correct.
+
+Recorded because the misreading actually happened: on 5 August 2026 a
+perfectly good Pexels photograph was flagged to the owner as an
+off-register "deviation" on the strength of this rule, which never
+applied to it. Judge a stock photograph on subject, composition,
+place-plausibility and legibility at 300px — the §3 composition rules
+travel; the palette rule does not.
+
 This exists because the first real generation took **four dispatches**
 to produce one usable image, and three of those were avoidable. The
 failures were not bad luck:

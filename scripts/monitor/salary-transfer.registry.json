@@ -14,17 +14,19 @@
       "bank": "enbd",
       "urls": [
         "https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more",
-        "https://www.emiratesnbd.com/-/media/enbd/files/pdf/transfer_your_salary_win_rewards_tc.pdf"
+        "https://www.emiratesnbd.com/-/media/enbd/files/pdf/transfer_your_salary_win_rewards_tc.pdf",
+        "https://cdn.emiratesnbd.com/liv/static-files/pdf/salary_transfer_tncs_en.pdf"
       ],
-      "_evidence": "Campaign page: live sourceUrl of emirates-nbd-ongoing-2026.mdx, re-surfaced by discovery runs 30982700538 and 30985646889. T&C PDF: verify run 30988856840 returned SUPPORTED (AED 5000, minSalary 5000). Landing page + T&C pair, which is the shape this surface wants."
+      "_evidence": "Campaign page: live sourceUrl of emirates-nbd-ongoing-2026.mdx, re-surfaced by discovery runs 30982700538 and 30985646889. T&C PDF: verify run 30988856840 returned SUPPORTED (AED 5000, minSalary 5000). Landing page + T&C pair, which is the shape this surface wants. Liv T&C PDF added: SUPPORTED on verify run 31003513821 (5 August 2026) with the strongest signal set of the whole run — AED 5,000, minimum salary AED 5,000, bands AND clawback, all four. Liv is ENBD's digital bank, so this is likely a distinct offer rather than a duplicate of the campaign above; the desk should confirm which product it describes before either is written up."
     },
     {
       "bank": "mashreq",
       "urls": [
         "https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer",
-        "https://www.mashreq.com/en/uae/gold/banking-solutions/account-deposits/current-accounts/salary-transfer"
+        "https://www.mashreq.com/en/uae/gold/banking-solutions/account-deposits/current-accounts/salary-transfer",
+        "https://www.mashreq.com/-/jssmedia/pdfs/neo/accounts-deposits/TnCs/salary-transfer-bonus-tnc-en-ar.ashx"
       ],
-      "_evidence": "NEO page: live sourceUrl of mashreq-2026.mdx, re-surfaced by both discovery runs. Gold page: verify run 30988856840 returned SUPPORTED with the strongest signal set of any candidate (AED 50000, minSalary 25000, band language present)."
+      "_evidence": "NEO page: live sourceUrl of mashreq-2026.mdx, re-surfaced by both discovery runs. Gold page: verify run 30988856840 returned SUPPORTED with the strongest signal set of any candidate (AED 50000, minSalary 25000, band language present). NEO salary-transfer-bonus T&C added: SUPPORTED on verify run 31003513821 (5 August 2026) (AED 2,500, bands, clawback). This closes a real gap — mashreq-2026.mdx cites a marketing page as its sourceUrl, and the entry can now be re-derived from the terms document, the same upgrade the FAB entry was built with from the start."
     },
     {
       "bank": "dib",
@@ -32,6 +34,20 @@
         "https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf"
       ],
       "_evidence": "Verify run 30988856840 returned SUPPORTED (AED 8000, minSalary 8000). NOTE: this is NOT the dib-xtra-tc.pdf cited by the live dib-xtra-2026.mdx entry, whose bands start at AED 5,000. Two distinct documents both carrying salary-transfer terms — watching this one is safe, but which is current is an editorial question flagged to the business-realestate desk."
+    },
+    {
+      "bank": "adcb",
+      "urls": [
+        "https://www.adcb.com/en/personal/promotions/switch-nine-salary-transfer"
+      ],
+      "_evidence": "SUPPORTED on verify run 31003513821 (5 August 2026) — minimum salary AED 5,000, band language and clawback wording, three strong signals. Provenance is notable: this URL came from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md, which recorded it live on 30 May after adcb.com/en/personal/promotions/salary-transfer returned 404. It sat in an open brief for two months while two discovery runs reported 'no candidate found', because the patterns required 'salary' to start a path segment and this slug carries it as a suffix. Replaces the Mar-2017 PDF, which stays in _pending as WEAK."
+    },
+    {
+      "bank": "emirates-islamic",
+      "urls": [
+        "https://www.emiratesislamic.ae/en/offers/mbrhe-salary-transfer-package"
+      ],
+      "_evidence": "SUPPORTED on verify run 31003513821 (5 August 2026) — AED 3,000 and band language. CAVEAT, and it matters for coverage: MBRHE is the Mohammed Bin Rashid Housing Establishment programme, a narrow eligibility segment for UAE nationals, NOT Emirates Islamic's general salary-transfer offer. Watching it is correct; it does not make Emirates Islamic a covered bank in the reader-facing sense. Its general offers page and both 6k/16k T&C documents came back WEAK on the same run — see _pending."
     }
   ],
   "_pending": {
@@ -59,29 +75,26 @@
     },
     "adcb": {
       "urls": [
-        "https://www.adcb.com/en/personal/promotions/switch-nine-salary-transfer",
         "https://www.adcb.com/Images/SpecialTermsAndConditions-IB-SalaryTransfer-E-A-V1-Mar17_tcm9-92619.pdf"
       ],
-      "verdict": "AWAITING VERIFY. The switch-nine URL comes from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md (status: open), which recorded it as the LIVE replacement after adcb.com/en/personal/promotions/salary-transfer returned 404 — confirmed 200 OK on 30 May 2026. Neither discovery run ever surfaced it; the map search never reached a /promotions/switch-nine-* path, which is a real limitation of URL discovery rather than a gap in ADCB's site. Previous verdict on the Mar-2017 PDF (retained below): WEAK — reachable, AED 12,000, no bands or clawback."
+      "verdict": "WEAK (verify run 31003513821 (5 August 2026)) — reachable, AED 12,000, no bands or clawback, and dated March 2017. Superseded for monitoring by the switch-nine page now in `banks`; retained only because a 2017 document may still be the terms behind an older cycle."
     },
     "emirates-islamic": {
       "urls": [
         "https://www.emiratesislamic.ae/en/offers/salary-transfer-cashback",
         "https://www.emiratesislamic.ae/-/media/ei/pdfs/terms-and-condition/offers/salarytransferoffer_6k_tnc_en.pdf",
         "https://www.emiratesislamic.ae/-/media/ei/pdfs/terms-and-condition/offers/salarytransferoffer_16k_tnc_en.pdf",
-        "https://www.emiratesislamic.ae/en/offers/mbrhe-salary-transfer-package",
         "https://www.emiratesislamic.ae/en/terms-and-conditions/salary-transfer-offer",
         "https://www.emiratesislamic.ae/en/soc/payroll-card"
       ],
-      "verdict": "AWAITING VERIFY — and the most promising of the whole set. Until discovery run 31003139057 this bank's ONLY candidate was payroll-card, a WPS prepaid card correctly rejected as not an offer, and Emirates Islamic was written off as having nothing. The slug-suffix fix surfaced an offers page AND two banded T&C documents at 6k and 16k salary tiers. If those hold real bands this is a fourth covered bank. The mbrhe package is the Mohammed Bin Rashid Housing Establishment programme — a specific segment, likely a separate offer rather than the general one. payroll-card retained at the end for its recorded NO SALARY-TRANSFER CONTENT verdict."
+      "verdict": "ALL WEAK on verify run 31003513821 (5 August 2026), and this reverses what I predicted. I called the 6k/16k T&C documents the most promising candidates in the set; the 6k returned NO signals at all and the 16k only clawback. The general offers page carries AED 6,000 but nothing else. What actually verified was the MBRHE package, which I had dismissed as a narrow segment — now in `banks`. Emirates Islamic's GENERAL offer therefore remains unevidenced, and the bank is not covered in the reader-facing sense. payroll-card retained with its NO SALARY-TRANSFER CONTENT verdict across three runs."
     },
     "enbd_secondary": {
       "urls": [
         "https://www.emiratesnbd.com/en/promotions/salary-transfer-account-offer",
-        "https://cdn.emiratesnbd.com/liv/static-files/pdf/salary_transfer_tncs_en.pdf",
         "https://www.emiratesnbd.com/en/campaigns/abu-dhabi-open-salary-transfer-account"
       ],
-      "verdict": "AWAITING VERIFY on the first two, both new from run 31003139057. The /en/promotions/ page is a fourth ENBD surface the campaigns rule never reached; the liv PDF is ENBD's digital bank, which may be a distinct offer rather than a duplicate. The abu-dhabi campaign retains its earlier WEAK verdict (AED 15,000, one strong signal)."
+      "verdict": "Both WEAK on verify run 31003513821 (5 August 2026). The /en/promotions/ page returned no signals at all despite the promising slug — a reminder that a good URL is not a good page. The abu-dhabi campaign carries AED 15,000 and nothing else, unchanged across two runs."
     },
     "_no_candidate": {
       "banks": [
@@ -89,26 +102,25 @@
         "citi",
         "hsbc"
       ],
-      "note": "Neither discovery run found any candidate for these three, including the retry pass with a second search term. FAB was in this list until 5 August 2026, when the owner supplied a URL that discovery could never have found: the offer lives under /promotions/, and the salary-transfer patterns in discover-salary-transfer.mjs do not match that path. This is the SECOND bank missed the same way — ADCB's live page is also under /promotions/ (switch-nine-salary-transfer), recorded in the 30 May brief. Two misses with one cause is a pattern worth fixing: adding a /promotions/.*salary rule to discovery would likely surface both. Until then, treat 'no candidate found' as 'discovery did not reach it', not as 'the bank has no offer'."
+      "note": "No discovery run has found a candidate for these three, including the retry pass with a second search term and the re-run after the 5 August pattern fix. FAB was in this list until 5 August 2026, when the owner supplied a URL discovery could not reach: the anchored patterns required 'salary' to START a path segment, and both FAB's 20-percent-cashback-on-salary-transfers and ADCB's switch-nine-salary-transfer carry it as a slug SUFFIX. Two banks missed on one character. Fixed the same day — discover-salary-transfer.mjs gained a /promotions/.*salary rule and an unanchored salary-transfer fallback ranked last — and the re-run surfaced ADCB's page, which then verified. These three stayed empty through that fix, so their gap is not the same one; treat 'no candidate found' as 'discovery did not reach it' and locate by hand."
     },
     "mashreq": {
       "urls": [
-        "https://www.mashreq.com/-/jssmedia/pdfs/gold/mg-salary-transfer-tc-en.ashx",
-        "https://www.mashreq.com/-/jssmedia/pdfs/neo/accounts-deposits/TnCs/salary-transfer-bonus-tnc-en-ar.ashx"
+        "https://www.mashreq.com/-/jssmedia/pdfs/gold/mg-salary-transfer-tc-en.ashx"
       ],
-      "verdict": "AWAITING VERIFY. Both T&C documents are new from run 31003139057 and matter more than most: Mashreq is already a covered bank, but its shipped entry cites a marketing page rather than terms. Admitting these would let the entry be re-derived from the source document, the same upgrade FAB's entry got."
+      "verdict": "UNREACHABLE on verify run 31003513821 (5 August 2026) — Firecrawl HTTP 502 Bad Gateway. A server error, not a dead page; re-verify before judging it. The Gold tier is a separate product from NEO, so this is worth another attempt."
     },
     "fab": {
       "urls": [
         "https://www.bankfab.com/en-ae/personal/accounts/salary-transfer-account"
       ],
-      "verdict": "AWAITING VERIFY. A standing product page distinct from the time-boxed 20% promotion already admitted. If it carries its own terms it is worth watching separately, since the promotion expires 31 December 2026 and this page presumably will not."
+      "verdict": "WEAK (verify run 31003513821 (5 August 2026)) — reachable but AED=0 and no other signal, so the standing account page carries no offer detail of its own. The 20% promotion in `banks` remains the only FAB source worth watching; revisit after it expires 31 December 2026."
     },
     "dib": {
       "urls": [
         "https://www.dib.ae/docs/default-source/pdf/e-brochures/salary-transfer-leaflet-eng.pdf"
       ],
-      "verdict": "AWAITING VERIFY. A brochure rather than terms, so likely WEAK, but DIB has an unresolved source conflict (see the 2026-08-05 brief) and a third document may help settle which product our shipped entry describes."
+      "verdict": "UNREACHABLE on verify run 31003513821 (5 August 2026) — Firecrawl HTTP 408 Request Timeout, the second transient failure on a DIB PDF this session. Re-verify. It may help settle the source conflict in the 2026-08-05 brief."
     }
   }
 }

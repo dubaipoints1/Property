@@ -14,9 +14,13 @@
 #   5. Alt: new descriptive alt text
 #   6. Run.
 #
-# The workflow refuses unknown slugs (the fetcher will fail because
-# the slug needs to exist with --replace logic). Use seed-images.yml
-# instead for NEW slugs.
+# Works for NEW slugs too, despite the name. The fetcher guards with
+# `if (existing && !args.replace)` (scripts/images/fetch-stock.ts), so
+# with --replace an unknown slug simply falls through to the normal
+# fetch-and-append path and lands a fresh manifest entry. Corrected
+# 2026-08-05 — this comment previously claimed unknown slugs were
+# refused, which sent people to hand-write a one-off seed-images-eNN
+# workflow for something this already does.
 
 name: refetch-image
 

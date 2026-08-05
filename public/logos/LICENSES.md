@@ -59,6 +59,43 @@ Per the editorial style guide, real SVGs must be:
 When you replace a file, log the source URL and the date pulled in
 this document.
 
+## Non-issuer marks (`partners/`)
+
+The replacement rule above governs **issuer** marks — banks, airlines and
+loyalty programmes the publication reviews. It is deliberately strict, and
+that strictness is why five reviewed banks above still render as text
+placeholders.
+
+The 2026-08-05 Charter amendment opened a separate, narrower lane for a
+**non-issuer** company named as an illustrative example inside a guide.
+These live in `partners/` rather than `banks/` or `airlines/` so the two
+standards never get confused with one another.
+
+**Read this before adding one.** A `partners/` mark is generally *not* a
+{{PD-textlogo}} or brand-kit asset — it is the company's own artwork taken
+from its own website, used nominatively to identify a business the piece
+discusses. That is a weaker licence basis than anything in the source log
+above, and **it is not precedent for sourcing issuer logos the same way.**
+An issuer mark that fails the replacement rule stays a text placeholder;
+that has not changed.
+
+Conditions, all of them:
+
+1. The company is named as an example **or recommended** in editorial
+   copy, with no payment, affiliate arrangement or ownership interest —
+   disclosed in the piece. Where it is a recommendation, the disclosure
+   also states the basis for it.
+2. The mark is used **unmodified** and rendered **nominatively**, adjacent
+   to the business name at a modest size. Not a hero badge.
+3. Source URL and date logged below, in the same commit as the asset.
+4. Takedown requests honoured within 24 hours, no questions asked.
+5. Fetched via `.github/workflows/fetch-partner-logo.yml` — the web
+   session cannot reach third-party image hosts.
+
+| Slug | Source URL | Pulled | Notes |
+|---|---|---|---|
+| partners/modcare | https://modcare.ae/wp-content/uploads/2023/09/Modcarelogo-singular-min.svg | 2026-08-05 | Company's own artwork from its own website. Trademark of Modcare Car Care, Al Quoz, Dubai; used nominatively to identify the worked example in `guides/expat-starter-car-costs`. No payment, no affiliate arrangement, no ownership interest — disclosed inline above the example. Not a {{PD-textlogo}} or brand-kit asset; permitted under the 2026-08-05 amendment, on site-owner direction. No written permission on file — if a grant is later obtained, record it in this row. |
+
 ## Source log
 
 | Slug | Source URL | Pulled | Notes |
