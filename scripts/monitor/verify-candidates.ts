@@ -61,9 +61,18 @@ export function signalsFor(markdown: string): Signals {
     hasClawback: /claw\s?back|forfeit|pro-?rata|lock-?in|recover(?:ed|y)?\s+(?:the\s+)?bonus/i.test(
       markdown,
     ),
-    mentionsSalaryTransfer: /salary\s+transfer|transfer\s+your\s+salary|salary\s+account/i.test(
-      markdown,
-    ),
+    // Deliberately broad on product naming. The first version of this
+    // matched only "salary transfer" / "transfer your salary" / "salary
+    // account", and verify run 30988856840 reported ADIB's
+    // salary-bonus-program-tcs-en.pdf as NO SALARY-TRANSFER CONTENT while
+    // it carried an AED figure — a false negative of the detector, not a
+    // bad URL. UAE banks brand this product several ways: salary bonus
+    // (ADIB), salary credit, WPS salary. Missing one reads as "the bank
+    // has no offer", which is the wrong answer to give.
+    mentionsSalaryTransfer:
+      /salary\s+transfer|transfer\s+your\s+salary|salary\s+account|salary\s+bonus|salary\s+credit|credit\s+your\s+salary|wps\s+salary/i.test(
+        markdown,
+      ),
   };
 }
 
@@ -94,9 +103,16 @@ function pendingUrls(): Array<{ bank: string; url: string; admitted: boolean }> 
       for (const url of b.urls ?? []) out.push({ bank: b.bank, url, admitted: true });
     }
   }
-  for (const [bank, urls] of Object.entries(reg._pending ?? {})) {
+  for (const [bank, entry] of Object.entries(reg._pending ?? {})) {
     if (bank.startsWith("_")) continue; // _doc, _no_candidate
-    if (!Array.isArray(urls)) continue;
+    // Two accepted shapes: a bare array, or {urls, verdict} once a run has
+    // recorded why the candidate did not qualify. Reading only the array
+    // form silently found zero URLs after verdicts were added.
+    const urls = Array.isArray(entry)
+      ? entry
+      : Array.isArray((entry as { urls?: unknown })?.urls)
+        ? (entry as { urls: unknown[] }).urls
+        : [];
     for (const url of urls) out.push({ bank, url: String(url), admitted: false });
   }
   return out;
