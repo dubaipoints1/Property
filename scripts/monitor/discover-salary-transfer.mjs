@@ -31,7 +31,7 @@ export const SALARY_TRANSFER_PATTERNS = [
   /\/campaigns?\/.*salary/i,
 ];
 
-// Deliberately NARROWER than the offers reject rule.
+// Deliberately NARROWER than the offers reject rule *on documents*.
 //
 // discover-offers.mjs rejects `.pdf`, `/terms` and `/tnc` because for a
 // promotions landing page those are noise. For salary transfer they are
@@ -39,14 +39,45 @@ export const SALARY_TRANSFER_PATTERNS = [
 // the T&C document, not the marketing page. DIB's shipped sourceUrl is
 // literally dib.ae/docs/default-source/pdf/dib-xtra-tc.pdf.
 //
-// So this keeps PDFs and terms pages and rejects only what is genuinely
-// not a durable salary-transfer surface: images, archives, expired
-// campaigns, and year-stamped paths.
-export const SALARY_TRANSFER_REJECT = /\.(jpg|jpeg|png|gif|svg)$|\/archive|\/expired|\/\d{4}\//i;
+// So this keeps PDFs and terms pages, and rejects only what is genuinely
+// not a UAE consumer salary-transfer surface. Every rule below was added
+// from real noise in discovery run 30982700538 — see the matching cases
+// in tests/monitor/discover.test.ts, which use those exact URLs.
+//
+// Non-UAE markets. These banks publish the same product across many
+// countries and the map surfaces all of them: Standard Chartered offered
+// sc.com/ng/save/salary-account (Nigeria) and Mashreq offered an Egypt
+// payroll-loans page. Matched as whole path segments so a two-letter code
+// cannot fire inside a longer word.
+const FOREIGN_MARKET = /\/(ng|eg|egypt|pk|in|uk|sg|hk|ke|bh|qa|om|kw|lb|jo)\//i;
+
+// Arabic mirrors of pages whose /en/ equivalent is already surfaced —
+// a pure duplicate, so dropping it removes no information.
+const NON_EN_LOCALE = /\/ar\//i;
+
+// Salary ADVANCE and payroll LOANS are credit products, not
+// salary-transfer bonuses. CBD's only candidate was salaryadvance_t-c.pdf.
+const CREDIT_PRODUCT = /salary-?advance|payroll-?loans?/i;
+
+// B2B payroll services — the bank selling WPS processing to employers,
+// not an offer a reader can take. Emirates Islamic and RAKBANK both
+// surfaced these.
+const B2B = /\/business(-banking)?\/|payroll-solutions?/i;
+
+const NOT_DURABLE = /\.(jpg|jpeg|png|gif|svg)$|\/archive|\/expired|\/\d{4}\//i;
+
+export const SALARY_TRANSFER_REJECT = new RegExp(
+  [FOREIGN_MARKET, NON_EN_LOCALE, CREDIT_PRODUCT, B2B, NOT_DURABLE]
+    .map((r) => r.source)
+    .join("|"),
+  "i",
+);
 
 export const SALARY_TRANSFER_CONFIG = {
   surface: "salary-transfer",
   search: "salary transfer",
+  // Second search term, used only for banks the first pass missed.
+  retrySearch: "salary account",
   patterns: SALARY_TRANSFER_PATTERNS,
   reject: SALARY_TRANSFER_REJECT,
   // Higher than the offers limit of 5: we want the landing page AND its
