@@ -3,6 +3,14 @@
   "_admission_standard": "A URL enters `banks` only on evidence, never on plausibility. Either (a) two independent signals — an editor verified it as a live entry's sourceUrl AND discovery independently re-surfaced it — or (b) scripts/monitor/verify-candidates.ts fetched it and returned SUPPORTED. Plausibility is not enough: salaryTransferOfferHistory records that adcb.com/en/personal/promotions/salary-transfer and rakbank.ae/personal/accounts/salary-transfer both returned 404 on re-verification (30 June 2026) despite reading like perfectly ordinary salary-transfer URLs. Candidates that fail stay in _pending with their verdict recorded.",
   "banks": [
     {
+      "bank": "fab",
+      "urls": [
+        "https://www.bankfab.com/en-ae/personal/promotions/20-percent-cashback-on-salary-transfers",
+        "https://www.bankfab.com/-/media/fab-uds/personal/promotions/2026/20-percent-cashback-on-salary-transfers/terms-and-conditions-en.pdf"
+      ],
+      "_evidence": "Owner-supplied 5 August 2026; both fetched same day at HTTP 200. Landing page carries AED amounts, a minimum salary of AED 5,000, a band table and a validity date to 31 December 2026 — SUPPORTED on the verify criteria without a separate run. T&C PDF is the authoritative source and says so explicitly (§6: 'These Terms & Conditions take precedence over any marketing or promotional communication'), so every typed figure in the offer entry derives from it rather than the landing page. Landing page + T&C pair, same shape as the ENBD entry. NOTE: the URL as supplied carried gclid, gbraid and five utm_* parameters; the clean URL was confirmed to resolve on its own and is what is watched here."
+    },
+    {
       "bank": "enbd",
       "urls": [
         "https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more",
@@ -72,10 +80,9 @@
       "banks": [
         "cbd",
         "citi",
-        "fab",
         "hsbc"
       ],
-      "note": "Neither discovery run found any candidate, including the retry pass with a second search term. FAB matters most, being the largest UAE bank. These need manual location."
+      "note": "Neither discovery run found any candidate for these three, including the retry pass with a second search term. FAB was in this list until 5 August 2026, when the owner supplied a URL that discovery could never have found: the offer lives under /promotions/, and the salary-transfer patterns in discover-salary-transfer.mjs do not match that path. This is the SECOND bank missed the same way — ADCB's live page is also under /promotions/ (switch-nine-salary-transfer), recorded in the 30 May brief. Two misses with one cause is a pattern worth fixing: adding a /promotions/.*salary rule to discovery would likely surface both. Until then, treat 'no candidate found' as 'discovery did not reach it', not as 'the bank has no offer'."
     }
   }
 }
