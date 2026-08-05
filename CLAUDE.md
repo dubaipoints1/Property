@@ -320,7 +320,9 @@ scrape runs *in response*:
 scripts/monitor/setup.mjs            # idempotent provisioning (FIRECRAWL_API_KEY=skip to dry-run)
 scripts/monitor/poll.mjs             # reads check results, routes them, emits banks to scrape
 scripts/monitor/_routing.mjs         # routing sets + registry readers (pure; tests/monitor/)
+scripts/monitor/_discover.mjs        # shared discovery core (map → rank → propose)
 scripts/monitor/discover-offers.mjs  # one-off offers-URL discovery, human-confirmed
+scripts/monitor/discover-salary-transfer.mjs # ditto for salary-transfer; KEEPS T&C PDFs
 scripts/monitor/offers.registry.json # confirmed offers URLs (per bank, not per card)
 scripts/monitor/salary-transfer.registry.json # confirmed salary-transfer URLs (per bank)
 data/monitor/monitors.json           # monitor IDs (committed)
@@ -331,7 +333,16 @@ data/monitor/state.json              # seen checks, baseline flags, reported cre
 Both registries ship **empty**. `setup.mjs` skips a monitor with no URLs,
 so `offers` and `salary-transfer` are provisioned only once someone has
 confirmed each URL by hand — a monitor pointed at a guessed page is worse
-than none, because we would then trust it.
+than none, because we would then trust it. The `discover-*.mjs` scripts
+propose candidates (~12 credits, one map call per bank); they never write
+a registry.
+
+The two surfaces reject different things, and the inversion is
+deliberate: offers discovery drops `.pdf` / `/terms` / `/tnc` as noise
+around the landing page, while salary-transfer discovery **keeps** them,
+because the salary bands, payout months and clawback terms live in the
+T&C document (DIB's shipped `sourceUrl` is a PDF). Collapsing the two
+reject rules into one fails `tests/monitor/discover.test.ts`.
 
 **The §6 boundary is the whole design.** Firecrawl offers JSON-mode
 change tracking that would hand us
