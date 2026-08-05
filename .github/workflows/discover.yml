@@ -24,13 +24,14 @@ on:
   workflow_dispatch:
     inputs:
       surface:
-        description: "Which registry surface to discover URLs for"
+        description: "Which registry surface to discover URLs for, or 'verify' to fetch pending candidates"
         required: true
         default: salary-transfer
         type: choice
         options:
           - salary-transfer
           - offers
+          - verify
       ref:
         description: "Branch/ref to run the discovery scripts from"
         required: false
@@ -60,12 +61,29 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      # Discovery scripts are plain .mjs and need no dependencies. The
+      # verify pass is TypeScript run through tsx — it reuses the scrapers'
+      # own parsers in scripts/scrape/_lib.ts rather than duplicating them,
+      # which is worth an install step.
+      - name: Install dependencies (verify only)
+        if: inputs.surface == 'verify'
+        run: npm ci
+
       - name: Run discovery
         env:
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
         run: |
           set -o pipefail
-          script="scripts/monitor/discover-${{ inputs.surface }}.mjs"
+          # 'verify' fetches the registry's pending candidates instead of
+          # mapping origins — same read-only posture, different question:
+          # discovery asks "what URLs exist?", verify asks "is this one real?"
+          if [ "${{ inputs.surface }}" = "verify" ]; then
+            script="scripts/monitor/verify-candidates.ts"
+            runner="npx tsx"
+          else
+            script="scripts/monitor/discover-${{ inputs.surface }}.mjs"
+            runner="node"
+          fi
           if [ ! -f "$script" ]; then
             echo "::error::$script not found on this ref (${{ inputs.ref || github.ref }})."
             exit 1
@@ -74,7 +92,7 @@ jobs:
             echo "::error::FIRECRAWL_API_KEY secret is unset — set it in repo settings."
             exit 1
           fi
-          node "$script" 2>&1 | tee discovery-output.txt
+          $runner "$script" 2>&1 | tee discovery-output.txt
 
       - name: Publish candidates to the job summary
         if: always() && hashFiles('discovery-output.txt') != ''

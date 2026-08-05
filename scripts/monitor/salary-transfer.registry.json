@@ -1,4 +1,39 @@
 {
   "_doc": "Bank salary-transfer offer pages and their T&C documents, watched weekly by the 'salary-transfer' monitor (scripts/monitor/setup.mjs). Like offers, this is a per-BANK surface rather than per-card, which is why it lives here and not on scripts/scrape/banks/<slug>.urls.json. Populate by confirming each URL BY HAND — a monitor pointed at the wrong page is worse than no monitor, because we would then trust it. Entries here are alert-only and are never auto-scraped: the salaryTransferOffers collection is entirely typed editor content (salary bands, reward amounts, clawback terms) with no free-text scraper equivalent at all, so a change routes to the business-realestate editor and the deals desk to be typed up against the source. Cadence is weekly rather than daily because salary-transfer promotions move on quarterly campaign cycles; see the credit budget in CLAUDE.md.",
-  "banks": []
+  "_admission_standard": "A URL enters this file only with TWO independent signals: an editor verified it as a live entry's sourceUrl, AND discovery independently re-surfaced it. Plausibility is not enough — salaryTransferOfferHistory records that adcb.com/en/personal/promotions/salary-transfer and rakbank.ae/personal/accounts/salary-transfer both returned 404 on re-verification (30 June 2026) despite reading like perfectly ordinary salary-transfer URLs. Candidates awaiting evidence are listed in _pending below rather than added here.",
+  "banks": [
+    {
+      "bank": "enbd",
+      "urls": ["https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more"],
+      "_evidence": "Live sourceUrl of src/content/salaryTransferOffers/emirates-nbd-ongoing-2026.mdx; independently re-surfaced by discovery runs 30982700538 and 30985646889."
+    },
+    {
+      "bank": "mashreq",
+      "urls": ["https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer"],
+      "_evidence": "Live sourceUrl of src/content/salaryTransferOffers/mashreq-2026.mdx; independently re-surfaced by discovery runs 30982700538 and 30985646889."
+    }
+  ],
+  "_pending": {
+    "_doc": "Discovery candidates that resolve plausibly but have NOT been fetched and confirmed. Not watched. Promote to `banks` only once scripts/monitor/verify-candidates.mjs shows the URL reachable and carrying salary-transfer content.",
+    "rakbank": [
+      "https://www.rakbank.ae/en/everyday-banking/salary-transfer",
+      "https://www.rakbank.ae/en/everyday-banking/salary-transfer/rak-more",
+      "https://www.rakbank.ae/en/islamic/personal/everyday-banking/accounts-facilities/salary-transfer"
+    ],
+    "adib": [
+      "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf"
+    ],
+    "standard-chartered": ["https://www.sc.com/ae/save/salary-account/apply"],
+    "enbd": [
+      "https://www.emiratesnbd.com/-/media/enbd/files/pdf/transfer_your_salary_win_rewards_tc.pdf",
+      "https://www.emiratesnbd.com/en/campaigns/abu-dhabi-open-salary-transfer-account"
+    ],
+    "mashreq": [
+      "https://www.mashreq.com/en/uae/gold/banking-solutions/account-deposits/current-accounts/salary-transfer"
+    ],
+    "dib": ["https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf"],
+    "adcb": ["https://www.adcb.com/Images/SpecialTermsAndConditions-IB-SalaryTransfer-E-A-V1-Mar17_tcm9-92619.pdf"],
+    "emirates-islamic": ["https://www.emiratesislamic.ae/en/soc/payroll-card"],
+    "_no_candidate": ["cbd", "citi", "fab", "hsbc"]
+  }
 }
