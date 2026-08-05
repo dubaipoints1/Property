@@ -34,6 +34,28 @@ section-editor beats and to URL prefixes:
 posts as inline merchant codes. There is no generic blog — every
 article belongs to a vertical.
 
+### Bounded categories (not beats)
+
+Some subjects earn coverage without earning a beat. They are admitted as
+**spend-and-credit categories**: covered only where a card, loan or bank
+product touches them, and never as a topic in their own right.
+
+| Category | Owner | Admitted | Covered where | Explicitly not licensed |
+|---|---|---|---|---|
+| **Motoring** | Business & Real Estate | 2026-08-05, Chairman | Running costs paid by card — fuel, Salik, registration, insurance, servicing, protection — and car finance where DBR and auto-loan structure apply | Car reviews, EV-charging guides, insurance comparison, dealer or workshop directories |
+
+Admitted after council session
+`.council/sessions/2026-08-05-motoring-taxonomy.md`. The section editor
+accepted a spoke and declined a beat: no points nexus, insurance
+comparison is a regulated-advice and lead-generation surface the desk
+will not hold, and capacity belongs to salary-transfer. The justification
+was that 25 cards in `src/data/cards.json` already carried a verified
+`fuel` earn rate that no page used.
+
+A bounded category is not a foothold. A request that falls outside the
+"covered where" column re-opens the question at the Chairman gate rather
+than inheriting this ruling.
+
 ---
 
 ## Section-editor beat assignments

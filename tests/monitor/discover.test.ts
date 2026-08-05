@@ -222,6 +222,115 @@ test("the offers surface is unaffected by the salary-transfer rejects", () => {
   assert.deepEqual(rank([offersUrl], OFFERS_CONFIG), [offersUrl]);
 });
 
+
+// ── the segment-anchoring bug (found 5 August 2026) ───────────────────
+
+test("a salary-transfer slug SUFFIX is matched, not just a segment start", () => {
+  // The bug that hid two banks for months. Patterns 0/2/3 require a "/"
+  // immediately before "salary", but both of these end in the phrase:
+  //   /promotions/20-percent-cashback-on-salary-transfers   (FAB)
+  //   /promotions/switch-nine-salary-transfer               (ADCB)
+  // Discovery reported "no candidate found" for both — FAB being the
+  // largest bank in the country — on that single character.
+  const missed = [
+    "https://www.bankfab.com/en-ae/personal/promotions/20-percent-cashback-on-salary-transfers",
+    "https://www.adcb.com/en/personal/promotions/switch-nine-salary-transfer",
+  ];
+  for (const u of missed) {
+    assert.deepEqual(rank([u], SALARY_TRANSFER_CONFIG), [u], `not matched: ${u}`);
+  }
+});
+
+test("a promotions parent is matched like a campaigns parent", () => {
+  // Banks file these under either word; they behave identically.
+  const promo = "https://www.x.ae/en/personal/promotions/big-salary-offer";
+  const camp = "https://www.x.ae/en/campaigns/big-salary-offer";
+  assert.equal(rank([promo], SALARY_TRANSFER_CONFIG).length, 1);
+  assert.equal(rank([camp], SALARY_TRANSFER_CONFIG).length, 1);
+});
+
+test("the loosened rule does not weaken any reject", () => {
+  // Matching the phrase anywhere must not readmit the noise the tightened
+  // reject rules exist to strip.
+  const noise = [
+    "https://www.cbd.ae/docs/default-source/default-document-library/salaryadvance_t-c.pdf",
+    "https://www.sc.com/ng/save/salary-account",
+    "https://www.sc.com/np/deposits/payroll-plus-account",
+    "https://www.mashreq.com/en/egypt/personal/loans/personal-loans/payroll-loans",
+    "https://www.emiratesislamic.ae/en/business-banking/payroll-solution",
+    "https://www.rakbank.ae/ar/islamic/personal/everyday-banking/accounts-facilities/salary-transfer",
+  ];
+  assert.deepEqual(rank(noise, SALARY_TRANSFER_CONFIG), []);
+});
+
+test("an anchored segment match still outranks a mid-slug one", () => {
+  // The loose rule is ranked last on purpose — a real segment match must
+  // still come first, or the ordering stops meaning anything.
+  const anchored = "https://www.x.ae/en/salary-transfer";
+  const suffix = "https://www.x.ae/en/promotions/cashback-on-salary-transfer";
+  assert.equal(rank([suffix, anchored], SALARY_TRANSFER_CONFIG)[0], anchored);
+});
+
+
+// ── noise classes exposed by the loosened rule (run 31003139057) ──────
+//
+// Widening the match to slug suffixes tripled the candidate count and let
+// four new noise classes through. Every URL below is verbatim from that
+// run.
+
+test("salary-BACKED LOANS are rejected — they are not transfer offers", () => {
+  // Same category error as CBD's salary-advance, different words. These
+  // are loans secured against a salary transfer.
+  const loans = [
+    "https://www.emiratesnbd.com/en/loans/personal-loans/salary-transfer-loans-for-expats",
+    "https://www.emiratesnbd.com/en/loans/personal-loans/salary-transfer-loans-for-uae-nationals",
+    "https://www.rakbank.ae/en/islamic/help-centre/product-terms-kfs/terms-and-conditions/personal-finance-salary-transfer",
+  ];
+  assert.deepEqual(rank(loans, SALARY_TRANSFER_CONFIG), []);
+});
+
+test("letter templates and application forms are rejected", () => {
+  // A form an employer fills in carries no terms and is not an offer.
+  const forms = [
+    "https://www.emiratesislamic.ae/-/media/ei/pdfs/Personal-Banking/EIB_Salary_Transfer_Letter_Format.pdf",
+    "https://www.sc.com/global/av/ae-salary-transfer-format.pdf",
+    "https://cdn.emiratesnbd.com/enbd/files/pdf/form-center/account/salary-transfer-letter-format.pdf",
+  ];
+  assert.deepEqual(rank(forms, SALARY_TRANSFER_CONFIG), []);
+});
+
+test("editorial debris is rejected", () => {
+  // A page the bank forgot to unpublish, and a prize list.
+  const debris = [
+    "https://www.emiratesislamic.ae/en/offers/salary-transfer-offer-delete",
+    "https://www.dib.ae/docs/default-source/pdf/9634-xtra-salary-transfer-winners.pdf",
+  ];
+  assert.deepEqual(rank(debris, SALARY_TRANSFER_CONFIG), []);
+});
+
+test("the /ar-ae/ locale form is rejected, not just /ar/", () => {
+  // FAB uses ar-ae. The original rule only knew /ar/, so its Arabic
+  // mirror slipped through the loosened match.
+  const ar = "https://www.bankfab.com/ar-ae/personal/accounts/salary-transfer-account";
+  const en = "https://www.bankfab.com/en-ae/personal/accounts/salary-transfer-account";
+  assert.deepEqual(rank([ar, en], SALARY_TRANSFER_CONFIG), [en]);
+});
+
+test("the genuine new candidates from that run all survive", () => {
+  // Emirates Islamic went from one rejected payroll-card to a real offer
+  // page plus two banded T&C documents. Tightening must not undo that.
+  const good = [
+    "https://www.emiratesislamic.ae/en/offers/salary-transfer-cashback",
+    "https://www.emiratesislamic.ae/-/media/ei/pdfs/terms-and-condition/offers/salarytransferoffer_6k_tnc_en.pdf",
+    "https://www.emiratesislamic.ae/-/media/ei/pdfs/terms-and-condition/offers/salarytransferoffer_16k_tnc_en.pdf",
+    "https://www.emiratesnbd.com/en/promotions/salary-transfer-account-offer",
+    "https://www.mashreq.com/-/jssmedia/pdfs/gold/mg-salary-transfer-tc-en.ashx",
+    "https://www.bankfab.com/en-ae/personal/accounts/salary-transfer-account",
+  ];
+  const kept = rank(good, { ...SALARY_TRANSFER_CONFIG, limit: 20 });
+  for (const u of good) assert.ok(kept.includes(u), `wrongly rejected: ${u}`);
+});
+
 // ── origins ───────────────────────────────────────────────────────────
 
 test("bankOrigins covers every bank in the scrape registry", () => {

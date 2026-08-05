@@ -1,9 +1,9 @@
 ---
-status: open
+status: closed-resolved
 tier: T3
 raised-by: site owner (5 August 2026) — originally proposed as a paint-protection-film provider page
 owner: business-realestate-editor
-chairman-status: pending
+chairman-status: approved
 ---
 
 # Brief — UAE car running costs guide, and whether motoring enters the taxonomy
@@ -133,6 +133,26 @@ it.
 2. If yes, pick one of the three staleness options above.
 3. Assign the guide, with Fact-Checker at Stage 6 as normal.
 4. Decide separately whether `lastVerified` should exist on guides.
+
+## Chairman ruling — 5 August 2026
+
+All three questions answered following council session
+`.council/sessions/2026-08-05-motoring-taxonomy.md`:
+
+1. **Motoring enters as a bounded category, not a beat** — a
+   spend-and-credit category owned by Business & Real Estate, covered
+   only where a card, loan or bank product touches it. Recorded in
+   `04_content_taxonomy.md` under "Bounded categories (not beats)".
+2. **Staleness: option 1.** No volatile figure is quoted; the guide links
+   to the authority and leads on card rates, which are verified and
+   drift-flagged. Adding `lastVerified` to the guides schema remains a
+   separate open decision.
+3. **A single named example is permitted**, with the contact block cut to
+   citation links only. The Chairman ruled against retaining phone,
+   WhatsApp, email and Instagram, upholding the Standards Editor and SEO
+   Strategist over the original instruction.
+
+Shipped as PR #309.
 
 ## One-line summary
 

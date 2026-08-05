@@ -3,6 +3,14 @@
   "_admission_standard": "A URL enters `banks` only on evidence, never on plausibility. Either (a) two independent signals — an editor verified it as a live entry's sourceUrl AND discovery independently re-surfaced it — or (b) scripts/monitor/verify-candidates.ts fetched it and returned SUPPORTED. Plausibility is not enough: salaryTransferOfferHistory records that adcb.com/en/personal/promotions/salary-transfer and rakbank.ae/personal/accounts/salary-transfer both returned 404 on re-verification (30 June 2026) despite reading like perfectly ordinary salary-transfer URLs. Candidates that fail stay in _pending with their verdict recorded.",
   "banks": [
     {
+      "bank": "fab",
+      "urls": [
+        "https://www.bankfab.com/en-ae/personal/promotions/20-percent-cashback-on-salary-transfers",
+        "https://www.bankfab.com/-/media/fab-uds/personal/promotions/2026/20-percent-cashback-on-salary-transfers/terms-and-conditions-en.pdf"
+      ],
+      "_evidence": "Owner-supplied 5 August 2026; both fetched same day at HTTP 200. Landing page carries AED amounts, a minimum salary of AED 5,000, a band table and a validity date to 31 December 2026 — SUPPORTED on the verify criteria without a separate run. T&C PDF is the authoritative source and says so explicitly (§6: 'These Terms & Conditions take precedence over any marketing or promotional communication'), so every typed figure in the offer entry derives from it rather than the landing page. Landing page + T&C pair, same shape as the ENBD entry. NOTE: the URL as supplied carried gclid, gbraid and five utm_* parameters; the clean URL was confirmed to resolve on its own and is what is watched here."
+    },
+    {
       "bank": "enbd",
       "urls": [
         "https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more",
@@ -27,7 +35,7 @@
     }
   ],
   "_pending": {
-    "_doc": "Candidates that have been fetched but did not meet the admission standard, plus URLs sourced from council briefs and awaiting their first verify. Verdicts reflect runs 30988856840 and 30990596839. Not watched. A candidate needs two strong signals — AED amount, minimum salary, band language, clawback wording — on a reachable page that mentions salary transfer. NOTE: URL discovery is not the only source of candidates. ADCB's live page sat in an open brief for two months while both discovery runs reported 'no candidate found'; check .council/briefs/ before concluding a bank has no reachable offer page.",
+    "_doc": "Candidates fetched or proposed but not yet meeting the admission standard. Verdicts reflect runs 30988856840, 30990596839 and 31003139057. Not watched. A candidate needs two strong signals — AED amount, minimum salary, band language, clawback wording — on a reachable page that mentions salary transfer. NOTE: URL discovery is not the only source of candidates, and 'no candidate found' has twice meant 'discovery did not reach it'. ADCB's live page sat in an open brief for two months; FAB's was supplied by the owner. Both were invisible because the patterns required 'salary' to start a path segment while both slugs carried it as a suffix — fixed 5 August 2026. Check .council/briefs/ before concluding a bank has no offer.",
     "adib": {
       "urls": [
         "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf"
@@ -58,24 +66,49 @@
     },
     "emirates-islamic": {
       "urls": [
+        "https://www.emiratesislamic.ae/en/offers/salary-transfer-cashback",
+        "https://www.emiratesislamic.ae/-/media/ei/pdfs/terms-and-condition/offers/salarytransferoffer_6k_tnc_en.pdf",
+        "https://www.emiratesislamic.ae/-/media/ei/pdfs/terms-and-condition/offers/salarytransferoffer_16k_tnc_en.pdf",
+        "https://www.emiratesislamic.ae/en/offers/mbrhe-salary-transfer-package",
+        "https://www.emiratesislamic.ae/en/terms-and-conditions/salary-transfer-offer",
         "https://www.emiratesislamic.ae/en/soc/payroll-card"
       ],
-      "verdict": "NO SALARY-TRANSFER CONTENT (unchanged across both runs) — a WPS prepaid card for employees, not a salary-transfer offer, as suspected when it was proposed. The AED=3 signal is a spurious parse. Emirates Islamic's archived sourceUrl was never primary-source-verified either; needs manual sourcing."
+      "verdict": "AWAITING VERIFY — and the most promising of the whole set. Until discovery run 31003139057 this bank's ONLY candidate was payroll-card, a WPS prepaid card correctly rejected as not an offer, and Emirates Islamic was written off as having nothing. The slug-suffix fix surfaced an offers page AND two banded T&C documents at 6k and 16k salary tiers. If those hold real bands this is a fourth covered bank. The mbrhe package is the Mohammed Bin Rashid Housing Establishment programme — a specific segment, likely a separate offer rather than the general one. payroll-card retained at the end for its recorded NO SALARY-TRANSFER CONTENT verdict."
     },
     "enbd_secondary": {
       "urls": [
+        "https://www.emiratesnbd.com/en/promotions/salary-transfer-account-offer",
+        "https://cdn.emiratesnbd.com/liv/static-files/pdf/salary_transfer_tncs_en.pdf",
         "https://www.emiratesnbd.com/en/campaigns/abu-dhabi-open-salary-transfer-account"
       ],
-      "verdict": "WEAK (re-verify run 30990596839) — the earlier UNREACHABLE was a transient Firecrawl HTTP 408, not a dead page; it resolved on retry and carries AED 15,000. Still only one strong signal, so it stays out. ENBD's main campaign page and T&C PDF are already admitted, so this adds little even if confirmed."
+      "verdict": "AWAITING VERIFY on the first two, both new from run 31003139057. The /en/promotions/ page is a fourth ENBD surface the campaigns rule never reached; the liv PDF is ENBD's digital bank, which may be a distinct offer rather than a duplicate. The abu-dhabi campaign retains its earlier WEAK verdict (AED 15,000, one strong signal)."
     },
     "_no_candidate": {
       "banks": [
         "cbd",
         "citi",
-        "fab",
         "hsbc"
       ],
-      "note": "Neither discovery run found any candidate, including the retry pass with a second search term. FAB matters most, being the largest UAE bank. These need manual location."
+      "note": "Neither discovery run found any candidate for these three, including the retry pass with a second search term. FAB was in this list until 5 August 2026, when the owner supplied a URL that discovery could never have found: the offer lives under /promotions/, and the salary-transfer patterns in discover-salary-transfer.mjs do not match that path. This is the SECOND bank missed the same way — ADCB's live page is also under /promotions/ (switch-nine-salary-transfer), recorded in the 30 May brief. Two misses with one cause is a pattern worth fixing: adding a /promotions/.*salary rule to discovery would likely surface both. Until then, treat 'no candidate found' as 'discovery did not reach it', not as 'the bank has no offer'."
+    },
+    "mashreq": {
+      "urls": [
+        "https://www.mashreq.com/-/jssmedia/pdfs/gold/mg-salary-transfer-tc-en.ashx",
+        "https://www.mashreq.com/-/jssmedia/pdfs/neo/accounts-deposits/TnCs/salary-transfer-bonus-tnc-en-ar.ashx"
+      ],
+      "verdict": "AWAITING VERIFY. Both T&C documents are new from run 31003139057 and matter more than most: Mashreq is already a covered bank, but its shipped entry cites a marketing page rather than terms. Admitting these would let the entry be re-derived from the source document, the same upgrade FAB's entry got."
+    },
+    "fab": {
+      "urls": [
+        "https://www.bankfab.com/en-ae/personal/accounts/salary-transfer-account"
+      ],
+      "verdict": "AWAITING VERIFY. A standing product page distinct from the time-boxed 20% promotion already admitted. If it carries its own terms it is worth watching separately, since the promotion expires 31 December 2026 and this page presumably will not."
+    },
+    "dib": {
+      "urls": [
+        "https://www.dib.ae/docs/default-source/pdf/e-brochures/salary-transfer-leaflet-eng.pdf"
+      ],
+      "verdict": "AWAITING VERIFY. A brochure rather than terms, so likely WEAK, but DIB has an unresolved source conflict (see the 2026-08-05 brief) and a third document may help settle which product our shipped entry describes."
     }
   }
 }
