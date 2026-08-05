@@ -574,6 +574,18 @@ Both have a working Actions channel (`seed-images-*.yml`,
 `refetch-image.yml`, `gen-ai-image.yml`), so neither blocks the
 imagery pipeline — they only block running it in-session.
 
+Added 2026-08-05:
+
+| Host | Status | Use case blocked |
+|---|---|---|
+| `*.dubaipoints.pages.dev` | 403 | Reading a Cloudflare Pages **preview deploy** from a web session |
+
+The Cloudflare Pages bot posts a preview URL on every PR, so it reads as
+though a session could open it and check the rendered result. It cannot.
+Verify against the local `dist/` after `npm run build` instead — Pages
+deploys that same artifact, so the built HTML is the honest substitute.
+Reviewing a preview visually remains a workstation task.
+
 **Operational consequences:**
 
 - The Head of Research cannot fetch issuer press-library imagery
