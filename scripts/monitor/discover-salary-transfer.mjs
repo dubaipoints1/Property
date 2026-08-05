@@ -29,6 +29,23 @@ export const SALARY_TRANSFER_PATTERNS = [
   /\/payroll/i,
   /salary.*t-?&?cs?.*\.pdf$/i,
   /\/campaigns?\/.*salary/i,
+  // Promotions parents, mirroring the campaigns rule above. Banks file
+  // these offers under either word and the two behave identically.
+  /\/promotions?\/.*salary/i,
+  // Last resort, deliberately weakest: salary-transfer ANYWHERE in the
+  // path, not only at the start of a segment.
+  //
+  // This is the rule that would have caught FAB and ADCB. Both offers live
+  // at a slug that ENDS in the phrase — /promotions/20-percent-cashback-
+  // on-salary-transfers and /promotions/switch-nine-salary-transfer — so
+  // the anchored patterns above miss them, because those require a `/`
+  // immediately before "salary". Two banks were reported "no candidate
+  // found" for months on that single character, FAB being the largest in
+  // the country.
+  //
+  // Ranked last so it never outranks a real segment match; the reject
+  // rules still strip advance/loan/B2B/foreign-market noise.
+  /salary[-_]?transfers?/i,
 ];
 
 // Deliberately NARROWER than the offers reject rule *on documents*.
