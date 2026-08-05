@@ -1,12 +1,13 @@
 // Firecrawl monitor provisioning — idempotent.
 //
-// Creates (or updates) the four monitors that replace blind scheduled
+// Creates (or updates) the five monitors that replace blind scheduled
 // scraping with event-driven alerts:
 //
-//   fee-docs       10 KFS / Schedule-of-Fees documents   daily
-//   product-pages  52 card product pages                 weekly
-//   offers         bank offers/promotions landing pages  daily
-//   press-rooms     9 issuer press indexes               daily
+//   fee-docs         10 KFS / Schedule-of-Fees documents      daily
+//   product-pages    52 card product pages                    weekly
+//   offers           bank offers/promotions landing pages     daily
+//   salary-transfer  bank salary-transfer offer pages + T&Cs  weekly
+//   press-rooms       9 issuer press indexes                  daily
 //
 // ── The §6 boundary, which is why this file looks the way it does ─────
 // Charter §6 bans LLM extraction for typed numerics: fees, salary bands,
@@ -32,6 +33,12 @@
 // poll.mjs knows what to read.
 
 import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+
+import {
+  OFFERS_REGISTRY,
+  SALARY_TRANSFER_REGISTRY,
+  readRegistryUrls,
+} from "./_routing.mjs";
 
 const KEY = process.env.FIRECRAWL_API_KEY;
 const API = "https://api.firecrawl.dev/v2/monitor";
@@ -71,15 +78,9 @@ function readCardUrls() {
   return { kfs: [...kfs], product: [...product] };
 }
 
-function readOfferUrls() {
-  const path = "scripts/monitor/offers.registry.json";
-  if (!existsSync(path)) return [];
-  const reg = JSON.parse(readFileSync(path, "utf8"));
-  return (reg.banks ?? []).flatMap((b) => b.urls ?? []);
-}
-
 const { kfs, product } = readCardUrls();
-const offers = readOfferUrls();
+const offers = readRegistryUrls(OFFERS_REGISTRY);
+const salaryTransfer = readRegistryUrls(SALARY_TRANSFER_REGISTRY);
 
 const MONITORS = [
   {
@@ -105,6 +106,18 @@ const MONITORS = [
     schedule: { text: "daily at 04:00", timezone: "UTC" },
     goal:
       "Alert when a welcome bonus, sign-up offer, limited-time promotion, cashback campaign or partner deal is added, changed, extended or withdrawn. Include the offer's end date when it appears. Ignore navigation, cookie banners and layout changes.",
+  },
+  {
+    // Weekly, not daily: salary-transfer promotions move on quarterly
+    // campaign cycles, and weekly keeps this at ~4.3 credits per URL per
+    // month instead of 30 — headroom that matters once the offers
+    // registry is populated and the estimate approaches the cap below.
+    key: "salary-transfer",
+    name: "dubaipoints-salary-transfer",
+    urls: salaryTransfer,
+    schedule: { text: "weekly", timezone: "UTC" },
+    goal:
+      "Alert when a salary-transfer offer changes: the cash or voucher amount, the salary bands that qualify, the minimum salary, the payout timing, the tenure or lock-in period, the clawback terms, any bundled credit-card or finance requirement, or the offer's validity dates. Alert when such an offer is launched or withdrawn. Ignore navigation, cookie banners, branch locators and layout changes.",
   },
   {
     key: "press-rooms",

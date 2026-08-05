@@ -397,6 +397,9 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 }
 .dpst-verified .vdate { font-size: 13px; color: var(--dpst-navy); margin-bottom: 12px; }
 .dpst-verified .vdate b { font-weight: 600; }
+/* 90-day drift flag — the offers-side equivalent of the card VerifiedStamp
+   amber state. --gold is the trust-signal accent (Charter two-accent rule). */
+.dpst-verified .vdate .drift { color: var(--gold); font-weight: 600; }
 .dpst-verified a {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 12px; font-weight: 600; color: var(--dpst-navy); text-decoration: none;
@@ -2615,6 +2618,22 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 }
 .dp-tools-stats .lbl { color: var(--muted); }
 .dp-tools-stats strong { color: var(--ink); font-weight: 600; }
+
+/* Coverage disclosure — states the gap between what a tracker covers and
+   what it claims to. --gold is the trust-signal accent, the same job it
+   does on the Verified chip and the 90-day drift flag. */
+.dp-coverage-note {
+  margin-top: 18px;
+  max-width: 68ch;
+  padding: 12px 16px;
+  border-left: 3px solid var(--gold);
+  background: color-mix(in srgb, var(--gold) 7%, transparent);
+  border-radius: 0 6px 6px 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.dp-coverage-note strong { color: var(--ink); font-weight: 600; }
 
 /* ════════════════════════════════════════════════════════════════════════
    .dp-metric-strip — Inline metric row for hub pages.

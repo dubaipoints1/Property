@@ -19,6 +19,7 @@
 import { useEffect, useMemo, useState } from "preact/hooks";
 import type { CardData } from "../../lib/cardsData";
 import { formatEarnValue } from "../../lib/cardsDataFormat";
+import { NINETY_DAYS_MS } from "../../lib/verification";
 
 // ── Public types ─────────────────────────────────────────────────────────
 
@@ -142,8 +143,6 @@ export function conversionForCard(card: CardForCalc): {
 }
 
 // ── Ranking — exported as a pure function for testability ────────────────
-
-const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
 
 /** Compute per-category AED reward and pick the top contributing category. */
 function perCategoryBreakdown(

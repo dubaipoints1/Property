@@ -38,6 +38,7 @@ import EarnRateTable from "./EarnRateTable.astro";
 import EligibilityChips from "./EligibilityChips.astro";
 import WelcomeBonusCallout from "./WelcomeBonusCallout.astro";
 import VerifiedStamp from "./VerifiedStamp.astro";
+import { isStale as isStaleAt } from "~/lib/verification";
 
 interface Props {
   card: CardData & { slug: string };
@@ -68,12 +69,12 @@ const earnLine = top
 const feeLabel = annualFeeLabel(card);
 
 // 90-day stale check — reused for the warning chip on the card head.
-const NINETY_DAYS_MS = 90 * 24 * 60 * 60 * 1000;
+// Threshold shared via ~/lib/verification.
 const verifiedAt =
   card.lastVerified instanceof Date
     ? card.lastVerified
     : new Date(card.lastVerified);
-const isStale = Date.now() - verifiedAt.getTime() > NINETY_DAYS_MS;
+const isStale = isStaleAt(verifiedAt);
 
 const wbDisplay = card.welcomeBonus ? toDisplay(card.welcomeBonus) : "";
 const showWelcome =
