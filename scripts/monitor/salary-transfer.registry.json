@@ -20,46 +20,61 @@
     },
     {
       "bank": "dib",
-      "urls": ["https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf"],
+      "urls": [
+        "https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf"
+      ],
       "_evidence": "Verify run 30988856840 returned SUPPORTED (AED 8000, minSalary 8000). NOTE: this is NOT the dib-xtra-tc.pdf cited by the live dib-xtra-2026.mdx entry, whose bands start at AED 5,000. Two distinct documents both carrying salary-transfer terms — watching this one is safe, but which is current is an editorial question flagged to the business-realestate desk."
     }
   ],
   "_pending": {
-    "_doc": "Candidates that have been fetched but did not meet the admission standard. Verdicts from verify run 30988856840 (scripts/monitor/verify-candidates.ts). Not watched. Re-verify after the detector fix, or locate the right URL by hand.",
+    "_doc": "Candidates that have been fetched but did not meet the admission standard, plus URLs sourced from council briefs and awaiting their first verify. Verdicts reflect runs 30988856840 and 30990596839. Not watched. A candidate needs two strong signals — AED amount, minimum salary, band language, clawback wording — on a reachable page that mentions salary transfer. NOTE: URL discovery is not the only source of candidates. ADCB's live page sat in an open brief for two months while both discovery runs reported 'no candidate found'; check .council/briefs/ before concluding a bank has no reachable offer page.",
     "adib": {
       "urls": [
         "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf"
       ],
-      "verdict": "NO SALARY-TRANSFER CONTENT — but this was a DETECTOR false negative, not a bad URL. The document carried AED 3,000 and is literally named salary-bonus-program-tcs; the regex only knew the phrase 'salary transfer'. mentionsSalaryTransfer now also matches 'salary bonus' / 'salary credit' / 'WPS salary'. Re-run verify to get a true verdict."
+      "verdict": "WEAK (re-verify run 30990596839) — the detector fix worked: this was previously NO SALARY-TRANSFER CONTENT purely because mentionsSalaryTransfer did not know the phrase 'salary bonus'. It is now correctly recognised as salary-transfer content. It still does not qualify: only one strong signal (AED 3,000), where admission needs two. The bands and clawback terms are presumably in a section the scrape did not reach, or in another document. Worth a human look — this is the closest of the remaining candidates to being real."
     },
     "rakbank": {
       "urls": [
+        "https://www.rakbank.ae/en/landing-page/accounts/accounts-lp",
         "https://www.rakbank.ae/en/everyday-banking/salary-transfer",
         "https://www.rakbank.ae/en/everyday-banking/salary-transfer/rak-more",
         "https://www.rakbank.ae/en/islamic/personal/everyday-banking/accounts-facilities/salary-transfer"
       ],
-      "verdict": "WEAK on all three — reachable and about salary transfer, but almost no offer detail (only /rak-more returned a minimum salary of AED 5,000). Likely marketing pages with the terms in a document not yet located, or content rendered client-side. Worth a human look; RAKBANK's previous sourceUrl 404'd, so these paths are the current ones."
+      "verdict": "AWAITING VERIFY on the accounts-lp URL, which comes from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md (status: open) alongside /rak-more — both recorded live on 30 May 2026 after rakbank.ae/personal/accounts/salary-transfer returned 404. The brief quotes 'up to AED 4,000 cashback on salary transfer'. Previous verdicts (retained): all three discovery paths WEAK across runs 30988856840 and 30990596839 — reachable and on-topic but almost no offer detail, only /rak-more returning a minimum salary of AED 5,000."
     },
     "standard-chartered": {
-      "urls": ["https://www.sc.com/ae/save/salary-account/apply"],
-      "verdict": "NO SALARY-TRANSFER CONTENT — an application form carries little prose. The landing page without /apply is the better watch target and was not proposed; locate by hand."
+      "urls": [
+        "https://www.sc.com/ae/save/salary-account/apply"
+      ],
+      "verdict": "NO SALARY-TRANSFER CONTENT (unchanged across both runs) — an application form carries little prose. The landing page without /apply is the better watch target and was never proposed by discovery; locate by hand."
     },
     "adcb": {
       "urls": [
+        "https://www.adcb.com/en/personal/promotions/switch-nine-salary-transfer",
         "https://www.adcb.com/Images/SpecialTermsAndConditions-IB-SalaryTransfer-E-A-V1-Mar17_tcm9-92619.pdf"
       ],
-      "verdict": "WEAK — reachable, carries AED 12,000, but no bands or clawback, and the document is dated March 2017. ADCB's previous sourceUrl 404'd and no current page was found. Needs manual sourcing."
+      "verdict": "AWAITING VERIFY. The switch-nine URL comes from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md (status: open), which recorded it as the LIVE replacement after adcb.com/en/personal/promotions/salary-transfer returned 404 — confirmed 200 OK on 30 May 2026. Neither discovery run ever surfaced it; the map search never reached a /promotions/switch-nine-* path, which is a real limitation of URL discovery rather than a gap in ADCB's site. Previous verdict on the Mar-2017 PDF (retained below): WEAK — reachable, AED 12,000, no bands or clawback."
     },
     "emirates-islamic": {
-      "urls": ["https://www.emiratesislamic.ae/en/soc/payroll-card"],
-      "verdict": "NO SALARY-TRANSFER CONTENT — a WPS prepaid card for employees, not a salary-transfer offer, as suspected when it was proposed. The AED=3 signal is a spurious parse. Emirates Islamic's archived sourceUrl was never primary-source-verified either; needs manual sourcing."
+      "urls": [
+        "https://www.emiratesislamic.ae/en/soc/payroll-card"
+      ],
+      "verdict": "NO SALARY-TRANSFER CONTENT (unchanged across both runs) — a WPS prepaid card for employees, not a salary-transfer offer, as suspected when it was proposed. The AED=3 signal is a spurious parse. Emirates Islamic's archived sourceUrl was never primary-source-verified either; needs manual sourcing."
     },
     "enbd_secondary": {
-      "urls": ["https://www.emiratesnbd.com/en/campaigns/abu-dhabi-open-salary-transfer-account"],
-      "verdict": "UNREACHABLE — Firecrawl HTTP 408 timeout. A transient failure rather than a dead page; re-verify before judging it."
+      "urls": [
+        "https://www.emiratesnbd.com/en/campaigns/abu-dhabi-open-salary-transfer-account"
+      ],
+      "verdict": "WEAK (re-verify run 30990596839) — the earlier UNREACHABLE was a transient Firecrawl HTTP 408, not a dead page; it resolved on retry and carries AED 15,000. Still only one strong signal, so it stays out. ENBD's main campaign page and T&C PDF are already admitted, so this adds little even if confirmed."
     },
     "_no_candidate": {
-      "banks": ["cbd", "citi", "fab", "hsbc"],
+      "banks": [
+        "cbd",
+        "citi",
+        "fab",
+        "hsbc"
+      ],
       "note": "Neither discovery run found any candidate, including the retry pass with a second search term. FAB matters most, being the largest UAE bank. These need manual location."
     }
   }

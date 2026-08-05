@@ -1,0 +1,120 @@
+# Firecrawl monitor provisioning — manual dispatch.
+#
+# WHY THIS EXISTS. Until August 2026 nothing had ever run setup.mjs against
+# the real Firecrawl API: data/monitor/monitors.json had never been
+# committed, so no monitor existed. poll.mjs bails when that file is
+# missing, which means monitor.yml had been running daily at 04:23 UTC and
+# exiting immediately. The whole event-driven monitoring design was wired
+# correctly and watching nothing.
+#
+# There was no workflow that could fix it — monitor.yml only polls. This is
+# that workflow.
+#
+# Unlike discover.yml, this one WRITES. It commits data/monitor/monitors.json
+# because poll.mjs reads it from main, and CLAUDE.md specifies it as
+# committed. The commit step is scoped to that directory alone.
+#
+# Budget protection lives in setup.mjs, not here: it aborts if the API's own
+# estimatedCreditsPerMonth exceeds MAX_ESTIMATED_CREDITS (1,600), which
+# guards against PDF documents billing per page rather than per URL.
+#
+# Run with dry_run: true first (the default). That passes
+# FIRECRAWL_API_KEY=skip, printing the provisioning plan and the local
+# credit estimate while making no network call and writing nothing.
+
+name: provision-monitors
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Show the plan without creating monitors (recommended first)"
+        required: true
+        default: true
+        type: boolean
+      ref:
+        description: "Branch/ref to run setup.mjs from"
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: provision-monitors
+  cancel-in-progress: false
+
+jobs:
+  provision:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Provision monitors
+        env:
+          # 'skip' short-circuits every network call in setup.mjs and exits
+          # after printing the plan — the script's own documented dry run.
+          FIRECRAWL_API_KEY: ${{ inputs.dry_run && 'skip' || secrets.FIRECRAWL_API_KEY }}
+        run: |
+          set -o pipefail
+          if [ -z "$FIRECRAWL_API_KEY" ]; then
+            echo "::error::FIRECRAWL_API_KEY secret is unset — set it in repo settings."
+            exit 1
+          fi
+          node scripts/monitor/setup.mjs 2>&1 | tee provision-output.txt
+
+      - name: Publish plan to the job summary
+        if: always() && hashFiles('provision-output.txt') != ''
+        run: |
+          {
+            echo "## Monitor provisioning — ${{ inputs.dry_run && 'DRY RUN' || 'LIVE' }}"
+            echo
+            if [ "${{ inputs.dry_run }}" = "true" ]; then
+              echo "No network call was made and nothing was written."
+              echo "Re-dispatch with \`dry_run: false\` to create the monitors."
+            else
+              echo "Monitors created/updated. \`data/monitor/monitors.json\` is committed"
+              echo "below, which is what \`poll.mjs\` reads — the daily \`monitor\` workflow"
+              echo "starts doing real work from its next run."
+              echo
+              echo "The first check per monitor is a **baseline**: \`poll.mjs\` records it"
+              echo "and dispatches nothing, so expect no alerts on day one."
+            fi
+            echo
+            echo '```'
+            cat provision-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commit monitor IDs
+        if: inputs.dry_run == false
+        run: |
+          # Scoped to data/monitor/ deliberately. setup.mjs writes nothing
+          # else, and a wider `git add` here would be a way for an unrelated
+          # change to reach main without review.
+          git config user.name "dubaipoints-monitor"
+          git config user.email "info@dubaipoints.ae"
+          git add data/monitor/ || true
+          if git diff --cached --quiet; then
+            echo "No change to monitor IDs — nothing to commit."
+          else
+            git commit -m "monitor: provision Firecrawl monitors ($(date -u +%Y-%m-%d\ %H:%M) UTC)"
+            git push origin HEAD:${{ inputs.ref || github.ref_name }}
+          fi
+
+      - name: Assert the dry run wrote nothing
+        if: inputs.dry_run == true
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::dry run modified tracked files — it must only report."
+            git status --porcelain
+            exit 1
+          fi
+          echo "Working tree clean — dry run reported only."
