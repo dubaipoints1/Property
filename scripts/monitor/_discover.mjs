@@ -105,8 +105,21 @@ export async function runDiscovery(config) {
   for (const [slug, origin] of origins) {
     try {
       const links = await firecrawlMap(key, origin, config.search);
-      const candidates = rank(links, config);
-      console.log(`## ${slug}  (${origin})`);
+      let candidates = rank(links, config);
+      let via = "";
+
+      // Retry once with a different search term when a bank yields
+      // nothing. Run 30982700538 drew a blank on citi, fab and hsbc —
+      // including the largest UAE bank — where the issue is reach rather
+      // than noise. Fires only on an empty result, so this costs one
+      // extra credit per missing bank, not a second full pass.
+      if (!candidates.length && config.retrySearch) {
+        const retry = await firecrawlMap(key, origin, config.retrySearch);
+        candidates = rank(retry, config);
+        if (candidates.length) via = `  [via retry: "${config.retrySearch}"]`;
+      }
+
+      console.log(`## ${slug}  (${origin})${via}`);
       if (!candidates.length) {
         console.log("   no candidate found — locate manually\n");
         continue;

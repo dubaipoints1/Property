@@ -114,6 +114,114 @@ test("a malformed URL does not throw", () => {
   assert.deepEqual(rank(urls, SALARY_TRANSFER_CONFIG), ["https://www.x.ae/salary-transfer"]);
 });
 
+// ── noise from discovery run 30982700538 ──────────────────────────────
+//
+// Every URL below is verbatim from that run's output. Using the real
+// strings rather than invented ones means these tests fail if a future
+// pattern edit lets back in exactly the noise we saw, rather than
+// something merely similar to it.
+
+test("non-UAE market pages are rejected", () => {
+  // Standard Chartered's ONLY candidate in run 1 was Nigeria; the retry
+  // pass in run 2 then surfaced Nepal. Mashreq offered Egypt. The rule is
+  // inverted (anything but /ae/) precisely because enumerating ~60 SC
+  // markets would always be one country behind.
+  const foreign = [
+    "https://www.sc.com/ng/save/salary-account",
+    "https://www.sc.com/np/deposits/payroll-plus-account",
+    "https://www.mashreq.com/en/egypt/personal/loans/personal-loans/payroll-loans",
+  ];
+  assert.deepEqual(rank(foreign, SALARY_TRANSFER_CONFIG), []);
+});
+
+test("a market code never seen before is still rejected", () => {
+  // The point of inverting the rule: these are not in any list.
+  const unseen = [
+    "https://www.sc.com/bw/save/salary-account",
+    "https://www.sc.com/zm/save/salary-account",
+  ];
+  assert.deepEqual(rank(unseen, SALARY_TRANSFER_CONFIG), []);
+});
+
+test("the UAE market segment survives", () => {
+  // sc.com/ae/… is the real Standard Chartered page — run 2 found it via
+  // the retry pass. If the market rule ever rejects this, the only
+  // candidate we have for that bank disappears.
+  const ae = "https://www.sc.com/ae/save/salary-account/apply";
+  assert.deepEqual(rank([ae], SALARY_TRANSFER_CONFIG), [ae]);
+});
+
+test("a leading /en/ language segment is not treated as a market", () => {
+  // Mashreq puts language first (/en/uae/…). Rejecting two-letter leading
+  // segments naively would drop its genuine candidates.
+  const en = "https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer";
+  assert.deepEqual(rank([en], SALARY_TRANSFER_CONFIG), [en]);
+});
+
+test("non-market paths beginning with letters are unaffected", () => {
+  // /docs/, /Images/ and /-/media/ must not look like market codes.
+  const paths = [
+    "https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf",
+    "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf",
+  ];
+  const kept = rank(paths, { ...SALARY_TRANSFER_CONFIG, limit: 20 });
+  for (const p of paths) assert.ok(kept.includes(p), `${p} was wrongly rejected`);
+});
+
+test("a two-letter market code does not fire inside a longer word", () => {
+  // /in/ must not match "banking", "insurance", "savings" etc. The rule
+  // is a path-segment match precisely to avoid this.
+  const ok = "https://www.x.ae/en/personal-banking/insurance/salary-transfer";
+  assert.deepEqual(rank([ok], SALARY_TRANSFER_CONFIG), [ok]);
+});
+
+test("credit products are rejected — an advance is not a transfer bonus", () => {
+  // CBD's only candidate. A salary advance is a loan against future pay.
+  const cbd =
+    "https://www.cbd.ae/docs/default-source/default-document-library/salaryadvance_t-c.pdf";
+  assert.deepEqual(rank([cbd], SALARY_TRANSFER_CONFIG), []);
+});
+
+test("B2B payroll services are rejected", () => {
+  // The bank selling WPS processing to employers — not an offer a reader
+  // can take. Emirates Islamic and RAKBANK both surfaced these.
+  const b2b = [
+    "https://www.emiratesislamic.ae/en/business-banking/payroll-solution",
+    "https://www.rakbank.ae/en/business/business-solutions/payroll-solutions",
+  ];
+  assert.deepEqual(rank(b2b, SALARY_TRANSFER_CONFIG), []);
+});
+
+test("Arabic mirrors are dropped but their English equivalent is kept", () => {
+  const ar = "https://www.rakbank.ae/ar/islamic/personal/everyday-banking/accounts-facilities/salary-transfer";
+  const en = "https://www.rakbank.ae/en/islamic/personal/everyday-banking/accounts-facilities/salary-transfer";
+  assert.deepEqual(rank([ar, en], SALARY_TRANSFER_CONFIG), [en]);
+});
+
+test("the genuine candidates from the run all survive", () => {
+  // The whole point: tightening the reject rule must not claw back the
+  // real finds, especially the T&C documents this surface exists for.
+  const good = [
+    "https://www.rakbank.ae/en/everyday-banking/salary-transfer",
+    "https://www.emiratesnbd.com/en/campaigns/transfer-your-salary-earn-more",
+    "https://www.emiratesnbd.com/-/media/enbd/files/pdf/transfer_your_salary_win_rewards_tc.pdf",
+    "https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf",
+    "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf",
+    "https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer",
+  ];
+  const kept = rank(good, { ...SALARY_TRANSFER_CONFIG, limit: 20 });
+  for (const u of good) {
+    assert.ok(kept.includes(u), `${u} was wrongly rejected`);
+  }
+});
+
+test("the offers surface is unaffected by the salary-transfer rejects", () => {
+  // The two configs must stay independent — a /business/ offers page is
+  // still a legitimate offers candidate.
+  const offersUrl = "https://www.x.ae/en/offers";
+  assert.deepEqual(rank([offersUrl], OFFERS_CONFIG), [offersUrl]);
+});
+
 // ── origins ───────────────────────────────────────────────────────────
 
 test("bankOrigins covers every bank in the scrape registry", () => {
