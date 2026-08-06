@@ -38,6 +38,12 @@ editor content end to end; the scraper has no free-text equivalent for
 salary bands, payout months or clawback terms. Every entry below has to
 be read off a primary source and typed by a human.
 
+> **RAKBANK resolved 6 August 2026** (see the 30 May brief for its
+> history): the "up to AED 4,000" campaign is live 1 July – 31 August
+> 2026 and is now a tracker entry, `rakbank-cash-reward-2026.mdx`, typed
+> from the campaign T&C PDF and fact-checked band-by-band. Coverage moves
+> to 4 of 12.
+
 ## ADCB and RAKBANK are NOT in this brief
 
 They are already covered by
@@ -69,7 +75,7 @@ that already failed.
 | **hsbc** | **Hand search completed 6 August 2026: offer found.** AED 2,000 cashback for monthly salary ≥ AED 40,000 (30,000 Emirati) inside the Premier welcome offer, ends 31 December 2026. Page watched; T&C PDF timed out twice, unverified. | Head of Research dossier from the rewards page; verify T&C PDF via Actions channel; then editor types the entry. High threshold — present as the premium-segment offer it is. |
 | **cbd** | **Hand search completed 6 August 2026: offer existed, now expired.** The `/cbd-rewards/credit-card-cash-bonus` page carries a full band table but validity 1 June – 31 August 2024 (T&C PDF confirms). Page watched for renewal. | None until renewal — the brief's own rule applies: a bank with no live offer is a finding to record, not a gap to fill. |
 | **standard-chartered** | `sc.com/ae/save/salary-account/apply` — NO SALARY-TRANSFER CONTENT (an application form) | The landing page without `/apply` was never proposed. Try it. |
-| **adib** | `salary-bonus-program-tcs-en.pdf` — **WEAK**, one strong signal (AED 3,000) | **Closest to real.** Read the PDF: bands and clawback are presumably in a section the scrape did not reach. |
+| **adib** | **Resolved 6 August 2026: draw programme, not an offer.** The full T&C is one page — no bands exist. Min AED 3,000, automatic enrollment, 10 monthly winners of 1× salary (cap 10,000), 1 annual winner of 12× salary (cap 200,000). A draw has no guaranteed reward, so no tracker entry; both surfaces watched. | None until ADIB launches a banded offer — the monitor will say so. |
 | **emirates-islamic** | Only candidate was `payroll-card`, a WPS prepaid card — not an offer. Archived `sourceUrl` was never primary-source-verified | Locate by hand. |
 
 A bank that runs **no** salary-transfer offer is a legitimate finding to
