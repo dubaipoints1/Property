@@ -1,0 +1,76 @@
+# Council sign-off gate — Charter §7.
+#
+# "No pull request merges to `main` without a `## Council sign-off`
+# section in its body […] A PR missing the sign-off block is not
+# mergeable, no exceptions."
+#
+# CLAUDE.md previously recorded this as unenforced: "The CI `validate`
+# workflow does not (yet) parse this block; it is enforced editorially by
+# the Chairman at the merge gate. A future GitHub Action may grep PR
+# bodies for the section header to hard-fail PRs without it." This is that
+# action, and CLAUDE.md has been updated to stop saying otherwise.
+#
+# Kept SEPARATE from pr-checks.yml on purpose. This needs the `edited`
+# trigger so that fixing the PR body re-runs the gate; adding `edited` to
+# pr-checks would re-run astro check, the full build and 277 tests every
+# time somebody touched a description. This job needs no npm install and
+# finishes in seconds.
+#
+# One-time setup to make it binding:
+#   Settings → Branches → branch protection rule for `main`
+#   ✓ Require status checks to pass before merging
+#   Add: council-signoff
+#
+# Expected behaviour worth knowing before you enable that: a PR stays RED
+# until the Chairman row reads **approved**. That is the gate working, not
+# a fault — Charter §"Non-negotiables" 3 makes the Chairman the only
+# publish gate. Editing the body flips it green within seconds.
+#
+# Known limitation, stated rather than hidden: this runs the checker from
+# the PR's own head, so a PR could in principle weaken its own gate. That
+# is an acceptable trade in a single-owner repo whose contributors are the
+# owner and two trusted agents, and the real failure mode here is a
+# forgotten block rather than a hostile one. If this repo ever takes
+# outside contributions, pin the checkout to the base ref instead.
+
+name: Council sign-off
+
+on:
+  pull_request:
+    branches:
+      - main
+    # `edited` is the load-bearing one — without it, filling in the block
+    # or flipping the Chairman to approved would not re-run the check and
+    # the PR would sit red until an unrelated push.
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: council-signoff-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  council-signoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # The body arrives through the ENVIRONMENT, never interpolated into
+      # the shell with ${{ }}. A PR description is attacker-controllable
+      # text and pasting it into a run: block is a command-injection hole.
+      # No npm install — the checker is dependency-free by design.
+      - name: Check Council sign-off block
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: node scripts/ci/check-signoff.mjs

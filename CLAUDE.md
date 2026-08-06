@@ -89,10 +89,26 @@ mandatory; other roles only when their tier requires sign-off.
 | Chairman (Stage 7) | **approved** | required on every tier |
 ```
 
-The CI `validate` workflow does not (yet) parse this block; it is
-enforced editorially by the Chairman at the merge gate. A future
-GitHub Action may grep PR bodies for the section header to
-hard-fail PRs without it.
+**This block is now enforced in CI.** The `council-signoff` workflow
+(`.github/workflows/council-signoff.yml`) parses every PR body against
+`scripts/ci/check-signoff.mjs` and fails when the section is missing, no
+tier is declared, or the Chairman's status cell is anything other than
+`approved`. Rules are unit-tested in `tests/ci/signoff.test.ts`, including
+the near-miss a naive `grep -q approved` would wave through — the word
+appearing in a Notes cell while the status still reads `pending`.
+
+Consequence worth expecting: **a PR stays red until the Chairman row reads
+`approved`.** That is the gate working, not a fault. The workflow listens
+for `edited`, so changing the body flips the check within seconds without
+needing a push.
+
+The weekly scrape PR now opens with this block pre-filled by
+`scripts/scrape/propose-changes.ts` — its own facts filled in, every human
+judgement left blank, Chairman deliberately `pending`.
+
+Still editorial, not mechanical: CI checks that the block exists and that
+the Chairman approved. It cannot check that the named specialists actually
+reviewed anything.
 
 ## Authority
 

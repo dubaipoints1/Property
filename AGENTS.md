@@ -41,9 +41,15 @@ violation, because the provenance is unreproducible.
 Charter §7. Every PR body needs a `## Council sign-off` section naming
 which specialists reviewed it, with the Chairman's line marked
 `approved`. The required set scales by tier (T1/T2/T3 — see the Charter's
-tiered-review table). **CI does not check this.** The `validate` workflow
-does not parse the block; it is enforced editorially at the merge gate. A
-PR without it is not mergeable regardless of whether checks are green.
+tiered-review table).
+
+**This one IS enforced**, by the `council-signoff` workflow. Expect the
+check to be red until the Chairman's status cell reads `approved` — that
+is the gate, not a bug. The workflow re-runs on `edited`, so fixing the
+body turns it green without a push.
+
+What CI cannot check is whether the named specialists actually reviewed
+anything. Do not treat a green tick as a substitute for the review.
 
 ### 3. Logos and imagery are licence-governed, not taste-governed
 
