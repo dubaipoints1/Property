@@ -40,7 +40,7 @@ const deck = isLive
   crumb={`DubaiPoints / Deals / ${formatCategory(deal.data.category)}`}
   eyebrow={`DEAL · ${formatCategory(deal.data.category).toUpperCase()}`}
   deck={deck}
-  publishedAt={deal.data.expiresOn}
+  publishedAt={deal.data.publishedAt}
   toc={toc}
   showHero
   heroSlug={`deal-${deal.id}`}

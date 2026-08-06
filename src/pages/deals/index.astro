@@ -7,8 +7,9 @@
 // Differences vs the other surfaces:
 //   - Deals are time-limited. Each card carries a status pill (Live /
 //     Expires-in-N-days) and a countdown line.
-//   - Live deals only. Expired entries don't render here (kept under
-//     /content/salaryTransferOfferHistory/ for archival).
+//   - Live deals only. Expired entries stay in the collection marked
+//     `archived: true` (their /deals/<slug>/ pages render an expired
+//     state); scripts/ci/check-deal-expiry.mjs enforces the sweep.
 //   - Tabs use the DEAL_CATEGORY enum from content.config.ts.
 //   - Empty-state band when zero live deals — points readers at the
 //     newsletter + RSS for notification.
@@ -21,7 +22,7 @@ import { resolveDealIssuer } from "~/lib/dealIssuer";
 const todayMs = Date.now();
 
 const liveDeals = (await getCollection("deals"))
-  .filter((d) => d.data.expiresOn.getTime() >= todayMs)
+  .filter((d) => !d.data.archived && d.data.expiresOn.getTime() >= todayMs)
   .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime());
 
 const dealsWithBank = await Promise.all(

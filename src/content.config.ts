@@ -156,7 +156,17 @@ const deals = defineCollection({
       bank: reference("banks").optional(),
       /** Airline/hotel loyalty programme running the offer. Mutually exclusive with `bank`. */
       program: reference("programs").optional(),
+      /** When the deal was first published. RSS pubDate; `expiresOn` is not a publication date. */
+      publishedAt: z.coerce.date(),
+      /** When a human last checked the offer against the issuer's page. */
+      lastVerified: z.coerce.date(),
       expiresOn: z.coerce.date(),
+      /**
+       * Set true when the deal expires. Expired-but-unarchived deals fail
+       * scripts/ci/check-deal-expiry.mjs — the weekly sweep the 2026-H2
+       * editorial strategy mandates, enforced instead of remembered.
+       */
+      archived: z.boolean().default(false),
       category: DEAL_CATEGORY,
     })
     .superRefine((data, ctx) => {
