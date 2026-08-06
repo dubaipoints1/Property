@@ -18,6 +18,13 @@
 # Offers changes are deliberately alert-only — typed editor fields
 # (welcomeBonus, annualFeeWaiver, _features) are never written by the
 # scraper, so those route to an editor and to the deals desk.
+#
+# State and digests are committed to the unprotected `automation-state`
+# branch, not main: the council-signoff required check blocks every
+# direct bot push to main, and no bypass exists for the Actions app
+# (scripts/ci/automation-state.sh has the full story). The alert a human
+# acts on is the GitHub issue, which carries the whole digest as its
+# body — the branch is the archive plus dedupe state.
 
 name: monitor
 
@@ -48,6 +55,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
+
+      # State only — NOT .council/monitoring/. The issue steps below use
+      # `git status` to tell a digest written by THIS run from ones
+      # already in history; restoring old digests into the working tree
+      # would make every past digest look freshly written.
+      - name: Restore automation state
+        run: bash scripts/ci/automation-state.sh restore data/monitor
 
       - name: Poll monitor results
         id: poll
@@ -95,14 +109,8 @@ jobs:
               || echo "dispatch failed for $BANK"
           done
 
-      - name: Commit digests + state
+      - name: Save digests + state to automation-state
         run: |
-          git config user.name "dubaipoints-monitor"
-          git config user.email "info@dubaipoints.ae"
-          git add .council/monitoring/ data/monitor/ || true
-          if git diff --cached --quiet; then
-            echo "Nothing new to commit."
-          else
-            git commit -m "monitor: change signals ($(date -u +%Y-%m-%d\ %H:%M) UTC)"
-            git push origin main
-          fi
+          bash scripts/ci/automation-state.sh save \
+            "monitor: change signals ($(date -u +%Y-%m-%d\ %H:%M) UTC)" \
+            .council/monitoring data/monitor

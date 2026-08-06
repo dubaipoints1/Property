@@ -11,8 +11,10 @@
 # that workflow.
 #
 # Unlike discover.yml, this one WRITES. It commits data/monitor/monitors.json
-# because poll.mjs reads it from main, and CLAUDE.md specifies it as
-# committed. The commit step is scoped to that directory alone.
+# to the `automation-state` branch, which is where poll.mjs's daily run
+# restores it from (main's required council-signoff check blocks direct
+# bot pushes — see scripts/ci/automation-state.sh). The save step is
+# scoped to that directory alone.
 #
 # Budget protection lives in setup.mjs, not here: it aborts if the API's own
 # estimatedCreditsPerMonth exceeds MAX_ESTIMATED_CREDITS (1,600), which
@@ -57,6 +59,15 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      # Live runs need the CURRENT monitor IDs for idempotence — the copy
+      # on the dispatched ref is a frozen migration seed. The snapshot
+      # feeds the dry-run assertion below, which can no longer use
+      # `git status` on data/ (restore itself dirties it).
+      - name: Restore automation state
+        run: |
+          bash scripts/ci/automation-state.sh restore data/monitor
+          cp -r data/monitor "$RUNNER_TEMP/monitor-before"
+
       - name: Provision monitors
         env:
           # 'skip' short-circuits every network call in setup.mjs and exits
@@ -93,21 +104,15 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Commit monitor IDs
+      - name: Save monitor IDs to automation-state
         if: inputs.dry_run == false
         run: |
           # Scoped to data/monitor/ deliberately. setup.mjs writes nothing
-          # else, and a wider `git add` here would be a way for an unrelated
-          # change to reach main without review.
-          git config user.name "dubaipoints-monitor"
-          git config user.email "info@dubaipoints.ae"
-          git add data/monitor/ || true
-          if git diff --cached --quiet; then
-            echo "No change to monitor IDs — nothing to commit."
-          else
-            git commit -m "monitor: provision Firecrawl monitors ($(date -u +%Y-%m-%d\ %H:%M) UTC)"
-            git push origin HEAD:${{ inputs.ref || github.ref_name }}
-          fi
+          # else, and a wider save here would be a way for an unrelated
+          # change to escape review.
+          bash scripts/ci/automation-state.sh save \
+            "monitor: provision Firecrawl monitors ($(date -u +%Y-%m-%d\ %H:%M) UTC)" \
+            data/monitor
 
       - name: Assert the dry run wrote nothing
         if: inputs.dry_run == true
@@ -117,9 +122,18 @@ jobs:
           # creates itself via tee — run 30993455568 failed on exactly that,
           # reporting its own log file as an unexpected write. discover.yml's
           # equivalent assertion was scoped from the start; this one was not.
-          if [ -n "$(git status --porcelain -- data/ scripts/ src/)" ]; then
-            echo "::error::dry run modified tracked files — it must only report."
-            git status --porcelain -- data/ scripts/ src/
+          #
+          # data/monitor is compared against the post-restore snapshot, not
+          # `git status`: the restore step legitimately overlays the
+          # automation-state copy over the checked-out ref's frozen seed,
+          # so the working tree is expected to differ from the ref there.
+          if ! diff -r data/monitor "$RUNNER_TEMP/monitor-before"; then
+            echo "::error::dry run modified data/monitor — it must only report."
             exit 1
           fi
-          echo "Working tree clean — dry run reported only."
+          if [ -n "$(git status --porcelain -- scripts/ src/)" ]; then
+            echo "::error::dry run modified tracked files — it must only report."
+            git status --porcelain -- scripts/ src/
+            exit 1
+          fi
+          echo "Working tree matches the restored state — dry run reported only."

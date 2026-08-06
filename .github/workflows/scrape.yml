@@ -28,8 +28,10 @@
 # banks are added by appending to that JSON; this workflow file does not
 # need to be edited.
 #
-# Always commits a run log to LATEST_RUN.log (repo root) so failures are
-# inspectable from outside the runner.
+# Always commits a run log to LATEST_RUN.log so failures are inspectable
+# from outside the runner — on the `automation-state` branch, since
+# main's required council-signoff check blocks direct bot pushes
+# (see scripts/ci/automation-state.sh).
 
 name: scrape
 
@@ -132,18 +134,12 @@ jobs:
           if [ -f PR_BODY.md ]; then cp PR_BODY.md LATEST_SCRAPE.md; fi
           exit 0
 
-      - name: Always commit log + diagnostic body to main
+      - name: Always save log + diagnostic body to automation-state
         if: always()
         run: |
-          git config user.name "dubaipoints-bot"
-          git config user.email "info@dubaipoints.ae"
-          git add -f LATEST_RUN.log LATEST_SCRAPE.md 2>/dev/null || true
-          if git diff --cached --quiet; then
-            echo "[diag] Nothing to commit."
-          else
-            git commit -m "diag(scrape): run log + body"
-            git push origin main || echo "[diag] push failed"
-          fi
+          bash scripts/ci/automation-state.sh save \
+            "diag(scrape): run log + body" \
+            LATEST_RUN.log LATEST_SCRAPE.md || echo "[diag] save failed"
 
       - name: Open PR if cards.json changed
         run: |
@@ -153,12 +149,10 @@ jobs:
           LOG=LATEST_RUN.log
           if [ -z "$(git status --porcelain src/data/cards.json)" ]; then
             echo "[scrape] No cards.json changes; skipping PR." | tee -a "$LOG"
-            # Still re-commit LATEST_RUN.log so the no-PR conclusion is visible
-            # on main without waiting for the next run.
-            git config user.name "dubaipoints-bot"
-            git config user.email "info@dubaipoints.ae"
-            git add -f "$LOG" 2>/dev/null || true
-            git diff --cached --quiet || { git commit -m "diag(scrape): no cards.json change"; git push origin main || true; }
+            # Still re-save LATEST_RUN.log so the no-PR conclusion is
+            # visible on automation-state without waiting for the next run.
+            bash scripts/ci/automation-state.sh save \
+              "diag(scrape): no cards.json change" "$LOG" || true
             exit 0
           fi
           BRANCH="scrape/weekly-$(date +%Y-%m-%d-%H%M%S)"
@@ -206,11 +200,11 @@ jobs:
               echo "re-run this workflow to produce a fresh one."
               echo "=== END ACTION REQUIRED ==="
             } | tee -a "$LOG"
-            # Re-commit LATEST_RUN.log to main so the user sees the error
-            # without digging through the Actions UI.
-            git checkout main
-            git add -f "$LOG"
-            git diff --cached --quiet || { git commit -m "diag(scrape): PR creation failed — see LATEST_RUN.log"; git push origin main || true; }
+            # Re-save LATEST_RUN.log so the user sees the error without
+            # digging through the Actions UI. The helper works from the
+            # scrape branch checkout — no need to switch back to main.
+            bash scripts/ci/automation-state.sh save \
+              "diag(scrape): PR creation failed — see LATEST_RUN.log" "$LOG" || true
             exit 1
           fi
         env:

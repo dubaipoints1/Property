@@ -3,9 +3,11 @@
 # sourcing ladder in .council/research/2026-07/news-sourcing-policy.md).
 #
 # Runs in Actions because the aggregator hosts are unreachable from
-# Claude Code web-session egress. Commits the digest + state straight to
-# main (same precedent as scrape.yml's LATEST_RUN.log). Digests live
-# under .council/monitoring/ and are not part of the site build.
+# Claude Code web-session egress. Commits the digest + state to the
+# unprotected `automation-state` branch — main's required council-signoff
+# check blocks direct bot pushes (see scripts/ci/automation-state.sh).
+# The issue opened below carries the full digest, so the desks lose
+# nothing. Digests are not part of the site build.
 #
 # Free to run as of 2026-08: the press-room tier moved to native
 # Firecrawl monitors (.github/workflows/monitor.yml), so this job needs
@@ -42,6 +44,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      # State only — restoring old digests would defeat the this-run
+      # `git status` check in the issue step below.
+      - name: Restore automation state
+        run: bash scripts/ci/automation-state.sh restore data/news-monitor
+
       - name: Run RSS discovery sweep
         run: node scripts/news-monitor/monitor.mjs
 
@@ -59,14 +66,8 @@ jobs:
               --label "news-digest" || echo "issue creation failed (label may not exist) — digest still committed"
           fi
 
-      - name: Commit digest + state
+      - name: Save digest + state to automation-state
         run: |
-          git config user.name "dubaipoints-news-monitor"
-          git config user.email "info@dubaipoints.ae"
-          git add .council/monitoring/ data/news-monitor/ || true
-          if git diff --cached --quiet; then
-            echo "Nothing new to commit."
-          else
-            git commit -m "monitor: news discovery digest ($(date -u +%Y-%m-%d\ %H:%M) UTC)"
-            git push origin main
-          fi
+          bash scripts/ci/automation-state.sh save \
+            "monitor: news discovery digest ($(date -u +%Y-%m-%d\ %H:%M) UTC)" \
+            .council/monitoring data/news-monitor
