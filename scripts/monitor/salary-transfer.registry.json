@@ -44,6 +44,22 @@
       "_evidence": "SUPPORTED on verify run 31003513821 (5 August 2026) — minimum salary AED 5,000, band language and clawback wording, three strong signals. Provenance is notable: this URL came from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md, which recorded it live on 30 May after adcb.com/en/personal/promotions/salary-transfer returned 404. It sat in an open brief for two months while two discovery runs reported 'no candidate found', because the patterns required 'salary' to start a path segment and this slug carries it as a suffix. Replaces the Mar-2017 PDF, which stays in _pending as WEAK."
     },
     {
+      "bank": "rakbank",
+      "urls": [
+        "https://www.rakbank.ae/en/everyday-banking/salary-transfer/rak-more",
+        "https://www.rakbank.ae/globalassets/rakbank/all-pdfs/001---campaign/c-transfer-salary-cash-reward-july2026.pdf"
+      ],
+      "_evidence": "Promoted 6 August 2026 on full human read for the rakbank-cash-reward-2026.mdx entry. The cash-reward T&C (July 2026) carries all four signal types: band table AED 500/1,000/2,000/4,000, minimum salary AED 10,000 (5,000 for RAKempower/RAKmore enrollees), three-consecutive-salaries tenure with lowest-month computation, and a clawback clause. Campaign window 1 July - 31 August 2026 — RAKBANK versions these PDFs per campaign cycle (the accounts-lp page lists five dated welcome-interest T&Cs, active and concluded), so when this document's link changes on the RAKmore page, that is the signal a new cycle has started. The RAKmore page itself is the durable landing (min salary AED 5,000, benefits list) and is the entry's secondary source. accounts-lp from the 30 May brief was reviewed and left unwatched: it is a marketing landing that rotates campaign tiles; the RAKmore page + campaign T&C are the load-bearing pair."
+    },
+    {
+      "bank": "adib",
+      "urls": [
+        "https://www.adib.ae/en/personal/accounts/adib-salary-bonus-programme",
+        "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf"
+      ],
+      "_evidence": "Promoted 6 August 2026 after the human look the WEAK verdict asked for. The verdict's hypothesis — bands and clawback in an unreached section — is FALSIFIED: the full T&C is one page and there are no bands, because the ADIB Salary Bonus Programme is a PRIZE DRAW, not a banded offer. Minimum salary AED 3,000, automatic enrollment; 10 monthly winners of 1x salary (capped AED 10,000) and 1 grand winner of 12x salary (capped AED 200,000), prizes at ADIB's discretion, paid from shareholders' funds. A draw has no guaranteed reward, so it cannot honestly occupy salaryBands[] — ADIB stays uncovered in the reader-facing tracker, recorded as a documented finding (same class as Citi's absence, different mechanism). Both URLs watched: if ADIB ever launches a banded cashback offer, one of these surfaces is where it lands."
+    },
+    {
       "bank": "cbd",
       "urls": [
         "https://www.cbd.ae/personal/more/cbd-rewards/credit-card-cash-bonus"
@@ -67,20 +83,13 @@
   ],
   "_pending": {
     "_doc": "Candidates fetched or proposed but not yet meeting the admission standard. Verdicts reflect runs 30988856840, 30990596839 and 31003139057. Not watched. A candidate needs two strong signals — AED amount, minimum salary, band language, clawback wording — on a reachable page that mentions salary transfer. NOTE: URL discovery is not the only source of candidates, and 'no candidate found' has twice meant 'discovery did not reach it'. ADCB's live page sat in an open brief for two months; FAB's was supplied by the owner. Both were invisible because the patterns required 'salary' to start a path segment while both slugs carried it as a suffix — fixed 5 August 2026. Check .council/briefs/ before concluding a bank has no offer.",
-    "adib": {
-      "urls": [
-        "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/accounts/salary-bonus/salary-bonus-program-tcs-en.pdf"
-      ],
-      "verdict": "WEAK (re-verify run 30990596839) — the detector fix worked: this was previously NO SALARY-TRANSFER CONTENT purely because mentionsSalaryTransfer did not know the phrase 'salary bonus'. It is now correctly recognised as salary-transfer content. It still does not qualify: only one strong signal (AED 3,000), where admission needs two. The bands and clawback terms are presumably in a section the scrape did not reach, or in another document. Worth a human look — this is the closest of the remaining candidates to being real."
-    },
     "rakbank": {
       "urls": [
         "https://www.rakbank.ae/en/landing-page/accounts/accounts-lp",
         "https://www.rakbank.ae/en/everyday-banking/salary-transfer",
-        "https://www.rakbank.ae/en/everyday-banking/salary-transfer/rak-more",
         "https://www.rakbank.ae/en/islamic/personal/everyday-banking/accounts-facilities/salary-transfer"
       ],
-      "verdict": "AWAITING VERIFY on the accounts-lp URL, which comes from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md (status: open) alongside /rak-more — both recorded live on 30 May 2026 after rakbank.ae/personal/accounts/salary-transfer returned 404. The brief quotes 'up to AED 4,000 cashback on salary transfer'. Previous verdicts (retained): all three discovery paths WEAK across runs 30988856840 and 30990596839 — reachable and on-topic but almost no offer detail, only /rak-more returning a minimum salary of AED 5,000."
+      "verdict": "RESOLVED 6 August 2026 — the May-30 brief's 'up to AED 4,000 cashback' is real and now a live tracker entry (rakbank-cash-reward-2026.mdx); the RAKmore page + campaign T&C moved to `banks`. These three stay unwatched: accounts-lp is a rotating campaign-tile marketing landing, the bare salary-transfer path is a thin index, and the Islamic variant was never verified. The earlier WEAK verdicts were correct about the pages, wrong about the bank — the offer detail lives in the campaign PDF none of the discovery paths surfaced."
     },
     "standard-chartered": {
       "urls": [
