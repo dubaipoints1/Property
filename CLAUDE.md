@@ -310,7 +310,9 @@ data/scraped/<bank>/<ts>.json # scraper output (gitignored except .gitkeep)
 `FIRECRAWL_API_KEY=skip` short-circuits all network calls and returns
 `status: "fail"` from `firecrawlFetch` — useful for wiring tests
 without burning quota. The workflow always commits `LATEST_RUN.log`
-and `LATEST_SCRAPE.md` to main for outside-runner debugging.
+and `LATEST_SCRAPE.md` for outside-runner debugging — to the
+`automation-state` branch, not main (see §"The automation-state
+branch" below).
 
 `scripts/` and `tests/` are excluded from `tsconfig.json` (they run
 via `tsx`), so type checks there happen at runtime in tests, not via
@@ -350,8 +352,8 @@ scripts/monitor/discover-offers.mjs  # one-off offers-URL discovery, human-confi
 scripts/monitor/discover-salary-transfer.mjs # ditto for salary-transfer; KEEPS T&C PDFs
 scripts/monitor/offers.registry.json # confirmed offers URLs (per bank, not per card)
 scripts/monitor/salary-transfer.registry.json # confirmed salary-transfer URLs (per bank)
-data/monitor/monitors.json           # monitor IDs (committed)
-data/monitor/state.json              # seen checks, baseline flags, reported credits
+data/monitor/monitors.json           # monitor IDs (canonical on the automation-state branch)
+data/monitor/state.json              # seen checks, baseline flags, reported credits (ditto)
 .github/workflows/monitor.yml        # daily poll → issue → gh workflow run scrape.yml -f bank=<slug>
 ```
 
@@ -414,6 +416,35 @@ per URL.
 `scrape.yml` dropped from monthly to **quarterly** as the backstop for
 what monitors structurally cannot see: a restructured page, a moved URL,
 a monitor that silently stopped.
+
+### The automation-state branch
+
+Since 6 August 2026 `council-signoff` is a **required status check** on
+main, and required checks block every direct push — including the
+github-actions bot. Classic branch protection has no per-actor bypass
+for status checks and this repo's ruleset bypass picker does not offer
+the GitHub Actions app, so the workflows that used to commit machine
+state straight to main now write to the unprotected orphan branch
+**`automation-state`** via `scripts/ci/automation-state.sh`
+(`restore` before a run, `save` after). Main only changes via pull
+request — that is now an invariant, not a habit.
+
+Canonical there: `data/monitor/` (monitors.json, state.json),
+`data/news-monitor/state.json`, new `.council/monitoring/` digests,
+`LATEST_RUN.log`, `LATEST_SCRAPE.md`. The copies of
+`data/monitor/monitors.json` and `data/news-monitor/state.json` still
+on main are **frozen migration seeds** (they let the branch
+self-bootstrap); do not update them, and read the branch for current
+values: `git fetch origin automation-state`. Digests still reach
+humans as GitHub issues carrying the full digest body — the branch is
+the archive, not the alert.
+
+Consequence for the imagery workflows (`seed-images-*`,
+`gen-ai-image.yml`, `refetch-image.yml`, `fetch-partner-logo.yml`,
+`seed-logos.yml`): they commit real site content, which belongs on
+main via review — so **dispatch them with a non-main `branch` input**
+and PR the result. Dispatched against main they now fail at the push
+step by design.
 
 ### Firecrawl credentials — three separate channels
 
