@@ -41,7 +41,7 @@
       "urls": [
         "https://www.adcb.com/en/personal/promotions/switch-nine-salary-transfer"
       ],
-      "_evidence": "SUPPORTED on verify run 31003513821 (5 August 2026) — minimum salary AED 5,000, band language and clawback wording, three strong signals. Provenance is notable: this URL came from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md, which recorded it live on 30 May after adcb.com/en/personal/promotions/salary-transfer returned 404. It sat in an open brief for two months while two discovery runs reported 'no candidate found', because the patterns required 'salary' to start a path segment and this slug carries it as a suffix. Replaces the Mar-2017 PDF, which stays in _pending as WEAK."
+      "_evidence": "SUPPORTED on verify run 31003513821 (5 August 2026) — minimum salary AED 5,000, band language and clawback wording, three strong signals. Provenance is notable: this URL came from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md, which recorded it live on 30 May after adcb.com/en/personal/promotions/salary-transfer returned 404. It sat in an open brief for two months while two discovery runs reported 'no candidate found', because the patterns required 'salary' to start a path segment and this slug carries it as a suffix. Replaces the Mar-2017 PDF, which stays in _pending as WEAK. UPDATE 6 August 2026: fresh scrape + the campaign's own T&C (adcb.com/switch10 → switch10-tnc.pdf, Ver.02/April2026) show the Switch cycle-10 campaign EXPIRED 30 June 2026 with the page still live — the CBD pattern. No live tracker entry; the verified band table is archived as salaryTransferOfferHistory/adcb-switch10-2026-h1. ADCB has run cycles 8, 9 and 10, so this watch is the tripwire for cycle 11."
     },
     {
       "bank": "rakbank",
@@ -69,9 +69,10 @@
     {
       "bank": "hsbc",
       "urls": [
-        "https://www.hsbc.ae/premier/rewards-and-offers/"
+        "https://www.hsbc.ae/premier/rewards-and-offers/",
+        "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/offers/new-to-bank-and-customer-relationship-offer-terms-and-conditions.pdf"
       ],
-      "_evidence": "Hand search 6 August 2026, HTTP 200. Discovery missed it for the same structural reason as CBD: the path /premier/rewards-and-offers/ carries no 'salary'. HSBC's salary-transfer offer lives inside the Premier welcome offer: AED 2,000 cashback for transferring an ongoing monthly net salary of at least AED 40,000 (AED 30,000 for Emirati nationals) within the first 3 months of account opening, sustained for at least 2 consecutive months (footnote 11 on the page). Offer ends 31 December 2026. Three strong signals — AED amount, minimum salary, validity — plus the consecutive-months condition. Note for the desk: this is a high-threshold offer (AED 40,000/month) inside a premium-account package, a different shape from the mass-market band-table offers; the deposit/investment legs of the same welcome offer (AED 8,000-12,000 cashback) are funding-based, not salary-based, and are not what this watch is for. The offer T&C PDF is in _pending — it timed out twice on fetch and its content is unverified."
+      "_evidence": "Hand search 6 August 2026, HTTP 200. Discovery missed it for the same structural reason as CBD: the path /premier/rewards-and-offers/ carries no 'salary'. HSBC's salary-transfer offer lives inside the Premier welcome offer: AED 2,000 cashback for transferring an ongoing monthly net salary of at least AED 40,000 (AED 30,000 for Emirati nationals) within the first 3 months of account opening, sustained for at least 2 consecutive months (footnote 11 on the page). Offer ends 31 December 2026. Three strong signals — AED amount, minimum salary, validity — plus the consecutive-months condition. Note for the desk: this is a high-threshold offer (AED 40,000/month) inside a premium-account package, a different shape from the mass-market band-table offers; the deposit/investment legs of the same welcome offer (AED 8,000-12,000 cashback) are funding-based, not salary-based, and are not what this watch is for. The offer T&C PDF is in _pending — it timed out twice on fetch and its content is unverified. UPDATE 6 August 2026 (later same day): the T&C PDF fetched successfully via the Firecrawl PDF parser — the channel change the _pending verdict prescribed — and is now read in full and VERIFIED: offer period 2 Jan – 31 Dec 2026, two salary tiers (Advance 10,000–39,999 → AED 750; Premier 40,000+/30,000 Emirati → AED 2,000), payout within 90 days of qualifying, 180-day clawback window. Tracker entry hsbc-new-to-bank-2026 is live and typed from it; the PDF joins the watch (salary-transfer discovery KEEPS T&C documents). Dossier: .council/research/2026-08/salary-transfer-hsbc-adcb.md."
     },
     {
       "bank": "emirates-islamic",
@@ -136,7 +137,7 @@
       "urls": [
         "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/offers/new-to-bank-and-customer-relationship-offer-terms-and-conditions.pdf"
       ],
-      "verdict": "UNVERIFIED — fetch timed out twice on 6 August 2026 (60s each, via the MCP channel). This is the T&C PDF behind the Premier welcome offer's salary-transfer leg, linked from the rewards page now in `banks`. Two identical failures means change the channel, not retry: attempt via the Actions verify script on the next run. Until its content is read, the typed figures for any HSBC entry must come from the landing page only, clearly noted as such."
+      "verdict": "RESOLVED 6 August 2026 — fetched via the Firecrawl PDF parser (channel change per the prior verdict) and read in full; promoted to banks.hsbc. Kept here only as a record that two raw-fetch timeouts on 6 August were a transport problem, not a missing document."
     },
     "fab": {
       "urls": [
