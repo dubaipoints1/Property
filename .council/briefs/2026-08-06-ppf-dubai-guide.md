@@ -55,3 +55,37 @@ Naming them is what keeps the piece a market guide rather than an advert.
 `src/content/guides/paint-protection-film-dubai.mdx`, cross-linked from
 the PPF section of `expat-starter-car-costs.mdx`. Stages 4–6.5 run
 in-session; Chairman gate at the PR.
+
+## Revision — 6 August 2026 (same-day Chairman direction)
+
+Hours after publication the Chairman directed, in-session and quotable:
+remove the links to other PPF installers, remove all pricing ("dont
+want to quote prices since it can be different. Custom quotes"), and
+centre the hand-cut versus laser/pre-cut comparison — exposed edges are
+the quality difference the reader should judge installers on.
+
+Applied same day:
+
+- The published-price table (PPS, Platinum One Auto, Desert Diamond),
+  the piecemeal-panel prices, and the quote-spread section are
+  **removed**, along with every competitor name and outbound link. The
+  §10 1a guard in this brief that justified naming them (price
+  reference points) no longer applies because the piece no longer
+  quotes prices; the guide now frames PPF plainly as a custom-quote
+  market.
+- A **hand-cut vs pre-cut (plotter/laser) section** is now the guide's
+  centrepiece: mechanism honestly described (pre-cut = no blade near
+  paint but an exposed edge line on every panel — visible, dirt-
+  catching, and where lifting starts; hand-cut = edges wrapped and
+  effectively invisible, dependent on installer skill), Modcare's
+  published argument attributed, and the house judgement stated that
+  the wrapped hand-cut edge is the better result. No comparative-test
+  claim is made or implied; the §10 1a disclosure basis (first-hand
+  customer experience, not a survey) is unchanged.
+- Warranty section genericised (film vs workmanship split,
+  registration test) with no named third parties; the sources table
+  above beyond Modcare is retained for the record of what the original
+  version cited, not as live citations.
+- Title/description reframed off "what it costs"; slug unchanged.
+- Cross-link copy in `expat-starter-car-costs.mdx` updated to stop
+  promising published price points.

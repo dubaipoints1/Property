@@ -52,10 +52,16 @@ const {
 
 const entry = getStockEntry(slug);
 const isAi = entry?.source === "ai-generated";
+// Editorial photographs (a covered company's own image, used with
+// visible credit) get the same overlay treatment as the AI label and
+// for the same reason: the credit must ship with the image wherever it
+// renders, not depend on a call site remembering a caption. The
+// photographer field holds the credit owner per the manifest contract.
+const isEditorial = entry?.source === "editorial";
 ---
 
 {entry ? (
-  isAi ? (
+  isAi || isEditorial ? (
     <span class="dp-ai-figure">
       <img
         src={`/${entry.file}`}
@@ -68,10 +74,12 @@ const isAi = entry?.source === "ai-generated";
         class={className}
         data-stock-slug={entry.slug}
         data-stock-source={entry.source}
-        data-ai-generated="true"
+        data-ai-generated={isAi ? "true" : undefined}
       />
-      <span class="dp-ai-label" data-image-ai-label>
-        Illustration: generated with {entry.generator} · not a photograph
+      <span class="dp-ai-label" data-image-ai-label={isAi ? true : undefined}>
+        {isAi
+          ? `Illustration: generated with ${entry.generator} · not a photograph`
+          : `Image: ${entry.photographer}`}
       </span>
     </span>
   ) : (
@@ -101,9 +109,9 @@ const isAi = entry?.source === "ai-generated";
      image. Overlaid, the disclosure travels with the image everywhere
      it appears and costs no layout.
 
-     Only ai-generated entries get this wrapper; photographs keep the
-     bare <img> they have always rendered, so the 105 photo entries
-     carry no regression risk from this change. */
+     Only ai-generated and editorial-source entries get this wrapper;
+     stock photographs keep the bare <img> they have always rendered,
+     so the Pexels entries carry no regression risk from this change. */
   .dp-ai-figure {
     position: relative;
     display: block;
