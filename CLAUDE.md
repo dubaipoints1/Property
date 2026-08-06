@@ -546,10 +546,14 @@ above remains in force until the Chairman approves a swap.
   shouldn't index carry `data-pagefind-ignore` on the wrapper
   element.
 - **Cloudflare Pages** auto-deploys on push to `main`; there is no
-  separate deploy workflow. The Web Analytics token in
-  `BaseLayout.astro` is currently a placeholder
-  (`REPLACE_WITH_CLOUDFLARE_WEB_ANALYTICS_TOKEN`) — do not commit a
-  real token without coordinating.
+  separate deploy workflow. The Web Analytics beacon in
+  `BaseLayout.astro:69` reads `PUBLIC_CF_BEACON_TOKEN` from the
+  environment and renders only when that is set **and** the build is
+  production — no token is committed. (This entry previously described a
+  `REPLACE_WITH_CLOUDFLARE_WEB_ANALYTICS_TOKEN` placeholder in the
+  layout; that placeholder no longer exists and the env-var pattern
+  supersedes it. Corrected 6 August 2026 after an agent-facing doc
+  repeated the stale claim.)
 
 ## Network allowlist (Claude Code on the web)
 
