@@ -32,9 +32,9 @@
     {
       "bank": "dib",
       "urls": [
-        "https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf"
+        "https://www.dib.ae/docs/default-source/pdf/dib-xtra-tc.pdf"
       ],
-      "_evidence": "Verify run 30988856840 returned SUPPORTED (AED 8000, minSalary 8000). NOTE: this is NOT the dib-xtra-tc.pdf cited by the live dib-xtra-2026.mdx entry, whose bands start at AED 5,000. Two distinct documents both carrying salary-transfer terms — watching this one is safe, but which is current is an editorial question flagged to the business-realestate desk."
+      "_evidence": "SWAPPED 6 August 2026 on resolution of the 2026-08-05 source-conflict brief. This is the CURRENT XTRA campaign T&C (its own definitions: start 1 January 2026, min salary AED 5,000, expat bands AED 250-3,000, bundle-gated) and the sourceUrl of the live dib-xtra-2026.mdx entry — full human read on 6 August matched the entry verbatim, satisfying the admission standard on both legs (editor-verified sourceUrl + direct fetch with all signal types). The previously watched 9684-salary-transfer-tc.pdf turned out to be the EXPIRED 10 July - 7 September 2024 campaign (AED 8,000 minimum, smaller bands, prize draw) still hosted; the verify run's SUPPORTED verdict was parsing a real document from a dead campaign. Moved to _pending. Lesson recorded there: deterministic signals confirm a document is a salary-transfer T&C, not that its campaign is alive — campaign dates need a human read."
     },
     {
       "bank": "adcb",
@@ -137,9 +137,10 @@
     },
     "dib": {
       "urls": [
-        "https://www.dib.ae/docs/default-source/pdf/e-brochures/salary-transfer-leaflet-eng.pdf"
+        "https://www.dib.ae/docs/default-source/pdf/e-brochures/salary-transfer-leaflet-eng.pdf",
+        "https://www.dib.ae/docs/default-source/pdf/9684-salary-transfer-tc.pdf"
       ],
-      "verdict": "EXPIRED CAMPAIGN — re-verified 6 August 2026 at HTTP 200 (the 5 August 408 was transient). The document is a raffle-draw leaflet ('Double your salary') valid until 3 September 2018: monthly prize draws, minimum salary AED 8,000, no cashback bands, no clawback. Not a watch target. Retained only as historical context for the 2026-08-05 source-conflict brief: it shows DIB using an AED 8,000 minimum as far back as 2018, consistent with the 9684 T&C's minimum rather than dib-xtra-tc.pdf's AED 5,000."
+      "verdict": "BOTH EXPIRED CAMPAIGNS, resolved 6 August 2026 — DIB leaves dead campaign documents hosted, which is what created the source-conflict brief. The leaflet is the 2018 raffle campaign (valid to 3 September 2018, min AED 8,000). The 9684 T&C is the 10 July - 7 September 2024 XTRA campaign (min AED 8,000, expat bands 350/500/1,000, one-month-salary draw) — the verify run's SUPPORTED verdict on it was real parsing of a dead campaign, which is why campaign dates need a human read on top of deterministic signals. Together they show DIB's minimum was AED 8,000 from at least 2018 through 2024 before the current campaign dropped it to 5,000. Neither is watched; the current dib-xtra-tc.pdf is, in `banks`."
     }
   }
 }
