@@ -64,10 +64,10 @@ that already failed.
 
 | Bank | Candidate state | Next step |
 |---|---|---|
-| **fab** | No candidate from either run, including the retry pass | Locate by hand. **Highest priority** — largest UAE bank. |
-| **citi** | No candidate from either run | Locate by hand. |
-| **hsbc** | No candidate from either run | Locate by hand. |
-| **cbd** | Only candidate was a *salary-advance* PDF — a credit product, correctly rejected | Locate by hand; confirm whether CBD runs a transfer offer at all. |
+| **fab** | ~~No candidate from either run~~ **Resolved 5 August**: owner supplied the 20% cashback URL; entry `fab-20-percent-2026.mdx` is live; landing page + T&C watched | Fact-Checker Stage 6 on the entry (run 6 August — see the entry's verification note). |
+| **citi** | **Hand search completed 6 August 2026: documented absence.** A map call returned 47 salary-mentioning URLs; all are Salary Protect insurance, loan-pricing tiers, or funding-based Citigold promos. Citi UAE runs no salary-transfer cashback offer. | None — record stands. The coverage-gap note can cite this as a verified "no offer", not an unknown. |
+| **hsbc** | **Hand search completed 6 August 2026: offer found.** AED 2,000 cashback for monthly salary ≥ AED 40,000 (30,000 Emirati) inside the Premier welcome offer, ends 31 December 2026. Page watched; T&C PDF timed out twice, unverified. | Head of Research dossier from the rewards page; verify T&C PDF via Actions channel; then editor types the entry. High threshold — present as the premium-segment offer it is. |
+| **cbd** | **Hand search completed 6 August 2026: offer existed, now expired.** The `/cbd-rewards/credit-card-cash-bonus` page carries a full band table but validity 1 June – 31 August 2024 (T&C PDF confirms). Page watched for renewal. | None until renewal — the brief's own rule applies: a bank with no live offer is a finding to record, not a gap to fill. |
 | **standard-chartered** | `sc.com/ae/save/salary-account/apply` — NO SALARY-TRANSFER CONTENT (an application form) | The landing page without `/apply` was never proposed. Try it. |
 | **adib** | `salary-bonus-program-tcs-en.pdf` — **WEAK**, one strong signal (AED 3,000) | **Closest to real.** Read the PDF: bands and clawback are presumably in a section the scrape did not reach. |
 | **emirates-islamic** | Only candidate was `payroll-card`, a WPS prepaid card — not an offer. Archived `sourceUrl` was never primary-source-verified | Locate by hand. |
