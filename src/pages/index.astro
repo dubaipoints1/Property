@@ -10,6 +10,7 @@ import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
 import { getLiveOffers } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
+import { resolveDealIssuer } from "~/lib/dealIssuer";
 
 const allGuides = await getCollection("guides");
 const allPrograms = await getCollection("programs");
@@ -109,6 +110,27 @@ const offerRows = liveOffers.map((o) => {
   };
 });
 
+// ── Live deals strip (Aug 2026) ──────────────────────────────────────
+// Same honest-emptiness contract as the tracker teaser: renders only
+// while live, unarchived deals exist. Soonest-expiring first, capped at
+// four rows — the /deals/ index is the full surface.
+const todayMs = Date.now();
+const liveDealsRaw = (await getCollection("deals"))
+  .filter((d) => !d.data.archived && d.data.expiresOn.getTime() >= todayMs)
+  .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime())
+  .slice(0, 4);
+const daysUntil = (d: Date) =>
+  Math.max(0, Math.ceil((d.getTime() - todayMs) / (1000 * 60 * 60 * 24)));
+const dealRows = await Promise.all(
+  liveDealsRaw.map(async (d) => ({
+    id: d.id,
+    title: d.data.title,
+    issuer: (await resolveDealIssuer(d)).name,
+    daysLeft: daysUntil(d.data.expiresOn),
+    ends: fmtShort(d.data.expiresOn),
+  })),
+);
+
 const milesTiles = allPrograms
   .slice()
   .sort((a, b) => {
@@ -198,6 +220,35 @@ const milesTiles = allPrograms
           ))}
         </ul>
         <p class="foot">Every band checked against the bank's published terms. Offers change without notice — verify before applying.</p>
+      </div>
+    </section>
+  )}
+
+  <!-- ── 2a-ii. Live deals strip ─────────────────────────────────────── -->
+  {dealRows.length > 0 && (
+    <section class="hp-tracker-teaser is-deals" aria-label="Live deals">
+      <div class="inner">
+        <div class="head">
+          <div>
+            <p class="eyebrow">Deals desk</p>
+            <h2>Live deals, dated and sourced.</h2>
+          </div>
+          <a href="/deals/" class="hp-intel-more">Open the deals desk →</a>
+        </div>
+        <ul class="rows">
+          {dealRows.map((r) => (
+            <li>
+              <a href={`/deals/${r.id}/`} class="row">
+                <span class="bank">{r.issuer}</span>
+                <span class="deal">{r.title}</span>
+                <span class={`chip${r.daysLeft < 8 ? " is-soon" : ""}`}>
+                  {r.daysLeft < 8 ? `${r.daysLeft} day${r.daysLeft === 1 ? "" : "s"} left` : `Ends ${r.ends}`}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="foot">Expired deals are removed, not buried — anything listed here is live today.</p>
       </div>
     </section>
   )}
@@ -902,6 +953,20 @@ const milesTiles = allPrograms
     .hp-tracker-teaser { padding: 32px 20px 28px; }
     .hp-tracker-teaser .row { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
     .hp-tracker-teaser .chip { justify-self: start; }
+  }
+
+  /* Deals variant of the teaser: primary-accent eyebrow (gold stays the
+     trust/verified signal), neutral end-date chip that turns gold only
+     when a deal is inside its final week — same threshold as /deals/. */
+  .hp-tracker-teaser.is-deals .eyebrow { color: var(--green); }
+  .hp-tracker-teaser.is-deals .chip {
+    color: var(--ink-soft);
+    border-color: var(--line);
+  }
+  .hp-tracker-teaser.is-deals .chip.is-soon {
+    color: #6c4a18;
+    border-color: var(--gold);
+    background: var(--gold-soft, #fff6e7);
   }
 
   /* ── Fresh Intel ─────────────────────────────────────────────────── */
