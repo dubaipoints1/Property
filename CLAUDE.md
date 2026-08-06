@@ -675,6 +675,47 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-08-06 — In-session Chairman direction constitutes Stage 7 approval
+
+On Chairman direction (6 August 2026), recorded in the Chairman's own
+words as the basis of the ruling: "I don't like this chairman I have to
+keep going in and approving it."
+
+The friction being removed is real and specific. On 6 August the
+Chairman directed three pieces of work in an interactive session ("Do
+the PPF guide", "Do both", "You do it"), then had to separately approve
+each resulting PR on GitHub before the `council-signoff` gate — made a
+required status check that same morning — would let it merge. Approving
+work you personally ordered hours earlier is ceremony, not control.
+
+**The rule.** Where the Chairman has given explicit direction for
+specific work in an interactive session, that direction IS the Stage 7
+approval for the directed scope. The PR's Council sign-off block records
+it in the Chairman status cell as `approved` with a note naming the
+mechanism and date (e.g. "Chairman direction in-session, 6 August
+2026"), filled in by the session without a separate GitHub action by
+the Chairman.
+
+**What this does not change — and this is the load-bearing part.**
+
+1. §"Non-negotiables" 3 stands: the Chairman remains the only publish
+   gate. This amendment defines what counts as the Chairman's act of
+   approval; it does not move the authority.
+2. The delegation covers only the **directed scope**. Work the session
+   originates beyond the direction, and any PR the Chairman did not
+   direct — the weekly scrape PRs, community contributions, automated
+   refreshes — still requires the Chairman's explicit approval (GitHub
+   review, body edit, or a word in-session).
+3. The `council-signoff` required check stays exactly as it is. It
+   enforces that the block exists and the Chairman cell reads
+   `approved`; this amendment changes who is permitted to write that
+   cell and on what basis, and the basis must be stated in the cell's
+   Notes.
+4. A session claiming this delegation without a direction it can quote
+   is a discipline failure of the same class as under-tiering.
+
+— Chairman, 6 August 2026.
+
 ### 2026-08-05 — §10 logo-sourcing extended to non-issuer marks
 
 On site-owner/Chairman direction (5 August 2026), §10 logo sourcing gains
