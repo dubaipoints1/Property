@@ -16,8 +16,9 @@
 // scraper-output free-text perks (in _scraped_freetext) and adds typed
 // _features by hand. Provenance for _features is always "editor-confirmed".
 
-import { z } from "astro:content";
+import { z } from "astro/zod";
 import cardsJson from "../data/cards.json";
+import { welcomeBonusRank } from "./cardsDataFormat";
 
 const NETWORK = z.enum([
   "Visa",
@@ -460,10 +461,10 @@ const CardDataSchema = z.object({
 
   transferPartners: z.array(z.string()).default([]),
 
-  applyUrl: z.string().url().optional(),
-  kfsUrl: z.string().url().optional(),
+  applyUrl: z.url().optional(),
+  kfsUrl: z.url().optional(),
   lastVerified: z.coerce.date(),
-  sources: z.array(z.string().url()).min(1),
+  sources: z.array(z.url()).min(1),
 
   /** Phase 2a.2.3 (2026-05-20): VAT treatment of stored fee figures.
    * "inclusive" (default) = AED amounts in this record already include 5% UAE VAT.
@@ -497,9 +498,12 @@ const AllCardsSchema = z.record(z.string(), CardDataSchema);
 // Validate at module load — fail fast on any schema drift.
 const validated = AllCardsSchema.parse(cardsJson);
 
-// Build-time warnings — non-fatal, surface drift the editor should fix.
+// Build-time warning — only surface bonuses that genuinely cannot be priced.
+// A missing headline_value_aed is not itself drift: welcomeBonusRank uses the
+// approved per-unit baseline where one exists. Unpriced units stay out of the
+// numeric ranking until an editor records a source-backed AED value.
 {
-  const missingHeadlineValue: string[] = [];
+  const unpricedWelcomeBonuses: string[] = [];
   for (const [slug, card] of Object.entries(validated)) {
     const wb = card.welcomeBonus;
     if (
@@ -507,14 +511,15 @@ const validated = AllCardsSchema.parse(cardsJson);
       typeof wb === "object" &&
       "amount" in wb &&
       "unit" in wb &&
-      wb.headline_value_aed === undefined
+      wb.headline_value_aed === undefined &&
+      welcomeBonusRank(wb).tier === "unpriced"
     ) {
-      missingHeadlineValue.push(slug);
+      unpricedWelcomeBonuses.push(slug);
     }
   }
-  if (missingHeadlineValue.length > 0) {
+  if (unpricedWelcomeBonuses.length > 0) {
     console.warn(
-      `[cardsData] ${missingHeadlineValue.length} card(s) have a structured welcomeBonus without headline_value_aed: ${missingHeadlineValue.join(", ")}. Editor should backfill via the SOP at .council/sops/features-typing.md.`,
+      `[cardsData] ${unpricedWelcomeBonuses.length} welcome bonus(es) remain unpriced because no approved AED baseline or source-backed headline_value_aed exists: ${unpricedWelcomeBonuses.join(", ")}. Leave unranked until editor verification.`,
     );
   }
 }

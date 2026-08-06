@@ -12,10 +12,10 @@ const posts = (await getCollection("news", (p) => p.data.beat === "airline"))
 
 <NewsIndexLayout
   title="UAE airline & miles news | DubaiPoints"
-  description="Airline news for UAE residents: Emirates Skywards, Etihad Guest and Gulf-carrier programme changes, promotions and devaluations — every figure in AED, every claim sourced."
+  description="Airline news for UAE residents: Emirates Skywards, Etihad Guest and Gulf-carrier programme changes, promotions and devaluations, with original denominations and source links."
   crumb="DubaiPoints / News / Airlines"
   heading="The airline desk."
-  deck="Skywards, Etihad Guest and Gulf-carrier news that changes what a UAE resident should earn or burn — every figure in AED, every claim sourced."
+  deck="Skywards, Etihad Guest and Gulf-carrier news that changes what a UAE resident should earn or burn, with the source basis linked and published denominations retained."
   posts={posts}
   activeDesk="airline"
 >
@@ -30,7 +30,7 @@ const posts = (await getCollection("news", (p) => p.data.beat === "airline"))
       earn rates and sweet spots.
     </p>
     <div class="news-empty-ctas">
-      <a href="/newsletter/" class="news-empty-cta">Subscribe to the Friday brief →</a>
+      <a href="/newsletter/" class="news-empty-cta">Join the launch list →</a>
       <a href="/rss.xml" class="news-empty-cta is-ghost">RSS feed →</a>
     </div>
   </Fragment>

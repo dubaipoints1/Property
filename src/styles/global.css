@@ -38,7 +38,7 @@
   /* Type — warm near-black, NOT royal navy */
   --ink:       #1f2328;          /* body text */
   --ink-soft:  #56606b;          /* meta, secondary copy */
-  --muted:     #9aa0a6;          /* dates, byline timestamps */
+  --muted:     #6b7178;          /* dates, byline timestamps — AA on paper */
 
   /* Lines — warm hairlines */
   --line:      #dad6cd;
@@ -3230,7 +3230,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 }
 
 /* StockImage SVG fallback: ensure it fills container */
-:global(svg.dp-cover) {
+svg.dp-cover {
   width: 100%;
   height: 100%;
   display: block;
@@ -3279,7 +3279,7 @@ html * {
 
   --ink:       #e8ecf1;
   --ink-soft:  #9aa5b8;
-  --muted:     #5c667a;
+  --muted:     #9aa5b8;          /* AA on dark paper and page backgrounds */
 
   --line:      #2a3142;
   --line-soft: #1e2535;

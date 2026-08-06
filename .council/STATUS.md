@@ -12,7 +12,11 @@ Managing Editor on every state change. Cross-checks against
 **Status:** OPERATIONAL.
 **Convened:** 2026-05-08 by the publication owner (Chairman).
 **Charter:** `CLAUDE.md` Part I.
-**Active branch:** `claude/council-spike` (PR #17 → `main`).
+**Active branch:** `codex/integrity-conversion-sprint` (unpublished working branch).
+**Current release gate:** integrity and conversion sprint implemented; all nine
+required non-Chairman Council roles pass and route the exact working tree to the
+Chairman. Chairman approval for commit, pull request or publication remains
+pending in `.council/briefs/2026-08-05-integrity-conversion-sprint.md`.
 
 ## Chairman picks (2026-05-08)
 
@@ -76,17 +80,12 @@ Contract tests at `tests/scrape/propose-changes.test.ts` cover:
 - editor-confirmed entries are never overwritten by a scrape
 - string fallback still routes when normaliser couldn't parse
 
-### B. Live-site backfill via Firecrawl
+### B. Live-site and monitor verification
 
-`.council/00_state_of_the_site.md` §9 carries TO-BACKFILL markers on
-the live-site and competitor sections. They will fill in once
-Firecrawl access is wired (MCP server connected, or
-`FIRECRAWL_API_KEY` provisioned and the existing HTTP client used).
-
-**Recommendation:** Owner provisions Firecrawl access; Head of
-Research runs the backfill scrape on first session post-access and
-publishes as
-`.council/research/2026-05/state-of-site-backfill.md`.
+The 5 August refresh verified the working repository and production artefact,
+not the deployed site or the external health of Firecrawl monitors. Those
+states require a separate live check before publication or a monitoring-health
+claim.
 
 ## Operating cadence in force
 
@@ -102,14 +101,15 @@ Per `EDITORIAL.md` (carried forward unamended):
 
 ## Next milestones (sequenced)
 
-1. **Homepage rebuild** to the 4-section Quiet Ledger spec
-   (`src/pages/index.astro`). Highest visible impact; touched only
-   when prepared with browser preview.
-2. **Structure expansion** per `.council/04_content_taxonomy.md`:
-   per-band salary-transfer landing pages, `/cards/best/`,
-   `/news/`, `/newsletter/`, `/search/`.
-3. **Weekly Firecrawl cadence** for the 10 remaining banks. Order
-   per the May 2026 scrape brief: ENBD first.
+1. Present the Council-routed integrity-sprint artefacts to the Chairman; do
+   not commit, open a pull request, publish or deploy before approval.
+2. Configure a verified Buttondown public username and consent settings before
+   enabling the newsletter form; the unconfigured site retains an email
+   fallback.
+3. Backfill salary-transfer offers one bank at a time from primary-source
+   dossiers. Nine banks currently lack a live entry.
+4. Resolve the remaining substantive `needs-review` card fields and four
+   unpriced welcome bonuses without guessing values.
 
 The phased plan is at
 `.council/sessions/2026-05-08-rollout.md`.
@@ -127,3 +127,6 @@ The phased plan is at
 | 2026-05-08-bis | technical-lead | Chunk 1 (PR #25, merged): `global.css` token retune — palette, type weights, body 15→16px, eyebrow `--ink → --green`. Cascades to every `.dp-*` component automatically. Bonus data repair: `cards.json` enum violations from my ENBD URL scaffold (real-estate / premium / online / Diners-Club-International) all corrected. NETWORK enum expansion for proper Diners Club support queued as fenced follow-up. |
 | 2026-05-08-bis | technical-lead | Chunk 2 (PR #27, merged): TPG homepage rebuild — typographic hero / feature card / latest with tabs / favourite cards (filter pills + card-tile grid) / newsletter band. 6 reusable component classes added to `global.css` (`.dp-band-*`, `.dp-feature-card`, `.dp-tabs`, `.dp-filter-pills`, `.dp-card-tile`, `.dp-valuation-row`). Chunks 3–7 consume these without duplication. |
 | 2026-05-08-bis | managing-editor | **Pre-content foundation** queued ahead of chunks 3–7 to unblock "start putting stories and news": (a) `news` content collection + `/news/` index + slug route; (b) 20 MDX stubs for ENBD cards merged into `cards.json` by PR #22 — frontmatter-only "review-in-progress" placeholders so the pages don't render half-broken; (c) `/newsletter/` stub + `/rss.xml` endpoint to fix the homepage CTAs that pointed to 404s; (d) `/design-spike/` route deleted (Quiet Ledger spike was superseded). Doc amendments to `BRAND_NOTES`, `EDITORIAL`, `SITE_ARCHITECTURE`, `CLAUDE.md` Part I queued as separate PR. |
+| 2026-08-05 | technical-lead | Integrity and conversion sprint opened on `codex/integrity-conversion-sprint`: earn-rate unit integrity, claim-force corrections, configuration-gated Buttondown form, internal-route pruning, Astro 7/Node 22 baseline and production verification. Publication remains gated. |
+| 2026-08-05 | standards-editor | Chairman selected the narrow `DubaiPoints Editorial` organisational-byline exception for a one-editor publication; named contributors still require real-name attribution and trust schema remains `Organization`-only until a named profile exists. |
+| 2026-08-05 | managing-editor | Renewed review complete: all nine required non-Chairman roles pass and route the exact working tree to the Chairman gate. No commit, PR, publication or deployment is authorised yet. |

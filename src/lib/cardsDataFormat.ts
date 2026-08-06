@@ -550,6 +550,62 @@ export function formatEarnValue(
   return earnIsPercentage(earnUnit, categories) ? `${value}%` : `${value}×`;
 }
 
+/**
+ * Extract the spend basis carried by an L2 earn-unit string.
+ *
+ * Banks publish points against different denominators (AED 1, AED 10,
+ * AED 200, USD 1). Dropping that denominator changes the meaning of the
+ * number, so compact surfaces must never append a guessed `per AED 1`.
+ */
+export function earnRateBasis(earnUnit?: string | null): string | null {
+  const unit = (earnUnit ?? "").trim();
+  const perCurrency = unit.match(/\bper\s+(AED|USD)\s+([0-9]+(?:\.[0-9]+)?)/i);
+  if (perCurrency) {
+    const currency = perCurrency[1]?.toUpperCase();
+    const amount = perCurrency[2];
+    return currency && amount ? `per ${currency} ${amount}` : null;
+  }
+  if (/\bmultiplier\s+on\s+base\s+earn\s+rate\b/i.test(unit)) {
+    return "base earn";
+  }
+  return null;
+}
+
+/** Format an earn rate without losing its source denominator. */
+export function formatEarnRate(
+  value: number,
+  earnUnit?: string | null,
+  categories?: readonly string[],
+): string {
+  const formatted = formatEarnValue(value, earnUnit, categories);
+  if (earnIsPercentage(earnUnit, categories)) return formatted;
+  const basis = earnRateBasis(earnUnit);
+  return basis ? `${formatted} ${basis}` : formatted;
+}
+
+/** A conservative comparison key for deciding whether two raw rates are
+ * actually commensurable. Percentages compare with percentages. Points rates
+ * compare only when both the reward currency and spend denominator match. */
+export function earnRateComparisonKey(
+  earnUnit?: string | null,
+  categories?: readonly string[],
+): string | null {
+  if (earnIsPercentage(earnUnit, categories)) return "percentage";
+  const unit = (earnUnit ?? "").trim();
+  const perCurrency = unit.match(
+    /^(.+?)\s+per\s+(AED|USD)\s+([0-9]+(?:\.[0-9]+)?)(?:\s+spent)?/i,
+  );
+  if (perCurrency) {
+    const reward = perCurrency[1]?.trim().toLowerCase().replace(/\s+/g, " ");
+    const currency = perCurrency[2]?.toUpperCase();
+    const amount = perCurrency[3];
+    return reward && currency && amount
+      ? `${reward}|${currency}|${amount}`
+      : null;
+  }
+  return null;
+}
+
 interface LoungeFeature {
   type: "lounge_access";
   network: string;
@@ -693,16 +749,22 @@ export function cardComparisonRows(
     const lTop = topEarnEntry(left.earnRates as Record<string, unknown>);
     const rTop = topEarnEntry(right.earnRates as Record<string, unknown>);
     const lValue = lTop
-      ? `${lTop.label} ${formatEarnValue(lTop.value, left.earnUnit, left.categories)}`
+      ? `${lTop.label} ${formatEarnRate(lTop.value, left.earnUnit, left.categories)}`
       : "—";
     const rValue = rTop
-      ? `${rTop.label} ${formatEarnValue(rTop.value, right.earnUnit, right.categories)}`
+      ? `${rTop.label} ${formatEarnRate(rTop.value, right.earnUnit, right.categories)}`
       : "—";
     let winner: ComparisonWinner;
     if (!lTop && !rTop) winner = "none";
     else if (!lTop) winner = "right";
     else if (!rTop) winner = "left";
-    else winner = higherWins(lTop.value, rTop.value);
+    else {
+      const leftKey = earnRateComparisonKey(left.earnUnit, left.categories);
+      const rightKey = earnRateComparisonKey(right.earnUnit, right.categories);
+      winner = leftKey && leftKey === rightKey
+        ? higherWins(lTop.value, rTop.value)
+        : "none";
+    }
     rows.push({
       key: "topEarn",
       label: "Top earn rate",

@@ -143,9 +143,17 @@ const milesTiles = allPrograms
 
 <BaseLayout
   title="DubaiPoints — UAE miles, deals and banking, AED-first"
-  description="Independent UAE-resident-led guides to credit cards, salary-transfer bonuses, miles redemptions and lifestyle deals. Every figure in AED, every card checked."
+  description="Independent UAE-resident-led guides to credit cards, salary-transfer bonuses, miles redemptions and lifestyle deals. AED-first, sourced and dated."
   fullWidth
 >
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    href="/images/stock/hero-cabin.jpg"
+    type="image/jpeg"
+    fetchpriority="high"
+  />
   <!-- ── 1. Hero ──────────────────────────────────────────────────────── -->
   <header class="dp-pagehead is-hero">
     <div class="hp-hero-grid">
@@ -155,10 +163,10 @@ const milesTiles = allPrograms
         <p>
           UAE-resident guides to the card combinations, salary-transfer
           bonuses and miles redemptions that stretch a Dubai paycheque
-          further — every figure in dirhams, dated and verified.
+          further — AED-first, dated and sourced.
         </p>
-        <a href="/newsletter/" class="hp-hero-form-cta">About the Friday brief →</a>
-        <p class="hp-hero-micro">One email each Friday, launching soon. Unsubscribe at any time.</p>
+        <a href="/newsletter/" class="hp-hero-form-cta">Join the Friday brief →</a>
+        <p class="hp-hero-micro">The brief is preparing for launch. Join the list by email while automated sign-up is configured.</p>
       </div>
 
       <div class="hp-hero-media">
@@ -308,7 +316,7 @@ const milesTiles = allPrograms
   <section class="hp-intel-band">
     <div class="hp-intel-head">
       <h2>Fresh intel</h2>
-      <p>Latest reviews, sweet spots and banking moves — every claim verified against the issuer's Schedule of Charges.</p>
+      <p>Latest reviews, sweet spots and banking moves, checked against the relevant primary sources.</p>
       <a href="/guides/" class="hp-intel-more">All guides →</a>
     </div>
     {/* Newspaper-front-page layout (July 2026 blend): one dominant
@@ -325,7 +333,7 @@ const milesTiles = allPrograms
               coverCategory={intel[0].coverCategory}
               coverSize="hero"
               class="hp-intel-card-image"
-              loading="eager"
+              loading="lazy"
               sizes="(max-width: 900px) 100vw, 60vw"
             />
           </div>
@@ -456,15 +464,15 @@ const milesTiles = allPrograms
       <p class="eyebrow">Why trust us</p>
       <div class="grid">
         <a href="/team/" class="tile">
-          <p class="tile-eyebrow">Editors</p>
-          <h3>Meet the team</h3>
-          <p class="lead">UAE-resident editors with named bylines on every review. No anonymous content, no syndicated copy.</p>
-          <span class="cta" aria-hidden="true">See the masthead →</span>
+          <p class="tile-eyebrow">Publication</p>
+          <h3>Who writes DubaiPoints</h3>
+          <p class="lead">A UAE-resident, single-editor publication using the DubaiPoints Editorial byline. Reviews carry dated verification and supporting sources.</p>
+          <span class="cta" aria-hidden="true">Read about the editor →</span>
         </a>
         <a href="/editorial-policy/" class="tile">
           <p class="tile-eyebrow">Method</p>
           <h3>How we work</h3>
-          <p class="lead">Every figure traces to an issuer's published Schedule of Charges. Cards re-verified on a 90-day rolling cycle.</p>
+          <p class="lead">Card figures draw on issuer product pages, terms, Key Facts Statements and Schedules of Charges as applicable. Pages display a last-verified date; card figures older than 90 days are flagged for refresh.</p>
           <span class="cta" aria-hidden="true">Our editorial policy →</span>
         </a>
         <a href="/how-we-make-money/" class="tile">
@@ -486,10 +494,10 @@ const milesTiles = allPrograms
   <section class="hp-news-band">
     <div class="inner">
       <span class="eyebrow">The DubaiPoints brief</span>
-      <h2>Friday morning, in your inbox.</h2>
-      <p>One email each Friday with the week's salary-transfer changes, new card offers, miles redemptions worth knowing about, and lifestyle deals. AED-first, dated and verified.</p>
+      <h2>The Friday brief is preparing for launch.</h2>
+      <p>Join the launch list for salary-transfer changes, new card offers, worthwhile miles redemptions and lifestyle deals.</p>
       <div class="cta">
-        <a href="/newsletter/" class="btn primary">Subscribe</a>
+        <a href="/newsletter/" class="btn primary">Join the brief</a>
         <a href="/rss.xml" class="btn ghost">RSS feeds</a>
       </div>
       <p class="micro">
@@ -561,7 +569,7 @@ const milesTiles = allPrograms
   .hp-hero-form-cta {
     display: inline-block;
     background: var(--green);
-    color: white;
+    color: var(--navy-deep);
     font-family: 'DM Sans', system-ui, sans-serif;
     font-weight: 700;
     font-size: 14px;
@@ -572,7 +580,7 @@ const milesTiles = allPrograms
     box-shadow: 0 6px 20px -12px rgba(15, 31, 46, 0.18);
     transition: background 0.2s ease, transform 0.1s ease;
   }
-  .hp-hero-form-cta:hover { background: #15293a; }
+  .hp-hero-form-cta:hover { box-shadow: 0 8px 24px -12px rgba(15, 31, 46, 0.32); }
   .hp-hero-form-cta:active { transform: scale(0.98); }
   .hp-hero-micro {
     font-size: 12px;
@@ -1115,8 +1123,8 @@ const milesTiles = allPrograms
 
   /* ── UAE Wallet Setup (dark band) ────────────────────────────────── */
   .hp-wallet-band {
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--navy-deep);
+    color: #fdfcf8;
     padding: 64px 32px 72px;
   }
   .hp-wallet-grid {
@@ -1132,7 +1140,7 @@ const milesTiles = allPrograms
     font-weight: 500;
     font-size: clamp(28px, 4vw, 42px);
     letter-spacing: -1px;
-    color: var(--paper);
+    color: #fdfcf8;
     margin: 0 0 16px;
     text-wrap: balance;
   }
@@ -1182,7 +1190,7 @@ const milesTiles = allPrograms
     font-family: 'Fraunces', serif;
     font-weight: 500;
     font-size: 16px;
-    color: var(--paper);
+    color: #fdfcf8;
     margin-bottom: 4px;
     letter-spacing: -0.2px;
     transition: color 0.15s ease;
@@ -1200,8 +1208,8 @@ const milesTiles = allPrograms
     align-items: center;
     height: 44px;
     padding: 0 24px;
-    background: var(--paper);
-    color: var(--ink);
+    background: #fdfcf8;
+    color: #1f2328;
     border-radius: 999px;
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 13px;
@@ -1210,7 +1218,7 @@ const milesTiles = allPrograms
     text-decoration: none;
     transition: background 0.15s ease, color 0.15s ease;
   }
-  .hp-wallet-cta:hover { background: var(--mint); color: var(--ink); }
+  .hp-wallet-cta:hover { background: #e0dccf; color: #1f2328; }
 
   .hp-wallet-media {
     position: relative;
@@ -1229,7 +1237,7 @@ const milesTiles = allPrograms
     right: 20px;
     bottom: 20px;
     background: var(--mint);
-    color: var(--ink);
+    color: #0f1f2e;
     border-radius: 14px;
     padding: 16px 18px;
     display: grid;

@@ -12,10 +12,10 @@ const posts = (await getCollection("news", (p) => p.data.beat === "banking"))
 
 <NewsIndexLayout
   title="UAE banking & card news | DubaiPoints"
-  description="UAE banking news for points collectors: card launches, salary-transfer cycles, cashback rate cuts and fee changes across the issuers we track — every figure in AED, every claim sourced."
+  description="UAE banking news for points collectors: card launches, salary-transfer cycles, cashback rate cuts and fee changes across the issuers we track, with original denominations and source links."
   crumb="DubaiPoints / News / Banking"
   heading="The banking desk."
-  deck="Card launches, salary-transfer cycles, rate cuts and fee changes across the UAE issuers we track — every figure in AED, every claim sourced."
+  deck="Card launches, salary-transfer cycles, rate cuts and fee changes across the UAE issuers we track, with the source basis linked and published denominations retained."
   posts={posts}
   activeDesk="banking"
 >
@@ -25,12 +25,12 @@ const posts = (await getCollection("news", (p) => p.data.beat === "banking"))
     <p>
       When an issuer moves — a rate cut, a new card, a salary-transfer
       cycle opening or closing — the story files here. Until then the
-      <a href="/salary-transfer/">live tracker</a> watches every active
-      offer and the <a href="/cards/">card reviews</a> carry the current
+      <a href="/salary-transfer/">live tracker</a> shows the active
+      offers we have verified and the <a href="/cards/">card reviews</a> carry the current
       verified figures.
     </p>
     <div class="news-empty-ctas">
-      <a href="/newsletter/" class="news-empty-cta">Subscribe to the Friday brief →</a>
+      <a href="/newsletter/" class="news-empty-cta">Join the launch list →</a>
       <a href="/rss.xml" class="news-empty-cta is-ghost">RSS feed →</a>
     </div>
   </Fragment>

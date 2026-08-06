@@ -9,7 +9,7 @@ import {
 import {
   topEarnEntry,
   CATEGORY_LABELS_FOR_TOP,
-  formatEarnValue,
+  formatEarnRate,
 } from "~/lib/cardsDataFormat";
 
 // Generate one route per card in the data layer (L2). Even cards without
@@ -72,7 +72,7 @@ const minSalaryFragment = data.eligibility.invitationOnly
   : data.eligibility.minSalary > 0
   ? `min salary AED ${data.eligibility.minSalary.toLocaleString()}`
   : "no min salary";
-const earnFragment = top && topLabel ? `${formatEarnValue(top.value, data.earnUnit, data.categories)} ${topLabel}` : null;
+const earnFragment = top && topLabel ? `${formatEarnRate(top.value, data.earnUnit, data.categories)} ${topLabel}` : null;
 const cardDescription = [
   // Card names often already start with the bank ("Emirates NBD Go4it
   // Gold") — only prefix when they don't, else the SERP description

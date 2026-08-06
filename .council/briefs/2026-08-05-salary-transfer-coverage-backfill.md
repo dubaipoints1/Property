@@ -6,7 +6,7 @@ owner: business-realestate-editor
 chairman-status: pending
 ---
 
-# Brief — salary-transfer tracker covers 2 of 12 banks; scaffolding for the backfill
+# Brief — salary-transfer tracker covers 3 of 12 banks; scaffolding for the backfill
 
 **Date:** 2026-08-05
 **Tier:** T3 (new content across up to ten entries)
@@ -14,12 +14,12 @@ chairman-status: pending
 ## The finding
 
 The salary-transfer tracker is named a core differentiator in the
-Charter. It renders **two live offers** — DIB and Mashreq — against the
+Charter. It renders **three live offers** — DIB, FAB and Mashreq — against the
 twelve banks the publication covers. Emirates NBD's entry carries
 `archived: true` and is filtered out by `getLiveOffers()`.
 
-As of 5 August the page states this openly: the stats strip reads
-"Banks tracked: 2 of 12" and a coverage note names the gap. That fixed
+As of 5 August the page states this openly: the stats strip derives
+"Banks tracked: 3 of 12" and a coverage note names the gap. That fixed
 the *honesty* problem. It did not fix the *coverage* problem, which is
 what this brief is for.
 
@@ -134,11 +134,11 @@ from then on.
 
 The tracker's stats strip and coverage note both derive from the
 collections, so they self-correct as entries land — no copy edit needed.
-Each bank added moves "2 of 12" without anyone touching the page.
+Each bank added moves "3 of 12" without anyone touching the page.
 
 ## One-line summary
 
-**Ten banks have no live salary-transfer entry. Tooling to find and verify
+**Nine banks have no live salary-transfer entry. Tooling to find and verify
 source URLs exists; writing the entries is editorial work requiring
 primary sources and Fact-Checker at Stage 6. ADCB and RAKBANK are covered
-by the open 30 May brief; FAB is the highest-value remaining gap.**
+by the open 30 May brief; FAB was completed on 5 August 2026.**

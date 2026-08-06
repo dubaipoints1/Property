@@ -95,13 +95,11 @@ Each L2 field carries a `_provenance` entry. **Fields marked
 `editor-confirmed`, `editor-corrected` or `editor-confirmed-null` are
 never overwritten by a scrape** — only `lastVerified` always refreshes
 (`ALWAYS_REFRESHABLE` in `scripts/scrape/propose-changes.ts`). Typed
-editor fields (`welcomeBonus`, `annualFeeWaiver`, `_features`) are never
-written by the scraper at all; it emits free text under
-`_scraped_freetext.*` for an editor to type up.
-
-`welcomeBonus` is **deliberately absent** from `SCRAPED_FIELDS` (removed
-in `e291a87`). Adding it back is a fenced contract change requiring
-Chairman approval.
+editor fields (`annualFeeWaiver`, `_features`) are never written by the
+scraper; it emits free text under `_scraped_freetext.*` for an editor to
+type up. `welcomeBonus` is the deliberate exception: it was restored to
+`SCRAPED_FIELDS` on 8 May 2026 after the normaliser gained deterministic
+parsing, and the raw wording is retained in `_scraped_freetext` for audit.
 
 ### 5. Monitors detect change; they never write data
 
@@ -136,7 +134,7 @@ a dev build by hardcoding one.
 
 ## Commands
 
-Node 20 (`.nvmrc`). From the repo root:
+Node 22.20.0 (`.nvmrc`; package floor 22.12). From the repo root:
 
 ```bash
 npm install

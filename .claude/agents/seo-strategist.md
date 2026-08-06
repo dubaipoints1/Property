@@ -125,7 +125,7 @@ You do **not** have Firecrawl access.
 | Deal | `Article` + `Offer` + `BreadcrumbList` |
 | Programme | `Article` + `BreadcrumbList` |
 | Bank hub | `Article` + `Organization` (the bank) + `BreadcrumbList` |
-| Trust pages | `Organization` + `Person` (council bylines) |
+| Trust pages | `Organization`; add `Person` only for a real named contributor profile |
 
 ## Operating rhythm
 

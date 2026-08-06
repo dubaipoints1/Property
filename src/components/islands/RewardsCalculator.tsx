@@ -18,7 +18,7 @@
 
 import { useEffect, useMemo, useState } from "preact/hooks";
 import type { CardData } from "../../lib/cardsData";
-import { formatEarnValue } from "../../lib/cardsDataFormat";
+import { formatEarnRate } from "../../lib/cardsDataFormat";
 import { NINETY_DAYS_MS } from "../../lib/verification";
 
 // ── Public types ─────────────────────────────────────────────────────────
@@ -470,7 +470,7 @@ export default function RewardsCalculator({ cards }: Props) {
                   Ranks here because{" "}
                   <strong>{CATEGORY_LABELS[r.topCategory].toLowerCase()}</strong>{" "}
                   is your single biggest contributor — this card pays{" "}
-                  {formatEarnValue(
+                  {formatEarnRate(
                     (r.card.earnRates as unknown as Record<string, number | undefined>)[
                       r.topCategory
                     ] ?? r.card.earnRates.everythingElse,

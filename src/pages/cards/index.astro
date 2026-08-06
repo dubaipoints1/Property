@@ -35,7 +35,7 @@ import {
   FEATURE_CHIP_LABELS,
   annualFeeLabel,
 } from "~/lib/cardsData";
-import { compareByWelcomeValue, formatEarnValue } from "~/lib/cardsDataFormat";
+import { compareByWelcomeValue, formatEarnRate } from "~/lib/cardsDataFormat";
 
 const cards = await Promise.all(
   getActiveCards()
@@ -79,7 +79,7 @@ function topEarnRate(card: typeof cards[number]["card"]): string | null {
   // leaking verbatim into the reader-facing "Top earn rate" column on
   // ~20 rows (July 2026 structure audit): "1.5% on everythingElse".
   const label = best.label.replace(/([A-Z])/g, " $1").toLowerCase();
-  return `${formatEarnValue(best.value, card.earnUnit, card.categories)} on ${label}`;
+  return `${formatEarnRate(best.value, card.earnUnit, card.categories)} on ${label}`;
 }
 
 // Perk chips — up to 2 short scan-affordances. Prefers typed `_features`
@@ -122,7 +122,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
 
 <BaseLayout
   title={`The best UAE credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
-  description="Every UAE credit card we cover, sorted by welcome-bonus value. Annual fees and earn rates checked against the issuer's Schedule of Charges."
+  description="UAE credit cards covered by DubaiPoints, sorted by welcome-bonus value. Annual fees and earn rates checked against primary issuer sources."
   fullWidth
 >
   <!-- ── 1. Page header ─────────────────────────────────────────────── -->
@@ -131,8 +131,8 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
       <div class="crumb">DubaiPoints / Cards</div>
       <h1>The best UAE credit cards.</h1>
       <p>
-        We've reviewed every active UAE credit card against its issuer's
-        published Schedule of Charges. Browse the picks, compare welcome
+        We've reviewed the active UAE cards we cover against primary issuer
+        sources. Browse the picks, compare welcome
         bonuses and earn rates, then open any card for the full verdict.
       </p>
     </div>

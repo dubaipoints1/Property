@@ -6,7 +6,7 @@ import {
   welcomeBonusHeadline,
   annualFeeLabel,
 } from "~/lib/cardsData";
-import { formatEarnValue } from "~/lib/cardsDataFormat";
+import { formatEarnRate } from "~/lib/cardsDataFormat";
 
 const milesCards = getActiveCards().filter(
   (c) => c.categories.includes("travel") || c.categories.includes("co-brand"),
@@ -22,7 +22,7 @@ const rows = await Promise.all(
       values: [
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
         c._provenance?.fxFee === "needs-review" ? "—" : `${c.fxFee}%`,
-        `${formatEarnValue(c.earnRates.everythingElse ?? 0, c.earnUnit, c.categories)}${c.earnUnit && c.earnUnit.toLowerCase().includes("per") ? " per AED" : ""}`,
+        formatEarnRate(c.earnRates.everythingElse ?? 0, c.earnUnit, c.categories),
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };

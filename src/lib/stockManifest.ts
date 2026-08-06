@@ -21,7 +21,7 @@
 // never reach production — which is also what stops an unlabelled or
 // unattributed AI image from shipping.
 
-import { z } from "astro:content";
+import { z } from "astro/zod";
 import manifestJson from "../../data/stock/manifest.json";
 
 const STOCK_SOURCE = z.enum(["pexels", "unsplash", "editorial", "ai-generated"]);
@@ -30,13 +30,13 @@ const StockEntrySchema = z
   .object({
     slug: z.string().regex(/^[a-z0-9-]+$/, "slug must be kebab-case"),
     source: STOCK_SOURCE,
-    source_url: z.string().url().optional(),
+    source_url: z.url().optional(),
     source_id: z.string().optional(),
     query: z.string().optional(),
     photographer: z.string(),
-    photographer_url: z.string().url().optional(),
+    photographer_url: z.url().optional(),
     licence: z.string(),
-    licence_url: z.string().url().optional(),
+    licence_url: z.url().optional(),
     file: z
       .string()
       .regex(/^(images\/stock|images\/ai|cover)\/[a-z0-9-]+\.(jpg|jpeg|png|webp)$/),
@@ -54,28 +54,28 @@ const StockEntrySchema = z
     if (entry.source === "ai-generated") {
       if (!entry.generator) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["generator"],
           message: `"${entry.slug}": ai-generated entries must name the generating model`,
         });
       }
       if (!entry.prompt) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["prompt"],
           message: `"${entry.slug}": ai-generated entries must record the full generating prompt`,
         });
       }
       if (!entry.file.startsWith("images/ai/")) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           path: ["file"],
           message: `"${entry.slug}": ai-generated files live under images/ai/, not alongside photographs`,
         });
       }
     } else if (entry.generator || entry.prompt) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         path: ["generator"],
         message: `"${entry.slug}": generator/prompt are only valid on source "ai-generated"`,
       });

@@ -28,7 +28,7 @@ import {
   annualFeeLabel,
 } from "~/lib/cardsData";
 import {
-  formatEarnValue,
+  formatEarnRate,
   topEarnEntry,
   CATEGORY_LABELS_FOR_TOP,
 } from "~/lib/cardsDataFormat";
@@ -60,7 +60,7 @@ const bankName = bankEntry?.data.name ?? card.bank;
 // "everythingElse" to readers because the local map omitted them).
 const top = topEarnEntry(card.earnRates as Record<string, unknown>);
 const earnLine = top
-  ? `${formatEarnValue(top.value, card.earnUnit, card.categories)} ${CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key}`
+  ? `${formatEarnRate(top.value, card.earnUnit, card.categories)} ${CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key}`
   : null;
 
 // Year-1 vs year-2 annual-fee qualifier — shared with the listing tile,
@@ -113,7 +113,7 @@ if (variant === "full") {
       card.annualFee.amount === 0
         ? "no annual fee"
         : `${feeLabel.amount} a year`;
-    tagline = `${formatEarnValue(top.value, card.earnUnit, card.categories)} on ${lbl} — ${feeStr}.`;
+    tagline = `${formatEarnRate(top.value, card.earnUnit, card.categories)} on ${lbl} — ${feeStr}.`;
   }
 }
 ---

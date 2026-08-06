@@ -18,7 +18,7 @@ import {
   topEarnEntry,
   CATEGORY_LABELS_FOR_TOP,
   formatAED,
-  formatEarnValue,
+  formatEarnRate,
 } from "~/lib/cardsDataFormat";
 
 interface Props {
@@ -142,7 +142,7 @@ const tileCount =
     <div class="tile">
       <dt class="eyebrow">Top earn rate</dt>
       <dd class="value">
-        <span class="num">{formatEarnValue(top.value, card.earnUnit, card.categories)}</span>
+        <span class="num">{formatEarnRate(top.value, card.earnUnit, card.categories)}</span>
         <span class="qual">{CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key}</span>
       </dd>
     </div>

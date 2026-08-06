@@ -10,7 +10,7 @@
 
 import type { CardData } from "~/lib/cardsData";
 import { getCardData } from "~/lib/cardsData";
-import { formatEarnValue, earnIsPercentage } from "~/lib/cardsDataFormat";
+import { formatEarnRate, formatEarnValue, earnIsPercentage } from "~/lib/cardsDataFormat";
 
 interface Props {
   /** Phase 2a.2: when set, the component resolves earnRates + earnUnit
@@ -111,7 +111,7 @@ const cats = resolved?.categories;
         class={`row${key === "everythingElse" ? " is-default" : ""}${key === topKey ? " is-top" : ""}`}
       >
         <dt>{label}</dt>
-        <dd>{formatEarnValue(value, earnUnit, cats)}</dd>
+        <dd>{formatEarnRate(value, earnUnit, cats)}</dd>
       </div>
     ))}
   </dl>

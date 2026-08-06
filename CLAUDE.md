@@ -222,7 +222,7 @@ instances making code changes (not editorial decisions) start here.
 
 ## Commands
 
-Node 20 (see `.nvmrc`). All commands run from repo root.
+Node 22 (see `.nvmrc`). All commands run from repo root.
 
 ```bash
 npm install
@@ -278,15 +278,14 @@ rules in
   which is exactly what the field records. Keep that set narrow —
   anything asserting something about the product stays behind the
   guard.
-- Typed editor fields (`welcomeBonus`, `annualFeeWaiver`,
-  `_features`) are not written by the scraper directly. The
-  scraper produces free-text equivalents that land under
+- Typed editor fields (`annualFeeWaiver`, `_features`) are not written by
+  the scraper directly. The scraper produces free-text equivalents under
   `_scraped_freetext.*` for the editor to type up by hand.
-- As of the Council spike (May 2026), `scripts/scrape/_normaliser.ts`
-  also emits a structured `welcomeBonus` object via
-  `parseWelcomeBonus()` when parseable. **`SCRAPED_FIELDS` does not
-  yet include `welcomeBonus`** (removed in `e291a87`); adding it
-  back is a fenced contract change requiring Chairman approval.
+- `welcomeBonus` is the deliberate exception. It was restored to
+  `SCRAPED_FIELDS` on 8 May 2026 after the normaliser's deterministic
+  `parseWelcomeBonus()` path was validated. The raw wording still lands in
+  `_scraped_freetext.welcomeBonus` so an editor can audit the structured
+  parse against the source copy.
 - `_features` is a Zod discriminated union (14 typed perk types —
   lounge access, cinema BOGO, hotel discount, etc.) defined in
   `src/lib/cardsData.ts`. The matcher reads only this; free-text
@@ -562,7 +561,7 @@ code, not lint rules — match them when adding pages:
   **Do not** introduce Tailwind slate utilities in long-form pages
   or layouts. Colours come from CSS custom properties (`--ink`,
   `--brand`, `--gold`, ...), not Tailwind palette utilities.
-- **Two-accent system.** `--green` (`#2d6a52`, deep editorial green)
+- **Two-accent system.** `--green` (`#1f3a4d`, navy)
   is the **primary brand accent** — eyebrows, links, "Our take"
   label, hover, focus, hero kickers, success states. `--gold`
   (`#b8842a`) is the secondary trust-signal accent — Verified chip,
@@ -576,9 +575,11 @@ code, not lint rules — match them when adding pages:
   `<article class="dp-article">`, then `.dp-article-head` +
   sections. **Directory pages:** `<article class="dp-article
   is-wide">` + `.dp-dir-grid` of `.dp-dir-tile` children.
-- **Editorial guarantees.** Every figure in AED. Every card has ≥1
-  source URL and a `lastVerified` date — UI flags entries older than
-  90 days. No affiliate-driven recommendations at launch.
+- **Editorial guarantees.** Monetary comparisons are AED-first;
+  issuer denominations such as USD are retained where conversion is
+  undocumented. Every card has ≥1 source URL and a `lastVerified`
+  date — UI flags entries older than 90 days. No affiliate-driven
+  recommendations at launch.
 
 A redesign exploration ("Quiet Ledger") landed in May 2026 at
 `/design-spike/`. The brief is at
@@ -587,7 +588,7 @@ above remains in force until the Chairman approves a swap.
 
 ## Stack notes
 
-- **Astro 5** static output (`output: "static"` in
+- **Astro 7** static output (`output: "static"` in
   `astro.config.mjs`). MDX and Preact integrations are enabled;
   Preact is excluded from Vite's optimizeDeps. Hydrate `.tsx`
   islands (currently in `src/components/islands/`) with `client:*`
@@ -746,6 +747,32 @@ the Chairman.
    is a discipline failure of the same class as under-tiering.
 
 — Chairman, 6 August 2026.
+
+### 2026-08-05 — §8 organisational byline exception
+
+On site-owner/Chairman direction (5 August 2026), §8 permits the
+organisational byline **DubaiPoints Editorial** while DubaiPoints remains a
+single-editor publication and the editor has chosen not to publish a personal
+name. This is a narrow accountability rule, not an anonymous multi-author
+stand-in.
+
+The exception applies only where all of the following remain true:
+
+1. `/team/` states that the publication has one editor, that the byline is
+   organisational rather than named, and how readers can submit editorial
+   questions, corrections and tips.
+2. The byline must not conceal another contributor, a paid or commercial
+   author, an AI-only author, or a material conflict of interest.
+3. Any separately credited contributor uses their real name and links to a
+   profile carrying relevant experience and disclosures.
+4. Material first-person experience and conflicts are disclosed in the article
+   even when the organisational byline is used.
+5. Structured author data uses `Organization` only. A `Person` entity may be
+   added only when a real named contributor profile is published.
+
+The exception ends if the publication begins presenting multiple unnamed
+writers as one editorial identity. At that point, named contributor bylines or
+a further Chairman ruling are required.
 
 ### 2026-08-05 — §10 logo-sourcing extended to non-issuer marks
 

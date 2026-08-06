@@ -126,10 +126,13 @@ If a piece serves more than one segment, say so explicitly in the lede.
 Google's Experience-Expertise-Authoritativeness-Trustworthiness
 heuristic shapes every byline:
 
-- **Author bylines are real.** A council member name only — no "Dubai
-  Points Editorial Team" stand-ins. The byline links to the council
-  member profile under `/team/` showing credentials, residence
-  history, and beats.
+- **Authorship is accountable.** Named contributors use their real names and
+  link to profiles under `/team/` showing relevant experience and disclosures.
+  The Chairman-authorised organisational byline **DubaiPoints Editorial** may
+  be used only while the publication has one editor whose name is intentionally
+  not public. `/team/` must disclose that status and provide a corrections and
+  contact route. The byline must not conceal another contributor, paid or
+  commercial authorship, AI-only authorship, or a material conflict.
 - **First-person experience is allowed and encouraged.** "I tested the
   Skywards Silver lounge at DXB Concourse B in March 2026" beats "the
   Silver lounge offers...". Tag clearly when the author has not
@@ -151,7 +154,8 @@ appropriate JSON-LD:
   `BreadcrumbList`.
 - **Deal:** `Article` + `Offer` + `BreadcrumbList`.
 - **Programme page:** `Article` + `BreadcrumbList`.
-- **About / team:** `Organization` + `Person` for council bylines.
+- **About / team:** `Organization`; add `Person` only when a real named
+  contributor profile exists.
 
 Meta title patterns:
 

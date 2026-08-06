@@ -2,11 +2,11 @@
 
 UAE-focused points and miles site — credit card analysis, loyalty programs, and deals for the GCC traveller.
 
-Built with Astro 5, TypeScript (strict), Tailwind 4, MDX, and Pagefind. Deployed to Cloudflare Pages.
+Built with Astro 7, TypeScript (strict), Tailwind 4, MDX, and Pagefind. Configured for Cloudflare Pages.
 
 ## Stack
 
-- **Astro 5** with Content Collections (Content Layer API) and MDX
+- **Astro 7** with Content Collections (Content Layer API) and MDX
 - **TypeScript** strict mode
 - **Tailwind 4** via the Vite plugin (CSS-first config in `src/styles/global.css`)
 - **Pagefind** for client-side search (post-build)
@@ -16,7 +16,7 @@ Built with Astro 5, TypeScript (strict), Tailwind 4, MDX, and Pagefind. Deployed
 ## Develop
 
 ```bash
-nvm use            # Node 20
+nvm use            # Node 22
 npm install
 npm run dev        # http://localhost:4321
 npm run build      # outputs dist/ + runs Pagefind
@@ -25,4 +25,8 @@ npm run check      # astro check (TS + content schema validation)
 
 ## Project status
 
-Currently in **Phase 1**: scaffold + Zod content schemas. See `PLAN.md` for the full multi-phase roadmap.
+Pre-publication content build: 55 card records across 12 banks, three live
+salary-transfer offers, and a static search index. Internal fixture routes are
+removed from the production artefact before Pagefind runs. Publication remains
+subject to the Council and Chairman gates in `CLAUDE.md`; `PLAN.md` is retained
+as historical roadmap context.

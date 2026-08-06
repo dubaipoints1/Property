@@ -17,13 +17,13 @@ const BEATS = {
     beat: "airline",
     title: "DubaiPoints — Airline news",
     description:
-      "Airline and airline-loyalty news with a UAE nexus: programme changes, award pricing, routes from DXB, AUH, SHJ and DWC. Every figure in AED.",
+      "Airline and airline-loyalty news with a UAE nexus: programme changes, award pricing, routes from DXB, AUH, SHJ and DWC, with published denominations retained and source links provided.",
   },
   hotels: {
     beat: "hotel",
     title: "DubaiPoints — Hotel news",
     description:
-      "Hotel and hotel-loyalty news with a UAE/GCC nexus: openings, points promos, award repricings and status offers. Every figure in AED.",
+      "Hotel and hotel-loyalty news with a UAE/GCC nexus: openings, points promotions, award repricings and status offers, with published denominations retained and source links provided.",
   },
   banking: {
     beat: "banking",
