@@ -1,0 +1,128 @@
+# Fetch an EDITORIAL photograph (source: "editorial") into
+# public/images/stock/.
+#
+# Why this exists — the same egress reason as fetch-partner-logo.yml and
+# every seed-images workflow: the Claude Code web sandbox cannot reach
+# third-party image hosts (modcare.ae curls as 000/403 at the allowlist
+# layer), while GitHub runners download cleanly.
+#
+# SCOPE — read before pointing this anywhere.
+#
+# This is for photographs used under the manifest's `source: "editorial"`
+# basis: a named company's own photography, displayed to illustrate a
+# piece that covers that company, with a visible credit and the
+# photographer field set to the credit owner. First application: the PPF
+# guide's hero from Modcare's own site, on explicit Chairman direction
+# (6 August 2026, in-session: "Take an image from modcare instagram page
+# or site. Only."). The same §10 posture as the partner-logo lane
+# applies: source URL + date recorded (manifest `source_url` +
+# `fetched_at`), takedown honoured within 24 hours. It is NOT a route
+# around the Pexels pipeline for ordinary stock, and NOT for issuer
+# imagery — the 2026-05-21 press-library amendment governs those.
+#
+# The workflow commits only the image file. The manifest entry (schema
+# requires photographer/licence/dimensions/alt) is written by the editor
+# in the same PR — an unreferenced file in public/images/stock/ renders
+# nowhere until the manifest names it.
+#
+# On the `push:` trigger — the repo's established bootstrap workaround:
+# GitHub only dispatches workflows that exist on the DEFAULT branch, so
+# the defaults below carry the first payload and the push of this file
+# runs it. After this merges, dispatch normally with real inputs.
+
+name: fetch-editorial-image
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to"
+        required: false
+        type: string
+      slug:
+        description: "Manifest slug / filename without extension"
+        required: false
+        type: string
+      url:
+        description: "Direct URL to the photograph (.jpg/.png/.webp)"
+        required: false
+        type: string
+      credit:
+        description: "Credit owner (commit message only)"
+        required: false
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/fetch-editorial-image.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: ${{ inputs.branch || github.ref_name }}
+      SLUG: ${{ inputs.slug || 'guide-paint-protection-film-dubai' }}
+      ASSET_URL: ${{ inputs.url || 'https://modcare.ae/wp-content/uploads/2023/09/IMG_0560.jpg' }}
+      CREDIT: ${{ inputs.credit || 'Modcare' }}
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 1
+
+      # Values are read from the environment, never interpolated into the
+      # shell with ${{ }} — a URL is attacker-controllable input.
+      - name: Validate slug
+        run: |
+          case "$SLUG" in
+            *[!a-z0-9-]*|"")
+              echo "slug must be kebab-case [a-z0-9-]+ — got '$SLUG'"
+              exit 1 ;;
+          esac
+
+      - name: Download photograph
+        run: |
+          set -euo pipefail
+          mkdir -p public/images/stock
+          tmp="$(mktemp)"
+          code=$(curl -sS -L --fail --max-time 60 \
+            -w '%{http_code}' -o "$tmp" "$ASSET_URL")
+          echo "HTTP $code"
+          [ -s "$tmp" ] || { echo "Empty download — refusing to commit."; exit 1; }
+
+          # Sniff real content — WordPress uploads paths can serve an
+          # HTML error body with a 200 status.
+          kind=$(file -b --mime-type "$tmp")
+          echo "Detected MIME: $kind"
+          case "$kind" in
+            image/jpeg) ext=jpg ;;
+            image/png)  ext=png ;;
+            image/webp) ext=webp ;;
+            *)
+              echo "Unsupported type '$kind' — refusing to commit."
+              head -c 300 "$tmp" || true
+              exit 1 ;;
+          esac
+
+          mv "$tmp" "public/images/stock/${SLUG}.${ext}"
+          ls -l "public/images/stock/${SLUG}.${ext}"
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/images/stock/
+          if git diff --staged --quiet; then
+            echo "No change to commit."
+            exit 0
+          fi
+          git commit \
+            -m "feat(images): editorial photograph ${SLUG} (credit: ${CREDIT})" \
+            -m "Fetched from the credit owner's own site via fetch-editorial-image.yml; source URL and basis recorded in the manifest entry that lands in the same PR."
+          git push origin "HEAD:${TARGET_BRANCH}"
