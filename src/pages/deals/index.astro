@@ -47,9 +47,6 @@ const fmt = (d: Date) =>
 const formatCategory = (c: string) =>
   c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
-const daysUntil = (d: Date) =>
-  Math.max(0, Math.ceil((d.getTime() - todayMs) / (1000 * 60 * 60 * 24)));
-
 // Sibling pivots — kept honest. "Welcome bonus" and "Fee waiver" used
 // to both point at /cards/ which is misleading (two tabs, same
 // destination, neither filtered). Replaced with one real cross-link.
@@ -60,15 +57,15 @@ const tabs = [
 ---
 
 <BaseLayout
-  title="Live UAE bank & card deals | DubaiPoints"
-  description="Live UAE deals: welcome bonuses, salary-transfer top-ups, spend promos and fee waivers. Every offer dated and sourced — expired deals are removed, not buried."
+  title="Current UAE bank & card deals | DubaiPoints"
+  description="Current UAE deals: welcome bonuses, salary-transfer top-ups, spend promos and fee waivers. Every offer is dated, sourced and checked against its recorded expiry."
   fullWidth
 >
   <header class="intel-pagehead">
     <div class="intel-pagehead-inner">
       <div class="crumb">DubaiPoints / Deals</div>
-      <h1>Live deals.</h1>
-      <p>Welcome bonuses, salary-transfer top-ups, spend promos and fee waivers — every offer dated, sourced, and removed the day it expires.</p>
+      <h1>Current deals.</h1>
+      <p>Welcome bonuses, salary-transfer top-ups, spend promos and fee waivers — every offer dated and sourced, with expired entries archived during editorial sweeps.</p>
 
       <div class="intel-tools">
         <div class="intel-tabs" role="tablist">
@@ -132,7 +129,7 @@ const tabs = [
               <div class="intel-featured-body">
                 <span class="intel-featured-eyebrow">{formatCategory(featured.entry.data.category)} · {featured.bankName}</span>
                 <h2>{featured.entry.data.title}</h2>
-                <p>Live until {fmt(featured.entry.data.expiresOn)} — {daysUntil(featured.entry.data.expiresOn)} {daysUntil(featured.entry.data.expiresOn) === 1 ? "day" : "days"} remaining.</p>
+                <p>Last checked {fmt(featured.entry.data.lastVerified)} · recorded to expire {fmt(featured.entry.data.expiresOn)}.</p>
                 <span class="intel-featured-meta">
                   Read the full deal →
                 </span>
@@ -143,8 +140,6 @@ const tabs = [
           {others.length > 0 && (
             <ul class="intel-card-grid">
               {others.map((d) => {
-                const daysLeft = daysUntil(d.entry.data.expiresOn);
-                const isExpiringSoon = daysLeft < 8;
                 return (
                   <li class="intel-card-item">
                     <a href={`/deals/${d.entry.id}/`} class="intel-card">
@@ -161,9 +156,9 @@ const tabs = [
                           {formatCategory(d.entry.data.category)} · {d.bankName}
                         </span>
                         <h3>{d.entry.data.title}</h3>
-                        <p>Live until {fmt(d.entry.data.expiresOn)}.</p>
-                        <span class={`intel-card-meta deals-countdown${isExpiringSoon ? " is-soon" : ""}`}>
-                          {daysLeft} day{daysLeft === 1 ? "" : "s"} remaining
+                        <p>Last checked {fmt(d.entry.data.lastVerified)}.</p>
+                        <span class="intel-card-meta deals-countdown">
+                          Recorded expiry {fmt(d.entry.data.expiresOn)}
                         </span>
                       </div>
                     </a>
@@ -571,6 +566,9 @@ const tabs = [
     transition: opacity 0.15s ease;
   }
   .intel-insider .cta:hover { opacity: 0.88; }
+
+  :global([data-theme="dark"]) .intel-insider { background: #16202c; }
+  :global([data-theme="dark"]) .intel-insider .cta { color: #1f3a4d; }
 
   @media (max-width: 1023px) {
     .intel-grid { grid-template-columns: 1fr; }

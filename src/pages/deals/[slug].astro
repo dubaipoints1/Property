@@ -27,16 +27,21 @@ const expiresStr = deal.data.expiresOn.toLocaleDateString("en-GB", {
   month: "long",
   year: "numeric",
 });
-const isLive = deal.data.expiresOn.getTime() >= Date.now();
-const deck = isLive
-  ? `Live until ${expiresStr}.`
-  : `Expired on ${expiresStr}. Kept for archival reference.`;
+const verifiedStr = deal.data.lastVerified.toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+const isCurrentAtBuild = !deal.data.archived && deal.data.expiresOn.getTime() >= Date.now();
+const deck = isCurrentAtBuild
+  ? `Last checked ${verifiedStr}; recorded to expire ${expiresStr}. Verify provider terms before acting.`
+  : `Recorded expiry ${expiresStr}. Kept for archival reference.`;
 ---
 
 <ArticleLayout
   title={`${deal.data.title} | DubaiPoints`}
   heading={deal.data.title}
-  description={`${deal.data.title} — ${issuer.name} ${formatCategory(deal.data.category).toLowerCase()} deal, ${isLive ? `live until ${expiresStr}` : `expired ${expiresStr}`}. AED-first verdict from DubaiPoints.`}
+  description={`${deal.data.title} — ${issuer.name} ${formatCategory(deal.data.category).toLowerCase()} deal, recorded to expire ${expiresStr}. AED-first verdict from DubaiPoints.`}
   crumb={`DubaiPoints / Deals / ${formatCategory(deal.data.category)}`}
   eyebrow={`DEAL · ${formatCategory(deal.data.category).toUpperCase()}`}
   deck={deck}

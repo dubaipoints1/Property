@@ -1,7 +1,7 @@
-# State of the Site — 5 August 2026
+# State of the Site — 6 August 2026
 
 _Author: Council foundation memo, refreshed from the working repository on
-5 August 2026. This is a source-state record, not confirmation that the same
+6 August 2026. This is a source-state record, not confirmation that the same
 state is deployed._
 
 This memo is the factual ground the Dubai Points Council operates on.
@@ -39,8 +39,8 @@ historical roadmap context; it no longer describes the present phase.
   `PUBLIC_CF_BEACON_TOKEN` is configured; source inspection does
   not establish whether production analytics is flowing.
 - **Node 22.20.0** (`.nvmrc`).
-- **Dependency audit:** zero known npm advisories after the 5 August 2026
-  Astro 7 migration and esbuild override.
+- **Dependency audit:** zero known npm advisories in the live registry check on
+  6 August 2026 after the Astro 7 migration and esbuild override.
 
 ## 3. Content architecture — verified from source
 
@@ -52,7 +52,7 @@ Content Layer (`glob` loader):
 | `banks` | Bank metadata (logo, customer service, card list) | references `cards` |
 | `cards` | Editorial layer (L3) only — pros/cons/`editorTake`/`verifiedBy` | joined to L2 by slug |
 | `programs` | Loyalty programmes — currency, transfer partners, sweet spots | |
-| `deals` | Time-bound offers | references `banks`; `expiresOn` is required |
+| `deals` | Time-bound offers | exactly one issuer reference (`banks` or `programs`); `publishedAt`, `lastVerified`, `expiresOn` and `archived` state |
 | `guides` | Evergreen long-form | references `cards` and `programs` |
 | `salaryTransferOffers` | Live tracker entries | shares `SalaryTransferOfferShape` with history |
 | `salaryTransferOfferHistory` | Archived offers | `archived: true` literal + optional `archivedReason` |
@@ -71,10 +71,12 @@ in **two files joined by slug at render time**:
   Frontmatter is intentionally tiny.
 
 Every L2 entry carries a `_provenance` map per top-level field with
-values `scraped | editor-confirmed | editor-corrected | needs-review`.
-Editor-confirmed and editor-corrected values are protected from scrape
-overwrites. `propose-changes.ts` admits only its explicit field allowlist and
-retains relevant raw captures under `_scraped_freetext.*` for audit.
+values `scraped | editor-confirmed | editor-corrected | needs-review |
+editor-confirmed-null`. Editor-confirmed, editor-corrected and
+editor-confirmed-null values are protected from scrape overwrites.
+`propose-changes.ts` admits only its explicit field allowlist, including the
+structured `welcomeBonus` contract, and retains relevant raw captures under
+`_scraped_freetext.*` for audit.
 
 ## 4. Routes — verified from source
 
@@ -119,26 +121,31 @@ banned in long-form pages and layouts.
 Type pairing: Fraunces (serif) for headlines, eyebrows, "Our take";
 DM Sans for body and UI.
 
-Two-accent system: `--brand` blue `#1a5fc6` is primary,
-`--gold` `#b8842a` is secondary trust signal (Verified chip, "Our take"
-callout, affiliate asterisk). Each colour does one job.
+The current editorial accent token `--green` resolves to navy `#1f3a4d` in
+light mode. `--brand` remains a legacy alias for link blue `#1a5fc6`, while
+`--gold` `#b8842a` remains a secondary trust signal. Dark mode supplies
+separate contrast-safe token values; the token names are historical and must
+not be interpreted as their literal colour.
 
 ## 8. Active pain points — verified from source
 
 1. **Newsletter activation.** The Buttondown integration remains disabled
    until a verified public username and consent configuration are supplied.
-2. **Salary-transfer coverage.** Three of twelve listed banks have a live
-   offer; missing coverage requires one primary-source dossier per bank.
+2. **Salary-transfer coverage.** Five of twelve listed banks have a current
+   source-backed offer. Five more were checked without a current live banded
+   offer. Standard Chartered and Emirates Islamic remain unresolved.
 3. **Editorial data gates.** Two card records carry three substantive
    `needs-review` fields, and four welcome bonuses remain unpriced; the
    production code deliberately does not infer values.
-4. **Publication gate.** The 5 August integrity sprint is implemented on a
-   working branch. All nine required non-Chairman Council roles pass; it
-   remains unpublished pending the Chairman gate.
+4. **Publication state.** The 5 August integrity sprint has been reconciled
+   onto `origin/main` through PR #322 on a local working branch. The Chairman's
+   6 August direction authorises the local reconciliation and audit. Source
+   inspection does not prove the deployed state, and no new push or deployment
+   has been requested.
 
 ## 9. Live site & competitors — historical research, live state unverified
 
-The 5 August source refresh did not independently verify the deployed site.
+The 6 August repository and local-render audit did not independently verify the deployed site.
 The May competitor observations below remain historical research, not current
 claims about those sites:
 

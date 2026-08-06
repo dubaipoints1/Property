@@ -13,10 +13,12 @@ Managing Editor on every state change. Cross-checks against
 **Convened:** 2026-05-08 by the publication owner (Chairman).
 **Charter:** `CLAUDE.md` Part I.
 **Active branch:** `codex/integrity-conversion-sprint` (unpublished working branch).
-**Current release gate:** integrity and conversion sprint implemented; all nine
-required non-Chairman Council roles pass and route the exact working tree to the
-Chairman. Chairman approval for commit, pull request or publication remains
-pending in `.council/briefs/2026-08-05-integrity-conversion-sprint.md`.
+**Current release gate:** `origin/main` through PR #322 has been reconciled with
+the local integrity sprint on `codex/integrity-conversion-sprint`. The Chairman's
+6 August in-session direction authorises this reconciliation and site audit as
+local work. No push, pull request, deployment or publication-status claim is
+authorised unless separately requested and verified. Evidence:
+`.council/sessions/2026-08-06-main-reconciliation-site-audit.md`.
 
 ## Chairman picks (2026-05-08)
 
@@ -56,7 +58,7 @@ Original brief: `.council/research/2026-05/ux-redesign-brief.md`.
 
 ### 2. Council convened — agents, commands, and policy in force
 
-- 10 sub-agents at `.claude/agents/*.md` are routable via `Task` and
+- 14 sub-agents at `.claude/agents/*.md` are routable via `Task` and
   via the slash commands.
 - 4 slash commands at `.claude/commands/*.md` are live: `/brief`,
   `/research`, `/publish`, `/council`.
@@ -101,13 +103,14 @@ Per `EDITORIAL.md` (carried forward unamended):
 
 ## Next milestones (sequenced)
 
-1. Present the Council-routed integrity-sprint artefacts to the Chairman; do
-   not commit, open a pull request, publish or deploy before approval.
+1. Close and record the 6 August reconciliation audit; retain the branch
+   locally unless the Chairman separately directs a push or deployment.
 2. Configure a verified Buttondown public username and consent settings before
    enabling the newsletter form; the unconfigured site retains an email
    fallback.
-3. Backfill salary-transfer offers one bank at a time from primary-source
-   dossiers. Nine banks currently lack a live entry.
+3. Complete the two unresolved salary-transfer searches: Standard Chartered
+   and Emirates Islamic. Five banks have current source-backed offers; five
+   more were checked without a current live banded offer.
 4. Resolve the remaining substantive `needs-review` card fields and four
    unpriced welcome bonuses without guessing values.
 
@@ -130,3 +133,4 @@ The phased plan is at
 | 2026-08-05 | technical-lead | Integrity and conversion sprint opened on `codex/integrity-conversion-sprint`: earn-rate unit integrity, claim-force corrections, configuration-gated Buttondown form, internal-route pruning, Astro 7/Node 22 baseline and production verification. Publication remains gated. |
 | 2026-08-05 | standards-editor | Chairman selected the narrow `DubaiPoints Editorial` organisational-byline exception for a one-editor publication; named contributors still require real-name attribution and trust schema remains `Organization`-only until a named profile exists. |
 | 2026-08-05 | managing-editor | Renewed review complete: all nine required non-Chairman roles pass and route the exact working tree to the Chairman gate. No commit, PR, publication or deployment is authorised yet. |
+| 2026-08-06 | managing-editor | Reconciled the integrity sprint onto `origin/main` through PR #322. Chairman in-session direction authorises the local reconciliation and audit. Salary tracker is 5 current offers, 5 checked without a current live banded offer, and 2 unresolved. Push, deployment and live-publication state remain separate. |

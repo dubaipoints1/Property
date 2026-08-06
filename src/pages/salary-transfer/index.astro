@@ -19,12 +19,28 @@ const offers = await getLiveOffers();
 // actually covers, so the gap is visible on the page instead of being
 // something a reader could only find by counting rows.
 //
-// This is deliberately derived, not hardcoded: an offer added for a
-// tenth bank moves the numerator without anyone remembering to edit copy.
+// Current offers are derived. Negative and unresolved findings are editorial
+// classifications from the 6 August source sweep and are named explicitly so
+// a reader can distinguish an absence finding from an unfinished search.
 const allBanks = await getCollection("banks");
 const trackedBanks = new Set(offers.map((o) => o.bankSlug));
 const coveredCount = allBanks.length;
-const untrackedCount = coveredCount - trackedBanks.size;
+const checkedWithoutLiveOffer = ["adcb", "adib", "cbd", "citi", "emirates-nbd"];
+const unresolvedBanks = ["standard-chartered", "emirates-islamic"];
+const bankName = new Map(allBanks.map((bank) => [bank.id, bank.data.name]));
+const classifiedBanks = new Set([
+  ...trackedBanks,
+  ...checkedWithoutLiveOffer,
+  ...unresolvedBanks,
+]);
+if (classifiedBanks.size !== coveredCount) {
+  throw new Error(
+    `Salary-transfer coverage classification has ${classifiedBanks.size} banks; expected ${coveredCount}.`,
+  );
+}
+const nameList = new Intl.ListFormat("en-GB", { style: "long", type: "conjunction" });
+const listNames = (slugs: string[]) =>
+  nameList.format(slugs.map((slug) => bankName.get(slug) ?? slug));
 
 const bands = [
   { slug: "aed-5000-to-8000",   label: "AED 5,000 – 8,000" },
@@ -48,32 +64,29 @@ const newestVerification = offers.length
 ---
 
 <BaseLayout
-  title="UAE salary transfer offers — live tracker | DubaiPoints"
-  description="UAE salary-transfer cash bonuses, voucher offers and combined card+salary promotions, verified against issuer T&Cs and filterable by salary band and reward type."
+  title="UAE salary transfer offers — current tracker | DubaiPoints"
+  description="Current UAE salary-transfer cash bonuses, voucher offers and combined card-and-salary promotions, each dated and linked to bank material."
   fullWidth
 >
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Salary-transfer tracker</div>
     <h1>The salary-transfer tracker.</h1>
-    <p>Every salary-transfer offer we have verified against the issuer's own T&amp;Cs, dated per offer. Filter by salary band, reward type, or specific bank.</p>
+    <p>Each listed salary-transfer offer has been checked against a bank product page or campaign terms and dated per offer. Filter by salary band, reward type, or specific bank.</p>
 
     <div class="dp-tools-stats">
-      <span><span class="lbl">Banks tracked:</span> <strong>{trackedBanks.size} of {coveredCount}</strong></span>
+      <span><span class="lbl">Banks with current offers:</span> <strong>{trackedBanks.size} of {coveredCount}</strong></span>
       <span><span class="lbl">Live offers:</span> <strong>{offers.length}</strong></span>
       {newestVerification && (
         <span><span class="lbl">Newest verification:</span> <strong>{fmtFull(newestVerification)}</strong></span>
       )}
     </div>
 
-    {untrackedCount > 0 && (
-      <p class="dp-coverage-note">
-        <strong>Coverage gap.</strong> {untrackedCount} of the {coveredCount} banks
-        we cover {untrackedCount === 1 ? "has" : "have"} no verified salary-transfer
-        offer in the tracker yet. That means we have not confirmed one against the
-        bank's published terms — not that no offer exists. Treat this table as what
-        we can evidence, not as the whole UAE market.
-      </p>
-    )}
+    <p class="dp-coverage-note">
+      <strong>Coverage status.</strong> We found current, source-backed offers for
+      {" "}{trackedBanks.size} banks. We checked {listNames(checkedWithoutLiveOffer)}
+      {" "}and found no current live banded offer. {listNames(unresolvedBanks)} remain
+      unresolved. Absence from the table is not evidence that no offer exists.
+    </p>
   </div>
 
   <!-- Preact island handles filter UI + sortable table -->
@@ -100,7 +113,7 @@ const newestVerification = offers.length
   <section class="dp-tools-methodology" id="methodology">
     <div class="col">
       <div class="lbl">How we verify</div>
-      <p>Each published offer is checked against the bank's primary product page or campaign terms. Verification dates are stamped per offer, and unsupported entries stay out of the live tracker.</p>
+      <p>Each published offer is checked against a bank product page or campaign terms. Verification dates are stamped per offer, and unsupported entries stay out of the current tracker.</p>
     </div>
     <div class="col">
       <div class="lbl">How we value vouchers</div>

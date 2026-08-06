@@ -13,11 +13,10 @@ Claude Code instance — or human contributor — working in this repo.
 
 **dubaipoints.ae** is a UAE-focused points-and-miles publication. Tone
 is HfP-dry, evidence-led; differentiation is AED-first pricing, UAE
-eligibility front-loaded, salary-transfer tracker as a live product,
-full coverage of regional loyalty programmes (Skywards, Etihad Guest,
-Qatar Privilege Club, Saudia Alfursan).
+eligibility front-loaded, salary-transfer tracker as a live product, and
+coverage of selected regional and hotel loyalty programmes.
 
-The publication is operated by a **Council of ten specialist roles**
+The publication is operated by a **Council of fourteen specialist roles**
 implemented as Claude Code sub-agents under `.claude/agents/*.md`. The
 Council is convened automatically by the workflow defined in
 `.council/02_workflow.md` and on-demand via the slash commands in

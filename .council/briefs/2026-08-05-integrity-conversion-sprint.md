@@ -7,7 +7,7 @@ seo-status: pass
 draft-status: complete
 factcheck-status: pass
 tech-status: pass
-chairman-status: ready-for-chairman
+chairman-status: approved
 target-publish: 2026-08-05
 sources-required: 4
 tier: T3
@@ -18,10 +18,11 @@ tier: T3
 ## Chairman direction
 
 The site owner directed implementation on 5 August 2026 after reviewing a
-repository and deployed-site audit. Research and SEO stages are collapsed for
-this correction sprint because it introduces no new product claims, numerical
-figures, taxonomy or routes. Technical, fact-check, standards and visual
-verification are complete; the Chairman gate remains pending.
+repository and deployed-site audit, and on 6 August directed the current
+session to reconcile the intervening Claude work and audit the site. Under the
+6 August Charter amendment, that in-session direction is Stage 7 approval for
+the directed local scope. It does not authorise a push or deployment that was
+not requested.
 
 ## The reader question
 
@@ -102,12 +103,13 @@ against the intended launch configuration. No username is inferred in code.
 | Growth & Analytics Lead | **pass** | The unconfigured state is honest; Buttondown activation remains a separate external gate. |
 | Business & Real Estate Editor | **pass** | Earn-unit, tracker, fee/VAT and valuation-status boundaries are internally consistent. |
 | Managing Editor | **pass** | All release blockers are closed and the branch may route to the Chairman. |
-| Chairman | **pending** | The organisational-byline decision is recorded; publication/PR approval has not been given. |
+| Chairman | **approved** | In-session direction on 6 August 2026: reconcile the Claude changes, put the sessions on the same page, and audit the site. Approval covers the directed local scope; no push or deployment was requested. |
 
 Council review: `.council/sessions/2026-08-05-integrity-conversion-review-synthesis.md`.
 
-The renewed Council review routes the exact working tree to the Chairman gate.
-This is not approval to commit, push, open a pull request or deploy.
+The renewed Council review and the 6 August reconciliation audit are recorded
+in `.council/sessions/2026-08-06-main-reconciliation-site-audit.md`. Publication
+state still requires separate verification; no push or deployment is implied.
 
 ## Remediation evidence — 5 August 2026
 

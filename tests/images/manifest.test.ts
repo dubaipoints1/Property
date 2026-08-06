@@ -123,6 +123,19 @@ test("every entry's file path resolves to a real file on disk", () => {
   }
 });
 
+test("manifest dimensions match the image bytes on disk", async () => {
+  const { default: sharp } = await import("sharp");
+  const manifest = loadManifest();
+  for (const entry of manifest.entries) {
+    const fullPath = path.join(REPO_ROOT, "public", entry.file);
+    const metadata = await sharp(fullPath).metadata();
+    assert.equal(metadata.width, entry.width,
+      `entry "${entry.slug}" width does not match ${entry.file}`);
+    assert.equal(metadata.height, entry.height,
+      `entry "${entry.slug}" height does not match ${entry.file}`);
+  }
+});
+
 test("file paths conform to allowed locations", () => {
   const manifest = loadManifest();
   for (const entry of manifest.entries) {

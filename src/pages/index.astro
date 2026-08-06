@@ -119,14 +119,11 @@ const liveDealsRaw = (await getCollection("deals"))
   .filter((d) => !d.data.archived && d.data.expiresOn.getTime() >= todayMs)
   .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime())
   .slice(0, 4);
-const daysUntil = (d: Date) =>
-  Math.max(0, Math.ceil((d.getTime() - todayMs) / (1000 * 60 * 60 * 24)));
 const dealRows = await Promise.all(
   liveDealsRaw.map(async (d) => ({
     id: d.id,
     title: d.data.title,
     issuer: (await resolveDealIssuer(d)).name,
-    daysLeft: daysUntil(d.data.expiresOn),
     ends: fmtShort(d.data.expiresOn),
   })),
 );
@@ -239,7 +236,7 @@ const milesTiles = allPrograms
         <div class="head">
           <div>
             <p class="eyebrow">Deals desk</p>
-            <h2>Live deals, dated and sourced.</h2>
+            <h2>Current deals, dated and sourced.</h2>
           </div>
           <a href="/deals/" class="hp-intel-more">Open the deals desk →</a>
         </div>
@@ -249,14 +246,12 @@ const milesTiles = allPrograms
               <a href={`/deals/${r.id}/`} class="row">
                 <span class="bank">{r.issuer}</span>
                 <span class="deal">{r.title}</span>
-                <span class={`chip${r.daysLeft < 8 ? " is-soon" : ""}`}>
-                  {r.daysLeft < 8 ? `${r.daysLeft} day${r.daysLeft === 1 ? "" : "s"} left` : `Ends ${r.ends}`}
-                </span>
+                <span class="chip">Ends {r.ends}</span>
               </a>
             </li>
           ))}
         </ul>
-        <p class="foot">Expired deals are removed, not buried — anything listed here is live today.</p>
+        <p class="foot">Shown as recorded in the latest editorial sweep. Check the provider before acting; offer terms can change.</p>
       </div>
     </section>
   )}
@@ -279,7 +274,7 @@ const milesTiles = allPrograms
         </div>
         <div class="hp-miles-tile-head"><span class="eyebrow">{cards.length} cards</span></div>
         <h3 class="hp-miles-tile-title">Credit-card reviews</h3>
-        <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Cards</span>Cashback, miles and Islamic cards ranked by net AED value.</p>
+        <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Cards</span>Cashback, miles and Islamic cards compared on fees, earn rates and eligibility.</p>
         <span class="hp-miles-tile-cta">Browse cards →</span>
       </a>
       <a href="/banks/" class="hp-miles-tile is-wayfinder">
@@ -288,7 +283,7 @@ const milesTiles = allPrograms
         </div>
         <div class="hp-miles-tile-head"><span class="eyebrow">{allBanks.length} banks</span></div>
         <h3 class="hp-miles-tile-title">Bank guides</h3>
-        <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Issuers</span>Every major UAE bank — fees, eligibility and card line-ups.</p>
+        <p class="hp-miles-tile-spot"><span class="hp-miles-tile-spot-label">Issuers</span>Our 12 covered UAE banks — fees, eligibility and card line-ups.</p>
         <span class="hp-miles-tile-cta">Browse banks →</span>
       </a>
       <a href="/airlines/" class="hp-miles-tile is-wayfinder">
@@ -412,9 +407,9 @@ const milesTiles = allPrograms
           sizes="(max-width: 900px) 100vw, 50vw"
         />
         {liveWelcomeCount > 0 && (
-          <div class="hp-wallet-stat" role="figure" aria-label="Cards with a live welcome offer">
+          <div class="hp-wallet-stat" role="figure" aria-label="Cards with welcome-bonus data">
             <span class="hp-wallet-stat-value">{liveWelcomeCount}</span>
-            <span class="hp-wallet-stat-label">Cards with a live<br />welcome offer</span>
+            <span class="hp-wallet-stat-label">Cards with recorded<br />welcome-bonus data</span>
           </div>
         )}
       </div>
@@ -569,7 +564,7 @@ const milesTiles = allPrograms
   .hp-hero-form-cta {
     display: inline-block;
     background: var(--green);
-    color: var(--navy-deep);
+    color: var(--paper);
     font-family: 'DM Sans', system-ui, sans-serif;
     font-weight: 700;
     font-size: 14px;

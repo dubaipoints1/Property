@@ -340,11 +340,11 @@ export default function SalaryTransferTracker({ offers }: Props) {
           <div class="mark" aria-hidden="true">
             ⌀
           </div>
-          <h4>No verified live offers right now.</h4>
+          <h4>No current offers in the latest sweep.</h4>
           <p>
-            We list salary-transfer offers only while we can verify them against
-            the bank's current published terms. None are verified as live today —
-            check back, or see the methodology below for how we source them.
+            We list salary-transfer offers only while bank material supports
+            them. None were current at the latest editorial sweep — check back,
+            or see the methodology below for how we source them.
           </p>
         </div>
       ) : rows.length === 0 ? (
@@ -354,7 +354,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
           </div>
           <h4>No offers match — yet.</h4>
           <p>
-            No live salary-transfer offers fit this band and filter combination.
+            No current salary-transfer offers fit this band and filter combination.
             Loosen a filter to see more.
           </p>
           <button
