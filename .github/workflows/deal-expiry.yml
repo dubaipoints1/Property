@@ -1,0 +1,73 @@
+# Weekly deal-expiry sweep — the enforcement half of the editorial
+# strategy's Tuesday hygiene loop (editorial-strategy-2026-h2.md §
+# "Every `expiresOn` in the deals collection is checked in the Tue slot;
+# expired deals are archived same week").
+#
+# The rule check itself (scripts/ci/check-deal-expiry.mjs) also runs in
+# `npm test`, but a PR-time test only fires when someone happens to open
+# a PR — expiry is a function of the calendar, not of commits. This cron
+# is what actually notices a deal dying on a quiet week. On failure it
+# opens an issue for the lifestyle-culture desk (deals owner per
+# .council/04_content_taxonomy.md) rather than emailing a red X into the
+# void; issue creation is idempotent per stale-deal set via a marker in
+# the title.
+#
+# Tuesday 05:23 UTC = Tuesday morning Gulf time, matching the Tue slot.
+# Off-minute per the scheduling hygiene used by monitor.yml.
+
+name: Deal expiry sweep
+
+on:
+  schedule:
+    - cron: "23 5 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check for expired, unarchived deals
+        id: sweep
+        run: |
+          set +e
+          node scripts/ci/check-deal-expiry.mjs 2> stale.txt
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          cat stale.txt >&2
+
+      - name: Open issue for the deals desk
+        if: steps.sweep.outputs.exit != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="Deal expiry sweep: expired deals need archiving ($(date -u +%Y-%m-%d))"
+          existing=$(gh issue list --state open --search "Deal expiry sweep in:title" --json number --jq '.[0].number // empty')
+          {
+            echo "The weekly sweep found deals past \`expiresOn\` without \`archived: true\`:"
+            echo
+            echo '```'
+            cat stale.txt
+            echo '```'
+            echo
+            echo "Owner: lifestyle-culture desk. Archive each entry (\`archived: true\`) and check the issuer page for a successor offer — the successor hunt is the point of the sweep, not the flag."
+          } > issue-body.md
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file issue-body.md
+          else
+            gh issue create --title "$title" --body-file issue-body.md \
+              --label "deals" || gh issue create --title "$title" --body-file issue-body.md
+          fi

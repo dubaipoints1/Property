@@ -35,12 +35,12 @@ export const GET: APIRoute = async () => {
       category: "guide",
     })),
     ...deals
-      .filter((d) => d.data.expiresOn.getTime() >= todayMs)
+      .filter((d) => !d.data.archived && d.data.expiresOn.getTime() >= todayMs)
       .map((d) => ({
         href: `/deals/${d.id}/`,
         title: d.data.title,
         description: `Deal expires ${d.data.expiresOn.toLocaleDateString("en-GB")}.`,
-        pubDate: d.data.expiresOn,
+        pubDate: d.data.publishedAt,
         category: d.data.category,
       })),
   ];

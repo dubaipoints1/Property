@@ -1,4 +1,66 @@
 {
   "_doc": "Bank offers / promotions landing pages, watched daily by the 'offers' monitor (scripts/monitor/setup.mjs). Offers are a per-BANK surface, not per-card, which is why they live here rather than as a field on scripts/scrape/banks/<slug>.urls.json. Populate by running `node scripts/monitor/discover-offers.mjs` and CONFIRMING each candidate by hand — a monitor pointed at the wrong page is worse than no monitor, because we would then trust it. Entries here are alert-only: per the scrape merge contract, typed editor fields (welcomeBonus, annualFeeWaiver, _features) are never written by the scraper, so an offers change routes to an editor and to the deals desk, never to cards.json.",
-  "banks": []
+  "_populated": "6 August 2026, by hand-confirmed discovery in a Claude Code session: one Firecrawl map call per bank origin (search: 'offers promotions', mirroring discover-offers.mjs), candidates ranked by the OFFER_PATTERNS confidence order, rejects dropped per OFFER_REJECT (PDFs, /terms, dated campaign paths), and the four least-certain candidates confirmed by direct scrape (cbd, mashreq, citi, standard-chartered). One durable index URL per bank — campaign sub-pages deliberately not watched, because the index is where new campaigns appear and per-campaign URLs churn.",
+  "banks": [
+    {
+      "bank": "fab",
+      "urls": ["https://www.bankfab.com/en-ae/personal/credit-cards/offers"],
+      "_evidence": "Map 6 Aug 2026: durable card-offers index ('Best Credit Card Offers | FAB UAE') with seasonal/online/food sub-indices and ~20 live merchant offers beneath it. FAB also runs /en-ae/personal/promotions/<campaign> pages (salary transfer, Rewards Active card) but exposes no durable promotions index; the card-offers index is the watchable surface."
+    },
+    {
+      "bank": "enbd",
+      "urls": ["https://www.emiratesnbd.com/en/promotions"],
+      "_evidence": "Map 6 Aug 2026: 'Bank Offers and Promotions' — the bank-product promotions index (accounts, cards, campaigns). ENBD's merchant-discount platform lives on lifestyle.emiratesnbd.com and is a separate, much larger surface deliberately not watched; the deals desk cares about bank-product promos, which land here."
+    },
+    {
+      "bank": "adcb",
+      "urls": ["https://www.adcb.com/en/personal/promotions/deals-and-discounts"],
+      "_evidence": "Map 6 Aug 2026: durable 'Deals and Discounts' index over ADCB's per-campaign /en/personal/promotions/<slug> pages (Amazon, noon, summer bonanza, account offers). No bare /promotions index surfaced on the map."
+    },
+    {
+      "bank": "mashreq",
+      "urls": ["https://www.mashreq.com/en/uae/neo/offers"],
+      "_evidence": "Scrape-confirmed 6 Aug 2026 HTTP 200: filterable all-offers index; first two entries at fetch were the salary-transfer cashback (AED 4,000) and NEO early-bird cashback (AED 9,500). NEO-branded path but the index carries bank-wide campaigns and payment-type filters."
+    },
+    {
+      "bank": "hsbc",
+      "urls": ["https://www.hsbc.ae/credit-cards/special-offers"],
+      "_evidence": "Map 6 Aug 2026: 'Credit Card Offers, Deals and Promotions' — 83 live offers at fetch, emirate/category-faceted. HSBC's account-opening welcome offers (Premier/Advance cashback) live on product pages, not here; the salary-transfer monitor watches the Premier rewards page separately."
+    },
+    {
+      "bank": "rakbank",
+      "urls": ["https://www.rakbank.ae/en/cards/card-offers"],
+      "_evidence": "Map 6 Aug 2026: durable card-offers index ('Explore exclusive card offers and discounts'). Campaign-style cashback promos also appear under /en/everyday-banking/rakbank-for-you/promotions/<slug> with no durable index surfaced; the card-offers index is the watchable surface."
+    },
+    {
+      "bank": "cbd",
+      "urls": ["https://www.cbd.ae/personal/more/cbd-rewards"],
+      "_evidence": "Scrape-confirmed 6 Aug 2026 HTTP 200. CAVEAT: this is a rewards-programme hub (points, Super Saver cashback, balance-transfer welcome offers valid to 31 Dec 2026), not a promotions feed — CBD exposes no durable offers index. Campaign pages nest under this path (/credit-card-cash-bonus, /cbd-account-offer, /cbd-fx-campaign), so the hub is the best available change surface, watched with expectations set accordingly. Weakest entry in this registry; revisit if CBD ships a real offers index."
+    },
+    {
+      "bank": "dib",
+      "urls": ["https://www.dib.ae/offers"],
+      "_evidence": "Map 6 Aug 2026: durable 'Offers' index — card offers, auto offers, personal finance offers, with per-merchant detail pages beneath it."
+    },
+    {
+      "bank": "adib",
+      "urls": ["https://www.adib.ae/en/offers"],
+      "_evidence": "Map 6 Aug 2026: 'Offers & Promotions' index with live per-merchant sub-pages (/en/offers/<merchant>) and an offer-expired pattern that confirms lifecycle management. The legacy .aspx offers pages also surfaced but the /en/offers index is the current surface."
+    },
+    {
+      "bank": "citi",
+      "urls": ["https://www.citibank.ae/credit-cards/promotions"],
+      "_evidence": "Scrape-confirmed 6 Aug 2026 HTTP 200 (large index page): 'Credit Card Offers & Promotions' — dining, travel, entertainment, cinema, 0% instalment plans. Citigold funding promotions live separately under /wealth-management/citigold/privileges-offers/promotions and are deposit-based, not card offers; not watched."
+    },
+    {
+      "bank": "standard-chartered",
+      "urls": ["https://www.sc.com/ae/promotions"],
+      "_evidence": "Scrape-confirmed 6 Aug 2026 HTTP 200: 'Promotions | Bank Offers' index (card offers, cashback campaigns, rewards). Thin index at fetch (three tiles) but per-campaign pages (/ae/promotions/<slug>: mgm, cinema-offers, expedia, apple-ipad) hang off it and the map shows active 2026 campaigns."
+    },
+    {
+      "bank": "emirates-islamic",
+      "urls": ["https://www.emiratesislamic.ae/en/offers"],
+      "_evidence": "Map 6 Aug 2026: 'Offers & Promotions' — the bank offers index. The separate /en/deals tree is the merchant-discount platform (dining, shopping, travel) and is a larger, faster-churning surface deliberately not watched; bank campaigns land on /en/offers."
+    }
+  ]
 }

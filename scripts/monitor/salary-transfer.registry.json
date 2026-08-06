@@ -24,9 +24,10 @@
       "urls": [
         "https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer",
         "https://www.mashreq.com/en/uae/gold/banking-solutions/account-deposits/current-accounts/salary-transfer",
-        "https://www.mashreq.com/-/jssmedia/pdfs/neo/accounts-deposits/TnCs/salary-transfer-bonus-tnc-en-ar.ashx"
+        "https://www.mashreq.com/-/jssmedia/pdfs/neo/accounts-deposits/TnCs/salary-transfer-bonus-tnc-en-ar.ashx",
+        "https://www.mashreq.com/-/jssmedia/pdfs/gold/mg-salary-transfer-tc-en.ashx"
       ],
-      "_evidence": "NEO page: live sourceUrl of mashreq-2026.mdx, re-surfaced by both discovery runs. Gold page: verify run 30988856840 returned SUPPORTED with the strongest signal set of any candidate (AED 50000, minSalary 25000, band language present). NEO salary-transfer-bonus T&C added: SUPPORTED on verify run 31003513821 (5 August 2026) (AED 2,500, bands, clawback). This closes a real gap — mashreq-2026.mdx cites a marketing page as its sourceUrl, and the entry can now be re-derived from the terms document, the same upgrade the FAB entry was built with from the start."
+      "_evidence": "NEO page: live sourceUrl of mashreq-2026.mdx, re-surfaced by both discovery runs. Gold page: verify run 30988856840 returned SUPPORTED with the strongest signal set of any candidate (AED 50000, minSalary 25000, band language present). NEO salary-transfer-bonus T&C added: SUPPORTED on verify run 31003513821 (5 August 2026) (AED 2,500, bands, clawback). This closes a real gap — mashreq-2026.mdx cites a marketing page as its sourceUrl, and the entry can now be re-derived from the terms document, the same upgrade the FAB entry was built with from the start. Gold-tier T&C added 6 August 2026: the 5 August 502 was transient — re-fetch returned HTTP 200 with all four signal types (band table AED 5,000-9,999 → 200 / 10,000-19,999 → 500 / 20,000-49,999 → 1,000 / 50,000+ → 2,500; minimum salary AED 5,000; 90-day payout; clawback on 2 consecutive missed months within the 6-month cycle). Gold is a distinct tier from NEO with its own bonus table; the desk should treat them as separate offers when writing up."
     },
     {
       "bank": "dib",
@@ -41,6 +42,20 @@
         "https://www.adcb.com/en/personal/promotions/switch-nine-salary-transfer"
       ],
       "_evidence": "SUPPORTED on verify run 31003513821 (5 August 2026) — minimum salary AED 5,000, band language and clawback wording, three strong signals. Provenance is notable: this URL came from .council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md, which recorded it live on 30 May after adcb.com/en/personal/promotions/salary-transfer returned 404. It sat in an open brief for two months while two discovery runs reported 'no candidate found', because the patterns required 'salary' to start a path segment and this slug carries it as a suffix. Replaces the Mar-2017 PDF, which stays in _pending as WEAK."
+    },
+    {
+      "bank": "cbd",
+      "urls": [
+        "https://www.cbd.ae/personal/more/cbd-rewards/credit-card-cash-bonus"
+      ],
+      "_evidence": "Hand search 6 August 2026 (per the _no_candidate instruction to locate by hand), HTTP 200. This is the page discovery could never reach: the slug is credit-card-cash-bonus with no 'salary' anywhere in the path, so no pattern variant would ever have ranked it. The page carries a full salary-transfer cash-bonus band table (AED 5,000-14,999 → 1,500; 15,000-24,999 → up to 6,000 bundled; 25,000-49,999 → up to 8,000; 50,000+ → up to 25,000 with card + home loan), minimum salary AED 5,000, three-consecutive-salary-transfers requirement, and one-year clawback — all four signal types. CAVEAT, and it matters: the stated validity is 1 June – 31 August 2024, confirmed by the linked T&C PDF (salary credits due by 31 January 2025). The campaign is OVER; the page is stale-but-published. Watching it is correct — a renewal will move this page — but it is NOT evidence of a live offer and must not seed a reader-facing tracker entry. This settles the backfill brief's open question: CBD did run a salary-transfer offer, through 31 August 2024; whether it currently runs one is answered 'no' as of 6 August 2026."
+    },
+    {
+      "bank": "hsbc",
+      "urls": [
+        "https://www.hsbc.ae/premier/rewards-and-offers/"
+      ],
+      "_evidence": "Hand search 6 August 2026, HTTP 200. Discovery missed it for the same structural reason as CBD: the path /premier/rewards-and-offers/ carries no 'salary'. HSBC's salary-transfer offer lives inside the Premier welcome offer: AED 2,000 cashback for transferring an ongoing monthly net salary of at least AED 40,000 (AED 30,000 for Emirati nationals) within the first 3 months of account opening, sustained for at least 2 consecutive months (footnote 11 on the page). Offer ends 31 December 2026. Three strong signals — AED amount, minimum salary, validity — plus the consecutive-months condition. Note for the desk: this is a high-threshold offer (AED 40,000/month) inside a premium-account package, a different shape from the mass-market band-table offers; the deposit/investment legs of the same welcome offer (AED 8,000-12,000 cashback) are funding-based, not salary-based, and are not what this watch is for. The offer T&C PDF is in _pending — it timed out twice on fetch and its content is unverified."
     },
     {
       "bank": "emirates-islamic",
@@ -98,17 +113,21 @@
     },
     "_no_candidate": {
       "banks": [
-        "cbd",
-        "citi",
-        "hsbc"
+        "citi"
       ],
-      "note": "No discovery run has found a candidate for these three, including the retry pass with a second search term and the re-run after the 5 August pattern fix. FAB was in this list until 5 August 2026, when the owner supplied a URL discovery could not reach: the anchored patterns required 'salary' to START a path segment, and both FAB's 20-percent-cashback-on-salary-transfers and ADCB's switch-nine-salary-transfer carry it as a slug SUFFIX. Two banks missed on one character. Fixed the same day — discover-salary-transfer.mjs gained a /promotions/.*salary rule and an unanchored salary-transfer fallback ranked last — and the re-run surfaced ADCB's page, which then verified. These three stayed empty through that fix, so their gap is not the same one; treat 'no candidate found' as 'discovery did not reach it' and locate by hand."
+      "note": "Hand search completed 6 August 2026 for all three banks previously listed here (cbd, citi, hsbc), per this note's own instruction. CBD and HSBC both had real salary-transfer surfaces that discovery structurally could not reach — neither page carries 'salary' anywhere in its path (cbd: /cbd-rewards/credit-card-cash-bonus; hsbc: /premier/rewards-and-offers/) — both now in `banks` with evidence. Citi is the genuine absence: a 6 August map call returned 47 salary-mentioning URLs on citibank.ae and not one is a transfer offer — they are Salary Protect insurance pages, personal-loan pricing tiers (the fees PDF's 'With Salary Transfer to Citibank 6.99%-8.99%' is loan pricing, not a bonus), and funding-based Citigold promotions (rewards keyed to deposits/investments, not salary). Citi UAE's salary-transfer nexus is loan pricing only; it runs no salary-transfer cashback offer. Recorded as a documented absence, not a discovery failure — the tracker's coverage-gap note can cite this. Prior history of this list, kept because the lesson generalises: FAB and ADCB sat here for months over a one-character anchoring bug (fixed 5 August 2026), and CBD/HSBC sat here because their offer pages carry no 'salary' in the slug at all. Discovery patterns find pages named like offers; they cannot find offers hiding inside differently-named surfaces. Treat any future entry in this list as 'locate by hand', not 'no offer exists'."
     },
-    "mashreq": {
+    "cbd": {
       "urls": [
-        "https://www.mashreq.com/-/jssmedia/pdfs/gold/mg-salary-transfer-tc-en.ashx"
+        "https://www.cbd.ae/docs/default-source/revamp-doc/salary-transfer-promotion-terms-and-conditions-cash.pdf"
       ],
-      "verdict": "UNREACHABLE on verify run 31003513821 (5 August 2026) — Firecrawl HTTP 502 Bad Gateway. A server error, not a dead page; re-verify before judging it. The Gold tier is a separate product from NEO, so this is worth another attempt."
+      "verdict": "EXPIRED CAMPAIGN T&C — fetched 6 August 2026 at HTTP 200 during the hand search. Full terms for the 2024 salary-transfer promotion (window 1 June – 31 August 2024, three consecutive salary credits due by 31 January 2025, min AED 5,000, one-year clawback). Content verified but the campaign is over, so it is not watched; the landing page in `banks` is where a renewal would surface. If CBD renews, expect a new T&C document — re-run the hand search then."
+    },
+    "hsbc": {
+      "urls": [
+        "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/offers/new-to-bank-and-customer-relationship-offer-terms-and-conditions.pdf"
+      ],
+      "verdict": "UNVERIFIED — fetch timed out twice on 6 August 2026 (60s each, via the MCP channel). This is the T&C PDF behind the Premier welcome offer's salary-transfer leg, linked from the rewards page now in `banks`. Two identical failures means change the channel, not retry: attempt via the Actions verify script on the next run. Until its content is read, the typed figures for any HSBC entry must come from the landing page only, clearly noted as such."
     },
     "fab": {
       "urls": [
@@ -120,7 +139,7 @@
       "urls": [
         "https://www.dib.ae/docs/default-source/pdf/e-brochures/salary-transfer-leaflet-eng.pdf"
       ],
-      "verdict": "UNREACHABLE on verify run 31003513821 (5 August 2026) — Firecrawl HTTP 408 Request Timeout, the second transient failure on a DIB PDF this session. Re-verify. It may help settle the source conflict in the 2026-08-05 brief."
+      "verdict": "EXPIRED CAMPAIGN — re-verified 6 August 2026 at HTTP 200 (the 5 August 408 was transient). The document is a raffle-draw leaflet ('Double your salary') valid until 3 September 2018: monthly prize draws, minimum salary AED 8,000, no cashback bands, no clawback. Not a watch target. Retained only as historical context for the 2026-08-05 source-conflict brief: it shows DIB using an AED 8,000 minimum as far back as 2018, consistent with the 9684 T&C's minimum rather than dib-xtra-tc.pdf's AED 5,000."
     }
   }
 }
