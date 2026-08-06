@@ -11,24 +11,32 @@
 #
 # ── Why this triggers on `push`, not just `pull_request` ──────────────
 #
-# The first version of this workflow used `pull_request` alone and NEVER
-# RAN. PRs here are opened by automation, and the pull_request event does
-# not reach workflows for them — editing the PR produced no run either.
+# The first version used `pull_request` alone and never ran once. What was
+# OBSERVED, on 6 August 2026, in this order:
 #
-# This is not new: pr-checks.yml already carries a push trigger and its
-# header says why — "so the `validate` check lands on each commit — this
-# is what makes auto-opened PRs (auto-pr.yml, via the default token) show
-# the required check." Same constraint, same workaround.
+#   1. PR opened as a DRAFT, workflow present on the branch — no run.
+#   2. PR title edited while still a draft (`edited` was a listed type)
+#      — no run.
+#   3. `push` trigger added — ran immediately, and has every time since.
+#   4. PR marked ready for review, body edited — a pull_request-triggered
+#      run DID fire.
 #
-# So: `push` is the trigger that actually fires, and on a push the PR body
-# is not in the event payload — it has to be fetched. `pull_request` is
-# kept as well because it DOES fire for human-opened PRs, and its `edited`
-# type is the only thing that re-runs the gate when someone flips the
-# Chairman cell to `approved` without pushing.
+# The honest reading is that `pull_request` did not fire while the PR was
+# a draft and does fire once it is ready for review. An earlier version of
+# this comment blamed "PRs opened by automation"; that was an inference
+# from steps 1-2 before step 4 existed, and it was wrong. Recorded rather
+# than quietly deleted, because a confident wrong cause in a comment is
+# how the next person wastes an afternoon.
 #
-# If the gate is red and you have just approved in the body, and no run
-# appears: re-run this job from the Actions tab, or push. That is a
-# consequence of the constraint above, not a fault in the check.
+# Either way `push` is what makes this reliable: most work here starts as
+# a draft PR, and a gate that only wakes up at the end is not a gate. On a
+# push the PR body is not in the event payload, so it is fetched from the
+# API. `pull_request` is kept because its `edited` type is the only thing
+# that re-runs the gate when someone flips the Chairman cell to `approved`
+# without pushing — which works once the PR is out of draft.
+#
+# If the gate is red, you have just approved in the body, and no run
+# appears: re-run this job from the Actions tab, or push.
 #
 # ── Making it binding ─────────────────────────────────────────────────
 #   Settings → Branches → branch protection for `main`

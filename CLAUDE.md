@@ -102,14 +102,14 @@ Consequence worth expecting: **a PR stays red until the Chairman row reads
 
 The workflow triggers on **`push`** as well as `pull_request`, and on a
 push it fetches the PR body via the API. That is not belt-and-braces: the
-`pull_request` event does not reach workflows for PRs opened by this
-repo's automation — the first version of this gate used `pull_request`
-alone and never ran once. `pr-checks.yml` carries a `push` trigger for the
-same reason and says so in its header.
+first version used `pull_request` alone and never ran once. Observed 6
+August 2026 — no run when the PR opened as a draft, none when it was
+edited as a draft, an immediate run once `push` was added, and a
+`pull_request` run only after the PR left draft. Since most work here
+starts as a draft PR, `push` is what makes the gate actually gate.
 
 Practical consequence: if you flip the Chairman cell to `approved` and no
 new run appears, re-run the job from the Actions tab or push a commit.
-`edited` only helps on human-opened PRs.
 
 The weekly scrape PR now opens with this block pre-filled by
 `scripts/scrape/propose-changes.ts` — its own facts filled in, every human

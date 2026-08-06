@@ -48,10 +48,15 @@ check to be red until the Chairman's status cell reads `approved` — that
 is the gate, not a bug.
 
 It triggers on **`push`** (and fetches the PR body via the API), because
-the `pull_request` event does not reach workflows for PRs opened by this
-repo's automation. If you approve in the body and no run appears, re-run
-the job or push a commit. Any new PR-triggered workflow you add here will
-hit the same constraint — use a `push` trigger.
+`pull_request` alone did not fire while the PR was a draft — and most work
+here starts as a draft PR. If you approve in the body and no run appears,
+re-run the job or push a commit.
+
+**Adding any new PR-gating workflow here? Give it a `push` trigger.** A
+`pull_request`-only workflow can sit silently dead, which is worse than
+having no gate at all — branch protection reports green from a check that
+never evaluated anything. Confirm a new gate has actually run before
+trusting it.
 
 What CI cannot check is whether the named specialists actually reviewed
 anything. Do not treat a green tick as a substitute for the review.
