@@ -94,7 +94,7 @@ Conditions, all of them:
 
 | Slug | Source URL | Pulled | Notes |
 |---|---|---|---|
-| partners/modcare | https://modcare.ae/wp-content/uploads/2023/09/Modcarelogo-singular-min.svg | 2026-08-05 | Company's own artwork from its own website. Trademark of Modcare Car Care, Al Quoz, Dubai; used nominatively to identify the worked example in `guides/expat-starter-car-costs`. No payment, no affiliate arrangement, no ownership interest — disclosed inline above the example. Not a {{PD-textlogo}} or brand-kit asset; permitted under the 2026-08-05 amendment, on site-owner direction. No written permission on file — if a grant is later obtained, record it in this row. |
+| partners/modcare | https://modcare.ae/wp-content/uploads/2023/09/Modcarelogo-singular-min.svg | 2026-08-05 | Company's own artwork from its own website. Trademark of Modcare Car Care, Al Quoz, Dubai; used nominatively to identify the business **recommended** in `guides/expat-starter-car-costs`. No payment, no affiliate arrangement, no ownership interest — disclosed inline above the recommendation, which also states its basis (the editor's first-hand use as a customer) and its limit (no comparative test of UAE installers). Not a {{PD-textlogo}} or brand-kit asset; permitted under the 2026-08-05 amendment, on site-owner direction. No written permission on file — if a grant is later obtained, record it in this row. |
 
 ## Source log
 
