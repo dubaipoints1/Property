@@ -596,7 +596,10 @@ const milesTiles = allPrograms
     background: var(--shade-1);
     box-shadow: 0 22px 44px -22px rgba(15, 31, 46, 0.22);
   }
-  @media (min-width: 961px) {
+  /* A 460px minimum height implies a 613px minimum width at 4:3. Applying
+     it at 961px forced the image 37px beyond a 1024px viewport. Only lock
+     the taller treatment once the two-column grid can contain it. */
+  @media (min-width: 1160px) {
     .hp-hero-media { min-height: 460px; }
   }
   .hp-hero-media :global(.hp-hero-image),

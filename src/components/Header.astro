@@ -507,10 +507,13 @@ const publicationRows: SubRow[] = [
   .dp-quicklink-sep { flex: 0 0 auto; white-space: nowrap; }
 }
 
-/* ─── DESKTOP ≥768px ─────────────────────────────────────────────── */
-@media (min-width: 768px) {
+/* ─── DESKTOP ≥1024px ──────────────────────────────────────────────
+   Keep the full navigation for widths that can hold all three header
+   columns. Below this, the mobile navigation remains available instead
+   of exposing a compressed desktop bar with inaccessible mega-menus. */
+@media (min-width: 1024px) {
   .dp-header-inner {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto 1fr;
     height: 72px;
     gap: 24px;
     padding-inline: 24px;
@@ -522,17 +525,23 @@ const publicationRows: SubRow[] = [
     display: flex;
     gap: 28px;
     justify-self: center;
+    align-self: stretch;
+    align-items: stretch;
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.3px;
   }
   .dp-header-nav a {
     color: var(--ink);
-    padding: 6px 0;
+    padding: 0;
     text-decoration: none;
     transition: color 0.15s ease;
     border-bottom: 2px solid transparent;
     position: relative;
+  }
+  .dp-header-nav > a {
+    display: inline-flex;
+    align-items: center;
   }
   .dp-header-nav a:hover { color: var(--green); }
   .dp-header-nav a.is-active {
@@ -540,12 +549,16 @@ const publicationRows: SubRow[] = [
     border-bottom-color: var(--green);
   }
 
-  .dp-nav-mega-wrap { position: static; }
+  .dp-nav-mega-wrap {
+    position: static;
+    display: flex;
+    align-items: stretch;
+  }
   .dp-nav-mega-wrap > a {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 8px 0;                     /* larger hit area */
+    padding: 0;
   }
   .dp-mega-caret {
     font-size: 10px;
@@ -623,14 +636,11 @@ const publicationRows: SubRow[] = [
   .dp-mega-sub:hover .lbl,
   .dp-mega-sub:focus-visible .lbl { color: var(--green); }
 
-  @media (max-width: 1023px) {
-    .dp-megapanel { display: none; }
-    .dp-mega-caret { display: none; }
-  }
   .dp-header-actions {
     display: flex;
     align-items: center;
     gap: 4px;
+    justify-self: end;
   }
   .dp-header-subscribe {
     display: inline-flex;
