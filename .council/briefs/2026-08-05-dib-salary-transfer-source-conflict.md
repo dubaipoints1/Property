@@ -1,9 +1,10 @@
 ---
-status: open
+status: resolved
 tier: T2
 raised-by: salary-transfer monitor provisioning (verify run 30988856840, 5 August 2026)
 owner: business-realestate-editor
 chairman-status: pending
+resolved: 2026-08-06
 ---
 
 # Brief — DIB cites one salary-transfer T&C document while a second live document carries different terms
@@ -77,3 +78,31 @@ tracker's amber flag starts rendering on it regardless of this brief.
 (AED 5,000 vs AED 8,000). Our published entry cites one; the monitor
 watches the other. A human must read both and decide which describes the
 product we feature.**
+
+## Resolution — 6 August 2026
+
+Both PDFs fetched fresh and read in full. The answer is reading 3
+(stale), with a date-stamped proof the deterministic parse could not see:
+
+| Document | Its own campaign dates | Verdict |
+|---|---|---|
+| `9684-salary-transfer-tc.pdf` | Start **10 July 2024**, end **7 September 2024** (clause 1(a)-(b)) | **Expired campaign, still hosted.** Min AED 8,000, expat bands 350/500/1,000, plus a one-month-salary prize draw. Not a competing current offer. |
+| `dib-xtra-tc.pdf` | Start **1 January 2026** (clause 1(a); no hard end date) | **Current campaign.** Min AED 5,000, bundle-gated, expat bands 250/500/1,000/2,500/3,000 — matches the published entry verbatim on re-check. |
+
+Both documents title themselves "DIB XTRA Salary Transfer Account"
+campaign T&Cs — same product line, successive campaign cycles. DIB
+leaves dead cycles hosted (the 2018 raffle leaflet re-verified the day
+before is a third example), which is the whole mechanism of this
+conflict. Historical note: DIB's minimum was AED 8,000 from at least
+2018 through 2024; the 2026 cycle dropped it to 5,000.
+
+Actions taken per item 4 (and a correction to the watch):
+- `dib-xtra-2026.mdx` re-verified band-by-band against the current T&C —
+  no figure changed; `lastVerified` → 2026-08-06 (clears the
+  28 September amber deadline); resolution noted in the entry.
+- The monitor was watching the stale document and not the current one —
+  backwards. Swapped: `dib-xtra-tc.pdf` now watched in `banks`; `9684`
+  parked in `_pending` as an expired campaign.
+- Lesson for the verify tooling, recorded in the registry: SUPPORTED
+  confirms a document is a real salary-transfer T&C, not that its
+  campaign is alive. Campaign dates need a human read.
