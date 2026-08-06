@@ -467,6 +467,37 @@ async function main() {
   prSections.push("");
   prSections.push("This PR is auto-opened by `.github/workflows/scrape.yml`. Never auto-merge — review every figure against the cited source URLs.");
 
+  // Charter §7 sign-off skeleton. Required since the council-signoff CI
+  // gate landed: without this block every weekly scrape PR would open red
+  // with no indication of what was missing.
+  //
+  // The scraper cannot sign this off — that is the entire point of the
+  // gate — so it emits the block PRE-FILLED WITH ITS OWN FACTS and leaves
+  // every human judgement blank. Chairman is `pending` deliberately: the
+  // PR is meant to stay red until a person has read the figures against
+  // their sources and changed it.
+  //
+  // Tier is a starting suggestion, not a ruling. A refresh that moved no
+  // value is a date bump (T1); one that changed a published figure is a
+  // claim about a product (T2). Escalate by hand if the scrape touched
+  // schema or parser logic — under-tiering is a discipline failure the
+  // Chairman flags at the gate.
+  const suggestedTier = totalChanged === 0 ? "T1" : "T2";
+  prSections.push("");
+  prSections.push("## Council sign-off");
+  prSections.push("");
+  prSections.push(`**Tier**: ${suggestedTier} — suggested by the scraper (${totalChanged === 0 ? "no field values moved; this is a `lastVerified` refresh" : `${totalChanged} entr(y/ies) changed`}). Confirm or escalate.`);
+  prSections.push("**Brief**: `ad-hoc` (weekly scrape)");
+  prSections.push("");
+  prSections.push("| Role | Status | Notes |");
+  prSections.push("|---|---|---|");
+  prSections.push("| Section editor | | which cards you checked |");
+  prSections.push("| Head of UX (Stage 5.5) | n/a | data-only change |");
+  prSections.push("| Fact-Checker (Stage 6) | | every changed figure against its source URL |");
+  prSections.push("| Standards Editor (Stage 6.5) | n/a | no prose |");
+  prSections.push("| Technical Lead | | parser warnings above, if any |");
+  prSections.push("| Chairman (Stage 7) | pending | **required — CI stays red until this reads `approved`** |");
+
   fs.writeFileSync(PR_BODY_PATH, prSections.join("\n"));
   console.log(`[propose] Wrote ${PR_BODY_PATH}: ${totalNew} new, ${totalChanged} changed, ${totalErrors} warning(s)`);
 }

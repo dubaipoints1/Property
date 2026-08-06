@@ -1,0 +1,132 @@
+# Council sign-off gate — Charter §7.
+#
+# "No pull request merges to `main` without a `## Council sign-off`
+# section in its body […] A PR missing the sign-off block is not
+# mergeable, no exceptions."
+#
+# CLAUDE.md previously recorded this as unenforced and suggested a future
+# action "grep PR bodies for the section header". This is that action —
+# though not a grep; see scripts/ci/check-signoff.mjs for why a naive one
+# passes a row reading `| Chairman | pending | approved on 5 Aug |`.
+#
+# ── Why this triggers on `push`, not just `pull_request` ──────────────
+#
+# The first version used `pull_request` alone and never ran once. What was
+# OBSERVED, on 6 August 2026, in this order:
+#
+#   1. PR opened as a DRAFT, workflow present on the branch — no run.
+#   2. PR title edited while still a draft (`edited` was a listed type)
+#      — no run.
+#   3. `push` trigger added — ran immediately, and has every time since.
+#   4. PR marked ready for review, body edited — a pull_request-triggered
+#      run DID fire.
+#
+# The honest reading is that `pull_request` did not fire while the PR was
+# a draft and does fire once it is ready for review. An earlier version of
+# this comment blamed "PRs opened by automation"; that was an inference
+# from steps 1-2 before step 4 existed, and it was wrong. Recorded rather
+# than quietly deleted, because a confident wrong cause in a comment is
+# how the next person wastes an afternoon.
+#
+# Either way `push` is what makes this reliable: most work here starts as
+# a draft PR, and a gate that only wakes up at the end is not a gate. On a
+# push the PR body is not in the event payload, so it is fetched from the
+# API. `pull_request` is kept because its `edited` type is the only thing
+# that re-runs the gate when someone flips the Chairman cell to `approved`
+# without pushing — which works once the PR is out of draft.
+#
+# If the gate is red, you have just approved in the body, and no run
+# appears: re-run this job from the Actions tab, or push.
+#
+# ── Making it binding ─────────────────────────────────────────────────
+#   Settings → Branches → branch protection for `main`
+#   ✓ Require status checks to pass before merging → add `council-signoff`
+#
+# Expect a PR to stay RED until the Chairman row reads `approved`. That is
+# the gate working — Charter §"Non-negotiables" 3 makes the Chairman the
+# only publish gate.
+
+name: Council sign-off
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, edited, reopened, synchronize, ready_for_review]
+  push:
+    branches:
+      - "claude/**"
+      - "codex/**"
+      - "scrape/**"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: council-signoff-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  council-signoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # On a push there is no PR body in the payload, and auto-pr.yml may
+      # still be opening the PR for this very push — so poll briefly
+      # rather than racing it. Writes the body to a file instead of an
+      # output: a PR description is untrusted multi-line text and must
+      # never round-trip through shell interpolation.
+      - name: Resolve PR body
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+          BRANCH: ${{ github.ref_name }}
+          PR_BODY_EVENT: ${{ github.event.pull_request.body }}
+        run: |
+          set -euo pipefail
+
+          if [ "$EVENT" = "pull_request" ]; then
+            printf '%s' "$PR_BODY_EVENT" > pr-body.txt
+            echo "Body taken from the pull_request payload."
+            exit 0
+          fi
+
+          owner="${REPO%%/*}"
+          for attempt in 1 2 3 4 5 6; do
+            num=$(gh api "repos/$REPO/pulls?head=$owner:$BRANCH&state=open" \
+                    --jq '.[0].number // empty' 2>/dev/null || true)
+            if [ -n "$num" ]; then
+              echo "Found open PR #$num for $BRANCH."
+              gh api "repos/$REPO/pulls/$num" --jq '.body // ""' > pr-body.txt
+              exit 0
+            fi
+            echo "No open PR for $BRANCH yet (attempt $attempt/6); waiting…"
+            sleep 15
+          done
+
+          # A branch can legitimately be pushed before its PR exists. There
+          # is nothing to gate yet, and auto-pr.yml's own push will bring
+          # us back here. Do NOT fail — a red X on a branch with no PR
+          # teaches people to ignore this check.
+          echo "NO_PR" > pr-body.marker
+          echo "No open PR for $BRANCH after 90s — nothing to gate on this push."
+
+      - name: Check Council sign-off block
+        run: |
+          set -euo pipefail
+          if [ -f pr-body.marker ]; then
+            echo "Skipped: no open pull request for this branch."
+            exit 0
+          fi
+          PR_BODY="$(cat pr-body.txt)" node scripts/ci/check-signoff.mjs
