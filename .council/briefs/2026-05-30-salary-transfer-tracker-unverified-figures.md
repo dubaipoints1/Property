@@ -1,10 +1,36 @@
 ---
-status: open
+status: resolved
 tier: T2
 raised-by: decay-audit on salaryTransferOffers (30 May 2026)
 owner: head-of-research (primary-source scrape) → business-realestate-editor (L2 + body rewrite)
-chairman-status: pending
+chairman-status: approved
+resolved: 2026-08-06
 ---
+
+> **RESOLUTION — 6 August 2026.** Both halves closed, though neither the
+> way this brief expected.
+>
+> - **RAKBANK**: the illustrative `rakbank-2026-q2` had already moved to
+>   history; the live campaign (1 Jul – 31 Aug 2026, "up to AED 4,000")
+>   was typed from its own T&C PDF as `rakbank-cash-reward-2026` on
+>   6 August — verified band-by-band, live on the tracker.
+> - **ADCB**: the switch-nine URL this brief preserved was the key —
+>   discovery never found it. The fresh 6 August scrape plus the
+>   campaign's own T&C (`switch10-tnc.pdf`) showed the Switch cycle-10
+>   campaign ran 1 Jan – 30 Jun 2026 and is **expired** with the page
+>   still live. No live entry; the verified band table (expat 250 / 1,000
+>   / 2,000 / 5,500 · nationals 500 / 1,500 / 3,000 / 7,000, voucher
+>   payout, 12-month clawback, AED 2,500 card-spend condition) is
+>   archived as `salaryTransferOfferHistory/adcb-switch10-2026-h1`,
+>   replacing guesswork with a record. The page stays monitored for
+>   cycle 11.
+>
+> The lesson this brief taught — check `.council/briefs/` before
+> declaring a bank has no reachable offer page — is recorded in the
+> 2026-08-05 coverage-backfill brief. Dossier:
+> `.council/research/2026-08/salary-transfer-hsbc-adcb.md`. Chairman
+> approval via in-session direction, 6 August 2026 ("Do the hsbc and
+> adcb").
 
 # Brief — 2 salary-transfer tracker entries shipping illustrative-skeleton figures with 404 source URLs
 

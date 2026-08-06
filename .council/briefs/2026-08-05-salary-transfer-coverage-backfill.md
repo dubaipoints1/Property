@@ -46,9 +46,15 @@ be read off a primary source and typed by a human.
 
 ## ADCB and RAKBANK are NOT in this brief
 
+> **Both resolved 6 August 2026** — RAKBANK as a live entry (see above),
+> ADCB as a verified expired-campaign finding: the Switch cycle-10
+> campaign ended 30 June 2026 with the page still live; its real band
+> table is archived at `salaryTransferOfferHistory/adcb-switch10-2026-h1`
+> and the page stays monitored for cycle 11. The 30 May brief is closed.
+
 They are already covered by
 `.council/briefs/2026-05-30-salary-transfer-tracker-unverified-figures.md`,
-**status: open**, which has an owner, a recommended sequence, and — most
+**status: resolved**, which has an owner, a recommended sequence, and — most
 usefully — the live replacement URLs it confirmed on 30 May:
 
 - ADCB: `adcb.com/en/personal/promotions/switch-nine-salary-transfer`
@@ -72,7 +78,7 @@ that already failed.
 |---|---|---|
 | **fab** | ~~No candidate from either run~~ **Resolved 5 August**: owner supplied the 20% cashback URL; entry `fab-20-percent-2026.mdx` is live; landing page + T&C watched | Fact-Checker Stage 6 on the entry (run 6 August — see the entry's verification note). |
 | **citi** | **Hand search completed 6 August 2026: documented absence.** A map call returned 47 salary-mentioning URLs; all are Salary Protect insurance, loan-pricing tiers, or funding-based Citigold promos. Citi UAE runs no salary-transfer cashback offer. | None — record stands. The coverage-gap note can cite this as a verified "no offer", not an unknown. |
-| **hsbc** | **Hand search completed 6 August 2026: offer found.** AED 2,000 cashback for monthly salary ≥ AED 40,000 (30,000 Emirati) inside the Premier welcome offer, ends 31 December 2026. Page watched; T&C PDF timed out twice, unverified. | Head of Research dossier from the rewards page; verify T&C PDF via Actions channel; then editor types the entry. High threshold — present as the premium-segment offer it is. |
+| **hsbc** | ~~T&C PDF timed out twice, unverified~~ **Resolved 6 August 2026 (evening): entry live.** The T&C fetched via the Firecrawl PDF parser (the channel change the registry prescribed) and was read in full — revealing a second, mass-market salary tier the landing page buries: Advance, 2 salaries of AED 10,000–39,999 → AED 750, alongside Premier's AED 2,000 at 40,000+ (30,000 Emirati). Entry `hsbc-new-to-bank-2026.mdx`, both tiers, fact-checked band-by-band; PDF joined the monitor watch. | None — coverage moves to 5 of 12. |
 | **cbd** | **Hand search completed 6 August 2026: offer existed, now expired.** The `/cbd-rewards/credit-card-cash-bonus` page carries a full band table but validity 1 June – 31 August 2024 (T&C PDF confirms). Page watched for renewal. | None until renewal — the brief's own rule applies: a bank with no live offer is a finding to record, not a gap to fill. |
 | **standard-chartered** | `sc.com/ae/save/salary-account/apply` — NO SALARY-TRANSFER CONTENT (an application form) | The landing page without `/apply` was never proposed. Try it. |
 | **adib** | **Resolved 6 August 2026: draw programme, not an offer.** The full T&C is one page — no bands exist. Min AED 3,000, automatic enrollment, 10 monthly winners of 1× salary (cap 10,000), 1 annual winner of 12× salary (cap 200,000). A draw has no guaranteed reward, so no tracker entry; both surfaces watched. | None until ADIB launches a banded offer — the monitor will say so. |
