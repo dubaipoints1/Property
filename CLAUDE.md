@@ -98,9 +98,18 @@ the near-miss a naive `grep -q approved` would wave through — the word
 appearing in a Notes cell while the status still reads `pending`.
 
 Consequence worth expecting: **a PR stays red until the Chairman row reads
-`approved`.** That is the gate working, not a fault. The workflow listens
-for `edited`, so changing the body flips the check within seconds without
-needing a push.
+`approved`.** That is the gate working, not a fault.
+
+The workflow triggers on **`push`** as well as `pull_request`, and on a
+push it fetches the PR body via the API. That is not belt-and-braces: the
+`pull_request` event does not reach workflows for PRs opened by this
+repo's automation — the first version of this gate used `pull_request`
+alone and never ran once. `pr-checks.yml` carries a `push` trigger for the
+same reason and says so in its header.
+
+Practical consequence: if you flip the Chairman cell to `approved` and no
+new run appears, re-run the job from the Actions tab or push a commit.
+`edited` only helps on human-opened PRs.
 
 The weekly scrape PR now opens with this block pre-filled by
 `scripts/scrape/propose-changes.ts` — its own facts filled in, every human
