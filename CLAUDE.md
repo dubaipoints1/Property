@@ -49,8 +49,11 @@ Council is convened automatically by the workflow defined in
    declaring which specialists reviewed it. The required reviewer
    set scales by change tier (see §"Tiered review" below). The
    Chairman's `approved` status is mandatory on every tier; the
-   `/publish` slash command halts at this gate by design. A PR
-   missing the sign-off block is not mergeable, no exceptions.
+   `/publish` slash command halts at this gate by design. Since the
+   2026-08-07 amendment the CI check is **advisory** — it warns
+   rather than blocks. The obligation is editorial discipline,
+   enforced at review; a PR without the block is a discipline
+   failure, not a red X.
 
 ## Tiered review
 
@@ -88,27 +91,19 @@ mandatory; other roles only when their tier requires sign-off.
 | Chairman (Stage 7) | **approved** | required on every tier |
 ```
 
-**This block is now enforced in CI.** The `council-signoff` workflow
-(`.github/workflows/council-signoff.yml`) parses every PR body against
-`scripts/ci/check-signoff.mjs` and fails when the section is missing, no
-tier is declared, or the Chairman's status cell is anything other than
-`approved`. Rules are unit-tested in `tests/ci/signoff.test.ts`, including
-the near-miss a naive `grep -q approved` would wave through — the word
-appearing in a Notes cell while the status still reads `pending`.
+**This block is checked in CI, advisorily.** The `council-signoff`
+workflow (`.github/workflows/council-signoff.yml`) parses every PR body
+against `scripts/ci/check-signoff.mjs` and — since the 2026-08-07
+amendment — emits a warning annotation, never a failure, when the
+section is missing, no tier is declared, or the Chairman's status cell
+is anything other than `approved`. Parser rules are unit-tested in
+`tests/ci/signoff.test.ts`, including the near-miss a naive
+`grep -q approved` would wave through — the word appearing in a Notes
+cell while the status still reads `pending`.
 
-Consequence worth expecting: **a PR stays red until the Chairman row reads
-`approved`.** That is the gate working, not a fault.
-
-The workflow triggers on **`push`** as well as `pull_request`, and on a
-push it fetches the PR body via the API. That is not belt-and-braces: the
-first version used `pull_request` alone and never ran once. Observed 6
-August 2026 — no run when the PR opened as a draft, none when it was
-edited as a draft, an immediate run once `push` was added, and a
-`pull_request` run only after the PR left draft. Since most work here
-starts as a draft PR, `push` is what makes the gate actually gate.
-
-Practical consequence: if you flip the Chairman cell to `approved` and no
-new run appears, re-run the job from the Actions tab or push a commit.
+The check name remains a configured required status check on main, so
+the workflow must keep reporting (green) on every PR branch — see the
+warning at the top of the workflow file before touching it.
 
 The weekly scrape PR now opens with this block pre-filled by
 `scripts/scrape/propose-changes.ts` — its own facts filled in, every human
@@ -705,6 +700,48 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-08-07 — Council sign-off CI gate made advisory
+
+On Chairman direction (7 August 2026), recorded verbatim as the basis
+of the ruling: "Can we remove this chairman approval. Blocking."
+
+The friction being removed is real and had recurred within 24 hours of
+the gate becoming a required check. On 6 August the Chairman had to
+separately approve work he had personally directed (resolved by the
+2026-08-06 amendment). On 7 August, PR #324 — a Chairman-reported,
+Chairman-directed one-line nav fix with the sign-off block correctly
+`approved` — was still held red by a stale `pull_request`-event re-run
+replaying the pre-sign-off body, and needed a manual re-run of the
+push-event run before auto-merge could act. A gate whose failure modes
+require a runbook to merge a one-line fix costs more than it protects.
+
+**The rule.** The `council-signoff` workflow becomes **advisory**: the
+parser still runs on every PR and emits a warning annotation when the
+sign-off block is missing, no tier is declared, or the Chairman cell is
+not `approved` — but the check always reports success and never blocks
+a merge.
+
+**What this does not change.**
+
+1. §"Non-negotiables" 3 stands: the Chairman remains the only publish
+   gate. What changed is the enforcement mechanism (editorial review,
+   not a red X), not the authority.
+2. The sign-off block remains mandatory in every PR body per
+   §"Non-negotiables" 7. Omitting it is a discipline failure of the
+   same class as under-tiering; the CI warning is the tripwire.
+3. `council-signoff` remains a *configured* required status check on
+   main — an always-green one. Removing the requirement itself is a
+   repo Settings → Rules action only the owner can take; until then
+   the workflow must not be deleted, because a required check that
+   never reports would block every PR indefinitely.
+4. Main still only changes via pull request. The workflow never runs
+   on pushes to main, so direct pushes still fail required checks and
+   the `automation-state` branch rationale stands unchanged.
+5. The 2026-08-06 amendment (in-session Chairman direction constitutes
+   Stage 7 approval) stands.
+
+— Chairman, 7 August 2026.
 
 ### 2026-08-06 — In-session Chairman direction constitutes Stage 7 approval
 
