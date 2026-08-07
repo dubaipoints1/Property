@@ -157,6 +157,13 @@ jobs:
           fi
           BRANCH="scrape/weekly-$(date +%Y-%m-%d-%H%M%S)"
           git checkout -b "$BRANCH"
+          # Runner checkouts have no git identity; automation-state.sh
+          # exports its own but only inside its process. Without these
+          # two lines the commit dies with "fatal: empty ident name" and
+          # the scrape's findings are silently dropped (observed on the
+          # 2026-08-06 09:38 and 2026-08-07 02:00 push runs).
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A src/data/cards.json
           git commit -m "scrape: weekly card refresh ($(date +%Y-%m-%d))"
           if ! git push -u origin "$BRANCH" 2>&1 | tee -a "$LOG"; then
