@@ -224,12 +224,22 @@ async function pexelsSearch(query: string, orientation: string, key: string): Pr
   return (await res.json()) as PexelsSearchResponse;
 }
 
-async function downloadFile(url: string, dest: string): Promise<void> {
+async function downloadFile(url: string, dest: string): Promise<{ width: number; height: number }> {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Download failed: ${res.status} ${res.statusText}`);
   const buf = Buffer.from(await res.arrayBuffer());
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.writeFileSync(dest, buf);
+
+  // Pexels' API dimensions describe the original photograph, not the
+  // downloaded large2x rendition. Record the bytes we actually ship so
+  // rendered width/height attributes preserve the real aspect ratio.
+  const { default: sharp } = await import("sharp");
+  const metadata = await sharp(dest).metadata();
+  if (!metadata.width || !metadata.height) {
+    throw new Error(`Downloaded image has no readable dimensions: ${dest}`);
+  }
+  return { width: metadata.width, height: metadata.height };
 }
 
 async function main(): Promise<void> {
@@ -285,7 +295,7 @@ async function main(): Promise<void> {
   const dest = path.join(STOCK_DIR, filename);
 
   console.log(`Downloading ${downloadUrl} → public/${file}`);
-  await downloadFile(downloadUrl, dest);
+  const dimensions = await downloadFile(downloadUrl, dest);
 
   const entry: ManifestEntry = {
     slug: args.slug,
@@ -298,8 +308,8 @@ async function main(): Promise<void> {
     licence: PEXELS_LICENCE,
     licence_url: PEXELS_LICENCE_URL,
     file,
-    width: photo.width,
-    height: photo.height,
+    width: dimensions.width,
+    height: dimensions.height,
     alt: args.alt,
     fetched_at: new Date().toISOString().slice(0, 10),
     usage_hint: args.usage,
@@ -313,7 +323,7 @@ async function main(): Promise<void> {
   manifest.entries.sort((a, b) => a.slug.localeCompare(b.slug));
   saveManifest(manifest);
 
-  console.log(`✓ ${args.slug} (${photo.width}×${photo.height}) by ${photo.photographer}`);
+  console.log(`✓ ${args.slug} (${dimensions.width}×${dimensions.height}) by ${photo.photographer}`);
   console.log(`  Manifest: ${MANIFEST_PATH}`);
 }
 

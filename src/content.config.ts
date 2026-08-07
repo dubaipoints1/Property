@@ -1,5 +1,6 @@
-import { defineCollection, reference, z } from "astro:content";
+import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 const REGION = z.enum(["UAE", "GCC", "Global"]);
 const DEAL_CATEGORY = z.enum([
@@ -32,8 +33,8 @@ const banks = defineCollection({
     logo: z.string(),
     customerService: z.object({
       phone: z.string().optional(),
-      email: z.string().email().optional(),
-      website: z.string().url().optional(),
+      email: z.email().optional(),
+      website: z.url().optional(),
     }),
     cards: z.array(reference("cards")).default([]),
     /** Optional reward-currency overview for the bank hub. Falls back to
@@ -174,14 +175,14 @@ const deals = defineCollection({
       const hasProgram = data.program !== undefined;
       if (!hasBank && !hasProgram) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message:
             "A deal needs an issuer: set either `bank` (card offers) or `program` (airline/hotel offers).",
         });
       }
       if (hasBank && hasProgram) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: "custom",
           message:
             "Set `bank` OR `program`, not both — a deal is attributed to a single issuer.",
         });
@@ -231,7 +232,7 @@ const SalaryTransferOfferShape = z.object({
   salaryBands: z.array(SalaryBand).min(1),
   requirements: z.array(z.string()).default([]),
   clawbackTerms: z.string(),
-  sourceUrl: z.string().url(),
+  sourceUrl: z.url(),
   lastVerified: z.coerce.date(),
   archived: z.boolean().default(false),
 });
@@ -304,7 +305,7 @@ const news = defineCollection({
     relatedCards: z.array(reference("cards")).default([]),
     relatedPrograms: z.array(reference("programs")).default([]),
     relatedBanks: z.array(reference("banks")).default([]),
-    sources: z.array(z.string().url()).default([]),
+    sources: z.array(z.url()).default([]),
   }),
 });
 

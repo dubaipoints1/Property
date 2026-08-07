@@ -69,6 +69,7 @@ const isEditorial = entry?.source === "editorial";
         width={entry.width}
         height={entry.height}
         loading={loading}
+        fetchpriority={loading === "eager" ? "high" : "low"}
         decoding="async"
         sizes={sizes}
         class={className}
@@ -89,6 +90,7 @@ const isEditorial = entry?.source === "editorial";
       width={entry.width}
       height={entry.height}
       loading={loading}
+      fetchpriority={loading === "eager" ? "high" : "low"}
       decoding="async"
       sizes={sizes}
       class={className}

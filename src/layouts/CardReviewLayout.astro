@@ -20,7 +20,7 @@ import Disclaimer from "~/components/Disclaimer.astro";
 import StockImage from "~/components/StockImage.astro";
 import HeroImage from "~/components/cards/HeroImage.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
-import { earnIsPercentage, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
+import { formatEarnRate, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
 import { getActiveCards } from "~/lib/cardsData";
 import { getCollection } from "astro:content";
 import type { CardData } from "~/lib/cardsData";
@@ -413,7 +413,7 @@ const schema = {
           {earnRows.map(([k, v]) => (
             <div class="dp-spec-row">
               <span class="k">{formatEarnKey(k)}</span>
-              <span class={`v ${v >= 3 ? "flag" : ""}`}>{earnIsPercentage(earnUnit, categories) ? `${v}%` : `${v}× per AED 1`}</span>
+              <span class={`v ${v >= 3 ? "flag" : ""}`}>{formatEarnRate(v, earnUnit, categories)}</span>
             </div>
           ))}
         </div>

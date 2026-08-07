@@ -38,7 +38,7 @@
   /* Type — warm near-black, NOT royal navy */
   --ink:       #1f2328;          /* body text */
   --ink-soft:  #56606b;          /* meta, secondary copy */
-  --muted:     #9aa0a6;          /* dates, byline timestamps */
+  --muted:     #6b7178;          /* dates, byline timestamps — AA on paper */
 
   /* Lines — warm hairlines */
   --line:      #dad6cd;
@@ -141,7 +141,7 @@ img { display: block; max-width: 100%; }
      functional signal colours. Not global. */
   --dpst-navy: #1f3a4d;
   --dpst-navy-2: #2c4d62;
-  --dpst-navy-soft: rgba(31, 58, 77, 0.6);
+  --dpst-navy-soft: rgba(31, 58, 77, 0.75);
   --dpst-cream: #faf6ef;
   --dpst-paper: #fffdf9;
   --dpst-green: #2f7d5d;
@@ -150,8 +150,8 @@ img { display: block; max-width: 100%; }
   --dpst-line: rgba(31, 58, 77, 0.16);
   --dpst-line-soft: rgba(31, 58, 77, 0.08);
   --dpst-hover: rgba(47, 125, 93, 0.05);
-  --dpst-far: #5b7a6b;
-  --dpst-soon: #c08a2e;
+  --dpst-far: #4f6e60;
+  --dpst-soon: #8f5f18;
   --dpst-urgent: #b4513a;
 
   position: relative;
@@ -3230,7 +3230,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 }
 
 /* StockImage SVG fallback: ensure it fills container */
-:global(svg.dp-cover) {
+svg.dp-cover {
   width: 100%;
   height: 100%;
   display: block;
@@ -3279,7 +3279,7 @@ html * {
 
   --ink:       #e8ecf1;
   --ink-soft:  #9aa5b8;
-  --muted:     #5c667a;
+  --muted:     #9aa5b8;          /* AA on dark paper and page backgrounds */
 
   --line:      #2a3142;
   --line-soft: #1e2535;

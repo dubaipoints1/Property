@@ -48,7 +48,7 @@ export const GET: APIRoute = async () => {
   return renderFeed({
     title: "DubaiPoints",
     description:
-      "UAE rewards, banking, and travel — without the marketing. Every figure in AED, every card checked.",
+      "UAE rewards, banking, and travel — without the marketing. AED-first, sourced and dated.",
     feedPath: "/rss.xml",
     items,
   });

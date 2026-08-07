@@ -1,7 +1,8 @@
-# State of the Site — May 2026
+# State of the Site — 6 August 2026
 
-_Author: Council foundation memo. Compiled from in-repo audit; live-site
-and competitor sections marked **TO-BACKFILL** pending Firecrawl access._
+_Author: Council foundation memo, refreshed from the working repository on
+6 August 2026. This is a source-state record, not confirmation that the same
+state is deployed._
 
 This memo is the factual ground the Dubai Points Council operates on.
 Every Council decision should trace back to a concrete fact in this
@@ -14,15 +15,15 @@ document or supersede it explicitly.
 dubaipoints.ae is a UAE-focused points-and-miles publication run by a
 solo operator. Tone is HfP-dry, evidence-led; differentiation is
 AED-first pricing, UAE eligibility front-loaded on every card review,
-salary-transfer tracker as a live product, and full coverage of regional
-loyalty programmes (Skywards, Etihad Guest, Qatar Privilege Club, Saudia
-Alfursan). It does not run advertorial-driven recommendations at launch.
-The site is in late Phase 1 / early Phase 2 of `PLAN.md`'s five-phase
-roadmap.
+salary-transfer tracker as a live product, and coverage of selected regional
+and hotel loyalty programmes. It does not run advertorial-driven
+recommendations at launch.
+The repository is a pre-publication content build. `PLAN.md` is retained as
+historical roadmap context; it no longer describes the present phase.
 
 ## 2. Stack — verified from source
 
-- **Astro 5** static output (`output: "static"`), built with the MDX +
+- **Astro 7** static output (`output: "static"`), built with the MDX +
   Preact integrations and `@tailwindcss/vite`.
 - **TypeScript strict** (`extends: astro/tsconfigs/strict`); JSX is
   `react-jsx` with `jsxImportSource: "preact"`. Path alias `~/*` →
@@ -31,16 +32,19 @@ roadmap.
   `src/styles/global.css`; there is no `tailwind.config.js`.
 - **Pagefind** runs as `postbuild` on `dist/`; the index lives at
   `dist/pagefind/`.
-- **Cloudflare Pages** auto-deploys on push to `main`; there is no
-  separate deploy workflow.
-- **Cloudflare Web Analytics** is wired in `BaseLayout.astro` but the
-  token is still the placeholder string `REPLACE_WITH_CLOUDFLARE_WEB_
-  ANALYTICS_TOKEN` — real analytics is not flowing yet.
-- **Node 20** (`.nvmrc`).
+- The repository has no explicit deploy workflow and is configured for
+  Cloudflare Pages; source inspection does not prove the current auto-deploy
+  state.
+- **Cloudflare Web Analytics** renders only when
+  `PUBLIC_CF_BEACON_TOKEN` is configured; source inspection does
+  not establish whether production analytics is flowing.
+- **Node 22.20.0** (`.nvmrc`).
+- **Dependency audit:** zero known npm advisories in the live registry check on
+  6 August 2026 after the Astro 7 migration and esbuild override.
 
 ## 3. Content architecture — verified from source
 
-Eight collections declared in `src/content.config.ts` via the Astro
+Nine collections declared in `src/content.config.ts` via the Astro
 Content Layer (`glob` loader):
 
 | Collection | Purpose | Notes |
@@ -48,11 +52,12 @@ Content Layer (`glob` loader):
 | `banks` | Bank metadata (logo, customer service, card list) | references `cards` |
 | `cards` | Editorial layer (L3) only — pros/cons/`editorTake`/`verifiedBy` | joined to L2 by slug |
 | `programs` | Loyalty programmes — currency, transfer partners, sweet spots | |
-| `deals` | Time-bound offers | references `banks`; `expiresOn` is required |
+| `deals` | Time-bound offers | exactly one issuer reference (`banks` or `programs`); `publishedAt`, `lastVerified`, `expiresOn` and `archived` state |
 | `guides` | Evergreen long-form | references `cards` and `programs` |
 | `salaryTransferOffers` | Live tracker entries | shares `SalaryTransferOfferShape` with history |
 | `salaryTransferOfferHistory` | Archived offers | `archived: true` literal + optional `archivedReason` |
 | `bankReputation` | Bank-level reputation signals | references `banks` |
+| `news` | Time-sensitive newsroom coverage | optional bank, card and programme references |
 
 The card system is the most non-obvious thing in the repo. Cards live
 in **two files joined by slug at render time**:
@@ -66,73 +71,41 @@ in **two files joined by slug at render time**:
   Frontmatter is intentionally tiny.
 
 Every L2 entry carries a `_provenance` map per top-level field with
-values `scraped | editor-confirmed | editor-corrected | needs-review`.
-Editor-confirmed and editor-corrected fields are **never** overwritten
-by a scrape. Typed editor fields (`welcomeBonus`, `annualFeeWaiver`,
-`_features`) are not written by the scraper at all — the scraper
-produces free-text equivalents under `_scraped_freetext.*` for the
-editor to type up by hand.
+values `scraped | editor-confirmed | editor-corrected | needs-review |
+editor-confirmed-null`. Editor-confirmed, editor-corrected and
+editor-confirmed-null values are protected from scrape overwrites.
+`propose-changes.ts` admits only its explicit field allowlist, including the
+structured `welcomeBonus` contract, and retains relevant raw captures under
+`_scraped_freetext.*` for audit.
 
 ## 4. Routes — verified from source
 
-24 routes in `src/pages/`:
-
-- Top-level: `index.astro`, `about.astro`, `team.astro`,
-  `editorial-policy.astro`, `how-we-make-money.astro`,
-  `dev/calculator-tests.astro`, `design-spike.astro` (new — the
-  Quiet Ledger spike landed in this branch).
-- Cards: `cards/index.astro`, `cards/[slug].astro`, `cards/compare.astro`,
-  `cards/cashback.astro`, `cards/islamic.astro`, `cards/miles.astro`.
-- Banks: `banks/index.astro`, `banks/[slug].astro`.
-- Airlines: `airlines/index.astro`, `airlines/[slug].astro`.
-- Guides: `guides/index.astro`, `guides/[slug].astro`.
-- Salary transfer: `salary-transfer/index.astro`,
-  `salary-transfer/calculator.astro`, `salary-transfer/[slug].astro`,
-  `salary-transfer/history/[bank].astro`.
-- Valuations: `valuations/index.astro`, `valuations/methodology.astro`.
-
-Two Preact islands are hydrated client-side:
-`src/components/islands/SalaryTransferTracker.tsx` and
-`src/components/islands/SalaryTransferCalculator.tsx`.
+The route set now includes cards, card finder and comparison, banks, airline
+programmes, guides, deals, news beats and RSS feeds, salary-transfer tracking,
+valuations, search, newsletter and trust pages. The source-only
+`/dev/calculator-tests/`, `/design-spike/` and `/style-guide/` routes are
+removed from `dist/` before Pagefind builds its production index.
 
 ## 5. Card coverage — verified from source
 
-13 cards in `src/data/cards.json`:
-
-- 9 Emirates NBD entries (pre-seeded; provenance mixed —
-  `editor-confirmed` on the structural fields).
-- 4 First Abu Dhabi Bank entries (scraped via `scripts/scrape/fab.ts`).
-- 0 cards from the other 9 priority banks (ADCB, Mashreq, HSBC, Citi,
-  Standard Chartered, RAKBank, CBD, DIB, ADIB, Emirates Islamic).
-
-`PLAN.md` Phase 5 targets 30+ cards across 11 priority banks within 60
-days of launch. We are short.
+`src/data/cards.json` contains 55 card records spanning all 12 listed banks.
+That is inventory, not a statement that every record is fully editorially
+complete. Provenance remains field-level; substantive `needs-review` fields and
+unpriced bonuses stay unresolved until primary-source review is complete.
 
 ## 6. Scrape pipeline — verified from source
 
-- One scraper exists: `scripts/scrape/fab.ts` reading
-  `scripts/scrape/banks/fab.urls.json`. The other 10 banks have neither
-  scraper nor URL config.
-- Shared library at `scripts/scrape/_lib.ts` is highly reusable —
-  `parseAED`, `parsePercent`, `parseMinSalary`, `parseEarnRate`,
-  `parseSalaryTransferRequired`, the Firecrawl wrapper, and
-  `loadFixture` are language-agnostic.
-- `scripts/scrape/_normaliser.ts` has FAB-specific perk-filter regex
-  baked in around line 130 (matches `fabonline`, `fabe?access`,
-  `ibanking.bankfab.com`). Adding ENBD or ADCB requires either
-  generalising this or per-bank overrides.
-- `scripts/scrape/propose-changes.ts` enforces the provenance contract.
-  `SCRAPED_FIELDS` no longer includes `welcomeBonus` (removed in
-  e291a87) — so even with a structured parser landing in `_normaliser.ts`
-  (this branch), the typed object will not flow into `cards.json` until
-  `SCRAPED_FIELDS` is amended.
-- `.github/workflows/scrape.yml` is hard-coded to `npm run scrape:fab`
-  on a Sunday 23:00 UTC cron. It always commits `LATEST_RUN.log` and
-  `LATEST_SCRAPE.md` to main for outside-runner debugging, then opens
-  a PR if `src/data/cards.json` changed. Never auto-merges.
-- Test coverage: one file (`tests/scrape/_normaliser.test.ts`), 15
-  tests, 2 fixtures (`fab-cashback.html`,
-  `welcome-bonus-samples.html`).
+- `scripts/scrape/banks.registry.json` lists 12 active bank scrapers; each has
+  a TypeScript entry point and URL configuration.
+- Shared parsing and normalisation remain centralised in `_lib.ts` and
+  `_normaliser.ts`; `propose-changes.ts` enforces the field-level provenance
+  contract before changes reach `cards.json`.
+- `.github/workflows/scrape.yml` runs a quarterly full sweep, accepts a
+  single-bank manual or monitor-triggered dispatch, persists diagnostics and
+  opens a PR when card data changes. It does not auto-merge product changes.
+- Firecrawl monitors are described in the workflow as the primary change
+  trigger; the scheduled sweep is the backstop. Source inspection alone does
+  not confirm the external monitors are currently healthy.
 
 ## 7. Visual idiom — verified from source
 
@@ -148,42 +121,36 @@ banned in long-form pages and layouts.
 Type pairing: Fraunces (serif) for headlines, eyebrows, "Our take";
 DM Sans for body and UI.
 
-Two-accent system: `--brand` electric blue `#1e6bd6` is primary,
-`--gold` `#b8842a` is secondary trust signal (Verified chip, "Our take"
-callout, affiliate asterisk). Each colour does one job.
+The current editorial accent token `--green` resolves to navy `#1f3a4d` in
+light mode. `--brand` remains a legacy alias for link blue `#1a5fc6`, while
+`--gold` `#b8842a` remains a secondary trust signal. Dark mode supplies
+separate contrast-safe token values; the token names are historical and must
+not be interpreted as their literal colour.
 
 ## 8. Active pain points — verified from source
 
-1. **Homepage size.** `src/pages/index.astro` is 668 lines with ~427
-   lines of scoped CSS across 7 sections. Hard to maintain; the
-   deal-rail grid bug at ≥1024px (negative `margin-inline: -16px`
-   remains after the layout switches off `grid-auto-flow: column`)
-   has lived for at least one audit cycle.
-2. **Layout duplication.** `src/layouts/ArticleLayout.astro` and
-   `src/layouts/CardReviewLayout.astro` both implement the editorial
-   header (title + meta + byline) without sharing an abstraction, and
-   both still use Tailwind `prose` classes instead of the `.dp-*`
-   system. Two competing visual grammars on the site.
-3. **Header logo discontinuity.** Desktop wordmark is 54px, mobile is
-   32px — a hard 40% jump at the 1024px breakpoint.
-4. **Documentation drift.** `SITE_ARCHITECTURE.md` §5.3 describes the
-   Header as having no hamburger drawer. The drawer ships and is
-   functional. The doc is wrong.
-5. **Coverage gap.** 13 cards from 2 banks, against an 11-bank
-   priority list and a 30-card 60-day target.
-6. **Welcome-bonus data is stranded.** Even with the new
-   `parseWelcomeBonus` in this branch, the merge contract won't admit
-   the structured form until `SCRAPED_FIELDS` is amended (fenced file
-   change, Chairman approval).
+1. **Newsletter activation.** The Buttondown integration remains disabled
+   until a verified public username and consent configuration are supplied.
+2. **Salary-transfer coverage.** Five of twelve listed banks have a current
+   source-backed offer. Five more were checked without a current live banded
+   offer. Standard Chartered and Emirates Islamic remain unresolved.
+3. **Editorial data gates.** Two card records carry three substantive
+   `needs-review` fields, and four welcome bonuses remain unpriced; the
+   production code deliberately does not infer values.
+4. **Publication state.** The 5 August integrity sprint has been reconciled
+   onto `origin/main` through PR #322 on a local working branch. The Chairman's
+   6 August direction authorises the local reconciliation and audit. Source
+   inspection does not prove the deployed state, and no new push or deployment
+   has been requested.
 
-## 9. Live site & competitors — TO-BACKFILL via Firecrawl
+## 9. Live site & competitors — historical research, live state unverified
 
-We chose to skip live scraping for the foundation memo (Council
-decision, 2026-05). Predictions to verify when Firecrawl is wired:
+The 6 August repository and local-render audit did not independently verify the deployed site.
+The May competitor observations below remain historical research, not current
+claims about those sites:
 
-- **dubaipoints.ae (production).** Expected to render the 8-section
-  homepage from `src/pages/index.astro` over Cloudflare Pages.
-  Sitemap, robots.txt, Pagefind index — all to confirm.
+- **dubaipoints.ae (production).** Current deployment, redirects, sitemap,
+  analytics and search behaviour remain to be confirmed independently.
 - **visitdubai.com.** Government tourism portal, multilingual (en/ar/zh
   at minimum), heavy event-driven calendar. Useful: official
   attractions vocabulary, AED-pricing patterns, JSON-LD usage. Not
@@ -197,12 +164,9 @@ decision, 2026-05). Predictions to verify when Firecrawl is wired:
   tag-archive depth. Differentiation lever: AED-first, UAE eligibility,
   salary-transfer tracker (none of which HfP does).
 
-Backfill task is owned by Head of Research; assigned date is the day
-Firecrawl access lands.
-
 ## 10. Editorial cadence — verified from source
 
-`EDITORIAL.md` documents the published cadence template:
+`EDITORIAL.md` documents the planned cadence template:
 
 | Day | Slot | Output |
 |---|---|---|
@@ -212,8 +176,9 @@ Firecrawl access lands.
 | Thu | Lifestyle deal roundup or news | One light editorial post |
 | Fri | Weekly recap | "This week on DubaiPoints" + newsletter send |
 
-Saturdays and Sundays are reserved for planning, verification, and
-quarterly artifacts. The Council adopts this cadence.
+Saturdays and Sundays are reserved for planning, verification, and quarterly
+artefacts. This is a planning target; the source refresh does not claim the
+cadence or newsletter is already operating publicly.
 
 ## 11. Reading list for new council members
 

@@ -1,0 +1,104 @@
+---
+interface Props {
+  source?: string;
+}
+
+const { source = "newsletter-page" } = Astro.props;
+const username = (import.meta.env.PUBLIC_BUTTONDOWN_USERNAME as string | undefined)?.trim();
+const isConfigured = Boolean(username && /^[a-zA-Z0-9_-]+$/.test(username));
+const action = isConfigured
+  ? `https://buttondown.com/api/emails/embed-subscribe/${username}`
+  : null;
+---
+
+{action ? (
+  <form action={action} method="post" class="dp-newsletter-form">
+    <label for="newsletter-email">Email address</label>
+    <div class="fields">
+      <input
+        id="newsletter-email"
+        type="email"
+        name="email"
+        autocomplete="email"
+        inputmode="email"
+        placeholder="you@example.com"
+        required
+      />
+      <button type="submit">Join the Friday brief</button>
+    </div>
+    <input type="hidden" name="embed" value="1" />
+    <input type="hidden" name="tag" value={source} />
+    <p class="privacy">
+      <a href="https://buttondown.com/legal/privacy" target="_blank" rel="noopener">Buttondown</a>
+      processes your email address, subscription IP and referrer metadata for
+      subscription management and delivery. Depending on the approved account
+      settings, it may also record opens, clicks and email-client information.
+      Unsubscribe at any time using the link in every email.
+    </p>
+  </form>
+) : (
+  <div class="dp-newsletter-fallback" role="note">
+    <p>
+      Automated sign-up is not enabled yet. To join the launch list, email
+      <a href="mailto:info@dubaipoints.ae?subject=Join%20the%20Friday%20brief">info@dubaipoints.ae</a>
+      with the subject <strong>Join the Friday brief</strong>.
+    </p>
+  </div>
+)}
+
+<style>
+  .dp-newsletter-form,
+  .dp-newsletter-fallback {
+    margin: 20px 0 28px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    background: var(--paper-alt, var(--paper));
+  }
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font: 700 12px/1.3 "DM Sans", system-ui, sans-serif;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .fields {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+  input[type="email"] {
+    min-width: 0;
+    min-height: 48px;
+    padding: 11px 13px;
+    border: 1px solid var(--line);
+    border-radius: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 500 16px/1.4 "DM Sans", system-ui, sans-serif;
+  }
+  button {
+    min-height: 48px;
+    padding: 11px 18px;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font: 700 14px/1.3 "DM Sans", system-ui, sans-serif;
+    cursor: pointer;
+  }
+  input:focus-visible,
+  button:focus-visible {
+    outline: 3px solid var(--link);
+    outline-offset: 2px;
+  }
+  .privacy {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .dp-newsletter-fallback p { margin: 0; }
+  @media (max-width: 560px) {
+    .fields { grid-template-columns: 1fr; }
+    button { width: 100%; }
+  }
+</style>

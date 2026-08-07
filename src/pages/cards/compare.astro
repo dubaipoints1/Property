@@ -17,8 +17,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
 import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
 import {
-  earnIsPercentage,
-  formatEarnValue,
+  formatEarnRate,
   topEarnEntry,
   CATEGORY_LABELS_FOR_TOP,
   compareByWelcomeValue,
@@ -98,14 +97,13 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   const top = topEarnEntry(card.earnRates as Record<string, unknown>);
   const r = card.earnRates;
   const everythingElse = typeof r.everythingElse === "number" ? r.everythingElse : 0;
-  const pct = earnIsPercentage(card.earnUnit, card.categories);
-  const fmtRest = pct ? `${everythingElse}%` : `${everythingElse}× per AED 1`;
+  const fmtRest = formatEarnRate(everythingElse, card.earnUnit, card.categories);
   if (!top || top.key === "everythingElse") {
-    return pct ? `${everythingElse}% all spend` : fmtRest;
+    return `${fmtRest} all spend`;
   }
   const topLabel = CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key;
-  const topFmt = formatEarnValue(top.value, card.earnUnit, card.categories);
-  const restFmt = formatEarnValue(everythingElse, card.earnUnit, card.categories);
+  const topFmt = formatEarnRate(top.value, card.earnUnit, card.categories);
+  const restFmt = formatEarnRate(everythingElse, card.earnUnit, card.categories);
   return `${topFmt} ${topLabel.toLowerCase()}, ${restFmt} rest`;
 };
 ---

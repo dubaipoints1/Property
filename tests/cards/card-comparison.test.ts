@@ -201,10 +201,10 @@ test("cardComparisonRows: snapshot of Skywards Infinite vs Signature display val
       key: "topEarn",
       // earnRates: dining 2, travel 2, partnerBrands 2 — `topEarnEntry`
       // iterates in the fixed TOP_EARN_ITERATION_ORDER (dining first),
-      // and breaks ties on first-hit, so "Dining 2×" wins the label.
+      // and breaks ties on first-hit. The USD denominator is preserved.
       // The numeric value is what drives the winner-rule comparison.
-      left: "Dining 2×",
-      right: "Dining 1.5×",
+      left: "Dining 2× per USD 1",
+      right: "Dining 1.5× per USD 1",
       winner: "left",
     },
     {
@@ -242,7 +242,11 @@ test("cardComparisonRows: identical annualFee resolves to a tie", () => {
   const byKey = Object.fromEntries(rows.map((r) => [r.key, r]));
   assert.equal(byKey.annualFee.winner, "tie");
   assert.equal(byKey.minSalary.winner, "tie");
-  assert.equal(byKey.topEarn.winner, "tie");
+  assert.equal(
+    byKey.topEarn.winner,
+    "none",
+    "an absent earn unit is not enough evidence to compare raw rates",
+  );
 });
 
 test("cardComparisonRows: joiningFee row is omitted when neither card has one", () => {
@@ -421,6 +425,29 @@ test("cardComparisonRows: cashback card top-earn row renders % not ×", () => {
   // citi-cashback is the left side — must carry a % and never a ×
   assert.match(top.leftValue, /%/);
   assert.doesNotMatch(top.leftValue, /×/);
+});
+
+test("cardComparisonRows: unlike reward currencies or denominators do not claim a winner", () => {
+  const a: CardForComparison = {
+    name: "Etihad",
+    annualFee: { amount: 0 },
+    eligibility: { minSalary: 0 },
+    earnRates: { dining: 10, everythingElse: 2 },
+    earnUnit: "Etihad Guest Miles per AED 10 spent",
+  };
+  const b: CardForComparison = {
+    name: "Skywards",
+    annualFee: { amount: 0 },
+    eligibility: { minSalary: 0 },
+    earnRates: { dining: 2, everythingElse: 1 },
+    earnUnit: "Skywards Miles per USD 1 spent",
+  };
+
+  const topEarn = cardComparisonRows(a, b).find((row) => row.key === "topEarn");
+  assert.ok(topEarn);
+  assert.equal(topEarn.winner, "none");
+  assert.equal(topEarn.leftValue, "Dining 10× per AED 10");
+  assert.equal(topEarn.rightValue, "Dining 2× per USD 1");
 });
 
 test("cardComparisonRows: points card top-earn row renders × not %", () => {

@@ -7,14 +7,14 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
   description="How DubaiPoints handles affiliate links, brand partnerships and sponsored content. Independence is non-negotiable; the financial firewall is in writing."
   eyebrow="Partnerships"
   heading="Where the money does and doesn't come from."
-  deck="If we ever earn affiliate commission on a card application — we don't yet — every link is marked with an asterisk and a footnote linking here. This page is the firewall, and it stays that way."
-  lastUpdated={new Date("2026-05-09")}
+  deck="No affiliate programme is live. If that changes, affiliate links must be visibly marked and the commercial relationship disclosed before activation."
+  lastUpdated={new Date("2026-08-05")}
 >
   <section>
     <h2>Affiliate links</h2>
     <p>An affiliate link is a tracked link to a bank's "Apply now" page that pays the publisher a commission if the reader applies and is approved. Many UAE comparison sites are funded almost entirely by these.</p>
-    <p>DubaiPoints does not yet run affiliate links. The architecture is in place — every monetary link in the site renders with a `markedAffiliate` flag — but no affiliate programme is live. When the first one goes live, every affiliate link on the site will be marked with a red asterisk (<span class="ast">*</span>) and a footnote pointing here.</p>
-    <p>Crucially, the asterisk is the same on a card we recommend and on a card we don't. Affiliate eligibility does not influence the verdict. Cards we'd tell you to skip get the asterisk and the same flat treatment as the cards we'd tell you to apply for.</p>
+    <p>DubaiPoints does not run affiliate links. A dormant link component can render a gold asterisk (<span class="ast">*</span>), but it is not currently used and does not by itself enforce site-wide labelling. Before any affiliate programme goes live, each affiliate link must carry a visible disclosure and direct readers to the applicable commercial policy.</p>
+    <p>Any future marker must be applied in the same way to a card we recommend and to one we do not. Affiliate eligibility must not influence the verdict or the editorial treatment.</p>
   </section>
 
   <section>
@@ -24,12 +24,12 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
 
   <section>
     <h2>Newsletter</h2>
-    <p>The Friday brief is unfunded. We do not sell sponsorship slots in the email, do not insert ad creative, and do not share the subscriber list with any third party. Cloudflare Web Analytics is the only third-party measurement on the site; it does not use cookies.</p>
+    <p>The Friday brief is unfunded. We do not sell sponsorship slots in the email, insert ad creative, sell subscriber addresses or provide the subscriber list to advertisers. Cloudflare Web Analytics measures site use without cookies. Buttondown will process subscription and delivery data only after its confirmation, privacy and tracking settings are approved and disclosed.</p>
   </section>
 
   <section>
     <h2>Conflicts of interest</h2>
-    <p>Editors disclose their own UAE banking relationships annually on the <a href="/team/">team page</a>. If an editor holds a card under review, the byline notes it. If a bank has employed or paid an editor in the past two years, that editor recuses themselves from coverage of the bank.</p>
+    <p>DubaiPoints does not currently publish a list of the editor's UAE banking relationships. That limits a reader's ability to assess product-level conflicts, so we state the limitation plainly. Any paid, hosted or other material relationship relevant to an article must be disclosed above it; a recent paid relationship with a bank precludes the editor from covering that bank.</p>
   </section>
 
   <section class="related">

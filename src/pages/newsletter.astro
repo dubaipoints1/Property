@@ -1,37 +1,40 @@
 ---
 import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+import NewsletterSignup from "~/components/NewsletterSignup.astro";
+
+const buttondownUsername = (import.meta.env.PUBLIC_BUTTONDOWN_USERNAME as string | undefined)?.trim();
+const automatedSignupReady = Boolean(
+  buttondownUsername && /^[a-zA-Z0-9_-]+$/.test(buttondownUsername),
+);
 ---
 
 <TrustPageLayout
-  title="Subscribe to the Friday brief | DubaiPoints"
-  description="The DubaiPoints brief: one email each Friday with the week's UAE salary-transfer changes, new card offers, and lifestyle deals. AED-first, dated and verified. Per-band RSS feeds also available."
-  eyebrow="Subscribe"
-  heading="The Friday brief, in your inbox."
-  deck="One email each Friday with the week's salary-transfer changes, new card offers, miles redemptions worth knowing about, and lifestyle deals. AED-first, dated and verified."
-  lastUpdated={new Date("2026-05-09")}
+  title="Join the Friday brief | DubaiPoints"
+  description="Join the DubaiPoints Friday brief for UAE salary-transfer changes, card offers, miles redemptions and lifestyle deals."
+  eyebrow="Friday brief"
+  heading={automatedSignupReady
+    ? "The Friday brief, in your inbox."
+    : "The Friday brief is preparing for launch."}
+  deck={automatedSignupReady
+    ? "One Friday email with UAE salary-transfer changes, card offers, worthwhile miles redemptions and lifestyle deals."
+    : "The brief is preparing for launch. Join the launch list while automated sign-up is being configured."}
+  lastUpdated={new Date("2026-08-05")}
 >
   <section>
-    <h2>Subscribe</h2>
+    <h2>{automatedSignupReady ? "Join the brief" : "Join the launch list"}</h2>
+    <NewsletterSignup source="newsletter-page" />
     <p>
-      The automated sign-up form is still being wired up — but you can join
-      now: email <a href="mailto:info@dubaipoints.ae?subject=Subscribe%20to%20the%20Friday%20brief">info@dubaipoints.ae</a>
-      with the subject <strong>&ldquo;Subscribe to the Friday brief&rdquo;</strong> and
-      we'll add you to the first send.
-    </p>
-    <p>
-      We run the list on <a href="https://buttondown.email/" target="_blank" rel="noopener">Buttondown</a>,
-      a paid email service run by an independent founder — chosen because it
-      doesn't sell subscriber data and doesn't auto-redirect tracking links,
-      both of which matter for a UAE-resident audience that gets enough
-      surveillance already.
+      Automated delivery uses <a href="https://buttondown.email/" target="_blank" rel="noopener">Buttondown</a>.
+      The embedded form remains disabled until the public account name and
+      confirmation, privacy and tracking settings have been verified.
     </p>
   </section>
 
   <section>
     <h2>What you'll get</h2>
     <ul>
-      <li>One Friday-morning send with the week's UAE points / banking news.</li>
-      <li>Per-band RSS feeds (5–8k, 8–15k, 15–30k, 30–50k, 50k+) so you only get the salary-transfer offers your band qualifies for.</li>
+      <li>A Friday-morning send with the week's UAE points and banking news once the brief launches.</li>
+      <li>Salary-transfer updates grouped by the five salary bands used by the live tracker.</li>
       <li>Time-bound deal alerts only when the deal is worth your time (we use the lifestyle-culture editor's judgement, not affiliate volume).</li>
     </ul>
   </section>
@@ -41,19 +44,8 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
     <ul>
       <li>Pop-up newsletter modals while you're trying to read.</li>
       <li>Affiliate links disguised as editorial picks.</li>
-      <li>Sold or shared email addresses. Cloudflare Web Analytics is the only third-party measurement on the site, and it doesn't use cookies.</li>
+      <li>Sold email addresses or subscriber lists shared with advertisers. Cloudflare Web Analytics measures site use without cookies. If the form is enabled, Buttondown processes subscription and delivery data under the disclosure above.</li>
     </ul>
-  </section>
-
-  <section>
-    <h2>Until the integration ships</h2>
-    <p>
-      If you'd like to be on the list when it goes live, send a one-line
-      email to <a href="mailto:info@dubaipoints.ae?subject=Newsletter">info@dubaipoints.ae</a>
-      with the subject "<em>Newsletter</em>". We'll add you manually from
-      a small holding list and migrate everyone over when the form goes
-      live. No promotional content while you wait.
-    </p>
   </section>
 
   <section>
@@ -61,9 +53,9 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
     <p>
       If you prefer RSS over email, the site-wide feed is at
       <a href="/rss.xml"><code>/rss.xml</code></a>. Per-band salary-transfer
-      feeds will follow once the band landings ship — see the
-      <a href="/editorial-policy/">editorial policy</a> for what we publish
-      and how often.
+      feeds are not yet available; they will be linked here only after they
+      ship. See the <a href="/editorial-policy/">editorial policy</a> for
+      what we publish and how often.
     </p>
   </section>
 

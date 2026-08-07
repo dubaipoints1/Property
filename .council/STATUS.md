@@ -12,7 +12,13 @@ Managing Editor on every state change. Cross-checks against
 **Status:** OPERATIONAL.
 **Convened:** 2026-05-08 by the publication owner (Chairman).
 **Charter:** `CLAUDE.md` Part I.
-**Active branch:** `claude/council-spike` (PR #17 → `main`).
+**Active branch:** `codex/integrity-conversion-sprint` (unpublished working branch).
+**Current release gate:** `origin/main` through PR #322 has been reconciled with
+the local integrity sprint on `codex/integrity-conversion-sprint`. The Chairman's
+6 August in-session direction authorises this reconciliation and site audit as
+local work. No push, pull request, deployment or publication-status claim is
+authorised unless separately requested and verified. Evidence:
+`.council/sessions/2026-08-06-main-reconciliation-site-audit.md`.
 
 ## Chairman picks (2026-05-08)
 
@@ -52,7 +58,7 @@ Original brief: `.council/research/2026-05/ux-redesign-brief.md`.
 
 ### 2. Council convened — agents, commands, and policy in force
 
-- 10 sub-agents at `.claude/agents/*.md` are routable via `Task` and
+- 14 sub-agents at `.claude/agents/*.md` are routable via `Task` and
   via the slash commands.
 - 4 slash commands at `.claude/commands/*.md` are live: `/brief`,
   `/research`, `/publish`, `/council`.
@@ -76,17 +82,12 @@ Contract tests at `tests/scrape/propose-changes.test.ts` cover:
 - editor-confirmed entries are never overwritten by a scrape
 - string fallback still routes when normaliser couldn't parse
 
-### B. Live-site backfill via Firecrawl
+### B. Live-site and monitor verification
 
-`.council/00_state_of_the_site.md` §9 carries TO-BACKFILL markers on
-the live-site and competitor sections. They will fill in once
-Firecrawl access is wired (MCP server connected, or
-`FIRECRAWL_API_KEY` provisioned and the existing HTTP client used).
-
-**Recommendation:** Owner provisions Firecrawl access; Head of
-Research runs the backfill scrape on first session post-access and
-publishes as
-`.council/research/2026-05/state-of-site-backfill.md`.
+The 5 August refresh verified the working repository and production artefact,
+not the deployed site or the external health of Firecrawl monitors. Those
+states require a separate live check before publication or a monitoring-health
+claim.
 
 ## Operating cadence in force
 
@@ -102,14 +103,16 @@ Per `EDITORIAL.md` (carried forward unamended):
 
 ## Next milestones (sequenced)
 
-1. **Homepage rebuild** to the 4-section Quiet Ledger spec
-   (`src/pages/index.astro`). Highest visible impact; touched only
-   when prepared with browser preview.
-2. **Structure expansion** per `.council/04_content_taxonomy.md`:
-   per-band salary-transfer landing pages, `/cards/best/`,
-   `/news/`, `/newsletter/`, `/search/`.
-3. **Weekly Firecrawl cadence** for the 10 remaining banks. Order
-   per the May 2026 scrape brief: ENBD first.
+1. Close and record the 6 August reconciliation audit; retain the branch
+   locally unless the Chairman separately directs a push or deployment.
+2. Configure a verified Buttondown public username and consent settings before
+   enabling the newsletter form; the unconfigured site retains an email
+   fallback.
+3. Complete the two unresolved salary-transfer searches: Standard Chartered
+   and Emirates Islamic. Five banks have current source-backed offers; five
+   more were checked without a current live banded offer.
+4. Resolve the remaining substantive `needs-review` card fields and four
+   unpriced welcome bonuses without guessing values.
 
 The phased plan is at
 `.council/sessions/2026-05-08-rollout.md`.
@@ -127,3 +130,7 @@ The phased plan is at
 | 2026-05-08-bis | technical-lead | Chunk 1 (PR #25, merged): `global.css` token retune — palette, type weights, body 15→16px, eyebrow `--ink → --green`. Cascades to every `.dp-*` component automatically. Bonus data repair: `cards.json` enum violations from my ENBD URL scaffold (real-estate / premium / online / Diners-Club-International) all corrected. NETWORK enum expansion for proper Diners Club support queued as fenced follow-up. |
 | 2026-05-08-bis | technical-lead | Chunk 2 (PR #27, merged): TPG homepage rebuild — typographic hero / feature card / latest with tabs / favourite cards (filter pills + card-tile grid) / newsletter band. 6 reusable component classes added to `global.css` (`.dp-band-*`, `.dp-feature-card`, `.dp-tabs`, `.dp-filter-pills`, `.dp-card-tile`, `.dp-valuation-row`). Chunks 3–7 consume these without duplication. |
 | 2026-05-08-bis | managing-editor | **Pre-content foundation** queued ahead of chunks 3–7 to unblock "start putting stories and news": (a) `news` content collection + `/news/` index + slug route; (b) 20 MDX stubs for ENBD cards merged into `cards.json` by PR #22 — frontmatter-only "review-in-progress" placeholders so the pages don't render half-broken; (c) `/newsletter/` stub + `/rss.xml` endpoint to fix the homepage CTAs that pointed to 404s; (d) `/design-spike/` route deleted (Quiet Ledger spike was superseded). Doc amendments to `BRAND_NOTES`, `EDITORIAL`, `SITE_ARCHITECTURE`, `CLAUDE.md` Part I queued as separate PR. |
+| 2026-08-05 | technical-lead | Integrity and conversion sprint opened on `codex/integrity-conversion-sprint`: earn-rate unit integrity, claim-force corrections, configuration-gated Buttondown form, internal-route pruning, Astro 7/Node 22 baseline and production verification. Publication remains gated. |
+| 2026-08-05 | standards-editor | Chairman selected the narrow `DubaiPoints Editorial` organisational-byline exception for a one-editor publication; named contributors still require real-name attribution and trust schema remains `Organization`-only until a named profile exists. |
+| 2026-08-05 | managing-editor | Renewed review complete: all nine required non-Chairman roles pass and route the exact working tree to the Chairman gate. No commit, PR, publication or deployment is authorised yet. |
+| 2026-08-06 | managing-editor | Reconciled the integrity sprint onto `origin/main` through PR #322. Chairman in-session direction authorises the local reconciliation and audit. Salary tracker is 5 current offers, 5 checked without a current live banded offer, and 2 unresolved. Push, deployment and live-publication state remain separate. |

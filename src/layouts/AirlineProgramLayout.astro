@@ -205,6 +205,13 @@ const schema = {
     padding: 40px 32px 80px;
   }
   @media (min-width: 1024px) {
+    /* The heading and metrics occupy the same main column as the hero and
+       prose. The right padding reserves the 300px reference rail plus its
+       64px gutter, eliminating the unrelated centred 760px header shell. */
+    .dp-pagehead.is-narrow {
+      max-width: var(--container-listing);
+      padding: 56px calc(32px + 300px + 64px) 32px 32px;
+    }
     .dp-prog-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 64px; }
   }
   @media (max-width: 640px) {
