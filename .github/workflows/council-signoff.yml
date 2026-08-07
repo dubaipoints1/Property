@@ -1,8 +1,16 @@
-# Council sign-off gate — Charter §7.
+# Council sign-off check — Charter §7.
 #
-# "No pull request merges to `main` without a `## Council sign-off`
-# section in its body […] A PR missing the sign-off block is not
-# mergeable, no exceptions."
+# ADVISORY since 7 August 2026, on Chairman direction given in-session
+# ("Can we remove this chairman approval. Blocking"). The parser still
+# runs and reports, but a missing or unapproved sign-off block emits a
+# warning annotation instead of failing the check. See the 2026-08-07
+# Charter amendment in CLAUDE.md.
+#
+# ⚠ Do NOT delete this workflow while `council-signoff` remains a
+# required status check in the main-branch ruleset: a required check
+# that never reports blocks every PR forever. Remove the required check
+# in Settings → Rules first; until then, this job must keep reporting
+# success.
 #
 # CLAUDE.md previously recorded this as unenforced and suggested a future
 # action "grep PR bodies for the section header". This is that action —
@@ -35,16 +43,11 @@
 # that re-runs the gate when someone flips the Chairman cell to `approved`
 # without pushing — which works once the PR is out of draft.
 #
-# If the gate is red, you have just approved in the body, and no run
-# appears: re-run this job from the Actions tab, or push.
-#
-# ── Making it binding ─────────────────────────────────────────────────
-#   Settings → Branches → branch protection for `main`
-#   ✓ Require status checks to pass before merging → add `council-signoff`
-#
-# Expect a PR to stay RED until the Chairman row reads `approved`. That is
-# the gate working — Charter §"Non-negotiables" 3 makes the Chairman the
-# only publish gate.
+# Historical note: until 2026-08-07 this was a binding gate (required
+# status check + hard failure when the Chairman cell was not approved),
+# and a stale pull_request-event re-run replaying an old body could
+# hold a PR red until someone re-ran the push-event run. Advisory mode
+# retires that whole failure class.
 
 name: Council sign-off
 
@@ -122,11 +125,19 @@ jobs:
           echo "NO_PR" > pr-body.marker
           echo "No open PR for $BRANCH after 90s — nothing to gate on this push."
 
-      - name: Check Council sign-off block
+      # Advisory: report, never fail (2026-08-07 amendment). The exit
+      # code is swallowed deliberately — the required status check on
+      # main stays configured, so this job going red would block merges,
+      # which is exactly what the amendment removes.
+      - name: Check Council sign-off block (advisory)
         run: |
           set -euo pipefail
           if [ -f pr-body.marker ]; then
             echo "Skipped: no open pull request for this branch."
             exit 0
           fi
-          PR_BODY="$(cat pr-body.txt)" node scripts/ci/check-signoff.mjs
+          if PR_BODY="$(cat pr-body.txt)" node scripts/ci/check-signoff.mjs; then
+            echo "Council sign-off block present; Chairman approved."
+          else
+            echo "::warning title=Council sign-off::Sign-off block missing or Chairman cell not approved. Advisory only since 2026-08-07 — not blocking merge."
+          fi
