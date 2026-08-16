@@ -4,27 +4,27 @@ v22.20.0
 
 === npm install ===
 
-added 478 packages in 7s
+added 478 packages in 8s
 [install] exit=0
-=== npm run scrape:emirates-islamic ===
+=== npm run scrape:mashreq ===
 
-> dubaipoints@0.1.0 scrape:emirates-islamic
-> tsx scripts/scrape/emirates-islamic.ts
+> dubaipoints@0.1.0 scrape:mashreq
+> tsx scripts/scrape/mashreq.ts
 
-[emirates-islamic] Scraping 1 card(s)
-[emirates-islamic] Fetching https://www.emiratesislamic.ae/en/cards/credit-cards/switch-cashback-credit-card
-[emirates-islamic] Fetching https://www.emiratesislamic.ae/en/soc/cards
-[emirates-islamic] Wrote data/scraped/emirates-islamic/2026-08-16T04-55-32-495Z.json
-[emirates-islamic] 1 card(s) had parsing warnings:
-[emirates-islamic]   emirates-islamic-switch-cashback: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; Could not parse minimum salary; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[emirates-islamic] exit=0
+[mashreq] Scraping 1 card(s)
+[mashreq] Fetching https://www.mashreq.com/en/uae/neo/cards/credit-cards/cashback-credit-card/
+[mashreq] Fetching https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-Final-EngArb.ashx
+[mashreq] Wrote data/scraped/mashreq/2026-08-16T04-55-37-263Z.json
+[mashreq] 1 card(s) had parsing warnings:
+[mashreq]   mashreq-cashback: Could not parse minimum salary
+[mashreq] exit=0
 
 === npm run scrape:propose ===
 
 > dubaipoints@0.1.0 scrape:propose
 > tsx scripts/scrape/propose-changes.ts
 
-[propose] Wrote PR_BODY.md: 0 new, 1 changed, 4 warning(s)
+[propose] Wrote PR_BODY.md: 0 new, 1 changed, 1 warning(s)
 
 === git status src/data/cards.json ===
  M src/data/cards.json
