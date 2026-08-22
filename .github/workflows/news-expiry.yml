@@ -1,0 +1,73 @@
+# Weekly news-expiry sweep — sibling of deal-expiry.yml for the news
+# collection. Deals carry `expiresOn` and their sweep enforces archiving;
+# news stories describe promotion windows in prose, so the optional
+# `staleAfter` frontmatter field records when a story's claims stop being
+# safe to serve unreviewed (see scripts/ci/check-news-expiry.mjs).
+#
+# The rule check also runs in `npm test` via its pure functions, but a
+# PR-time test only fires when someone happens to open a PR — staleness is
+# a function of the calendar, not of commits. This cron is what actually
+# notices a window closing on a quiet week. On failure it opens an issue
+# for the news desks (routed by each story's `beat`) rather than emailing
+# a red X into the void; issue creation is idempotent per stale-story set
+# via a marker in the title.
+#
+# Same Tuesday-morning-Gulf slot as deal-expiry.yml, off-minute from it
+# per the scheduling hygiene used by monitor.yml.
+
+name: News expiry sweep
+
+on:
+  schedule:
+    - cron: "37 5 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check for stories past staleAfter without a re-check
+        id: sweep
+        run: |
+          set +e
+          node scripts/ci/check-news-expiry.mjs 2> stale.txt
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          cat stale.txt >&2
+
+      - name: Open issue for the news desks
+        if: steps.sweep.outputs.exit != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="News expiry sweep: stories past staleAfter need a re-check ($(date -u +%Y-%m-%d))"
+          existing=$(gh issue list --state open --search "News expiry sweep in:title" --json number --jq '.[0].number // empty')
+          {
+            echo "The weekly sweep found news stories past \`staleAfter\` with no \`updatedAt\` bump since:"
+            echo
+            echo '```'
+            cat stale.txt
+            echo '```'
+            echo
+            echo "Owner: the news desk named in each story's \`[beat]\` (airline / hotel / banking). Re-check the story against its sources, update the prose, and bump \`updatedAt\` (plus \`staleAfter\` if a new window opened) — the re-check is the point of the sweep, not the flag."
+          } > issue-body.md
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file issue-body.md
+          else
+            gh issue create --title "$title" --body-file issue-body.md \
+              --label "news" || gh issue create --title "$title" --body-file issue-body.md
+          fi

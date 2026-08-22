@@ -1,0 +1,118 @@
+---
+// Per-salary-band card pages — audit recommendation #5 (22 August 2026).
+//
+// One page per common salary point, derived entirely from L2
+// `eligibility.minSalary` — the same field SpecCard renders — so the
+// listings can never drift from the card database. Cards whose salary
+// minimum is unverified (`_provenance.eligibility: needs-review`) are
+// EXCLUDED rather than shown as accessible: an unpublished minimum is
+// not evidence the reader qualifies (§6 posture).
+import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
+import { getEntry } from "astro:content";
+import {
+  getActiveCards,
+  welcomeBonusHeadline,
+  annualFeeLabel,
+} from "~/lib/cardsData";
+
+export function getStaticPaths() {
+  // Points chosen to match how UAE salaries cluster at bank eligibility
+  // cut-offs (5k entry, 8k mid, 12k the common Skywards-card gate, 20k
+  // premium, 30k Priority territory). `prev` bounds the "newly in reach"
+  // callout so each page says something the previous one could not.
+  return [
+    { params: { point: "5000" }, props: { prev: 0 } },
+    { params: { point: "8000" }, props: { prev: 5000 } },
+    { params: { point: "12000" }, props: { prev: 8000 } },
+    { params: { point: "20000" }, props: { prev: 12000 } },
+    { params: { point: "30000" }, props: { prev: 20000 } },
+  ];
+}
+
+const point = Number(Astro.params.point);
+const { prev } = Astro.props;
+const fmtAED = (n: number) => `AED ${n.toLocaleString("en-GB")}`;
+
+const qualifying = getActiveCards()
+  .filter(
+    (c) =>
+      c._provenance?.eligibility !== "needs-review" &&
+      c.eligibility.invitationOnly !== true &&
+      c.eligibility.minSalary <= point,
+  )
+  // Highest gate first: the cards this salary only just unlocks are the
+  // reason the reader picked this page over the generic directory.
+  .sort((a, b) => b.eligibility.minSalary - a.eligibility.minSalary);
+
+const newlyInReach = qualifying.filter((c) => c.eligibility.minSalary > prev);
+
+const rows = await Promise.all(
+  qualifying.map(async (c) => {
+    const bank = await getEntry("banks", c.bank);
+    const fee = annualFeeLabel(c);
+    return {
+      cardName: c.name,
+      bankName: bank?.data.name ?? c.bank,
+      href: `/cards/${c.slug}/`,
+      values: [
+        c.eligibility.minSalary > 0
+          ? `${fmtAED(c.eligibility.minSalary)}/mo`
+          : "No minimum",
+        fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
+        c._provenance?.fxFee === "needs-review" ? "—" : `${c.fxFee}%`,
+        c.eligibility.salaryTransferRequired ? "Required" : "Not required",
+        welcomeBonusHeadline(c.welcomeBonus) || "—",
+      ],
+    };
+  }),
+);
+
+const monthYear = new Date().toLocaleDateString("en-GB", {
+  month: "long",
+  year: "numeric",
+});
+const pointLabel = point.toLocaleString("en-GB");
+---
+
+<ComparisonTableLayout
+  title={`Best UAE credit cards at AED ${pointLabel} salary (${monthYear}) | DubaiPoints`}
+  heading={`UAE credit cards you can get at AED ${pointLabel}/month`}
+  description={`Every card in our database whose published salary minimum is AED ${pointLabel}/month or below — ${qualifying.length} cards, sorted so the ones this salary only just unlocks come first. Minimums, fees and bonuses from issuer pages and fee schedules, dated per card.`}
+  columns={["Min salary", "Annual fee", "FX fee", "Salary transfer", "Welcome bonus"]}
+  rows={rows}
+>
+  <section class="dp-prose">
+    {newlyInReach.length > 0 && (
+      <>
+        <h2>What AED {pointLabel} unlocks{prev > 0 ? ` that AED ${prev.toLocaleString("en-GB")} did not` : ""}</h2>
+        <ul>
+          {newlyInReach.map((c) => (
+            <li>
+              <a href={`/cards/${c.slug}/`}>{c.name}</a> — published minimum{" "}
+              {fmtAED(c.eligibility.minSalary)}/mo
+              {c.eligibility.salaryTransferRequired
+                ? ", salary transfer required"
+                : ""}
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+    <h2>How to read this table</h2>
+    <p>
+      The salary figures are the issuers' <em>published</em> minimums —
+      banks can and do approve or decline either side of them, and several
+      price the same card differently with and without a salary transfer.
+      Cards whose minimum we could not verify against a published source
+      are left off this page entirely rather than shown as within reach;
+      invitation-only cards are excluded for the same reason.
+    </p>
+    <p>
+      If you are moving your salary anyway, check the{" "}
+      <a href="/salary-transfer/">salary-transfer tracker</a> first — at
+      several banks the switch itself currently pays a banded cash bonus
+      on top of whatever card you take.
+    </p>
+  </section>
+</ComparisonTableLayout>
+

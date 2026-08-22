@@ -1,0 +1,61 @@
+---
+// Directory for the per-salary-band card pages. Counts are derived from
+// L2 at build time so the tiles can never overstate coverage.
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getActiveCards } from "~/lib/cardsData";
+
+const POINTS = [5000, 8000, 12000, 20000, 30000];
+const cards = getActiveCards().filter(
+  (c) =>
+    c._provenance?.eligibility !== "needs-review" &&
+    c.eligibility.invitationOnly !== true,
+);
+const tiles = POINTS.map((p) => ({
+  point: p,
+  label: `AED ${p.toLocaleString("en-GB")}`,
+  count: cards.filter((c) => c.eligibility.minSalary <= p).length,
+}));
+---
+
+<BaseLayout
+  title="UAE credit cards by salary | DubaiPoints"
+  description="Which UAE credit cards you can actually get at AED 5,000, 8,000, 12,000, 20,000 or 30,000 a month — published salary minimums from issuer pages and fee schedules, dated per card."
+  fullWidth
+>
+  <article class="dp-article is-wide">
+    <header class="dp-article-head">
+      <div class="crumb">DubaiPoints / Cards / By salary</div>
+      <h1>Cards by salary.</h1>
+      <p class="deck">
+        UAE card eligibility is gated on published salary minimums, so the
+        honest question is not "what is the best card" but "what is the
+        best card <em>I can get</em>". Pick your salary; every listed card
+        clears its published minimum at that level.
+      </p>
+    </header>
+
+    <div class="dp-dir-grid">
+      {tiles.map((t) => (
+        <a class="dp-dir-tile" href={`/cards/salary/${t.point}/`}>
+          <div class="dp-dir-tile-kicker">{t.count} cards in reach</div>
+          <h2>{t.label}/month</h2>
+          <p>
+            Every covered card with a published minimum at or below
+            {" "}{t.label}, the ones this level newly unlocks called out
+            first.
+          </p>
+        </a>
+      ))}
+    </div>
+
+    <section class="dp-prose">
+      <p>
+        Minimums are the issuers' published figures, verified per card and
+        dated on each review. Cards with unpublished or unverified
+        minimums are excluded rather than guessed at. Moving your salary
+        to qualify? The <a href="/salary-transfer/">salary-transfer
+        tracker</a> lists which banks currently pay you for the switch.
+      </p>
+    </section>
+  </article>
+</BaseLayout>

@@ -300,6 +300,12 @@ const news = defineCollection({
     description: z.string(),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
+    // The date after which the story's claims stop being safe to serve
+    // as-is (a promotion window closing, a registration deadline). Set by
+    // the editor from the story's own prose — never extracted (§6). Past
+    // it, the news-expiry sweep (scripts/ci/check-news-expiry.mjs) flags
+    // the story until updatedAt is bumped past staleAfter by a re-check.
+    staleAfter: z.coerce.date().optional(),
     category: NEWS_CATEGORY.default("news"),
     beat: NEWS_BEAT.optional(),
     relatedCards: z.array(reference("cards")).default([]),

@@ -260,16 +260,18 @@ test("schema-2a-0: cards.json validates against the augmented schema", () => {
   );
 });
 
-test("schema-2a-0: 9 cards carry joiningFee", () => {
+test("schema-2a-0: 10 cards carry joiningFee", () => {
   // 9th added 2026-06-11: etihad-guest-elevate AED 2,625 joining fee,
   // verified against the live product page + May 2026 KFS (both agree).
+  // 10th added 2026-08-22: liv-cashback-plus AED 700 joining fee, per the
+  // Liv charges page (waived with an active Liv Max subscription).
   const slugs = Object.entries(cards)
     .filter(([, c]) => (c as { joiningFee?: unknown }).joiningFee !== undefined)
     .map(([s]) => s);
   assert.equal(
     slugs.length,
-    9,
-    `Expected 9 cards with joiningFee, got ${slugs.length}: ${slugs.join(", ")}`,
+    10,
+    `Expected 10 cards with joiningFee, got ${slugs.length}: ${slugs.join(", ")}`,
   );
 });
 

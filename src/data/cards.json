@@ -5148,6 +5148,175 @@
       "partnerBrands": "Get a complimentary 12-month Careem Plus subscription. Simply add and use your HSBC credit card on the Careem app.; HSBC Emirates Skywards Signature Credit Card; HSBC Emirates Skywards Infinite Credit Card"
     }
   },
+  "liv-cashback": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "eligibility": "needs-review",
+      "transferPartners": "editor-confirmed",
+      "perks": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-08-22",
+    "_lastReviewed": "2026-08-22",
+    "bank": "liv",
+    "name": "Liv Cashback Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "cashback"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "fxFee": 1.99,
+    "interestRate": {
+      "monthly": 3.49,
+      "annual": 41.88
+    },
+    "earnRates": {
+      "everythingElse": 0.75,
+      "_caps": {
+        "monthly_max_aed": 750
+      }
+    },
+    "earnUnit": "% cashback",
+    "eligibility": {
+      "minSalary": 0,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried"
+      ]
+    },
+    "transferPartners": [
+      "Emirates Skywards"
+    ],
+    "perks": [
+      "Cashback rate is set by TOTAL monthly spend and applies to all of that month's spend once a tier is reached: 0.75% up to AED 4,999, 1.5% from AED 5,000, 2% at AED 10,000+. The 0.75% shown in the earn table is the guaranteed base tier.",
+      "Government, utility and other low-margin merchant categories earn 0.1% regardless of tier.",
+      "Monthly cashback cap of AED 750, additionally bounded by a percentage of the card's credit limit.",
+      "Rewards accrue as points redeemable as cashback or as Emirates Skywards Miles — up to 5,000 Miles per month; redemption requires a 500-point minimum.",
+      "Free for life — no joining or annual fee.",
+      "25+ airport lounges, 2 VOX cinema tickets/month plus 25% off F&B, 20% off 1 Talabat order/month.",
+      "One card per customer — Liv issues either the Cashback+ or the Cashback card, not both.",
+      "No minimum salary is published on Liv's product page, feature T&C or KFS; application and approval are handled in the Liv X app."
+    ],
+    "applyUrl": "https://www.liv.me/en/liv-credit-card",
+    "lastVerified": "2026-08-22",
+    "sources": [
+      "https://www.liv.me/en/liv-credit-card",
+      "https://www.liv.me/en/important-information/features/liv-credit-card-feature",
+      "https://www.liv.me/en/charges"
+    ],
+    "_scraped_freetext": {
+      "perks": [
+        "Tiers: AED 0–4,999 → 0.75% · 5,000–9,999 → 1.5% · 10,000+ → 2.0% (rate set by total monthly spend tier; applies to all that month's spends once a tier is reached).",
+        "Low-merchant 0.1%; cap AED 750/month (+ credit-limit bound).",
+        "Skywards alternative: up to 5,000 Miles/month; 500-point redemption minimum.",
+        "Free for life; monthly interest 3.49% (APR 41.88%).",
+        "Customers can only apply for 1 of the two credit cards.",
+        "Network basis for the editor-confirmed Mastercard entry: the feature T&C's tier names (Tamayaz Platinum / Tamayaz World in the KFS product table), the Mastercard-published MCC framework, and Mastercard-branded perks (Zee5 Mastercard 4K offer) on both cards."
+      ]
+    }
+  },
+  "liv-cashback-plus": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "eligibility": "needs-review",
+      "transferPartners": "editor-confirmed",
+      "perks": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review",
+      "joiningFee": "editor-confirmed"
+    },
+    "_lastScraped": "2026-08-22",
+    "_lastReviewed": "2026-08-22",
+    "bank": "liv",
+    "name": "Liv Cashback+ Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "cashback"
+    ],
+    "joiningFee": {
+      "amount": 700,
+      "currency": "AED"
+    },
+    "annualFee": {
+      "amount": 700,
+      "currency": "AED"
+    },
+    "fxFee": 1.99,
+    "interestRate": {
+      "monthly": 3.25,
+      "annual": 39
+    },
+    "earnRates": {
+      "everythingElse": 1,
+      "_caps": {
+        "monthly_max_aed": 1500
+      }
+    },
+    "earnUnit": "% cashback",
+    "eligibility": {
+      "minSalary": 0,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried"
+      ]
+    },
+    "transferPartners": [
+      "Emirates Skywards"
+    ],
+    "perks": [
+      "Cashback rate is set by TOTAL monthly spend and applies to all of that month's spend once a tier is reached: 1% up to AED 6,999, 2% from AED 7,000, 4% at AED 15,000+. The 1% shown in the earn table is the guaranteed base tier.",
+      "Government, utility and other low-margin merchant categories earn 0.1% regardless of tier.",
+      "Monthly cashback cap of AED 1,500, additionally bounded by a percentage of the card's credit limit (Liv's own illustration: an AED 20,000 limit caps cashback at AED 800/month).",
+      "Rewards accrue as points redeemable as cashback or as Emirates Skywards Miles — up to 10,000 Miles per month; redemption requires a 500-point minimum.",
+      "800+ airport lounges, 3 VOX cinema tickets/month plus 25% off F&B, 1 Careem airport transfer/year, travel medical insurance up to USD 500,000, 20% off 1 Talabat order/month, Global Blue VIP.",
+      "Joining fee AED 700, waived with an active Liv Max subscription; late payment fee AED 175; card replacement AED 25.",
+      "One card per customer — Liv issues either the Cashback+ or the Cashback card, not both.",
+      "No minimum salary is published on Liv's product page, feature T&C or KFS; application and approval are handled in the Liv X app."
+    ],
+    "applyUrl": "https://www.liv.me/en/liv-credit-card",
+    "lastVerified": "2026-08-22",
+    "sources": [
+      "https://www.liv.me/en/liv-credit-card",
+      "https://www.liv.me/en/important-information/features/liv-credit-card-feature",
+      "https://www.liv.me/en/charges"
+    ],
+    "_scraped_freetext": {
+      "perks": [
+        "Tiers: AED 0–6,999 → 1.0% · 7,000–14,999 → 2.0% · 15,000+ → 4.0% (rate set by total monthly spend tier; applies to all that month's spends once a tier is reached).",
+        "Low-merchant categories (government, utilities, bills): 0.1%.",
+        "Cap: AED 1,500/month, additionally bounded by a % of credit limit (illustration: AED 20,000 limit → AED 800/mo max).",
+        "Skywards alternative: up to 10,000 Miles/month; 500-point redemption minimum.",
+        "Customers can only apply for 1 of the two credit cards.",
+        "Network basis for the editor-confirmed Mastercard entry: the feature T&C's tier names (Tamayaz Platinum / Tamayaz World in the KFS product table), the Mastercard-published MCC framework, and Mastercard-branded perks (Zee5 Mastercard 4K offer) on both cards."
+      ]
+    }
+  },
   "mashreq-cashback": {
     "_provenance": {
       "bank": "editor-confirmed",
