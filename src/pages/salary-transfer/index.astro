@@ -19,19 +19,23 @@ const offers = await getLiveOffers();
 // actually covers, so the gap is visible on the page instead of being
 // something a reader could only find by counting rows.
 //
-// Current offers are derived. Negative and unresolved findings are editorial
-// classifications from the 6 August source sweep and are named explicitly so
-// a reader can distinguish an absence finding from an unfinished search.
+// Current offers are derived. Negative and special-case findings are
+// editorial classifications from the source sweeps (6 August, updated 22
+// August 2026) and are named explicitly so a reader can distinguish an
+// absence finding from an unfinished search. Standard Chartered is its own
+// category: the bank ADVERTISES an AED 2,000 Priority salary-transfer
+// cashback today, but the campaign T&C it links is the April–June 2026
+// document — advertised, without current published terms.
 const allBanks = await getCollection("banks");
 const trackedBanks = new Set(offers.map((o) => o.bankSlug));
 const coveredCount = allBanks.length;
 const checkedWithoutLiveOffer = ["adcb", "adib", "cbd", "citi", "emirates-nbd"];
-const unresolvedBanks = ["standard-chartered", "emirates-islamic"];
+const advertisedWithoutCurrentTerms = ["standard-chartered"];
 const bankName = new Map(allBanks.map((bank) => [bank.id, bank.data.name]));
 const classifiedBanks = new Set([
   ...trackedBanks,
   ...checkedWithoutLiveOffer,
-  ...unresolvedBanks,
+  ...advertisedWithoutCurrentTerms,
 ]);
 if (classifiedBanks.size !== coveredCount) {
   throw new Error(
@@ -84,8 +88,15 @@ const newestVerification = offers.length
     <p class="dp-coverage-note">
       <strong>Coverage status.</strong> We found current, source-backed offers for
       {" "}{trackedBanks.size} banks. We checked {listNames(checkedWithoutLiveOffer)}
-      {" "}and found no current live banded offer. {listNames(unresolvedBanks)} remain
-      unresolved. Absence from the table is not evidence that no offer exists.
+      {" "}and found no current live banded cash offer — ADCB is running an
+      education-sector-only TouchPoints salary campaign (15 July – 30 September
+      2026) that doesn't qualify for the cash table, and ADIB's salary programme
+      remains a prize draw rather than a banded reward (re-checked 22 August).
+      {" "}{listNames(advertisedWithoutCurrentTerms)} advertises an AED 2,000
+      Priority Banking salary-transfer cashback (salaries AED 30,000+), but the
+      campaign terms it links to are the April–June 2026 document — treat it as
+      unverified until current terms are republished. Absence from the table is
+      not evidence that no offer exists.
     </p>
   </div>
 
