@@ -29,7 +29,16 @@ const offers = await getLiveOffers();
 const allBanks = await getCollection("banks");
 const trackedBanks = new Set(offers.map((o) => o.bankSlug));
 const coveredCount = allBanks.length;
-const checkedWithoutLiveOffer = ["adcb", "adib", "cbd", "citi", "emirates-nbd"];
+const checkedWithoutLiveOffer = [
+  "adcb",
+  "adib",
+  "al-hilal",
+  "cbd",
+  "citi",
+  "emirates-nbd",
+  "liv",
+  "wio",
+];
 const advertisedWithoutCurrentTerms = ["standard-chartered"];
 const bankName = new Map(allBanks.map((bank) => [bank.id, bank.data.name]));
 const classifiedBanks = new Set([
@@ -92,6 +101,9 @@ const newestVerification = offers.length
       education-sector-only TouchPoints salary campaign (15 July – 30 September
       2026) that doesn't qualify for the cash table, and ADIB's salary programme
       remains a prize draw rather than a banded reward (re-checked 22 August).
+      Liv and Wio run rate-based salary benefits — savings interest tied to the
+      salary transfer, not banded cash — and Al Hilal's up-to-AED-15,000
+      campaign ended 4 August 2026 (checked 22 August).
       {" "}{listNames(advertisedWithoutCurrentTerms)} advertises an AED 2,000
       Priority Banking salary-transfer cashback (salaries AED 30,000+), but the
       campaign terms it links to are the April–June 2026 document — treat it as

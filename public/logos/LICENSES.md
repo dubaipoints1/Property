@@ -21,6 +21,12 @@ serif until a clean asset is sourced.
   downloadable asset). Each renders the name in serif and falls back
   gracefully.
 
+  **Coverage expansion (2026-08-22):** three more placeholder text-marks
+  added at coverage launch — banks/liv, banks/wio, banks/al-hilal. These
+  were authored as placeholders per Charter §10 (no brand mark drawn);
+  no Commons {{PD-textlogo}} / brand-kit sourcing sweep has been run for
+  them yet. Replace only per the replacement rule below.
+
   **Sourcing sweep (2026-05-30):** re-checked all 5. Wikimedia Commons
   has no SVG logo for any of them (DIB's Commons category holds only
   panoramio photos; the others have no category). Wikipedia hosts
@@ -109,6 +115,9 @@ Conditions, all of them:
 | banks/dib | placeholder | 2026-05-26 | Replace with Dubai Islamic Bank brand-kit SVG |
 | banks/adib | placeholder | 2026-05-26 | Replace with ADIB brand-kit SVG |
 | banks/cbd | placeholder | 2026-05-26 | Replace with Commercial Bank of Dubai brand-kit SVG |
+| banks/liv | placeholder | 2026-08-22 | Text-mark authored by DubaiPoints. Replace with a Liv (Emirates NBD) brand-kit SVG or Commons {{PD-textlogo}} asset |
+| banks/wio | placeholder | 2026-08-22 | Text-mark authored by DubaiPoints. Replace with a Wio Bank brand-kit SVG or Commons {{PD-textlogo}} asset |
+| banks/al-hilal | placeholder | 2026-08-22 | Text-mark authored by DubaiPoints. Replace with an Al Hilal Bank (ADCB Group) brand-kit SVG or Commons {{PD-textlogo}} asset |
 | banks/hsbc | https://commons.wikimedia.org/wiki/File:HSBC_logo_(2018).svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of HSBC Holdings, used nominatively |
 | banks/citi | https://commons.wikimedia.org/wiki/File:Citi.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Citigroup, used nominatively |
 | banks/standard-chartered | https://commons.wikimedia.org/wiki/File:Standard_Chartered_(2021).svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Standard Chartered PLC, used nominatively |

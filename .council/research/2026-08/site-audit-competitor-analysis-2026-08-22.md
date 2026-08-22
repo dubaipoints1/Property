@@ -173,3 +173,37 @@ rather than let pass silently.
   current cycles; FAB/ADCB bank-hub card counts re-anchored to August.
 - Weekly scrape PR #327 merged (54 cards' `lastVerified` → 6 Aug);
   superseded scrape PRs #300/#302/#307 closed.
+
+## 6. Shipped same-day, second wave (Chairman: "implement all the fixes")
+
+- **Coverage expansion to 15 banks**: Liv, Wio and Al Hilal hubs live;
+  Liv's two cards fully in L2/L3 (fees and tiers primary-sourced); Wio
+  and Al Hilal card entries deliberately held back — their fee documents
+  defeated every fetch channel, so hubs defer to the linked KFS/SoF
+  rather than print unverified numbers (dossier:
+  `coverage-expansion-dossier-2026-08-22.md`). Workstation follow-up
+  queued for both documents.
+- **Per-salary-band pages** at `/cards/salary/{5000,8000,12000,20000,
+  30000}/` + directory, derived from L2 minimums at build time,
+  "newly in reach at this band" called out per page; linked from the
+  cards mega-panel. Cards with unverified minimums are excluded, not
+  guessed.
+- **News desks woken**: five stories filed 22 Aug — RAKBANK close
+  (31 Aug), Al Hilal campaign quietly ended, EI banded cashback live to
+  30 Sep, Skywards Season of Rewards final week (airline). Hotel desk
+  still has no sourced story — deliberate: nothing verifiable surfaced
+  today; the desk's backlog stands.
+- **News-expiry CI sweep** (`check-news-expiry.mjs` + weekly workflow +
+  15 tests): optional `staleAfter` on news; three campaign stories
+  backfilled; >60-day untouched stories warn.
+- **Seasonal guides**: DSF guide re-checked 22 Aug (32nd-edition dates
+  still unannounced — stated, with the 31st edition as anchor); Ramadan
+  guide reframed forward to 2027 with 2026 evidence preserved.
+- **Housekeeping**: ENBD archived offer moved to the history
+  collection; `verifiedBy` date suffixes stripped (L2 `lastVerified` is
+  the single displayed date); dev test route unrouted; the
+  "Award vs cash calculator" nav label corrected to "Salary-offer
+  calculator" (it ranks salary offers); tracker's no-card filter
+  confirmed already shipped.
+- Validation at ship: astro check 0 errors · 323/323 tests · build
+  green · deal + news expiry sweeps clean.
