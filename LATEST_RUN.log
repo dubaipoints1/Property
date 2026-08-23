@@ -4,85 +4,58 @@ v22.20.0
 
 === npm install ===
 
-added 478 packages in 8s
+added 478 packages in 5s
 [install] exit=0
-=== npm run scrape:enbd ===
+=== npm run scrape:adcb ===
 
-> dubaipoints@0.1.0 scrape:enbd
-> tsx scripts/scrape/enbd.ts
+> dubaipoints@0.1.0 scrape:adcb
+> tsx scripts/scrape/adcb.ts
 
-[enbd] Scraping 31 card(s)
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/skywards-infinite-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/skywards-signature-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/darna-visa-infinite-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/darna-visa-signature-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/darna-select-visa-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/priority-banking-visa-infinite-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/visa-infinite-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/visa-flexi-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/mastercard-platinum-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/duo-credit-cards
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/go4it-platinum-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/go4it-gold-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/visa-platinum-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/diners-club-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/webshopper-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/dnata-world-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/dnata-platinum-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-elevate
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/etihad-guest-visa-inspire
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/manchester-united-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/lulu-247-platinum-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/lulu-247-titanium-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/marriott-bonvoy-world-elite-mastercard-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/marriott-bonvoy-world-mastercard
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-infinite-credit-card-for-emiratis
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-family-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/noon-one-visa-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/share-visa-infinite-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/share-visa-signature-credit-card
-[enbd] Fetching https://www.emiratesnbd.com/en/cards/credit-cards/voyager-world-credit-card
-[enbd] Wrote data/scraped/enbd/2026-08-16T04-55-51-019Z.json
-[enbd] 30 card(s) had parsing warnings:
-[enbd]   emirates-nbd-skywards-infinite: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-skywards-signature: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-darna-visa-infinite: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-darna-visa-signature: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-darna-select-visa: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-priority-banking-visa-infinite: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; Could not parse minimum salary; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-visa-infinite: Could not parse FX fee
-[enbd]   emirates-nbd-visa-flexi: Could not parse FX fee
-[enbd]   emirates-nbd-mastercard-platinum: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-duo: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-go4it-platinum: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-go4it-gold: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-visa-platinum: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-diners-club: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-webshopper: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-dnata-world: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-dnata-platinum: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-etihad-guest-elevate: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-etihad-guest-inspire: Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-manchester-united: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-lulu-247-platinum: Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-lulu-247-titanium: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-marriott-bonvoy-world-elite: Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-marriott-bonvoy-world: Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-u-by-emaar-infinite: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-u-by-emaar-infinite-emiratis: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1
-[enbd]   emirates-nbd-u-by-emaar-family: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-noon-one: Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd]   emirates-nbd-share-visa-signature: Could not parse annual fee; Could not parse FX fee
-[enbd]   emirates-nbd-voyager-world: Could not parse FX fee; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
-[enbd] exit=0
+[adcb] Scraping 11 card(s)
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/shukran-credit-card
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/traveller-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/365-cashback-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/talabat-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb]   ✗ Firecrawl HTTP 502: Bad Gateway
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/betaqti-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-titanium-gold-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-ic.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-platinum-cc.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-tg-cc.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/essential-cashback-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Wrote data/scraped/adcb/2026-08-23T04-57-52-334Z.json
+[adcb] 11 card(s) had parsing warnings:
+[adcb]   adcb-shukran: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-traveller: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-365-cashback: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-talabat: https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf: Firecrawl HTTP 502: Bad Gateway; Could not parse annual fee; Could not parse FX fee; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-betaqti: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-lulu-platinum: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-lulu-titanium-gold: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-touchpoints-infinite: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-touchpoints-platinum: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-touchpoints-titanium-gold: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-essential-cashback: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb] exit=0
 
 === npm run scrape:propose ===
 
 > dubaipoints@0.1.0 scrape:propose
 > tsx scripts/scrape/propose-changes.ts
 
-[propose] Wrote PR_BODY.md: 0 new, 30 changed, 74 warning(s)
+[propose] Wrote PR_BODY.md: 0 new, 11 changed, 33 warning(s)
 
 === git status src/data/cards.json ===
  M src/data/cards.json
