@@ -5651,5 +5651,90 @@
       ],
       "partnerBrands": "All ride hailing apps (e.g. Careem); | Utility Bill Payments-DEWA, Etisalat etc.3 |  | N/A |; | Utility Bill Payments-DEWA,Etisalat etc.2 | Per transaction | Free |"
     }
+  },
+  "wio-credit": {
+    "_provenance": {
+      "bank": "editor-confirmed",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "categories": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "fxFee": "editor-confirmed",
+      "interestRate": "editor-confirmed",
+      "earnRates": "editor-confirmed",
+      "earnUnit": "editor-confirmed",
+      "sharia": "editor-confirmed",
+      "eligibility": "needs-review",
+      "perks": "editor-confirmed",
+      "applyUrl": "editor-confirmed",
+      "kfsUrl": "editor-confirmed",
+      "lastVerified": "editor-confirmed",
+      "sources": "editor-confirmed",
+      "partnerBrands": "needs-review"
+    },
+    "_lastScraped": "2026-08-22",
+    "_lastReviewed": "2026-08-22",
+    "bank": "wio",
+    "name": "Wio Credit (Mastercard World)",
+    "network": "Mastercard",
+    "categories": [
+      "cashback"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "fxFee": 2,
+    "interestRate": {
+      "monthly": 3.25,
+      "annual": 39
+    },
+    "earnRates": {
+      "everythingElse": 2,
+      "_caps": {
+        "monthly_max_aed": 2500
+      }
+    },
+    "earnUnit": "% cashback",
+    "sharia": false,
+    "eligibility": {
+      "minSalary": 0,
+      "salaryTransferRequired": false,
+      "residencyRequired": true,
+      "employmentTypes": [
+        "salaried"
+      ]
+    },
+    "transferPartners": [],
+    "perks": [
+      "Cashback requires a non-Standard plan: 2% on all purchases with the Salary, Plus or Family plan, capped at AED 2,500 per calendar month (the cap includes My Money current-account transactions). Standard-plan customers earn no cashback.",
+      "Paying another UAE bank's credit card through Wio Credit earns 0.5% cashback — unique in the UAE market — up to 0.5% of the Wio Credit limit, conditioned in the KFS on a minimum AED 5,000 of retail transactions in the same cycle.",
+      "Government, real-estate and utility payments (including Easy Cash) earn 0.5%, not 2%. Cash advances, quasi-cash and crypto are excluded. Cashback credits on the 1st of the following month.",
+      "The card itself is unpriced — the plan subscription is the price: Salary plan free with an AED 15,000+ monthly salary transfer (reducible for partner-company employees), Plus at AED 49/month (waived at AED 35,000 balances), Family AED 49/month, Standard AED 25/month (free at AED 3,000+ balances, but no cashback).",
+      "Roll-over interest 3.25%/month (39% APR) on Standard, Plus and Family plans, reduced to 2.29%/month (27.48% APR) on the Salary plan; interest-free up to 60 days; minimum payment 5% or AED 100; late payment AED 199.",
+      "Easy Cash: borrow up to 50% of the credit limit at AED 1/day per AED 1,000 for up to 90 days — 36.5% APR per the fee schedule's own figure. Easy Installments 3–48 months; AED 52.50 processing on the 3-month tenure, longer tenures free.",
+      "No minimum salary is stated in KFS v5 for the credit product itself; eligibility is assessed in the Wio app."
+    ],
+    "applyUrl": "https://wio.io/personal-credit",
+    "kfsUrl": "https://wio.io/file/wio-personal-credit-KFS-version-5(Eng)-august-2026.pdf",
+    "lastVerified": "2026-08-22",
+    "sources": [
+      "https://wio.io/personal-credit",
+      "https://assets.ctfassets.net/l65m9bcr2nac/6YdOzuMWXOLOGLsbL9YYG/e8d5c70a361d636d530db6d1790e0d85/wio-personal-credit-KFS-version-5_Eng_-august-2026.pdf",
+      "https://assets.ctfassets.net/l65m9bcr2nac/40SC3XeKXQBq62PViGbnSu/80e874a8d2fdb91f6d6cb27ce325d7e2/Schedule_of_Fees_Retail_-_Version_8_-_Jul_2026.pdf"
+    ],
+    "_scraped_freetext": {
+      "perks": [
+        "Cashback is \"not applicable to Standard Plan customers\"; maximum cashback AED 2,500 per calendar month, including \"My Money\" current-account transactions; credited the 1st of the following month. (KFS v5, August 2026)",
+        "2% (using Wio Credit) of all purchases. (KFS v5)",
+        "0.5% cashback paying another UAE bank's credit card with Wio Credit, up to 0.5% of the Wio Credit limit; the KFS places a \"minimum spend a total of retail transactions of AED 5,000.00 in the same cycle\" condition in this clause. (KFS v5)",
+        "0.5% cashback on government, real-estate and utility payments, including Easy Cash. (KFS v5)",
+        "Cash advances, quasi-cash and crypto transactions are excluded from cashback. (KFS v5)",
+        "Roll-over interest 3.25%/month (39% APR) on Standard/Plus/Family plans; 2.29%/month (27.48% APR) on the Salary plan. First-month roll-over waiver; the applied rate is \"set out in your Offer\". (KFS v5 + Schedule of Fees Retail v8, July 2026)",
+        "Plans: Standard AED 25/month (free at AED 3,000+ balance) · Plus AED 49/month (free at AED 35,000+) · Salary free with a minimum monthly salary transfer of AED 15,000, reducible for partner-company employees · Family AED 49/month (free at AED 35,000+ or one member's AED 15,000+ salary). No annual card fee row exists — the plan subscription is the price. (Schedule of Fees Retail v8)",
+        "Easy Cash: up to 50% of limit, AED 1/day per AED 1,000, up to 90 days — 36.5% APR per the fee schedule; late payment AED 199; card replacement AED 26.25; 3-month installment AED 52.50 processing, longer tenures free. (Schedule of Fees Retail v8)",
+        "No salary minimum stated in KFS v5 (the superseded deposit-card KFS said 21–64 and AED 5,000+); eligibility is app-assessed."
+      ]
+    }
   }
 }

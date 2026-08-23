@@ -256,23 +256,6 @@ const salaryTransferOfferHistory = defineCollection({
   }),
 });
 
-const bankReputation = defineCollection({
-  loader: glob({
-    pattern: "**/*.{md,mdx}",
-    base: "./src/content/bankReputation",
-  }),
-  schema: z.object({
-    bank: reference("banks"),
-    customerServiceRating: z.number().min(0).max(5),
-    appStoreRatingIOS: z.number().min(0).max(5).optional(),
-    appStoreRatingAndroid: z.number().min(0).max(5).optional(),
-    branchCount: z.number().int().nonnegative().optional(),
-    digitalFirst: z.boolean(),
-    salaryTransferTurnaroundDays: z.number().int().nonnegative().optional(),
-    notes: z.string().optional(),
-  }),
-});
-
 const NEWS_CATEGORY = z.enum([
   "news",
   "deal-update",
@@ -324,5 +307,4 @@ export const collections = {
   news,
   salaryTransferOffers,
   salaryTransferOfferHistory,
-  bankReputation,
 };

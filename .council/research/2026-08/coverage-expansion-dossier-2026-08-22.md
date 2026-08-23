@@ -127,6 +127,66 @@ The page still ranks #1 for salary-transfer queries 18 days after
 closing. Tracker classification: checked — campaign expired 4 August
 2026; successor watch noted. News-desk story filed same day.
 
+## Addendum (same day, second pass) — Wio KFS v5 and fee schedule READ
+
+The "unreachable" Wio documents fell to a channel change: the wio.io
+`/file/` routes serve a JS viewer, but the viewer HTML embeds the real
+Contentful asset URLs, which fetch cleanly.
+
+### Wio Credit — Key Fact Statement v5, Effective August 2026
+<https://assets.ctfassets.net/l65m9bcr2nac/6YdOzuMWXOLOGLsbL9YYG/e8d5c70a361d636d530db6d1790e0d85/wio-personal-credit-KFS-version-5_Eng_-august-2026.pdf>
+(fetched 2026-08-22; canonical public link
+<https://wio.io/file/wio-personal-credit-KFS-version-5(Eng)-august-2026.pdf>)
+- Product: "The **Wio Mastercard World Card**" — network confirmed.
+- "a **Foreign Exchange Fee of 2%** of the purchase amount will be
+  charged" on non-AED transactions.
+- Cashback: "not applicable to Standard Plan customers"; maximum
+  **AED 2,500 per calendar month** (incl. "My Money" current-account
+  transactions); **2% (using Wio Credit) of all purchases**; **0.5%**
+  paying another UAE bank's credit card with Wio Credit (up to 0.5% of
+  the Wio Credit limit; the KFS places a "minimum spend a total of
+  retail transactions of AED 5,000.00 in the same cycle" condition in
+  this clause); **0.5%** on government, real-estate and utility
+  payments (incl. Easy Cash); cash advances/quasi-cash/crypto excluded;
+  credited the 1st of the following month.
+- Interest-free up to 60 days; minimum payment 5% or AED 100;
+  first-month roll-over waiver; roll-over rate "set out in your Offer".
+- Easy Cash: up to 50% of limit, AED 1/day per AED 1,000, up to 90
+  days; Installments 3–48 months at 0% up to the roll-over rate.
+- No salary minimum stated in v5 (the superseded deposit-card KFS said
+  21–64 and AED 5,000+); eligibility is app-assessed → L2 carries
+  `minSalary: 0` with `needs-review` eligibility, rendering "Pending".
+
+### Wio Schedule of Fees Retail — Version 8, July 2026
+<https://assets.ctfassets.net/l65m9bcr2nac/40SC3XeKXQBq62PViGbnSu/80e874a8d2fdb91f6d6cb27ce325d7e2/Schedule_of_Fees_Retail_-_Version_8_-_Jul_2026.pdf>
+(fetched 2026-08-22; canonical public link <https://www.wio.io/personal-fees.pdf>)
+- Plans: Standard AED 25/mo (free ≥ AED 3,000 balance) · Plus AED
+  49/mo (free ≥ 35,000) · **Salary: free, minimum monthly salary
+  transfer AED 15,000** (reducible for partner-company employees) ·
+  Family AED 49/mo (free ≥ 35,000 or one member's 15,000+ salary).
+- Credit: **no annual card fee row exists — the card itself is
+  unpriced; the plan subscription is the price**. Card replacement
+  AED 26.25; **late payment AED 199**; **roll-over interest 3.25%/month
+  (39% APR) on Standard/Plus/Family and 2.29%/month (27.48% APR) on
+  the Salary plan**; Easy Cash AED 1/day/1,000 (36.5% APR); 3-month
+  installment AED 52.50 processing, longer tenures free.
+- FX transaction fee 2% (debit table; matches the credit KFS's 2%).
+
+Consequence: the **Wio Credit L2 entry ships** (annualFee 0 with the
+plan-cost reality prose-front-and-centre, fxFee 2.0, base 2% with caps,
+Mastercard). The Al Hilal SoF, by contrast, defeated five attempts
+(connection reset ×3 across two proxies, general-KFS timeouts ×2,
+alternate-domain 404) — its card entry remains gated on a workstation
+read; mechanics are fully verified, fees are not.
+
+### bankReputation — unshipped (same pass)
+The collection had one entry (of 15 banks), was rendered by **no page**,
+and its core `customerServiceRating` field is an unsourced 0–5 score —
+the exact class of number the §6 posture and the Chairman-reserved
+review-scores decision exist to police. Removed (collection definition +
+directory); any future bank-reputation surface should come back through
+the scores methodology decision, not as an orphaned schema.
+
 ## Follow-ups queued
 1. Workstation: read Wio Credit KFS v5 (Aug 2026) and Al Hilal SoF;
    then ship both L2 card entries.
