@@ -207,3 +207,35 @@ rather than let pass silently.
   confirmed already shipped.
 - Validation at ship: astro check 0 errors · 323/323 tests · build
   green · deal + news expiry sweeps clean.
+
+## 7. Shipped same-day, third wave (Chairman: "complete the other ones")
+
+- **Wio Credit ships in full** (57 → 58 cards): the "unreachable" KFS
+  fell to a channel change — Wio's `/file/` PDF viewer embeds the real
+  Contentful asset URLs. KFS v5 (Aug 2026) + Schedule of Fees v8 (Jul
+  2026) both read; every figure sourced (Mastercard World, 2% FX, no
+  annual card fee — the plan is the price, AED 2,500/mo cap, plan-gated
+  cashback, 2.29%/mo Salary-plan roll-over). Hub reframed; dossier
+  addendum records the quotes.
+- **Al Hilal card entry stays gated, deliberately**: the SoF defeated
+  five attempts across three channels; mechanics are fully verified but
+  fees are not, and we do not print unsourced numbers. Workstation read
+  remains the one open follow-up.
+- **Hotel desk woken with a sourced story**: IHG One Rewards "pick your
+  points" choice promo (2,000/2-nights vs 8,000/4-nights, unlimited,
+  Middle East residents) ends 31 August — primary-sourced from IHG's
+  own offer T&C.
+- **Scraper coverage for the new banks**: `liv.ts` + `wio.ts` modules,
+  URL configs, per-bank gotcha notes (the Contentful-asset trick is
+  documented for the next KFS version bump), registry now 14 banks,
+  npm scripts added; both dry-run clean.
+- **bankReputation unshipped**: one entry of 15, rendered by no page,
+  built on an unsourced 0–5 rating — the exact number class §6 and the
+  Chairman-reserved scores decision police. Collection removed; any
+  future reputation surface returns through the scores-methodology
+  ruling.
+- **Review scores remain untouched and Chairman-reserved** — completing
+  that item requires the Chairman's own pre-publish ruling per the
+  2026-05-25 amendment; it is a decision, not a task.
+- Validation: astro check clean · 323/323 tests · build green · both
+  expiry sweeps clean · scrapers dry-run OK.
