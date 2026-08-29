@@ -38,12 +38,10 @@ const cards = getActiveCards();
 
 const fmtShort = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-const dateline = new Date().toLocaleDateString("en-GB", {
-  weekday: "long",
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+// No build-time dateline: `new Date()` fossilises at build on a static
+// site, and a stale "today" beside real verified dates reads as neglect
+// (Head of UX, 29 Aug 2026 review). Freshness claims stay on the items
+// that actually carry dates.
 
 // Newsletter state — same env flag NewsletterSignup gates its form on.
 // While unset, the hero micro-line and the band headline say honestly
@@ -178,7 +176,7 @@ const dealRows = await Promise.all(
           further — AED-first, dated and sourced.
         </p>
         <p class="hp-hero-meta">
-          {dateline} · {cards.length} cards · {allBanks.length} banks ·
+          {cards.length} cards · {allBanks.length} banks ·
           {allPrograms.length} programmes · zero paid placements
         </p>
         <div class="hp-hero-ctas">
@@ -193,7 +191,7 @@ const dealRows = await Promise.all(
         )}
       </div>
 
-      <aside class="hp-hero-index" aria-label="Latest from the desk">
+      <aside class="hp-hero-index" aria-label="On the desk">
         <p class="hp-hero-index-label">On the desk</p>
         <ol>
           {heroIndex.map((item) => (
@@ -210,7 +208,7 @@ const dealRows = await Promise.all(
               <a href={`/airlines/${flagshipProgramme.id}/`}>
                 <span class="cat">Sweet spot</span>
                 <span class="t">{heroSweetSpot.title}</span>
-                <span class="m">{flagshipProgramme.data.currencyName} ›</span>
+                <span class="m">{flagshipProgramme.data.currencyName} →</span>
               </a>
             </li>
           )}
@@ -232,7 +230,7 @@ const dealRows = await Promise.all(
       </div>
       <div class="cols">
         {offerRows.length > 0 && (
-          <div class="col" aria-label="Live salary-transfer offers">
+          <div class="col" role="group" aria-label="Live salary-transfer offers">
             <div class="col-head">
               <h3>Salary-transfer offers</h3>
               <a href="/salary-transfer/">Full tracker →</a>
@@ -255,7 +253,7 @@ const dealRows = await Promise.all(
           </div>
         )}
         {dealRows.length > 0 && (
-          <div class="col" aria-label="Live deals">
+          <div class="col" role="group" aria-label="Live deals">
             <div class="col-head">
               <h3>Deals desk</h3>
               <a href="/deals/">All deals →</a>
@@ -369,7 +367,7 @@ const dealRows = await Promise.all(
       <a href="/salary-transfer/" class="dp-dir-tile">
         <span class="eyebrow"><span class="hp-live-dot" aria-hidden="true"></span>Live tracker</span>
         <span class="title">Salary-transfer offers</span>
-        <span class="desc">Band-by-band cash and rate offers across UAE banks, verified weekly.</span>
+        <span class="desc">Band-by-band cash and rate offers across UAE banks — sources watched weekly, every entry dated.</span>
         <span class="meta">{offerRows.length} live offers</span>
       </a>
       <a href="/calculator/" class="dp-dir-tile">
@@ -547,6 +545,12 @@ const dealRows = await Promise.all(
   }
   .hp-dir .dp-dir-grid, .hp-trust .dp-dir-grid,
   .hp-dir .dp-featured-eyebrow, .hp-trust .dp-featured-eyebrow,
+  /* .dp-featured-band leaves width-constraining to callers (see
+     guides/index.astro); without these two selectors S3 runs wider
+     than every neighbouring band on ≥1240px viewports and misaligns
+     with .hp-latest-foot directly below it. */
+  .dp-featured-band .dp-featured-eyebrow,
+  .dp-featured-band .dp-featured-grid,
   .hp-latest-foot {
     max-width: var(--container-listing);
     margin-left: auto; margin-right: auto;

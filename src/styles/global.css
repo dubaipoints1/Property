@@ -1264,7 +1264,12 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   color: var(--muted);
   white-space: nowrap;
 }
-.dp-live-desk .row .chip.is-ends { color: var(--gold); }
+/* Expiry chip stays in the ink family: --gold on --shade-1 is ~2.8:1 at
+   11px (fails AA), and gold is the trust-signal accent — an "Ends" date
+   is a deadline, not a trust signal (see the .dp-take rule note above).
+   --ink-soft is AA on shade-1 in both themes and reads one step heavier
+   than the muted Verified chip. */
+.dp-live-desk .row .chip.is-ends { color: var(--ink-soft); }
 .dp-live-desk .row:hover .bank { color: var(--green); }
 .dp-live-desk .foot {
   font-size: 11px; color: var(--muted);
