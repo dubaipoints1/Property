@@ -6,44 +6,17 @@
 // lands (Q3 2026 per EDITORIAL.md).
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import {
+  programmeValuations,
+  baselinesConfirmed,
+  type ProgrammeValuation,
+} from "~/lib/valuations";
 
-interface Programme {
-  name: string;
-  currencyName: string;
-  mark: string;
-  floor: number | null;
-  ceiling: number | null;
-  dpValue: number | null;
-  delta90: string;
-  status: "Active" | "Pending" | "Under review";
-}
-
-// DP values carry only the baselines actually published in the
-// programme overviews (and used by card reviews) — see
-// .council/sops/value-to-me-convention.md. The earlier illustrative
-// figures here (Skywards 3.5, Etihad 2.8, …) contradicted the 2-fil
-// baseline the reviews cite; a reader cross-checking a review against
-// this page got a different number (Fact-Checker redline, 11 June
-// 2026). Floor/ceiling ranges and 90-day deltas return when the
-// methodology lands (Q3 2026) — they are not published until they
-// can be traced.
-const programmes: Programme[] = [
-  { name: "Emirates",         currencyName: "Skywards",         mark: "SKY", floor: null, ceiling: null, dpValue: 2.0,  delta90: "—", status: "Active" },
-  { name: "Etihad",           currencyName: "Guest",            mark: "ETI", floor: null, ceiling: null, dpValue: 2.0,  delta90: "—", status: "Active" },
-  { name: "Qatar",            currencyName: "Avios",            mark: "QR",  floor: null, ceiling: null, dpValue: 3.0,  delta90: "—", status: "Active" },
-  { name: "British Airways",  currencyName: "Avios",            mark: "BA",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
-  { name: "Marriott",         currencyName: "Bonvoy",           mark: "MAR", floor: null, ceiling: null, dpValue: 2.5,  delta90: "—", status: "Active" },
-  { name: "IHG",              currencyName: "One Rewards",      mark: "IHG", floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
-  { name: "Hilton",           currencyName: "Honors",           mark: "HIL", floor: null, ceiling: null, dpValue: 1.5,  delta90: "—", status: "Active" },
-  { name: "flydubai",         currencyName: "OPEN",             mark: "FZ",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
-  { name: "Wizz Air",         currencyName: "Discount Club",    mark: "W6",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
-  { name: "Air Arabia",       currencyName: "Airewards",        mark: "G9",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
-];
-
-// Date the published baselines were last confirmed against the
-// programme overview pages — NOT the build date. A build-date stamp
-// here manufactured freshness for numbers that hadn't moved.
-const baselinesConfirmed = new Date("2026-06-10");
+// Rows and baselines live in src/lib/valuations.ts — the single
+// source of truth the header mega-menu also renders from (Fact-Checker
+// redline, 11 June 2026; nav fork closed 29 August 2026).
+type Programme = ProgrammeValuation;
+const programmes = programmeValuations;
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
@@ -67,7 +40,7 @@ const distributionPct = (p: Programme): number => {
     <div class="dp-tools-stats">
       <span><span class="lbl">Programmes tracked:</span> <strong>{programmes.length}</strong></span>
       <span><span class="lbl">Baselines confirmed:</span> <strong>{fmt(baselinesConfirmed)}</strong></span>
-      <span><span class="lbl">Methodology:</span> <strong><a href="/editorial-policy/" style="color: var(--link);">Read →</a></strong></span>
+      <span><span class="lbl">Methodology:</span> <strong><a href="/valuations/methodology/" style="color: var(--link);">Read →</a></strong></span>
     </div>
   </div>
 
@@ -143,7 +116,7 @@ const distributionPct = (p: Programme): number => {
   </section>
 
   <div class="dp-tools-actions">
-    <span><a href="/editorial-policy/">Methodology (draft)</a> · Programmes drawn from /airlines/ collection</span>
+    <span><a href="/valuations/methodology/">Methodology (draft)</a> · UAE-relevant programmes, editor-curated</span>
     <span><a href="/airlines/">Programme guides →</a></span>
   </div>
 </BaseLayout>

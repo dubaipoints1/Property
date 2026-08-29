@@ -1,11 +1,11 @@
 ---
-// Card finder — filter-driven chooser for the 34 UAE cards we cover.
+// Card finder — filter-driven chooser for every UAE card we cover.
 //
 // Stage 4–7 (Tech) workstream of the card-data-audit-and-ui-programme.
 // The form is a GET form posting back to itself; the URL is the
 // shareable state. Because this site builds with `output: "static"`,
 // the actual ranking + filtering executes in a small inline script
-// on page load. All 34 cards render at build time with data-*
+// on page load. All cards render at build time with data-*
 // attributes; the script reorders + hides DOM nodes.
 //
 // Score formula (deterministic, mirrored in the inline script):
@@ -119,7 +119,7 @@ const lastRefreshed = new Date(
 
 <BaseLayout
   title="Find your UAE credit card | DubaiPoints"
-  description="Tell us your AED salary, primary spend category, and what you're optimising for. We'll rank the 34 UAE cards in our database against your profile."
+  description={`Tell us your AED salary, primary spend category, and what you're optimising for. We'll rank the ${allCards.length} UAE cards in our database against your profile.`}
   fullWidth
 >
   <div class="dp-pagehead">

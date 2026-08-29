@@ -4,6 +4,7 @@
 // smoother mega-panel hover, consistent focus states.
 
 import ThemeToggle from "~/components/ThemeToggle.astro";
+import { dpValueSub } from "~/lib/valuations";
 
 const currentPath = Astro.url.pathname;
 const isActive = (href: string) =>
@@ -29,6 +30,7 @@ const cardsPanel: Group[] = [
     { label: "Best cashback cards",     href: "/cards/cashback/", sub: "Capped & uncapped" },
     { label: "Best Islamic (Sharia) cards", href: "/cards/islamic/" },
     { label: "Cards by your salary",    href: "/cards/salary/", sub: "AED 5k to 30k+" },
+    { label: "Card finder",             href: "/cards/finder/", sub: "Match a card to your spend" },
     { label: "All cards",               href: "/cards/" },
   ]},
   { title: "By bank issuer", rows: [
@@ -62,19 +64,21 @@ const pointsPanel: Group[] = [
     { label: "All bank programmes",  href: "/banks/" },
   ]},
   { title: "Airline programmes", rows: [
-    { label: "Emirates Skywards",      href: "/airlines/skywards/", sub: "3.5 fils · DP value" },
-    { label: "Etihad Guest",           href: "/airlines/etihad-guest/", sub: "2.8 fils · DP value" },
-    { label: "Qatar Privilege Club",   href: "/airlines/qatar-privilege-club/" },
+    { label: "Emirates Skywards",      href: "/airlines/skywards/", sub: dpValueSub("skywards") },
+    { label: "Etihad Guest",           href: "/airlines/etihad-guest/", sub: dpValueSub("etihad-guest") },
+    { label: "Qatar Privilege Club",   href: "/airlines/qatar-privilege-club/", sub: dpValueSub("qatar-privilege-club") },
     { label: "All airline programmes", href: "/airlines/" },
   ]},
   { title: "Hotel programmes", rows: [
-    { label: "Marriott Bonvoy",      href: "/airlines/marriott-bonvoy/" },
-    { label: "All hotel programmes", href: "/airlines/" },
+    { label: "Marriott Bonvoy",      href: "/airlines/marriott-bonvoy/", sub: dpValueSub("marriott-bonvoy") },
+    { label: "Hilton Honors",        href: "/airlines/hilton-honors/", sub: dpValueSub("hilton-honors") },
+    { label: "Accor ALL",            href: "/airlines/accor-all/" },
+    { label: "All hotel programmes", href: "/airlines/", sub: "In the programme directory" },
   ]},
   { title: "Learn", rows: [
     { label: "Beginner's guide to UAE points", href: "/guides/expat-starter-points-101/" },
     { label: "DP valuations methodology",       href: "/valuations/" },
-    { label: "Award vs cash calculator",        href: "/salary-transfer/calculator/" },
+    { label: "Salary-offer calculator",         href: "/salary-transfer/calculator/" },
     { label: "Transfer-partner cheatsheet",     href: "/guides/uae-transfer-ratios-2026/" },
   ]},
 ];
@@ -96,13 +100,13 @@ const travelPanel: Group[] = [
   ]},
   { title: "Hotels", rows: [
     { label: "Hotel news",        href: "/news/hotels/" },
-    { label: "Hotel programmes",  href: "/airlines/" },
+    { label: "Hotel programmes",  href: "/airlines/", sub: "In the programme directory" },
     { label: "All hotel stories", href: "/news/hotels/" },
   ]},
 ];
 
 const toolRows: SubRow[] = [
-  { label: "Salary-transfer tracker", href: "/salary-transfer/", sub: "Scheduled weekly" },
+  { label: "Salary-transfer tracker", href: "/salary-transfer/", sub: "Sources watched weekly" },
   { label: "Points & miles valuations", href: "/valuations/", sub: "DP value" },
   { label: "Card compare", href: "/cards/compare/", sub: "Side-by-side specs" },
   { label: "Salary-offer calculator", href: "/salary-transfer/calculator/" },

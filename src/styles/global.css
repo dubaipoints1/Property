@@ -1190,6 +1190,99 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   color: var(--ink);
 }
 
+/* ── .dp-live-desk — homepage live module (salary offers + deals) ────────
+   One section header, two row-list columns at ≥1024px. Row idiom is the
+   Aug-2026 generalisation of the old homepage tracker teaser: bank name /
+   detail line / date chip. The /salary-transfer/ and /deals/ indexes can
+   adopt the same rows. Honest-emptiness: callers render a column only
+   while live rows exist. */
+.dp-live-desk {
+  padding: 40px 32px 32px;
+  border-bottom: 1px solid var(--line);
+  background: var(--shade-1);
+}
+.dp-live-desk .head,
+.dp-live-desk .cols {
+  max-width: var(--container-listing);
+  margin: 0 auto;
+}
+.dp-live-desk .head h2 {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: clamp(24px, 3vw, 32px);
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin: 0 0 24px;
+}
+.dp-live-desk .cols {
+  display: grid; grid-template-columns: 1fr;
+  gap: 32px;
+}
+@media (min-width: 1024px) {
+  .dp-live-desk .cols { grid-template-columns: 1fr 1fr; }
+}
+.dp-live-desk .col-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+.dp-live-desk .col-head h3 {
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0;
+}
+.dp-live-desk .col-head a {
+  font-size: 13px; font-weight: 600;
+  color: var(--green); text-decoration: none;
+  white-space: nowrap;
+}
+.dp-live-desk .col-head a:hover { text-decoration: underline; }
+.dp-live-desk .rows {
+  list-style: none; margin: 0; padding: 0;
+  border-top: 1px solid var(--line);
+}
+.dp-live-desk .row {
+  display: grid;
+  grid-template-columns: minmax(110px, 160px) 1fr auto;
+  gap: 14px; align-items: baseline;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+}
+.dp-live-desk .row .bank {
+  font-weight: 700; font-size: 14px;
+  color: var(--ink);
+}
+.dp-live-desk .row .detail {
+  font-size: 13px; line-height: 1.45;
+  color: var(--ink-soft);
+}
+.dp-live-desk .row .detail strong { color: var(--ink); }
+.dp-live-desk .row .chip {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+/* Expiry chip stays in the ink family: --gold on --shade-1 is ~2.8:1 at
+   11px (fails AA), and gold is the trust-signal accent — an "Ends" date
+   is a deadline, not a trust signal (see the .dp-take rule note above).
+   --ink-soft is AA on shade-1 in both themes and reads one step heavier
+   than the muted Verified chip. */
+.dp-live-desk .row .chip.is-ends { color: var(--ink-soft); }
+.dp-live-desk .row:hover .bank { color: var(--green); }
+.dp-live-desk .foot {
+  font-size: 11px; color: var(--muted);
+  margin: 10px 0 0; line-height: 1.5;
+}
+@media (max-width: 640px) {
+  .dp-live-desk { padding: 32px 24px 28px; }
+  .dp-live-desk .row {
+    grid-template-columns: 1fr auto;
+  }
+  .dp-live-desk .row .detail { grid-column: 1 / -1; }
+}
+
 /* ── .dp-feature-card — TPG Featured story pattern ─────────────────────── */
 .dp-feature-card {
   background: var(--navy);
@@ -3246,11 +3339,6 @@ svg.dp-cover {
   opacity: 1;
 }
 
-/* Hero-specific: larger skeleton */
-.hp-hero-media.dp-img-wrap {
-  background: var(--shade-2);
-}
-
 /* ════════════════════════════════════════════════════════════════════════
    DARK MODE — July 2026
    Toggle via data-theme="dark" on <html> (init script in BaseLayout;
@@ -3306,21 +3394,9 @@ html * {
 [data-theme="dark"] .dp-footer {
   background: #0a0e17;
 }
-[data-theme="dark"] .hp-wallet-band {
-  background: #0a0e17;
-}
-[data-theme="dark"] .hp-news-band {
-  background: linear-gradient(135deg, #1a3a4d 0%, #0f1f2e 100%);
-}
-[data-theme="dark"] .dp-story-card,
-[data-theme="dark"] .hp-intel-card,
-[data-theme="dark"] .hp-miles-tile {
+[data-theme="dark"] .dp-story-card {
   background: var(--paper);
   border-color: var(--line);
-}
-[data-theme="dark"] .hp-hero-media,
-[data-theme="dark"] .hp-wallet-media {
-  background: var(--shade-1);
 }
 
 /* Navy-band surfaces (merge review, July 2026): the inverted --navy
@@ -3330,19 +3406,16 @@ html * {
    Pin those surfaces to a dark navy instead. */
 [data-theme="dark"] .dp-cr-hero,
 [data-theme="dark"] .dp-band-navy,
+[data-theme="dark"] .dp-band-green,
 [data-theme="dark"] .dp-feature-card,
 [data-theme="dark"] .dp-nav-live-strip {
   background: #16202c;
 }
 
-/* Contrast fixes (merge review, July 2026): --green resolves to light
-   mint in dark mode, so white-on-green buttons would fail contrast.
-   Flip their text to the dark base instead. */
-[data-theme="dark"] .hp-hero-form-cta,
-[data-theme="dark"] .hp-news-band .btn.primary {
-  color: #0f1419;
-}
-[data-theme="dark"] .hp-hero-form-cta:hover { background: #a3c4da; }
+/* Contrast note (Aug 2026 homepage rewrite): the hero CTAs use
+   var(--ink) on var(--paper), which self-inverts with the theme — no
+   per-theme override needed. The old .hp-hero-form-cta green-button
+   fixes left with the classes they patched. */
 /* The frosted-glass scrolled header keyframe bakes in a light paper
    colour; keep the header solid dark instead. */
 @supports (animation-timeline: scroll()) {
