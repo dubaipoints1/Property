@@ -208,10 +208,11 @@ const publicationRows: SubRow[] = [
     <div class="dp-header-actions">
       {/* Search pill (v0-layout adoption, Aug 2026): input-styled link —
           /search/ autofocuses the Pagefind box on arrival, so the pill
-          behaves like a search field that opens. Visible text is the
-          accessible name; it collapses to icon-only at 1024–1279px where
-          the centre nav leaves no slack. */}
-      <a href="/search/" class="dp-search-pill" aria-label="Search">
+          behaves like a search field that opens. The aria-label carries
+          the accessible name (the text span hides at 1024–1279px, where
+          the pill is icon-only) and must start with the visible label
+          text for WCAG 2.5.3 Label in Name. */}
+      <a href="/search/" class="dp-search-pill" aria-label="Search cards, guides">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7" />

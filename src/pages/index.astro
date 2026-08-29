@@ -136,10 +136,14 @@ const flagshipProgramme =
 const heroSweetSpot = flagshipProgramme?.data.sweetSpots[0];
 
 // ── S4 Strategy panel — goal-ranked top-3s, all deterministic L2 ─────
-// Mirrors the card finder's formula (spendRate fallback, loyaltyTag,
-// annualFee tie-break — see cards/finder/index.astro); the panel's deep
-// links land in the finder with the same params so homepage top-3 and
-// finder top-6 agree. No LLM extraction anywhere (§6).
+// Uses the card finder's building blocks (spendRate fallback,
+// loyaltyTag, annualFee tie-break — see cards/finder/index.astro) and
+// deep-links into the finder, but the finder's score() adds preference
+// bonuses, so its ordering can differ from these raw-rate sorts (it
+// does for travel — Fact-Checker, 29 Aug 2026). Known limitation, has
+// a follow-up brief: travel rates are unit-mixed across cards (per AED
+// vs per AED 10 vs per USD), so the travel ranking orders raw values
+// and displays no number. No LLM extraction anywhere (§6).
 type ActiveCard = ReturnType<typeof getActiveCards>[number];
 const bankNameOf = (c: ActiveCard) =>
   allBanks.find((b) => b.id === c.bank)?.data.name ?? c.bank;
@@ -204,7 +208,12 @@ const firstTop = cards
     asRow(
       c,
       `AED ${c.annualFee.amount.toLocaleString()} fee`,
-      `from AED ${c.eligibility.minSalary.toLocaleString()} salary`,
+      // "from AED 0 salary" is confusing and, on the two digital-bank
+      // rows, rests on needs-review eligibility data — show no salary
+      // sub-line rather than a claim the data can't support (UX 5.5).
+      c.eligibility.minSalary > 0
+        ? `from AED ${c.eligibility.minSalary.toLocaleString()} salary`
+        : "",
     ),
   );
 
@@ -496,7 +505,7 @@ const dealRows = await Promise.all(
                     <span class="name">{c.name}</span>
                     <span class="bank">{c.bank}</span>
                   </span>
-                  <span class="stat">{c.stat}<small>{c.statSub}</small></span>
+                  <span class="stat">{c.stat}{c.statSub && <small>{c.statSub}</small>}</span>
                 </a>
               </li>
             ))}
@@ -676,6 +685,10 @@ const dealRows = await Promise.all(
     /* Keep the 3px ink masthead rule — the Quiet Ledger idiom. */
     border-top: 3px solid var(--ink);
     padding: 56px 32px 48px;
+    /* No hairline into the tools strip: hero + tools read as one unit
+       (the strip's own border-bottom is the unit's closing rule), so
+       the page counts six perceptual bands, not seven (UX 5.5, 29 Aug). */
+    border-bottom: 0;
   }
   .hp-hero-grid {
     max-width: var(--container-listing);
@@ -854,6 +867,9 @@ const dealRows = await Promise.all(
   /* ── Responsive padding ────────────────────────────────────────────── */
   @media (max-width: 768px) {
     .hp-hero { padding: 40px 24px 36px; }
+    /* Match the hero's 24px gutter — the two share a left edge now
+       that the hairline between them is gone. */
+    .hp-tools { padding: 16px 24px 24px; }
     .hp-dir, .hp-trust { padding: 28px 24px 8px; }
     .hp-news { padding: 44px 24px 40px; }
   }
