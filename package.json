@@ -10,7 +10,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
-    "postbuild": "node scripts/build/prune-internal-pages.mjs && pagefind --site dist",
+    "postbuild": "node scripts/build/prune-internal-pages.mjs && pagefind --site dist && node scripts/ci/check-links.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check",
