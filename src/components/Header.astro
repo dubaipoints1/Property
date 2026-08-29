@@ -206,12 +206,19 @@ const publicationRows: SubRow[] = [
 
     <!-- Desktop actions -->
     <div class="dp-header-actions">
-      <a href="/search/" class="dp-icon-btn" aria-label="Search">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
+      {/* Search pill (v0-layout adoption, Aug 2026): input-styled link —
+          /search/ autofocuses the Pagefind box on arrival, so the pill
+          behaves like a search field that opens. The aria-label carries
+          the accessible name (the text span hides at 1024–1279px, where
+          the pill is icon-only) and must start with the visible label
+          text for WCAG 2.5.3 Label in Name. */}
+      <a href="/search/" class="dp-search-pill" aria-label="Search cards, guides">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7" />
           <line x1="16.5" y1="16.5" x2="21" y2="21" />
         </svg>
+        <span class="dp-search-pill-text" aria-hidden="true">Search cards, guides…</span>
       </a>
       <ThemeToggle />
       <a href="/newsletter/" class="dp-header-subscribe">Join brief</a>
@@ -647,6 +654,34 @@ const publicationRows: SubRow[] = [
     align-items: center;
     gap: 4px;
     justify-self: end;
+  }
+  /* Search pill — input-styled link to /search/ (which autofocuses the
+     Pagefind box). Grid safety: .dp-header-inner at ≥1024 is
+     1fr auto 1fr, so a wider pill compresses the left 1fr, never the
+     centre nav; the 1280px gate keeps 1024–1279 exactly as wide as the
+     old icon button. Tokens self-invert in dark mode. */
+  .dp-search-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--paper);
+    color: var(--muted);
+    font-size: 13px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .dp-search-pill:hover,
+  .dp-search-pill:focus-visible { border-color: var(--green); color: var(--ink); }
+  .dp-search-pill svg { color: var(--ink-soft); flex-shrink: 0; }
+  .dp-search-pill-text { display: none; }
+  @media (min-width: 1280px) {
+    .dp-search-pill { padding: 0 14px; min-width: 190px; }
+    .dp-search-pill-text { display: inline; }
   }
   .dp-header-subscribe {
     display: inline-flex;

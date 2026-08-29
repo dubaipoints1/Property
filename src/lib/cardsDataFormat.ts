@@ -172,6 +172,28 @@ export function compareByWelcomeValue(
   return 0;
 }
 
+/** Classify a card's reward currency for goal-based ranking surfaces.
+ *
+ * MIRROR: the card finder's inline client script carries a verbatim
+ * JS copy of this function (src/pages/cards/finder/index.astro,
+ * `function loyaltyTag`) because it must run without imports. Change
+ * both together — tests/cards/loyalty-tag.test.ts pins this one. */
+export function loyaltyTag(
+  loyaltyProgram: string | undefined | null,
+): "cashback" | "miles" | "points" {
+  const l = (loyaltyProgram ?? "").toLowerCase();
+  if (l.includes("cashback") || l.includes("aed") || l === "") return "cashback";
+  if (
+    l.includes("skywards") ||
+    l.includes("etihad") ||
+    l.includes("avios") ||
+    l.includes("alfursan") ||
+    l.includes("miles")
+  )
+    return "miles";
+  return "points";
+}
+
 function singleWelcomeBonusDisplay(v: StructuredWelcomeBonus): string {
   const amount = v.amount.toLocaleString();
   const unit = REWARD_UNIT_LABELS[v.unit] ?? v.unit;
