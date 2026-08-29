@@ -25,6 +25,10 @@ export interface ProgrammeValuation {
   floor: number | null;
   ceiling: number | null;
   dpValue: number | null;
+  /** True when every published reference writes the baseline as
+   * approximate (e.g. Qatar Avios "~3 fils" per the value-to-me SOP) —
+   * chrome must not render it as an exact figure. */
+  approx?: boolean;
   delta90: string;
   status: "Active" | "Pending" | "Under review";
 }
@@ -32,7 +36,7 @@ export interface ProgrammeValuation {
 export const programmeValuations: ProgrammeValuation[] = [
   { slug: "skywards",             name: "Emirates",        currencyName: "Skywards",      mark: "SKY", floor: null, ceiling: null, dpValue: 2.0,  delta90: "—", status: "Active" },
   { slug: "etihad-guest",         name: "Etihad",          currencyName: "Guest",         mark: "ETI", floor: null, ceiling: null, dpValue: 2.0,  delta90: "—", status: "Active" },
-  { slug: "qatar-privilege-club", name: "Qatar",           currencyName: "Avios",         mark: "QR",  floor: null, ceiling: null, dpValue: 3.0,  delta90: "—", status: "Active" },
+  { slug: "qatar-privilege-club", name: "Qatar",           currencyName: "Avios",         mark: "QR",  floor: null, ceiling: null, dpValue: 3.0,  approx: true, delta90: "—", status: "Active" },
   { slug: null,                   name: "British Airways", currencyName: "Avios",         mark: "BA",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
   { slug: "marriott-bonvoy",      name: "Marriott",        currencyName: "Bonvoy",        mark: "MAR", floor: null, ceiling: null, dpValue: 2.5,  delta90: "—", status: "Active" },
   { slug: null,                   name: "IHG",             currencyName: "One Rewards",   mark: "IHG", floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
@@ -49,8 +53,9 @@ export function dpValueFils(slug: string): number | null {
 
 /** Nav-chrome sub-line for a programme, e.g. "2.0 fils · DP value". */
 export function dpValueSub(slug: string): string | undefined {
-  const v = dpValueFils(slug);
-  return v == null ? undefined : `${v.toFixed(1)} fils · DP value`;
+  const p = programmeValuations.find((e) => e.slug === slug);
+  if (p?.dpValue == null) return undefined;
+  return `${p.approx ? "~" : ""}${p.dpValue.toFixed(1)} fils · DP value`;
 }
 
 // Date the published baselines were last confirmed against the
