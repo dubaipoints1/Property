@@ -56,8 +56,10 @@ Content Layer (`glob` loader):
 | `guides` | Evergreen long-form | references `cards` and `programs` |
 | `salaryTransferOffers` | Live tracker entries | shares `SalaryTransferOfferShape` with history |
 | `salaryTransferOfferHistory` | Archived offers | `archived: true` literal + optional `archivedReason` |
-| `bankReputation` | Bank-level reputation signals | references `banks` |
 | `news` | Time-sensitive newsroom coverage | optional bank, card and programme references |
+
+(`bankReputation` was removed 22 Aug 2026 — one unsourced entry,
+rendered by no page; see the 2026-08-22 site audit §7.)
 
 The card system is the most non-obvious thing in the repo. Cards live
 in **two files joined by slug at render time**:

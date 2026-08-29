@@ -19,7 +19,7 @@ The following are **locked in** and are not to be changed by this document:
 | Tagline: "UAE rewards, banking and travel decoded" (homepage) / "UAE Miles · Deals · Banking Hacks" (masthead) | `BRAND_NOTES.md` §4 / `Header.astro:119` | **keep** |
 | Tone: HfP-dry, evidence-led | `BRAND_NOTES.md` §3 | **keep** |
 | Stack: Astro 5 + TS strict + Tailwind 4 + MDX + Pagefind + Cloudflare Pages | `PLAN.md` Stack | **keep** |
-| Content collections: `banks`, `cards`, `programs`, `deals`, `guides`, `salaryTransferOffers`, `salaryTransferOfferHistory`, `bankReputation` | `src/content.config.ts` | **keep** |
+| Content collections: `banks`, `cards`, `programs`, `deals`, `guides`, `news`, `salaryTransferOffers`, `salaryTransferOfferHistory` | `src/content.config.ts` | **keep** — `bankReputation` removed 22 Aug 2026 (unsourced rating, rendered nowhere); `news` added July 2026 |
 | Editorial principles: AED-first, sourced, date-stamped, no affiliate-driven recommendations | `PLAN.md` Editorial | **keep** |
 | Primary nav structure: News / Cards / Airlines / Banks / Guides + Salary tracker CTA | `Header.astro:2-8` | **keep** |
 | **Promo Codes — REMOVED** from architecture. Promo content, where relevant, lives inside `deals/` posts as inline merchant codes, never as a top-level destination. | this doc | **new** |
@@ -175,8 +175,9 @@ media queries unless a single component truly needs them.
   and to recent news posts referencing it.
 
 ### `banks/` — Bank Hubs
-- One hub per bank: cards lineup, current offers, salary-transfer position,
-  reputation summary (`bankReputation` collection).
+- One hub per bank: cards lineup, current offers, salary-transfer position.
+  (A `bankReputation` reputation summary was specced here; the collection
+  was removed 22 Aug 2026 — one unsourced entry, rendered by no page.)
 - Already prioritised list in `PLAN.md` Phase 2 — 11 banks.
 
 ### `salary-transfer/` — Live Tracker
@@ -339,7 +340,7 @@ paths from this amendment.
 | `src/styles/global.css` palette + Quiet Ledger rules | applied 2026-05-08 |
 | `src/components/Header.astro` continuous logo scale | applied 2026-05-08 |
 | `src/layouts/ArticleLayout.astro` `.dp-*` rewrite | applied 2026-05-08 (was unused) |
-| `src/pages/index.astro` 4-section homepage rebuild | **deferred** to next session |
+| `src/pages/index.astro` 4-section homepage rebuild | applied 2026-08-29 (as 5 sections: the Quiet Ledger index + live desk + latest analysis, plus the TPG brief's start-here directory and the trust/newsletter close; typographic hero, no photo) |
 | Per-band salary-transfer landing pages | **deferred** to next session |
 | `/news/`, `/newsletter/`, `/search/` routes | **deferred** to next session |
 | Card-review `.dp-take` re-theme on existing pages | inherited via `.dp-*` for free |
