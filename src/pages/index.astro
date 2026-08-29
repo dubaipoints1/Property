@@ -167,7 +167,7 @@ const travelTop = cards
   // "Miles per AED 10 spent", tiered) and a uniform "/AED" label would
   // misstate rates (§6). The currency names the programme; the review
   // page carries the exact table.
-  .map((c) => asRow(c, c.loyaltyProgram ?? "Miles", "top travel earn rate"));
+  .map((c) => asRow(c, c.loyaltyProgram ?? "Miles", "ranked on travel earn rate"));
 
 const cashbackTop = cards
   .filter((c) => loyaltyTag(c.loyaltyProgram) === "cashback")
@@ -234,7 +234,7 @@ const goals = [
     tool: {
       href: "/cards/finder/?spend=travel&prefer=miles",
       eyebrow: "Tool",
-      title: "Rank every miles card for travel spend",
+      title: "Rank miles cards for travel spend",
       meta: "Card finder →",
     },
   },
@@ -246,7 +246,7 @@ const goals = [
     tool: {
       href: "/cards/finder/?spend=general&prefer=cashback",
       eyebrow: "Tool",
-      title: "Rank every cashback card for your spend",
+      title: "Rank cashback cards for your spend",
       meta: "Card finder →",
     },
   },
