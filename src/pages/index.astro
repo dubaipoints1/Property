@@ -7,12 +7,19 @@
 // ("adopt verbatim") and its 6-section IA, expressed in the current
 // warm-paper tokens. Five sections, down from ten bands:
 //
-//   S1  Typographic hero + story index   (was: photo hero + stats band)
-//   S2  Live desk — salary offers + deals, one module (was: two teasers)
-//   S3  Latest analysis — .dp-featured-band story grid (was: hp-intel)
-//   S4  Start here — .dp-dir-tile directory   (was: wayfinder + wallet
-//                                              band + miles tiles)
-//   S5  Trust row + press + newsletter band   (was: trust stack + band)
+//   S1  Hero: masthead + .dp-feature-card feature story
+//   S2  Tools strip — .dp-tool-strip (finder / compare / calculators)
+//   S3  Live desk — salary offers + deals, one module
+//   S4  Strategy panel — .dp-strategy, no-JS radio goals
+//   S5  Latest analysis — .dp-featured-band story grid (intel[1..6))
+//   S6  Start here — .dp-dir-tile directory
+//   S7  Trust row + press + newsletter band
+//
+// Aug 2026 v0-layout amendment (Chairman direction, 29 Aug): the hero
+// carries an image-led feature story and the page gains the tools strip
+// and goal panel — the v0 prototype's layout rebuilt in house tokens.
+// This supersedes the TPG typographic-only-hero ruling by explicit
+// direction; palette unchanged (navy + gold, no third hue).
 //
 // Shared primitives over scoped CSS wherever one exists (.dp-pagehead,
 // .dp-featured-band/-grid, .dp-story-card, .dp-dir-grid/-tile,
@@ -26,6 +33,12 @@ import PressStrip from "~/components/PressStrip.astro";
 import NewsletterSignup from "~/components/NewsletterSignup.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
+import {
+  loyaltyTag,
+  welcomeBonusRank,
+  compareByWelcomeValue,
+} from "~/lib/cardsDataFormat";
+import { getStockEntry } from "~/lib/stockManifest";
 import { getLiveOffers } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
@@ -73,7 +86,7 @@ type IntelItem = {
 };
 
 const intel: IntelItem[] = [];
-for (const g of guidesSorted.slice(0, 3)) {
+for (const g of guidesSorted.slice(0, 4)) {
   intel.push({
     href: `/guides/${g.id}/`,
     category: "Guide",
@@ -111,13 +124,157 @@ if (newsSorted[0]) {
   });
 }
 
-// Hero story index — the three newest editorial items, text-only.
-const heroIndex = intel.slice(0, 3);
+// Hero feature story — intel[0] leads the hero in a .dp-feature-card;
+// the Latest-analysis grid takes intel[1..6) so the two never repeat.
+// Bare manifest entry, not <StockImage>: the circular .feat-mask needs
+// the primitive's own navy-hatch fallback, not the rectangular Cover.
+const featureImg = intel[0] ? getStockEntry(intel[0].imageSlug) : undefined;
 
 const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
 const flagshipProgramme =
   allPrograms.find((p) => p.id === "skywards") ?? allPrograms[0];
 const heroSweetSpot = flagshipProgramme?.data.sweetSpots[0];
+
+// ── S4 Strategy panel — goal-ranked top-3s, all deterministic L2 ─────
+// Mirrors the card finder's formula (spendRate fallback, loyaltyTag,
+// annualFee tie-break — see cards/finder/index.astro); the panel's deep
+// links land in the finder with the same params so homepage top-3 and
+// finder top-6 agree. No LLM extraction anywhere (§6).
+type ActiveCard = ReturnType<typeof getActiveCards>[number];
+const bankNameOf = (c: ActiveCard) =>
+  allBanks.find((b) => b.id === c.bank)?.data.name ?? c.bank;
+const spendRate = (c: ActiveCard, key: string): number => {
+  const v = (c.earnRates as Record<string, unknown>)[key];
+  return typeof v === "number" ? v : (c.earnRates.everythingElse ?? 0);
+};
+const feeAsc = (a: ActiveCard, b: ActiveCard) =>
+  a.annualFee.amount - b.annualFee.amount;
+
+type GoalRow = { slug: string; name: string; bank: string; stat: string; statSub: string };
+const asRow = (c: ActiveCard, stat: string, statSub: string): GoalRow => ({
+  slug: c.slug,
+  name: c.name,
+  bank: bankNameOf(c),
+  stat,
+  statSub,
+});
+
+const travelTop = cards
+  .filter((c) => loyaltyTag(c.loyaltyProgram) === "miles")
+  .sort((a, b) => spendRate(b, "travel") - spendRate(a, "travel") || feeAsc(a, b))
+  .slice(0, 3)
+  // No numeric stat here: earn units vary per card ("miles per AED",
+  // "Miles per AED 10 spent", tiered) and a uniform "/AED" label would
+  // misstate rates (§6). The currency names the programme; the review
+  // page carries the exact table.
+  .map((c) => asRow(c, c.loyaltyProgram ?? "Miles", "top travel earn rate"));
+
+const cashbackTop = cards
+  .filter((c) => loyaltyTag(c.loyaltyProgram) === "cashback")
+  .sort(
+    (a, b) =>
+      (b.earnRates.everythingElse ?? 0) - (a.earnRates.everythingElse ?? 0) ||
+      feeAsc(a, b),
+  )
+  .slice(0, 3)
+  .map((c) =>
+    asRow(c, `${c.earnRates.everythingElse}% back`, "on everything else"),
+  );
+
+const welcomeTop = cards
+  .filter((c) => welcomeBonusRank(c.welcomeBonus).tier === "priced")
+  .sort((a, b) => compareByWelcomeValue(a, b) || feeAsc(a, b))
+  .slice(0, 3)
+  .map((c) => {
+    const rank = welcomeBonusRank(c.welcomeBonus);
+    const aed = rank.tier === "priced" ? rank.aed : 0;
+    return asRow(c, `≈ AED ${aed.toLocaleString()}`, "welcome value");
+  });
+
+const firstTop = cards
+  .filter((c) => c.eligibility.minSalary <= 8000 && c.eligibility.invitationOnly !== true)
+  .sort(
+    (a, b) =>
+      feeAsc(a, b) ||
+      a.eligibility.minSalary - b.eligibility.minSalary ||
+      (b.earnRates.everythingElse ?? 0) - (a.earnRates.everythingElse ?? 0),
+  )
+  .slice(0, 3)
+  .map((c) =>
+    asRow(
+      c,
+      `AED ${c.annualFee.amount.toLocaleString()} fee`,
+      `from AED ${c.eligibility.minSalary.toLocaleString()} salary`,
+    ),
+  );
+
+// Guides carry no tags (content.config.ts) — the goal→guide map is
+// hand-curated. The build-time throw keeps a renamed guide from
+// silently 404ing the homepage; the postbuild link sweep is the
+// second net.
+const GOAL_GUIDES = {
+  travel: "skywards-business-class-redemptions-2026",
+  cashback: "best-entry-level-cards-2026",
+  welcome: "best-premium-cards-2026",
+  first: "expat-starter-first-credit-card",
+} as const;
+const goalGuide = (id: keyof typeof GOAL_GUIDES) => {
+  const slug = GOAL_GUIDES[id];
+  const g = allGuides.find((x) => x.id === slug);
+  if (!g) throw new Error(`strategy panel: guide "${slug}" not found for goal "${id}"`);
+  return { slug, title: g.data.title, meta: `Updated ${fmtShort(g.data.updatedAt)}` };
+};
+
+const goals = [
+  {
+    id: "travel",
+    label: "Travel & miles",
+    cards: travelTop,
+    guide: goalGuide("travel"),
+    tool: {
+      href: "/cards/finder/?spend=travel&prefer=miles",
+      eyebrow: "Tool",
+      title: "Rank every miles card for travel spend",
+      meta: "Card finder →",
+    },
+  },
+  {
+    id: "cashback",
+    label: "Cashback",
+    cards: cashbackTop,
+    guide: goalGuide("cashback"),
+    tool: {
+      href: "/cards/finder/?spend=general&prefer=cashback",
+      eyebrow: "Tool",
+      title: "Rank every cashback card for your spend",
+      meta: "Card finder →",
+    },
+  },
+  {
+    id: "welcome",
+    label: "Welcome bonus",
+    cards: welcomeTop,
+    guide: goalGuide("welcome"),
+    tool: {
+      href: "/calculator/",
+      eyebrow: "Tool",
+      title: "See which welcome offer pays back first",
+      meta: "Welcome-bonus calculator →",
+    },
+  },
+  {
+    id: "first",
+    label: "First card",
+    cards: firstTop,
+    guide: goalGuide("first"),
+    tool: {
+      href: "/cards/finder/?salary=8000&fee=under-500",
+      eyebrow: "Tool",
+      title: "Entry-level cards under AED 500 a year",
+      meta: "Card finder →",
+    },
+  },
+] as const;
 
 // ── S2 Live desk: salary-transfer offers ─────────────────────────────
 // Real rows from the salaryTransferOffers collection; each column
@@ -164,7 +321,7 @@ const dealRows = await Promise.all(
   description="Independent UAE-resident-led guides to credit cards, salary-transfer bonuses, miles redemptions and lifestyle deals. AED-first, sourced and dated."
   fullWidth
 >
-  <!-- ── S1. Typographic hero + story index ─────────────────────────── -->
+  <!-- ── S1. Hero: masthead + feature story ─────────────────────────── -->
   <header class="dp-pagehead is-hero hp-hero">
     <div class="hp-hero-grid">
       <div class="hp-hero-text">
@@ -191,33 +348,67 @@ const dealRows = await Promise.all(
         )}
       </div>
 
-      <aside class="hp-hero-index" aria-label="On the desk">
-        <p class="hp-hero-index-label">On the desk</p>
-        <ol>
-          {heroIndex.map((item) => (
-            <li>
-              <a href={item.href}>
-                <span class="cat">{item.category}</span>
-                <span class="t">{item.title}</span>
-                <span class="m">{item.meta}</span>
-              </a>
-            </li>
-          ))}
-          {heroSweetSpot && flagshipProgramme && (
-            <li>
-              <a href={`/airlines/${flagshipProgramme.id}/`}>
-                <span class="cat">Sweet spot</span>
-                <span class="t">{heroSweetSpot.title}</span>
-                <span class="m">{flagshipProgramme.data.currencyName} →</span>
-              </a>
-            </li>
+      {intel[0] && (
+        <a href={intel[0].href} class="dp-feature-card hp-hero-feature">
+          {featureImg ? (
+            <span class="feat-mask">
+              <img
+                src={`/${featureImg.file}`}
+                alt={featureImg.alt}
+                width={featureImg.width}
+                height={featureImg.height}
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                sizes="(max-width: 899px) 80vw, 30vw"
+              />
+            </span>
+          ) : (
+            <span class="feat-mask" aria-hidden="true"></span>
           )}
-        </ol>
-      </aside>
+          <span class="feat-body">
+            <span class="feat-eyebrow">Featured · {intel[0].category}</span>
+            <span class="feat-title">{intel[0].title}</span>
+            <span class="feat-meta">{intel[0].meta}</span>
+            <span class="feat-arrow" aria-hidden="true">→</span>
+          </span>
+        </a>
+      )}
     </div>
   </header>
 
-  <!-- ── S2. Live desk — salary offers + deals, one module ──────────── -->
+  <!-- ── S2. Tools strip ────────────────────────────────────────────── -->
+  <section class="hp-tools" aria-label="Tools">
+    <div class="dp-featured-eyebrow">
+      <span>Tools</span>
+      <span class="rule"></span>
+      <span class="meta">Rank, compare, calculate</span>
+    </div>
+    <div class="dp-tool-strip">
+      <a href="/cards/finder/" class="dp-tool">
+        <span class="eyebrow">Rank</span>
+        <span class="title">Card finder</span>
+        <span class="go">{cards.length} cards →</span>
+      </a>
+      <a href="/cards/compare/" class="dp-tool">
+        <span class="eyebrow">Compare</span>
+        <span class="title">Compare cards</span>
+        <span class="go">Side-by-side specs →</span>
+      </a>
+      <a href="/calculator/" class="dp-tool">
+        <span class="eyebrow">Calculate</span>
+        <span class="title">Welcome-bonus calculator</span>
+        <span class="go">Payback by AED spend →</span>
+      </a>
+      <a href="/salary-transfer/calculator/" class="dp-tool">
+        <span class="eyebrow">Calculate</span>
+        <span class="title">Salary-offer calculator</span>
+        <span class="go">Compare bank offers →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ── S3. Live desk — salary offers + deals, one module ──────────── -->
   {(offerRows.length > 0 || dealRows.length > 0) && (
     <section class="dp-live-desk" aria-label="Live data desk">
       <div class="head">
@@ -276,7 +467,58 @@ const dealRows = await Promise.all(
     </section>
   )}
 
-  <!-- ── S3. Latest analysis ────────────────────────────────────────── -->
+  <!-- ── S4. Strategy panel — goal-ranked, no-JS radio tabs ─────────── -->
+  <section class="dp-strategy" aria-label="Build your points strategy">
+    <div class="inner">
+      <div class="dp-featured-eyebrow">
+        <span>Build your points strategy</span>
+        <span class="rule"></span>
+        <span class="meta">Ranked from verified card data</span>
+      </div>
+      <h2>Start from the goal, not the card.</h2>
+      <input type="radio" name="dps-goal" id="dps-travel" class="dps-radio" checked />
+      <input type="radio" name="dps-goal" id="dps-cashback" class="dps-radio" />
+      <input type="radio" name="dps-goal" id="dps-welcome" class="dps-radio" />
+      <input type="radio" name="dps-goal" id="dps-first" class="dps-radio" />
+      <div class="dps-pills">
+        {goals.map((g) => (
+          <label for={`dps-${g.id}`}>{g.label}</label>
+        ))}
+      </div>
+      {goals.map((g) => (
+        <div class={`dps-panel is-${g.id}`}>
+          <ol class="dps-cards">
+            {g.cards.map((c, i) => (
+              <li>
+                <a href={`/cards/${c.slug}/`}>
+                  <span class="rank">{i + 1}</span>
+                  <span>
+                    <span class="name">{c.name}</span>
+                    <span class="bank">{c.bank}</span>
+                  </span>
+                  <span class="stat">{c.stat}<small>{c.statSub}</small></span>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <div class="dps-aside">
+            <a href={`/guides/${g.guide.slug}/`}>
+              <span class="eyebrow">Guide</span>
+              <span class="t">{g.guide.title}</span>
+              <span class="m">{g.guide.meta}</span>
+            </a>
+            <a href={g.tool.href}>
+              <span class="eyebrow">{g.tool.eyebrow}</span>
+              <span class="t">{g.tool.title}</span>
+              <span class="m">{g.tool.meta}</span>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ── S5. Latest analysis ────────────────────────────────────────── -->
   <section class="dp-featured-band" id="latest" aria-label="Latest analysis">
     <div class="dp-featured-eyebrow">
       <span>Latest analysis</span>
@@ -284,24 +526,24 @@ const dealRows = await Promise.all(
       <span class="meta">Checked against primary sources</span>
     </div>
     <div class="dp-featured-grid">
-      {intel[0] && (
-        <a href={intel[0].href} class="dp-story-card hero">
+      {intel[1] && (
+        <a href={intel[1].href} class="dp-story-card hero">
           <StockImage
-            slug={intel[0].imageSlug}
-            coverTitle={intel[0].title}
-            coverCategory={intel[0].coverCategory}
+            slug={intel[1].imageSlug}
+            coverTitle={intel[1].title}
+            coverCategory={intel[1].coverCategory}
             coverSize="hero"
             loading="eager"
             sizes="(max-width: 1024px) 100vw, 50vw"
           />
           <div class="body">
-            <span class="meta"><span class="cat">{intel[0].category}</span> {intel[0].meta}</span>
-            <h3>{intel[0].title}</h3>
-            <p>{intel[0].excerpt}</p>
+            <span class="meta"><span class="cat">{intel[1].category}</span> {intel[1].meta}</span>
+            <h3>{intel[1].title}</h3>
+            <p>{intel[1].excerpt}</p>
           </div>
         </a>
       )}
-      {intel.slice(1, 3).map((item) => (
+      {intel.slice(2, 4).map((item) => (
         <a href={item.href} class="dp-story-card med">
           <StockImage
             slug={item.imageSlug}
@@ -316,7 +558,7 @@ const dealRows = await Promise.all(
           </div>
         </a>
       ))}
-      {intel.slice(3, 5).map((item) => (
+      {intel.slice(4, 6).map((item) => (
         <a href={item.href} class="dp-story-card sm">
           <StockImage
             slug={item.imageSlug}
@@ -338,7 +580,7 @@ const dealRows = await Promise.all(
     </div>
   </section>
 
-  <!-- ── S4. Start here — directory ─────────────────────────────────── -->
+  <!-- ── S6. Start here — directory ─────────────────────────────────── -->
   <section class="hp-dir" aria-label="Browse dubaipoints.ae">
     <div class="dp-featured-eyebrow">
       <span>Start here</span>
@@ -370,11 +612,11 @@ const dealRows = await Promise.all(
         <span class="desc">Band-by-band cash and rate offers across UAE banks — sources watched weekly, every entry dated.</span>
         <span class="meta">{offerRows.length} live offers</span>
       </a>
-      <a href="/calculator/" class="dp-dir-tile">
-        <span class="eyebrow">Tool</span>
-        <span class="title">Welcome-bonus calculator</span>
-        <span class="desc">Plug in your monthly AED spend; see which card's welcome offer pays back first.</span>
-        <span class="meta">Open the calculator →</span>
+      <a href="/deals/" class="dp-dir-tile">
+        <span class="eyebrow">{dealRows.length > 0 ? `${dealRows.length} live` : "Deals desk"}</span>
+        <span class="title">Lifestyle deals</span>
+        <span class="desc">Time-bound UAE dining, retail and travel offers — dated, sourced, archived when they end.</span>
+        <span class="meta">All deals →</span>
       </a>
       <a href="/guides/" class="dp-dir-tile">
         <span class="eyebrow">{allGuides.length} guides</span>
@@ -385,7 +627,7 @@ const dealRows = await Promise.all(
     </div>
   </section>
 
-  <!-- ── S5. Trust + press + newsletter ─────────────────────────────── -->
+  <!-- ── S7. Trust + press + newsletter ─────────────────────────────── -->
   <section class="hp-trust" aria-label="Why trust DubaiPoints">
     <div class="dp-featured-eyebrow">
       <span>Why trust us</span>
@@ -444,7 +686,16 @@ const dealRows = await Promise.all(
     align-items: start;
   }
   @media (min-width: 900px) {
-    .hp-hero-grid { grid-template-columns: 1.35fr 1fr; gap: 64px; }
+    .hp-hero-grid { grid-template-columns: 1.1fr minmax(340px, 0.9fr); gap: 56px; }
+  }
+  /* Feature card in the hero column: the primitive's 38vw mask clamp
+     was sized for a full-width band and balloons the hero — cap it. */
+  .hp-hero-feature :global(.feat-mask),
+  .hp-hero-feature .feat-mask {
+    width: clamp(150px, 20vw, 230px);
+  }
+  @media (max-width: 899px) {
+    .hp-hero-feature { max-width: 460px; }
   }
   .hp-hero-kicker {
     display: inline-block;
@@ -492,40 +743,19 @@ const dealRows = await Promise.all(
     margin: 14px 0 0;
   }
 
-  /* Story index — typographic, hairline-ruled */
-  .hp-hero-index { border-top: 1px solid var(--line); }
-  .hp-hero-index-label {
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--ink-soft);
-    margin: 14px 0 4px;
+  /* ── S2 tools strip shell ──────────────────────────────────────────── */
+  .hp-tools {
+    padding: 20px 32px 28px;
+    border-bottom: 1px solid var(--line);
   }
-  .hp-hero-index ol {
-    list-style: none; margin: 0; padding: 0;
+  .hp-tools .dp-featured-eyebrow,
+  .hp-tools .dp-tool-strip {
+    max-width: var(--container-listing);
+    margin-left: auto; margin-right: auto;
   }
-  .hp-hero-index li { border-bottom: 1px solid var(--line); }
-  .hp-hero-index a {
-    display: grid; gap: 4px;
-    padding: 14px 0;
-    text-decoration: none;
-  }
-  .hp-hero-index .cat {
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--green);
-  }
-  .hp-hero-index .t {
-    font-family: 'Fraunces', serif; font-weight: 500;
-    font-size: 17px; line-height: 1.3; letter-spacing: -0.2px;
-    color: var(--ink);
-    transition: color 0.15s;
-  }
-  .hp-hero-index a:hover .t { color: var(--green); }
-  .hp-hero-index .m {
-    font-size: 11px; color: var(--muted); letter-spacing: 0.3px;
-  }
+  .hp-tools .dp-featured-eyebrow { margin-bottom: 16px; }
 
-  /* ── S3 foot links ─────────────────────────────────────────────────── */
+  /* ── S5 foot links ─────────────────────────────────────────────────── */
   .hp-latest-foot {
     max-width: var(--container-listing);
     margin: 20px auto 0;
@@ -538,7 +768,7 @@ const dealRows = await Promise.all(
   }
   .hp-latest-foot a:hover { text-decoration: underline; }
 
-  /* ── S4 / S5 shells — shared grid, page-level padding only ─────────── */
+  /* ── S6 / S7 shells — shared grid, page-level padding only ─────────── */
   .hp-dir, .hp-trust {
     max-width: none;
     padding: 36px 32px 8px;
@@ -578,7 +808,7 @@ const dealRows = await Promise.all(
   }
   .hp-trust-footnote a { color: var(--green); }
 
-  /* ── S5 newsletter band ────────────────────────────────────────────── */
+  /* ── S7 newsletter band ────────────────────────────────────────────── */
   .hp-news { padding: 56px 32px 48px; }
   .hp-news .inner {
     max-width: 640px; margin: 0 auto; text-align: center;

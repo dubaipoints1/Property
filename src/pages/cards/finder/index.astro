@@ -365,6 +365,9 @@ const lastRefreshed = new Date(
       };
     }
 
+    // MIRROR: verbatim JS copy of loyaltyTag() in
+    // src/lib/cardsDataFormat.ts (this inline script runs without
+    // imports). Change both together; the TS one is unit-tested.
     function loyaltyTag(loyalty) {
       var l = (loyalty || "").toLowerCase();
       if (

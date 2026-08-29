@@ -1140,6 +1140,43 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   letter-spacing: 0.3px;
 }
 
+/* ── .dp-tool-strip — compact utility row (v0-layout adoption, Aug 2026) ──
+   Slim 4-up strip of tool links directly under the homepage hero. NOT a
+   .dp-dir-tile: dir tiles are 3-line editorial tiles; this is a utility
+   strip and the two must not read as the same organism twice on a page. */
+.dp-tool-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+@media (min-width: 900px) {
+  .dp-tool-strip { grid-template-columns: repeat(4, 1fr); }
+}
+.dp-tool {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 14px 16px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+.dp-tool:hover { border-color: var(--green); }
+.dp-tool .eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted);
+}
+.dp-tool .title {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-weight: 600; font-size: 14px;
+  color: var(--ink);
+  transition: color 0.15s;
+}
+.dp-tool:hover .title { color: var(--green); }
+.dp-tool .go {
+  font-size: 11px; color: var(--muted); letter-spacing: 0.3px;
+}
+
 .dp-dir-pills {
   display: flex; flex-wrap: wrap; gap: 8px;
   margin-top: 14px;
@@ -1324,7 +1361,13 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 .dp-feature-card .feat-body { display: flex; flex-direction: column; gap: 14px; }
 .dp-feature-card .feat-eyebrow {
   font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--green);
+  text-transform: uppercase;
+  /* Gold, not --green: --green resolves to the same navy as the card
+     background in light mode — the original var(--green) here was
+     invisible navy-on-navy, never seen because the primitive shipped
+     unused (found at first use, Aug 2026). Gold-on-navy is the
+     established dark-band eyebrow treatment. */
+  color: var(--gold);
 }
 .dp-feature-card .feat-title {
   font-family: 'Fraunces', serif; font-weight: 700;
@@ -1346,6 +1389,149 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   transition: transform 0.18s;
 }
 .dp-feature-card:hover .feat-arrow { transform: translateX(4px); }
+
+/* ── .dp-strategy — goal-based strategy panel (v0-layout adoption) ────────
+   "Start from the goal, not the card." Four pre-rendered goal panels
+   swapped by a no-JS radio group — same input-hack doctrine as the
+   header's .dp-nav-toggle checkbox. To assistive tech this is honestly a
+   radio group ("choose a goal"), not a tablist; all four panels are
+   build-time static, Pagefind-indexable, zero hydration.
+
+   The radio inputs MUST precede .dps-pills and the panels as siblings —
+   every rule below is a `:checked ~` / `:focus-visible ~` sibling
+   combinator. Inputs are hidden with opacity, NOT display:none, so they
+   stay focusable; the four :focus-visible rules are load-bearing for
+   keyboard users. */
+.dp-strategy {
+  padding: 40px 32px 36px;
+  border-bottom: 1px solid var(--line);
+}
+.dp-strategy .inner {
+  max-width: var(--container-listing);
+  margin: 0 auto;
+}
+.dp-strategy h2 {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: clamp(24px, 3vw, 32px);
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin: 0 0 20px;
+}
+.dps-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.dps-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 24px;
+}
+.dps-pills label {
+  padding: 8px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.dps-pills label:hover { border-color: var(--ink); color: var(--ink); }
+#dps-travel:checked ~ .dps-pills label[for="dps-travel"],
+#dps-cashback:checked ~ .dps-pills label[for="dps-cashback"],
+#dps-welcome:checked ~ .dps-pills label[for="dps-welcome"],
+#dps-first:checked ~ .dps-pills label[for="dps-first"] {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+#dps-travel:focus-visible ~ .dps-pills label[for="dps-travel"],
+#dps-cashback:focus-visible ~ .dps-pills label[for="dps-cashback"],
+#dps-welcome:focus-visible ~ .dps-pills label[for="dps-welcome"],
+#dps-first:focus-visible ~ .dps-pills label[for="dps-first"] {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+.dps-panel { display: none; }
+#dps-travel:checked ~ .dps-panel.is-travel,
+#dps-cashback:checked ~ .dps-panel.is-cashback,
+#dps-welcome:checked ~ .dps-panel.is-welcome,
+#dps-first:checked ~ .dps-panel.is-first {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 900px) {
+  #dps-travel:checked ~ .dps-panel.is-travel,
+  #dps-cashback:checked ~ .dps-panel.is-cashback,
+  #dps-welcome:checked ~ .dps-panel.is-welcome,
+  #dps-first:checked ~ .dps-panel.is-first {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 32px;
+  }
+}
+/* Card rows — the .dp-live-desk row idiom: rank / name+bank / stat chip */
+.dps-cards {
+  list-style: none; margin: 0; padding: 0;
+  border-top: 1px solid var(--line);
+}
+.dps-cards li { border-bottom: 1px solid var(--line); }
+.dps-cards a {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 14px; align-items: baseline;
+  padding: 14px 0;
+  text-decoration: none;
+}
+.dps-cards .rank {
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: 16px; color: var(--muted);
+}
+.dps-cards .name {
+  font-weight: 700; font-size: 14px; color: var(--ink);
+  transition: color 0.15s;
+}
+.dps-cards a:hover .name { color: var(--green); }
+.dps-cards .bank {
+  display: block;
+  font-size: 12px; font-weight: 400; color: var(--muted);
+  margin-top: 2px;
+}
+.dps-cards .stat {
+  font-size: 12px; font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  text-align: right;
+}
+.dps-cards .stat small {
+  display: block;
+  font-size: 11px; font-weight: 400; color: var(--muted);
+}
+.dps-aside { display: flex; flex-direction: column; gap: 12px; }
+.dps-aside a {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+.dps-aside a:hover { border-color: var(--green); }
+.dps-aside .eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted);
+}
+.dps-aside .t {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 16px; line-height: 1.3;
+  color: var(--ink);
+  transition: color 0.15s;
+}
+.dps-aside a:hover .t { color: var(--green); }
+.dps-aside .m { font-size: 11px; color: var(--muted); }
+@media (max-width: 640px) {
+  .dp-strategy { padding: 32px 24px 28px; }
+  .dps-cards .stat { white-space: normal; max-width: 120px; }
+}
 
 /* ── .dp-tabs — green-underline tabs (TPG content-feed pattern) ────────── */
 .dp-tabs {
@@ -3411,6 +3597,9 @@ html * {
 [data-theme="dark"] .dp-nav-live-strip {
   background: #16202c;
 }
+/* The feat-arrow is white-circle + var(--navy) glyph; inverted --navy is
+   near-white in dark mode — pin the glyph to the dark surface colour. */
+[data-theme="dark"] .dp-feature-card .feat-arrow { color: #16202c; }
 
 /* Contrast note (Aug 2026 homepage rewrite): the hero CTAs use
    var(--ink) on var(--paper), which self-inverts with the theme — no
