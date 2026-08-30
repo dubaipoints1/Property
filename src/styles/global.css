@@ -1177,6 +1177,54 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   font-size: 11px; color: var(--muted); letter-spacing: 0.3px;
 }
 
+/* Boxed variant (v0-layout adoption, Aug 2026): joined white boxes with
+   icon tiles and corner arrows, designed to sit on a sand band
+   (--shade-2). Square corners are the variant's signature. */
+.dp-tool-strip.is-boxed {
+  gap: 0;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+.dp-tool-strip.is-boxed .dp-tool {
+  position: relative;
+  border: 0;
+  border-radius: 0;
+  padding: 26px 24px 22px;
+  gap: 10px;
+}
+/* Seams follow the grid: base strip is 2-up (2×2 → seam between the
+   columns + between the rows); at ≥900px the 4-up row joins left-to-
+   right only. A bare `+ sibling` border-top in a 2-col grid draws a
+   stray hairline atop cell 2 and no vertical seam at all (UX 5.5). */
+.dp-tool-strip.is-boxed .dp-tool:nth-child(even) { border-left: 1px solid var(--line); }
+.dp-tool-strip.is-boxed .dp-tool:nth-child(n+3) { border-top: 1px solid var(--line); }
+@media (min-width: 900px) {
+  .dp-tool-strip.is-boxed .dp-tool:nth-child(n+3) { border-top: 0; }
+  .dp-tool-strip.is-boxed .dp-tool + .dp-tool { border-left: 1px solid var(--line); }
+}
+.dp-tool-strip.is-boxed .icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px;
+  background: var(--gold-soft);
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.dp-tool-strip.is-boxed .title {
+  font-family: 'Fraunces', serif; font-weight: 500;
+  font-size: 19px; letter-spacing: -0.2px;
+}
+.dp-tool-strip.is-boxed .go {
+  font-size: 13px; color: var(--ink-soft); letter-spacing: 0;
+  padding-right: 22px; /* clears the absolute corner arrow at 2-col widths */
+}
+.dp-tool-strip.is-boxed .arrow {
+  position: absolute; right: 18px; bottom: 16px;
+  color: var(--green); font-size: 15px;
+  transition: transform 0.15s;
+}
+.dp-tool-strip.is-boxed .dp-tool:hover .arrow { transform: translate(2px, -2px); }
+[data-theme="dark"] .dp-tool-strip.is-boxed .icon { background: #253243; }
+
 .dp-dir-pills {
   display: flex; flex-wrap: wrap; gap: 8px;
   margin-top: 14px;
@@ -1443,6 +1491,77 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 #dps-first:checked ~ .dps-pills label[for="dps-first"] {
   background: var(--ink); color: var(--paper); border-color: var(--ink);
 }
+
+/* Navy-band variant (v0-layout adoption): the panel sits on a dark navy
+   band; goal labels render as underline TABS (v0's idiom), gold carries
+   the active underline as the on-band accent. Same radio mechanism. */
+.dp-strategy.is-navy {
+  background: var(--navy);
+  border-bottom: 0;
+}
+[data-theme="dark"] .dp-strategy.is-navy { background: #16202c; }
+.dp-strategy.is-navy h2 { color: #fff; }
+.dp-strategy.is-navy h2 em {
+  font-style: italic; color: var(--gold);
+}
+.dp-strategy.is-navy .dp-featured-eyebrow { color: rgba(255,255,255,0.75); }
+.dp-strategy.is-navy .dp-featured-eyebrow .rule { background: rgba(255,255,255,0.2); }
+.dp-strategy.is-navy .dp-featured-eyebrow .meta { color: rgba(255,255,255,0.62); }
+.dp-strategy.is-navy .dps-lede {
+  font-size: 15px; line-height: 1.6;
+  color: rgba(255,255,255,0.72);
+  max-width: 44ch;
+  margin: 0 0 24px;
+}
+.dp-strategy.is-navy .dps-pills {
+  gap: 26px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.dp-strategy.is-navy .dps-pills label {
+  border: 0; border-radius: 0;
+  padding: 0 0 12px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  background: transparent;
+}
+.dp-strategy.is-navy .dps-pills label:hover { color: #fff; }
+.dp-strategy.is-navy #dps-travel:checked ~ .dps-pills label[for="dps-travel"],
+.dp-strategy.is-navy #dps-cashback:checked ~ .dps-pills label[for="dps-cashback"],
+.dp-strategy.is-navy #dps-welcome:checked ~ .dps-pills label[for="dps-welcome"],
+.dp-strategy.is-navy #dps-first:checked ~ .dps-pills label[for="dps-first"] {
+  background: transparent;
+  color: #fff;
+  border-bottom-color: var(--gold);
+}
+.dp-strategy.is-navy #dps-travel:focus-visible ~ .dps-pills label[for="dps-travel"],
+.dp-strategy.is-navy #dps-cashback:focus-visible ~ .dps-pills label[for="dps-cashback"],
+.dp-strategy.is-navy #dps-welcome:focus-visible ~ .dps-pills label[for="dps-welcome"],
+.dp-strategy.is-navy #dps-first:focus-visible ~ .dps-pills label[for="dps-first"] {
+  outline-color: var(--gold);
+}
+.dp-strategy.is-navy .dps-cards,
+.dp-strategy.is-navy .dps-cards li { border-color: rgba(255,255,255,0.16); }
+/* Small-text whites on the navy band sit at ≥0.55 alpha: 0.45–0.5 white
+   over #1f3a4d measures ≈3.7–4.2:1 — under the 4.5:1 AA floor for the
+   11–16px sizes these carry (UX 5.5, 29 Aug 2026). */
+.dp-strategy.is-navy .dps-cards .rank { color: rgba(255,255,255,0.55); }
+.dp-strategy.is-navy .dps-cards .name { color: #fff; }
+.dp-strategy.is-navy .dps-cards a:hover .name { color: var(--gold); }
+.dp-strategy.is-navy .dps-cards .bank { color: rgba(255,255,255,0.62); }
+.dp-strategy.is-navy .dps-cards .stat { color: rgba(255,255,255,0.85); }
+.dp-strategy.is-navy .dps-cards .stat small { color: rgba(255,255,255,0.62); }
+.dp-strategy.is-navy .dps-aside a {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.2);
+  border-radius: 0; /* the navy band belongs to the v0 square-box idiom */
+}
+.dp-strategy.is-navy .dps-aside a:hover { border-color: var(--gold); }
+.dp-strategy.is-navy .dps-aside .eyebrow { color: rgba(255,255,255,0.62); }
+.dp-strategy.is-navy .dps-aside .t { color: #fff; }
+.dp-strategy.is-navy .dps-aside a:hover .t { color: var(--gold); }
+.dp-strategy.is-navy .dps-aside .m { color: rgba(255,255,255,0.62); }
 #dps-travel:focus-visible ~ .dps-pills label[for="dps-travel"],
 #dps-cashback:focus-visible ~ .dps-pills label[for="dps-cashback"],
 #dps-welcome:focus-visible ~ .dps-pills label[for="dps-welcome"],

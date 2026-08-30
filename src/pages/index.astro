@@ -7,19 +7,22 @@
 // ("adopt verbatim") and its 6-section IA, expressed in the current
 // warm-paper tokens. Five sections, down from ten bands:
 //
-//   S1  Hero: masthead + .dp-feature-card feature story
-//   S2  Tools strip — .dp-tool-strip (finder / compare / calculators)
-//   S3  Live desk — salary offers + deals, one module
-//   S4  Strategy panel — .dp-strategy, no-JS radio goals
-//   S5  Latest analysis — .dp-featured-band story grid (intel[1..6))
+//   S1  Hero: masthead + rect feature photo w/ overlay play-card
+//   S2  Tools band — sand surface, boxed icon tiles (.dp-tool-strip.is-boxed)
+//   S3  Live desk — salary offers + deals, boxed columns
+//   S4  Fresh from the desk — big heading, search, uniform 3-up
+//   S5  Strategy panel — navy band, underline tabs (.dp-strategy.is-navy)
 //   S6  Start here — .dp-dir-tile directory
-//   S7  Trust row + press + newsletter band
+//   S7  Trust row + press + gold newsletter band
 //
-// Aug 2026 v0-layout amendment (Chairman direction, 29 Aug): the hero
-// carries an image-led feature story and the page gains the tools strip
-// and goal panel — the v0 prototype's layout rebuilt in house tokens.
-// This supersedes the TPG typographic-only-hero ruling by explicit
-// direction; palette unchanged (navy + gold, no third hue).
+// Aug 2026 v0-design amendment (Chairman direction, 29 Aug, from the
+// owner's v0 screenshots): the page adopts the prototype's composition —
+// the boxes (icon tool tiles, boxed live desk, overlay play-card, square
+// CTAs) and the band flow (paper → sand → paper → navy → gold) — rebuilt
+// in house tokens. The italic display accent returns and the gold
+// newsletter band is a deliberate one-page exception to gold's chip-only
+// role, both by the same direction. Supersedes the TPG typographic-only
+// hero; palette unchanged (navy + gold, no third hue).
 //
 // Shared primitives over scoped CSS wherever one exists (.dp-pagehead,
 // .dp-featured-band/-grid, .dp-story-card, .dp-dir-grid/-tile,
@@ -124,10 +127,11 @@ if (newsSorted[0]) {
   });
 }
 
-// Hero feature story — intel[0] leads the hero in a .dp-feature-card;
-// the Latest-analysis grid takes intel[1..6) so the two never repeat.
-// Bare manifest entry, not <StockImage>: the circular .feat-mask needs
-// the primitive's own navy-hatch fallback, not the rectangular Cover.
+// Hero feature story — intel[0] leads the hero as a rectangular photo
+// with an overlay "This week's read" card; the Fresh grid shows
+// intel[1] + the newest card review + newest news, so hero and grid
+// never repeat. Bare manifest entry (not <StockImage>) so the hero
+// controls its own eager/priority loading and navy fallback panel.
 const featureImg = intel[0] ? getStockEntry(intel[0].imageSlug) : undefined;
 
 const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
@@ -334,85 +338,98 @@ const dealRows = await Promise.all(
   <header class="dp-pagehead is-hero hp-hero">
     <div class="hp-hero-grid">
       <div class="hp-hero-text">
-        <span class="hp-hero-kicker">Independent UAE points &amp; miles publication</span>
-        <h1>Fly further. Pay&nbsp;less.</h1>
+        <span class="hp-hero-kicker"><span class="dot" aria-hidden="true"></span>Independent UAE points &amp; miles publication</span>
+        <h1>Fly further. <em>Pay&nbsp;less.</em></h1>
         <p class="hp-hero-lede">
           UAE-resident guides to the card combinations, salary-transfer
           bonuses and miles redemptions that stretch a Dubai paycheque
           further — AED-first, dated and sourced.
         </p>
-        <p class="hp-hero-meta">
-          {cards.length} cards · {allBanks.length} banks ·
-          {allPrograms.length} programmes · zero paid placements
-        </p>
         <div class="hp-hero-ctas">
-          <a href="#latest" class="hp-hero-cta">Read the latest ↓</a>
-          <a href="/newsletter/" class="hp-hero-cta is-ghost">Join the Friday brief →</a>
+          <a href="#tools" class="hp-hero-cta">Start with a tool ↗</a>
+          <a href="#latest" class="hp-hero-cta is-ghost">Read the latest →</a>
         </div>
         {!newsletterLive && (
           <p class="hp-hero-micro">
-            The brief is preparing for launch — sign-up is by email until
-            the automated list opens.
+            The Friday brief is preparing for launch — sign-up is by email
+            until the automated list opens.
           </p>
         )}
+        <p class="hp-hero-trust">
+          <span>{cards.length} cards · {allBanks.length} banks</span>
+          <span>AED-first</span>
+          <span>No paid placements</span>
+        </p>
       </div>
 
       {intel[0] && (
-        <a href={intel[0].href} class="dp-feature-card hp-hero-feature">
+        <div class="hp-hero-media">
           {featureImg ? (
-            <span class="feat-mask">
-              <img
-                src={`/${featureImg.file}`}
-                alt={featureImg.alt}
-                width={featureImg.width}
-                height={featureImg.height}
-                loading="eager"
-                fetchpriority="high"
-                decoding="async"
-                sizes="(max-width: 899px) 80vw, 30vw"
-              />
-            </span>
+            <img
+              src={`/${featureImg.file}`}
+              alt={featureImg.alt}
+              width={featureImg.width}
+              height={featureImg.height}
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
+              sizes="(max-width: 899px) 100vw, 46vw"
+            />
           ) : (
-            <span class="feat-mask" aria-hidden="true"></span>
+            <div class="hp-hero-media-fallback" aria-hidden="true"></div>
           )}
-          <span class="feat-body">
-            <span class="feat-eyebrow">Featured · {intel[0].category}</span>
-            <span class="feat-title">{intel[0].title}</span>
-            <span class="feat-meta">{intel[0].meta}</span>
-            <span class="feat-arrow" aria-hidden="true">→</span>
-          </span>
-        </a>
+          <span class="hp-hero-stamp" aria-hidden="true">DXB<i>✦</i>AED-FIRST</span>
+          <a href={intel[0].href} class="hp-hero-play">
+            <span class="eyebrow">Featured read</span>
+            <span class="t">{intel[0].title}</span>
+            <span class="m">{intel[0].category} · {intel[0].meta} ↗</span>
+          </a>
+        </div>
       )}
     </div>
   </header>
 
-  <!-- ── S2. Tools strip ────────────────────────────────────────────── -->
-  <section class="hp-tools" aria-label="Tools">
-    <div class="dp-featured-eyebrow">
-      <span>Tools</span>
-      <span class="rule"></span>
-      <span class="meta">Rank, compare, calculate</span>
+  <!-- ── S2. Tools band ─────────────────────────────────────────────── -->
+  <section class="hp-tools" id="tools" aria-label="Tools">
+    <div class="hp-tools-head">
+      <div>
+        <span class="hp-band-eyebrow">Know what you need?</span>
+        <h2>Start with a tool.</h2>
+      </div>
+      <p class="hp-tools-sub">Rank, compare and calculate against verified card data — before you apply.</p>
     </div>
-    <div class="dp-tool-strip">
+    <div class="dp-tool-strip is-boxed">
       <a href="/cards/finder/" class="dp-tool">
-        <span class="eyebrow">Rank</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="1"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </span>
         <span class="title">Card finder</span>
-        <span class="go">{cards.length} cards →</span>
+        <span class="go">Rank {cards.length} cards against your spending</span>
+        <span class="arrow" aria-hidden="true">↗</span>
       </a>
       <a href="/cards/compare/" class="dp-tool">
-        <span class="eyebrow">Compare</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/></svg>
+        </span>
         <span class="title">Compare cards</span>
-        <span class="go">Side-by-side specs →</span>
+        <span class="go">Shortlist your next UAE card side by side</span>
+        <span class="arrow" aria-hidden="true">↗</span>
       </a>
       <a href="/calculator/" class="dp-tool">
-        <span class="eyebrow">Calculate</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="2" width="16" height="20" rx="1"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="12" x2="8" y2="12.01"/><line x1="12" y1="12" x2="12" y2="12.01"/><line x1="16" y1="12" x2="16" y2="12.01"/><line x1="8" y1="16" x2="8" y2="16.01"/><line x1="12" y1="16" x2="12" y2="16.01"/><line x1="16" y1="16" x2="16" y2="16.01"/></svg>
+        </span>
         <span class="title">Welcome-bonus calculator</span>
-        <span class="go">Payback by AED spend →</span>
+        <span class="go">See which welcome offer pays back first</span>
+        <span class="arrow" aria-hidden="true">↗</span>
       </a>
       <a href="/salary-transfer/calculator/" class="dp-tool">
-        <span class="eyebrow">Calculate</span>
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </span>
         <span class="title">Salary-offer calculator</span>
-        <span class="go">Compare bank offers →</span>
+        <span class="go">Match your salary band to live offers</span>
+        <span class="arrow" aria-hidden="true">↗</span>
       </a>
     </div>
   </section>
@@ -476,15 +493,61 @@ const dealRows = await Promise.all(
     </section>
   )}
 
-  <!-- ── S4. Strategy panel — goal-ranked, no-JS radio tabs ─────────── -->
-  <section class="dp-strategy" aria-label="Build your points strategy">
+  <!-- ── S4. Latest analysis ────────────────────────────────────────── -->
+  <section class="dp-featured-band hp-fresh" id="latest" aria-label="Latest analysis">
+    <div class="hp-fresh-head">
+      <div>
+        <span class="hp-band-eyebrow">Checked against primary sources</span>
+        <h2>Fresh from the desk.</h2>
+      </div>
+      <a href="/guides/" class="hp-fresh-all">View all guides →</a>
+    </div>
+    <a href="/search/" class="hp-fresh-search">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" /><line x1="16.5" y1="16.5" x2="21" y2="21" />
+      </svg>
+      <span aria-hidden="true">Search cards, miles, banks…</span>
+      <span class="sr-only">Search</span>
+    </a>
+    <div class="hp-fresh-grid">
+      {[intel[1], intel[4], intel[5]].filter(Boolean).map((item) => (
+        <a href={item.href} class="dp-story-card med">
+          <StockImage
+            slug={item.imageSlug}
+            coverTitle={item.title}
+            coverCategory={item.coverCategory}
+            coverSize="med"
+            sizes="(max-width: 900px) 100vw, 33vw"
+          />
+          <div class="body">
+            <span class="meta"><span class="cat">{item.category}</span> {item.meta}</span>
+            <h3>{item.title}</h3>
+            <p>{item.excerpt}</p>
+            <span class="by">DubaiPoints Editorial</span>
+          </div>
+        </a>
+      ))}
+    </div>
+    <div class="hp-latest-foot">
+      <a href="/news/">News desk →</a>
+      <a href="/deals/">Deals desk →</a>
+    </div>
+  </section>
+
+  <!-- ── S5. Strategy panel — goal-ranked, no-JS radio tabs ─────────── -->
+  <section class="dp-strategy is-navy" aria-label="Build your points strategy">
     <div class="inner">
       <div class="dp-featured-eyebrow">
-        <span>Build your points strategy</span>
+        <span>Build your strategy</span>
         <span class="rule"></span>
         <span class="meta">Ranked from verified card data</span>
       </div>
-      <h2>Start from the goal, not the card.</h2>
+      <h2>What are you <em>optimising for?</em></h2>
+      <p class="dps-lede">
+        Pick a goal and the cards are ranked for it — straight from the
+        verified card database.
+      </p>
       <input type="radio" name="dps-goal" id="dps-travel" class="dps-radio" checked />
       <input type="radio" name="dps-goal" id="dps-cashback" class="dps-radio" />
       <input type="radio" name="dps-goal" id="dps-welcome" class="dps-radio" />
@@ -524,68 +587,6 @@ const dealRows = await Promise.all(
           </div>
         </div>
       ))}
-    </div>
-  </section>
-
-  <!-- ── S5. Latest analysis ────────────────────────────────────────── -->
-  <section class="dp-featured-band" id="latest" aria-label="Latest analysis">
-    <div class="dp-featured-eyebrow">
-      <span>Latest analysis</span>
-      <span class="rule"></span>
-      <span class="meta">Checked against primary sources</span>
-    </div>
-    <div class="dp-featured-grid">
-      {intel[1] && (
-        <a href={intel[1].href} class="dp-story-card hero">
-          <StockImage
-            slug={intel[1].imageSlug}
-            coverTitle={intel[1].title}
-            coverCategory={intel[1].coverCategory}
-            coverSize="hero"
-            loading="eager"
-            sizes="(max-width: 1024px) 100vw, 50vw"
-          />
-          <div class="body">
-            <span class="meta"><span class="cat">{intel[1].category}</span> {intel[1].meta}</span>
-            <h3>{intel[1].title}</h3>
-            <p>{intel[1].excerpt}</p>
-          </div>
-        </a>
-      )}
-      {intel.slice(2, 4).map((item) => (
-        <a href={item.href} class="dp-story-card med">
-          <StockImage
-            slug={item.imageSlug}
-            coverTitle={item.title}
-            coverCategory={item.coverCategory}
-            coverSize="med"
-            sizes="(max-width: 1024px) 100vw, 25vw"
-          />
-          <div class="body">
-            <span class="meta"><span class="cat">{item.category}</span> {item.meta}</span>
-            <h3>{item.title}</h3>
-          </div>
-        </a>
-      ))}
-      {intel.slice(4, 6).map((item) => (
-        <a href={item.href} class="dp-story-card sm">
-          <StockImage
-            slug={item.imageSlug}
-            coverTitle={item.title}
-            coverCategory={item.coverCategory}
-            coverSize="sm"
-            sizes="(max-width: 640px) 100vw, 25vw"
-          />
-          <div class="body">
-            <span class="meta"><span class="cat">{item.category}</span></span>
-            <h3>{item.title}</h3>
-          </div>
-        </a>
-      ))}
-    </div>
-    <div class="hp-latest-foot">
-      <a href="/guides/">All guides →</a>
-      <a href="/news/">News desk →</a>
     </div>
   </section>
 
@@ -666,15 +667,19 @@ const dealRows = await Promise.all(
 
   <PressStrip />
 
-  <section class="dp-band-green hp-news" aria-label="Newsletter">
+  <section class="hp-news is-gold" aria-label="Newsletter">
     <div class="inner">
-      <span class="hp-news-eyebrow">The DubaiPoints brief</span>
-      <h2>{newsletterLive ? "The Friday brief." : "The Friday brief is preparing for launch."}</h2>
-      <p>Salary-transfer changes, new card offers, worthwhile miles redemptions and lifestyle deals — once a week, AED-first.</p>
-      <NewsletterSignup source="homepage" />
-      <p class="micro">
-        We never sell email addresses or browsing data. <a href="/editorial-policy/">Editorial policy</a> · <a href="/rss.xml">RSS feeds</a>
-      </p>
+      <div class="hp-news-text">
+        <span class="hp-news-eyebrow">A little useful, every Friday</span>
+        <h2>{newsletterLive ? "The Friday brief." : "The Friday brief is preparing for launch."}</h2>
+        <p>Salary-transfer changes, new card offers, worthwhile miles redemptions and lifestyle deals — once a week, AED-first.</p>
+        <p class="micro">
+          We never sell email addresses or browsing data. <a href="/editorial-policy/">Editorial policy</a> · <a href="/rss.xml">RSS feeds</a>
+        </p>
+      </div>
+      <div class="hp-news-form">
+        <NewsletterSignup source="homepage" />
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -685,10 +690,6 @@ const dealRows = await Promise.all(
     /* Keep the 3px ink masthead rule — the Quiet Ledger idiom. */
     border-top: 3px solid var(--ink);
     padding: 56px 32px 48px;
-    /* No hairline into the tools strip: hero + tools read as one unit
-       (the strip's own border-bottom is the unit's closing rule), so
-       the page counts six perceptual bands, not seven (UX 5.5, 29 Aug). */
-    border-bottom: 0;
   }
   .hp-hero-grid {
     max-width: var(--container-listing);
@@ -696,84 +697,239 @@ const dealRows = await Promise.all(
     display: grid;
     grid-template-columns: 1fr;
     gap: 40px;
-    align-items: start;
+    align-items: center;
   }
   @media (min-width: 900px) {
-    .hp-hero-grid { grid-template-columns: 1.1fr minmax(340px, 0.9fr); gap: 56px; }
-  }
-  /* Feature card in the hero column: the primitive's 38vw mask clamp
-     was sized for a full-width band and balloons the hero — cap it. */
-  .hp-hero-feature :global(.feat-mask),
-  .hp-hero-feature .feat-mask {
-    width: clamp(150px, 20vw, 230px);
-  }
-  @media (max-width: 899px) {
-    .hp-hero-feature { max-width: 460px; }
+    .hp-hero-grid { grid-template-columns: 1fr 1.1fr; gap: 56px; }
   }
   .hp-hero-kicker {
-    display: inline-block;
+    display: inline-flex; align-items: center; gap: 8px;
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
     margin-bottom: 18px;
   }
+  .hp-hero-kicker .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--gold);
+  }
   .hp-hero h1 {
     font-family: 'Fraunces', serif; font-weight: 700;
-    font-size: clamp(44px, 6vw, 68px);
-    letter-spacing: -1.8px; line-height: 1.02;
+    font-size: clamp(46px, 5.6vw, 72px);
+    letter-spacing: -1.8px; line-height: 1.04;
     color: var(--ink);
     margin: 0 0 18px;
-    text-wrap: balance;
+  }
+  /* The italic accent word is the v0 design's signature, readopted on
+     Chairman direction (29 Aug 2026) in the primary accent. */
+  .hp-hero h1 em {
+    font-style: italic;
+    color: var(--green);
   }
   .hp-hero-lede {
     font-size: 17px; line-height: 1.6;
     color: var(--ink-soft);
-    max-width: 54ch;
-    margin: 0 0 14px;
+    max-width: 46ch;
+    margin: 0 0 26px;
   }
-  .hp-hero-meta {
-    font-size: 12px; letter-spacing: 0.4px;
-    color: var(--muted);
-    margin: 0 0 24px;
-  }
-  .hp-hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+  .hp-hero-ctas { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  /* Square box CTAs — the v0 "boxes" idiom. */
   .hp-hero-cta {
     display: inline-flex; align-items: center;
-    padding: 12px 22px;
+    padding: 14px 24px;
     background: var(--ink); color: var(--paper);
-    border-radius: 999px;
     font-size: 14px; font-weight: 600;
     text-decoration: none;
-    transition: transform 0.15s, opacity 0.15s;
+    transition: background 0.15s, opacity 0.15s;
   }
-  .hp-hero-cta:hover { transform: translateY(-1px); opacity: 0.92; }
+  .hp-hero-cta:hover { opacity: 0.9; }
   .hp-hero-cta.is-ghost {
     background: transparent; color: var(--ink);
-    border: 1px solid var(--ink-soft);
+    padding: 14px 6px;
   }
+  .hp-hero-cta.is-ghost:hover { color: var(--green); }
   .hp-hero-micro {
     font-size: 12px; color: var(--muted);
     margin: 14px 0 0;
   }
-
-  /* ── S2 tools strip shell ──────────────────────────────────────────── */
-  .hp-tools {
-    padding: 20px 32px 28px;
-    border-bottom: 1px solid var(--line);
+  .hp-hero-trust {
+    display: flex; flex-wrap: wrap; gap: 0;
+    margin: 30px 0 0;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 1.4px; text-transform: uppercase;
+    color: var(--muted);
   }
-  .hp-tools .dp-featured-eyebrow,
+  .hp-hero-trust span { padding-right: 14px; }
+  .hp-hero-trust span + span {
+    border-left: 1px solid var(--line);
+    padding-left: 14px;
+  }
+
+  /* Hero media — big rectangular photo, stamp badge, overlay play card */
+  .hp-hero-media { position: relative; }
+  .hp-hero-media > img {
+    display: block;
+    width: 100%; height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .hp-hero-media-fallback {
+    width: 100%; aspect-ratio: 4 / 3;
+    background: linear-gradient(140deg, #1a3a60 0%, var(--navy) 70%);
+  }
+  .hp-hero-stamp {
+    position: absolute; top: 20px; right: 20px;
+    display: inline-flex; flex-direction: column; align-items: center;
+    gap: 4px;
+    padding: 12px 14px;
+    border: 1px solid rgba(255,255,255,0.85);
+    color: #fff;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    /* Scrim, not shadow alone: text-shadow washes out over bright photo
+       regions (sky/sand), and the feature photo rotates weekly. The navy
+       tint keeps the stamp legible over any image and over the dark-mode
+       fallback panel (UX 5.5, 29 Aug 2026). */
+    background: rgba(15,31,46,0.3);
+    text-shadow: 0 1px 4px rgba(15,31,46,0.45);
+  }
+  .hp-hero-stamp i { font-style: normal; font-size: 11px; }
+  .hp-hero-play {
+    position: absolute; left: -18px; bottom: 26px;
+    max-width: min(320px, 78%);
+    display: grid; gap: 6px;
+    padding: 20px 22px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 14px 34px -18px rgba(15,31,46,0.35);
+    text-decoration: none;
+  }
+  @media (max-width: 899px) {
+    .hp-hero-play { left: 12px; }
+  }
+  .hp-hero-play .eyebrow {
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 1.8px; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hp-hero-play .t {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 19px; line-height: 1.25; letter-spacing: -0.2px;
+    color: var(--ink);
+    transition: color 0.15s;
+  }
+  .hp-hero-play:hover .t { color: var(--green); }
+  .hp-hero-play .m {
+    font-size: 12px; font-weight: 600;
+    color: var(--green);
+  }
+
+  /* ── S2 tools band — sand surface ─────────────────────────────────── */
+  .hp-tools {
+    background: var(--shade-2);
+    padding: 48px 32px 56px;
+  }
+  .hp-tools-head,
   .hp-tools .dp-tool-strip {
     max-width: var(--container-listing);
     margin-left: auto; margin-right: auto;
   }
-  .hp-tools .dp-featured-eyebrow { margin-bottom: 16px; }
+  .hp-tools-head {
+    display: flex; flex-wrap: wrap;
+    align-items: flex-end; justify-content: space-between;
+    gap: 12px 32px;
+    margin-bottom: 26px;
+  }
+  .hp-band-eyebrow {
+    display: inline-block;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  .hp-tools-head h2,
+  .hp-fresh-head h2 {
+    font-family: 'Fraunces', serif; font-weight: 600;
+    font-size: clamp(28px, 3.4vw, 40px);
+    letter-spacing: -0.7px; line-height: 1.1;
+    color: var(--ink);
+    margin: 0;
+  }
+  .hp-tools-sub {
+    font-size: 14px; line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 34ch;
+    margin: 0;
+    text-align: right;
+  }
+  @media (max-width: 640px) {
+    .hp-tools-sub { text-align: left; }
+  }
 
-  /* ── S5 foot links ─────────────────────────────────────────────────── */
+  /* ── S3 live desk — boxed columns on paper ────────────────────────── */
+  .dp-live-desk { background: var(--paper); }
+  .dp-live-desk .col {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    padding: 22px 24px 18px;
+  }
+  .dp-live-desk .rows { border-top: 0; }
+
+  /* ── S4 fresh — heading, search, uniform 3-up ─────────────────────── */
+  .hp-fresh { padding-top: 44px; }
+  .hp-fresh-head,
+  .hp-fresh-search,
+  .hp-fresh-grid,
   .hp-latest-foot {
     max-width: var(--container-listing);
-    margin: 20px auto 0;
+    margin-left: auto; margin-right: auto;
+  }
+  .hp-fresh-head {
+    display: flex; flex-wrap: wrap;
+    align-items: flex-end; justify-content: space-between;
+    gap: 12px 32px;
+    margin-bottom: 20px;
+  }
+  .hp-fresh-all {
+    font-size: 13px; font-weight: 600;
+    color: var(--ink); text-decoration: none;
+    padding-bottom: 4px;
+  }
+  .hp-fresh-all:hover { color: var(--green); }
+  .hp-fresh-search {
+    display: flex; align-items: center; gap: 10px;
+    max-width: 560px;
+    margin-left: 0;
+    padding: 13px 16px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--muted);
+    font-size: 14px;
+    text-decoration: none;
+    margin-bottom: 28px;
+    transition: border-color 0.15s;
+  }
+  .hp-fresh-search:hover,
+  .hp-fresh-search:focus-visible { border-color: var(--green); color: var(--ink); }
+  .hp-fresh-search svg { color: var(--gold); flex-shrink: 0; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+  .hp-fresh-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 900px) {
+    .hp-fresh-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  .hp-fresh-grid :global(.dp-story-card) { border-radius: 0; }
+  .hp-latest-foot {
+    margin-top: 24px;
     display: flex; gap: 24px;
-    padding-bottom: 28px;
+    padding-bottom: 32px;
   }
   .hp-latest-foot a {
     font-size: 13px; font-weight: 600;
@@ -787,14 +943,7 @@ const dealRows = await Promise.all(
     padding: 36px 32px 8px;
   }
   .hp-dir .dp-dir-grid, .hp-trust .dp-dir-grid,
-  .hp-dir .dp-featured-eyebrow, .hp-trust .dp-featured-eyebrow,
-  /* .dp-featured-band leaves width-constraining to callers (see
-     guides/index.astro); without these two selectors S3 runs wider
-     than every neighbouring band on ≥1240px viewports and misaligns
-     with .hp-latest-foot directly below it. */
-  .dp-featured-band .dp-featured-eyebrow,
-  .dp-featured-band .dp-featured-grid,
-  .hp-latest-foot {
+  .hp-dir .dp-featured-eyebrow, .hp-trust .dp-featured-eyebrow {
     max-width: var(--container-listing);
     margin-left: auto; margin-right: auto;
   }
@@ -821,56 +970,72 @@ const dealRows = await Promise.all(
   }
   .hp-trust-footnote a { color: var(--green); }
 
-  /* ── S7 newsletter band ────────────────────────────────────────────── */
-  .hp-news { padding: 56px 32px 48px; }
-  .hp-news .inner {
-    max-width: 640px; margin: 0 auto; text-align: center;
+  /* ── S7 newsletter — gold accent band (v0 coral-band analog) ───────── */
+  /* One-page exception to gold's chip-only role, per the 29 Aug v0-design
+     direction: the closing accent band is the design's full stop. Dark
+     text on gold clears AA; the paper form inset carries the contrast. */
+  .hp-news.is-gold {
+    background: var(--gold);
+    padding: 56px 32px 52px;
   }
+  .hp-news .inner {
+    max-width: var(--container-listing);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px 64px;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .hp-news .inner { grid-template-columns: 1.1fr 1fr; }
+  }
+  /* Contrast on gold (#b8842a): solid #241c0a measures 5.1:1; the softer
+     tints must stay ≥0.92 alpha to clear 4.5:1 AA at body/micro sizes.
+     The shipped 0.85/0.75/0.7 tints measured 3.2–4.1:1 (UX 5.5). */
   .hp-news-eyebrow {
     display: inline-block;
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
-    color: var(--gold);
+    color: #241c0a;
     margin-bottom: 12px;
   }
   .hp-news h2 {
     font-family: 'Fraunces', serif; font-weight: 600;
-    font-size: clamp(26px, 3.4vw, 36px);
-    letter-spacing: -0.6px; line-height: 1.15;
+    font-size: clamp(28px, 3.6vw, 42px);
+    letter-spacing: -0.7px; line-height: 1.1;
+    color: #241c0a;
     margin: 0 0 12px;
   }
   .hp-news p {
     font-size: 15px; line-height: 1.6;
-    color: rgba(255, 255, 255, 0.82);
+    color: rgba(36, 28, 10, 0.92);
     margin: 0 0 8px;
+    max-width: 46ch;
   }
   .hp-news .micro {
-    font-size: 12px; color: rgba(255, 255, 255, 0.6);
+    font-size: 12px; color: #241c0a;
     margin-top: 16px;
   }
-  .hp-news .micro a { color: rgba(255, 255, 255, 0.82); }
-  /* NewsletterSignup renders a paper-background inset; the band's
-     white-text cascade would make its copy white-on-paper. Restore ink
-     inside the inset (both the form and the email fallback). */
+  .hp-news .micro a { color: #241c0a; }
+  /* NewsletterSignup renders a paper-background inset; restore ink inside
+     it (both the form and the email fallback). */
   .hp-news :global(.dp-newsletter-form),
   .hp-news :global(.dp-newsletter-fallback) {
     color: var(--ink);
     text-align: left;
+    margin: 12px 0;
   }
   .hp-news :global(.dp-newsletter-form a),
   .hp-news :global(.dp-newsletter-fallback a) {
-    /* --green flips to light mint in dark mode, where the inset's
-       --paper background is dark — readable in both themes. */
     color: var(--green);
   }
 
   /* ── Responsive padding ────────────────────────────────────────────── */
   @media (max-width: 768px) {
     .hp-hero { padding: 40px 24px 36px; }
-    /* Match the hero's 24px gutter — the two share a left edge now
-       that the hairline between them is gone. */
-    .hp-tools { padding: 16px 24px 24px; }
+    .hp-tools { padding: 36px 24px 44px; }
+    .hp-fresh { padding-top: 32px; }
     .hp-dir, .hp-trust { padding: 28px 24px 8px; }
-    .hp-news { padding: 44px 24px 40px; }
+    .hp-news.is-gold { padding: 44px 24px 40px; }
   }
 </style>
