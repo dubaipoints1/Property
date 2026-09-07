@@ -48,6 +48,21 @@ export async function getLiveOffers(): Promise<SalaryTransferOffer[]> {
   return Promise.all(entries.map(entryToOffer));
 }
 
+/**
+ * Offers whose validity has passed but which nobody has archived yet.
+ * Surfaced so the tracker page can classify the bank honestly ("offer
+ * ended <date>") instead of failing the build — see
+ * src/lib/salaryTransferCoverage.ts for the 2026-09-06 incident.
+ */
+export async function getLapsedUnarchivedOffers(): Promise<SalaryTransferOffer[]> {
+  const today = Date.now();
+  const entries = await getCollection("salaryTransferOffers", (e) => {
+    if (e.data.archived) return false;
+    return e.data.validUntil.getTime() < today;
+  });
+  return Promise.all(entries.map(entryToOffer));
+}
+
 export async function getOffersForBank(bankSlug: string): Promise<SalaryTransferOffer[]> {
   // Same live predicate as getLiveOffers. All three consumers (bank hub
   // "Current salary transfer offer" slot, /salary-transfer/<bank>/, and

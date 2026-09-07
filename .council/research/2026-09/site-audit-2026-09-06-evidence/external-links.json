@@ -1,0 +1,425 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "workflowRun": 34098558459,
+    "job": 101667533548,
+    "commit": "b242105",
+    "generated": "2026-09-07T08:05:25.003Z",
+    "note": "Reconstructed from the job log; the upload-artifact blob store is not reachable from the Claude Code session."
+  },
+  "meta": {
+    "htmlFiles": 199,
+    "distinctUrls": 150,
+    "internalAbsolute": 6,
+    "counts": {
+      "ok": 108,
+      "redirect-cross-host": 3,
+      "client-error": 6,
+      "timeout": 8,
+      "network": 4,
+      "unverifiable": 21,
+      "broken": 18
+    }
+  },
+  "broken": [
+    {
+      "url": "https://icp.gov.ae/en/services/golden-residency-services/",
+      "state": "client-error",
+      "detail": "404",
+      "method": "GET",
+      "sources": [
+        "guides/golden-visa-cards/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://mof.gov.ae/corporate-tax-legislation/",
+      "state": "client-error",
+      "detail": "404",
+      "method": "GET",
+      "sources": [
+        "guides/uae-corporate-tax-overview/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.bankfab.com/en-ae/personal/elite-banking",
+      "state": "client-error",
+      "detail": "404",
+      "method": "GET",
+      "sources": [
+        "guides/golden-visa-cards/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.ihg.com/content/us/en/deals/member-offers/2k8k",
+      "state": "client-error",
+      "detail": "403",
+      "method": "GET",
+      "sources": [
+        "news/ihg-one-rewards-choice-points-promo-ends-31-august/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.mashreqbank.com/uae/en/personal/wealth/gold",
+      "state": "client-error",
+      "detail": "404",
+      "method": "GET",
+      "sources": [
+        "guides/golden-visa-cards/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.rakbank.ae/personal/accounts/salary-transfer",
+      "state": "client-error",
+      "detail": "404",
+      "method": "GET",
+      "sources": [
+        "guides/salary-transfer-mechanics-2026/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.emirates.com/ae/english/skywards/partners/marriott-bonvoy/",
+      "state": "timeout",
+      "detail": "no response within timeout",
+      "method": "HEAD",
+      "sources": [
+        "news/marriott-bonvoy-skywards-5000-points-one-stay/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.emirates.com/media-centre/emirates-skywards-launches-5-million-skywards-miles-giveaway-for-dubai-summer-surprises/",
+      "state": "timeout",
+      "detail": "no response within timeout",
+      "method": "HEAD",
+      "sources": [
+        "news/skywards-summer-redemption-push-dss-5-million-miles/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.emirates.com/media-centre/emirates-skywards-launches-global-season-of-rewards-campaign-for-members-worldwide/",
+      "state": "timeout",
+      "detail": "no response within timeout",
+      "method": "HEAD",
+      "sources": [
+        "news/emirates-skywards-season-of-rewards-2026/index.html",
+        "news/skywards-season-of-rewards-final-week-31-august/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.emirates.com/media-centre/make-every-mile-count-spend-smarter-to-unlock-more-summer-value-with-emirates-skywards/",
+      "state": "timeout",
+      "detail": "no response within timeout",
+      "method": "HEAD",
+      "sources": [
+        "news/skywards-summer-redemption-push-dss-5-million-miles/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.emirates.com/us/english/special-offers/shop-and-earn-skywards-tier-miles-on-the-ground/",
+      "state": "timeout",
+      "detail": "no response within timeout",
+      "method": "HEAD",
+      "sources": [
+        "news/skywards-season-of-rewards-final-week-31-august/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.etihad.com/en-ae/offers",
+      "state": "timeout",
+      "detail": "no response within timeout",
+      "method": "HEAD",
+      "sources": [
+        "deals/etihad-fare-sale-july-2026/index.html",
+        "deals/etihad-last-chance-summer-2026/index.html",
+        "news/etihad-fare-sale-book-by-31-july-2026/index.html"
+      ],
+      "moreSources": true
+    },
+    {
+      "url": "https://www.etihad.com/en/etihadguest/tiers-and-benefits",
+      "state": "timeout",
+      "detail": "no response within timeout",
+      "method": "HEAD",
+      "sources": [
+        "airlines/etihad-guest/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.malloftheemirates.com/",
+      "state": "timeout",
+      "detail": "no response within timeout",
+      "method": "HEAD",
+      "sources": [
+        "guides/dubai-shopping-festival-2026/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://aecb.gov.ae/en/credit-score",
+      "state": "network",
+      "detail": "TypeError: getaddrinfo ENOTFOUND aecb.gov.ae",
+      "method": "GET",
+      "sources": [
+        "guides/aecb-credit-report-walkthrough/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://aecb.gov.ae/en/individual-services",
+      "state": "network",
+      "detail": "TypeError: getaddrinfo ENOTFOUND aecb.gov.ae",
+      "method": "GET",
+      "sources": [
+        "guides/aecb-credit-report-walkthrough/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.cbd.ae/docs/default-source/document/cards/cbd-kfs-conventional_cbd-one-cc.pdf",
+      "state": "network",
+      "detail": "UND_ERR_HEADERS_OVERFLOW Headers Overflow Error",
+      "method": "GET",
+      "sources": [
+        "cards/cbd-one/index.html"
+      ],
+      "moreSources": false
+    },
+    {
+      "url": "https://www.mohre.gov.ae/en/services/wages-protection-system.aspx",
+      "state": "network",
+      "detail": "UND_ERR_CONNECT_TIMEOUT Connect Timeout Error (attempted address: www.mohre.gov.ae:443, timeout: 10000ms)",
+      "method": "GET",
+      "sources": [
+        "guides/choosing-first-uae-bank/index.html",
+        "guides/salary-transfer-mechanics-2026/index.html"
+      ],
+      "moreSources": false
+    }
+  ],
+  "unverifiable": [
+    {
+      "url": "https://www.adcb.com/",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "banks/adcb/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/365-cashback-card.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-365-cashback/index.html",
+        "news/adcb-365-cashback-earn-table-rebalance-2026/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-credit-card.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-lulu-platinum/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-titanium-gold-credit-card.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-lulu-titanium-gold/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/betaqti-credit-card.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-betaqti/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/essential-cashback-credit-card.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-essential-cashback/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/shukran-credit-card",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-shukran/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/talabat-credit-card.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-talabat/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-ic.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-touchpoints-infinite/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-platinum-cc.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-touchpoints-platinum/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-tg-cc.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-touchpoints-titanium-gold/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/cards/credit-cards/traveller-credit-card.aspx",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "cards/adcb-traveller/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adcb.com/en/personal/promotions/salary-transfer",
+      "host": "www.adcb.com",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "guides/salary-transfer-mechanics-2026/index.html"
+      ]
+    },
+    {
+      "url": "https://www.alhilalbank.ae/en/Images/Ahb-sof.pdf",
+      "host": "www.alhilalbank.ae",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "banks/al-hilal/index.html"
+      ]
+    },
+    {
+      "url": "https://www.alhilalbank.ae/en/Images/ahb-cashback-tcs-final.pdf",
+      "host": "www.alhilalbank.ae",
+      "reason": "cloudflare-block",
+      "status": 403,
+      "sources": [
+        "banks/al-hilal/index.html"
+      ]
+    },
+    {
+      "url": "https://www.cbd.ae/",
+      "host": "www.cbd.ae",
+      "reason": "cloudflare-403",
+      "status": 403,
+      "sources": [
+        "banks/cbd/index.html"
+      ]
+    },
+    {
+      "url": "https://www.cbd.ae/personal/cards/credit-cards/cbd-one",
+      "host": "www.cbd.ae",
+      "reason": "cloudflare-403",
+      "status": 403,
+      "sources": [
+        "cards/cbd-one/index.html"
+      ]
+    },
+    {
+      "url": "https://www.centralbank.ae/en/cbuae-amlcft/consumer-protection-standards/",
+      "host": "www.centralbank.ae",
+      "reason": "cloudflare-challenge",
+      "status": 403,
+      "sources": [
+        "guides/aecb-credit-report-walkthrough/index.html"
+      ]
+    },
+    {
+      "url": "https://www.centralbank.ae/en/our-operations/financial-stability/licensed-financial-institutions/",
+      "host": "www.centralbank.ae",
+      "reason": "cloudflare-challenge",
+      "status": 403,
+      "sources": [
+        "guides/choosing-first-uae-bank/index.html"
+      ]
+    },
+    {
+      "url": "https://www.centralbank.ae/en/our-operations/payment-systems/wages-protection-system",
+      "host": "www.centralbank.ae",
+      "reason": "cloudflare-challenge",
+      "status": 403,
+      "sources": [
+        "guides/salary-transfer-mechanics-2026/index.html"
+      ]
+    },
+    {
+      "url": "https://www.salik.ae/",
+      "host": "www.salik.ae",
+      "reason": "cloudflare-challenge",
+      "status": 403,
+      "sources": [
+        "guides/expat-starter-car-costs/index.html"
+      ]
+    }
+  ],
+  "crossHostRedirects": [
+    {
+      "url": "https://buttondown.email/",
+      "landsOn": "https://buttondown.com/",
+      "sources": [
+        "newsletter/index.html"
+      ]
+    },
+    {
+      "url": "https://www.adib.ae/en/pages/personal_cards_notices.aspx",
+      "landsOn": "https://www.adib.com/en/pages/personal_cards_notices.aspx",
+      "sources": [
+        "cards/adib-cashback-visa/index.html"
+      ]
+    },
+    {
+      "url": "https://www.mydsf.ae/",
+      "landsOn": "https://www.visitdubai.com/en/festivals-and-events/dsf",
+      "sources": [
+        "guides/dubai-shopping-festival-2026/index.html"
+      ]
+    }
+  ]
+}

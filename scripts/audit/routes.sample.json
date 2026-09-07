@@ -1,0 +1,22 @@
+[
+  { "template": "Homepage", "route": "/" },
+  { "template": "CardReviewLayout", "match": "^/cards/adcb-365-cashback/$" },
+  { "template": "ArticleLayout (guide)", "match": "^/guides/best-premium-cards-2026/$" },
+  { "template": "ArticleLayout (news)", "match": "^/news/(?!airlines/|banking/|hotels/)[^/]+/$" },
+  { "template": "AirlineProgramLayout", "match": "^/airlines/[^/]+/$" },
+  { "template": "BankHubLayout", "match": "^/banks/adcb/$" },
+  { "template": "ComparisonTableLayout", "route": "/cards/cashback/" },
+  { "template": "NewsIndexLayout", "route": "/news/" },
+  { "template": "SalaryTransferTrackerLayout", "route": "/salary-transfer/" },
+  { "template": "SalaryTransferCalculatorLayout", "route": "/salary-transfer/calculator/" },
+  { "template": "SalaryTransferHistoryLayout", "match": "^/salary-transfer/history/[^/]+/$" },
+  { "template": "TrustPageLayout", "route": "/about/" },
+  { "template": "Island-heavy (finder)", "route": "/cards/finder/" },
+  { "template": "Rewards calculator", "route": "/calculator/" },
+  { "template": "Compare", "route": "/cards/compare/" },
+  { "template": "Directory (cards)", "route": "/cards/" },
+  { "template": "Directory (guides)", "route": "/guides/" },
+  { "template": "Deals", "route": "/deals/" },
+  { "template": "Search (pagefind runtime)", "route": "/search/?q=cashback" },
+  { "template": "404", "route": "/404.html" }
+]
