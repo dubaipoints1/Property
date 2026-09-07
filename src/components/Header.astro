@@ -31,7 +31,6 @@ const cardsPanel: Group[] = [
     { label: "Best Islamic (Sharia) cards", href: "/cards/islamic/" },
     { label: "Cards by your salary",    href: "/cards/salary/", sub: "AED 5k to 30k+" },
     { label: "Card finder",             href: "/cards/finder/", sub: "Match a card to your spend" },
-    { label: "All cards",               href: "/cards/" },
   ]},
   { title: "By bank issuer", rows: [
     { label: "FAB cards",                 href: "/banks/fab/" },
@@ -45,13 +44,12 @@ const cardsPanel: Group[] = [
     { label: "Emirates Skywards cards",   href: "/airlines/skywards/" },
     { label: "Etihad Guest cards",        href: "/airlines/etihad-guest/" },
     { label: "Marriott Bonvoy cards",     href: "/airlines/marriott-bonvoy/" },
-    { label: "All co-branded cards",      href: "/cards/" },
   ]},
   { title: "Learn about UAE cards", rows: [
     { label: "Beginner's guide",          href: "/guides/expat-starter/" },
     { label: "AECB credit score",         href: "/guides/aecb-credit-report-walkthrough/" },
-    { label: "Salary transfer explained", href: "/salary-transfer/" },
-    { label: "Card reviews methodology",  href: "/editorial-policy/" },
+    { label: "Salary-transfer tracker",   href: "/salary-transfer/" },
+    { label: "How we score cards",        href: "/editorial-policy/how-we-score/" },
   ]},
 ];
 
@@ -61,7 +59,6 @@ const pointsPanel: Group[] = [
     { label: "FAB Rewards",          href: "/banks/fab/" },
     { label: "ADCB TouchPoints",     href: "/banks/adcb/" },
     { label: "RAKBANK Rewards",      href: "/banks/rakbank/" },
-    { label: "All bank programmes",  href: "/banks/" },
   ]},
   { title: "Airline programmes", rows: [
     { label: "Emirates Skywards",      href: "/airlines/skywards/", sub: dpValueSub("skywards") },
@@ -73,12 +70,11 @@ const pointsPanel: Group[] = [
     { label: "Marriott Bonvoy",      href: "/airlines/marriott-bonvoy/", sub: dpValueSub("marriott-bonvoy") },
     { label: "Hilton Honors",        href: "/airlines/hilton-honors/", sub: dpValueSub("hilton-honors") },
     { label: "Accor ALL",            href: "/airlines/accor-all/" },
-    { label: "All hotel programmes", href: "/airlines/", sub: "In the programme directory" },
   ]},
   { title: "Learn", rows: [
     { label: "Beginner's guide to UAE points", href: "/guides/expat-starter-points-101/" },
-    { label: "DP valuations methodology",       href: "/valuations/" },
-    { label: "Salary-offer calculator",         href: "/salary-transfer/calculator/" },
+    { label: "Points & miles valuations",       href: "/valuations/" },
+    { label: "Salary-transfer calculator",      href: "/salary-transfer/calculator/" },
     { label: "Transfer-partner cheatsheet",     href: "/guides/uae-transfer-ratios-2026/" },
   ]},
 ];
@@ -91,17 +87,18 @@ const pointsPanel: Group[] = [
 // "Hotel reviews", "UAE staycations", and the whole "Routes &
 // destinations" group — those rows previously dumped readers into
 // /airlines/ or /deals/ and promised sections the site doesn't have.
+// 2026-09-06 audit (F-029): the panel carried seven rows for four pages —
+// two "All … stories" duplicates of the desk rows, a deals row whose
+// sub-label promised a travel filter that does not exist, and an apology
+// sub-label on the programme row. Four rows, four destinations.
 const travelPanel: Group[] = [
   { title: "Airlines", rows: [
     { label: "Airline news",        href: "/news/airlines/" },
     { label: "Airline programmes",  href: "/airlines/" },
-    { label: "Airline deals",       href: "/deals/", sub: "From DXB / AUH / SHJ" },
-    { label: "All airline stories", href: "/news/airlines/" },
   ]},
   { title: "Hotels", rows: [
     { label: "Hotel news",        href: "/news/hotels/" },
-    { label: "Hotel programmes",  href: "/airlines/", sub: "In the programme directory" },
-    { label: "All hotel stories", href: "/news/hotels/" },
+    { label: "Hotel programmes",  href: "/airlines/" },
   ]},
 ];
 
@@ -109,7 +106,7 @@ const toolRows: SubRow[] = [
   { label: "Salary-transfer tracker", href: "/salary-transfer/", sub: "Sources watched weekly" },
   { label: "Points & miles valuations", href: "/valuations/", sub: "DP value" },
   { label: "Card compare", href: "/cards/compare/", sub: "Side-by-side specs" },
-  { label: "Salary-offer calculator", href: "/salary-transfer/calculator/" },
+  { label: "Salary-transfer calculator", href: "/salary-transfer/calculator/" },
 ];
 
 const publicationRows: SubRow[] = [
@@ -516,6 +513,14 @@ const publicationRows: SubRow[] = [
 @media (min-width: 1440px) {
   .dp-tracker-strip-inner { gap: 22px; letter-spacing: 2px; }
 }
+/* The links themselves were 17px tall inside a 34px strip — the smallest
+   tap targets in the chrome (2026-09-06 audit, F-026). Fill the strip. */
+.dp-quicklink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 4px;
+}
 
 /* Only scroll strip when content actually overflows */
 @media (max-width: 767.98px) {
@@ -651,7 +656,7 @@ const publicationRows: SubRow[] = [
   }
   .dp-mega-sub {
     display: flex; flex-direction: column; gap: 2px;
-    padding: 8px 0;
+    padding: 10px 0; /* ≥ 36px rows — 2026-09-06 audit, F-026 */
     text-decoration: none;
     border-bottom: 1px solid var(--line-soft);
     transition: background 0.1s ease;

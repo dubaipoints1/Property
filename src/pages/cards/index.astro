@@ -616,6 +616,14 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     padding: 56px 32px 64px;
     margin: 32px 0 48px;
   }
+  /* In dark mode --ink is the light text colour, so the band inverted to a
+     light surface under light copy (1.1:1). Brand navy in dark, as on the
+     newsletter rail (2026-09-06 audit family F-003). */
+  :global([data-theme="dark"]) .cards-callout { background: #1f3a4d; color: #ffffff; }
+  :global([data-theme="dark"]) .cards-callout-text h2,
+  :global([data-theme="dark"]) .cards-callout-cta,
+  :global([data-theme="dark"]) .cards-callout-cta-title { color: #ffffff; }
+  :global([data-theme="dark"]) .cards-callout-cta-eyebrow { color: #cfe0ec; }
   .cards-callout-grid {
     max-width: var(--container-listing); margin: 0 auto;
     display: grid;

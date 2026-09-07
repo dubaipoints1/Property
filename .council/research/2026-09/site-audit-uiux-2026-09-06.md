@@ -1807,3 +1807,27 @@ Landed on `claude/website-audit-uiux-k1393i` after PR #348 merged, most importan
 **Corrections to two findings, for the record.** F-046's evidence line about fallback initials came from the inventory's `textContent`, not the accessible name — the fallback span was already `aria-hidden`; the real duplication was the component's `role="img" aria-label="<Bank> logo"` beside the visible name, which is what the fix addresses. F-007's aside about the overlay's accordion checkboxes is withdrawn: they already carried `aria-hidden` and `tabindex="-1"` in source; only the hamburger label lacked keyboard handling.
 
 Not in this sprint: F-010 (image derivatives, T3), F-016 (dead citations need a browser check per link), F-026 (tap targets), F-029/F-031 (menu row cuts and canonical nouns — one Header pass with the R3 label ruling), F-034/F-035, and everything under R1–R10.
+
+## 15. Fix sprint 2 — 7 September 2026 (Chairman direction in-session: "Yes next go ahead"; band colour; "check anything stale")
+
+| Item | What changed | Verified by |
+|---|---|---|
+| Homepage newsletter band (Chairman: "this colour doesn't go with the rest of the page") | Full-bleed gold band → brand navy `#1f3a4d` in both themes, white copy, gold-ink eyebrow; gold returns to its single job. The 29 Aug gold-band exception is thereby withdrawn by the Chairman. | element captures light + dark at 390; axe 0 on `/` |
+| F-029 | Header rows cut: "All cards", "All co-branded cards", "All bank programmes", "All hotel programmes", "All airline stories", "All hotel stories", "Airline deals" (promised a travel filter); Travel panel is four rows for four pages | built header; internal links 14,231 / 0 broken |
+| F-031 | Canonical nouns: "Salary-transfer tracker" / "Salary-transfer calculator" in header panels, tools block, footer and the homepage tile; "Salary transfer explained" → tracker label; "Card reviews methodology" → "How we score cards" → `/editorial-policy/how-we-score/`; "DP valuations methodology" → "Points & miles valuations" | built HTML |
+| F-026 (part) | Quick links fill the 34px strip (were 17px); mega-menu rows ≥ 36px | probe tap counts; visual |
+| F-016 (part) | Five dead citations replaced with the pages the sources moved to (Firecrawl search, 7 Sep): ICP golden residency guide, MoF tax-legislation hub, FAB Elite, Mashreq Gold, RAKBANK salary-transfer; the IHG offer page is live (its 403 is a bot wall against the Actions runner) | built HTML; next `link-audit.yml` run |
+| F-017 (remaining) | The 22 May "Season of Rewards" story, the one story still past `staleAfter`, carries a dated update and `updatedAt` | `check-news-expiry.mjs` clean |
+| Dark-mode cards-directory callout | `.cards-callout` used `--ink` as a background, which is the light text colour in dark mode (1.1:1); navy surface + white copy in dark | axe dark on `/cards/`: 0 violations, light 0 |
+
+**Staleness sweep, 7 September 2026.**
+
+| Surface | State | Action |
+|---|---|---|
+| News | 17 stories; newest filed 22 Aug (16 days). After this sprint no story is past `staleAfter`. Two records without `staleAfter` are >60 days (May welcome cycles, Mashreq rate cut) — evergreen records, confirm or set a date. **No new story has been filed since 22 August** against desk ceilings of 2–3 airline and 1–2 hotel stories a week. | desks: cadence; Managing Editor |
+| Deals | 6; 3 expired and archived, 3 live to 31 Dec | none |
+| Salary-transfer offers | 5 live, verified 16–32 days ago; Emirates Islamic window closes 30 Sep | re-verify EI before 30 Sep |
+| Cards | 58, `lastVerified` 16–34 days, none over 60 | none |
+| Guides | 13 of 21 past 90 days (expat-starter set 124 days) — known-open | refresh queue (F-050) |
+| Valuations | baselines 10 Jun cross 90 days on 8 Sep; Q3 promise due 30 Sep | ruling R10 (F-018) |
+| Trust pages | press, tip stamped 9 May | F-058 |
