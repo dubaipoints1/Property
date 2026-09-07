@@ -125,11 +125,11 @@ const publicationRows: SubRow[] = [
 
 <input type="checkbox" id="dp-nav-toggle" class="dp-nav-toggle" aria-hidden="true" tabindex="-1" />
 
-<div class="dp-header" data-pagefind-ignore>
+<header class="dp-header" data-pagefind-ignore>
   <div class="dp-header-inner">
     <!-- Hamburger -->
     <label for="dp-nav-toggle" class="dp-icon-btn dp-mobile-only" role="button"
-           tabindex="0" aria-label="Open menu" aria-controls="dp-nav-overlay">
+           tabindex="0" aria-label="Open menu" aria-controls="dp-nav-overlay" aria-expanded="false">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
         <line x1="4" y1="7" x2="20" y2="7" />
@@ -158,7 +158,7 @@ const publicationRows: SubRow[] = [
           Credit cards
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </a>
-        <div class="dp-megapanel" role="region" aria-label="Cards menu">
+        <div class="dp-megapanel" role="region" aria-label="Cards menu" data-nosnippet>
           <div class="dp-megapanel-inner">
             {cardsPanel.map((g) => (
               <div class="dp-mega-grp">
@@ -182,7 +182,7 @@ const publicationRows: SubRow[] = [
           Earn miles
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </a>
-        <div class="dp-megapanel" role="region" aria-label="Earn miles menu">
+        <div class="dp-megapanel" role="region" aria-label="Earn miles menu" data-nosnippet>
           <div class="dp-megapanel-inner">
             {pointsPanel.map((g) => (
               <div class="dp-mega-grp">
@@ -235,23 +235,23 @@ const publicationRows: SubRow[] = [
   </div>
 
   <!-- Quick-links strip -->
-  <div class="dp-tracker-strip">
+  <nav class="dp-tracker-strip" aria-label="Quick links" data-nosnippet>
     <div class="dp-tracker-strip-inner">
       <a href="/salary-transfer/" class="dp-quicklink">Salary offers</a>
       <span class="dp-quicklink-sep" aria-hidden="true">·</span>
-      <a href="/cards/" class="dp-quicklink">Card deals</a>
+      <a href="/deals/" class="dp-quicklink">Card deals</a>
       <span class="dp-quicklink-sep" aria-hidden="true">·</span>
       <a href="/news/" class="dp-quicklink">Latest news</a>
     </div>
-  </div>
-</div>
+  </nav>
+</header>
 
 <!-- Mobile overlay -->
 <label for="dp-nav-toggle" class="dp-nav-backdrop" aria-hidden="true"></label>
 
 <aside id="dp-nav-overlay" class="dp-nav-overlay" aria-label="Site navigation">
   <div class="dp-nav-overlay-head">
-    <label for="dp-nav-toggle" class="dp-icon-btn" role="button" tabindex="0" aria-label="Close menu">
+    <label for="dp-nav-toggle" class="dp-icon-btn" role="button" tabindex="0" aria-label="Close menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
         <line x1="6" y1="6" x2="18" y2="18" />
@@ -378,11 +378,36 @@ const publicationRows: SubRow[] = [
     </div>
 
     <div class="dp-nav-foot">
-      <span>EN · العربية</span>
       <span>© {new Date().getFullYear()} DubaiPoints</span>
     </div>
   </nav>
 </aside>
+
+<script is:inline>
+  // The menu is CSS-only (a <label> for a hidden checkbox), so Enter, Space
+  // and Escape did nothing on any route (2026-09-06 audit, F-007). Labels
+  // do not activate on keydown; this mirrors the click for keyboard users
+  // and keeps aria-expanded honest on both toggles.
+  (() => {
+    const toggle = document.getElementById("dp-nav-toggle");
+    if (!toggle) return;
+    const labels = Array.from(document.querySelectorAll('label[for="dp-nav-toggle"][role="button"]'));
+    const sync = () => labels.forEach((l) => l.setAttribute("aria-expanded", String(toggle.checked)));
+    const set = (on) => { toggle.checked = on; sync(); };
+    toggle.addEventListener("change", sync);
+    labels.forEach((l) => l.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); set(!toggle.checked); }
+    }));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && toggle.checked) {
+        set(false);
+        const opener = labels.find((l) => l.classList.contains("dp-mobile-only"));
+        if (opener) opener.focus();
+      }
+    });
+    sync();
+  })();
+</script>
 
 <style>
 /* ════════════════════════════════════════════════════════════════════════
@@ -689,6 +714,8 @@ const publicationRows: SubRow[] = [
     height: 36px;
     padding: 0 16px;
     margin-left: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
     background: var(--ink);
     color: #fff;
     border-radius: 999px;

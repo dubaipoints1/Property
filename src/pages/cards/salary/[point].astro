@@ -7,6 +7,7 @@
 // minimum is unverified (`_provenance.eligibility: needs-review`) are
 // EXCLUDED rather than shown as accessible: an unpublished minimum is
 // not evidence the reader qualifies (§6 posture).
+import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
 import {
@@ -67,15 +68,12 @@ const rows = await Promise.all(
   }),
 );
 
-const monthYear = new Date().toLocaleDateString("en-GB", {
-  month: "long",
-  year: "numeric",
-});
+const monthYear = verifiedMonthStamp(qualifying) ?? verifiedMonthStamp(getActiveCards()) ?? "";
 const pointLabel = point.toLocaleString("en-GB");
 ---
 
 <ComparisonTableLayout
-  title={`Best UAE credit cards at AED ${pointLabel} salary (${monthYear}) | DubaiPoints`}
+  title={`Best UAE credit cards at AED ${pointLabel} salary${monthYear ? ` (${monthYear})` : ""} | DubaiPoints`}
   heading={`UAE credit cards you can get at AED ${pointLabel}/month`}
   description={`Every card in our database whose published salary minimum is AED ${pointLabel}/month or below — ${qualifying.length} cards, sorted so the ones this salary only just unlocks come first. Minimums, fees and bonuses from issuer pages and fee schedules, dated per card.`}
   columns={["Min salary", "Annual fee", "FX fee", "Salary transfer", "Welcome bonus"]}

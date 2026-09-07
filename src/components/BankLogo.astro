@@ -15,9 +15,13 @@ interface Props {
   slug: string;
   name: string;
   size?: "sm" | "md" | "lg";
+  /** True when the visible bank name sits right beside the mark, so the
+   *  logo must not announce "<Bank> logo <Bank>" twice (2026-09-06 audit,
+   *  F-046). */
+  decorative?: boolean;
 }
 
-const { slug, name, size = "md" } = Astro.props;
+const { slug, name, size = "md", decorative = false } = Astro.props;
 
 const dim = { sm: 18, md: 28, lg: 44 }[size];
 
@@ -40,7 +44,12 @@ const initials = name
   .join("");
 ---
 
-<span class={`dp-bank-logo dp-bank-logo--${size}`} aria-label={`${name} logo`} role="img">
+<span
+  class={`dp-bank-logo dp-bank-logo--${size}`}
+  aria-label={decorative ? undefined : `${name} logo`}
+  role={decorative ? undefined : "img"}
+  aria-hidden={decorative ? "true" : undefined}
+>
   <img
     src={`/logos/banks/${slug}.${ext}`}
     alt=""

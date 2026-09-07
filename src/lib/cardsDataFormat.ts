@@ -409,6 +409,27 @@ export interface CardForAnnualFee {
  * Charter §6 compliant: reads typed numerics from L2 only (joiningFee.amount,
  * annualFee.amount, annualFeeWaiver.year_one_waived); no LLM extraction.
  */
+/**
+ * "September 2026"-style stamp for a listing title, taken from the newest
+ * `lastVerified` among the cards shown — never from the build clock. The
+ * directory and comparison titles stamped `new Date()` until the
+ * 2026-09-06 audit (F-014), which re-dated every page on every deploy
+ * regardless of whether anything had been re-verified.
+ */
+export function verifiedMonthStamp(
+  cards: ReadonlyArray<{ lastVerified?: string | Date | null }>,
+): string | null {
+  let newest = 0;
+  for (const c of cards) {
+    if (!c.lastVerified) continue;
+    const t = new Date(c.lastVerified).getTime();
+    if (!Number.isNaN(t) && t > newest) newest = t;
+  }
+  return newest
+    ? new Date(newest).toLocaleDateString("en-GB", { month: "long", year: "numeric" })
+    : null;
+}
+
 export function annualFeeLabel(card: CardForAnnualFee): {
   amount: string;
   qual: string | null;

@@ -26,6 +26,7 @@
 //   - Welcome bonus highlighted via `--green` token (Charter §"two-accent
 //     system"); annual fee uses `--ink`. No new colour utilities.
 
+import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getEntry } from "astro:content";
@@ -46,6 +47,7 @@ const cards = await Promise.all(
     }),
 );
 
+const verifiedStamp = verifiedMonthStamp(cards.map((c) => c.card));
 const topPicks = cards.slice(0, 2);
 const compareList = cards.slice(2);
 
@@ -121,7 +123,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
 ---
 
 <BaseLayout
-  title={`The best UAE credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
+  title={`The best UAE credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
   description="UAE credit cards covered by DubaiPoints, sorted by welcome-bonus value. Annual fees and earn rates checked against primary issuer sources."
   fullWidth
 >
