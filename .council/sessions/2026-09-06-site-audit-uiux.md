@@ -5,7 +5,7 @@ topic: Site-wide UI/UX, navigation and link audit with a reproducible probe harn
 convened: 2026-09-06
 participants: head-of-ux, standards-editor, seo-strategist, technical-lead, fact-checker, growth-analytics-lead, business-realestate-editor, travel-experiences-editor, lifestyle-culture-editor, airline-news-editor, hotel-news-editor, managing-editor, chairman
 deliverable-shape: brief-plus-proof
-status: open
+status: filed — 2026-09-07 (synthesis: 2026-09-06-site-audit-uiux-synthesis.md)
 ---
 
 # Council session: site-wide UI/UX, navigation and link audit
@@ -88,6 +88,22 @@ Outputs: `.council/research/2026-09/site-audit-uiux-2026-09-06.md` (master),
 `.council/seo/audit-2026-Q3.md`, evidence JSON under
 `.council/research/2026-09/site-audit-2026-09-06-evidence/`, and the harness
 under `scripts/audit/`, `scripts/ci/`, `.github/workflows/link-audit.yml`.
+
+## How the review actually ran (recorded 2026-09-07)
+
+The Council workflow above failed three times on the account session limit
+(14:30 and 21:20 UTC on 6 September; 12:30 UTC on 7 September) and the
+runtime ran at most two agents concurrently. Two finders completed before
+the last cut — Homepage × standards-editor and Homepage × head-of-ux — and
+their findings are merged verbatim and credited in the master report. Every
+other lens was applied by the orchestrating session directly from the
+evidence, with the lens named on each finding; the Managing Editor and the
+Chairman then ran as single agents, one at a time, on the finished findings
+list. Dry rounds did not run. The three-lens verification was replaced by
+anchor verification at filing and a random re-check (master report,
+Appendix B). Sign-off by the named specialists on the A1 tables and the
+template scores is pending review of PR #348 — the ratings are the
+session's, and the file headers say so.
 
 ## Synthesis owner
 

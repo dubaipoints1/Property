@@ -34,11 +34,6 @@
 name: link-audit
 
 on:
-  # TEMPORARY (2026-09-07 audit): run on pushes to the audit branch so the sweep can
-  # execute before this file exists on main — GitHub cannot dispatch a workflow that
-  # is absent from the default branch. Remove this block when the PR is un-drafted.
-  push:
-    branches: [claude/website-audit-uiux-k1393i]
   workflow_dispatch:
     inputs:
       strict:
