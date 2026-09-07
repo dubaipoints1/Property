@@ -232,6 +232,26 @@ npm run scrape:propose # merges latest data/scraped/<bank>/*.json into src/data/
 
 Run a single test file: `node --import tsx --test tests/scrape/_normaliser.test.ts`.
 
+## Audit harness (opt-in)
+
+Reproducible UI/UX, accessibility, performance and link probes live under
+`scripts/audit/` and `scripts/ci/check-{fragments,external-links}.mjs`, added
+as the recurrence guard for the 2026-09-06 site-wide audit
+(`.council/research/2026-09/site-audit-uiux-2026-09-06.md`). They are
+**opt-in** — `npm run audit:render`, `audit:lighthouse`,
+`audit:links:fragments`, `audit:static`, `audit:links:external`,
+`audit:all` — and are deliberately not wired into `build`, `postbuild` or
+`pr-checks`. Outputs go to the gitignored `audit-output/`; curated JSON for a
+filed audit is copied to `.council/research/<month>/<audit>-evidence/`. The
+external-link sweep only tells the truth from GitHub Actions
+(`.github/workflows/link-audit.yml`, Monday cron + dispatch, never writes to
+the repo) because the web sandbox's egress allowlist blocks nearly every
+issuer host. `playwright` is pinned exactly (1.56.1) because its bundled
+Chromium build 1194 is the one pre-installed in the web session; `DP_CHROME_PATH`
+overrides. `public/_headers` is still a recommendation printed by
+`audit:static`, not a file — adding it is a T3 production change. See
+`scripts/audit/README.md`.
+
 ## Architecture — the three-layer card model
 
 The card system is the most non-obvious thing in the repo. Cards live
@@ -460,10 +480,16 @@ read credentials at container boot.
 > Status (2026-06-11): **verified.** Hobby plan subscribed. GitHub
 > Actions secret provisioned. MCP server token in Claude Code on the
 > web environment confirmed working — live `firecrawl_scrape` of
-> headforpoints.com returned 200 on 11 June 2026. Note: the MCP tools
-> are available to the **main session only**; sub-agents (including
-> Head of Research) do not inherit them, so Firecrawl work must run
-> in the orchestrating session or via the GitHub Actions channel.
+> headforpoints.com returned 200 on 11 June 2026. Note (superseded, see
+> below): the MCP tools were observed available to the **main session
+> only**; sub-agents did not inherit them.
+>
+> Correction (2026-09-06 audit): Workflow/Agent sub-agents **can** now
+> call the Firecrawl MCP tools — a sub-agent probe scraped `/about/` for
+> 1 credit in-session. Charter §2 (Firecrawl is the Research arm's) is a
+> role rule, not a runtime limit; a sub-agent acting for Head of Research
+> may hold it. The 60-second MCP transport timeout still applies per call,
+> so long crawls are chunked (≤ 25 pages) or run through Actions.
 
 ## Imagery pipeline
 
