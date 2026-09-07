@@ -1771,3 +1771,39 @@ Re-run `npm run audit:all` after the "now" sprint; §1's table is the baseline.
 - Session record: `.council/sessions/2026-09-06-site-audit-uiux.md` and `-synthesis.md`.
 
 — Audit session for the Council, 6–7 September 2026. Chairman direction in-session, 6 September 2026.
+
+## 14. Fix sprint 1 — 7 September 2026 (Chairman direction in-session: "make a plan and fix those items with the most important one")
+
+Landed on `claude/website-audit-uiux-k1393i` after PR #348 merged, most important first; nothing under rulings R1–R10 was touched.
+
+| Finding | What changed | Verified by |
+|---|---|---|
+| F-002 | RAKBANK July–August offer moved to `salaryTransferOfferHistory` (`archived: true`, dated `archivedReason`); RAKBANK added to the tracker's checked-without-live-offer list with the closing date in the coverage note | build has no lapsed-offer warning; tracker, homepage live desk and calculator no longer list it |
+| F-003 | Dark-mode surface for the article newsletter rail and the directory "insider" band set to brand navy; `--gold-soft` gets a dark value | axe dark: 0 violations on 9 probed routes |
+| F-004 | `--gold-ink` (#8a6118 light / #d9a85a dark) for the 10–11px labels (HotTip eyebrow, bank callout label, programme expiry label); value-bar muted alpha 0.62 → 0.78; hub card CTA opacity 0.55 → 0.85 | axe light: 0 contrast nodes on hubs, programmes, guides, home, tracker; 4 remain on card reviews — the R1 hues (F-005) |
+| F-007 | Inline keyboard handler: Enter/Space toggle the menu, Escape closes and returns focus; `aria-expanded` kept in sync on both labels | probe: enter/space/escape true on all 9 routes; live Playwright test |
+| F-008 | `aria-expanded` moved from the tracker `<tr>` to the row's fine-print button, which is now focusable | axe: 0 `aria-conditional-attr` on `/salary-transfer/` |
+| F-009 | `<main class="intel-main">` → `<div>` on the five directory templates | axe: 0 landmark violations |
+| F-011 | Quick-link "Card deals" → `/deals/` | built HTML |
+| F-013 (part) | Coverage note links every checked-without-offer bank page and RAKBANK's history | internal links 14,024 → 14,036 |
+| F-014 | Title stamps derive from the newest `lastVerified` (cards index, cashback, miles, salary bands, tracker bank pages) instead of the build clock; no stamp when nothing is live | built titles read "(August 2026)"; RAKBANK page carries none |
+| F-015 | Five directory search forms post to `/search/`; the search page triggers Pagefind from `?q=` and labels its input | live test: `/airlines/` form → `/search/?q=skywards` with results |
+| F-017 | Dated "Update, 7 September 2026" notes on the three 31-August stories; `updatedAt` bumped so the expiry sweep clears | news expiry check |
+| F-019 | Coverage note is a `<details>` collapsed below 768px, open above | built HTML |
+| F-021 | Homepage tile relabelled "Spend-return calculator / See which card pays back most on your monthly spend" | built HTML |
+| F-022 | Newsletter fallback mailto underlined (component and homepage) | CSS |
+| F-023 | Live-desk salary rows show "Verified … · to <end date>" | built HTML |
+| F-024 | Header is a `<header>`; quick-link strip is a `<nav aria-label="Quick links">` | axe: 0 `region` violations |
+| F-025 | Focus ring on directory search inputs; Pagefind's suppressed Clear button removed from the tab order; search tip text raised to `--ink-soft` | probe: 0 focus failures on `/airlines/`, `/banks/`, `/search/` |
+| F-028 | Inert `EN · العربية` span removed | built HTML |
+| F-036 | Liv Cashback jump anchor id aligned | fragments 576 / 0 broken |
+| F-037 | `data-nosnippet` on both mega-menus and the quick-link strip | built HTML |
+| F-040 (spacing only) | `Pay&nbsp;less` → `Pay less` with `white-space: nowrap` on the italic | built HTML |
+| F-043 | Hero launch-pending micro block removed (the band H2 and the fallback still carry the state) | built HTML |
+| F-044 | `.dp-header-subscribe` no longer wraps | CSS |
+| F-045 | Guide `<h4>` → `<h3>` | axe heading-order |
+| F-046 | `BankLogo` gains `decorative`; footer rows no longer announce "<Bank> logo <Bank>" | built HTML: `aria-hidden="true"` on footer marks |
+
+**Corrections to two findings, for the record.** F-046's evidence line about fallback initials came from the inventory's `textContent`, not the accessible name — the fallback span was already `aria-hidden`; the real duplication was the component's `role="img" aria-label="<Bank> logo"` beside the visible name, which is what the fix addresses. F-007's aside about the overlay's accordion checkboxes is withdrawn: they already carried `aria-hidden` and `tabindex="-1"` in source; only the hamburger label lacked keyboard handling.
+
+Not in this sprint: F-010 (image derivatives, T3), F-016 (dead citations need a browser check per link), F-026 (tap targets), F-029/F-031 (menu row cuts and canonical nouns — one Header pass with the R3 label ruling), F-034/F-035, and everything under R1–R10.

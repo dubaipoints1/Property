@@ -34,12 +34,19 @@ const props = Astro.props as
 let bandOffers: Awaited<ReturnType<typeof getLiveOffers>> = [];
 let bankOffers: Awaited<ReturnType<typeof getLiveOffers>> = [];
 let renderedNotes: { id: string; Content: any }[] = [];
+let bankStamp: string | null = null;
 
 if (props.kind === "band") {
   const all = await getLiveOffers();
   bandOffers = all.filter((o) => findBand(o.salaryBands, props.sample) !== null);
 } else {
   bankOffers = await getOffersForBank(props.bankId);
+  // Title stamp from the newest verification date, never the build clock
+  // (2026-09-06 audit, F-014: every bank page re-dated itself each deploy).
+  bankStamp = bankOffers.length
+    ? new Date(Math.max(...bankOffers.map((o) => new Date(o.lastVerified).getTime())))
+        .toLocaleDateString("en-GB", { month: "long", year: "numeric" })
+    : null;
   const offerEntries = await getCollection(
     "salaryTransferOffers",
     (e) => e.data.bank.id === props.bankId,
@@ -71,7 +78,7 @@ if (props.kind === "band") {
 {
   props.kind === "bank" && (
     <BaseLayout
-      title={`${props.bankName} salary transfer offer (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
+      title={`${props.bankName} salary transfer offer${bankStamp ? ` (${bankStamp})` : ""} | DubaiPoints`}
       description={`Deep-dive on ${props.bankName}'s current salary transfer offer: bands, clawback, payout timing, and expat-relevant gotchas.`}
       fullWidth
     >

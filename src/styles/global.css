@@ -81,6 +81,11 @@
      work superseded by chat-4 iterations. */
   --gold:      #b8842a;
   --gold-soft: #f3ead6;
+  /* Text-weight gold for labels at 14px and below (eyebrows, callout
+     labels). #b8842a is 3.0:1 on paper at 11px — it stays the chip, rule
+     and Verified-badge colour; small text uses this shade of the same
+     hue (2026-09-06 audit, F-004). Not a new hue: same family, darker. */
+  --gold-ink:  #8a6118;
   --brand:     #1a5fc6;          /* legacy alias to --link */
   --brand-deep:#154fa3;
   --brand-soft:#eef3fb;
@@ -3139,6 +3144,14 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   color: var(--ink-soft);
 }
 .dp-coverage-note strong { color: var(--ink); font-weight: 600; }
+.dp-coverage-note summary { cursor: pointer; list-style: none; color: var(--ink-soft); }
+.dp-coverage-note summary::-webkit-details-marker { display: none; }
+.dp-coverage-note summary::after { content: " ▾"; color: var(--gold); }
+.dp-coverage-note[open] summary::after { content: " ▴"; }
+.dp-coverage-note summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
+.dp-coverage-note p { margin: 10px 0 0; }
+.dp-coverage-note a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: color-mix(in srgb, var(--green) 45%, transparent); }
+.dp-coverage-note a:hover { text-decoration-color: var(--green); }
 
 /* ════════════════════════════════════════════════════════════════════════
    .dp-metric-strip — Inline metric row for hub pages.
@@ -3685,6 +3698,10 @@ html * {
   --green-band:#6f95ad;
   --mint:      #8fb3cc;
   --mint-soft: rgba(143, 179, 204, 0.08);
+  /* Gold on dark surfaces: the light-theme wash (#f3ead6) stayed light in
+     dark mode, so light text sat on it at 2.1:1 (2026-09-06 audit, F-003). */
+  --gold-soft: #2e2a1c;
+  --gold-ink:  #d9a85a;
 
   --link:      #6ba3f5;
   --link-deep: #4a8de0;
@@ -3696,6 +3713,12 @@ html * {
   background: var(--paper);
   border-bottom-color: var(--line);
 }
+/* The article newsletter rail paints `var(--green)` behind white text; in
+   dark mode --green is the lightened navy (#8fb3cc), which left the rail
+   at 1.8–2.2:1 on 44 routes (2026-09-06 audit, F-003). Brand navy is the
+   surface here in both themes; the button keeps white with navy text. */
+[data-theme="dark"] .dp-aside-newsletter { background: #1f3a4d; }
+[data-theme="dark"] .dp-aside-newsletter .cta { color: #1f3a4d; }
 [data-theme="dark"] .dp-footer {
   background: #0a0e17;
 }
