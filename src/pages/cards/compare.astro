@@ -22,6 +22,7 @@ import {
   CATEGORY_LABELS_FOR_TOP,
   compareByWelcomeValue,
 } from "~/lib/cardsDataFormat";
+import { cardMatchups, matchupSlug } from "~/data/cardMatchups";
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EligibilityChips from "~/components/cards/EligibilityChips.astro";
@@ -31,46 +32,33 @@ import VerifiedStamp from "~/components/cards/VerifiedStamp.astro";
 const MAX_CARDS = 4;
 
 const allCards = getActiveCards();
-const allBySlug = new Map(allCards.map((c) => [c.slug, c]));
 
-// ── Read ?cards=... ─────────────────────────────────────────────────
-const rawParam = Astro.url.searchParams.get("cards") ?? "";
-const requestedSlugs = rawParam
-  .split(",")
-  .map((s) => s.trim())
-  .filter((s) => s.length > 0)
-  .filter((s) => allBySlug.has(s));
-
-// De-dupe while preserving order, cap at MAX_CARDS.
-const seen = new Set<string>();
-const selectedSlugs: string[] = [];
-for (const slug of requestedSlugs) {
-  if (seen.has(slug)) continue;
-  seen.add(slug);
-  selectedSlugs.push(slug);
-  if (selectedSlugs.length >= MAX_CARDS) break;
-}
-
-// Default — top-3 by AED-normalised welcome value when no ?cards= present.
-const isDefault = selectedSlugs.length === 0;
-const defaultSlugs = isDefault
-  ? allCards
-      .filter((c) => c.welcomeBonus)
-      .sort(compareByWelcomeValue)
-      .slice(0, 3)
-      .map((c) => c.slug)
-  : [];
-
-const finalSlugs = isDefault ? defaultSlugs : selectedSlugs;
+// ── Selection ───────────────────────────────────────────────────────
+// This page used to read `Astro.url.searchParams.get("cards")` here and
+// render only the requested cards. astro.config.mjs is `output: "static"`,
+// so search params are always empty at build: the emitted HTML was the
+// default three on every visit, the picker's checkboxes never came back
+// ticked, and the deck's promise that "the URL is shareable" was not true.
+// Nothing on the page recovered it, unlike /cards/finder/, which at least
+// had a script (2026-09-06 audit; the finder's half is F-039).
+//
+// Fixed the same way the finder was: every card's column is emitted, the
+// default three are visible, and the inline script at the foot of this file
+// unhides whatever the query string asks for. A reader with JS off still
+// gets a working default rather than a blank page.
+const defaultSlugs = allCards
+  .filter((c) => c.welcomeBonus)
+  .sort(compareByWelcomeValue)
+  .slice(0, 3)
+  .map((c) => c.slug);
+const defaultSet = new Set(defaultSlugs);
+const defaultRank = new Map(defaultSlugs.map((slug, i) => [slug, i]));
 
 const cardsRaw = await Promise.all(
-  finalSlugs
-    .map((slug) => allBySlug.get(slug))
-    .filter((c): c is NonNullable<typeof c> => Boolean(c))
-    .map(async (card) => {
-      const bank = await getEntry("banks", card.bank);
-      return { card, bankName: bank?.data.name ?? card.bank };
-    }),
+  allCards.map(async (card) => {
+    const bank = await getEntry("banks", card.bank);
+    return { card, bankName: bank?.data.name ?? card.bank };
+  }),
 );
 
 // ── Picker data — all cards grouped by bank for the <details> form ──
@@ -85,7 +73,7 @@ const bankGroups = [...allByBank.entries()].sort(([a], [b]) =>
   a.localeCompare(b),
 );
 
-const selectedSet = new Set(finalSlugs);
+const selectedSet = defaultSet;
 
 // Pick a representative earn-rate metric per card. Routes through the
 // canonical `topEarnEntry` + `CATEGORY_LABELS_FOR_TOP` so this surface
@@ -130,7 +118,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       <span>
         <span class="lbl">Showing:</span>
         <strong>
-          {cardsRaw.length} {isDefault ? "top welcome-bonus cards" : "selected"}
+          <span id="dp-compare-count">{defaultSlugs.length}</span>{" "}
+          <span id="dp-compare-mode">top welcome-bonus cards</span>
         </strong>
       </span>
       <span>
@@ -141,6 +130,26 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       </span>
     </div>
   </div>
+
+  <!-- ── Written matchups ─────────────────────────────────────────── -->
+  <section class="dp-compare-matchups" aria-labelledby="dp-matchups-head">
+    <h2 id="dp-matchups-head">Head to head, with a verdict</h2>
+    <p>
+      Pairs a shortlist tends to come down to. Each has its own page, its own
+      spec table and our call on which one to take.
+    </p>
+    <ul>
+      {cardMatchups.map((m) => (
+        <li>
+          <a href={`/cards/compare/${matchupSlug(m)}/`}>
+            {allCards.find((c) => c.slug === m.left)?.name} vs{" "}
+            {allCards.find((c) => c.slug === m.right)?.name}
+          </a>
+          <span class="deck">{m.deck}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
 
   <!-- ── Picker ───────────────────────────────────────────────────── -->
   <section class="dp-compare-picker">
@@ -186,21 +195,23 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     </details>
   </section>
 
-  {cardsRaw.length === 0 ? (
-    <div
-      style="padding: 64px 32px; text-align: center; color: var(--ink-soft);"
-    >
-      <p style="font-size: 16px;">
-        None of the requested cards are in our database.
-      </p>
-      <p style="font-size: 14px; margin-top: 8px;">
-        <a href="/cards/compare/" style="color: var(--link);">
-          Reset to defaults →
-        </a>
-      </p>
-    </div>
-  ) : (
-    <section class="dp-compare-grid" aria-label="Card comparison">
+  <div
+    id="dp-compare-empty"
+    hidden
+    style="padding: 64px 32px; text-align: center; color: var(--ink-soft);"
+  >
+    <p style="font-size: 16px;">
+      None of the requested cards are in our database.
+    </p>
+    <p style="font-size: 14px; margin-top: 8px;">
+      <a href="/cards/compare/" style="color: var(--link);">
+        Reset to defaults →
+      </a>
+    </p>
+  </div>
+
+  {(
+    <section class="dp-compare-grid" id="dp-compare-grid" aria-label="Card comparison">
       {cardsRaw.map(({ card, bankName }) => {
         const wbDisplay = card.welcomeBonus
           ? welcomeBonusDisplay(card.welcomeBonus)
@@ -210,7 +221,13 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
           card.welcomeBonus !== null &&
           wbDisplay.length > 0;
         return (
-          <article class="dp-compare-col" data-bank={card.bank}>
+          <article
+            class="dp-compare-col"
+            data-bank={card.bank}
+            data-slug={card.slug}
+            hidden={!defaultSet.has(card.slug)}
+            style={defaultRank.has(card.slug) ? `order: ${defaultRank.get(card.slug)};` : undefined}
+          >
             <header class="dp-compare-col-head">
               <span class="bank">{bankName}</span>
               <h2>
@@ -283,7 +300,124 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   </div>
 </BaseLayout>
 
+<script is:inline define:vars={{ MAX_CARDS, defaultSlugs }}>
+  // Recovers the ?cards= selection this page could never render. See the
+  // note beside the frontmatter's selection block: the server read search
+  // params in a static build, so they were always empty and the picker's
+  // "Update comparison" button returned the same three cards every time.
+  (function () {
+    var grid = document.getElementById("dp-compare-grid");
+    var empty = document.getElementById("dp-compare-empty");
+    var countEl = document.getElementById("dp-compare-count");
+    var modeEl = document.getElementById("dp-compare-mode");
+    if (!grid || !empty || !countEl || !modeEl) return;
+
+    var cols = Array.prototype.slice.call(grid.querySelectorAll("[data-slug]"));
+    var known = {};
+    cols.forEach(function (el) {
+      known[el.getAttribute("data-slug")] = el;
+    });
+
+    function requested() {
+      var raw = new URLSearchParams(window.location.search).getAll("cards");
+      // Accept both repeated ?cards=a&cards=b (what the form submits) and a
+      // single comma-joined value (what a hand-written link tends to use).
+      var slugs = [];
+      raw.forEach(function (v) {
+        String(v)
+          .split(",")
+          .forEach(function (part) {
+            var slug = part.trim();
+            // An unknown slug is dropped rather than emptying the page.
+            if (slug && known[slug] && slugs.indexOf(slug) < 0) slugs.push(slug);
+          });
+      });
+      return slugs.slice(0, MAX_CARDS);
+    }
+
+    function apply() {
+      var chosen = requested();
+      var isDefault = chosen.length === 0;
+      var show = isDefault ? defaultSlugs : chosen;
+
+      cols.forEach(function (el) {
+        var i = show.indexOf(el.getAttribute("data-slug"));
+        el.hidden = i < 0;
+        el.style.order = i < 0 ? "999" : String(i);
+      });
+
+      countEl.textContent = String(show.length);
+      modeEl.textContent = isDefault ? "top welcome-bonus cards" : "selected";
+
+      var none = show.length === 0;
+      empty.hidden = !none;
+      grid.hidden = none;
+
+      // The checkboxes are server-rendered against the defaults, so they need
+      // the same correction.
+      var boxes = document.querySelectorAll('.dp-compare-picker-form input[name="cards"]');
+      Array.prototype.forEach.call(boxes, function (box) {
+        box.checked = show.indexOf(box.value) >= 0;
+      });
+    }
+
+    apply();
+  })();
+</script>
+
 <style>
+  .dp-compare-matchups {
+    max-width: var(--container-listing);
+    margin: 0 auto 40px;
+    padding: 0 32px;
+  }
+  .dp-compare-matchups h2 {
+    font-family: "Fraunces", serif;
+    font-size: 24px;
+    margin: 0 0 6px;
+  }
+  .dp-compare-matchups > p {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0 0 18px;
+    max-width: 62ch;
+  }
+  .dp-compare-matchups ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .dp-compare-matchups li {
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+  .dp-compare-matchups a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--green);
+    text-decoration: none;
+  }
+  .dp-compare-matchups a:hover { text-decoration: underline; }
+  .dp-compare-matchups .deck {
+    display: block;
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+  @media (max-width: 720px) {
+    .dp-compare-matchups { padding: 0 20px; }
+  }
+
   .sr-only {
     position: absolute;
     width: 1px;
