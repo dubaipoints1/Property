@@ -21,7 +21,8 @@ import StockImage from "~/components/StockImage.astro";
 import HeroImage from "~/components/cards/HeroImage.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
 import { formatEarnRate, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
-import { getActiveCards } from "~/lib/cardsData";
+import { getActiveCards, getCardData } from "~/lib/cardsData";
+import { matchupsForCard, matchupSlug } from "~/data/cardMatchups";
 import { getCollection } from "astro:content";
 import type { CardData } from "~/lib/cardsData";
 
@@ -272,7 +273,6 @@ const schema = {
           coverSize="med"
           class="dp-cr-photo-img"
           loading="eager"
-          sizes="(max-width: 720px) 100vw, 360px"
         />
         <figcaption class="dp-cr-photo-cap">
           <span class="b">{bankName}</span>
@@ -464,6 +464,28 @@ const schema = {
     </aside>
   </div>
 
+  {/* Head-to-head pages that involve this card. Without this the matchup
+      pages would have exactly one inbound link each, from the compare hub —
+      the orphan shape the 2026-09-06 audit flagged as F-013. */}
+  {slug && matchupsForCard(slug).length > 0 && (
+    <section class="dp-cr-matchups" aria-label="Head-to-head comparisons">
+      <h2>Compared head to head</h2>
+      <ul>
+        {matchupsForCard(slug).map((m) => {
+          const other = m.left === slug ? m.right : m.left;
+          return (
+            <li>
+              <a href={`/cards/compare/${matchupSlug(m)}/`}>
+                versus {getCardData(other)?.name ?? other}
+              </a>
+              <span>{m.deck}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
   <!-- Related reviews (recirculation) — reuses shared .dp-article-related* -->
   {relatedCards.length > 0 && (
     <section class="dp-article-related" aria-label="Related card reviews">
@@ -479,7 +501,6 @@ const schema = {
               coverTitle={c.name}
               coverCategory="Review"
               coverSize="med"
-              sizes="(max-width: 900px) 100vw, 33vw"
             />
             <div class="body">
               <span class="cat">{relatedBankName(c.bank)} · {c.categories?.[0] ?? "Cards"}</span>

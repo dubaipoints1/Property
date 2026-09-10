@@ -53,8 +53,14 @@
      resolves to navy. */
   --green:     #1f3a4d;          /* eyebrows, pull-quote mark, accents (navy after F.9) */
   --green-band:#15293a;          /* newsletter band — slightly darker navy for depth */
-  --mint:      #5fb88a;          /* secondary green — .dp-callout-tip border + chips */
-  --mint-soft: #e6f1ea;          /* wash for callout backgrounds (derived from mint) */
+  /* Lightened brand navy. Was --mint #5fb88a, a third hue the 2026-07-25
+     no-third-hue rule does not admit; on Chairman ruling R1 (10 Sep 2026,
+     audit F-006) it resolves to the same #8fb3cc the dark palette has used
+     since that amendment replaced its teal. Renamed rather than re-pointed
+     so the token does not repeat the --green naming lie the 2026-05-16
+     amendment had to live with. */
+  --navy-lift:      #8fb3cc;     /* .dp-callout-tip rail, live dot, accents on dark */
+  --navy-lift-soft: #e8eef3;     /* wash for callout backgrounds (derived from it) */
 
   /* Interactive (link / focus / hover only — never display type, never eyebrows) */
   --link:      #1a5fc6;
@@ -81,6 +87,11 @@
      work superseded by chat-4 iterations. */
   --gold:      #b8842a;
   --gold-soft: #f3ead6;
+  /* Text-weight gold for labels at 14px and below (eyebrows, callout
+     labels). #b8842a is 3.0:1 on paper at 11px — it stays the chip, rule
+     and Verified-badge colour; small text uses this shade of the same
+     hue (2026-09-06 audit, F-004). Not a new hue: same family, darker. */
+  --gold-ink:  #8a6118;
   --brand:     #1a5fc6;          /* legacy alias to --link */
   --brand-deep:#154fa3;
   --brand-soft:#eef3fb;
@@ -144,13 +155,13 @@ img { display: block; max-width: 100%; }
   --dpst-navy-soft: rgba(31, 58, 77, 0.75);
   --dpst-cream: #faf6ef;
   --dpst-paper: #fffdf9;
-  --dpst-green: #2f7d5d;
-  --dpst-teal: #54a37e;
+  --dpst-accent: #1f3a4d;
+  --dpst-accent-2: #3a6c91;
   --dpst-ochre: #c08a2e;
   --dpst-line: rgba(31, 58, 77, 0.16);
   --dpst-line-soft: rgba(31, 58, 77, 0.08);
-  --dpst-hover: rgba(47, 125, 93, 0.05);
-  --dpst-far: #4f6e60;
+  --dpst-hover: rgba(31, 58, 77, 0.05);
+  --dpst-far: #54677a;
   --dpst-soon: #8f5f18;
   --dpst-urgent: #b4513a;
 
@@ -169,8 +180,8 @@ img { display: block; max-width: 100%; }
   position: absolute;
   top: 0; left: 0;
   width: 48px; height: 48px;
-  border-top: 2px solid var(--dpst-green);
-  border-left: 2px solid var(--dpst-green);
+  border-top: 2px solid var(--dpst-accent);
+  border-left: 2px solid var(--dpst-accent);
   border-top-left-radius: 16px;
   opacity: 0.5;
   pointer-events: none;
@@ -213,7 +224,7 @@ img { display: block; max-width: 100%; }
 }
 .dpst-band:hover { color: var(--dpst-navy); }
 .dpst-band[aria-pressed="true"] { color: #fff; }
-.dpst-band:focus-visible { outline: 2px solid var(--dpst-green); outline-offset: 2px; }
+.dpst-band:focus-visible { outline: 2px solid var(--dpst-accent); outline-offset: 2px; }
 .dpst-band-slider {
   position: absolute; top: 3px; bottom: 3px;
   width: calc((100% - 6px) / 5);
@@ -234,7 +245,7 @@ img { display: block; max-width: 100%; }
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 .dpst-chip:hover { border-color: var(--dpst-navy-soft); }
-.dpst-chip:focus-visible { outline: 2px solid var(--dpst-green); outline-offset: 2px; }
+.dpst-chip:focus-visible { outline: 2px solid var(--dpst-accent); outline-offset: 2px; }
 .dpst-chip .tick {
   width: 14px; height: 14px; border-radius: 4px;
   border: 1.5px solid var(--dpst-line);
@@ -243,10 +254,10 @@ img { display: block; max-width: 100%; }
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 .dpst-chip[aria-pressed="true"] {
-  background: var(--dpst-green); border-color: var(--dpst-green); color: #fff;
+  background: var(--dpst-accent); border-color: var(--dpst-accent); color: #fff;
 }
 .dpst-chip[aria-pressed="true"] .tick {
-  background: #fff; border-color: #fff; color: var(--dpst-green);
+  background: #fff; border-color: #fff; color: var(--dpst-accent);
 }
 .dpst-chip.is-reset { color: var(--dpst-navy-soft); }
 .dpst-sort { display: flex; align-items: center; gap: 8px; }
@@ -258,7 +269,7 @@ img { display: block; max-width: 100%; }
   border: 1px solid var(--dpst-line); border-radius: 8px; padding: 8px 12px;
 }
 .dpst-sort-btn:hover { border-color: var(--dpst-navy-soft); }
-.dpst-sort-btn:focus-visible { outline: 2px solid var(--dpst-green); outline-offset: 2px; }
+.dpst-sort-btn:focus-visible { outline: 2px solid var(--dpst-accent); outline-offset: 2px; }
 .dpst-sort-btn[aria-pressed="true"] {
   background: var(--dpst-navy); color: #fff; border-color: var(--dpst-navy);
 }
@@ -273,7 +284,7 @@ img { display: block; max-width: 100%; }
 .dpst-count { font-weight: 600; color: var(--dpst-navy); }
 .dpst-count b {
   font-family: "Fraunces", serif; font-size: 17px; font-weight: 700;
-  color: var(--dpst-green); font-variant-numeric: tabular-nums;
+  color: var(--dpst-accent); font-variant-numeric: tabular-nums;
 }
 .dpst-meta .applied { font-size: 12px; }
 
@@ -289,7 +300,7 @@ img { display: block; max-width: 100%; }
 .dpst-table thead th.sortable { cursor: pointer; user-select: none; }
 .dpst-table thead th.sortable:hover { background: var(--dpst-navy-2); }
 .dpst-table thead th .sort-ind { margin-left: 6px; opacity: 0.45; font-size: 10px; }
-.dpst-table thead th.sorted .sort-ind { opacity: 1; color: #8fd3b3; }
+.dpst-table thead th.sorted .sort-ind { opacity: 1; color: #8fb3cc; }
 .dpst-table thead th:first-child { position: sticky; left: 0; z-index: 4; }
 .dpst-table tbody td {
   padding: 16px; border-bottom: 1px solid var(--dpst-line-soft);
@@ -313,7 +324,7 @@ img { display: block; max-width: 100%; }
   color: #fff; letter-spacing: -0.3px;
 }
 a.dpst-bank-name { font-weight: 600; line-height: 1.2; color: var(--dpst-navy); text-decoration: none; }
-a.dpst-bank-name:hover { color: var(--dpst-green); }
+a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dpst-bank-tier { display: block; font-size: 11px; color: var(--dpst-navy-soft); margin-top: 1px; }
 .dpst-badge {
   display: inline-flex; align-items: center; gap: 6px;
@@ -321,12 +332,12 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   padding: 5px 10px; border-radius: 6px; white-space: nowrap;
 }
 .dpst-badge .ic { width: 7px; height: 7px; border-radius: 2px; flex-shrink: 0; }
-.dpst-badge.cash { background: rgba(47, 125, 93, 0.12); color: #235f46; }
-.dpst-badge.cash .ic { background: var(--dpst-green); }
+.dpst-badge.cash { background: rgba(31, 58, 77, 0.10); color: #1f3a4d; }
+.dpst-badge.cash .ic { background: var(--dpst-accent); }
 .dpst-badge.voucher { background: rgba(192, 138, 46, 0.14); color: #8a6217; }
 .dpst-badge.voucher .ic { background: var(--dpst-ochre); }
-.dpst-badge.cashback { background: rgba(84, 163, 126, 0.16); color: #2f6b4f; }
-.dpst-badge.cashback .ic { background: var(--dpst-teal); }
+.dpst-badge.cashback { background: rgba(58, 108, 145, 0.16); color: #335e7e; }
+.dpst-badge.cashback .ic { background: var(--dpst-accent-2); }
 .dpst-badge.points { background: rgba(31, 58, 77, 0.1); color: var(--dpst-navy); }
 .dpst-badge.points .ic { background: var(--dpst-navy); }
 .dpst-value {
@@ -370,7 +381,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 }
 .dpst-fineblock .dpst-finehead {
   font-size: 10px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
-  color: var(--dpst-green); margin: 0 0 10px;
+  color: var(--dpst-accent); margin: 0 0 10px;
 }
 .dpst-fineitem {
   display: flex; justify-content: space-between; gap: 14px; padding: 7px 0;
@@ -379,21 +390,21 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 .dpst-fineitem .k { color: var(--dpst-navy-soft); }
 .dpst-fineitem .v { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
 .dpst-fineitem .v.warn { color: var(--dpst-urgent); }
-.dpst-fineitem .v.ok { color: var(--dpst-green); }
+.dpst-fineitem .v.ok { color: var(--dpst-accent); }
 .dpst-finenote { font-size: 12px; line-height: 1.5; color: var(--dpst-navy-soft); margin: 10px 0 0; }
 .dpst-finereqs { list-style: none; margin: 8px 0 0; padding: 0; }
 .dpst-finereqs li {
   position: relative; padding: 3px 0 3px 14px; font-size: 12px;
   color: var(--dpst-navy-soft); line-height: 1.45;
 }
-.dpst-finereqs li::before { content: "–"; position: absolute; left: 0; color: var(--dpst-green); }
+.dpst-finereqs li::before { content: "–"; position: absolute; left: 0; color: var(--dpst-accent); }
 .dpst-verified {
   background: var(--dpst-cream); border: 1px solid var(--dpst-line);
   border-radius: 11px; padding: 16px 18px;
 }
 .dpst-verified .vrow {
   display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
-  color: var(--dpst-green); margin-bottom: 6px; letter-spacing: 0.3px;
+  color: var(--dpst-accent); margin-bottom: 6px; letter-spacing: 0.3px;
 }
 .dpst-verified .vdate { font-size: 13px; color: var(--dpst-navy); margin-bottom: 12px; }
 .dpst-verified .vdate b { font-weight: 600; }
@@ -405,7 +416,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   font-size: 12px; font-weight: 600; color: var(--dpst-navy); text-decoration: none;
   border-bottom: 1px solid var(--dpst-line); padding-bottom: 2px;
 }
-.dpst-verified a:hover { color: var(--dpst-green); border-bottom-color: var(--dpst-green); }
+.dpst-verified a:hover { color: var(--dpst-accent); border-bottom-color: var(--dpst-accent); }
 
 /* ── EMPTY STATE ───────────────────────────────────────────── */
 .dpst-empty { padding: 64px 34px; text-align: center; }
@@ -414,7 +425,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 .dpst-empty p { font-size: 14px; color: var(--dpst-navy-soft); margin: 0 0 20px; }
 .dpst-empty button {
   appearance: none; cursor: pointer; font-family: inherit;
-  font-size: 13px; font-weight: 600; color: #fff; background: var(--dpst-green);
+  font-size: 13px; font-weight: 600; color: #fff; background: var(--dpst-accent);
   border: 0; border-radius: 999px; padding: 11px 22px;
 }
 .dpst-empty button:focus-visible { outline: 2px solid var(--dpst-navy); outline-offset: 2px; }
@@ -428,7 +439,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 .dpst-foot .left { display: flex; align-items: center; gap: 8px; }
 .dpst-foot b { color: #fff; font-weight: 600; }
 .dpst-foot a { color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.3); padding-bottom: 1px; }
-.dpst-foot a:hover { border-bottom-color: #8fd3b3; }
+.dpst-foot a:hover { border-bottom-color: #8fb3cc; }
 
 /* ── MOBILE: cards ─────────────────────────────────────────── */
 .dpst-cards { display: none; }
@@ -455,7 +466,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
     padding: 12px 16px; background: var(--dpst-paper); border: 0; border-top: 1px solid var(--dpst-line);
     font-size: 12px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--dpst-navy);
   }
-  .dpst-card-acc:focus-visible { outline: 2px solid var(--dpst-green); outline-offset: -2px; }
+  .dpst-card-acc:focus-visible { outline: 2px solid var(--dpst-accent); outline-offset: -2px; }
   .dpst-card-acc .chev { transition: transform 0.2s; }
   .dpst-card.is-open .dpst-card-acc .chev { transform: rotate(180deg); }
   .dpst-card-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: var(--dpst-paper); }
@@ -528,7 +539,10 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 .dpsc-best-eyebrow {
   font-size: 10px; font-weight: 700;
   letter-spacing: 2px; text-transform: uppercase;
-  color: var(--gold);
+  /* --gold is 3.1:1 on paper, which 10px text does not get away with.
+     Fix sprint 1 introduced --gold-ink for exactly this and swapped the
+     labels it had found; this one was missed (2026-09-06 audit, F-004). */
+  color: var(--gold-ink);
   margin: 0 0 6px;
 }
 .dpsc-best h2 {
@@ -733,12 +747,12 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 
 /* Pro-tip callout — image-forward editorial pattern (Phase A, May 2026).
    Used inside MDX article bodies for sidebar-style asides that belong
-   inline rather than in the sticky aside. Mint left rail keeps it
+   inline rather than in the sticky aside. Lifted-navy left rail keeps it
    distinct from the .dp-take "editor's take" pattern (red label, ink
    border) so the two callouts don't fight each other in the same article. */
 .dp-callout-tip {
-  border-left: 4px solid var(--mint);
-  background: var(--mint-soft);
+  border-left: 4px solid var(--navy-lift);
+  background: var(--navy-lift-soft);
   padding: 16px 20px 18px;
   margin: 24px 0 32px;
   border-radius: 0 4px 4px 0;
@@ -1149,6 +1163,14 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
+/* Below 480px the 2-up grid leaves each tile about 85px of text column
+   once the page gutter and the tile's own 24px padding are taken out, so
+   a 19px Fraunces title wraps to three or four lines and the corner arrow
+   crowds the last one (2026-09-06 audit, F-055). One column at that
+   width; seams follow below. */
+@media (max-width: 479px) {
+  .dp-tool-strip { grid-template-columns: 1fr; }
+}
 @media (min-width: 900px) {
   .dp-tool-strip { grid-template-columns: repeat(4, 1fr); }
 }
@@ -1198,6 +1220,12 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
    stray hairline atop cell 2 and no vertical seam at all (UX 5.5). */
 .dp-tool-strip.is-boxed .dp-tool:nth-child(even) { border-left: 1px solid var(--line); }
 .dp-tool-strip.is-boxed .dp-tool:nth-child(n+3) { border-top: 1px solid var(--line); }
+/* Single column: one horizontal seam between every pair, no vertical one. */
+@media (max-width: 479px) {
+  .dp-tool-strip.is-boxed .dp-tool:nth-child(even) { border-left: 0; }
+  .dp-tool-strip.is-boxed .dp-tool + .dp-tool { border-top: 1px solid var(--line); }
+  .dp-tool-strip.is-boxed .dp-tool { padding: 20px 20px 18px; }
+}
 @media (min-width: 900px) {
   .dp-tool-strip.is-boxed .dp-tool:nth-child(n+3) { border-top: 0; }
   .dp-tool-strip.is-boxed .dp-tool + .dp-tool { border-left: 1px solid var(--line); }
@@ -2348,7 +2376,7 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 /* Worked-example variant — carries more visual weight than the base
    pullbox, which is a flat shaded block with no rule and therefore reads
    as the QUIETEST thing in a section whose other callouts (.dp-callout-tip)
-   all have a mint rule.
+   all have a navy rule.
 
    Rule colour is --green, the primary accent. Deliberately NOT --gold:
    gold is the trust-signal accent and does exactly one job — Verified
@@ -2704,6 +2732,17 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
    no aside, no byline. Policy docs, not articles.
    ════════════════════════════════════════════════════════════════════════ */
 
+/* The facts strip on a trust page aligns with the meta strip above it and
+   the body below, rather than sitting at the page's full width. */
+.dp-trust-facts {
+  max-width: 760px;
+  margin: 24px auto 0;
+  margin-inline: auto;
+}
+@media (max-width: 720px) {
+  .dp-trust-facts { margin-inline: 20px; }
+}
+
 .dp-trust-meta {
   max-width: 760px;
   margin: 0 auto;
@@ -2749,8 +2788,8 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 .dp-trust-body .dp-prose section { margin-block: 32px; }
 .dp-trust-body .dp-prose section:first-child { margin-top: 0; }
 .dp-trust-body .dp-prose section h2 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: clamp(20px, 2.6vw, 26px);
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: clamp(22px, 2.6vw, 26px);
   letter-spacing: -0.4px;
   color: var(--ink);
   margin: 0 0 14px;
@@ -3139,6 +3178,14 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
   color: var(--ink-soft);
 }
 .dp-coverage-note strong { color: var(--ink); font-weight: 600; }
+.dp-coverage-note summary { cursor: pointer; list-style: none; color: var(--ink-soft); }
+.dp-coverage-note summary::-webkit-details-marker { display: none; }
+.dp-coverage-note summary::after { content: " ▾"; color: var(--gold); }
+.dp-coverage-note[open] summary::after { content: " ▴"; }
+.dp-coverage-note summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
+.dp-coverage-note p { margin: 10px 0 0; }
+.dp-coverage-note a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: color-mix(in srgb, var(--green) 45%, transparent); }
+.dp-coverage-note a:hover { text-decoration-color: var(--green); }
 
 /* ════════════════════════════════════════════════════════════════════════
    .dp-metric-strip — Inline metric row for hub pages.
@@ -3327,6 +3374,10 @@ a.dpst-bank-name:hover { color: var(--dpst-green); }
 }
 
 /* Distribution bar — used in valuations table */
+/* Parked, not dead: the distribution bar and the delta arrows lost their
+   columns under Chairman ruling R10 (10 September 2026, audit F-018) and
+   come back with them once src/lib/valuations.ts carries real floor and
+   ceiling figures. */
 .dp-val-bar {
   height: 8px;
   background: var(--shade-1);
@@ -3683,8 +3734,22 @@ html * {
      2026: off-brand, removed. Gold stays the sole secondary accent. */
   --green:     #8fb3cc;          /* lightened brand navy for dark bg */
   --green-band:#6f95ad;
-  --mint:      #8fb3cc;
-  --mint-soft: rgba(143, 179, 204, 0.08);
+  --navy-lift:      #8fb3cc;
+  --navy-lift-soft: rgba(143, 179, 204, 0.08);
+  /* Gold on dark surfaces: the light-theme wash (#f3ead6) stayed light in
+     dark mode, so light text sat on it at 2.1:1 (2026-09-06 audit, F-003). */
+  --gold-soft: #2e2a1c;
+  --gold-ink:  #d9a85a;
+
+  /* Signal and feedback tokens had NO dark values, so they kept their
+     light-theme hues against the dark surface: --red at 3.3:1 on the "Our
+     take" label and the calculator's drift chip, --positive at 2.6:1.
+     Lightened here to the same hue at 6:1 or better on #1a1f2e. These stay
+     outside the two-accent system as state, not brand accent, per the
+     10 September 2026 amendment — but state still has to be legible. */
+  --red:      #e8836f;
+  --positive: #7fc3a1;
+  --negative: #e0947c;
 
   --link:      #6ba3f5;
   --link-deep: #4a8de0;
@@ -3696,6 +3761,12 @@ html * {
   background: var(--paper);
   border-bottom-color: var(--line);
 }
+/* The article newsletter rail paints `var(--green)` behind white text; in
+   dark mode --green is the lightened navy (#8fb3cc), which left the rail
+   at 1.8–2.2:1 on 44 routes (2026-09-06 audit, F-003). Brand navy is the
+   surface here in both themes; the button keeps white with navy text. */
+[data-theme="dark"] .dp-aside-newsletter { background: #1f3a4d; }
+[data-theme="dark"] .dp-aside-newsletter .cta { color: #1f3a4d; }
 [data-theme="dark"] .dp-footer {
   background: #0a0e17;
 }

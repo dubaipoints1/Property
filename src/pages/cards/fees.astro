@@ -1,0 +1,171 @@
+---
+/**
+ * /cards/fees/ — annual and foreign-currency fees across the card set.
+ *
+ * Added 10 September 2026 from the kredit.ae teardown, which publishes a
+ * fee index over its catalogue. Ours is computed from L2 at build time in
+ * src/lib/feeIndex.ts; this page types no figure of its own. Two things
+ * theirs does not have: an FX-fee distribution (every card we cover carries
+ * a numeric FX margin) and a per-card table a reader can check a figure
+ * against. Definitions are stated in the methodology block below and
+ * enforced by tests/cards/fee-index.test.ts.
+ */
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { getActiveCards } from "~/lib/cardsData";
+import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
+import { buildFeeIndex } from "~/lib/feeIndex";
+import { getEntry } from "astro:content";
+
+const cards = getActiveCards();
+const idx = buildFeeIndex(cards);
+const stamp = verifiedMonthStamp(cards);
+
+const bankNames = new Map<string, string>();
+for (const b of idx.byBank) {
+  const e = await getEntry("banks", b.bank);
+  bankNames.set(b.bank, e?.data.name ?? b.bank);
+}
+const bankName = (slug: string) => bankNames.get(slug) ?? slug;
+
+const aed = (n: number) => `AED ${Math.round(n).toLocaleString("en-GB")}`;
+const pct = (n: number) => `${Math.round(n * 100)}%`;
+const fx = (n: number) => (n === 0 ? "0%" : `${n}%`);
+---
+
+<BaseLayout
+  title={`UAE credit-card fee index${stamp ? ` (${stamp})` : ""} | DubaiPoints`}
+  description="Annual fees and foreign-currency fees across every UAE credit card we cover: how many are free for life, the median fee, fees by bank and by salary tier, and a per-card table."
+  fullWidth
+>
+  <div class="dp-pagehead">
+    <div class="crumb"><a href="/cards/" class="crumb-link">Cards</a> / Fees</div>
+    <h1>UAE credit-card fees, across the set</h1>
+    <p>
+      What the {idx.total} cards we cover charge to hold and to spend abroad.
+      Every figure is computed from the card data on this site; when a fee
+      changes in a card's schedule of charges, this page moves with it.
+    </p>
+    <div class="dp-tools-stats">
+      <span><span class="lbl">Cards:</span> <strong>{idx.total}</strong></span>
+      <span><span class="lbl">Banks:</span> <strong>{idx.byBank.length}</strong></span>
+      {stamp && <span><span class="lbl">Verified through:</span> <strong>{stamp}</strong></span>}
+    </div>
+  </div>
+
+  <div class="dp-fees-body">
+    <dl class="dp-stats is-four">
+      <div class="dp-stat"><dt>Free for life</dt><dd>{idx.freeForLife} of {idx.total} <small>({pct(idx.freeShare)})</small></dd></div>
+      <div class="dp-stat"><dt>First year free</dt><dd>{idx.firstYearFree}</dd></div>
+      <div class="dp-stat"><dt>Median annual fee</dt><dd>{aed(idx.medianFee)}</dd></div>
+      <div class="dp-stat"><dt>Median fee, paid cards</dt><dd>{idx.medianPaidFee == null ? "—" : aed(idx.medianPaidFee)}</dd></div>
+      <div class="dp-stat"><dt>Highest fee</dt><dd>{idx.highest ? <>{aed(idx.highest.annualFee)} <small><a href={`/cards/${idx.highest.slug}/`}>{idx.highest.name}</a></small></> : "—"}</dd></div>
+      <div class="dp-stat"><dt>Cheapest paid card</dt><dd>{idx.lowestPaid ? <>{aed(idx.lowestPaid.annualFee)} <small><a href={`/cards/${idx.lowestPaid.slug}/`}>{idx.lowestPaid.name}</a></small></> : "—"}</dd></div>
+      <div class="dp-stat"><dt>No FX fee</dt><dd>{idx.fxZero} of {idx.total}</dd></div>
+      <div class="dp-stat"><dt>Median FX fee</dt><dd>{fx(idx.medianFx)} <small>(up to {fx(idx.maxFx)})</small></dd></div>
+    </dl>
+
+    <section class="dp-fees-section">
+      <h2>By bank</h2>
+      <div class="dp-fees-table-wrap">
+        <table class="dp-data-table">
+          <thead>
+            <tr><th>Bank</th><th class="num">Cards</th><th class="num">Free for life</th><th class="num">Median annual fee</th><th class="num">Median FX fee</th></tr>
+          </thead>
+          <tbody>
+            {idx.byBank.map((b) => (
+              <tr>
+                <td><a href={`/banks/${b.bank}/`}>{bankName(b.bank)}</a></td>
+                <td class="num">{b.cards}</td>
+                <td class="num">{b.freeForLife}</td>
+                <td class="num">{aed(b.medianFee)}</td>
+                <td class="num">{fx(b.medianFx)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dp-fees-section">
+      <h2>By minimum salary</h2>
+      <div class="dp-fees-table-wrap">
+        <table class="dp-data-table">
+          <thead>
+            <tr><th>Minimum salary tier</th><th class="num">Cards</th><th class="num">Free for life</th><th class="num">Median annual fee</th></tr>
+          </thead>
+          <tbody>
+            {idx.bySalaryTier.map((t) => (
+              <tr>
+                <td>{t.label}</td>
+                <td class="num">{t.cards}</td>
+                <td class="num">{t.freeForLife}</td>
+                <td class="num">{t.medianFee == null ? "—" : aed(t.medianFee)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="dp-fees-note">
+        Cards whose minimum salary we have not verified, or which are by invitation, are left out of the tiers. Per-salary listings are at <a href="/cards/salary/">cards by salary</a>.
+      </p>
+    </section>
+
+    <section class="dp-fees-section">
+      <h2>Every card, cheapest first</h2>
+      <div class="dp-fees-table-wrap">
+        <table class="dp-data-table">
+          <thead>
+            <tr><th>Card</th><th>Bank</th><th class="num">Annual fee</th><th>First year</th><th class="num">FX fee</th><th class="num">Min salary</th></tr>
+          </thead>
+          <tbody>
+            {idx.rows.map((r) => (
+              <tr>
+                <td><a href={`/cards/${r.slug}/`}>{r.name}</a></td>
+                <td>{bankName(r.bank)}</td>
+                <td class="num">{r.annualFee === 0 ? "Free" : aed(r.annualFee)}</td>
+                <td>{r.annualFee === 0 ? "—" : r.firstYearWaived ? "Waived" : "Charged"}</td>
+                <td class="num">{fx(r.fxFee)}</td>
+                <td class="num">{r.minSalary == null ? "—" : r.minSalary === 0 ? "None" : aed(r.minSalary)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="dp-tools-methodology">
+      <div class="col">
+        <div class="lbl">Free for life</div>
+        <p>An annual fee of zero with no condition. A card that waives its first year and charges from the second is counted under <strong>first year free</strong>, not here.</p>
+      </div>
+      <div class="col">
+        <div class="lbl">Annual fee</div>
+        <p>The standard published amount before any spend-based waiver. Where a card waives its fee above a spend threshold, the condition is shown on the card's own page.</p>
+      </div>
+      <div class="col">
+        <div class="lbl">FX fee</div>
+        <p>The card's published foreign-currency transaction margin, as a percentage of the transaction. Every card we cover carries one; the ADCB figures were corrected on 29 May 2026 and the <a href="/corrections/">corrections log</a> records it.</p>
+      </div>
+    </section>
+
+    <div class="dp-tools-actions">
+      <span>Medians rather than means throughout: a few premium cards pull an average up.</span>
+      <span><a href="/calculator/">Spend-return calculator →</a></span>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .dp-fees-body { max-width: 1120px; margin: 0 auto; padding: 0 32px 40px; }
+  .dp-fees-body .dp-stats { margin-top: 8px; }
+  .dp-fees-body .dp-stat dd small { display: block; font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 12px; color: var(--muted); letter-spacing: 0; margin-top: 2px; }
+  .dp-fees-body .dp-stat dd small a { color: var(--link); }
+  .dp-fees-section { margin: 32px 0; }
+  .dp-fees-section h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 22px; color: var(--ink); margin: 0 0 12px; }
+  .dp-fees-table-wrap { overflow-x: auto; }
+  .dp-fees-body .dp-data-table .num { text-align: right; font-feature-settings: 'tnum'; }
+  .dp-fees-note { font-size: 13px; color: var(--ink-soft); margin: 10px 0 0; }
+  .dp-fees-body .dp-tools-methodology { padding-left: 0; padding-right: 0; }
+  .dp-fees-body .dp-tools-actions { padding-left: 0; padding-right: 0; }
+  @media (max-width: 640px) { .dp-fees-body { padding: 0 16px 32px; } }
+</style>

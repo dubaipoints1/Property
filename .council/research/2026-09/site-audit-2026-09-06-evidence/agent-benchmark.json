@@ -1,0 +1,221 @@
+{
+ "benchmark-uae": {
+  "job": "01a0762e-c0de-70eb-bb21-616681790a27",
+  "model": "spark-2",
+  "creditsUsedReported": 0,
+  "sites": [
+   {
+    "site": "YallaCompare",
+    "pagesExamined": [
+     "https://yallacompare.com/ae/en-us",
+     "https://yallacompare.com/uae/en/credit-cards/",
+     "https://yallacompare.com/uae/en/credit-cards/emirates-nbd-share-visa-platinum-credit-card",
+     "https://yallacompare.com/uae/ar/credit-cards/",
+     "https://yallacompare.com/uae/en/calculators"
+    ],
+    "filters": "Listing exposes a Salary filter, feature chips and a Bank filter. UAE-relevant feature choices include No Salary Transfer, Islamic Banking, Islamic Finance and Sharia Compliant; salary is a filter category, not a questionnaire. Listing is infinite-scroll (successive product batches on reaching the bottom, no numbered pagination). Individual page presents minimum salary, salary transfer and Islamic-finance status as explicit comparison attributes with an Eligibility & Requirements section.",
+    "aedFormatting": "Currency shown as a separate AED label adjacent to the value. Tile labels recurring cost as Annual Fee; detail page groups charges under Rates and Fees and separately labels late-payment, over-limit and optional-protection charges. Compact currency-code-plus-value presentation.",
+    "languageToggle": "English and Arabic are first-class routes; header/footer exposes عربي/English links; Arabic listing uses Arabic labels and localised slugs and is visibly RTL. Some navigation/product text remains untranslated or mixed-language.",
+    "cardTile": "Card image, issuer/product name, small promo/product-of-the-month marker, compact facts (minimum salary, annual fee, salary-transfer status, rate), feature list, Apply Now CTA; tile participates in the page Compare control; detail reached via image/name link.",
+    "compareFlow": "Prominent Compare entry point and comparison-oriented results layout; tiles expose a compare affordance; maximum selections not stated; detail page has a compact attribute table and a separate Apply path.",
+    "mobilePatterns": "Responsive with lazy/infinite loading rather than pagination. No clearly labelled sticky comparison bar or documented mobile table strategy in the markup; detail comparison table is a compact block to test at narrow widths.",
+    "trustSignals": "Discloses information is illustrative and subject to change, advises a trained professional, includes an implications-of-non-payment notice, identifies UAE Central Bank regulation for insurance. Product pages include T&C language and eligibility/document requirements. No visible last-updated stamp or how-we-earn statement found on card pages.",
+    "navigation": "IA grouped into Insurance, Banking products, Money Saving Tools & Tips and Everything else; Banking includes credit cards alongside loans and accounts; tools include calculators. Footer repeats categories, guides, terms, privacy, about, contact, countries and language routes, plus regulatory/disclaimer content and a WhatsApp contact.",
+    "adopt": [
+     "Salary-transfer, Islamic/Sharia and bank as explicit, scannable filters.",
+     "Consistent first-screen facts across tiles: eligibility cue, fee label, salary-transfer status, salient features.",
+     "Parallel English/Arabic routes with localised labels and genuine RTL, auditing untranslated leftovers.",
+     "Compact comparison summary with a prominent CTA and a deeper eligibility/requirements section.",
+     "Regulatory/disclaimer language and non-payment warnings close to the decision context."
+    ],
+    "avoid": [
+     "Infinite scroll without a result-position cue, accessible loading state or alternative route to a product.",
+     "Mixed Arabic/English labels in a supposedly localised journey.",
+     "Ambiguous comparison limit or selection state; application CTAs obscuring the comparison task."
+    ]
+   },
+   {
+    "site": "SouqAlmal",
+    "pagesExamined": [
+     "https://souqalmal.com/ae-en"
+    ],
+    "filters": "Not verifiable: the fetched page returned a Cloudflare SSL handshake failure.",
+    "aedFormatting": "Not verifiable.",
+    "languageToggle": "Not verifiable.",
+    "cardTile": "Not verifiable.",
+    "compareFlow": "Not verifiable.",
+    "mobilePatterns": "Not verifiable.",
+    "trustSignals": "Not verifiable.",
+    "navigation": "Not verifiable.",
+    "adopt": [],
+    "avoid": [
+     "Do not draw benchmark conclusions about SouqAlmal from an unavailable page; validate directly when reachable."
+    ]
+   },
+   {
+    "site": "Policybazaar.ae",
+    "pagesExamined": [
+     "https://www.policybazaar.ae",
+     "https://www.policybazaar.ae/credit-cards/",
+     "https://www.policybazaar.ae/credit-cards/articles/",
+     "https://www.policybazaar.ae/term-insurance/term-insurance-calculator/"
+    ],
+    "filters": "Credit-card URL and article path returned a 'Page Is No Longer Available' page; live homepage navigation is organised around insurance/investment and calculators with no live card comparison section.",
+    "aedFormatting": "On the live calculator page AED is rendered as a currency code next to values and labels.",
+    "languageToggle": "Calculator page exposes English and Arabic choices near the top; no live card RTL journey to assess.",
+    "cardTile": "No live card tile or card page available.",
+    "compareFlow": "No live card comparison flow available.",
+    "mobilePatterns": "Calculator is a guided input tool with a compact results area and responsive content; no card-specific sticky bar observable.",
+    "trustSignals": "Calculator page shows an editorial last-updated stamp and links to Editorial Standards. Footer identifies the licensed broker entity, Central Bank of the UAE regulation/registration, Dubai authorities, DHA and Emirates Insurance Federation credentials, plus a solicitation disclaimer (insurance disclosures, not card disclosures).",
+    "navigation": "Large category mega-menu covering term/life, car, investment, health, travel and business insurance, then calculators and article resources. Footer repeats categories/calculators with company/legal/regulatory information, help content and language access.",
+    "adopt": [
+     "Editorial standards link and a visible last-updated marker on financial explainers and tools.",
+     "Tools grouped in a clearly labelled Calculators area, inputs and purpose explained before the form.",
+     "Regulatory, licensing and solicitation disclosures in a structured footer."
+    ],
+    "avoid": [
+     "Stale category URLs returning a generic removal page without redirecting to a live alternative.",
+     "Assuming insurance trust badges explain how a card comparison or referral works."
+    ]
+   }
+  ],
+  "synthesis": {
+   "uaeConventions": [
+    "AED commonly shown as the explicit three-letter code beside a value rather than a symbol.",
+    "Minimum salary, salary transfer and Sharia/Islamic status are high-value UAE decision attributes and work as visible filter/comparison fields.",
+    "English/Arabic route switching is expected; Arabic support should include RTL layout, localised navigation and product labels.",
+    "UAE comparison UX benefits from prominent eligibility requirements, terms/change disclaimers, non-payment warnings and regulator/licence disclosures.",
+    "Large category mega-menus combine comparison products, calculators, guides and legal/help links; the footer is a major trust and navigation surface."
+   ],
+   "recommendationsForDubaipoints": [
+    "Filter-first card directory with salary band, salary-transfer requirement, Islamic/Sharia status and issuer filters, filter state preserved in the URL.",
+    "Consistent card-tile anatomy: issuer/product, eligibility cue, AED-labelled fee fields, key benefits, compare checkbox, honest editorial CTA; Apply/Visit Bank only in disclosed referral contexts.",
+    "Mobile comparison tray showing selected cards with clear selection state; wide tables as stacked sections or horizontally scrollable tables with accessible headings.",
+    "English/Arabic switching with a real RTL stylesheet and QA for mixed-language labels, numbers, dates and table alignment.",
+    "Last updated, methodology/how-we-earn, affiliate/referral disclosure, eligibility caveats and UAE regulatory context easy to find near results and in the footer."
+   ]
+  }
+ },
+ "benchmark-global": {
+  "job": "01a0762e-bf09-73e1-a1f2-68aa565e4c74",
+  "model": "spark-2",
+  "creditsUsedReported": 0,
+  "sites": [
+   {
+    "site": "https://www.moneyluna.com",
+    "pagesExamined": [
+     "https://www.moneyluna.com/",
+     "https://www.moneyluna.com/moneytips/categories/credit-cards",
+     "https://www.moneyluna.com/post/best-uae-cashback-credit-cards",
+     "https://www.moneyluna.com/tools/healthcheck",
+     "https://www.moneyluna.com/about-us"
+    ],
+    "navigation": "Compact primary navigation links Home, Money Tips, Tools and About Us, repeated in the footer. Homepage provides prominent routes into tools and featured articles. Credit-card category has a heading, a Most read feature and an All Credit Cards feed with topical labels. No separate card-product listing or explicit comparison UI found. Mobile menu state not exposed.",
+    "homepage": "Concise value proposition for UAE residents, then featured money tips, a free toolkit, a testimonial and an email-update CTA. Editorial cards use imagery, topic labels, titles and direct Read article links; toolkit uses short task-oriented links.",
+    "cardReview": "Cashback-card page is an editorial review/comparison article: title, framing copy, hero image, contents-style bullet links, comparison table, explanatory sections, practical self-check, usage guidance, FAQs, related cards. Selection criteria and links to statements/terms emphasised. No fact strip, rating, sticky CTA or author panel evident.",
+    "listingCompare": "Editorial listing: featured Most read then All Credit Cards feed (image, tag, headline, summary, Read article CTA). No total, pagination, load-more or infinite-scroll marker exposed.",
+    "tools": "Healthcheck is a focused tool landing page: back link to All tools, cross-tool switcher, hero screenshot, concise promise, Financial Health Check section, links to adjacent tools and guides, FAQ explaining scoring, privacy, reload/no-account behaviour.",
+    "trustSignals": "Independent/free positioning, About Us UAE-expat focus, explicit no-hidden-agendas stance, update language, FAQs, testimonial, social/contact links; tool states it does not connect to banks/bureaus and does not sell data. No author/reviewer panel or corrections mechanism prominent.",
+    "mobilePatterns": "Mobile nav state not verifiable; responsive-friendly structure (short nav, stacked cards, compact labels, repeated CTAs, simple tool switcher). No sticky mobile CTA or table-overflow behaviour confirmed.",
+    "visualHierarchy": "Editorial: large page-level promise, featured content, section headings, image-led cards, summaries, repeated action links. Category tags distinguish topics from headlines. Long articles: prominent title + hero, scannable contents bullets, headings, tables, callout guidance, FAQs, related content.",
+    "learnFrom": [
+     "Small, stable primary navigation repeated in the footer.",
+     "Scannable comparison content: framing, explicit selection criteria, structured tables, caveats, FAQs, related articles.",
+     "Tools as action-oriented journeys: outcome first, scope and privacy, adjacent next steps.",
+     "Consistent topic labels, summaries, imagery and direct CTAs across listings.",
+     "Credibility via transparent editorial positioning, practical explanations, contact/social links, clear privacy boundaries."
+    ],
+    "avoid": [
+     "Do not assume a feed has pagination/infinite scroll when no control or total is visible; make continuation explicit.",
+     "Do not rely on promotional headlines alone; pair recommendations with criteria, caveats, FAQs and supporting terms/evidence.",
+     "Do not claim a mobile navigation solution without verifying the rendered mobile state."
+    ]
+   },
+   {
+    "site": "https://www.headforpoints.com",
+    "pagesExamined": [
+     "https://www.headforpoints.com/",
+     "https://www.headforpoints.com/category/credit-card-reviews-series/",
+     "https://www.headforpoints.com/category/credit-card-reviews-series/page/2/",
+     "https://www.headforpoints.com/2025/11/01/amex-gold-best-card-for-miles-and-points-beginner/",
+     "https://www.headforpoints.com/2024/03/24/how-many-tier-points-does-each-british-airways-flight-earn/",
+     "https://www.headforpoints.com/the-beginners-guide-to-collecting-avios-points/"
+    ],
+    "navigation": "Publishing/news destination around Avios, airline, hotel and credit-card content. Homepage: stream of dated posts, pinned content, recurring newsletter promotion, forums and card modules. Credit-card review category is a dedicated archive with conventional page-based pagination. Tools surfaced through article/resource links rather than a prominent global calculator hub.",
+    "homepage": "Chronological editorial feed with a pinned story, image-led cards, author/date/comment metadata, recurring featured-card modules and newsletter signup; mixes news, reviews, hotels and forum links.",
+    "cardReview": "Strong title, descriptive benefit-oriented section headings, conclusion, related-card/category modules; links back to the broader review resource. No distinct fact strip, visible rating, sticky CTA or reviewer panel evident.",
+    "listingCompare": "Archive is a scannable listing: thumbnail, linked title, excerpt, date, author, comment count; states reviews are maintained regularly (freshness). Conventional pagination; no load-more/infinite scroll.",
+    "tools": "Tier-point article presents a reference-table tool concept: use case explained, link to dedicated calculator, table after context, supporting links, newsletter prompt. No rich in-page calculator with documented defaults/results.",
+    "trustSignals": "Named authors, publication dates, visible comment counts, update language on the archive, detailed review structure, forum and newsletter links. Methodology link and corrections workflow not prominent.",
+    "mobilePatterns": "Responsive single-column editorial content with compact repeated cards; concise headings/excerpts/metadata precede long content. Mobile-only nav state, sticky CTA and table-overflow treatment not discernible.",
+    "visualHierarchy": "Large linked headlines and imagery lead; dates/authors/comments secondary; section headings break long reviews; subscription and related-card links as distinct interruption points.",
+    "learnFrom": [
+     "Image-led editorial cards with title, excerpt and author/date/comment metadata make a large archive scannable.",
+     "Separate evergreen category archives from news with a consistent review-card template across pagination.",
+     "Structure long guides/reviews with descriptive headings, conclusions and contextual cross-links.",
+     "Pair a reference tool with explanatory context and a clear link to the dedicated calculator.",
+     "Repeat newsletter and community entry points to convert one-off readers."
+    ],
+    "avoid": [
+     "Avoid mixing too many editorial verticals in the first view without clear grouping.",
+     "Avoid burying the interactive calculator behind a long article; provide a direct, prominent tool entry point.",
+     "Avoid relying solely on dated feeds for discovery; retain clear category archives and pagination."
+    ]
+   },
+   {
+    "site": "https://thepointsguy.com",
+    "pagesExamined": [
+     "https://thepointsguy.com/",
+     "https://thepointsguy.com/credit-cards/",
+     "https://thepointsguy.com/reviews/amex-business-platinum-card-review/",
+     "https://thepointsguy.com/reviews/credit-card-reviews/",
+     "https://thepointsguy.com/calculator/",
+     "https://thepointsguy.com/credit-cards/how-to-choose-a-credit-card/"
+    ],
+    "navigation": "Header exposes Menu, Home, Subscribe and search, with grouped sections News, Credit Cards, Points + Miles, Travel and Tools. Credit Cards subdivided by card type, issuer, cobranded and learning links; Tools includes valuations, award-vs-cash calculator and CardMatch. Desktop shows grouped navigation; mobile uses a Menu trigger.",
+    "homepage": "Magazine-style hub: editorial/story modules interleaved with card-discovery CTAs, newsletter signup, travel content and tool links. CardMatch positioned as personalised next-card path; calculator framed as decision aid. Distinct visual modules support cross-navigation rather than one dense feed.",
+    "cardReview": "Breadcrumb/category label, headline, author identity, current-offer module, editorial verdict, scannable headings, methodology/rating links, editorial and advertiser disclaimers, recurring-update language, related-card CTAs, comments. Disclosures near relevant modules and again at page end. No single fixed sticky CTA confirmed.",
+    "listingCompare": "All-cards page leads with partner-offer cards and CardMatch, then category navigation and editorial copy. Cards are repeatable offer modules with an obvious action affordance and terms disclosure. No result total, pagination or load-more found; a curated hub rather than an exhaustive index.",
+    "tools": "Calculator page is a dedicated interactive destination comparing award vs cash, purpose explained before the interaction. CardMatch uses a short recommendation flow with prominent CTA. Tools surfaced in global nav and on the homepage.",
+    "trustSignals": "Named authors, editor/reviewer roles, author biographies, update labels, linked product-review methodology, editorial disclaimers, advertising-policy links, partner-compensation disclosure, terms-apply language, transparency statement; editorial opinion separated from issuer endorsement.",
+    "mobilePatterns": "Menu trigger at top and skip-to-content link (collapsed nav). Linear flow of modules, cards and CTAs; search and Subscribe prominent. No distinct sticky CTA or wide-table treatment confirmed.",
+    "visualHierarchy": "Category labels and large headlines lead, then author/offer context and body sections. High-contrast actions (Apply, Subscribe, Try CardMatch, calculator) distinguish conversion/utility from editorial. Images and card art break text; disclosure and methodology near modules and page end.",
+    "learnFrom": [
+     "Broad task-oriented top-level buckets with deeper card taxonomy grouped by intent.",
+     "Pair editorial recommendations with a personalised matching flow and purpose-specific calculator.",
+     "Make authorship, editing/review, methodology, update status and advertiser disclosure visible inside the template.",
+     "Reusable visual offer/story modules with one obvious action plus terms and editorial context.",
+     "Homepage as a cross-navigation hub connecting stories, tools, newsletters and product discovery."
+    ],
+    "avoid": [
+     "Do not imply a curated card hub is a complete catalog without an explicit total or pagination endpoint.",
+     "Do not let partner-offer modules obscure editorial disclaimer, methodology or sponsored/independent distinction.",
+     "Avoid long reviews that depend only on uninterrupted prose; retain headings, related links and in-page decision aids."
+    ]
+   }
+  ],
+  "crossSiteSynthesis": {
+   "commonPatterns": [
+    "All three use editorial card/article modules with strong headlines, imagery, short supporting text and direct CTAs.",
+    "All provide a card content route, but archive behaviour differs: HfP exposes conventional pagination; MoneyLuna and TPG exposed no explicit total or continuation control.",
+    "Long-form content made scannable with section headings, related content and cross-links; tools framed as decision aids.",
+    "Newsletter/subscription prompts recur; all use authorship, dates, update language, editorial framing or disclosure for credibility.",
+    "Observed mobile direction is collapsed/compact navigation or naturally stacked editorial flow."
+   ],
+   "differentiators": [
+    "MoneyLuna: most compact and UAE-contextual; tools, privacy and practical self-assessment over a product archive.",
+    "HfP: most archive/news-feed oriented; dated posts, community/forum, explicit page-based pagination.",
+    "TPG: most developed taxonomy and commercial/editorial separation; grouped mega-menu nav, CardMatch, dedicated calculator route, prominent methodology/disclosure.",
+    "MoneyLuna's comparison article uses contents + table; HfP emphasises recurring review articles and archive freshness; TPG emphasises reusable offer modules and conversion paths."
+   ],
+   "recommendationsForDubaipoints": [
+    "Adopt a small top-level taxonomy organised around user tasks (Cards, Points and Miles, Travel, Tools, Guides) with a compact mobile Menu and a footer that repeats key destinations.",
+    "Review template with breadcrumb, author/editor panel, update date, compact non-promotional fact strip, verdict near the top, pros/cons, jump links, methodology and separated disclosure.",
+    "A true card listing with explicit result scope, filters, sorting, consistent tiles, compare/shortlist behaviour and clear empty states; never present a curated set as complete without saying so.",
+    "Surface tools globally and on the homepage with a direct task statement, visible inputs/defaults, understandable results, reset behaviour and privacy explanation.",
+    "UAE-specific intent labels and editorial modules with consistent cards, related links and CTAs; wide comparison tables horizontally scrollable on mobile; verify sticky CTA behaviour rather than assuming it.",
+    "Keep affiliate/partner disclosures adjacent to commercial CTAs, link methodology and advertising policy, show author/editor roles and update status, provide a visible corrections/contact route."
+   ]
+  }
+ }
+}

@@ -1,0 +1,175 @@
+# Weekly link audit — the outbound half of "every link goes somewhere
+# real". check-links.mjs makes internal nav integrity mechanical at build
+# time; this job runs scripts/ci/check-external-links.mjs (and the
+# fragment sweep, when present) against a fresh build and files what it
+# finds. Origin: the 2026-09-06 site UI/UX audit, which found the ~150
+# distinct outbound URLs the publication cites for provenance — Schedules
+# of Fees, KFS / T&C PDFs, campaign pages, regulator pages — had no check
+# of any kind.
+#
+# Why a scheduled Actions job and not a PR check or a local script:
+#   - egress. The Claude Code web sandbox enforces a host allowlist
+#     (CLAUDE.md § Network allowlist) that rejects nearly every issuer
+#     host, so in-session the sweep can only classify everything as
+#     `unverifiable / egress-blocked`. GitHub-hosted runners have
+#     ordinary egress, so this is the only channel that produces a real
+#     answer.
+#   - flakiness. Bot walls, CDN challenges and 5xx blips are third-party
+#     weather; none of it should ever redden a PR about a typo. The
+#     sweep classifies those as `unverifiable`, never `broken`, and even
+#     a genuine broken link is an editorial task, not a build failure.
+#
+# What this workflow never does: write to the repo. Output goes to the
+# run artifact (audit-output/links/, gitignored in the tree), the step
+# summary, and — on the cron only — a GitHub issue for the desks, which
+# is commented on rather than duplicated while it stays open. There is
+# no automation-state commit here because there is no state: every run
+# re-derives the list from dist/. Manual dispatch with `strict: true`
+# turns a non-zero broken count into a red run, for use when someone
+# wants a hard answer.
+#
+# Monday 02:41 UTC — a quiet slot ahead of the Gulf working day and
+# off-minute per the scheduling hygiene used by monitor.yml.
+
+name: link-audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: "Fail the run when any external link is broken"
+        type: boolean
+        default: false
+  schedule:
+    - cron: "41 2 * * 1"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: link-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # No `ref:` — the audit runs against whatever branch it is dispatched
+      # from, so a fix branch can be checked before it merges.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      - name: Install
+        run: npm ci --no-audit --no-fund
+
+      - name: Build
+        run: npm run build
+
+      # Fragment sweep (scripts/ci/check-fragments.mjs) is a sibling
+      # deliverable; guard on its presence so this workflow is valid on
+      # refs that predate it. `set +e` — a broken fragment is reported,
+      # not fatal, same policy as the external sweep below.
+      - name: Fragment links
+        id: fragments
+        run: |
+          set +e
+          mkdir -p audit-output/links
+          if [ -f scripts/ci/check-fragments.mjs ]; then
+            node scripts/ci/check-fragments.mjs dist --json audit-output/links/fragments.json
+            code=$?
+          else
+            echo "scripts/ci/check-fragments.mjs not present on this ref — skipped"
+            code=0
+          fi
+          echo "exit=$code" >> "$GITHUB_OUTPUT"
+          echo "fragment sweep exit: $code"
+
+      - name: External links
+        id: external
+        run: |
+          set +e
+          node scripts/ci/check-external-links.mjs --dist dist --out audit-output/links
+          code=$?
+          echo "exit=$code" >> "$GITHUB_OUTPUT"
+          echo "external sweep exit: $code"
+
+      # The markdown goes to the step summary AND the log, so it can be
+      # read from a session that can only reach the job logs.
+      - name: Summary
+        id: summary
+        run: |
+          md=audit-output/links/external-links.md
+          json=audit-output/links/external-links.json
+          broken=0
+          if [ -f "$json" ]; then
+            broken=$(node -p "JSON.parse(require('fs').readFileSync('$json', 'utf8')).meta.counts.broken")
+          fi
+          {
+            echo "## Link audit"
+            echo
+            echo "- external sweep exit: ${{ steps.external.outputs.exit }} · broken: $broken"
+            echo "- fragment sweep exit: ${{ steps.fragments.outputs.exit }}"
+            echo
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -f "$md" ]; then
+            cat "$md" >> "$GITHUB_STEP_SUMMARY"
+            echo "----- external-links.md -----"
+            cat "$md"
+            echo "----- end external-links.md -----"
+          else
+            echo "external-links.md was not produced (build or sweep failed above)"
+          fi
+          echo "broken=$broken" >> "$GITHUB_OUTPUT"
+
+      - name: Upload audit output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: link-audit-${{ github.run_number }}
+          path: audit-output/links/
+          retention-days: 30
+          if-no-files-found: warn
+
+      # Cron only: manual dispatches are someone watching the run. Same
+      # idempotent pattern as news-expiry.yml — one open issue per marker,
+      # commented on while open, label optional.
+      - name: Open issue for the desks
+        if: github.event_name == 'schedule' && steps.summary.outputs.broken != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          BROKEN: ${{ steps.summary.outputs.broken }}
+        run: |
+          md=audit-output/links/external-links.md
+          title="Link audit: $BROKEN broken external link(s) ($(date -u +%Y-%m-%d))"
+          existing=$(gh issue list --state open --search "Link audit: in:title" --json number --jq '.[0].number // empty')
+          {
+            echo "The weekly external link audit found **$BROKEN** outbound link(s) answering 4xx/5xx or not at all."
+            echo
+            echo "Run: $RUN_URL (artifact \`link-audit-${{ github.run_number }}\` has the full JSON + markdown)."
+            echo
+            # Only the Broken section — the unverifiable/OK lists are in the artifact.
+            awk '/^## Broken/{p=1} /^## Unverifiable/{p=0} p' "$md"
+            echo
+            echo "Owner: the section editor whose page cites the URL (first source column). Find the moved page and update the \`sourceUrl\` / prose, or archive the claim — a dead source voids the figure it supports. Bot walls and rate limits are listed as *unverifiable* in the artifact, not here; they need a human with a browser, not a fix."
+          } > issue-body.md
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file issue-body.md
+          else
+            gh issue create --title "$title" --body-file issue-body.md \
+              --label "link-audit" || gh issue create --title "$title" --body-file issue-body.md
+          fi
+
+      - name: Enforce strict mode
+        if: inputs.strict == true && steps.summary.outputs.broken != '0'
+        run: |
+          echo "::error::strict mode: ${{ steps.summary.outputs.broken }} broken external link(s)"
+          exit 1

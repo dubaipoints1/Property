@@ -41,9 +41,14 @@ homepage band switches to read from it.
 
 ## Quarterly artifacts
 
-- **AED Valuations** — first formal sampling Q3 2026, then quarterly on
-  the first Friday of January, April, July, October. Methodology page:
-  `/valuations/methodology/`. Data module: `src/lib/valuations.ts`.
+- **AED Valuations** — first formal sampling is **not scheduled**. The
+  Q3 2026 date this line used to carry passed unstarted and the public
+  pages that repeated it were corrected on Chairman ruling R10,
+  10 September 2026 (audit F-018). Set a date here first, then restore
+  the floor/ceiling columns; never the other way round. Once sampling
+  begins: quarterly on the first Friday of January, April, July,
+  October. Methodology page: `/valuations/methodology/`. Data module:
+  `src/lib/valuations.ts`.
 - **Card lineup refresh** — every quarter, sweep all live card MDX for
   rate / fee / welcome-bonus drift; refresh `lastVerified`.
 - **Salary-transfer offer scrape** — weekly via Firecrawl scraper (see

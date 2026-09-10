@@ -1,5 +1,11 @@
 ---
 import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+import {
+  banksCovered,
+  cardsSourced,
+  cardsTracked,
+  verifiedThrough,
+} from "~/lib/trustFacts";
 ---
 
 <TrustPageLayout
@@ -8,6 +14,13 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
   eyebrow="About DubaiPoints"
   heading="Why DubaiPoints exists."
   lastUpdated={new Date("2026-08-06")}
+  deck="A sourced, dated record of UAE card, bank and loyalty terms — with the verification date on every entry and the corrections we have made kept permanently in public."
+  facts={[
+    { label: "Cards tracked", value: String(cardsTracked()) },
+    { label: "Banks covered", value: String(banksCovered()) },
+    { label: "Carrying a source URL", value: cardsSourced() },
+    { label: "Verified through", value: verifiedThrough() },
+  ]}
 >
   <section>
     <p>UAE card, bank and loyalty-programme terms are often spread across product pages, key-facts statements, schedules of charges and campaign terms. A product page may describe the headline benefit while a separate document sets the fee, eligibility rule, cap or expiry.</p>

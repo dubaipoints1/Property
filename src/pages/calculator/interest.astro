@@ -1,0 +1,178 @@
+---
+/**
+ * /calculator/interest/ — the interest-and-payoff calculator.
+ *
+ * Added 10 September 2026 from the kredit.ae teardown. Every tool on the
+ * site modelled what a card pays; none modelled what it costs when a
+ * balance is carried, which is the largest number in most cardholders'
+ * relationship with the product. The maths is arithmetic on the reader's
+ * inputs. The defaults are the median published monthly rate and the modal
+ * minimum-payment rule across the cards in L2 that publish one — computed
+ * here, with the sample sizes printed beside them.
+ */
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import InterestPayoffCalculator, { type CardRateOption } from "~/components/islands/InterestPayoffCalculator";
+import { getActiveCards } from "~/lib/cardsData";
+import {
+  cardsWithRate,
+  defaultMonthlyRate,
+  defaultMinPayment,
+  parseMinPaymentRule,
+  nominalAnnualPct,
+} from "~/lib/interestPayoff";
+import { getEntry } from "astro:content";
+
+const all = getActiveCards();
+const rated = cardsWithRate(all).sort(
+  (a, b) => a.interestRate!.monthly - b.interestRate!.monthly || a.name.localeCompare(b.name),
+);
+const rateDefault = defaultMonthlyRate(all);
+const minDefault = defaultMinPayment(all);
+
+const options: CardRateOption[] = await Promise.all(
+  rated.map(async (c) => {
+    const bank = await getEntry("banks", c.bank);
+    return {
+      slug: c.slug,
+      name: c.name,
+      bank: bank?.data.name ?? c.bank,
+      monthly: c.interestRate!.monthly,
+      minPayment: parseMinPaymentRule(c.minPayment),
+      minPaymentText: c.minPayment ?? null,
+    };
+  }),
+);
+
+const withRule = all.filter((c) => c.minPayment).length;
+---
+
+<BaseLayout
+  title="UAE credit-card interest & payoff calculator | DubaiPoints"
+  description="How long a carried UAE credit-card balance takes to clear at the minimum payment, and what it costs in interest. Defaults from the published rates of the cards we track."
+  fullWidth
+>
+  <article class="dp-article is-wide">
+    <header class="dp-article-head">
+      <p class="dp-article-eyebrow is-green">Tool · Calculator</p>
+      <h1 class="dp-article-title">What does carrying a balance actually cost?</h1>
+      <p class="dp-article-lede">
+        UAE issuers quote interest by the month, and the minimum payment
+        shrinks as the balance does. Enter a balance and see how long the
+        minimum takes to clear it, what that costs, and what a flat payment
+        would save.
+      </p>
+      <p class="dp-article-meta">
+        <strong>{rated.length}</strong> cards with a published rate
+        <span class="sep">·</span>
+        <a href="#methodology">Methodology</a>
+        <span class="sep">·</span>
+        <a href="/calculator/">Spend-return calculator</a>
+      </p>
+    </header>
+
+    <div class="dp-take">
+      <p class="label">How to read this</p>
+      <p>
+        These are estimates from the rate and rule you set. Your statement's
+        figures decide: banks round differently, charge interest from the
+        transaction date once a balance is carried, and add late-payment and
+        cash-advance charges this tool leaves out. Paying in full by the due
+        date costs nothing at all.
+      </p>
+    </div>
+
+    <InterestPayoffCalculator client:load cards={options} rateDefault={rateDefault} minDefault={minDefault} />
+
+    <section id="methodology" class="dp-article-section">
+      <h2>Methodology</h2>
+
+      <h3>Where the defaults come from</h3>
+      <p>
+        {rateDefault ? (
+          <>
+            The default rate, <strong>{rateDefault.monthlyRatePct}% a month</strong>,
+            is the median of the {rateDefault.sampleSize} cards in our data
+            that publish a monthly rate. It is not a typical figure typed in
+            by hand; it moves when the data does.
+          </>
+        ) : (
+          <>No card in our data publishes a monthly rate, so the default is a placeholder.</>
+        )}
+      </p>
+      <p>
+        {minDefault ? (
+          <>
+            The default minimum-payment rule, <strong>{minDefault.percent}% of the
+            balance or AED {minDefault.floorAED.toLocaleString("en-GB")}, whichever is
+            higher</strong>, is the most common rule among the {withRule} cards that
+            publish one: {minDefault.percentMatches} of {minDefault.percentTotal} state
+            that percentage and {minDefault.floorMatches} of {minDefault.floorTotal} that
+            floor. The rule is read from each card's wording by a fixed pattern,
+            never by a language model; a wording the pattern cannot read is left
+            out rather than guessed.
+          </>
+        ) : (
+          <>No card in our data publishes a minimum-payment rule we can read.</>
+        )}
+      </p>
+
+      <h3>The arithmetic</h3>
+      <p>
+        Each month: interest is the opening balance times the monthly rate;
+        the payment is the greater of the percentage and the floor (or your
+        fixed amount); the closing balance is opening plus interest minus
+        payment. The final payment is clamped to what is owed. A payment
+        that does not beat the month's interest is reported as never
+        clearing rather than run for fifty years.
+      </p>
+      <p>
+        The annual figure banks quote is the monthly rate times twelve. The
+        compounded figure, (1 + r)<sup>12</sup> − 1, is what the same rate
+        costs over a year if nothing is paid; both are shown.
+      </p>
+
+      <h3>The cards behind the default</h3>
+      <table class="dp-data-table">
+        <thead>
+          <tr>
+            <th>Card</th>
+            <th class="num">Monthly</th>
+            <th class="num">Annual, as quoted</th>
+            <th>Published minimum payment</th>
+          </tr>
+        </thead>
+        <tbody>
+          {options.map((c) => (
+            <tr>
+              <td><a href={`/cards/${c.slug}/`}>{c.name}</a> <small>{c.bank}</small></td>
+              <td class="num">{c.monthly.toFixed(2)}%</td>
+              <td class="num">{nominalAnnualPct(c.monthly).toFixed(1)}%</td>
+              <td>{c.minPaymentText ?? "—"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p>
+        Islamic cards publish a profit rate rather than an interest rate; where
+        our data holds one it is applied the same way arithmetically, and the
+        card's own page says which it is.
+      </p>
+
+      <h3>What this calculator does not do</h3>
+      <ul>
+        <li>Promotional or balance-transfer rates, installment plans, and the fees on them.</li>
+        <li>Late-payment fees, over-limit fees and cash-advance charges, all of which add to the cost.</li>
+        <li>New purchases added while a balance is carried, which usually accrue from day one.</li>
+        <li>Your credit report. Missed payments are recorded by the Al Etihad Credit Bureau; this page cannot see them.</li>
+      </ul>
+    </section>
+
+    <footer class="dp-article-foot">
+      <p>
+        A rate or rule here that does not match your card's Key Facts Statement?
+        Email <a href="mailto:corrections@dubaipoints.ae?subject=Interest+calculator+correction">corrections@dubaipoints.ae</a>.
+        Every fix is recorded on our <a href="/corrections/">corrections page</a>.
+      </p>
+    </footer>
+  </article>
+</BaseLayout>

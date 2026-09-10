@@ -86,14 +86,22 @@ const thresholdLine =
       ? `on ${aedFormatter.format(structured.spend_threshold_aed)} cumulative spend within ${structured.qualify_window_days} days`
       : `on ${aedFormatter.format(structured.spend_threshold_aed)} cumulative spend`
     : null;
+
+// This block used to be an <aside aria-label="Welcome bonus">, which makes
+// it a complementary landmark. Every card tile on a directory or finder
+// page renders one, so /cards/finder/ shipped 58 landmarks sharing a
+// single label (2026-09-06 audit; axe landmark-unique). It is a callout
+// inside one card's content, not a page-level complement, so it should
+// never have been a landmark: a <div> with the same visible eyebrow says
+// exactly as much without claiming page structure.
 ---
 
 {welcomeBonus && (
-  <aside class="dp-welcome-callout" aria-label="Welcome bonus">
+  <div class="dp-welcome-callout">
     <div class="eyebrow">Welcome bonus</div>
     <div class={`body${structured && structured.headline ? " is-headline" : ""}`}>{bodyText}</div>
     {thresholdLine && <div class="threshold">{thresholdLine}</div>}
-  </aside>
+  </div>
 )}
 
 <style>

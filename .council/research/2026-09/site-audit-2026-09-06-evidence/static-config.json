@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "redirects": {
+    "rules": [
+      {
+        "line": 1,
+        "source": "/friday-brief",
+        "target": "/newsletter/",
+        "status": 301,
+        "splat": false
+      },
+      {
+        "line": 2,
+        "source": "/friday-brief/",
+        "target": "/newsletter/",
+        "status": 301,
+        "splat": false
+      }
+    ],
+    "problems": []
+  },
+  "headers": {
+    "present": false,
+    "blocks": [],
+    "lint": {
+      "unknownHeaders": [],
+      "duplicatePaths": [],
+      "missingRecommended": [
+        "X-Content-Type-Options",
+        "Referrer-Policy",
+        "Permissions-Policy",
+        "X-Frame-Options",
+        "Strict-Transport-Security",
+        "Content-Security-Policy-Report-Only"
+      ]
+    }
+  },
+  "sitemap": {
+    "files": [
+      "sitemap-0.xml"
+    ],
+    "count": 198,
+    "diff": {
+      "inSitemapNotBuilt": [],
+      "builtNotInSitemap": []
+    }
+  },
+  "robots": {
+    "present": true,
+    "body": "# dubaipoints.ae — robots.txt\n# Generated 29 May 2026 (PR-D, post-audit SEO foundation).\n\nUser-agent: *\nAllow: /\n\n# Out of scope for indexing — internal scaffolding / dev-only.\nDisallow: /design-spike/\nDisallow: /style-guide/\nDisallow: /dev/\n\nSitemap: https://dubaipoints.ae/sitemap-index.xml\n"
+  }
+}

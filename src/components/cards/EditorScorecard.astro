@@ -319,7 +319,11 @@ const visibleRows = DIMENSION_LABELS.filter(
     margin-bottom: 6px;
   }
   .apply-skip .apply-eyebrow {
-    color: var(--positive);
+    /* Was var(--positive), whose own definition reserves it to the ProsCons
+       tick and cross icons — "no chrome, no chips, no copy". This is copy,
+       and it failed contrast in dark mode at 2.6:1 besides. The primary
+       accent is the right token and resolves light in dark mode. */
+    color: var(--green);
   }
   .apply-skip .skip-eyebrow {
     color: var(--ink-soft);

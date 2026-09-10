@@ -1,5 +1,9 @@
 ---
 import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+import {
+  correctionsPublished,
+  cardsTracked,
+} from "~/lib/trustFacts";
 ---
 
 <TrustPageLayout
@@ -8,6 +12,13 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
   eyebrow="The team"
   heading="Who writes DubaiPoints — and how to reach us."
   lastUpdated={new Date("2026-08-06")}
+  deck="One editor, an organisational byline, and a published route for corrections, tips and editorial questions. What that means in practice is below."
+  facts={[
+    { label: "Editors", value: "One" },
+    { label: "Byline", value: "Organisational" },
+    { label: "Cards under coverage", value: String(cardsTracked()) },
+    { label: "Corrections published", value: String(correctionsPublished()) },
+  ]}
 >
   <section>
     <h2>The editor</h2>

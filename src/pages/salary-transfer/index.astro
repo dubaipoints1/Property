@@ -9,9 +9,11 @@ import { getCollection } from "astro:content";
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
-import { getLiveOffers } from "~/lib/offerAdapter";
+import { getLiveOffers, getLapsedUnarchivedOffers } from "~/lib/offerAdapter";
+import { classifyCoverage, coverageGuardError } from "~/lib/salaryTransferCoverage";
 
 const offers = await getLiveOffers();
+const lapsedOffers = await getLapsedUnarchivedOffers();
 
 // Coverage, stated rather than implied. "Banks tracked: 2" alone reads
 // either as "we cover two" or "only two banks run an offer" — and the
@@ -37,23 +39,40 @@ const checkedWithoutLiveOffer = [
   "citi",
   "emirates-nbd",
   "liv",
+  "rakbank",
   "wio",
 ];
 const advertisedWithoutCurrentTerms = ["standard-chartered"];
 const bankName = new Map(allBanks.map((bank) => [bank.id, bank.data.name]));
-const classifiedBanks = new Set([
-  ...trackedBanks,
-  ...checkedWithoutLiveOffer,
-  ...advertisedWithoutCurrentTerms,
-]);
-if (classifiedBanks.size !== coveredCount) {
-  throw new Error(
-    `Salary-transfer coverage classification has ${classifiedBanks.size} banks; expected ${coveredCount}.`,
+// A lapsed, not-yet-archived offer is its own bucket (2026-09-06 P0: the
+// RAKBANK cash reward expired on 31 August and the old all-or-nothing
+// assertion took the build down with it). Only a bank with no
+// classification at all still throws. The warning is for the editor: an
+// entry in `lapsedOffers` is a card for the archive sweep.
+const coverage = classifyCoverage({
+  coveredBanks: allBanks.map((bank) => bank.id),
+  liveOfferBanks: [...trackedBanks],
+  lapsedOfferBanks: lapsedOffers.map((o) => o.bankSlug),
+  checkedWithoutLiveOffer,
+  advertisedWithoutCurrentTerms,
+});
+const guardError = coverageGuardError(coverage, coveredCount);
+if (guardError) throw new Error(guardError);
+if (lapsedOffers.length) {
+  console.warn(
+    `[salary-transfer] ${lapsedOffers.length} lapsed offer(s) awaiting archive: ` +
+      lapsedOffers.map((o) => `${o.bankSlug} (${o.name}, ended ${o.validUntil.slice(0, 10)})`).join("; "),
   );
 }
-const nameList = new Intl.ListFormat("en-GB", { style: "long", type: "conjunction" });
-const listNames = (slugs: string[]) =>
-  nameList.format(slugs.map((slug) => bankName.get(slug) ?? slug));
+// Linked variant for the coverage note: the eight "checked, no live offer"
+// bank pages had no inbound link anywhere on the site because the tracker
+// island links only banks with a live row (2026-09-06 audit, F-013).
+const linkList = (slugs: string[]) =>
+  slugs.map((slug, i) => ({
+    slug,
+    name: bankName.get(slug) ?? slug,
+    sep: i === 0 ? "" : i === slugs.length - 1 ? " and " : ", ",
+  }));
 
 const bands = [
   { slug: "aed-5000-to-8000",   label: "AED 5,000 – 8,000" },
@@ -94,22 +113,48 @@ const newestVerification = offers.length
       )}
     </div>
 
-    <p class="dp-coverage-note">
-      <strong>Coverage status.</strong> We found current, source-backed offers for
-      {" "}{trackedBanks.size} banks. We checked {listNames(checkedWithoutLiveOffer)}
-      {" "}and found no current live banded cash offer — ADCB is running an
-      education-sector-only TouchPoints salary campaign (15 July – 30 September
-      2026) that doesn't qualify for the cash table, and ADIB's salary programme
-      remains a prize draw rather than a banded reward (re-checked 22 August).
-      Liv and Wio run rate-based salary benefits — savings interest tied to the
-      salary transfer, not banded cash — and Al Hilal's up-to-AED-15,000
-      campaign ended 4 August 2026 (checked 22 August).
-      {" "}{listNames(advertisedWithoutCurrentTerms)} advertises an AED 2,000
-      Priority Banking salary-transfer cashback (salaries AED 30,000+), but the
-      campaign terms it links to are the April–June 2026 document — treat it as
-      unverified until current terms are republished. Absence from the table is
-      not evidence that no offer exists.
-    </p>
+    {/* Collapsed on phones: at 390px this paragraph filled the first
+        viewport and pushed the table below the fold (2026-09-06 audit,
+        F-019). The inline script opens it from 768px up. */}
+    <details class="dp-coverage-note" id="coverage-note">
+      <summary>
+        <strong>Coverage status.</strong> {trackedBanks.size} of {coveredCount} covered
+        banks have a live, source-backed offer — why the others are not listed
+      </summary>
+      <p>
+        We checked
+        {linkList(checkedWithoutLiveOffer).map((b) => (
+          <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
+        ))}
+        {" "}and found no current live banded cash offer — ADCB is running an
+        education-sector-only TouchPoints salary campaign (15 July – 30 September
+        2026) that doesn't qualify for the cash table, and ADIB's salary programme
+        remains a prize draw rather than a banded reward (re-checked 22 August).
+        Liv and Wio run rate-based salary benefits — savings interest tied to the
+        salary transfer, not banded cash. Al Hilal's up-to-AED-15,000 campaign
+        ended 4 August 2026 (checked 22 August), and RAKBANK's July–August cash
+        reward closed on 31 August 2026 (moved to its{" "}
+        <a href="/salary-transfer/history/rakbank/">offer history</a> on 7 September).
+        {" "}
+        {linkList(advertisedWithoutCurrentTerms).map((b) => (
+          <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
+        ))}
+        {" "}advertises an AED 2,000
+        Priority Banking salary-transfer cashback (salaries AED 30,000+), but the
+        campaign terms it links to are the April–June 2026 document — treat it as
+        unverified until current terms are republished.
+        {lapsedOffers.map((o) => (
+          <>{" "}{bankName.get(o.bankSlug) ?? o.bankSlug}&rsquo;s {o.name} ended {fmtFull(new Date(o.validUntil))}.</>
+        ))}
+        {" "}Absence from the table is not evidence that no offer exists.
+      </p>
+    </details>
+    <script is:inline>
+      (() => {
+        const d = document.getElementById("coverage-note");
+        if (d && window.matchMedia("(min-width: 768px)").matches) d.open = true;
+      })();
+    </script>
   </div>
 
   <!-- Preact island handles filter UI + sortable table -->

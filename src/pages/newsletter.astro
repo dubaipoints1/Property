@@ -2,10 +2,7 @@
 import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
 import NewsletterSignup from "~/components/NewsletterSignup.astro";
 
-const buttondownUsername = (import.meta.env.PUBLIC_BUTTONDOWN_USERNAME as string | undefined)?.trim();
-const automatedSignupReady = Boolean(
-  buttondownUsername && /^[a-zA-Z0-9_-]+$/.test(buttondownUsername),
-);
+import { newsletterLive as automatedSignupReady } from "~/lib/newsletter";
 ---
 
 <TrustPageLayout

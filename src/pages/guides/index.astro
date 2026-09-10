@@ -68,7 +68,7 @@ const tabs = [
               : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
           ))}
         </div>
-        <form class="intel-search" action="/" method="get" role="search">
+        <form class="intel-search" action="/search/" method="get" role="search">
           <label class="intel-search-label" for="intel-search-input">Search</label>
           <label for="intel-search-input" class="intel-search-icon" aria-hidden="true">
             <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
@@ -90,7 +90,7 @@ const tabs = [
 
   <!-- ── 2. Main grid ───────────────────────────────────────────────── -->
   <div class="intel-grid">
-    <main class="intel-main">
+    <div class="intel-main">
       {featured && (
         <a href={`/guides/${featured.id}/`} class="intel-featured">
           <StockImage
@@ -100,7 +100,6 @@ const tabs = [
             coverSize="hero"
             class="intel-featured-image"
             loading="eager"
-            sizes="(max-width: 900px) 100vw, 66vw"
           />
           <div class="intel-featured-body">
             <span class="intel-featured-eyebrow">Featured guide</span>
@@ -124,7 +123,6 @@ const tabs = [
                   coverCategory="Guide"
                   coverSize="med"
                   class="intel-card-image"
-                  sizes="(max-width: 900px) 100vw, 33vw"
                 />
                 <div class="intel-card-body">
                   <span class="intel-card-cat">Guide</span>
@@ -137,7 +135,7 @@ const tabs = [
           ))}
         </ul>
       )}
-    </main>
+    </div>
 
     <aside class="intel-aside">
       {trending.length > 0 && (
@@ -260,6 +258,7 @@ const tabs = [
     width: 100%;
   }
   .intel-search input[type="search"]::placeholder { color: var(--muted); }
+  .intel-search input[type="search"]:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
   .intel-search-icon {
     display: none;
     align-items: center; justify-content: center;
@@ -475,6 +474,8 @@ const tabs = [
   }
   .intel-trending a:hover { color: var(--green); }
 
+  :global([data-theme="dark"]) .intel-insider { background: #1f3a4d; }
+  :global([data-theme="dark"]) .intel-insider .cta { color: #1f3a4d; }
   .intel-insider {
     background: var(--green);
     color: white;

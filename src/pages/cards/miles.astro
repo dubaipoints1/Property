@@ -1,4 +1,5 @@
 ---
+import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
 import {
@@ -11,6 +12,7 @@ import { formatEarnRate } from "~/lib/cardsDataFormat";
 const milesCards = getActiveCards().filter(
   (c) => c.categories.includes("travel") || c.categories.includes("co-brand"),
 );
+const verifiedStamp = verifiedMonthStamp(milesCards);
 const rows = await Promise.all(
   milesCards.map(async (c) => {
     const bank = await getEntry("banks", c.bank);
@@ -31,8 +33,8 @@ const rows = await Promise.all(
 ---
 
 <ComparisonTableLayout
-  title={`Best UAE miles credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
-  heading={`Best UAE miles credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })})`}
+  title={`Best UAE miles credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
+  heading={`Best UAE miles credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""}`}
   description="Side-by-side comparison of UAE credit cards earning Skywards Miles, Etihad Guest Miles, and convertible TouchPoints / ENBD Plus / Mashreq Salaam."
   columns={["Annual fee", "FX fee", "Base earn", "Welcome bonus"]}
   rows={rows}
