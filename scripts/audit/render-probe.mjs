@@ -468,7 +468,30 @@ function tapTargetsInPage() {
     const cs = getComputedStyle(el);
     if (cs.display === "none" || cs.visibility === "hidden" || el.hidden || el.closest('[aria-hidden="true"]')) continue;
     if (el.type === "hidden") continue;
-    const r = el.getBoundingClientRect();
+    // A checkbox or radio is typically 13x13, but the label that wraps it
+    // (or points at it with `for`) is the thing a finger actually hits —
+    // clicking anywhere in the label activates the control. Measuring the
+    // input alone reported a 13px target where the real one was 316x28,
+    // which is most of the 2026-09-06 audit's 13,038-target count (F-026).
+    // Measure the label when there is one and it contains the input's box.
+    let r = el.getBoundingClientRect();
+    let hitVia = null;
+    if (el.tagName === "INPUT" && (el.type === "checkbox" || el.type === "radio")) {
+      const label =
+        el.closest("label") ||
+        (el.id ? document.querySelector(`label[for="${CSS.escape(el.id)}"]`) : null);
+      if (label) {
+        const lr = label.getBoundingClientRect();
+        const contains =
+          lr.width > 0 && lr.height > 0 &&
+          lr.left <= r.left + 1 && lr.right >= r.right - 1 &&
+          lr.top <= r.top + 1 && lr.bottom >= r.bottom - 1;
+        if (contains && (lr.width > r.width || lr.height > r.height)) {
+          r = lr;
+          hitVia = "label";
+        }
+      }
+    }
     if (r.width === 0 || r.height === 0) continue;
     let inTextBlock = false;
     const parent = el.parentElement;
@@ -484,6 +507,7 @@ function tapTargetsInPage() {
       selector: sel(el),
       w: Math.round(r.width),
       h: Math.round(r.height),
+      hitVia,
       display: cs.display,
       inTextBlock,
       text: String(el.getAttribute("aria-label") || el.textContent || el.value || "").replace(/\s+/g, " ").trim().slice(0, 40),

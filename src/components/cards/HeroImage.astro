@@ -33,12 +33,18 @@ if (!importer) {
 const { default: resolved } = await importer();
 ---
 
+<!-- A CSS custom property is not a valid length in a `sizes` media
+     condition, so this element's middle clause used to be unparseable and
+     the browser fell back on the last one at every width above 720px
+     (2026-09-06 audit, F-054, found while removing the inert `sizes`
+     attributes elsewhere). --container-listing clamps at 1180px, which is
+     the literal the clause meant. -->
 <figure class="dp-cr-hero-photo">
   <Image
     src={resolved}
     alt={alt}
     widths={[480, 720, 1080, 1440, 1800]}
-    sizes="(max-width: 720px) 100vw, (max-width: var(--container-listing)) 100vw, 1180px"
+    sizes="(max-width: 720px) 100vw, (max-width: 1180px) 100vw, 1180px"
     loading="eager"
     decoding="async"
     class="dp-cr-hero-photo-img"

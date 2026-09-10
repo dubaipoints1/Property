@@ -539,7 +539,10 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dpsc-best-eyebrow {
   font-size: 10px; font-weight: 700;
   letter-spacing: 2px; text-transform: uppercase;
-  color: var(--gold);
+  /* --gold is 3.1:1 on paper, which 10px text does not get away with.
+     Fix sprint 1 introduced --gold-ink for exactly this and swapped the
+     labels it had found; this one was missed (2026-09-06 audit, F-004). */
+  color: var(--gold-ink);
   margin: 0 0 6px;
 }
 .dpsc-best h2 {
@@ -1160,6 +1163,14 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
+/* Below 480px the 2-up grid leaves each tile about 85px of text column
+   once the page gutter and the tile's own 24px padding are taken out, so
+   a 19px Fraunces title wraps to three or four lines and the corner arrow
+   crowds the last one (2026-09-06 audit, F-055). One column at that
+   width; seams follow below. */
+@media (max-width: 479px) {
+  .dp-tool-strip { grid-template-columns: 1fr; }
+}
 @media (min-width: 900px) {
   .dp-tool-strip { grid-template-columns: repeat(4, 1fr); }
 }
@@ -1209,6 +1220,12 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
    stray hairline atop cell 2 and no vertical seam at all (UX 5.5). */
 .dp-tool-strip.is-boxed .dp-tool:nth-child(even) { border-left: 1px solid var(--line); }
 .dp-tool-strip.is-boxed .dp-tool:nth-child(n+3) { border-top: 1px solid var(--line); }
+/* Single column: one horizontal seam between every pair, no vertical one. */
+@media (max-width: 479px) {
+  .dp-tool-strip.is-boxed .dp-tool:nth-child(even) { border-left: 0; }
+  .dp-tool-strip.is-boxed .dp-tool + .dp-tool { border-top: 1px solid var(--line); }
+  .dp-tool-strip.is-boxed .dp-tool { padding: 20px 20px 18px; }
+}
 @media (min-width: 900px) {
   .dp-tool-strip.is-boxed .dp-tool:nth-child(n+3) { border-top: 0; }
   .dp-tool-strip.is-boxed .dp-tool + .dp-tool { border-left: 1px solid var(--line); }

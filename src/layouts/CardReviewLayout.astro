@@ -272,7 +272,6 @@ const schema = {
           coverSize="med"
           class="dp-cr-photo-img"
           loading="eager"
-          sizes="(max-width: 720px) 100vw, 360px"
         />
         <figcaption class="dp-cr-photo-cap">
           <span class="b">{bankName}</span>
@@ -479,7 +478,6 @@ const schema = {
               coverTitle={c.name}
               coverCategory="Review"
               coverSize="med"
-              sizes="(max-width: 900px) 100vw, 33vw"
             />
             <div class="body">
               <span class="cat">{relatedBankName(c.bank)} · {c.categories?.[0] ?? "Cards"}</span>

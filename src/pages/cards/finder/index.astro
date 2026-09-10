@@ -108,6 +108,37 @@ const FEE_OPTIONS: Array<{ value: string; label: string }> = [
 // The inline script reorders on page-load based on URL params.
 const initialOrder = cardsWithBanks;
 
+// The grid used to paint all 58 tiles and then have the inline script hide
+// all but six about 160 ms later, collapsing the page by tens of rows:
+// CLS 0.248 at 1280px (2026-09-06 audit, F-027). It measures 0 at 390px,
+// where the single-column grid puts the hidden rows below the fold, which
+// is why a mobile-only check misses it.
+//
+// So the six the script will choose on a bare /cards/finder/ are marked
+// here and the rest start hidden. With no query string the default filter
+// keeps every card still open to new applicants and the default score
+// reduces to the "everything else" earn rate — spend "general" reads that
+// rate and prefer "none" adds no bonus — with annual fee as the
+// tie-break, exactly as score() and apply() do in the inline script
+// below. Change one, change the other; the assertion in
+// tests/cards/finder-default-six.test.ts fails if they drift.
+const defaultTopSlugs = cardsWithBanks
+  .filter(({ card }) => card.discontinuedForNewApplicants === undefined)
+  .map(({ card }) => ({
+    slug: card.slug,
+    score: card.earnRates.everythingElse ?? 0,
+    annualFee: card.annualFee.amount,
+  }))
+  .sort((a, b) => (b.score !== a.score ? b.score - a.score : a.annualFee - b.annualFee))
+  .slice(0, 6)
+  .map((c) => c.slug);
+
+// The rank matters as much as the set. Tiles stay in min-salary DOM order,
+// so without a server-rendered `order` the six correct tiles still had to
+// be shuffled into rank by the script — six tiles moving between grid
+// cells, and CLS 0.239 of the original 0.248.
+const defaultRank = new Map(defaultTopSlugs.map((slug, i) => [slug, i]));
+
 // "Last refreshed" stamp computed from the newest L2 lastVerified so the
 // stats strip can never go stale (10 June 2026 staleness sweep — the
 // previous hardcoded "20 May 2026" had been overtaken by three L2
@@ -160,7 +191,7 @@ const lastRefreshed = new Date(
         <span class="dp-finder-formwrap-title">Filter cards</span>
         <span class="dp-finder-formwrap-hint">Salary, spend, preference</span>
       </summary>
-      <form method="get" action="/cards/finder/" class="dp-finder-form">
+      <form method="get" action="/cards/finder/" class="dp-finder-form" id="finder-form">
         <fieldset class="dp-finder-fs is-salary">
           <legend>Your monthly salary (AED)</legend>
           <input
@@ -296,9 +327,9 @@ const lastRefreshed = new Date(
       <div class="dp-finder-results-head">
         <h2>Matching cards</h2>
         <p class="count">
-          <strong id="finder-count">{cardsWithBanks.length}</strong> of
+          <strong id="finder-count">{defaultTopSlugs.length}</strong> of
           {cardsWithBanks.length} cards match —
-          <span id="finder-mode">showing all</span>
+          <span id="finder-mode">ranked by best fit (no filters set)</span>
         </p>
       </div>
 
@@ -315,7 +346,12 @@ const lastRefreshed = new Date(
 
       <div class="dp-finder-grid" id="finder-grid">
         {initialOrder.map(({ card }) => (
-          <div class="dp-finder-tile" data-slug={card.slug}>
+          <div
+            class="dp-finder-tile"
+            data-slug={card.slug}
+            hidden={!defaultRank.has(card.slug)}
+            style={defaultRank.has(card.slug) ? `order: ${defaultRank.get(card.slug)};` : undefined}
+          >
             <SpecCard card={card} variant="full" />
           </div>
         ))}
@@ -333,6 +369,17 @@ const lastRefreshed = new Date(
 </BaseLayout>
 
 <script is:inline type="application/json" id="finder-card-index" set:html={JSON.stringify(cardIndex)}></script>
+<script
+  is:inline
+  type="application/json"
+  id="finder-options"
+  set:html={JSON.stringify({
+    spend: SPEND_OPTIONS.map((o) => o.value),
+    prefer: PREFER_OPTIONS.map((o) => o.value),
+    network: NETWORK_OPTIONS.map((o) => o.value),
+    fee: FEE_OPTIONS.map((o) => o.value),
+  })}
+></script>
 
 <script is:inline>
   // ── Client-side ranker — runs on page load and re-reads on form submit.
@@ -348,14 +395,27 @@ const lastRefreshed = new Date(
     var empty = document.getElementById("finder-empty");
     if (!grid || !count || !mode || !empty) return;
 
+    // A query-string value that is not one of the offered options used to
+    // reach the filter unchanged: /cards/finder/?network=visa (lowercase)
+    // matched no card, so the reader saw an empty result set while the
+    // control still read "Any" and nothing on the page explained why.
+    // An unrecognised value now falls back to the default, which is what
+    // the control shows.
+    var optEl = document.getElementById("finder-options");
+    var OPTIONS = JSON.parse((optEl && optEl.textContent) || "{}");
+    function oneOf(name, value, fallback) {
+      var allowed = OPTIONS[name];
+      return allowed && allowed.indexOf(value) >= 0 ? value : fallback;
+    }
+
     function readParams() {
       var p = new URLSearchParams(window.location.search);
       return {
         salary: parseInt(p.get("salary") || "", 10),
-        spend: p.get("spend") || "general",
-        prefer: p.get("prefer") || "none",
-        network: p.get("network") || "any",
-        fee: p.get("fee") || "any",
+        spend: oneOf("spend", p.get("spend") || "general", "general"),
+        prefer: oneOf("prefer", p.get("prefer") || "none", "none"),
+        network: oneOf("network", p.get("network") || "any", "any"),
+        fee: oneOf("fee", p.get("fee") || "any", "any"),
         // Phase 2a.0: default "include invitation-only" = true so a
         // first-time visitor sees the Phase 1 set; "include legacy" =
         // false so discontinued cards are filtered out of the top 6
@@ -473,6 +533,30 @@ const lastRefreshed = new Date(
       }
     }
 
+    // The static build emits the form's default state, so on a shared or
+    // bookmarked URL the results were filtered by the query string while
+    // every control still showed its default — the reader could not see
+    // what was being applied, or change one filter without silently
+    // resetting the rest (2026-09-06 audit, F-039).
+    function syncControls(p) {
+      var form = document.getElementById("finder-form");
+      if (!form) return;
+      var salary = form.querySelector('input[name="salary"]');
+      if (salary) salary.value = isNaN(p.salary) || p.salary <= 0 ? "" : String(p.salary);
+      [["spend", p.spend], ["prefer", p.prefer], ["network", p.network], ["fee", p.fee]]
+        .forEach(function (pair) {
+          var el = form.querySelector(
+            'input[name="' + pair[0] + '"][value="' + pair[1] + '"]',
+          );
+          if (el) el.checked = true;
+        });
+      var invite = form.querySelector('input[name="include_invite_only"]');
+      if (invite) invite.checked = p.includeInviteOnly;
+      var legacy = form.querySelector('input[name="include_legacy"]');
+      if (legacy) legacy.checked = p.includeLegacy;
+    }
+
+    syncControls(readParams());
     apply();
   })();
 </script>
@@ -686,8 +770,14 @@ const lastRefreshed = new Date(
     color: var(--muted);
     line-height: 1.5;
   }
+  /* --link against --muted body text is 1.21:1, so colour alone did not
+     distinguish the disclosure link from the sentence around it (axe
+     link-in-text-block; same class as the newsletter mailto fixed in fix
+     sprint 1). */
   .dp-finder-foot a {
     color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   @media (max-width: 720px) {
