@@ -1831,3 +1831,86 @@ Not in this sprint: F-010 (image derivatives, T3), F-016 (dead citations need a 
 | Guides | 13 of 21 past 90 days (expat-starter set 124 days) — known-open | refresh queue (F-050) |
 | Valuations | baselines 10 Jun cross 90 days on 8 Sep; Q3 promise due 30 Sep | ruling R10 (F-018) |
 | Trust pages | press, tip stamped 9 May | F-058 |
+
+## 16. Fix sprint 3 — 10 September 2026 (four Chairman rulings, and four new findings)
+
+Landed on `claude/website-audit-uiux-k1393i` after PR #350 merged. PR #351.
+
+### 16.1 The four rulings
+
+| Ruling | Findings | What shipped |
+|---|---|---|
+| **R1** palette | F-005, F-006 | Value bar is a three-step sequential navy ramp with a gold fee segment; tracker accents are brand navy; `--mint` retired and renamed `--navy-lift`. Three steps because no card renders more than three reward categories, which lifts worst adjacent OKLab ΔE from 6.0 to 10.8. Also cleared four white-on-green labels below 4.5:1 that axe was still flagging after sprint 1. |
+| **R3** newsletter | F-012, F-042, F-043 | Header CTA does not render until `PUBLIC_BUTTONDOWN_USERNAME` is set; the brief is an ordinary nav row; footer asks for the launch list. Four independent env checks, with two different validation rules, converge on `src/lib/newsletter.ts`. |
+| **R4** calculators | F-021, F-032 | `/calculator/` is the spend-return calculator and gains a header and footer row; it had no nav entry anywhere. |
+| **R10** valuations | F-018 | Floor, Ceiling, Distribution and Δ 90d cut. The page claims **no date** for the ranges; `EDITORIAL.md` records that the date is set there first and the columns return second. |
+
+Charter amendment recording all four: `CLAUDE.md`, 2026-09-10.
+
+**Correction to F-018.** The audit named three empty columns. It was four —
+`delta90` is a dash on all ten rows too.
+
+### 16.2 Ruling-free findings closed
+
+| Finding | What changed | Verified by |
+|---|---|---|
+| F-027 (part) | `/cards/finder/` server-renders the six the script picks, in rank order, instead of painting 58 and hiding 52 about 160 ms later | CLS 0.248 → **0.0001** at 1280; 0.0002 at 768; 0 at 390 |
+| F-039 | Finder controls sync from the query string; an unrecognised value falls back to the default in both the filter and the control | six-case browser check |
+| F-038 | `offerTitle()` strips the bank prefix every offer name repeats; the rank no longer glues to it | 5 unit cases incl. "Citi" vs "Citibank" |
+| F-054 | `sizes` removed from ten call sites — there is no `srcset` anywhere in `src/`, so every one was inert. `HeroImage`'s `sizes` used a CSS custom property in a media condition, which never parsed | built HTML |
+| F-055 | Boxed tool tiles go single-column below 480px; title width 85px → 270px | element capture at 360 |
+| F-004 (part) | One missed 10px `var(--gold)` label on the salary calculator | axe |
+| — | Two axe violations on the finder: 58 card tiles each rendered a labelled `<aside>`, so the page shipped 58 landmarks sharing one label; the disclosure link sat at 1.21:1 against its own sentence | axe 0 |
+| — | `--red`, `--positive`, `--negative` had **no dark values at all** and failed contrast in dark mode at 3.3:1 and 2.6:1. The "Great card if" eyebrow used `--positive` as copy, which that token's own definition reserves to the ProsCons icons | axe dark 0 |
+
+### 16.3 Four new findings, from the kredit.ae teardown
+
+Filed in full at
+`.council/research/2026-09/kredit-ae-teardown-2026-09-10.md` §4. The
+teardown's value was not the competitor's content; it was these.
+
+| # | Severity | Finding |
+|---|---|---|
+| **F-073** | **P0** | `/calculator/` published reward figures up to **100× too high** — "48,300 % cashback ≈ AED 48,300" a month on AED 7,800 of spend. `earnRates` is a bare number and `earnUnit` is prose, so four incompatible denominators (percent, per AED 1, per AED 10, per USD 1) were all multiplied by spend alike. Same class as F-002: a false financial figure served to readers. |
+| **F-074** | P1 | The calculator's private valuation table contradicted `/valuations/` — a mile at 4 fils against the published 2.0, hotel points at 0.8 against Bonvoy's 2.5 — while calling them "conservative" and linking the methodology page. Against Chairman ruling 2 of 12 June 2026. Its regex matched "Voyager Miles" on the word *miles* and priced it as Skywards. |
+| **F-075** | P1 | The `EarnRates` Zod schema declared 9 categories against the 25 `cards.json` carries, and Zod strips undeclared keys — so `partnerBrands` was **silently deleted on 22 cards**, every co-brand review among them, for sixteen weeks. `EarnRateTable` had a comment from 20 May 2026 saying that row existed so the rate "doesn't silently drop from the table". `utilities` (12) and `insurance` (9) went the same way. |
+| **F-076** | P2 | `/cards/compare/?cards=` could never render. The page read `Astro.url.searchParams` in a static build, so the picker returned the same three cards every time and the deck's "the URL is shareable" was untrue. |
+
+All four fixed in the same PR, each with a test that fails on recurrence —
+including a per-card assertion that every card's earn-unit wording parses,
+so an unfamiliar new card fails the suite rather than earning a wrong number
+in silence.
+
+### 16.4 New surfaces
+
+- **Ten head-to-head pages** at `/cards/compare/<a>-vs-<b>/`, curated with a
+  written verdict each, reusing `CardComparison.astro`. Verdicts state no
+  figures — the spec table beneath carries them, so a rate that moves in L2
+  moves on the page. Linked from the compare hub and both cards' reviews.
+- **Three perk pages** at `/cards/perks/`, from `getCardsWithFeature()`,
+  which had zero call sites. Lounge access, golf and travel insurance only;
+  the other eleven perk types cover one to five cards. The eight-card
+  threshold is asserted in both directions.
+
+### 16.5 A correction to my own harness reasoning
+
+While investigating F-027 I hypothesised that the render probe's CLS figure
+was an artefact of its viewport-resize loop, wrote a fix and a test for it,
+and was wrong: metrics are collected before the loop runs. The 0.248 was
+real, at desktop widths only. The change was reverted before commit. Noted
+because the finding survived and the explanation did not.
+
+### 16.6 Still open after this sprint
+
+Six rulings remain unmade — **R2** (F-033, F-052), **R5** (F-030), **R6**
+(F-035), **R7** (F-041), **R8** (F-060), **R9** (F-047). Beyond them:
+F-027's filtered-URL half and its 3,582 DOM nodes; F-026, which needs the
+probe to model WCAG 2.2 SC 2.5.8's spacing exemption before its count means
+anything — what remains is dominated by inline text links at line height;
+F-016's remaining citations (`etihad.com/en-ae/offers` was re-verified live
+on 10 September and its Actions failure was a bot wall; one archived RAKBANK
+`sourceUrl` still points at a moved page); F-034's 116 over-length titles and
+65 over-length descriptions, which are editorial copy and were deliberately
+not machine-rewritten; F-050's guide refresh queue; and the news cadence gap
+— no story filed since 22 August against desk ceilings of two to three
+airline and one to two hotel stories a week.
