@@ -26,6 +26,7 @@
 //   - Welcome bonus highlighted via `--green` token (Charter §"two-accent
 //     system"); annual fee uses `--ink`. No new colour utilities.
 
+import { PERK_PAGES } from "~/data/perkPages";
 import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
@@ -54,11 +55,20 @@ const compareList = cards.slice(2);
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
+// The perk rows come from PERK_PAGES rather than being written out here, so
+// adding a perk page cannot leave it unlinked — which is how eight
+// salary-transfer bank pages ended up with no inbound link at all
+// (2026-09-06 audit, F-013).
 const filters = [
   { label: "All cards", active: true, href: "/cards/" },
   { label: "Miles", active: false, href: "/cards/miles/" },
   { label: "Cashback", active: false, href: "/cards/cashback/" },
   { label: "Islamic", active: false, href: "/cards/islamic/" },
+  ...PERK_PAGES.map((perk) => ({
+    label: perk.detailColumn,
+    active: false,
+    href: `/cards/perks/${perk.slug}/`,
+  })),
   { label: "Compare", active: false, href: "/cards/compare/" },
 ];
 

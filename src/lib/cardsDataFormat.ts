@@ -657,7 +657,7 @@ interface LoungeFeature {
   scope: "unlimited" | "limited" | { visits_per_year: number };
 }
 
-function loungeFeatureOf(card: CardForComparison): LoungeFeature | null {
+export function loungeFeatureOf(card: CardForComparison): LoungeFeature | null {
   const features = card._features ?? [];
   for (const f of features) {
     if ((f as { type?: string }).type === "lounge_access") {
@@ -667,7 +667,7 @@ function loungeFeatureOf(card: CardForComparison): LoungeFeature | null {
   return null;
 }
 
-function loungeDisplay(f: LoungeFeature | null): string {
+export function loungeDisplay(f: LoungeFeature | null): string {
   if (!f) return "None";
   if (f.scope === "unlimited") return `${f.network} — unlimited`;
   if (f.scope === "limited") return `${f.network} — visits capped`;
