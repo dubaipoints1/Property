@@ -13,16 +13,23 @@
 //   S4  Fresh from the desk — big heading, search, uniform 3-up
 //   S5  Strategy panel — navy band, underline tabs (.dp-strategy.is-navy)
 //   S6  Start here — .dp-dir-tile directory
-//   S7  Trust row + press + gold newsletter band
+//   S7  Trust row + press + navy newsletter band
 //
 // Aug 2026 v0-design amendment (Chairman direction, 29 Aug, from the
 // owner's v0 screenshots): the page adopts the prototype's composition —
 // the boxes (icon tool tiles, boxed live desk, overlay play-card, square
-// CTAs) and the band flow (paper → sand → paper → navy → gold) — rebuilt
-// in house tokens. The italic display accent returns and the gold
-// newsletter band is a deliberate one-page exception to gold's chip-only
-// role, both by the same direction. Supersedes the TPG typographic-only
-// hero; palette unchanged (navy + gold, no third hue).
+// CTAs) and the band flow — rebuilt in house tokens. The italic display
+// accent returns by the same direction. Supersedes the TPG
+// typographic-only hero; palette unchanged (navy + gold, no third hue).
+//
+// The 29 Aug direction also made the closing newsletter band a full-bleed
+// GOLD one, as a deliberate one-page exception to gold's chip-only role.
+// That exception was withdrawn on 7 September 2026 — the Chairman's words
+// were "this colour doesn't go with the rest of the page" — and the band is
+// the brand navy the article newsletter rail already uses. The band flow is
+// now paper → sand → paper → navy → navy. This header kept describing the
+// gold version for three days after the CSS changed; corrected 10 September
+// alongside the R1 palette work, which is the same class of drift.
 //
 // Shared primitives over scoped CSS wherever one exists (.dp-pagehead,
 // .dp-featured-band/-grid, .dp-story-card, .dp-dir-grid/-tile,
@@ -654,7 +661,7 @@ const dealRows = await Promise.all(
 
   <PressStrip />
 
-  <section class="hp-news is-gold" aria-label="Newsletter">
+  <section class="hp-news is-navy" aria-label="Newsletter">
     <div class="inner">
       <div class="hp-news-text">
         <span class="hp-news-eyebrow">A little useful, every Friday</span>
@@ -958,13 +965,15 @@ const dealRows = await Promise.all(
   }
   .hp-trust-footnote a { color: var(--green); }
 
-  /* ── S7 newsletter — gold accent band (v0 coral-band analog) ───────── */
+  /* ── S7 newsletter — navy closing band ─────────────────────────────── */
   /* Closing newsletter band. Shipped 29 Aug as a full-bleed gold band (the
      v0 design's "full stop"); on Chairman direction, 7 Sep 2026, it moves to
      the brand navy the article newsletter rail already uses, so gold goes
-     back to its single job (chips, rules, the Verified badge). The class
-     name is kept so nothing else needs to change. */
-  .hp-news.is-gold {
+     back to its single job (chips, rules, the Verified badge).
+     The class was left named `is-gold` at the time "so nothing else needs to
+     change"; renamed to `is-navy` on 10 September because a class that names
+     the wrong colour is the same drift R1 removed from `--mint` that day. */
+  .hp-news.is-navy {
     background: #1f3a4d;
     padding: 56px 32px 52px;
   }
@@ -1027,6 +1036,6 @@ const dealRows = await Promise.all(
     .hp-tools { padding: 36px 24px 44px; }
     .hp-fresh { padding-top: 32px; }
     .hp-dir, .hp-trust { padding: 28px 24px 8px; }
-    .hp-news.is-gold { padding: 44px 24px 40px; }
+    .hp-news.is-navy { padding: 44px 24px 40px; }
   }
 </style>
