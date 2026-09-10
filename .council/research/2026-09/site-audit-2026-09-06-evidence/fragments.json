@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "checked": 576,
+  "broken": [
+    {
+      "file": "cards/liv-cashback/index.html",
+      "href": "#cashback-vs-cashback-plus",
+      "targetFile": "cards/liv-cashback/index.html",
+      "fragment": "cashback-vs-cashback-plus"
+    }
+  ],
+  "missingTargets": [],
+  "forms": {
+    "missing": [],
+    "warnings": [
+      {
+        "file": "airlines/index.html",
+        "action": "/",
+        "method": "get",
+        "note": "GET form posts its query to the homepage, which ignores it"
+      },
+      {
+        "file": "banks/index.html",
+        "action": "/",
+        "method": "get",
+        "note": "GET form posts its query to the homepage, which ignores it"
+      },
+      {
+        "file": "deals/index.html",
+        "action": "/",
+        "method": "get",
+        "note": "GET form posts its query to the homepage, which ignores it"
+      },
+      {
+        "file": "guides/index.html",
+        "action": "/",
+        "method": "get",
+        "note": "GET form posts its query to the homepage, which ignores it"
+      },
+      {
+        "file": "news/airlines/index.html",
+        "action": "/",
+        "method": "get",
+        "note": "GET form posts its query to the homepage, which ignores it"
+      },
+      {
+        "file": "news/banking/index.html",
+        "action": "/",
+        "method": "get",
+        "note": "GET form posts its query to the homepage, which ignores it"
+      },
+      {
+        "file": "news/hotels/index.html",
+        "action": "/",
+        "method": "get",
+        "note": "GET form posts its query to the homepage, which ignores it"
+      },
+      {
+        "file": "news/index.html",
+        "action": "/",
+        "method": "get",
+        "note": "GET form posts its query to the homepage, which ignores it"
+      }
+    ]
+  }
+}

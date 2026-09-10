@@ -232,6 +232,26 @@ npm run scrape:propose # merges latest data/scraped/<bank>/*.json into src/data/
 
 Run a single test file: `node --import tsx --test tests/scrape/_normaliser.test.ts`.
 
+## Audit harness (opt-in)
+
+Reproducible UI/UX, accessibility, performance and link probes live under
+`scripts/audit/` and `scripts/ci/check-{fragments,external-links}.mjs`, added
+as the recurrence guard for the 2026-09-06 site-wide audit
+(`.council/research/2026-09/site-audit-uiux-2026-09-06.md`). They are
+**opt-in** — `npm run audit:render`, `audit:lighthouse`,
+`audit:links:fragments`, `audit:static`, `audit:links:external`,
+`audit:all` — and are deliberately not wired into `build`, `postbuild` or
+`pr-checks`. Outputs go to the gitignored `audit-output/`; curated JSON for a
+filed audit is copied to `.council/research/<month>/<audit>-evidence/`. The
+external-link sweep only tells the truth from GitHub Actions
+(`.github/workflows/link-audit.yml`, Monday cron + dispatch, never writes to
+the repo) because the web sandbox's egress allowlist blocks nearly every
+issuer host. `playwright` is pinned exactly (1.56.1) because its bundled
+Chromium build 1194 is the one pre-installed in the web session; `DP_CHROME_PATH`
+overrides. `public/_headers` is still a recommendation printed by
+`audit:static`, not a file — adding it is a T3 production change. See
+`scripts/audit/README.md`.
+
 ## Architecture — the three-layer card model
 
 The card system is the most non-obvious thing in the repo. Cards live
@@ -460,10 +480,16 @@ read credentials at container boot.
 > Status (2026-06-11): **verified.** Hobby plan subscribed. GitHub
 > Actions secret provisioned. MCP server token in Claude Code on the
 > web environment confirmed working — live `firecrawl_scrape` of
-> headforpoints.com returned 200 on 11 June 2026. Note: the MCP tools
-> are available to the **main session only**; sub-agents (including
-> Head of Research) do not inherit them, so Firecrawl work must run
-> in the orchestrating session or via the GitHub Actions channel.
+> headforpoints.com returned 200 on 11 June 2026. Note (superseded, see
+> below): the MCP tools were observed available to the **main session
+> only**; sub-agents did not inherit them.
+>
+> Correction (2026-09-06 audit): Workflow/Agent sub-agents **can** now
+> call the Firecrawl MCP tools — a sub-agent probe scraped `/about/` for
+> 1 credit in-session. Charter §2 (Firecrawl is the Research arm's) is a
+> role rule, not a runtime limit; a sub-agent acting for Head of Research
+> may hold it. The 60-second MCP transport timeout still applies per call,
+> so long crawls are chunked (≤ 25 pages) or run through Actions.
 
 ## Imagery pipeline
 
@@ -700,6 +726,76 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-09-10 — Four audit rulings (R1 palette, R3 newsletter, R4 calculators, R10 valuations)
+
+On site-owner/Chairman direction (10 September 2026), four of the ten
+decision questions the 6–7 September site audit framed
+(`.council/research/2026-09/site-audit-uiux-2026-09-06.md` §10) are ruled.
+The remaining six (R2, R5–R9) stay open.
+
+**R1 — the no-third-hue rule is applied, not exempted (audit F-005, F-006).**
+The AED value-breakdown bar shipped a five-step green ramp and a
+red-clay fee segment; the salary-transfer tracker shipped a mint and
+green accent family. Both argued, in their own comments, that these were
+"functional chart colours, not brand chrome" and so sat outside the
+2026-07-25 rule. That argument is rejected. Charts are not a hue-free
+zone: the ramp is now a single-hue sequential **navy** ramp, the fee
+segment is **gold**, and the tracker's accents are the brand navy. The
+`--mint` token, a third hue in the light palette, is retired and renamed
+`--navy-lift` at the value the dark palette has used since the
+2026-07-25 amendment replaced its teal — renamed rather than re-pointed
+so it does not repeat the `--green` naming problem the 2026-05-16
+amendment had to live with.
+
+Two things this ruling deliberately does not do. It does not create a
+data-visualisation exemption; a future chart needing more than two hue
+families returns for its own ruling. And it does not touch **status**
+signals — the tracker's urgent and warning colours are state, not brand
+accent, and stay outside the two-accent system on the same footing as
+error states. That reading was the session's; the Chairman may overrule
+it.
+
+The change also fixes an accessibility defect the hue question was
+hiding: four of the five green ramp steps carried white labels below
+4.5:1, which is what axe was still flagging on card reviews after fix
+sprint 1. Every navy step clears 4.65:1.
+
+**R3 — the newsletter CTA is demoted until the list exists (F-012,
+F-042, F-043).** "Join brief" occupied the header's primary action slot,
+the mobile overlay's first row, the footer and the homepage band while
+the newsletter page said three times that sign-up was not enabled. Until
+`PUBLIC_BUTTONDOWN_USERNAME` is set the header CTA does not render, the
+brief is an ordinary nav row, and the footer asks readers to join the
+**launch list**, which is the thing that actually exists. Setting the
+environment variable restores every label with no code change. The four
+places that each tested that variable independently — and not with the
+same rule, so a value with a space in it made the homepage announce a
+live list while the form stayed disabled — now share `src/lib/newsletter.ts`.
+
+**R4 — the two calculators stay separate and both get named (F-021,
+F-032).** `/calculator/` is the **spend-return calculator** and gains a
+header tools row and a footer row; it previously had no navigation entry
+anywhere and was reachable only from one homepage tile.
+`/salary-transfer/calculator/` remains the **salary-transfer
+calculator**. No merge, no redirect.
+
+**R10 — the empty valuations columns are cut (F-018).** `/valuations/`
+published Floor, Ceiling, Distribution and Δ 90d as a dash on every one
+of ten rows, under a printed promise that the ranges would "land with
+the methodology page, Q3 2026". Eleven days remained in Q3 and no
+sampling had been done. The columns are removed; DP value and Status
+stay, both of which are real. The page now states plainly that ranges
+are not published and **claims no date for them** — the audit asked for
+the promise to be re-dated, and a date invented by the session would be
+the same defect again. Setting that date is the Chairman's, and
+`EDITORIAL.md` now says the date goes there first and the columns come
+back second, never the other way round.
+
+For the record, the audit undercounted this finding: it named three
+empty columns. It was four — `delta90` is a dash on all ten rows too.
+
+— Chairman, 10 September 2026.
 
 ### 2026-08-07 — Council sign-off CI gate made advisory
 

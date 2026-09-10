@@ -27,6 +27,15 @@
 // Photographs are unaffected: the label element only exists for
 // ai-generated entries, so no existing layout gains a node.
 
+// No `sizes` attribute, deliberately. It used to be a prop and four call
+// sites passed one, but the manifest holds a single file per slug and
+// these are raw <img src> from public/ rather than astro:assets, so there
+// was never a `srcset` for `sizes` to choose from — the browser ignored
+// it and the markup claimed responsive behaviour the page did not have
+// (2026-09-06 audit, F-054). It comes back with the derivative pipeline,
+// which is F-010 and a T3 change; adding the attribute again before then
+// would restore the lie, not the behaviour.
+
 import { getStockEntry } from "../lib/stockManifest";
 import Cover from "./Cover.astro";
 
@@ -37,7 +46,6 @@ interface Props {
   coverSize?: "hero" | "med" | "sm" | "thumb";
   class?: string;
   loading?: "eager" | "lazy";
-  sizes?: string;
 }
 
 const {
@@ -47,7 +55,6 @@ const {
   coverSize = "med",
   class: className,
   loading = "lazy",
-  sizes,
 } = Astro.props;
 
 const entry = getStockEntry(slug);
@@ -71,7 +78,6 @@ const isEditorial = entry?.source === "editorial";
         loading={loading}
         fetchpriority={loading === "eager" ? "high" : "low"}
         decoding="async"
-        sizes={sizes}
         class={className}
         data-stock-slug={entry.slug}
         data-stock-source={entry.source}
@@ -92,7 +98,6 @@ const isEditorial = entry?.source === "editorial";
       loading={loading}
       fetchpriority={loading === "eager" ? "high" : "low"}
       decoding="async"
-      sizes={sizes}
       class={className}
       data-stock-slug={entry.slug}
       data-stock-source={entry.source}

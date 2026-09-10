@@ -7,17 +7,28 @@ import ThemeToggle from "~/components/ThemeToggle.astro";
 import { dpValueSub } from "~/lib/valuations";
 
 const currentPath = Astro.url.pathname;
+import { newsletterLive, newsletterNavLabel } from "~/lib/newsletter";
+
 const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 
 // Flat rows for the mobile overlay. Cards / Points + Miles / Travel are
 // expandable accordions and Banks is a standalone row, all rendered
 // inline in the overlay body — they do not belong in this list.
+// Chairman ruling R3, 10 September 2026 (audit F-012 / F-042 / F-043):
+// until the list accepts sign-ups the brief is a nav row like any other,
+// not the overlay's leading call to action. Setting the Buttondown
+// environment variable puts it back at the top with its CTA styling.
 const mobileTop = [
-  { href: "/newsletter/", label: "Join brief", subscribe: true },
+  ...(newsletterLive
+    ? [{ href: "/newsletter/", label: newsletterNavLabel, subscribe: true }]
+    : []),
   { href: "/deals/",      label: "Deals" },
   { href: "/guides/",     label: "Guides" },
   { href: "/news/",       label: "News" },
+  ...(newsletterLive
+    ? []
+    : [{ href: "/newsletter/", label: newsletterNavLabel }]),
 ];
 
 type SubRow = { label: string; href: string; sub?: string };
@@ -31,7 +42,6 @@ const cardsPanel: Group[] = [
     { label: "Best Islamic (Sharia) cards", href: "/cards/islamic/" },
     { label: "Cards by your salary",    href: "/cards/salary/", sub: "AED 5k to 30k+" },
     { label: "Card finder",             href: "/cards/finder/", sub: "Match a card to your spend" },
-    { label: "All cards",               href: "/cards/" },
   ]},
   { title: "By bank issuer", rows: [
     { label: "FAB cards",                 href: "/banks/fab/" },
@@ -45,13 +55,13 @@ const cardsPanel: Group[] = [
     { label: "Emirates Skywards cards",   href: "/airlines/skywards/" },
     { label: "Etihad Guest cards",        href: "/airlines/etihad-guest/" },
     { label: "Marriott Bonvoy cards",     href: "/airlines/marriott-bonvoy/" },
-    { label: "All co-branded cards",      href: "/cards/" },
   ]},
   { title: "Learn about UAE cards", rows: [
     { label: "Beginner's guide",          href: "/guides/expat-starter/" },
     { label: "AECB credit score",         href: "/guides/aecb-credit-report-walkthrough/" },
-    { label: "Salary transfer explained", href: "/salary-transfer/" },
-    { label: "Card reviews methodology",  href: "/editorial-policy/" },
+    { label: "Salary-transfer tracker",   href: "/salary-transfer/" },
+    { label: "Cards with lounge access",  href: "/cards/perks/lounge-access/" },
+    { label: "How we score cards",        href: "/editorial-policy/how-we-score/" },
   ]},
 ];
 
@@ -61,7 +71,6 @@ const pointsPanel: Group[] = [
     { label: "FAB Rewards",          href: "/banks/fab/" },
     { label: "ADCB TouchPoints",     href: "/banks/adcb/" },
     { label: "RAKBANK Rewards",      href: "/banks/rakbank/" },
-    { label: "All bank programmes",  href: "/banks/" },
   ]},
   { title: "Airline programmes", rows: [
     { label: "Emirates Skywards",      href: "/airlines/skywards/", sub: dpValueSub("skywards") },
@@ -73,12 +82,11 @@ const pointsPanel: Group[] = [
     { label: "Marriott Bonvoy",      href: "/airlines/marriott-bonvoy/", sub: dpValueSub("marriott-bonvoy") },
     { label: "Hilton Honors",        href: "/airlines/hilton-honors/", sub: dpValueSub("hilton-honors") },
     { label: "Accor ALL",            href: "/airlines/accor-all/" },
-    { label: "All hotel programmes", href: "/airlines/", sub: "In the programme directory" },
   ]},
   { title: "Learn", rows: [
     { label: "Beginner's guide to UAE points", href: "/guides/expat-starter-points-101/" },
-    { label: "DP valuations methodology",       href: "/valuations/" },
-    { label: "Salary-offer calculator",         href: "/salary-transfer/calculator/" },
+    { label: "Points & miles valuations",       href: "/valuations/" },
+    { label: "Salary-transfer calculator",      href: "/salary-transfer/calculator/" },
     { label: "Transfer-partner cheatsheet",     href: "/guides/uae-transfer-ratios-2026/" },
   ]},
 ];
@@ -91,17 +99,18 @@ const pointsPanel: Group[] = [
 // "Hotel reviews", "UAE staycations", and the whole "Routes &
 // destinations" group — those rows previously dumped readers into
 // /airlines/ or /deals/ and promised sections the site doesn't have.
+// 2026-09-06 audit (F-029): the panel carried seven rows for four pages —
+// two "All … stories" duplicates of the desk rows, a deals row whose
+// sub-label promised a travel filter that does not exist, and an apology
+// sub-label on the programme row. Four rows, four destinations.
 const travelPanel: Group[] = [
   { title: "Airlines", rows: [
     { label: "Airline news",        href: "/news/airlines/" },
     { label: "Airline programmes",  href: "/airlines/" },
-    { label: "Airline deals",       href: "/deals/", sub: "From DXB / AUH / SHJ" },
-    { label: "All airline stories", href: "/news/airlines/" },
   ]},
   { title: "Hotels", rows: [
     { label: "Hotel news",        href: "/news/hotels/" },
-    { label: "Hotel programmes",  href: "/airlines/", sub: "In the programme directory" },
-    { label: "All hotel stories", href: "/news/hotels/" },
+    { label: "Hotel programmes",  href: "/airlines/" },
   ]},
 ];
 
@@ -109,7 +118,16 @@ const toolRows: SubRow[] = [
   { label: "Salary-transfer tracker", href: "/salary-transfer/", sub: "Sources watched weekly" },
   { label: "Points & miles valuations", href: "/valuations/", sub: "DP value" },
   { label: "Card compare", href: "/cards/compare/", sub: "Side-by-side specs" },
-  { label: "Salary-offer calculator", href: "/salary-transfer/calculator/" },
+  { label: "Salary-transfer calculator", href: "/salary-transfer/calculator/" },
+  // Chairman ruling R4, 10 September 2026 (audit F-021 / F-032): the two
+  // calculators stay separate and each gets its own name and its own way in.
+  // /calculator/ had no nav slot anywhere and was reachable only from the
+  // homepage tools tile.
+  { label: "Spend-return calculator", href: "/calculator/", sub: "Which card pays back most" },
+  // 10 September 2026, kredit.ae teardown round two: the cost side of the
+  // ledger and the fee aggregates, both computed from L2.
+  { label: "Interest & payoff calculator", href: "/calculator/interest/", sub: "What a carried balance costs" },
+  { label: "Card fee index", href: "/cards/fees/", sub: "Annual and FX fees across the set" },
 ];
 
 const publicationRows: SubRow[] = [
@@ -125,11 +143,11 @@ const publicationRows: SubRow[] = [
 
 <input type="checkbox" id="dp-nav-toggle" class="dp-nav-toggle" aria-hidden="true" tabindex="-1" />
 
-<div class="dp-header" data-pagefind-ignore>
+<header class="dp-header" data-pagefind-ignore>
   <div class="dp-header-inner">
     <!-- Hamburger -->
     <label for="dp-nav-toggle" class="dp-icon-btn dp-mobile-only" role="button"
-           tabindex="0" aria-label="Open menu" aria-controls="dp-nav-overlay">
+           tabindex="0" aria-label="Open menu" aria-controls="dp-nav-overlay" aria-expanded="false">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
         <line x1="4" y1="7" x2="20" y2="7" />
@@ -158,7 +176,7 @@ const publicationRows: SubRow[] = [
           Credit cards
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </a>
-        <div class="dp-megapanel" role="region" aria-label="Cards menu">
+        <div class="dp-megapanel" role="region" aria-label="Cards menu" data-nosnippet>
           <div class="dp-megapanel-inner">
             {cardsPanel.map((g) => (
               <div class="dp-mega-grp">
@@ -182,7 +200,7 @@ const publicationRows: SubRow[] = [
           Earn miles
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </a>
-        <div class="dp-megapanel" role="region" aria-label="Earn miles menu">
+        <div class="dp-megapanel" role="region" aria-label="Earn miles menu" data-nosnippet>
           <div class="dp-megapanel-inner">
             {pointsPanel.map((g) => (
               <div class="dp-mega-grp">
@@ -221,7 +239,9 @@ const publicationRows: SubRow[] = [
         <span class="dp-search-pill-text" aria-hidden="true">Search cards, guides…</span>
       </a>
       <ThemeToggle />
-      <a href="/newsletter/" class="dp-header-subscribe">Join brief</a>
+      {newsletterLive && (
+        <a href="/newsletter/" class="dp-header-subscribe">{newsletterNavLabel}</a>
+      )}
     </div>
 
     <!-- Mobile search -->
@@ -235,23 +255,23 @@ const publicationRows: SubRow[] = [
   </div>
 
   <!-- Quick-links strip -->
-  <div class="dp-tracker-strip">
+  <nav class="dp-tracker-strip" aria-label="Quick links" data-nosnippet>
     <div class="dp-tracker-strip-inner">
       <a href="/salary-transfer/" class="dp-quicklink">Salary offers</a>
       <span class="dp-quicklink-sep" aria-hidden="true">·</span>
-      <a href="/cards/" class="dp-quicklink">Card deals</a>
+      <a href="/deals/" class="dp-quicklink">Card deals</a>
       <span class="dp-quicklink-sep" aria-hidden="true">·</span>
       <a href="/news/" class="dp-quicklink">Latest news</a>
     </div>
-  </div>
-</div>
+  </nav>
+</header>
 
 <!-- Mobile overlay -->
 <label for="dp-nav-toggle" class="dp-nav-backdrop" aria-hidden="true"></label>
 
 <aside id="dp-nav-overlay" class="dp-nav-overlay" aria-label="Site navigation">
   <div class="dp-nav-overlay-head">
-    <label for="dp-nav-toggle" class="dp-icon-btn" role="button" tabindex="0" aria-label="Close menu">
+    <label for="dp-nav-toggle" class="dp-icon-btn" role="button" tabindex="0" aria-label="Close menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
            stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
         <line x1="6" y1="6" x2="18" y2="18" />
@@ -378,11 +398,36 @@ const publicationRows: SubRow[] = [
     </div>
 
     <div class="dp-nav-foot">
-      <span>EN · العربية</span>
       <span>© {new Date().getFullYear()} DubaiPoints</span>
     </div>
   </nav>
 </aside>
+
+<script is:inline>
+  // The menu is CSS-only (a <label> for a hidden checkbox), so Enter, Space
+  // and Escape did nothing on any route (2026-09-06 audit, F-007). Labels
+  // do not activate on keydown; this mirrors the click for keyboard users
+  // and keeps aria-expanded honest on both toggles.
+  (() => {
+    const toggle = document.getElementById("dp-nav-toggle");
+    if (!toggle) return;
+    const labels = Array.from(document.querySelectorAll('label[for="dp-nav-toggle"][role="button"]'));
+    const sync = () => labels.forEach((l) => l.setAttribute("aria-expanded", String(toggle.checked)));
+    const set = (on) => { toggle.checked = on; sync(); };
+    toggle.addEventListener("change", sync);
+    labels.forEach((l) => l.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); set(!toggle.checked); }
+    }));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && toggle.checked) {
+        set(false);
+        const opener = labels.find((l) => l.classList.contains("dp-mobile-only"));
+        if (opener) opener.focus();
+      }
+    });
+    sync();
+  })();
+</script>
 
 <style>
 /* ════════════════════════════════════════════════════════════════════════
@@ -490,6 +535,14 @@ const publicationRows: SubRow[] = [
 }
 @media (min-width: 1440px) {
   .dp-tracker-strip-inner { gap: 22px; letter-spacing: 2px; }
+}
+/* The links themselves were 17px tall inside a 34px strip — the smallest
+   tap targets in the chrome (2026-09-06 audit, F-026). Fill the strip. */
+.dp-quicklink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 4px;
 }
 
 /* Only scroll strip when content actually overflows */
@@ -626,7 +679,7 @@ const publicationRows: SubRow[] = [
   }
   .dp-mega-sub {
     display: flex; flex-direction: column; gap: 2px;
-    padding: 8px 0;
+    padding: 10px 0; /* ≥ 36px rows — 2026-09-06 audit, F-026 */
     text-decoration: none;
     border-bottom: 1px solid var(--line-soft);
     transition: background 0.1s ease;
@@ -689,6 +742,8 @@ const publicationRows: SubRow[] = [
     height: 36px;
     padding: 0 16px;
     margin-left: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
     background: var(--ink);
     color: #fff;
     border-radius: 999px;
@@ -801,7 +856,7 @@ const publicationRows: SubRow[] = [
   display: inline-block;
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--mint);
+  background: var(--navy-lift);
   margin-right: 8px;
   flex-shrink: 0;
 }

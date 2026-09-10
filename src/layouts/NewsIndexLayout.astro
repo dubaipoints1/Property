@@ -115,7 +115,7 @@ const feedLabel = activeDesk === "all" ? "DubaiPoints" : `DubaiPoints — ${head
           </svg>
           RSS
         </a>
-        <form class="intel-search" action="/" method="get" role="search">
+        <form class="intel-search" action="/search/" method="get" role="search">
           <label class="intel-search-label" for={searchInputId}>Search</label>
           {/* Visible magnifier — sits inside the pill so taps on it
               focus the input (F-UX-4 mobile collapse). At <480px the
@@ -139,7 +139,7 @@ const feedLabel = activeDesk === "all" ? "DubaiPoints" : `DubaiPoints — ${head
   </header>
 
   <div class="intel-grid">
-    <main class="intel-main">
+    <div class="intel-main">
       {posts.length === 0 ? (
         <section class="news-empty">
           <slot name="empty" />
@@ -155,7 +155,6 @@ const feedLabel = activeDesk === "all" ? "DubaiPoints" : `DubaiPoints — ${head
                 coverSize="hero"
                 class="intel-featured-image"
                 loading="eager"
-                sizes="(max-width: 900px) 100vw, 66vw"
               />
               <div class="intel-featured-body">
                 <span class="intel-featured-eyebrow">{formatCategory(featured.data.category)}</span>
@@ -179,7 +178,6 @@ const feedLabel = activeDesk === "all" ? "DubaiPoints" : `DubaiPoints — ${head
                       coverCategory="News"
                       coverSize="med"
                       class="intel-card-image"
-                      sizes="(max-width: 900px) 100vw, 33vw"
                     />
                     <div class="intel-card-body">
                       <span class="intel-card-cat">{formatCategory(p.data.category)}</span>
@@ -194,7 +192,7 @@ const feedLabel = activeDesk === "all" ? "DubaiPoints" : `DubaiPoints — ${head
           )}
         </>
       )}
-    </main>
+    </div>
 
     <aside class="intel-aside">
       {trending.length > 0 && (
@@ -312,6 +310,7 @@ const feedLabel = activeDesk === "all" ? "DubaiPoints" : `DubaiPoints — ${head
     width: 100%;
   }
   .intel-search input[type="search"]::placeholder { color: var(--muted); }
+  .intel-search input[type="search"]:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
   .intel-search-icon {
     display: none;
     align-items: center; justify-content: center;
@@ -557,6 +556,8 @@ const feedLabel = activeDesk === "all" ? "DubaiPoints" : `DubaiPoints — ${head
   }
   .intel-trending a:hover { color: var(--green); }
 
+  :global([data-theme="dark"]) .intel-insider { background: #1f3a4d; }
+  :global([data-theme="dark"]) .intel-insider .cta { color: #1f3a4d; }
   .intel-insider {
     background: var(--green);
     color: white;

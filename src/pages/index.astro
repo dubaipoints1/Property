@@ -13,16 +13,23 @@
 //   S4  Fresh from the desk — big heading, search, uniform 3-up
 //   S5  Strategy panel — navy band, underline tabs (.dp-strategy.is-navy)
 //   S6  Start here — .dp-dir-tile directory
-//   S7  Trust row + press + gold newsletter band
+//   S7  Trust row + press + navy newsletter band
 //
 // Aug 2026 v0-design amendment (Chairman direction, 29 Aug, from the
 // owner's v0 screenshots): the page adopts the prototype's composition —
 // the boxes (icon tool tiles, boxed live desk, overlay play-card, square
-// CTAs) and the band flow (paper → sand → paper → navy → gold) — rebuilt
-// in house tokens. The italic display accent returns and the gold
-// newsletter band is a deliberate one-page exception to gold's chip-only
-// role, both by the same direction. Supersedes the TPG typographic-only
-// hero; palette unchanged (navy + gold, no third hue).
+// CTAs) and the band flow — rebuilt in house tokens. The italic display
+// accent returns by the same direction. Supersedes the TPG
+// typographic-only hero; palette unchanged (navy + gold, no third hue).
+//
+// The 29 Aug direction also made the closing newsletter band a full-bleed
+// GOLD one, as a deliberate one-page exception to gold's chip-only role.
+// That exception was withdrawn on 7 September 2026 — the Chairman's words
+// were "this colour doesn't go with the rest of the page" — and the band is
+// the brand navy the article newsletter rail already uses. The band flow is
+// now paper → sand → paper → navy → navy. This header kept describing the
+// gold version for three days after the CSS changed; corrected 10 September
+// alongside the R1 palette work, which is the same class of drift.
 //
 // Shared primitives over scoped CSS wherever one exists (.dp-pagehead,
 // .dp-featured-band/-grid, .dp-story-card, .dp-dir-grid/-tile,
@@ -45,6 +52,7 @@ import { getStockEntry } from "~/lib/stockManifest";
 import { getLiveOffers } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
+import { newsletterLive } from "~/lib/newsletter";
 
 const allGuides = await getCollection("guides");
 const allPrograms = await getCollection("programs");
@@ -59,13 +67,6 @@ const fmtShort = (d: Date) =>
 // (Head of UX, 29 Aug 2026 review). Freshness claims stay on the items
 // that actually carry dates.
 
-// Newsletter state — same env flag NewsletterSignup gates its form on.
-// While unset, the hero micro-line and the band headline say honestly
-// that sign-up is by email; once the Buttondown account is configured
-// the launch-pending copy disappears without a code change.
-const newsletterLive = Boolean(
-  (import.meta.env.PUBLIC_BUTTONDOWN_USERNAME ?? "").trim(),
-);
 
 const guidesSorted = [...allGuides].sort(
   (a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime(),
@@ -271,8 +272,8 @@ const goals = [
     tool: {
       href: "/calculator/",
       eyebrow: "Tool",
-      title: "See which welcome offer pays back first",
-      meta: "Welcome-bonus calculator →",
+      title: "See which card pays back most on your monthly spend",
+      meta: "Spend-return calculator →",
     },
   },
   {
@@ -306,6 +307,7 @@ const offerRows = liveOffers.map((o) => {
     bands: o.salaryBands.length,
     sharia: o.sharia,
     verified: fmtVerified(o.lastVerified),
+    ends: fmtShort(new Date(o.validUntil)),
   };
 });
 
@@ -339,7 +341,7 @@ const dealRows = await Promise.all(
     <div class="hp-hero-grid">
       <div class="hp-hero-text">
         <span class="hp-hero-kicker"><span class="dot" aria-hidden="true"></span>Independent UAE points &amp; miles publication</span>
-        <h1>Fly further. <em>Pay&nbsp;less.</em></h1>
+        <h1>Fly further. <em>Pay less.</em></h1>
         <p class="hp-hero-lede">
           UAE-resident guides to the card combinations, salary-transfer
           bonuses and miles redemptions that stretch a Dubai paycheque
@@ -349,12 +351,6 @@ const dealRows = await Promise.all(
           <a href="#tools" class="hp-hero-cta">Start with a tool ↗</a>
           <a href="#latest" class="hp-hero-cta is-ghost">Read the latest →</a>
         </div>
-        {!newsletterLive && (
-          <p class="hp-hero-micro">
-            The Friday brief is preparing for launch — sign-up is by email
-            until the automated list opens.
-          </p>
-        )}
         <p class="hp-hero-trust">
           <span>{cards.length} cards · {allBanks.length} banks</span>
           <span>AED-first</span>
@@ -373,7 +369,6 @@ const dealRows = await Promise.all(
               loading="eager"
               fetchpriority="high"
               decoding="async"
-              sizes="(max-width: 899px) 100vw, 46vw"
             />
           ) : (
             <div class="hp-hero-media-fallback" aria-hidden="true"></div>
@@ -419,15 +414,15 @@ const dealRows = await Promise.all(
         <span class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="2" width="16" height="20" rx="1"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="12" x2="8" y2="12.01"/><line x1="12" y1="12" x2="12" y2="12.01"/><line x1="16" y1="12" x2="16" y2="12.01"/><line x1="8" y1="16" x2="8" y2="16.01"/><line x1="12" y1="16" x2="12" y2="16.01"/><line x1="16" y1="16" x2="16" y2="16.01"/></svg>
         </span>
-        <span class="title">Welcome-bonus calculator</span>
-        <span class="go">See which welcome offer pays back first</span>
+        <span class="title">Spend-return calculator</span>
+        <span class="go">See which card pays back most on your monthly spend</span>
         <span class="arrow" aria-hidden="true">↗</span>
       </a>
       <a href="/salary-transfer/calculator/" class="dp-tool">
         <span class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         </span>
-        <span class="title">Salary-offer calculator</span>
+        <span class="title">Salary-transfer calculator</span>
         <span class="go">Match your salary band to live offers</span>
         <span class="arrow" aria-hidden="true">↗</span>
       </a>
@@ -461,7 +456,7 @@ const dealRows = await Promise.all(
                       up to <strong>{r.upTo}</strong> · {r.bands} bands · from {r.from}
                       {r.sharia ? " · Sharia-compliant" : ""}
                     </span>
-                    <span class="chip">Verified {r.verified}</span>
+                    <span class="chip">Verified {r.verified} · to {r.ends}</span>
                   </a>
                 </li>
               ))}
@@ -518,7 +513,6 @@ const dealRows = await Promise.all(
             coverTitle={item.title}
             coverCategory={item.coverCategory}
             coverSize="med"
-            sizes="(max-width: 900px) 100vw, 33vw"
           />
           <div class="body">
             <span class="meta"><span class="cat">{item.category}</span> {item.meta}</span>
@@ -667,7 +661,7 @@ const dealRows = await Promise.all(
 
   <PressStrip />
 
-  <section class="hp-news is-gold" aria-label="Newsletter">
+  <section class="hp-news is-navy" aria-label="Newsletter">
     <div class="inner">
       <div class="hp-news-text">
         <span class="hp-news-eyebrow">A little useful, every Friday</span>
@@ -725,6 +719,7 @@ const dealRows = await Promise.all(
   .hp-hero h1 em {
     font-style: italic;
     color: var(--green);
+    white-space: nowrap; /* keeps "Pay less" on one line without a &nbsp; that some readers join into one word (F-040) */
   }
   .hp-hero-lede {
     font-size: 17px; line-height: 1.6;
@@ -970,12 +965,16 @@ const dealRows = await Promise.all(
   }
   .hp-trust-footnote a { color: var(--green); }
 
-  /* ── S7 newsletter — gold accent band (v0 coral-band analog) ───────── */
-  /* One-page exception to gold's chip-only role, per the 29 Aug v0-design
-     direction: the closing accent band is the design's full stop. Dark
-     text on gold clears AA; the paper form inset carries the contrast. */
-  .hp-news.is-gold {
-    background: var(--gold);
+  /* ── S7 newsletter — navy closing band ─────────────────────────────── */
+  /* Closing newsletter band. Shipped 29 Aug as a full-bleed gold band (the
+     v0 design's "full stop"); on Chairman direction, 7 Sep 2026, it moves to
+     the brand navy the article newsletter rail already uses, so gold goes
+     back to its single job (chips, rules, the Verified badge).
+     The class was left named `is-gold` at the time "so nothing else needs to
+     change"; renamed to `is-navy` on 10 September because a class that names
+     the wrong colour is the same drift R1 removed from `--mint` that day. */
+  .hp-news.is-navy {
+    background: #1f3a4d;
     padding: 56px 32px 52px;
   }
   .hp-news .inner {
@@ -989,34 +988,33 @@ const dealRows = await Promise.all(
   @media (min-width: 900px) {
     .hp-news .inner { grid-template-columns: 1.1fr 1fr; }
   }
-  /* Contrast on gold (#b8842a): solid #241c0a measures 5.1:1; the softer
-     tints must stay ≥0.92 alpha to clear 4.5:1 AA at body/micro sizes.
-     The shipped 0.85/0.75/0.7 tints measured 3.2–4.1:1 (UX 5.5). */
+  /* Contrast on navy (#1f3a4d): white 12.6:1; the gold-ink eyebrow tint
+     #d9a85a 6.9:1; the 0.88 white tint on body/micro clears AA. */
   .hp-news-eyebrow {
     display: inline-block;
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
-    color: #241c0a;
+    color: #d9a85a;
     margin-bottom: 12px;
   }
   .hp-news h2 {
     font-family: 'Fraunces', serif; font-weight: 600;
     font-size: clamp(28px, 3.6vw, 42px);
     letter-spacing: -0.7px; line-height: 1.1;
-    color: #241c0a;
+    color: #ffffff;
     margin: 0 0 12px;
   }
   .hp-news p {
     font-size: 15px; line-height: 1.6;
-    color: rgba(36, 28, 10, 0.92);
+    color: rgba(255, 255, 255, 0.88);
     margin: 0 0 8px;
     max-width: 46ch;
   }
   .hp-news .micro {
-    font-size: 12px; color: #241c0a;
+    font-size: 12px; color: rgba(255, 255, 255, 0.88);
     margin-top: 16px;
   }
-  .hp-news .micro a { color: #241c0a; }
+  .hp-news .micro a { color: #ffffff; text-decoration: underline; text-underline-offset: 2px; }
   /* NewsletterSignup renders a paper-background inset; restore ink inside
      it (both the form and the email fallback). */
   .hp-news :global(.dp-newsletter-form),
@@ -1028,6 +1026,8 @@ const dealRows = await Promise.all(
   .hp-news :global(.dp-newsletter-form a),
   .hp-news :global(.dp-newsletter-fallback a) {
     color: var(--green);
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   /* ── Responsive padding ────────────────────────────────────────────── */
@@ -1036,6 +1036,6 @@ const dealRows = await Promise.all(
     .hp-tools { padding: 36px 24px 44px; }
     .hp-fresh { padding-top: 32px; }
     .hp-dir, .hp-trust { padding: 28px 24px 8px; }
-    .hp-news.is-gold { padding: 44px 24px 40px; }
+    .hp-news.is-navy { padding: 44px 24px 40px; }
   }
 </style>

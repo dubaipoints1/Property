@@ -6,6 +6,7 @@
 // source-denominator ruling. Word count ≤500 per the Chairman's acceptance bar.
 
 import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+import { cardsTracked, verifiedThrough } from "~/lib/trustFacts";
 ---
 
 <TrustPageLayout
@@ -14,6 +15,13 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
   eyebrow="Editorial policy"
   heading="How we score"
   lastUpdated={new Date("2026-08-05")}
+  deck="A fixed rubric, applied by an editor and shown in full. Pages without a completed rubric carry no scorecard rather than a guessed one."
+  facts={[
+    { label: "Scoring dimensions", value: "Five" },
+    { label: "Cards under coverage", value: String(cardsTracked()) },
+    { label: "Verified through", value: verifiedThrough() },
+    { label: "Black-box index", value: "None" },
+  ]}
 >
   <section>
     <p>Where a card review carries a scorecard, it uses a tier badge, five dimension scores and a one-line Apply / Skip pair. The rubric below is fixed wherever it is applied; pages without a completed rubric do not display a scorecard. It is editorial judgement, not a black-box index.</p>

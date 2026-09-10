@@ -76,15 +76,13 @@ const barTotal = gross + fee;
 // legend below is the canonical text equivalent.
 const TIGHT = 0.12;
 
-// Graduated green ramp for positive segments (largest visual weight first
-// in source order); fee is always red-clay. Index past the ramp reuses the
-// lightest shade.
+// Sequential navy ramp for positive segments (darkest first, so the
+// largest visual weight leads); the fee segment is always gold. Index past
+// the ramp reuses the lightest shade.
 const RAMP = [
   "var(--dpvb-seg-1)",
   "var(--dpvb-seg-2)",
   "var(--dpvb-seg-3)",
-  "var(--dpvb-seg-4)",
-  "var(--dpvb-seg-5)",
 ];
 const rampOf = (i: number) => RAMP[Math.min(i, RAMP.length - 1)];
 
@@ -226,21 +224,46 @@ const barAria = [
 
 <style>
   .dpvb {
-    /* Scoped tokens — navy is the live --green/navy; the green ramp + clay
-       fee are functional chart colours, not brand chrome. Not global. */
+    /* Scoped tokens, not global. The bar used to argue that its green ramp
+       and clay fee were "functional chart colours, not brand chrome" and so
+       sat outside the 2026-07-25 no-third-hue rule. Chairman ruling R1
+       (10 September 2026, audit F-005) rejected that: the ramp is now a
+       single-hue sequential navy ramp and the fee segment is gold. Every
+       step is >= 4.65:1 against the white label it carries — four of the
+       five green steps were not, which is what axe was still flagging on
+       card reviews after fix sprint 1. */
     --dpvb-navy: #1f3a4d;
-    --dpvb-navy-soft: rgba(31, 58, 77, 0.62);
+    /* 0.62 composited to #72818b on the cream — 3.7:1 for 10–15px labels
+       (2026-09-06 audit, F-004). 0.78 lands at ≈6:1. */
+    --dpvb-navy-soft: rgba(31, 58, 77, 0.78);
     --dpvb-cream: #faf6ef;
     --dpvb-paper: #fffdf9;
-    --dpvb-green: #2f7d5d;
     --dpvb-line: rgba(31, 58, 77, 0.16);
     --dpvb-line-soft: rgba(31, 58, 77, 0.09);
-    --dpvb-seg-1: #2f7d5d;
-    --dpvb-seg-2: #3f9068;
-    --dpvb-seg-3: #54a37e;
-    --dpvb-seg-4: #74b59a;
-    --dpvb-seg-5: #9ec9b6;
-    --dpvb-fee: #b46a55;
+    /* Sequential navy ramp, darkest first so the largest segment leads.
+       Three steps, not five: no card in the library renders more than
+       three reward categories (11 bars: 1x2, 2x3, 3x6 segments), and
+       rampOf() clamps a fourth to the lightest step. Three steps across
+       the same band roughly doubles the separation each step gets.
+
+       Numbers, so a later edit can be checked rather than eyeballed —
+       contrast against the segment's own #fff label 11.9 / 7.5 / 4.8,
+       worst adjacent OKLab dE 10.8 (deutan 10.5), gold fee 19.9 from
+       the nearest navy. The retired green ramp managed dE 6.0 and put
+       white labels on four steps that never cleared 4.5:1.
+
+       This is a sequential ramp, so the validator's categorical checks
+       for chroma floor and a dE-15 normal-vision floor do not apply; its
+       CVD-separation and contrast-vs-surface checks both pass, and the
+       bar carries the secondary encoding those rules ask for anyway —
+       a white divider between segments, a value and a label inside each,
+       and the legend below as the canonical text equivalent. */
+    --dpvb-seg-1: #1f3a4d;
+    --dpvb-seg-2: #245980;
+    --dpvb-seg-3: #3178ad;
+    /* The one gold data mark on the site. Deeper than --gold (#b8842a,
+       3.3:1) so the white label clears AA at 5.5:1. */
+    --dpvb-fee: #8a6118;
 
     width: 100%;
     max-width: 680px;
@@ -262,8 +285,8 @@ const barAria = [
     left: 0;
     width: 54px;
     height: 54px;
-    border-top: 2px solid var(--dpvb-green);
-    border-left: 2px solid var(--dpvb-green);
+    border-top: 2px solid var(--dpvb-navy);
+    border-left: 2px solid var(--dpvb-navy);
     border-top-left-radius: 14px;
     opacity: 0.5;
     pointer-events: none;
@@ -284,7 +307,7 @@ const barAria = [
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--dpvb-green);
+    background: var(--dpvb-navy);
     flex-shrink: 0;
   }
   .dpvb-eyebrow .sep {
@@ -344,7 +367,7 @@ const barAria = [
     font-weight: 600;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: var(--dpvb-green);
+    color: var(--dpvb-navy);
     margin-top: 8px;
   }
   .dpvb-net.is-cost .suffix {
@@ -451,7 +474,7 @@ const barAria = [
     font-variant-numeric: tabular-nums;
   }
   .dpvb-axis .net-tick {
-    color: var(--dpvb-green);
+    color: var(--dpvb-navy);
     font-weight: 600;
   }
 
@@ -555,7 +578,7 @@ const barAria = [
     letter-spacing: 0.8px;
     text-transform: uppercase;
     font-size: 10px;
-    color: var(--dpvb-green);
+    color: var(--dpvb-navy);
     padding-top: 1px;
   }
   .dpvb-source {
@@ -579,8 +602,8 @@ const barAria = [
     white-space: nowrap;
   }
   .dpvb-source a:hover {
-    border-bottom-color: var(--dpvb-green);
-    color: var(--dpvb-green);
+    border-bottom-color: var(--dpvb-navy);
+    color: var(--dpvb-navy);
   }
 
   @media (max-width: 560px) {

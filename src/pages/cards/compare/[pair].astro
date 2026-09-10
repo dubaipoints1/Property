@@ -1,0 +1,137 @@
+---
+// Head-to-head card pages — /cards/compare/<a>-vs-<b>/.
+//
+// /cards/compare/ is a picker: useful once a reader is already there, and
+// invisible to anyone searching for two named cards. These are the pages a
+// person actually looks for, and the only comparison surface on the site
+// with a stable URL per pair.
+//
+// The pair list and every verdict live in src/data/cardMatchups.ts, which
+// explains why the set is curated rather than generated. The spec table is
+// CardComparison.astro — the same component three card reviews already
+// mount — so the numbers here are the numbers there.
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import CardComparison from "~/components/cards/CardComparison.astro";
+import VerifiedStamp from "~/components/cards/VerifiedStamp.astro";
+import { getCardData } from "~/lib/cardsData";
+import { cardMatchups, matchupSlug, type CardMatchup } from "~/data/cardMatchups";
+
+export async function getStaticPaths() {
+  return cardMatchups.map((matchup) => ({
+    params: { pair: matchupSlug(matchup) },
+    props: { matchup },
+  }));
+}
+
+interface Props {
+  matchup: CardMatchup;
+}
+
+const { matchup } = Astro.props;
+const left = getCardData(matchup.left);
+const right = getCardData(matchup.right);
+
+// getStaticPaths built these from the same data, so a miss means the pair
+// list references a card cards.json no longer carries. Fail the build rather
+// than render a half-empty comparison.
+if (!left || !right) {
+  throw new Error(
+    `Matchup ${matchupSlug(matchup)} references an unknown card: ${
+      !left ? matchup.left : matchup.right
+    }`,
+  );
+}
+
+const newestVerified = new Date(
+  Math.max(
+    new Date(left.lastVerified).getTime(),
+    new Date(right.lastVerified).getTime(),
+  ),
+);
+---
+
+<BaseLayout
+  title={`${left.name} vs ${right.name} | DubaiPoints`}
+  description={`${matchup.deck} Side-by-side fees, salary requirements and earn rates, with our verdict.`}
+  fullWidth
+>
+  <article class="dp-article">
+    <div class="dp-article-head">
+      <div class="crumb">
+        <a href="/cards/">Cards</a> / <a href="/cards/compare/">Compare</a>
+      </div>
+      <h1>{left.name} vs {right.name}</h1>
+      <p class="lede">{matchup.deck}</p>
+      <VerifiedStamp lastVerified={newestVerified} />
+    </div>
+
+    <section class="dp-matchup-verdict" aria-labelledby="verdict-head">
+      <h2 id="verdict-head">Our verdict</h2>
+      {matchup.verdict.map((para) => <p>{para}</p>)}
+    </section>
+
+    <section aria-labelledby="specs-head">
+      <h2 id="specs-head">Side by side</h2>
+      <CardComparison cards={[matchup.left, matchup.right]} />
+    </section>
+
+    <section aria-labelledby="reviews-head">
+      <h2 id="reviews-head">The full reviews</h2>
+      <ul class="dp-matchup-links">
+        <li><a href={`/cards/${matchup.left}/`}>{left.name} review</a></li>
+        <li><a href={`/cards/${matchup.right}/`}>{right.name} review</a></li>
+        <li>
+          <a href="/cards/compare/">Compare any cards side by side</a>
+        </li>
+        <li>
+          <a href="/calculator/">Work out what each pays on your own spend</a>
+        </li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="other-head">
+      <h2 id="other-head">Other matchups</h2>
+      <ul class="dp-matchup-links">
+        {cardMatchups
+          .filter((m) => matchupSlug(m) !== matchupSlug(matchup))
+          .slice(0, 5)
+          .map((m) => (
+            <li>
+              <a href={`/cards/compare/${matchupSlug(m)}/`}>
+                {getCardData(m.left)?.name} vs {getCardData(m.right)?.name}
+              </a>
+            </li>
+          ))}
+      </ul>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .dp-matchup-verdict {
+    margin: 8px 0 36px;
+  }
+  .dp-matchup-verdict p {
+    font-size: 19px;
+    line-height: 1.65;
+    max-width: 70ch;
+    margin: 0 0 16px;
+  }
+  .dp-matchup-links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 32px;
+    display: grid;
+    gap: 10px;
+  }
+  .dp-matchup-links a {
+    color: var(--link);
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 15px;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+  }
+</style>

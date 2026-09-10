@@ -257,7 +257,7 @@ const cardTiles = allCards.map((c) => {
     font-weight: 600;
     letter-spacing: 0.2px;
     color: var(--green);
-    opacity: 0.55;
+    opacity: 0.85; /* 0.55 composited to 3.15:1 (2026-09-06 audit, F-004) */
     transition: opacity 0.15s;
   }
   .dp-bank-card-tile:hover .dp-bank-card-cta { opacity: 1; }

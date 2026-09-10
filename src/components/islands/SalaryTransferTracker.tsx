@@ -414,7 +414,6 @@ export default function SalaryTransferTracker({ offers }: Props) {
                         key={o.id}
                         class={`dpst-row${isOpen ? " is-open" : ""}`}
                         onClick={() => toggleOpen(o.id)}
-                        aria-expanded={isOpen}
                       >
                         <td class="col-bank">
                           <div class="dpst-bank">
@@ -455,7 +454,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
                             type="button"
                             class="dpst-expand"
                             aria-label={`Toggle fine print for ${o.bankName}`}
-                            tabIndex={-1}
+                            aria-expanded={isOpen}
                           >
                             ▾
                           </button>

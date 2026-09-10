@@ -230,3 +230,28 @@ export const daysUntil = (iso: string) => {
   const ms = new Date(iso).getTime() - Date.now();
   return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
 };
+
+/**
+ * The offer title with its bank prefix removed.
+ *
+ * Every `salaryTransferOffers` entry names itself "<Bank> — <offer>",
+ * and the calculator renders the bank name beside it from `bankName`.
+ * The result read "First Abu Dhabi Bank — First Abu Dhabi Bank — 20%
+ * Salary Transfer Campaign 2026" (2026-09-06 audit, F-038).
+ *
+ * Only an exact bank-name prefix followed by a dash is stripped, so an
+ * offer whose name happens to start with a similar word keeps it, and an
+ * entry that does not use the convention is returned untouched.
+ */
+export function offerTitle(bankName: string, name: string): string {
+  if (name.slice(0, bankName.length).toLowerCase() !== bankName.toLowerCase()) {
+    return name;
+  }
+  // The separator is required, so "Citi" does not turn "Citibank — Ready
+  // Credit" into "bank — Ready Credit".
+  const after = name.slice(bankName.length);
+  const separator = /^\s*[—–-]\s*/.exec(after);
+  if (!separator) return name;
+  const rest = after.slice(separator[0].length);
+  return rest.length > 0 ? rest : name;
+}
