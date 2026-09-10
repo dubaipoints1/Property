@@ -13,7 +13,7 @@ import assert from "node:assert/strict";
 import {
   rankCards,
   conversionForCard,
-  AED_PER_UNIT,
+  PLACEHOLDER_AED_PER_UNIT,
   type CardForCalc,
   type SpendProfile,
 } from "../../src/components/islands/RewardsCalculator.tsx";
@@ -131,24 +131,27 @@ test("Heavy-dining spend ranks the dining-bonus card first", () => {
 
 // ── Test 2: AED conversion respects earnUnit ─────────────────────────────
 
-test("AED conversion respects earnUnit — 1x cashback beats 5x miles", () => {
-  // 5x Miles at 0.04 AED/mile = 0.20 AED per AED spent.
+test("AED conversion respects earnUnit — a bigger rate number can be worth less", () => {
+  // The whole point of the conversion: `5` and `2` are not comparable until
+  // each has been through its own denominator and its own unit value.
+  // 2 Miles per AED at the published 2 fils = 4% back.
   const milesCard = makeCard({
     slug: "miles-card",
-    name: "Skywards 5x Card",
+    name: "Skywards 2x Card",
     loyaltyProgram: "Emirates Skywards",
     earnUnit: "Skywards Miles per AED 1 spent",
-    dining: 5,
-    everythingElse: 5,
+    dining: 2,
+    everythingElse: 2,
   });
-  // 1x AED cashback at 1.00 AED/AED cashback = 1.00 AED per AED spent.
+  // 5% cashback pays dirhams directly = 5% back, so it wins despite the
+  // miles card quoting the larger-looking rate per dirham.
   const cashbackCard = makeCard({
     slug: "cashback-card",
     name: "Plain Cashback Card",
     loyaltyProgram: "AED Cashback",
-    earnUnit: "AED cashback per AED 1 spent",
-    dining: 1,
-    everythingElse: 1,
+    earnUnit: "% cashback",
+    dining: 5,
+    everythingElse: 5,
   });
 
   const spend: SpendProfile = { ...ZERO_SPEND, dining: 1000 };
@@ -163,11 +166,14 @@ test("AED conversion respects earnUnit — 1x cashback beats 5x miles", () => {
     "cashback-card",
     "cashback should beat miles in AED-equivalent terms",
   );
-  // Sanity: confirm the underlying numbers match the published rates.
-  assert.equal(ranked[0].aedPerUnit, AED_PER_UNIT.aed_cashback);
-  assert.equal(ranked[1].aedPerUnit, AED_PER_UNIT.miles);
-  assert.equal(ranked[0].monthlyRewardAED, 1000); // 1000 * 1 * 1.00
-  assert.equal(ranked[1].monthlyRewardAED, 200);  // 1000 * 5 * 0.04
+  // Both figures moved on 10 September 2026. The old fixture asserted that
+  // a 1% cashback card returned AED 1,000 on AED 1,000 of spend — the 100x
+  // bug written down as a test — and priced a mile at 4 fils against the 2.0
+  // published on /valuations/.
+  assert.equal(ranked[0].aedPerUnit, 1);
+  assert.equal(ranked[1].aedPerUnit, 0.02);
+  assert.equal(ranked[0].monthlyRewardAED, 50); // 1000 * 5% in dirhams
+  assert.equal(ranked[1].monthlyRewardAED, 40); // 1000 * 2 miles * 0.02
 });
 
 // ── Test 3: net-of-fee toggle re-ranks ───────────────────────────────────
@@ -178,23 +184,24 @@ test("Net-of-annual-fee toggle flips ranking when fee dominates", () => {
     slug: "premium-fee",
     name: "Premium Fee Card",
     loyaltyProgram: "AED Cashback",
-    earnUnit: "AED cashback per AED 1 spent",
+    earnUnit: "% cashback",
     annualFee: 3000,
-    everythingElse: 0.03, // 3% on everything
+    everythingElse: 3, // 3% on everything
   });
   // Lower earn, no fee.
   const freebie = makeCard({
     slug: "freebie",
     name: "No Fee Card",
     loyaltyProgram: "AED Cashback",
-    earnUnit: "AED cashback per AED 1 spent",
+    earnUnit: "% cashback",
     annualFee: 0,
-    everythingElse: 0.02, // 2% on everything
+    everythingElse: 2, // 2% on everything
   });
 
-  // AED 5,000 of "utilities" spend flows through everythingElse.
-  // Premium reward: 5000 * 0.03 = 150 AED. Net: 150 - 250 = -100 AED/mo.
-  // Freebie reward: 5000 * 0.02 = 100 AED. Net: 100 - 0   =  100 AED/mo.
+  // AED 5,000 of "utilities" spend flows through everythingElse — neither
+  // fixture publishes a utilities rate.
+  // Premium reward: 5000 * 3% = 150 AED. Net: 150 - 250 = -100 AED/mo.
+  // Freebie reward: 5000 * 2% = 100 AED. Net: 100 - 0   =  100 AED/mo.
   const spend: SpendProfile = { ...ZERO_SPEND, utilities: 5000 };
 
   const grossRanked = rankCards([premium, freebie], spend, {
@@ -258,9 +265,10 @@ test("conversionForCard maps loyalty programmes to AED rates correctly", () => {
     slug: "c",
     name: "C",
     loyaltyProgram: "AED Cashback",
-    earnUnit: "AED cashback per AED 1 spent",
+    earnUnit: "% cashback",
   });
-  assert.equal(conversionForCard(cashback).bucket, "aed_cashback");
+  assert.equal(conversionForCard(cashback).basis, "cashback");
+  assert.equal(conversionForCard(cashback).aedPerUnit, 1);
 
   const skywards = makeCard({
     slug: "s",
@@ -268,25 +276,33 @@ test("conversionForCard maps loyalty programmes to AED rates correctly", () => {
     loyaltyProgram: "Emirates Skywards",
     earnUnit: "Skywards Miles per AED 1 spent",
   });
-  assert.equal(conversionForCard(skywards).bucket, "miles");
+  assert.equal(conversionForCard(skywards).basis, "published");
+  assert.equal(conversionForCard(skywards).aedPerUnit, 0.02);
 
+  // No published baseline for FAB Rewards, so a labelled placeholder — not
+  // a rate presented as though it came from /valuations/.
   const fabRewards = makeCard({
     slug: "f",
     name: "F",
     loyaltyProgram: "FAB Rewards",
     earnUnit: "FAB Rewards per AED 1 spent",
   });
-  assert.equal(conversionForCard(fabRewards).bucket, "bank_points");
+  assert.equal(conversionForCard(fabRewards).basis, "placeholder");
+  assert.equal(conversionForCard(fabRewards).aedPerUnit, PLACEHOLDER_AED_PER_UNIT);
 
+  // The programme name must match the valuations map exactly. "Marriott
+  // Bonvoy Points" is not the string cards.json uses, so it does not
+  // silently pick up Bonvoy's published rate.
   const marriott = makeCard({
     slug: "m",
     name: "M",
-    loyaltyProgram: "Marriott Bonvoy Points",
-    earnUnit: "Marriott Bonvoy Points per AED 1 spent",
+    loyaltyProgram: "Marriott Bonvoy",
+    earnUnit: "Marriott Bonvoy points per AED 1 spent",
   });
-  assert.equal(conversionForCard(marriott).bucket, "hotel_points");
+  assert.equal(conversionForCard(marriott).basis, "published");
+  assert.equal(conversionForCard(marriott).aedPerUnit, 0.025);
 
+  // No earnUnit at all: no denominator, so no AED figure is possible.
   const unknown = makeCard({ slug: "u", name: "U" });
-  assert.equal(conversionForCard(unknown).bucket, "unknown");
-  assert.equal(conversionForCard(unknown).fallback, true);
+  assert.equal(conversionForCard(unknown).basis, "unrankable");
 });

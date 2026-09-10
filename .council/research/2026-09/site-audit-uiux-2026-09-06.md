@@ -1831,3 +1831,181 @@ Not in this sprint: F-010 (image derivatives, T3), F-016 (dead citations need a 
 | Guides | 13 of 21 past 90 days (expat-starter set 124 days) — known-open | refresh queue (F-050) |
 | Valuations | baselines 10 Jun cross 90 days on 8 Sep; Q3 promise due 30 Sep | ruling R10 (F-018) |
 | Trust pages | press, tip stamped 9 May | F-058 |
+
+## 16. Fix sprint 3 — 10 September 2026 (four Chairman rulings, and four new findings)
+
+Landed on `claude/website-audit-uiux-k1393i` after PR #350 merged. PR #351.
+
+### 16.1 The four rulings
+
+| Ruling | Findings | What shipped |
+|---|---|---|
+| **R1** palette | F-005, F-006 | Value bar is a three-step sequential navy ramp with a gold fee segment; tracker accents are brand navy; `--mint` retired and renamed `--navy-lift`. Three steps because no card renders more than three reward categories, which lifts worst adjacent OKLab ΔE from 6.0 to 10.8. Also cleared four white-on-green labels below 4.5:1 that axe was still flagging after sprint 1. |
+| **R3** newsletter | F-012, F-042, F-043 | Header CTA does not render until `PUBLIC_BUTTONDOWN_USERNAME` is set; the brief is an ordinary nav row; footer asks for the launch list. Four independent env checks, with two different validation rules, converge on `src/lib/newsletter.ts`. |
+| **R4** calculators | F-021, F-032 | `/calculator/` is the spend-return calculator and gains a header and footer row; it had no nav entry anywhere. |
+| **R10** valuations | F-018 | Floor, Ceiling, Distribution and Δ 90d cut. The page claims **no date** for the ranges; `EDITORIAL.md` records that the date is set there first and the columns return second. |
+
+Charter amendment recording all four: `CLAUDE.md`, 2026-09-10.
+
+**Correction to F-018.** The audit named three empty columns. It was four —
+`delta90` is a dash on all ten rows too.
+
+### 16.2 Ruling-free findings closed
+
+| Finding | What changed | Verified by |
+|---|---|---|
+| F-027 (part) | `/cards/finder/` server-renders the six the script picks, in rank order, instead of painting 58 and hiding 52 about 160 ms later | CLS 0.248 → **0.0001** at 1280; 0.0002 at 768; 0 at 390 |
+| F-039 | Finder controls sync from the query string; an unrecognised value falls back to the default in both the filter and the control | six-case browser check |
+| F-038 | `offerTitle()` strips the bank prefix every offer name repeats; the rank no longer glues to it | 5 unit cases incl. "Citi" vs "Citibank" |
+| F-054 | `sizes` removed from ten call sites — there is no `srcset` anywhere in `src/`, so every one was inert. `HeroImage`'s `sizes` used a CSS custom property in a media condition, which never parsed | built HTML |
+| F-055 | Boxed tool tiles go single-column below 480px; title width 85px → 270px | element capture at 360 |
+| F-004 (part) | One missed 10px `var(--gold)` label on the salary calculator | axe |
+| — | Two axe violations on the finder: 58 card tiles each rendered a labelled `<aside>`, so the page shipped 58 landmarks sharing one label; the disclosure link sat at 1.21:1 against its own sentence | axe 0 |
+| — | `--red`, `--positive`, `--negative` had **no dark values at all** and failed contrast in dark mode at 3.3:1 and 2.6:1. The "Great card if" eyebrow used `--positive` as copy, which that token's own definition reserves to the ProsCons icons | axe dark 0 |
+
+### 16.3 Four new findings, from the kredit.ae teardown
+
+Filed in full at
+`.council/research/2026-09/kredit-ae-teardown-2026-09-10.md` §4. The
+teardown's value was not the competitor's content; it was these.
+
+| # | Severity | Finding |
+|---|---|---|
+| **F-073** | **P0** | `/calculator/` published reward figures up to **100× too high** — "48,300 % cashback ≈ AED 48,300" a month on AED 7,800 of spend. `earnRates` is a bare number and `earnUnit` is prose, so four incompatible denominators (percent, per AED 1, per AED 10, per USD 1) were all multiplied by spend alike. Same class as F-002: a false financial figure served to readers. |
+| **F-074** | P1 | The calculator's private valuation table contradicted `/valuations/` — a mile at 4 fils against the published 2.0, hotel points at 0.8 against Bonvoy's 2.5 — while calling them "conservative" and linking the methodology page. Against Chairman ruling 2 of 12 June 2026. Its regex matched "Voyager Miles" on the word *miles* and priced it as Skywards. |
+| **F-075** | P1 | The `EarnRates` Zod schema declared 9 categories against the 25 `cards.json` carries, and Zod strips undeclared keys — so `partnerBrands` was **silently deleted on 22 cards**, every co-brand review among them, for sixteen weeks. `EarnRateTable` had a comment from 20 May 2026 saying that row existed so the rate "doesn't silently drop from the table". `utilities` (12) and `insurance` (9) went the same way. |
+| **F-076** | P2 | `/cards/compare/?cards=` could never render. The page read `Astro.url.searchParams` in a static build, so the picker returned the same three cards every time and the deck's "the URL is shareable" was untrue. |
+
+All four fixed in the same PR, each with a test that fails on recurrence —
+including a per-card assertion that every card's earn-unit wording parses,
+so an unfamiliar new card fails the suite rather than earning a wrong number
+in silence.
+
+### 16.4 New surfaces
+
+- **Ten head-to-head pages** at `/cards/compare/<a>-vs-<b>/`, curated with a
+  written verdict each, reusing `CardComparison.astro`. Verdicts state no
+  figures — the spec table beneath carries them, so a rate that moves in L2
+  moves on the page. Linked from the compare hub and both cards' reviews.
+- **Three perk pages** at `/cards/perks/`, from `getCardsWithFeature()`,
+  which had zero call sites. Lounge access, golf and travel insurance only;
+  the other eleven perk types cover one to five cards. The eight-card
+  threshold is asserted in both directions.
+
+### 16.5 A correction to my own harness reasoning
+
+While investigating F-027 I hypothesised that the render probe's CLS figure
+was an artefact of its viewport-resize loop, wrote a fix and a test for it,
+and was wrong: metrics are collected before the loop runs. The 0.248 was
+real, at desktop widths only. The change was reverted before commit. Noted
+because the finding survived and the explanation did not.
+
+### 16.6 F-051 — the trust pages
+
+Closed 10 September, prompted by the kredit.ae teardown's §5a: their operator
+publishes no named editor, no corrections log and no provenance, and our
+advantage on all three was invisible to a reader who did not read the prose.
+
+`TrustPageLayout` rendered eyebrow, `<h1>`, an optional deck, a "Last
+updated" strip, then raw prose — and the six highest-trust pages passed **no
+deck at all**. It gains an optional `facts` strip mounting `.dp-stats`, a
+primitive defined in `global.css` since the Phase D handoff and used by
+nothing until now. Nine pages gain facts; six gain a deck.
+
+**Every figure is computed at build time** from `src/lib/trustFacts.ts` —
+none is typed into prose. That constraint is the lesson of R10, which had to
+cut four columns this morning because `/valuations/` carried a hand-typed
+promise. Today's values: 57 cards, 14 banks, **57 of 57 carrying a source
+URL**, 1,008 provenance-tagged fields, 2 corrections across 13 card pages.
+
+The corrections log moves from hardcoded markup to `src/data/corrections.ts`
+with machine-readable dates, so the page can state how many corrections exist
+and when the last one was — the two facts that make a log evidence rather
+than a promise. Both entries migrated verbatim.
+`tests/content/corrections.test.ts` fails on a half-written entry, a
+correction naming a card we no longer carry, or an entry hardcoded back into
+the markup.
+
+Measured after: the facts strip is above the fold at 390px and 1280px on
+every page checked. Section headings on trust pages were 20px/500 serif
+against 18px/400 sans at mobile, a 1.11 ratio that scanned flat; now 22px/600.
+
+**Not done, deliberately:** no schema.org on these pages. That is F-035,
+ruling **R6**, still unmade, and the 2026-08-05 amendment restricts author
+markup to `Organization` until a named contributor exists. Adding it here
+would pre-empt a Chairman decision.
+
+**One self-inflicted bug, caught and fixed before commit:** the CSS insert
+for the facts strip matched both `.dp-trust-meta` rules, so it landed a second
+time inside a `max-width: 640px` media query, nesting one media query in
+another. Found by measuring the strip's width across three viewports rather
+than trusting that it looked right.
+
+### 16.7 Still open after this sprint
+
+Six rulings remain unmade — **R2** (F-033, F-052), **R5** (F-030), **R6**
+(F-035), **R7** (F-041), **R8** (F-060), **R9** (F-047). Beyond them:
+F-027's filtered-URL half and its 3,582 DOM nodes; F-026, which needs the
+probe to model WCAG 2.2 SC 2.5.8's spacing exemption before its count means
+anything — what remains is dominated by inline text links at line height;
+F-016's remaining citations (`etihad.com/en-ae/offers` was re-verified live
+on 10 September and its Actions failure was a bot wall; one archived RAKBANK
+`sourceUrl` still points at a moved page); F-034's 116 over-length titles and
+65 over-length descriptions, which are editorial copy and were deliberately
+not machine-rewritten; F-050's guide refresh queue; and the news cadence gap
+— no story filed since 22 August against desk ceilings of two to three
+airline and one to two hotel stories a week.
+
+### 16.8 Round two of the kredit.ae teardown
+
+Later on 10 September the Chairman asked for kredit.ae to be reviewed in
+full and "what we can use" applied. Fifteen more pages were read for 15
+credits (teardown §2a and §6). Seven patterns were taken, every one built
+from data the site already held so that a figure moving in L2 moves in the
+tool:
+
+- **`/calculator/interest/`** — an interest-and-payoff calculator. Its two
+  defaults are computed, not typed: the median published monthly rate across
+  the 22 cards that carry one (3.49%) and the modal minimum-payment rule
+  across the 8 that publish one, read by a fixed regex per Charter §6, with
+  the match counts printed on the page. Picking a card fills its rate in.
+- **`/cards/fees/`** — a fee index over the 57 active cards: share free for
+  life, first-year waivers, median fees, by bank and by salary tier, an FX
+  distribution, and a per-card table. Medians as the headline. Every figure
+  from `src/lib/feeIndex.ts`; the page types none.
+- **`/calculator/`** gains six named spend profiles, a wallet mode that
+  narrows the ranking to held cards and routes each category to the best of
+  them, and a fee break-even line on every paid card's tile.
+- **`/valuations/`** gains a points-to-AED converter that prices a balance
+  only at the published DP baseline; Pending programmes are listed and
+  disabled.
+- **`/cards/`** gains a computed snapshot line and pills to the salary and
+  fee pages, which had no entry there.
+
+Declined, with the clause for each, in teardown §3: the 1–5 ratings and the
+percentile ranking, an open dataset under CC BY 4.0 (**decision required**),
+the ChatGPT app (**decision required**), the balance-transfer and EMI
+calculators, their FX-fee account (**verification hold**), and a
+new-to-UAE roadmap the expat-starter guide already carries.
+
+**Three more defects on our side** (teardown §4.5–4.7). The calculator's
+methodology had said since May 2026 that typed caps were applied; nothing
+applied them, and ADCB 365 showed AED 1,800 a month against a published
+ceiling of AED 1,000. Thirteen capped cards are now clamped and tested. The
+same page still said utilities were pinned to the base rate after 4.1 had
+changed that; corrected. And `fab-elite`'s `_caps` carries keys the schema
+strips, arriving as `{}` — the 4.3 class one object deeper, recorded rather
+than fixed because a units-denominated cap needs a schema field.
+
+**Verification.** `astro check` 0/0/0; `npm test` 449 passing (29 new across
+five files); `npm run build` 214 pages, 16,336 internal links, 0 broken; axe
+0 violations in light and dark on `/calculator/`, `/calculator/interest/`,
+`/cards/fees/`, `/valuations/` and `/cards/` — after one fix: the new
+snapshot line's "fee index" link failed link-in-text-block on the first
+probe (1.06:1 against the surrounding grey) and is underlined now. Driven in
+a browser at 1280px and 390px: presets set the totals, the wallet narrows
+and persists across reload, the ADCB 365 tile reads "capped at AED 1,000",
+the interest tool reports 11 years 9 months at the minimum against 2 years
+11 months flat, the converter disables five Pending rows, and the fee page
+figures match the library's to the dirham. No horizontal overflow at 390px
+on any of the four tool routes.

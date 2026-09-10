@@ -64,9 +64,6 @@ if (lapsedOffers.length) {
       lapsedOffers.map((o) => `${o.bankSlug} (${o.name}, ended ${o.validUntil.slice(0, 10)})`).join("; "),
   );
 }
-const nameList = new Intl.ListFormat("en-GB", { style: "long", type: "conjunction" });
-const listNames = (slugs: string[]) =>
-  nameList.format(slugs.map((slug) => bankName.get(slug) ?? slug));
 // Linked variant for the coverage note: the eight "checked, no live offer"
 // bank pages had no inbound link anywhere on the site because the tracker
 // island links only banks with a live row (2026-09-06 audit, F-013).

@@ -1,13 +1,13 @@
 ---
+import { buttondownUsername } from "~/lib/newsletter";
+
 interface Props {
   source?: string;
 }
 
 const { source = "newsletter-page" } = Astro.props;
-const username = (import.meta.env.PUBLIC_BUTTONDOWN_USERNAME as string | undefined)?.trim();
-const isConfigured = Boolean(username && /^[a-zA-Z0-9_-]+$/.test(username));
-const action = isConfigured
-  ? `https://buttondown.com/api/emails/embed-subscribe/${username}`
+const action = buttondownUsername
+  ? `https://buttondown.com/api/emails/embed-subscribe/${buttondownUsername}`
   : null;
 ---
 

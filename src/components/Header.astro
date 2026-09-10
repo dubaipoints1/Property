@@ -7,17 +7,28 @@ import ThemeToggle from "~/components/ThemeToggle.astro";
 import { dpValueSub } from "~/lib/valuations";
 
 const currentPath = Astro.url.pathname;
+import { newsletterLive, newsletterNavLabel } from "~/lib/newsletter";
+
 const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 
 // Flat rows for the mobile overlay. Cards / Points + Miles / Travel are
 // expandable accordions and Banks is a standalone row, all rendered
 // inline in the overlay body — they do not belong in this list.
+// Chairman ruling R3, 10 September 2026 (audit F-012 / F-042 / F-043):
+// until the list accepts sign-ups the brief is a nav row like any other,
+// not the overlay's leading call to action. Setting the Buttondown
+// environment variable puts it back at the top with its CTA styling.
 const mobileTop = [
-  { href: "/newsletter/", label: "Join brief", subscribe: true },
+  ...(newsletterLive
+    ? [{ href: "/newsletter/", label: newsletterNavLabel, subscribe: true }]
+    : []),
   { href: "/deals/",      label: "Deals" },
   { href: "/guides/",     label: "Guides" },
   { href: "/news/",       label: "News" },
+  ...(newsletterLive
+    ? []
+    : [{ href: "/newsletter/", label: newsletterNavLabel }]),
 ];
 
 type SubRow = { label: string; href: string; sub?: string };
@@ -49,6 +60,7 @@ const cardsPanel: Group[] = [
     { label: "Beginner's guide",          href: "/guides/expat-starter/" },
     { label: "AECB credit score",         href: "/guides/aecb-credit-report-walkthrough/" },
     { label: "Salary-transfer tracker",   href: "/salary-transfer/" },
+    { label: "Cards with lounge access",  href: "/cards/perks/lounge-access/" },
     { label: "How we score cards",        href: "/editorial-policy/how-we-score/" },
   ]},
 ];
@@ -107,6 +119,15 @@ const toolRows: SubRow[] = [
   { label: "Points & miles valuations", href: "/valuations/", sub: "DP value" },
   { label: "Card compare", href: "/cards/compare/", sub: "Side-by-side specs" },
   { label: "Salary-transfer calculator", href: "/salary-transfer/calculator/" },
+  // Chairman ruling R4, 10 September 2026 (audit F-021 / F-032): the two
+  // calculators stay separate and each gets its own name and its own way in.
+  // /calculator/ had no nav slot anywhere and was reachable only from the
+  // homepage tools tile.
+  { label: "Spend-return calculator", href: "/calculator/", sub: "Which card pays back most" },
+  // 10 September 2026, kredit.ae teardown round two: the cost side of the
+  // ledger and the fee aggregates, both computed from L2.
+  { label: "Interest & payoff calculator", href: "/calculator/interest/", sub: "What a carried balance costs" },
+  { label: "Card fee index", href: "/cards/fees/", sub: "Annual and FX fees across the set" },
 ];
 
 const publicationRows: SubRow[] = [
@@ -218,7 +239,9 @@ const publicationRows: SubRow[] = [
         <span class="dp-search-pill-text" aria-hidden="true">Search cards, guides…</span>
       </a>
       <ThemeToggle />
-      <a href="/newsletter/" class="dp-header-subscribe">Join brief</a>
+      {newsletterLive && (
+        <a href="/newsletter/" class="dp-header-subscribe">{newsletterNavLabel}</a>
+      )}
     </div>
 
     <!-- Mobile search -->
@@ -833,7 +856,7 @@ const publicationRows: SubRow[] = [
   display: inline-block;
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--mint);
+  background: var(--navy-lift);
   margin-right: 8px;
   flex-shrink: 0;
 }

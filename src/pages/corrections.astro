@@ -1,5 +1,21 @@
 ---
 import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+import {
+  cardsCorrected,
+  correctionsByDate,
+  corrections,
+  lastCorrectionDate,
+} from "~/data/corrections";
+
+// Entries used to be hardcoded in this file's markup, which meant the page
+// could not say how many corrections it held or when the last one was — the
+// two facts that make a corrections log evidence rather than a promise.
+const log = correctionsByDate();
+const last = lastCorrectionDate();
+const fmtLong = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+const fmtShort = (d: Date) =>
+  d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
 ---
 
 <TrustPageLayout
@@ -8,7 +24,13 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
   eyebrow="Corrections"
   heading="What we got wrong, and when we fixed it."
   deck="Material corrections to a published figure, fee, eligibility detail or recommendation are logged here permanently. The page corrected, the original value, and the corrected value — every time."
-  lastUpdated={new Date("2026-06-11")}
+  lastUpdated={last ?? new Date("2026-06-11")}
+  facts={[
+    { label: "Corrections published", value: String(corrections.length) },
+    { label: "Most recent", value: last ? fmtShort(last) : "None yet" },
+    { label: "Card pages corrected", value: String(cardsCorrected()) },
+    { label: "Fixed within", value: "3 working days" },
+  ]}
 >
   <section>
     <h2>The standard</h2>
@@ -20,14 +42,29 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
   <section>
     <h2>Recent corrections</h2>
 
-    <h3>11 June 2026 — ENBD Darna partner network (3 cards)</h3>
-    <p><strong>Original:</strong> our reviews of the <a href="/cards/emirates-nbd-darna-select-visa/">Darna Select</a>, <a href="/cards/emirates-nbd-darna-visa-signature/">Darna Signature</a> and <a href="/cards/emirates-nbd-darna-visa-infinite/">Darna Infinite</a> described the cards' 10%/7.5%/6.25% partner earn as applying at <strong>Emaar</strong> destinations — Dubai Mall, Address hotels, Reel Cinemas — and recommended them to Dubai-based Emaar spenders.</p>
-    <p><strong>Corrected:</strong> Darna is <strong>Aldar's</strong> loyalty programme. The partner earn applies at Aldar destinations — Yas Mall, Yas Island theme parks, Aldar hotels, spas and golf courses in Abu Dhabi — per the Emirates NBD product pages, verified 11 June 2026. All three reviews were rewritten the same day; the cards are now framed for Aldar-community residents and Yas Island regulars, which is who they actually serve. The Darna Infinite's fee break-even was also corrected from "roughly AED 15,000 a month" of partner spend to roughly AED 1,300 a month — the original figure misread an annual threshold as monthly.</p>
+    {log.map((entry) => (
+      <article class="dp-correction">
+        <h3>
+          <time datetime={entry.date.toISOString().slice(0, 10)}>
+            {fmtLong(entry.date)}
+          </time>{" "}
+          — {entry.title}
+          {" "}
+          <span class="count">
+            ({entry.cardsAffected.length}{" "}
+            {entry.cardsAffected.length === 1 ? "card" : "cards"})
+          </span>
+        </h3>
+        <p><strong>Original:</strong> <Fragment set:html={entry.original} /></p>
+        <p><strong>Corrected:</strong> <Fragment set:html={entry.corrected} /></p>
+      </article>
+    ))}
 
-    <h3>29 May 2026 — ADCB foreign-currency fee (10 cards)</h3>
-    <p><strong>Original:</strong> we listed the foreign-currency transaction fee on ten ADCB cards as <strong>0.525%</strong>, and the <a href="/cards/adcb-essential-cashback/">ADCB Essential Cashback review</a> promoted that figure as a reason to get the card.</p>
-    <p><strong>Corrected:</strong> the published fee is <strong>2.99%</strong>, per the ADCB Schedule of Fees Ver.46 (February 2026). The 0.525% figure was ADCB's charge for cash deposits and withdrawals in foreign currency — a different line in the same fee schedule — picked up in error by our data pipeline. All ten card pages were corrected the same day, and the Essential Cashback review's argument was rebuilt around the true cost of overseas spend. The <a href="/cards/adcb-traveller/">ADCB Traveller</a>, which genuinely carries 0% FX, was unaffected.</p>
-    <p>If you've spotted an error, please <a href="mailto:info@dubaipoints.ae?subject=Correction">email us</a> with the page URL and the corrected value.</p>
+    <p>
+      If you've spotted an error, please
+      <a href="mailto:info@dubaipoints.ae?subject=Correction"> email us</a>
+      with the page URL and the corrected value.
+    </p>
   </section>
 
   <section>
@@ -44,3 +81,24 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
     </ul>
   </section>
 </TrustPageLayout>
+
+<style>
+  .dp-correction {
+    padding-top: 4px;
+  }
+  .dp-correction + .dp-correction {
+    border-top: 1px solid var(--line-soft);
+    margin-top: 28px;
+    padding-top: 24px;
+  }
+  .dp-correction h3 time {
+    font-variant-numeric: tabular-nums;
+  }
+  .dp-correction h3 .count {
+    font-family: "DM Sans", system-ui, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+</style>
