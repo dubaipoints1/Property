@@ -45,6 +45,7 @@ import { getStockEntry } from "~/lib/stockManifest";
 import { getLiveOffers } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
+import { newsletterLive } from "~/lib/newsletter";
 
 const allGuides = await getCollection("guides");
 const allPrograms = await getCollection("programs");
@@ -59,13 +60,6 @@ const fmtShort = (d: Date) =>
 // (Head of UX, 29 Aug 2026 review). Freshness claims stay on the items
 // that actually carry dates.
 
-// Newsletter state — same env flag NewsletterSignup gates its form on.
-// While unset, the hero micro-line and the band headline say honestly
-// that sign-up is by email; once the Buttondown account is configured
-// the launch-pending copy disappears without a code change.
-const newsletterLive = Boolean(
-  (import.meta.env.PUBLIC_BUTTONDOWN_USERNAME ?? "").trim(),
-);
 
 const guidesSorted = [...allGuides].sort(
   (a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime(),

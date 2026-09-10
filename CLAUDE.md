@@ -727,6 +727,76 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-09-10 — Four audit rulings (R1 palette, R3 newsletter, R4 calculators, R10 valuations)
+
+On site-owner/Chairman direction (10 September 2026), four of the ten
+decision questions the 6–7 September site audit framed
+(`.council/research/2026-09/site-audit-uiux-2026-09-06.md` §10) are ruled.
+The remaining six (R2, R5–R9) stay open.
+
+**R1 — the no-third-hue rule is applied, not exempted (audit F-005, F-006).**
+The AED value-breakdown bar shipped a five-step green ramp and a
+red-clay fee segment; the salary-transfer tracker shipped a mint and
+green accent family. Both argued, in their own comments, that these were
+"functional chart colours, not brand chrome" and so sat outside the
+2026-07-25 rule. That argument is rejected. Charts are not a hue-free
+zone: the ramp is now a single-hue sequential **navy** ramp, the fee
+segment is **gold**, and the tracker's accents are the brand navy. The
+`--mint` token, a third hue in the light palette, is retired and renamed
+`--navy-lift` at the value the dark palette has used since the
+2026-07-25 amendment replaced its teal — renamed rather than re-pointed
+so it does not repeat the `--green` naming problem the 2026-05-16
+amendment had to live with.
+
+Two things this ruling deliberately does not do. It does not create a
+data-visualisation exemption; a future chart needing more than two hue
+families returns for its own ruling. And it does not touch **status**
+signals — the tracker's urgent and warning colours are state, not brand
+accent, and stay outside the two-accent system on the same footing as
+error states. That reading was the session's; the Chairman may overrule
+it.
+
+The change also fixes an accessibility defect the hue question was
+hiding: four of the five green ramp steps carried white labels below
+4.5:1, which is what axe was still flagging on card reviews after fix
+sprint 1. Every navy step clears 4.65:1.
+
+**R3 — the newsletter CTA is demoted until the list exists (F-012,
+F-042, F-043).** "Join brief" occupied the header's primary action slot,
+the mobile overlay's first row, the footer and the homepage band while
+the newsletter page said three times that sign-up was not enabled. Until
+`PUBLIC_BUTTONDOWN_USERNAME` is set the header CTA does not render, the
+brief is an ordinary nav row, and the footer asks readers to join the
+**launch list**, which is the thing that actually exists. Setting the
+environment variable restores every label with no code change. The four
+places that each tested that variable independently — and not with the
+same rule, so a value with a space in it made the homepage announce a
+live list while the form stayed disabled — now share `src/lib/newsletter.ts`.
+
+**R4 — the two calculators stay separate and both get named (F-021,
+F-032).** `/calculator/` is the **spend-return calculator** and gains a
+header tools row and a footer row; it previously had no navigation entry
+anywhere and was reachable only from one homepage tile.
+`/salary-transfer/calculator/` remains the **salary-transfer
+calculator**. No merge, no redirect.
+
+**R10 — the empty valuations columns are cut (F-018).** `/valuations/`
+published Floor, Ceiling, Distribution and Δ 90d as a dash on every one
+of ten rows, under a printed promise that the ranges would "land with
+the methodology page, Q3 2026". Eleven days remained in Q3 and no
+sampling had been done. The columns are removed; DP value and Status
+stay, both of which are real. The page now states plainly that ranges
+are not published and **claims no date for them** — the audit asked for
+the promise to be re-dated, and a date invented by the session would be
+the same defect again. Setting that date is the Chairman's, and
+`EDITORIAL.md` now says the date goes there first and the columns come
+back second, never the other way round.
+
+For the record, the audit undercounted this finding: it named three
+empty columns. It was four — `delta90` is a dash on all ten rows too.
+
+— Chairman, 10 September 2026.
+
 ### 2026-08-07 — Council sign-off CI gate made advisory
 
 On Chairman direction (7 August 2026), recorded verbatim as the basis

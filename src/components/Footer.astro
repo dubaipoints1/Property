@@ -5,6 +5,7 @@
 
 import { getCollection } from "astro:content";
 import BankLogo from "~/components/BankLogo.astro";
+import { newsletterCtaLabel } from "~/lib/newsletter";
 
 const banks = (await getCollection("banks")).sort((a, b) =>
   a.data.name.localeCompare(b.data.name),
@@ -24,7 +25,7 @@ const year = new Date().getFullYear();
         </a>
         <p class="dp-footer-tag">UAE rewards. Sourced, dated, AED-first.</p>
         <a href="/newsletter/" class="dp-footer-cta">
-          Join the Friday brief
+          {newsletterCtaLabel}
           <span class="dp-footer-cta-arrow" aria-hidden="true">→</span>
         </a>
 
@@ -80,7 +81,8 @@ const year = new Date().getFullYear();
         <ul>
           <li><a href="/cards/">All cards</a></li>
           <li><a href="/cards/compare/">Compare cards</a></li>
-          <li><a href="/valuations/">AED valuations</a></li>
+          <li><a href="/valuations/">Points &amp; miles valuations</a></li>
+          <li><a href="/calculator/">Spend-return calculator</a></li>
           <li><a href="/guides/">Guides</a></li>
           <li><a href="/guides/expat-starter/">Expat Starter</a></li>
           <li><a href="/best-of/">Best-of roundups</a></li>

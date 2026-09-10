@@ -3,39 +3,40 @@
 // Reference: dubaipoints/project/templates/tools.jsx::Valuations.
 // DP values mirror the published programme-page baselines; rows with
 // no published baseline are "Pending" until the DP-value methodology
-// lands (Q3 2026 per EDITORIAL.md).
+// lands.
+//
+// Chairman ruling R10, 10 September 2026 (audit F-018): the Floor,
+// Ceiling, Distribution and 90-day-delta columns are cut. Every one of
+// them was a dash on every row while the page carried a published
+// promise that the ranges would land in Q3 2026 — a promise with eleven
+// days left and no sampling done. The fields stay in
+// src/lib/valuations.ts so the columns can return in one commit when
+// real figures exist; nothing renders them until then.
+//
+// The audit counted three empty columns. It was four: delta90 is "—" on
+// all ten rows as well.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import {
-  programmeValuations,
-  baselinesConfirmed,
-  type ProgrammeValuation,
-} from "~/lib/valuations";
+import { programmeValuations, baselinesConfirmed } from "~/lib/valuations";
 
 // Rows and baselines live in src/lib/valuations.ts — the single
 // source of truth the header mega-menu also renders from (Fact-Checker
 // redline, 11 June 2026; nav fork closed 29 August 2026).
-type Programme = ProgrammeValuation;
 const programmes = programmeValuations;
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
-const distributionPct = (p: Programme): number => {
-  if (p.dpValue == null || p.floor == null || p.ceiling == null) return 0;
-  if (p.ceiling === p.floor) return 50;
-  return ((p.dpValue - p.floor) / (p.ceiling - p.floor)) * 100;
-};
 ---
 
 <BaseLayout
   title="UAE points & miles valuations | DubaiPoints"
-  description="What each UAE-relevant loyalty currency is worth in fils per point. DP-value is the rate we use in card reviews. Floor (worst-case) and ceiling (premium-cabin sweet spot) bracket the realistic range."
+  description="What each UAE-relevant loyalty currency is worth in fils per point. DP value is the conservative cost-basis rate we use in every card review, published on each programme's own page."
   fullWidth
 >
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Valuations</div>
     <h1>Points &amp; miles valuations</h1>
-    <p>What each UAE-relevant loyalty currency is actually worth, in fils per point. <strong>Floor</strong> = worst-case redemption (economy cash-vs-points on the programme's own metal). <strong>Ceiling</strong> = premium-cabin sweet spot on partner award space, on routes UAE residents fly. <strong>DP value</strong> is what we use in our own card reviews.</p>
+    <p>What each UAE-relevant loyalty currency is actually worth, in fils per point. <strong>DP value</strong> is the deliberately conservative cost-basis rate we use in our own card reviews, published on each programme's page. Programmes with no published baseline are marked Pending and carry no figure.</p>
 
     <div class="dp-tools-stats">
       <span><span class="lbl">Programmes tracked:</span> <strong>{programmes.length}</strong></span>
@@ -57,12 +58,8 @@ const distributionPct = (p: Programme): number => {
     <table class="dp-tools-table">
       <thead>
         <tr>
-          <th style="width: 30%;">Programme</th>
-          <th>Floor (fils)</th>
-          <th>Ceiling (fils)</th>
+          <th style="width: 46%;">Programme</th>
           <th class="sort-active">DP value (fils) ▼</th>
-          <th style="width: 200px;">Distribution</th>
-          <th>Δ 90d</th>
           <th>Status</th>
         </tr>
       </thead>
@@ -78,19 +75,7 @@ const distributionPct = (p: Programme): number => {
                 </div>
               </div>
             </td>
-            <td class="num">{p.floor ?? "—"}</td>
-            <td class="num">{p.ceiling ?? "—"}</td>
             <td class="num"><strong style="font-size: 15px;">{p.dpValue ?? "—"}</strong></td>
-            <td>
-              {p.dpValue != null && p.floor != null && p.ceiling != null ? (
-                <div class="dp-val-bar">
-                  <span style={`width: ${Math.max(15, distributionPct(p))}%;`}></span>
-                </div>
-              ) : (
-                <span style="font-size: 11px; color: var(--muted);">{p.dpValue != null ? "range pending methodology" : "under review"}</span>
-              )}
-            </td>
-            <td class={p.delta90.startsWith("+") ? "delta-up" : p.delta90.startsWith("-") ? "delta-down" : ""}>{p.delta90}</td>
             <td>
               <span class={p.status === "Active" ? "status-active" : "status-paused"} style={p.status === "Pending" ? "color: var(--muted);" : ""}>● {p.status}</span>
             </td>
@@ -102,16 +87,16 @@ const distributionPct = (p: Programme): number => {
 
   <section class="dp-tools-methodology">
     <div class="col">
-      <div class="lbl">Floor</div>
-      <p>Worst-case redemption — economy cash-vs-points on the programme's own metal, taxes / fuel surcharges in.</p>
-    </div>
-    <div class="col">
-      <div class="lbl">Ceiling</div>
-      <p>Sweet-spot — premium cabin on partner award space, on routes UAE residents actually fly (DXB / AUH / SHJ outbound).</p>
-    </div>
-    <div class="col">
       <div class="lbl">DP value</div>
-      <p>The baseline published in each programme's overview page and used for every earn-rate calculation in card reviews — a deliberately conservative cost-basis figure. Floor/ceiling ranges land with the methodology page, Q3 2026 per editorial calendar.</p>
+      <p>The baseline published in each programme's overview page and used for every earn-rate calculation in card reviews — a deliberately conservative cost-basis figure.</p>
+    </div>
+    <div class="col">
+      <div class="lbl">Status</div>
+      <p><strong>Active</strong> means a baseline is published on the programme's own page and in use in card reviews. <strong>Pending</strong> means no baseline is published yet, so the row carries no figure.</p>
+    </div>
+    <div class="col">
+      <div class="lbl">What this table does not show</div>
+      <p>Floor and ceiling ranges — the worst case and the sweet spot around each baseline — are not published. They need per-programme award sampling that has not been done, so no date is claimed for them here.</p>
     </div>
   </section>
 

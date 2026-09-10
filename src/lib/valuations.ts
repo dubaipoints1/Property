@@ -13,6 +13,11 @@
 // rows, and tests/nav/header.test.ts asserts no fils figure in nav
 // copy disagrees with it.
 //
+// NOT RENDERED. Chairman ruling R10, 10 September 2026 (audit F-018)
+// cut the Floor, Ceiling, Distribution and 90-day-delta columns from
+// /valuations/ because all four were a dash on all ten rows. The fields
+// stay here so the columns come back in one commit once real figures
+// exist — populate these, then restore the columns.
 // Floor/ceiling ranges and 90-day deltas return when the DP-value
 // methodology lands — they are not published until they can be traced.
 
