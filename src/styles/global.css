@@ -3730,6 +3730,16 @@ html * {
   --gold-soft: #2e2a1c;
   --gold-ink:  #d9a85a;
 
+  /* Signal and feedback tokens had NO dark values, so they kept their
+     light-theme hues against the dark surface: --red at 3.3:1 on the "Our
+     take" label and the calculator's drift chip, --positive at 2.6:1.
+     Lightened here to the same hue at 6:1 or better on #1a1f2e. These stay
+     outside the two-accent system as state, not brand accent, per the
+     10 September 2026 amendment — but state still has to be legible. */
+  --red:      #e8836f;
+  --positive: #7fc3a1;
+  --negative: #e0947c;
+
   --link:      #6ba3f5;
   --link-deep: #4a8de0;
   --link-soft: rgba(107, 163, 245, 0.1);

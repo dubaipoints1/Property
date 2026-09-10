@@ -5,10 +5,21 @@
  * `src/lib/cardsData.ts`) and ranks cards by AED-equivalent monthly reward
  * given a seven-category spend profile.
  *
- * The conversion table from a card's native earn unit (Miles / points / AED
- * cashback) into an AED-comparable number is intentionally exported as
- * {@link AED_PER_UNIT} so the page methodology section can show the same
- * numbers it ranks on. Updating those rates is a single edit.
+ * Two things decide a card's AED figure and they are kept apart on purpose:
+ *
+ *   1. HOW MANY native units the spend earns — the denominator, parsed from
+ *      `earnUnit` by {@link parseEarnBasis}. A rate of `1.5` can mean 1.5
+ *      percent, 1.5 points per AED 1, 1.5 miles per AED 10 or 1.5 miles per
+ *      USD 1, and this module used to multiply all four by spend alike.
+ *   2. WHAT ONE UNIT IS WORTH — resolved from the published baselines in
+ *      src/lib/valuations.ts where one exists, and otherwise an openly
+ *      labelled placeholder in {@link PLACEHOLDER_AED_PER_UNIT}.
+ *
+ * Before 10 September 2026 neither was right: percent-denominated cards came
+ * out 100x high (the page told readers the RAKBANK World card paid
+ * "48,300 % cashback ≈ AED 48,300" a month on AED 7,800 of spend), Etihad
+ * Guest 10x on the denominator, and every mile was priced at 4 fils against
+ * the 2.0 published on /valuations/.
  *
  * Charter constraints:
  *   - Deterministic only. We read typed numerics; no LLM, no live scraping.
@@ -20,6 +31,13 @@ import { useEffect, useMemo, useState } from "preact/hooks";
 import type { CardData } from "../../lib/cardsData";
 import { formatEarnRate } from "../../lib/cardsDataFormat";
 import { NINETY_DAYS_MS } from "../../lib/verification";
+import {
+  type EarnBasis,
+  earnsAED,
+  nativeEarned,
+  parseEarnBasis,
+} from "../../lib/earnBasis";
+import { publishedAEDPerUnit } from "../../lib/valuations";
 
 // ── Public types ─────────────────────────────────────────────────────────
 
@@ -49,8 +67,8 @@ export type RankResult = {
   netMonthlyAED: number;
   /** Single biggest contributing spend category by AED reward. */
   topCategory: keyof SpendProfile | null;
-  /** True when the conversion is a fallback (no known loyaltyProgram). */
-  fallbackConversion: boolean;
+  /** Where aedPerUnit came from — drives the disclosure chip on the tile. */
+  rateBasis: RateBasis;
   /** True when lastVerified is older than 90 days. */
   staleData: boolean;
 };
@@ -62,83 +80,62 @@ export type RankOptions = {
   now?: Date;
 };
 
-// ── Conversion table ─────────────────────────────────────────────────────
+// ── Conversion ───────────────────────────────────────────────────────────
 
-/** Conservative AED-per-native-unit benchmarks. Updating these here updates
- * both the ranker and the methodology section, which re-imports the table. */
-export const AED_PER_UNIT = {
-  /** 1 AED of cashback = 1 AED. */
-  aed_cashback: 1.0,
-  /** Skywards / Etihad Guest / Qatar Avios / Saudia Alfursan / any Miles. */
-  miles: 0.04,
-  /** Bank-proprietary transferable points (FAB Rewards, ENBD Plus Points,
-   * ADCB TouchPoints, Darna, U Points, etc.). */
-  bank_points: 0.01,
-  /** Hotel points (Marriott Bonvoy etc.). */
-  hotel_points: 0.008,
-  /** Fallback when no loyaltyProgram is known. Treated as 1:1 cashback
-   * with a UI warning chip. */
-  unknown: 1.0,
-} as const;
+/**
+ * Rate used when this publication has NOT published a baseline for the
+ * card's currency — 36 of 58 cards, among them ENBD Plus Points, ADCB
+ * TouchPoints, LuLu Points, Darna, U by Emaar, FAB Rewards, dnata, SHARE and
+ * Voyager Miles.
+ *
+ * It is a placeholder, not a valuation, and the UI says so on every card it
+ * touches. Chairman direction of 10 September 2026 was to keep these cards
+ * in the ranking with the weaker basis disclosed rather than drop two-thirds
+ * of the market out of the tool. Publishing a real baseline for a currency
+ * means adding a row to src/lib/valuations.ts, after which that currency
+ * stops using this number.
+ */
+export const PLACEHOLDER_AED_PER_UNIT = 0.01;
 
-export type ConversionBucket = keyof typeof AED_PER_UNIT;
+/** Where a card's AED-per-unit came from — shown to the reader. */
+export type RateBasis =
+  /** The card pays dirhams; no currency valuation is involved. */
+  | "cashback"
+  /** Taken from the published baseline on /valuations/. */
+  | "published"
+  /** No published baseline for this currency; placeholder rate. */
+  | "placeholder"
+  /** `earnUnit` does not state a denominator — no AED figure is possible. */
+  | "unrankable";
 
-const PROGRAM_TO_BUCKET: Array<{
-  test: (program: string, unit: string) => boolean;
-  bucket: ConversionBucket;
-}> = [
-  // Cashback first — exact-match unit string.
-  {
-    test: (_, unit) => /cashback|aed back/i.test(unit),
-    bucket: "aed_cashback",
-  },
-  // Miles programmes — Emirates Skywards, Etihad Guest, Qatar, Saudia.
-  {
-    test: (program, unit) =>
-      /miles|skywards|etihad|qatar|saudia|alfursan|avios/i.test(
-        `${program} ${unit}`,
-      ),
-    bucket: "miles",
-  },
-  // Hotel points.
-  {
-    test: (program) => /marriott|bonvoy|hilton|ihg|accor/i.test(program),
-    bucket: "hotel_points",
-  },
-];
-
-/** Resolve a card's native unit to its AED conversion rate. Default is the
- * conservative `bank_points` rate (0.01 AED/point), which fits FAB Rewards,
- * ENBD Plus Points, ADCB TouchPoints, U Points, Darna, etc. */
-export function conversionForCard(card: CardForCalc): {
-  bucket: ConversionBucket;
+export type CardConversion = {
+  basis: RateBasis;
+  /** null only when basis is "unrankable". */
+  earnBasis: EarnBasis | null;
   aedPerUnit: number;
-  fallback: boolean;
-} {
-  const program = card.loyaltyProgram ?? "";
-  const unit = card.earnUnit ?? "";
+};
 
-  if (!program && !unit) {
-    return {
-      bucket: "unknown",
-      aedPerUnit: AED_PER_UNIT.unknown,
-      fallback: true,
-    };
+/**
+ * Resolve how to price one card. Deterministic and total: a card whose
+ * `earnUnit` states no denominator is returned as "unrankable" and kept out
+ * of the AED ranking, rather than defaulted into it.
+ */
+export function conversionForCard(card: CardForCalc): CardConversion {
+  const earnBasis = parseEarnBasis(card.earnUnit);
+  if (!earnBasis) {
+    return { basis: "unrankable", earnBasis: null, aedPerUnit: 0 };
   }
-
-  for (const rule of PROGRAM_TO_BUCKET) {
-    if (rule.test(program, unit)) {
-      return {
-        bucket: rule.bucket,
-        aedPerUnit: AED_PER_UNIT[rule.bucket],
-        fallback: false,
-      };
-    }
+  if (earnsAED(card.earnUnit, earnBasis)) {
+    return { basis: "cashback", earnBasis, aedPerUnit: 1 };
+  }
+  const published = publishedAEDPerUnit(card.loyaltyProgram);
+  if (published != null) {
+    return { basis: "published", earnBasis, aedPerUnit: published };
   }
   return {
-    bucket: "bank_points",
-    aedPerUnit: AED_PER_UNIT.bank_points,
-    fallback: false,
+    basis: "placeholder",
+    earnBasis,
+    aedPerUnit: PLACEHOLDER_AED_PER_UNIT,
   };
 }
 
@@ -149,6 +146,7 @@ function perCategoryBreakdown(
   card: CardForCalc,
   spend: SpendProfile,
   aedPerUnit: number,
+  earnBasis: EarnBasis,
 ): {
   totalNative: number;
   totalAED: number;
@@ -157,16 +155,25 @@ function perCategoryBreakdown(
   const r = card.earnRates;
   const base = r.everythingElse;
 
-  // Per-category native earn = spend * rate. Utilities has no dedicated
-  // earnRates key — falls back to base by design.
+  // Per-category native earn, through the card's own denominator — a
+  // percentage of spend, units per AED n, or units per USD 1. Multiplying
+  // spend by the rate directly is what produced the 100x figures.
+  //
+  // Utilities reads `r.utilities` like every other category. It used to be
+  // pinned to the base rate on the grounds that no card had a utilities key;
+  // twelve do, and ten of them publish a rate BELOW their base precisely
+  // because utility spend earns less — so the calculator was over-crediting
+  // them. Bonvoy World Elite pays 0.3 there against a base of 3.
+  const earn = (spendAED: number, rate: number) =>
+    nativeEarned(spendAED, rate, earnBasis);
   const contributions: Record<keyof SpendProfile, number> = {
-    dining: spend.dining * (r.dining ?? base),
-    groceries: spend.groceries * (r.groceries ?? base),
-    fuel: spend.fuel * (r.fuel ?? base),
-    travel: spend.travel * (r.travel ?? base),
-    online: spend.online * (r.online ?? base),
-    utilities: spend.utilities * base,
-    entertainment: spend.entertainment * (r.entertainment ?? base),
+    dining: earn(spend.dining, r.dining ?? base),
+    groceries: earn(spend.groceries, r.groceries ?? base),
+    fuel: earn(spend.fuel, r.fuel ?? base),
+    travel: earn(spend.travel, r.travel ?? base),
+    online: earn(spend.online, r.online ?? base),
+    utilities: earn(spend.utilities, r.utilities ?? base),
+    entertainment: earn(spend.entertainment, r.entertainment ?? base),
   };
 
   let totalNative = 0;
@@ -200,12 +207,10 @@ export function rankCards(
   const refTime = (opts.now ?? new Date()).getTime();
 
   const results: RankResult[] = cards.map((card) => {
-    const { aedPerUnit, fallback } = conversionForCard(card);
-    const { totalNative, totalAED, topCategory } = perCategoryBreakdown(
-      card,
-      spend,
-      aedPerUnit,
-    );
+    const { aedPerUnit, basis, earnBasis } = conversionForCard(card);
+    const { totalNative, totalAED, topCategory } = earnBasis
+      ? perCategoryBreakdown(card, spend, aedPerUnit, earnBasis)
+      : { totalNative: 0, totalAED: 0, topCategory: null };
     const monthlyFeeAED = card.annualFee.amount / 12;
     const verifiedAt =
       card.lastVerified instanceof Date
@@ -221,7 +226,7 @@ export function rankCards(
       monthlyFeeAED,
       netMonthlyAED: totalAED - monthlyFeeAED,
       topCategory,
-      fallbackConversion: fallback,
+      rateBasis: basis,
       staleData,
     };
   });
@@ -230,7 +235,11 @@ export function rankCards(
     ? (r: RankResult) => r.netMonthlyAED
     : (r: RankResult) => r.monthlyRewardAED;
 
-  return results.sort((a, b) => keyFn(b) - keyFn(a));
+  // A card whose earnUnit states no denominator has no honest AED figure, so
+  // it is not ranked at all rather than ranked at zero.
+  return results
+    .filter((r) => r.rateBasis !== "unrankable")
+    .sort((a, b) => keyFn(b) - keyFn(a));
 }
 
 // ── UI ───────────────────────────────────────────────────────────────────
@@ -285,10 +294,37 @@ function saveSpend(spend: SpendProfile): void {
 const fmtAED = (n: number): string =>
   `AED ${Math.round(n).toLocaleString("en-AE")}`;
 
-const fmtNative = (n: number, unit: string | undefined): string => {
+/**
+ * The headline number on a tile.
+ *
+ * A percentage card's "native" earning is already dirhams, so it renders as
+ * currency; printing the count beside the raw unit string produced
+ * "483 % cashback", which reads as 483 percent. A per-unit card renders the
+ * count beside a short currency noun — the full earn-unit wording carries
+ * caps and exclusions that belong on the card's own page, not in a headline.
+ */
+const nativeUnitNoun = (unit: string | undefined): string => {
+  if (!unit) return "";
+  // Drop the denominator clause and any parenthetical, leaving the currency.
+  const noun = unit
+    .replace(/\s*\(.*$/, "")
+    .replace(/\s*per\s+(AED|USD)\s*[\d,]*\s*spent.*$/i, "")
+    .replace(/^%\s*(as|back as|value back as|back)?\s*/i, "")
+    .trim();
+  return noun;
+};
+
+const fmtNative = (
+  n: number,
+  unit: string | undefined,
+  basis: RateBasis,
+): string => {
+  if (basis === "cashback") return fmtAED(n);
   const rounded = Math.round(n);
-  if (!unit) return `${rounded.toLocaleString("en-AE")}`;
-  return `${rounded.toLocaleString("en-AE")} ${unit}`;
+  const noun = nativeUnitNoun(unit);
+  return noun
+    ? `${rounded.toLocaleString("en-AE")} ${noun}`
+    : rounded.toLocaleString("en-AE");
 };
 
 const fmtVerified = (d: Date | string): string => {
@@ -446,10 +482,14 @@ export default function RewardsCalculator({ cards }: Props) {
                 <div class="num-block">
                   <span class="num-label">Monthly reward</span>
                   <strong class="num-value">
-                    {fmtNative(r.monthlyRewardNative, r.card.earnUnit)}
+                    {fmtNative(r.monthlyRewardNative, r.card.earnUnit, r.rateBasis)}
                   </strong>
                   <span class="num-sub">
-                    ≈ {fmtAED(r.monthlyRewardAED)} at {r.aedPerUnit} AED/unit
+                    {r.rateBasis === "cashback"
+                      ? "paid in dirhams"
+                      : `≈ ${fmtAED(r.monthlyRewardAED)} at ${(r.aedPerUnit * 100).toFixed(1)} fils each, ${
+                          r.rateBasis === "published" ? "published" : "placeholder"
+                        }`}
                   </span>
                 </div>
                 <div class="num-block">
@@ -490,9 +530,12 @@ export default function RewardsCalculator({ cards }: Props) {
                     Data drift risk
                   </span>
                 )}
-                {r.fallbackConversion && (
-                  <span class="chip is-fallback" title="No known loyalty programme — treated as 1:1 cashback">
-                    Unknown unit — 1:1 fallback
+                {r.rateBasis === "placeholder" && (
+                  <span
+                    class="chip is-fallback"
+                    title="We have not published a baseline for this currency. The AED figure uses a placeholder rate and is not comparable with a card priced on a published one."
+                  >
+                    Placeholder rate — no published baseline
                   </span>
                 )}
               </div>

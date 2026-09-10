@@ -67,3 +67,42 @@ export function dpValueSub(slug: string): string | undefined {
 // programme overview pages — NOT the build date. A build-date stamp
 // manufactured freshness for numbers that hadn't moved.
 export const baselinesConfirmed = new Date("2026-06-10");
+
+/**
+ * Maps a card's L2 `loyaltyProgram` string to the programme slug above, so
+ * the rewards calculator values a currency at exactly the figure this page
+ * publishes rather than keeping a second table of its own.
+ *
+ * It had one: `AED_PER_UNIT` in RewardsCalculator.tsx priced a mile at 4
+ * fils against the 2.0 published here, and hotel points at 0.8 against
+ * Bonvoy's 2.5 — so /calculator/ ranked miles cards at double their
+ * published value and hotel cards at a third, on the page that links to
+ * /valuations/methodology/ as though the numbers came from it. Chairman
+ * ruling 2 of 12 June 2026 says card arithmetic uses these baselines.
+ *
+ * Keys are the exact strings in cards.json. A programme absent from this
+ * map has no published baseline; the caller must say so rather than guess,
+ * and `tests/calculator/published-rates.test.ts` fails if a mapped name
+ * stops matching a card or a row.
+ */
+export const VALUATION_SLUG_BY_LOYALTY_PROGRAM: Readonly<Record<string, string>> = {
+  "Emirates Skywards": "skywards",
+  "Etihad Guest": "etihad-guest",
+  "Marriott Bonvoy": "marriott-bonvoy",
+};
+
+/**
+ * Published AED per native unit for a card's loyalty programme, or null when
+ * this publication has not published a baseline for that currency.
+ *
+ * Deliberately NOT a fuzzy match. The previous regex over programme + unit
+ * text caught "Voyager Miles" on the word "miles" and priced it as if it
+ * were Skywards, a currency with a baseline; Voyager has none.
+ */
+export function publishedAEDPerUnit(loyaltyProgram: string | undefined | null): number | null {
+  if (!loyaltyProgram) return null;
+  const slug = VALUATION_SLUG_BY_LOYALTY_PROGRAM[loyaltyProgram.trim()];
+  if (!slug) return null;
+  const fils = dpValueFils(slug);
+  return fils == null ? null : fils / 100;
+}

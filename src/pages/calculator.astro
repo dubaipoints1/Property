@@ -10,7 +10,15 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import RewardsCalculator from "~/components/islands/RewardsCalculator";
 import { getActiveCards } from "~/lib/cardsData";
-import { AED_PER_UNIT } from "~/components/islands/RewardsCalculator";
+import { PLACEHOLDER_AED_PER_UNIT } from "~/components/islands/RewardsCalculator";
+import { VALUATION_SLUG_BY_LOYALTY_PROGRAM, dpValueFils } from "~/lib/valuations";
+
+// The currencies this publication has published a baseline for, read from
+// the same rows /valuations/ renders so the two can never disagree.
+const publishedRates = Object.entries(VALUATION_SLUG_BY_LOYALTY_PROGRAM)
+  .map(([programme, slug]) => ({ programme, fils: dpValueFils(slug) }))
+  .filter((r): r is { programme: string; fils: number } => r.fils != null)
+  .sort((a, b) => a.programme.localeCompare(b.programme));
 
 const cards = getActiveCards();
 const cardCount = cards.length;
@@ -93,58 +101,65 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
 
       <h3>The AED conversion table</h3>
       <p>
-        Each card earns in its own unit — AED cashback, Skywards
-        Miles, FAB Rewards, Darna, and so on. To rank cards against
-        each other we convert into AED equivalents using a single
-        published table. Updating these rates updates both the
-        ranking and this section.
+        Two separate things decide the AED figure on each card, and
+        mixing them up is what made an earlier version of this page
+        publish figures that were wrong by a factor of a hundred.
+      </p>
+
+      <h3>How much you earn</h3>
+      <p>
+        Cards state their earn rate in different denominators. Some
+        quote a percentage of spend, some points per AED 1, Etihad
+        Guest co-brands miles per AED 10, and the Skywards and Bonvoy
+        cards points per <strong>USD</strong> 1. Each card's rate is
+        applied through its own denominator, read from the earn-unit
+        wording published on the card's page. A card whose wording
+        does not state one is left out of the ranking rather than
+        guessed at.
+      </p>
+
+      <h3>What a unit is worth</h3>
+      <p>
+        Cashback cards pay dirhams, so no conversion applies. For the
+        currencies below we use the baseline published on our
+        <a href="/valuations/">valuations page</a> — the same figure
+        the card reviews use, not a separate number kept here.
       </p>
 
       <table class="dp-data-table">
         <thead>
           <tr>
-            <th>Earn unit family</th>
-            <th>AED per native unit</th>
-            <th>Examples</th>
+            <th>Currency</th>
+            <th>Fils per unit</th>
+            <th>Basis</th>
           </tr>
         </thead>
         <tbody>
+          {publishedRates.map((r) => (
+            <tr>
+              <td>{r.programme}</td>
+              <td class="num">{r.fils.toFixed(1)}</td>
+              <td>Published on /valuations/</td>
+            </tr>
+          ))}
           <tr>
-            <td>AED cashback</td>
-            <td class="num">{AED_PER_UNIT.aed_cashback.toFixed(2)}</td>
-            <td>FAB Cashback, Mashreq Cashback, ENBD Cashback</td>
-          </tr>
-          <tr>
-            <td>Airline miles</td>
-            <td class="num">{AED_PER_UNIT.miles.toFixed(2)}</td>
-            <td>Emirates Skywards, Etihad Guest, Qatar Avios</td>
-          </tr>
-          <tr>
-            <td>Bank-proprietary points</td>
-            <td class="num">{AED_PER_UNIT.bank_points.toFixed(2)}</td>
-            <td>FAB Rewards, ENBD Plus Points, ADCB TouchPoints, U Points, Darna</td>
-          </tr>
-          <tr>
-            <td>Hotel points</td>
-            <td class="num">{AED_PER_UNIT.hotel_points.toFixed(3)}</td>
-            <td>Marriott Bonvoy</td>
-          </tr>
-          <tr>
-            <td>Unknown / no loyalty programme</td>
-            <td class="num">{AED_PER_UNIT.unknown.toFixed(2)}</td>
-            <td>Fallback — flagged on the result tile</td>
+            <td>Every other currency</td>
+            <td class="num">{(PLACEHOLDER_AED_PER_UNIT * 100).toFixed(1)}</td>
+            <td>Placeholder — flagged on the card</td>
           </tr>
         </tbody>
       </table>
 
       <p>
-        <em>
-          These are conservative benchmarks; your actual redemption
-          value will differ. Skywards First-class sweet spots reach
-          5–7 fils per Mile; mass-market economy redemptions sit at
-          3 fils. See the <a href="/valuations/methodology/">AED
-          valuations methodology</a> for the underlying work.
-        </em>
+        <strong>The placeholder row is not a valuation.</strong> Most
+        cards here earn a bank or merchant currency — ENBD Plus
+        Points, ADCB TouchPoints, LuLu Points, Darna, U by Emaar, FAB
+        Rewards, SHARE, Voyager Miles — and we have not published a
+        baseline for any of them. Those cards are ranked on a flat
+        placeholder so they stay visible in the tool, and every one of
+        them carries a label saying so. Do not read a placeholder
+        card's AED figure against a published one; the two are not
+        measured the same way.
       </p>
 
       <h3>Annual fee handling</h3>
