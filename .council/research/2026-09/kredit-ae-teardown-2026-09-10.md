@@ -67,12 +67,44 @@ cover one to five cards each and stay as chips.
 spending profile a figure was priced on. That framing is what prompted
 checking ours, and ours turned out not to have a denominator at all — see §4.
 
+### 2a. Round two — the fuller pass
+
+Later on 10 September the Chairman asked for the site to be reviewed
+properly and "what we can use" applied. Fifteen more pages were read —
+the card directory, a bank hub, the calculators hub and two of the five
+calculators, the ranking and rating methodology pages, the fee index, the
+"new to the UAE" roadmap, the wallet optimiser, the card-picker quiz, the
+ChatGPT app page, a blog post, and one card page that turned out to be a
+listing tile and one that 404s. Seven more patterns came back, all built
+from data we already held:
+
+| Taken | Theirs | Ours |
+|---|---|---|
+| **Interest & payoff calculator** (`/calculator/interest/`) | One of five calculators; defaults typed into the copy ("around 3% to 3.5%", "5% or AED 100"). | Defaults **computed from L2**: the median monthly rate across the 22 cards that publish one (3.49%) and the modal minimum-payment rule across the 8 that publish one, with the match counts printed beside them. The rule is read by a fixed regex per Charter §6. Picking a card fills its published rate in. |
+| **Named spend profiles** on `/calculator/` | Seven household profiles on each compare page; five archetypes on the quiz. | Six round-number presets, labelled as modelling assumptions and editable. This is the §5 method — state the spend behind every figure — now adopted. |
+| **Wallet mode** on `/calculator/` | "My Cards": pick the cards you hold, get a category-by-category swipe plan. Requires sign-in. | Same question, no account: tick cards, the ranking narrows to them, a routing table shows which card to use per category. Kept in localStorage only. |
+| **Fee index** (`/cards/fees/`) | Share free-for-life, average and median fee, fees by bank and salary tier, over 157 cards. Means as the headline. | Computed from L2 on every build; **medians** as the headline because a few premium cards drag a mean. Adds what theirs lacks: an FX-fee distribution (every card we cover carries a numeric margin) and a per-card table a reader can check a figure against. |
+| **Points-to-AED converter** on `/valuations/` | Two values per currency — flight redemption and cash — for nine programmes. | One value per currency, the published DP baseline, per Chairman ruling 2 of 12 June 2026. Programmes with no baseline are listed but cannot be selected. |
+| **Fee break-even** per calculator tile | Their compare pages net the fee; their ROI post finds the spend at which a paid card "pulls ahead". | Each paid card's tile states the monthly spend, at the reader's own mix, at which earn first covers the fee accrual — or that a cap sits below the accrual and it never does. |
+| **Directory snapshot + facet pills** on `/cards/` | "157 listed products · 25+ banks · latest update Sep 2026" and a chip row of filters. | Card, bank and verified-through counts from `trustFacts`, plus pills to the salary and fee pages that had no entry there. |
+
+Everything in the table reuses the calculator's own engine — `parseEarnBasis`,
+the published baselines, `getActiveCards()` — so a figure that moves in L2
+moves in every tool at once. Credits for this pass are in §6.
+
 ## 3. What we declined, and why
 
 Recorded so nobody re-proposes them from the same source.
 
 | Declined | Reason |
 |---|---|
+| Card ratings out of 5 and the "Market Position" percentile ranking | Precedent (2026-05-25): the first published score returns to the Chairman. Worth noting they withdrew their own auto-generated ratings after two cards' economics were disputed; 5 of 157 cards now carry one. |
+| A published open dataset of the card catalogue under CC BY 4.0, with a cite-as line | **DECISION REQUIRED.** Licensing L2 for reuse would make our provenance citable rather than merely visible, and is the one thing on their site that competes on our axis. It is a Chairman ruling on licence terms, not a session's call. |
+| The ChatGPT app | **DECISION REQUIRED**, and a separate brief if wanted. Out of scope for a teardown. |
+| Balance-transfer and installment (EMI) calculators | Outside the points-and-miles remit, and balance transfer needs promotional-rate data L2 does not hold. |
+| Their account of UAE FX fees (bank markup plus a 1.15% scheme charge, a "September 2025 repricing to 3.14%") | **VERIFICATION HOLD** to Fact-Checker. The structure may be right; the figures are not citable from a competitor under the 2026-07-27 ladder. |
+| The "new to the UAE" five-step roadmap | Already exists: `expat-starter.mdx` §"First 90 days — week by week". |
+| Sign-in to save a wallet or spend profile | No accounts here. localStorage does the job the reader needs. |
 | The affiliate apply flow, 1,295 offer pages, partner perks | Charter §"Non-negotiables" 5. No advertorial-driven recommendations. Their whole page count rests on a model we do not run. |
 | Card ratings out of 5 (they publish e.g. "4.1/5") | The 2026-05-25 amendment makes the first published card score precedent-setting and returns it to the Chairman. Not a session's call. |
 | The card-picker quiz | Duplicates `/cards/finder/`. |
@@ -127,6 +159,36 @@ All six are fixed in PR #351 with tests that fail on recurrence — including
 a per-card assertion that every card's earn-unit wording parses, so an
 unfamiliar new card fails the suite rather than quietly earning a wrong
 number.
+
+**Round two found three more, the same way — by reading their method
+against our code.**
+
+**4.5 — the calculator applied no caps, while its methodology said it
+did.** The "Why we ignore caps by default" section had said since May 2026
+that per-category caps were applied "only when the card declares them in
+typed form". Thirteen cards carry `earnRates._caps`, and nothing read the
+field. ADCB 365's AED 1,000 monthly cap and ADIB Cashback's AED 300 grocery
+cap were credited without limit; at AED 60,000 of grocery spend the 365
+showed AED 1,800 a month against a published ceiling of 1,000. Cashback
+cards are now clamped per category and per month, the tile says when a
+figure is the capped one, and points cards are deliberately left alone
+because their AED-denominated caps have no honest conversion to units.
+`tests/calculator/caps-breakeven.test.ts` drives every capped card in L2
+past its cap and fails if one is not clamped.
+
+**4.6 — the same page still said utilities were pinned to the base rate**,
+a sentence the 10 September fix (4.1) had made false. Corrected, and the
+paragraph now states the twelve-card / ten-below-base figure the code acts
+on.
+
+**4.7 — nested schema stripping, again.** `fab-elite`'s `_caps` carries
+`annual_rewards_cap`, `luxury_monthly_cap` and `notes`; `fab-cashback`'s
+carries `notes`. None is declared on `EarnCaps`, so Zod strips them and
+`fab-elite`'s cap reaches the page as `{}`. Same class as 4.3, one object
+deeper. **Not fixed here**: a cap denominated in reward units rather than
+dirhams needs a schema field and a decision about how the tools should
+treat it, which is a T3 change. Recorded so the next person reading `{}`
+knows it is not empty in the file.
 
 ## 5. Honest note on the comparison
 
@@ -186,7 +248,9 @@ not draw the wrong conclusion.
 | `scrape` homepage (markdown + links) | 1 |
 | `scrape` one compare page | 1 |
 | `scrape` `etihad.com/en-ae/offers` (unrelated F-016 re-check) | 1 |
-| **Total** | **5** |
+| **Round one** | **5** |
+| Round two: `scrape` × 15 — `/credit-cards`, `/banks/adcb`, `/credit-cards/calculators`, `/calculators/miles-to-aed`, `/calculators/credit-card-interest`, `/credit-cards/how-we-rank`, `/credit-cards/how-we-rate`, `/credit-cards/fee-index`, `/new-to-uae`, `/my-cards`, `/card-picker`, `/chatgpt`, one blog post, one card URL (a listing tile), one card `/details` URL (404) | 15 |
+| **Total** | **20** |
 
 Well inside the 1,000-credit ceiling set for the September audit, of which
-roughly 490 had been spent.
+roughly 490 had been spent before this teardown.

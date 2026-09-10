@@ -28,6 +28,7 @@
 
 import { PERK_PAGES } from "~/data/perkPages";
 import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
+import { cardsTracked, banksCovered } from "~/lib/trustFacts";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getEntry } from "astro:content";
@@ -69,6 +70,8 @@ const filters = [
     active: false,
     href: `/cards/perks/${perk.slug}/`,
   })),
+  { label: "By salary", active: false, href: "/cards/salary/" },
+  { label: "Fees", active: false, href: "/cards/fees/" },
   { label: "Compare", active: false, href: "/cards/compare/" },
 ];
 
@@ -146,6 +149,19 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
         We've reviewed the active UAE cards we cover against primary issuer
         sources. Browse the picks, compare welcome
         bonuses and earn rates, then open any card for the full verdict.
+      </p>
+      <p class="cards-pagehead-snapshot">
+        <strong>{cardsTracked()}</strong> cards
+        <span class="sep">·</span>
+        <strong>{banksCovered()}</strong> banks
+        {verifiedStamp && (
+          <>
+            <span class="sep">·</span>
+            verified through <strong>{verifiedStamp}</strong>
+          </>
+        )}
+        <span class="sep">·</span>
+        <a href="/cards/fees/">fee index</a>
       </p>
     </div>
   </header>
@@ -472,6 +488,17 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
   .cards-compare-pills {
     display: flex; flex-wrap: wrap; gap: 8px;
   }
+  .cards-pagehead-snapshot {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-feature-settings: 'tnum';
+  }
+  .cards-pagehead-snapshot strong { color: var(--ink); font-weight: 600; }
+  .cards-pagehead-snapshot .sep { margin: 0 6px; color: var(--line); }
+  /* Underlined: a coloured link inside body text fails axe's
+     link-in-text-block (1.06:1 against the surrounding grey). */
+  .cards-pagehead-snapshot a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
   .cards-compare-sort {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 13px;

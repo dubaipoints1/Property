@@ -1955,3 +1955,57 @@ on 10 September and its Actions failure was a bot wall; one archived RAKBANK
 not machine-rewritten; F-050's guide refresh queue; and the news cadence gap
 — no story filed since 22 August against desk ceilings of two to three
 airline and one to two hotel stories a week.
+
+### 16.8 Round two of the kredit.ae teardown
+
+Later on 10 September the Chairman asked for kredit.ae to be reviewed in
+full and "what we can use" applied. Fifteen more pages were read for 15
+credits (teardown §2a and §6). Seven patterns were taken, every one built
+from data the site already held so that a figure moving in L2 moves in the
+tool:
+
+- **`/calculator/interest/`** — an interest-and-payoff calculator. Its two
+  defaults are computed, not typed: the median published monthly rate across
+  the 22 cards that carry one (3.49%) and the modal minimum-payment rule
+  across the 8 that publish one, read by a fixed regex per Charter §6, with
+  the match counts printed on the page. Picking a card fills its rate in.
+- **`/cards/fees/`** — a fee index over the 57 active cards: share free for
+  life, first-year waivers, median fees, by bank and by salary tier, an FX
+  distribution, and a per-card table. Medians as the headline. Every figure
+  from `src/lib/feeIndex.ts`; the page types none.
+- **`/calculator/`** gains six named spend profiles, a wallet mode that
+  narrows the ranking to held cards and routes each category to the best of
+  them, and a fee break-even line on every paid card's tile.
+- **`/valuations/`** gains a points-to-AED converter that prices a balance
+  only at the published DP baseline; Pending programmes are listed and
+  disabled.
+- **`/cards/`** gains a computed snapshot line and pills to the salary and
+  fee pages, which had no entry there.
+
+Declined, with the clause for each, in teardown §3: the 1–5 ratings and the
+percentile ranking, an open dataset under CC BY 4.0 (**decision required**),
+the ChatGPT app (**decision required**), the balance-transfer and EMI
+calculators, their FX-fee account (**verification hold**), and a
+new-to-UAE roadmap the expat-starter guide already carries.
+
+**Three more defects on our side** (teardown §4.5–4.7). The calculator's
+methodology had said since May 2026 that typed caps were applied; nothing
+applied them, and ADCB 365 showed AED 1,800 a month against a published
+ceiling of AED 1,000. Thirteen capped cards are now clamped and tested. The
+same page still said utilities were pinned to the base rate after 4.1 had
+changed that; corrected. And `fab-elite`'s `_caps` carries keys the schema
+strips, arriving as `{}` — the 4.3 class one object deeper, recorded rather
+than fixed because a units-denominated cap needs a schema field.
+
+**Verification.** `astro check` 0/0/0; `npm test` 449 passing (29 new across
+five files); `npm run build` 214 pages, 16,336 internal links, 0 broken; axe
+0 violations in light and dark on `/calculator/`, `/calculator/interest/`,
+`/cards/fees/`, `/valuations/` and `/cards/` — after one fix: the new
+snapshot line's "fee index" link failed link-in-text-block on the first
+probe (1.06:1 against the surrounding grey) and is underlined now. Driven in
+a browser at 1280px and 390px: presets set the totals, the wallet narrows
+and persists across reload, the ADCB 365 tile reads "capped at AED 1,000",
+the interest tool reports 11 years 9 months at the minimum against 2 years
+11 months flat, the converter disables five Pending rows, and the fee page
+figures match the library's to the dirham. No horizontal overflow at 390px
+on any of the four tool routes.

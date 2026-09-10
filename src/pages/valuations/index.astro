@@ -18,6 +18,18 @@
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { programmeValuations, baselinesConfirmed } from "~/lib/valuations";
+import PointsToAEDConverter from "~/components/islands/PointsToAEDConverter";
+
+// The converter prices a balance at the same rows the table renders, so the
+// two cannot disagree. Pending rows are passed through disabled rather than
+// omitted: the reader should see that the programme exists and has no
+// published figure, not wonder why it is missing.
+const converterProgrammes = programmeValuations.map((p) => ({
+  slug: p.slug ?? p.name.toLowerCase().replace(/\s+/g, "-"),
+  name: `${p.name} ${p.currencyName}`,
+  currencyName: p.currencyName,
+  dpValue: p.dpValue ?? null,
+}));
 
 // Rows and baselines live in src/lib/valuations.ts — the single
 // source of truth the header mega-menu also renders from (Fact-Checker
@@ -53,6 +65,8 @@ const fmt = (d: Date) =>
       Sorted by <strong style="color: var(--ink); font-weight: 600;">DP value</strong>
     </span>
   </div>
+
+  <PointsToAEDConverter client:visible programmes={converterProgrammes} />
 
   <div class="dp-tools-table-wrap">
     <table class="dp-tools-table">
