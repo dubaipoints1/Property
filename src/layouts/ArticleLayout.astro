@@ -228,7 +228,6 @@ const schema = {
             coverSize="hero"
             class="article-hero-image"
             loading="eager"
-            sizes="(max-width: 900px) 100vw, 65vw"
           />
         ) : (
           <div class="hero-img">{heroLabel}</div>
@@ -291,7 +290,7 @@ const schema = {
       <div class="dp-article-related-grid">
         {relatedGuides.map((g) => (
           <a href={`/guides/${g.id}/`} class="dp-article-related-card">
-            <StockImage slug={`guide-${g.id}`} coverTitle={g.data.title} coverCategory="Guide" coverSize="med" sizes="(max-width: 900px) 100vw, 33vw" />
+            <StockImage slug={`guide-${g.id}`} coverTitle={g.data.title} coverCategory="Guide" coverSize="med" />
             <div class="body">
               <span class="cat">Guide · {fmtShort(g.data.updatedAt)}</span>
               <h3>{g.data.title}</h3>

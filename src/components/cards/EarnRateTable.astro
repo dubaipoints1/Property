@@ -54,6 +54,23 @@ const CATEGORY_LABELS: Record<string, string> = {
   international: "International spend",
   utilities: "Utilities",
   insurance: "Insurance",
+  // Added 10 September 2026 with the schema fix below them: cards.json
+  // carried these and the EarnRates schema dropped them before this
+  // component ever saw them, so a rate an editor had entered rendered
+  // nowhere. Labels here so nothing L2 holds is carried but unshown.
+  supermarkets: "Supermarkets",
+  quickServiceRestaurants: "Quick-service restaurants",
+  autoDealers: "Car dealers",
+  education: "Education",
+  government: "Government services",
+  realEstate: "Rent and real estate",
+  telecom: "Telecom",
+  charity: "Charity",
+  transport: "Transport",
+  europe: "Europe / UK",
+  airfare: "Airfare",
+  hotels: "Hotels",
+  cinema: "Cinema",
   everythingElse: "Everything else",
 };
 

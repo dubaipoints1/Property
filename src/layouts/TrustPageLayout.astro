@@ -8,7 +8,29 @@
 //   ↓
 //   meta strip (Last updated · Editorial standards link)
 //   ↓
+//   optional facts strip (.dp-stats)
+//   ↓
 //   single-column body (max 720px) — slot for sectioned prose
+//
+// The facts strip was added on 10 September 2026 for audit finding F-051:
+// every page here opened with two long paragraphs and nothing scannable, and
+// the six highest-trust pages passed no deck either, so a reader's first
+// screen was a title, a date and body copy. The accountability this
+// publication actually has — a named editor position, per-field provenance,
+// verification dates, a public corrections log — was invisible to anyone who
+// did not read the prose. Prompted by the kredit.ae teardown, whose operator
+// publishes none of it and whose whole accountability surface is four pages.
+//
+// It reuses `.dp-stats` / `.dp-stat`, defined in global.css since the Phase D
+// handoff and mounted by nothing until now. The Charter forbids new visual
+// idioms; this is an existing one finally used.
+//
+// EVERY FIGURE PASSED HERE IS COMPUTED AT BUILD TIME FROM DATA. None is typed
+// into prose. /valuations/ published a hand-typed Q3 promise it did not keep
+// and ruling R10 had to cut four columns because of it; a trust page that
+// asserts a stale number does more damage than one that asserts nothing.
+// Facts that are policy rather than measurement ("one editor", "no affiliate
+// revenue") are stable statements and may be written.
 //
 // No byline (policy docs, not articles).
 // No drop-cap (overridden in scoped style).
@@ -23,9 +45,24 @@ interface Props {
   heading: string;
   deck?: string;
   lastUpdated: Date;
+  /**
+   * At-a-glance facts, rendered above the body. Two to four reads best —
+   * `.dp-stats` lays out 2 columns, 3 from 768px and 4 from 1024px with
+   * `.is-four`. Values are computed by the page from data, or are statements
+   * of standing policy. Never a hand-typed measurement.
+   */
+  facts?: ReadonlyArray<{ label: string; value: string }>;
 }
 
-const { title, description, eyebrow, heading, deck, lastUpdated } = Astro.props;
+const {
+  title,
+  description,
+  eyebrow,
+  heading,
+  deck,
+  lastUpdated,
+  facts,
+} = Astro.props;
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 ---
@@ -43,6 +80,17 @@ const fmt = (d: Date) =>
     <span class="dot" aria-hidden="true">·</span>
     <a href="/editorial-policy/">Editorial standards</a>
   </div>
+
+  {facts && facts.length > 0 && (
+    <dl class={`dp-stats dp-trust-facts${facts.length >= 4 ? " is-four" : ""}`}>
+      {facts.map((fact) => (
+        <div class="dp-stat">
+          <dt>{fact.label}</dt>
+          <dd>{fact.value}</dd>
+        </div>
+      ))}
+    </dl>
+  )}
 
   <article class="dp-trust-body">
     <div class="dp-prose">

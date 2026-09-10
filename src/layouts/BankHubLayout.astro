@@ -126,7 +126,6 @@ const schema = {
         coverSize="hero"
         class="dp-hub-hero"
         loading="eager"
-        sizes="(max-width: 800px) 100vw, 760px"
       />
     )}
 
@@ -206,7 +205,7 @@ const schema = {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
-    color: var(--gold);
+    color: var(--gold-ink, var(--gold));
     margin: 0 0 10px;
   }
   .dp-bank-callout :global(*) { color: var(--ink); }

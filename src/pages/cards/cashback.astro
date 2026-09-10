@@ -1,4 +1,5 @@
 ---
+import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
 import {
@@ -10,6 +11,7 @@ import {
 const cashbackCards = getActiveCards().filter((c) =>
   c.categories.includes("cashback"),
 );
+const verifiedStamp = verifiedMonthStamp(cashbackCards);
 const rows = await Promise.all(
   cashbackCards.map(async (c) => {
     const bank = await getEntry("banks", c.bank);
@@ -36,8 +38,8 @@ const rows = await Promise.all(
 ---
 
 <ComparisonTableLayout
-  title={`Best UAE cashback credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
-  heading={`Best UAE cashback credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })})`}
+  title={`Best UAE cashback credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
+  heading={`Best UAE cashback credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""}`}
   description="Side-by-side comparison of the cashback-earning UAE credit cards we cover. Annual fee, FX fee, minimum salary, and current welcome bonus."
   columns={["Annual fee", "FX fee", "Min salary", "Welcome bonus"]}
   rows={rows}

@@ -1,5 +1,10 @@
 ---
 import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+import {
+  cardsSourced,
+  correctionsPublished,
+  provenanceFields,
+} from "~/lib/trustFacts";
 ---
 
 <TrustPageLayout
@@ -8,6 +13,13 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
   eyebrow="Editorial policy"
   heading="How we research, verify, and correct DubaiPoints."
   lastUpdated={new Date("2026-08-05")}
+  deck="Every figure traces to a source, every field records how it was obtained, and every correction stays in public. The standards behind that are below."
+  facts={[
+    { label: "Carrying a source URL", value: cardsSourced() },
+    { label: "Provenance-tagged fields", value: provenanceFields() },
+    { label: "Corrections published", value: String(correctionsPublished()) },
+    { label: "Paid placements", value: "None" },
+  ]}
 >
   <section>
     <h2>Independence</h2>

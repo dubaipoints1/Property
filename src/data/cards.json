@@ -9,6 +9,7 @@
       "fxFee": "editor-corrected",
       "loyaltyProgram": "scraped",
       "earnRates": "editor-corrected",
+      "earnUnit": "editor-confirmed",
       "eligibility": "scraped",
       "applyUrl": "scraped",
       "kfsUrl": "scraped",
@@ -43,6 +44,7 @@
         "min_monthly_spend_to_qualify_aed": 5000
       }
     },
+    "earnUnit": "% cashback",
     "eligibility": {
       "minSalary": 5000,
       "salaryTransferRequired": false,
@@ -185,6 +187,7 @@
       "fxFee": "editor-corrected",
       "loyaltyProgram": "scraped",
       "earnRates": "scraped",
+      "earnUnit": "editor-confirmed",
       "welcomeBonus": "editor-corrected",
       "eligibility": "scraped",
       "applyUrl": "scraped",
@@ -209,13 +212,14 @@
     "earnRates": {
       "everythingElse": 1
     },
+    "earnUnit": "% cashback",
     "welcomeBonus": {
-      "amount": 350,
+      "amount": 300,
       "unit": "aed_cashback",
       "spend_threshold_aed": null,
       "qualify_window_days": null,
-      "headline": "Up to AED 350 welcome cashback on new-customer activation",
-      "notes": "Per the ADCB Essential Cashback product page — channel and spend mechanics not separately published; verify at application."
+      "headline": "Up to AED 300 welcome cashback on new-customer activation",
+      "notes": "Per the ADCB Essential Cashback product page — channel and spend mechanics not separately published; verify at application. Cut from AED 350 on the bank's own page; captured by the fee/product-page monitor 30 August 2026."
     },
     "eligibility": {
       "minSalary": 5000,
@@ -832,7 +836,7 @@
       "cinema": 50,
       "everythingElse": 1.5
     },
-    "earnUnit": "AED cashback per AED 1 spent",
+    "earnUnit": "% cashback",
     "eligibility": {
       "minSalary": 20000,
       "salaryTransferRequired": false,

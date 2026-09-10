@@ -26,6 +26,9 @@
 //   - Welcome bonus highlighted via `--green` token (Charter §"two-accent
 //     system"); annual fee uses `--ink`. No new colour utilities.
 
+import { PERK_PAGES } from "~/data/perkPages";
+import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
+import { cardsTracked, banksCovered } from "~/lib/trustFacts";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getEntry } from "astro:content";
@@ -46,17 +49,29 @@ const cards = await Promise.all(
     }),
 );
 
+const verifiedStamp = verifiedMonthStamp(cards.map((c) => c.card));
 const topPicks = cards.slice(0, 2);
 const compareList = cards.slice(2);
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
+// The perk rows come from PERK_PAGES rather than being written out here, so
+// adding a perk page cannot leave it unlinked — which is how eight
+// salary-transfer bank pages ended up with no inbound link at all
+// (2026-09-06 audit, F-013).
 const filters = [
   { label: "All cards", active: true, href: "/cards/" },
   { label: "Miles", active: false, href: "/cards/miles/" },
   { label: "Cashback", active: false, href: "/cards/cashback/" },
   { label: "Islamic", active: false, href: "/cards/islamic/" },
+  ...PERK_PAGES.map((perk) => ({
+    label: perk.detailColumn,
+    active: false,
+    href: `/cards/perks/${perk.slug}/`,
+  })),
+  { label: "By salary", active: false, href: "/cards/salary/" },
+  { label: "Fees", active: false, href: "/cards/fees/" },
   { label: "Compare", active: false, href: "/cards/compare/" },
 ];
 
@@ -121,7 +136,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
 ---
 
 <BaseLayout
-  title={`The best UAE credit cards (${new Date().toLocaleDateString("en-GB", { month: "long", year: "numeric" })}) | DubaiPoints`}
+  title={`The best UAE credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
   description="UAE credit cards covered by DubaiPoints, sorted by welcome-bonus value. Annual fees and earn rates checked against primary issuer sources."
   fullWidth
 >
@@ -134,6 +149,19 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
         We've reviewed the active UAE cards we cover against primary issuer
         sources. Browse the picks, compare welcome
         bonuses and earn rates, then open any card for the full verdict.
+      </p>
+      <p class="cards-pagehead-snapshot">
+        <strong>{cardsTracked()}</strong> cards
+        <span class="sep">·</span>
+        <strong>{banksCovered()}</strong> banks
+        {verifiedStamp && (
+          <>
+            <span class="sep">·</span>
+            verified through <strong>{verifiedStamp}</strong>
+          </>
+        )}
+        <span class="sep">·</span>
+        <a href="/cards/fees/">fee index</a>
       </p>
     </div>
   </header>
@@ -156,7 +184,6 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
               coverCategory="Review"
               coverSize="med"
               class="cards-top-card-image"
-              sizes="(max-width: 900px) 100vw, 50vw"
             />
             <div class="cards-top-card-body">
               <span class="cards-top-card-bank">{f.bankName}</span>
@@ -216,7 +243,6 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
                   coverCategory="Review"
                   coverSize="thumb"
                   class="cards-row-art-image"
-                  sizes="(max-width: 640px) 96px, 140px"
                 />
               </div>
               <div class="cards-row-id">
@@ -462,6 +488,17 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
   .cards-compare-pills {
     display: flex; flex-wrap: wrap; gap: 8px;
   }
+  .cards-pagehead-snapshot {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-feature-settings: 'tnum';
+  }
+  .cards-pagehead-snapshot strong { color: var(--ink); font-weight: 600; }
+  .cards-pagehead-snapshot .sep { margin: 0 6px; color: var(--line); }
+  /* Underlined: a coloured link inside body text fails axe's
+     link-in-text-block (1.06:1 against the surrounding grey). */
+  .cards-pagehead-snapshot a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
   .cards-compare-sort {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 13px;
@@ -614,6 +651,14 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
     padding: 56px 32px 64px;
     margin: 32px 0 48px;
   }
+  /* In dark mode --ink is the light text colour, so the band inverted to a
+     light surface under light copy (1.1:1). Brand navy in dark, as on the
+     newsletter rail (2026-09-06 audit family F-003). */
+  :global([data-theme="dark"]) .cards-callout { background: #1f3a4d; color: #ffffff; }
+  :global([data-theme="dark"]) .cards-callout-text h2,
+  :global([data-theme="dark"]) .cards-callout-cta,
+  :global([data-theme="dark"]) .cards-callout-cta-title { color: #ffffff; }
+  :global([data-theme="dark"]) .cards-callout-cta-eyebrow { color: #cfe0ec; }
   .cards-callout-grid {
     max-width: var(--container-listing); margin: 0 auto;
     display: grid;
@@ -655,14 +700,14 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
   }
   .cards-callout-cta:hover {
     background: rgba(251, 250, 246, 0.10);
-    border-color: var(--mint);
+    border-color: var(--navy-lift);
     transform: translateY(-2px);
   }
   .cards-callout-cta-eyebrow {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
-    color: var(--mint);
+    color: var(--navy-lift);
   }
   .cards-callout-cta-title {
     font-family: 'Fraunces', serif;
@@ -676,7 +721,7 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
   .cards-callout-cta-arrow {
     font-family: 'DM Sans', system-ui, sans-serif;
     font-size: 18px;
-    color: var(--mint);
+    color: var(--navy-lift);
     justify-self: end;
     margin-top: 4px;
   }

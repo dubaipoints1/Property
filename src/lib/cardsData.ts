@@ -329,6 +329,18 @@ const EarnCaps = z.object({
 
 // ── Card schema ──────────────────────────────────────────────────────────
 
+// Every earn-rate category L2 carries. Zod strips undeclared keys, so a
+// category missing from this list is silently deleted at module load and
+// never reaches a page — the opposite of the fail-fast contract this module
+// advertises. That is what happened to `partnerBrands` on 22 cards:
+// EarnRateTable.astro added it to CATEGORY_LABELS on 20 May 2026 with a
+// comment saying it was there so the headline partner rate "doesn't silently
+// drop from the table", and it dropped anyway, one layer earlier, for
+// sixteen weeks. `utilities` (12 cards) and `insurance` (9) went the same
+// way. Found 10 September 2026.
+//
+// tests/cards/earn-rate-categories.test.ts fails if cards.json gains a
+// category this schema does not declare.
 const EarnRates = z
   .object({
     dining: z.number().optional(),
@@ -339,6 +351,22 @@ const EarnRates = z
     entertainment: z.number().optional(),
     online: z.number().optional(),
     international: z.number().optional(),
+    partnerBrands: z.number().optional(),
+    utilities: z.number().optional(),
+    insurance: z.number().optional(),
+    supermarkets: z.number().optional(),
+    quickServiceRestaurants: z.number().optional(),
+    autoDealers: z.number().optional(),
+    education: z.number().optional(),
+    government: z.number().optional(),
+    realEstate: z.number().optional(),
+    telecom: z.number().optional(),
+    charity: z.number().optional(),
+    transport: z.number().optional(),
+    europe: z.number().optional(),
+    airfare: z.number().optional(),
+    hotels: z.number().optional(),
+    cinema: z.number().optional(),
     everythingElse: z.number(),
   })
   .extend({ _caps: EarnCaps.optional() });

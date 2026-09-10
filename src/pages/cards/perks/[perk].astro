@@ -1,0 +1,86 @@
+---
+// Perk facet pages — /cards/perks/<perk>/.
+//
+// `_features` is a typed discriminated union of fourteen perk types, and
+// getCardsWithFeature() has existed to filter on it since the union shipped.
+// It had zero call sites: the data was queryable and no page queried it, so
+// a reader could not ask "which cards get me into a lounge" anywhere on the
+// site (2026-09-06 audit; surfaced again by the 10 September kredit.ae
+// teardown, which runs about 306 facet pages on this idea).
+//
+// THREE TYPES, NOT FOURTEEN. Our card set is thinner than a lead
+// generator's, and eleven of the fourteen types cover between one and five
+// cards. A page listing one card is the thin-content shape the 2026-07-27
+// honest-nav rule forbids, so PERK_PAGES carries only the types that clear a
+// real threshold. The rest stay as chips on the cards index, where they
+// already are. Raising the set means checking the counts again, which
+// tests/cards/perk-pages.test.ts does on every run.
+import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
+import { getEntry } from "astro:content";
+import {
+  getCardsWithFeature,
+  welcomeBonusHeadline,
+  annualFeeLabel,
+} from "~/lib/cardsData";
+import {
+  verifiedMonthStamp,
+  loungeDisplay,
+  loungeFeatureOf,
+} from "~/lib/cardsDataFormat";
+import { PERK_PAGES, type PerkPage } from "~/data/perkPages";
+
+export async function getStaticPaths() {
+  return PERK_PAGES.map((perk) => ({
+    params: { perk: perk.slug },
+    props: { perk },
+  }));
+}
+
+interface Props {
+  perk: PerkPage;
+}
+
+const { perk } = Astro.props;
+const cards = getCardsWithFeature(perk.feature).sort(
+  (a, b) => a.annualFee.amount - b.annualFee.amount,
+);
+const verifiedStamp = verifiedMonthStamp(cards);
+
+const rows = await Promise.all(
+  cards.map(async (c) => {
+    const bank = await getEntry("banks", c.bank);
+    const fee = annualFeeLabel(c);
+    // Lounge is the one type with a typed detail worth a column of its own;
+    // the other two say the same thing for every card that has them.
+    const detail =
+      perk.feature === "lounge_access"
+        ? loungeDisplay(loungeFeatureOf(c))
+        : "Included";
+    return {
+      cardName: c.name,
+      bankName: bank?.data.name ?? c.bank,
+      href: `/cards/${c.slug}/`,
+      values: [
+        detail,
+        fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
+        c.eligibility.invitationOnly === true
+          ? "Invitation only"
+          : c._provenance?.eligibility === "needs-review"
+            ? "—"
+            : c.eligibility.minSalary > 0
+              ? `AED ${c.eligibility.minSalary.toLocaleString()}/mo`
+              : "No minimum",
+        welcomeBonusHeadline(c.welcomeBonus) || "—",
+      ],
+    };
+  }),
+);
+---
+
+<ComparisonTableLayout
+  title={`${perk.heading}${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
+  heading={`${perk.heading}${verifiedStamp ? ` (${verifiedStamp})` : ""}`}
+  description={perk.description}
+  columns={[perk.detailColumn, "Annual fee", "Min salary", "Welcome bonus"]}
+  rows={rows}
+/>

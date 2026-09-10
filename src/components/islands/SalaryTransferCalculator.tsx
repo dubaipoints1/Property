@@ -4,6 +4,7 @@ import {
   type CalculatorInput,
   type SalaryTransferOffer,
   formatAED,
+  offerTitle,
   rankOffers,
 } from "../../lib/salaryTransfer";
 
@@ -164,7 +165,9 @@ export default function SalaryTransferCalculator({ offers }: Props) {
           <div class="dpsc-best">
             <p class="dpsc-best-eyebrow">Best for you</p>
             <h2>{top.offer.bankName}</h2>
-            <p class="dpsc-best-offer">{top.offer.name}</p>
+            <p class="dpsc-best-offer">
+              {offerTitle(top.offer.bankName, top.offer.name)}
+            </p>
             <p class="dpsc-best-figure">
               {formatAED(top.cashEquivalentAED)}
               <span class="unit">cash-equivalent</span>
@@ -195,8 +198,12 @@ export default function SalaryTransferCalculator({ offers }: Props) {
             >
               <header class="dpsc-row-head">
                 <h3>
-                  <span class="dpsc-rank">#{idx + 1}</span>
-                  {r.offer.bankName} — {r.offer.name}
+                  {/* The rank was glued to the bank name in the accessible
+                      name ("#1First Abu Dhabi Bank") because the gap was a
+                      CSS margin, and every offer name repeats its own bank
+                      prefix (2026-09-06 audit, F-038). */}
+                  <span class="dpsc-rank">#{idx + 1}</span>{" "}
+                  {r.offer.bankName} — {offerTitle(r.offer.bankName, r.offer.name)}
                 </h3>
                 <span class="dpsc-status">{STATUS_LABEL[r.status]}</span>
               </header>

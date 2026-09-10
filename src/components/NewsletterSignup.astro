@@ -1,13 +1,13 @@
 ---
+import { buttondownUsername } from "~/lib/newsletter";
+
 interface Props {
   source?: string;
 }
 
 const { source = "newsletter-page" } = Astro.props;
-const username = (import.meta.env.PUBLIC_BUTTONDOWN_USERNAME as string | undefined)?.trim();
-const isConfigured = Boolean(username && /^[a-zA-Z0-9_-]+$/.test(username));
-const action = isConfigured
-  ? `https://buttondown.com/api/emails/embed-subscribe/${username}`
+const action = buttondownUsername
+  ? `https://buttondown.com/api/emails/embed-subscribe/${buttondownUsername}`
   : null;
 ---
 
@@ -97,6 +97,9 @@ const action = isConfigured
     font-size: 12px;
   }
   .dp-newsletter-fallback p { margin: 0; }
+  /* Colour alone (1.33:1 against the copy) was the only cue that this is
+     a link (2026-09-06 audit, F-022). */
+  .dp-newsletter-fallback a { text-decoration: underline; text-underline-offset: 2px; }
   @media (max-width: 560px) {
     .fields { grid-template-columns: 1fr; }
     button { width: 100%; }
