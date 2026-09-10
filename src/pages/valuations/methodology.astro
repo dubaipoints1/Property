@@ -1,5 +1,10 @@
 ---
 import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+import {
+  baselinesConfirmedStamp,
+  baselinesPublished,
+  programmesTracked,
+} from "~/lib/trustFacts";
 ---
 
 <TrustPageLayout
@@ -8,6 +13,13 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
   eyebrow="Valuations methodology"
   heading="How we define today's estimates and the formal sampling method to follow."
   lastUpdated={new Date("2026-08-05")}
+  deck="What a DP value is, where each one comes from, and what this publication does not yet publish."
+  facts={[
+    { label: "Programmes tracked", value: String(programmesTracked()) },
+    { label: "Baselines published", value: baselinesPublished() },
+    { label: "Last confirmed", value: baselinesConfirmedStamp() },
+    { label: "Sampled ranges", value: "Not published" },
+  ]}
 >
   <section>
     <h2>What the figure means</h2>

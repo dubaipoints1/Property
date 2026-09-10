@@ -1,5 +1,6 @@
 ---
 import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
+
 ---
 
 <TrustPageLayout
@@ -8,6 +9,13 @@ import TrustPageLayout from "~/layouts/TrustPageLayout.astro";
   eyebrow="How we make money"
   heading="What pays for DubaiPoints — and what doesn't shape what we publish."
   lastUpdated={new Date("2026-08-05")}
+  deck="The site has no revenue today. This page states what would change if that stops being true, and what would not."
+  facts={[
+    { label: "Revenue today", value: "None" },
+    { label: "Affiliate links", value: "None" },
+    { label: "Sponsored posts", value: "None" },
+    { label: "Paid rankings", value: "None" },
+  ]}
 >
   <section>
     <h2>Today, nothing</h2>

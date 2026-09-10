@@ -2732,6 +2732,17 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
    no aside, no byline. Policy docs, not articles.
    ════════════════════════════════════════════════════════════════════════ */
 
+/* The facts strip on a trust page aligns with the meta strip above it and
+   the body below, rather than sitting at the page's full width. */
+.dp-trust-facts {
+  max-width: 760px;
+  margin: 24px auto 0;
+  margin-inline: auto;
+}
+@media (max-width: 720px) {
+  .dp-trust-facts { margin-inline: 20px; }
+}
+
 .dp-trust-meta {
   max-width: 760px;
   margin: 0 auto;
@@ -2777,8 +2788,8 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-trust-body .dp-prose section { margin-block: 32px; }
 .dp-trust-body .dp-prose section:first-child { margin-top: 0; }
 .dp-trust-body .dp-prose section h2 {
-  font-family: 'Fraunces', serif; font-weight: 500;
-  font-size: clamp(20px, 2.6vw, 26px);
+  font-family: 'Fraunces', serif; font-weight: 600;
+  font-size: clamp(22px, 2.6vw, 26px);
   letter-spacing: -0.4px;
   color: var(--ink);
   margin: 0 0 14px;

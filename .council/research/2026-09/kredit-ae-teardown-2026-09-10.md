@@ -145,6 +145,38 @@ behind a disclosed commercial arrangement. Those are the things we compete
 on, and they are the reason the fixes in §4 mattered more than anything we
 brought back.
 
+## 5a. Their accountability surface against ours
+
+Checked 10 September after the Chairman asked who operates the site.
+
+kredit.ae names **nobody**. `/about` is anonymous prose — "we're a team of
+people who, just like you, were tired of..." — with no founder, no editor and
+no bios. `/contacts` is two email addresses and five social links. Every
+article is bylined "Kredit" or "Kredit editorial team" against a generic
+avatar. The only identifying facts anywhere are the footer's: SMART SPEND -
+FZCO, licence 68272, IFZA.
+
+| | kredit.ae | dubaipoints.ae |
+|---|---|---|
+| Accountability routes | 4 — `/about`, `/contacts`, `/credit-cards/how-we-rank`, `/credit-cards/how-we-rate` | 9 |
+| Named or explained byline | Organisational, unexplained | Organisational, with `/team/` stating the single-editor position per the 2026-08-05 amendment |
+| Corrections log | None | Public, dated, counted |
+| Per-field provenance | None | 1,008 tagged fields |
+| Commercial model | Affiliate, commission on applications | No revenue |
+
+They out-scale us roughly ten to one on pages. We are far ahead on the axis
+the 2026-06-12 ruling names as our trust posture. That asymmetry is the
+finding, and it is what the F-051 work on 10 September acted on: the
+accountability existed but a reader could not see it, because every trust
+page opened with a title, a date and body copy.
+
+**A name collision worth recording.** Searching "SMART SPEND" surfaces a UK
+warning-list entry for "Smart Spend Limited (clone of FCA authorised firm)".
+That is a different company — different jurisdiction, different legal form —
+and nothing connects it to the Dubai FZCO. Nothing adverse was found about
+the operator itself. Noted so a future reader running the same search does
+not draw the wrong conclusion.
+
 ## 6. Credits
 
 | Call | Credits |

@@ -1900,7 +1900,48 @@ and was wrong: metrics are collected before the loop runs. The 0.248 was
 real, at desktop widths only. The change was reverted before commit. Noted
 because the finding survived and the explanation did not.
 
-### 16.6 Still open after this sprint
+### 16.6 F-051 — the trust pages
+
+Closed 10 September, prompted by the kredit.ae teardown's §5a: their operator
+publishes no named editor, no corrections log and no provenance, and our
+advantage on all three was invisible to a reader who did not read the prose.
+
+`TrustPageLayout` rendered eyebrow, `<h1>`, an optional deck, a "Last
+updated" strip, then raw prose — and the six highest-trust pages passed **no
+deck at all**. It gains an optional `facts` strip mounting `.dp-stats`, a
+primitive defined in `global.css` since the Phase D handoff and used by
+nothing until now. Nine pages gain facts; six gain a deck.
+
+**Every figure is computed at build time** from `src/lib/trustFacts.ts` —
+none is typed into prose. That constraint is the lesson of R10, which had to
+cut four columns this morning because `/valuations/` carried a hand-typed
+promise. Today's values: 57 cards, 14 banks, **57 of 57 carrying a source
+URL**, 1,008 provenance-tagged fields, 2 corrections across 13 card pages.
+
+The corrections log moves from hardcoded markup to `src/data/corrections.ts`
+with machine-readable dates, so the page can state how many corrections exist
+and when the last one was — the two facts that make a log evidence rather
+than a promise. Both entries migrated verbatim.
+`tests/content/corrections.test.ts` fails on a half-written entry, a
+correction naming a card we no longer carry, or an entry hardcoded back into
+the markup.
+
+Measured after: the facts strip is above the fold at 390px and 1280px on
+every page checked. Section headings on trust pages were 20px/500 serif
+against 18px/400 sans at mobile, a 1.11 ratio that scanned flat; now 22px/600.
+
+**Not done, deliberately:** no schema.org on these pages. That is F-035,
+ruling **R6**, still unmade, and the 2026-08-05 amendment restricts author
+markup to `Organization` until a named contributor exists. Adding it here
+would pre-empt a Chairman decision.
+
+**One self-inflicted bug, caught and fixed before commit:** the CSS insert
+for the facts strip matched both `.dp-trust-meta` rules, so it landed a second
+time inside a `max-width: 640px` media query, nesting one media query in
+another. Found by measuring the strip's width across three viewports rather
+than trusting that it looked right.
+
+### 16.7 Still open after this sprint
 
 Six rulings remain unmade — **R2** (F-033, F-052), **R5** (F-030), **R6**
 (F-035), **R7** (F-041), **R8** (F-060), **R9** (F-047). Beyond them:
