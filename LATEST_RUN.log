@@ -7,25 +7,55 @@ npm warn deprecated whatwg-encoding@2.0.0: Use @exodus/bytes instead for a more 
 
 added 612 packages in 6s
 [install] exit=0
-=== npm run scrape:rakbank ===
+=== npm run scrape:adcb ===
 
-> dubaipoints@0.1.0 scrape:rakbank
-> tsx scripts/scrape/rakbank.ts
+> dubaipoints@0.1.0 scrape:adcb
+> tsx scripts/scrape/adcb.ts
 
-[rakbank] Scraping 1 card(s)
-[rakbank] Fetching https://www.rakbank.ae/en/cards/credit-cards/world-credit-card
-[rakbank] Fetching https://www.rakbank.ae/globalassets/rakbank/all-pdfs/001---service-and-price-guides/bilingual/012-j00686-sp-consumercreditcard.pdf
-[rakbank] Wrote data/scraped/rakbank/2026-09-13T09-37-43-011Z.json
-[rakbank] 1 card(s) had parsing warnings:
-[rakbank]   rakbank-world: Could not parse annual fee; Could not parse minimum salary
-[rakbank] exit=0
+[adcb] Scraping 11 card(s)
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/shukran-credit-card
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/traveller-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/365-cashback-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/talabat-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/betaqti-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/adcb-lulu-titanium-gold-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-ic.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-platinum-cc.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-tg-cc.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Fetching https://www.adcb.com/en/personal/cards/credit-cards/essential-cashback-credit-card.aspx
+[adcb] Fetching https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf
+[adcb] Wrote data/scraped/adcb/2026-09-13T09-37-49-068Z.json
+[adcb] 11 card(s) had parsing warnings:
+[adcb]   adcb-shukran: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-traveller: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-365-cashback: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-talabat: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-betaqti: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-lulu-platinum: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-lulu-titanium-gold: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb]   adcb-touchpoints-infinite: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-touchpoints-platinum: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-touchpoints-titanium-gold: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation
+[adcb]   adcb-essential-cashback: Multi-tier SOF page — annualFee not auto-extracted; needs editor confirmation; Multi-tier SOF page — fxFee not auto-extracted; needs editor confirmation; No earn-rate categories detected — base rate defaulted to 1; Welcome bonus copy detected but could not be parsed into the typed shape — fell back to free-text
+[adcb] exit=0
 
 === npm run scrape:propose ===
 
 > dubaipoints@0.1.0 scrape:propose
 > tsx scripts/scrape/propose-changes.ts
 
-[propose] Wrote PR_BODY.md: 0 new, 1 changed, 2 warning(s)
+[propose] Wrote PR_BODY.md: 0 new, 11 changed, 32 warning(s)
 
 === git status src/data/cards.json ===
  M src/data/cards.json
