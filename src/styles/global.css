@@ -1273,6 +1273,10 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   color: var(--green);
 }
 .dp-dir-pill.is-feature:hover { background: var(--green); color: white; }
+/* F-025: the directory search inputs had no visible focus state. Scoped
+   component styles set only border-color on :focus-within, which the
+   Tab-walk could not see; a global outline on the input itself does. */
+.intel-search input:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
 /* ════════════════════════════════════════════════════════════════════════
    TPG-adapted components (locked 2026-05-08-bis).
@@ -3767,6 +3771,8 @@ html * {
    surface here in both themes; the button keeps white with navy text. */
 [data-theme="dark"] .dp-aside-newsletter { background: #1f3a4d; }
 [data-theme="dark"] .dp-aside-newsletter .cta { color: #1f3a4d; }
+/* F-003 knock-on: same light-navy --green under white text on hover. */
+[data-theme="dark"] .dp-dir-pill.is-feature:hover { background: #1f3a4d; }
 [data-theme="dark"] .dp-footer {
   background: #0a0e17;
 }
