@@ -67,7 +67,14 @@ build_commit() {
     fi
     for p in "$@"; do
       if [ -e "$p" ]; then
-        git add -f -- "$p"
+        # --ignore-removal is load-bearing. Without it, `git add <dir>`
+        # also stages the *removal* of every tracked file under <dir>
+        # that is absent from this run's working tree — and the working
+        # tree is a checkout of main plus whatever this run wrote, so
+        # every digest the *other* cron wrote since main's snapshot was
+        # being deleted on each save (106 files by 13 September 2026).
+        # A save only ever adds or updates this run's paths.
+        git add -f --ignore-removal -- "$p"
       else
         note "skip: $p not in working tree" >&2
       fi
