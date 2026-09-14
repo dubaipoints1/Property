@@ -445,7 +445,7 @@ const dealRows = await Promise.all(
           <div class="col" role="group" aria-label="Live salary-transfer offers">
             <div class="col-head">
               <h3>Salary-transfer offers</h3>
-              <a href="/salary-transfer/">Full tracker →</a>
+              <a href="/salary-transfer/">Salary-transfer tracker →</a>
             </div>
             <ul class="rows">
               {offerRows.map((r) => (
@@ -611,7 +611,7 @@ const dealRows = await Promise.all(
         {heroSweetSpot && <span class="meta">Sweet spot: {heroSweetSpot.title}</span>}
       </a>
       <a href="/salary-transfer/" class="dp-dir-tile">
-        <span class="eyebrow"><span class="hp-live-dot" aria-hidden="true"></span>Live tracker</span>
+        <span class="eyebrow"><span class="hp-live-dot" aria-hidden="true"></span>Salary-transfer tracker</span>
         <span class="title">Salary-transfer offers</span>
         <span class="desc">Band-by-band cash and rate offers across UAE banks — sources watched weekly, every entry dated.</span>
         <span class="meta">{offerRows.length} live offers</span>
@@ -801,6 +801,9 @@ const dealRows = await Promise.all(
   }
   @media (max-width: 899px) {
     .hp-hero-play { left: 12px; }
+    /* F-044: the aria-hidden stamp collides with the play card under a
+       three-line title at 360px; it is decoration, so it goes. */
+    .hp-hero-stamp { display: none; }
   }
   .hp-hero-play .eyebrow {
     font-size: 10px; font-weight: 700;
