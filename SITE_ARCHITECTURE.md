@@ -317,7 +317,9 @@ single-step jump at any breakpoint. Implemented in
 `src/components/Header.astro` 2026-05-08.
 
 **§5.4 Typography — append.** Italic display words are removed
-site-wide. `em` inside `.dp-article-title` renders flat in body
+site-wide. *Carve-out, 2026-09-15 (Chairman ruling R2): the homepage H1's
+italic `<em>` ("Fly further. *Pay less.*") is ratified as part of the
+29 August composition and stands; the rule holds everywhere else.* `em` inside `.dp-article-title` renders flat in body
 weight and inherits the parent colour. The `--brand` token is
 reserved for interactive states (link text, link hover, focus ring)
 and never appears on display type or eyebrows.
@@ -340,8 +342,21 @@ paths from this amendment.
 | `src/styles/global.css` palette + Quiet Ledger rules | applied 2026-05-08 |
 | `src/components/Header.astro` continuous logo scale | applied 2026-05-08 |
 | `src/layouts/ArticleLayout.astro` `.dp-*` rewrite | applied 2026-05-08 (was unused) |
-| `src/pages/index.astro` 4-section homepage rebuild | applied 2026-08-29 (as 5 sections: the Quiet Ledger index + live desk + latest analysis, plus the TPG brief's start-here directory and the trust/newsletter close; typographic hero, no photo) |
+| `src/pages/index.astro` homepage | applied 2026-08-29 on the Chairman's v0 direction, **ratified as shipped 2026-09-15 (ruling R2)**: photo hero with overlay play-card, boxed tools band, boxed live desk, latest analysis, strategy panel, start-here directory, trust row and navy newsletter close. The band list in the file's header comment (S1–S7) is the record. The 4-section Quiet Ledger spec in §4 above is superseded. |
 | Per-band salary-transfer landing pages | **deferred** to next session |
 | `/news/`, `/newsletter/`, `/search/` routes | **deferred** to next session |
 | Card-review `.dp-take` re-theme on existing pages | inherited via `.dp-*` for free |
 | Deal-rail negative-margin bug | resolved by Quiet Ledger merging the rail into section 2 |
+
+**§4 Homepage — supersede (2026-09-15, Chairman ruling R2).** The
+4-section Quiet Ledger spec above (2026-05-08) is superseded by the page
+as shipped on 29 August 2026 under the Chairman's v0 direction and
+ratified on 15 September 2026 in these words: "ratify the homepage as
+shipped; keep the H1, fix the space bug." The composition is the one
+recorded in the header comment of `src/pages/index.astro`: photo hero
+with overlay play-card, boxed tools band, boxed live desk, latest
+analysis, strategy panel, start-here directory, trust row and the navy
+newsletter close (the gold band exception was withdrawn 7 September).
+The H1 keeps its two-beat italic form; the announcement bug (F-040) was
+fixed by a normal space plus `white-space: nowrap`. The palette is
+untouched: navy and gold, no third hue.

@@ -6,6 +6,7 @@
 // + methodology footer).
 
 import { getCollection } from "astro:content";
+import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
@@ -93,12 +94,15 @@ const newestVerification = offers.length
       Math.max(...offers.map((o) => new Date(o.lastVerified).getTime())),
     )
   : null;
+const siteUrl = siteUrlFrom(Astro.site);
+const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path: "/salary-transfer/" }]);
 ---
 
 <BaseLayout
   title="UAE salary transfer offers — current tracker | DubaiPoints"
   description="Current UAE salary-transfer cash bonuses, voucher offers and combined card-and-salary promotions, each dated and linked to bank material."
   fullWidth
+  schema={schema}
 >
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Salary-transfer tracker</div>
