@@ -396,6 +396,24 @@ drives Firecrawl's judge, used *only* to suppress alert noise; its
 opinion never becomes a fact. Every number still comes from the regex
 parsers in `scripts/scrape/_lib.ts` / `_normaliser.ts`.
 
+**A dropped check is a lost change, not a late one.** `poll.mjs` reads
+checks whose status is `completed` **or `partial`** — a partial check is a
+completed check with a hole in it, and every page that did scrape still
+carries its diff and its judgment. This is not a nicety: the *next* check
+diffs against *this* check's scrape, so a page the poller never reads has
+no later run that can surface it. That is exactly how ADCB's Essential
+Cashback welcome bonus went from AED 300 to AED 250 unseen on 6 September
+2026 — the monitor caught it, `meaningful: true` at high confidence, and
+the poller asked the API only for `completed` while one unrelated page in
+that run had errored. Found by hand on 13 September, fixed on the 15th.
+Three rules follow, asserted in `tests/monitor/coverage.test.ts` and
+driven end to end against the real script in `tests/monitor/poll.test.ts`:
+`partial` is readable; the changed-page fetch asks for more than the check
+says changed and verifies the count it got back; and any page the check
+could not read is written into the digest under **Coverage gaps**, kept
+separate from findings because "we do not know whether this moved" is a
+worse signal than "this moved", not a milder one.
+
 The monitor answers *"did something move?"*. The scraper answers *"what
 is it now?"*. Those stay separate, and nothing in `scripts/monitor/`
 writes to `cards.json`.
@@ -419,15 +437,29 @@ That both editor-typed monitors stay off the auto-scrape path is now an
 asserted invariant, not a convention: `tests/monitor/routing.test.ts`
 fails if either is added to `AUTO_SCRAPE`.
 
-**Budget.** Verified pricing: 1 credit per URL per check, plus 1 per
-changed page the judge validates. Design estimate ≈794/month with both
-editor-typed registries unpopulated, ≈1,154 once offers land, plus
-≈4.3/URL/month for salary-transfer (weekly — these promotions move on
-quarterly campaign cycles, so daily would buy nothing for 7× the
-credits). Against the 5,000/month Hobby plan. `setup.mjs` aborts if the
-API's own `estimatedCreditsPerMonth` exceeds `MAX_ESTIMATED_CREDITS`
-(1,600), which guards against PDF documents billing per page rather than
-per URL.
+**Budget.** Firecrawl's own estimate is exactly **URLs × checks/month ×
+2**, where weekly is 5 checks and daily is 30 — all five monitors matched
+that to the credit on 15 September 2026. The second credit is the judge,
+so the estimate is a worst case and actuals land lower (product-pages
+billed 90 against an estimated 110 on 13 September). The fleet as
+provisioned on 15 September: fee-docs 720, product-pages 570, offers 720,
+salary-transfer 190, press-rooms 540 — **2,740/month** against the
+5,000/month Hobby plan. Salary-transfer stays weekly because these
+promotions move on quarterly campaign cycles, so daily would buy nothing
+for 6× the credits.
+
+Two guards in `setup.mjs`, and the second exists because the first could
+not fire. `MAX_ESTIMATED_CREDITS` (1,600) is **per monitor** and the
+largest single monitor estimates 720, so it had never once triggered
+while the fleet total went unchecked. `MAX_TOTAL_ESTIMATED_CREDITS`
+(3,000) now caps the **sum**, and sits only ~260 above today's fleet on
+purpose: the next material URL addition should stop there and force
+audit hold F-020 (plan tier, and who owns the other monitors on this API
+key) to be answered rather than grow the bill on an assumption. Raising
+it is the account owner's call. The dry run's local estimate uses the
+same arithmetic as the API, so `FIRECRAWL_API_KEY=skip` now predicts the
+number the guard will test — it previously under-reported it by roughly
+half.
 
 `scrape.yml` dropped from monthly to **quarterly** as the backstop for
 what monitors structurally cannot see: a restructured page, a moved URL,

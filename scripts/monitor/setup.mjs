@@ -3,8 +3,8 @@
 // Creates (or updates) the five monitors that replace blind scheduled
 // scraping with event-driven alerts:
 //
-//   fee-docs         10 KFS / Schedule-of-Fees documents      daily
-//   product-pages    52 card product pages                    weekly
+//   fee-docs         12 KFS / Schedule-of-Fees documents      daily
+//   product-pages    57 card product pages                    weekly
 //   offers           bank offers/promotions landing pages     daily
 //   salary-transfer  bank salary-transfer offer pages + T&Cs  weekly
 //   press-rooms       9 issuer press indexes                  daily
@@ -37,6 +37,7 @@ import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync } from 
 import {
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
+  readCardUrls,
   readRegistryUrls,
 } from "./_routing.mjs";
 
@@ -45,10 +46,27 @@ const API = "https://api.firecrawl.dev/v2/monitor";
 const BANKS_DIR = "scripts/scrape/banks";
 const OUT_PATH = "data/monitor/monitors.json";
 
-// Budget guard. The create response returns estimatedCreditsPerMonth;
-// we refuse to provision above this so a mis-specified monitor cannot
-// quietly eat the 5,000/month plan. Design estimate is ~1,154.
+// Budget guards. The create/update response returns
+// estimatedCreditsPerMonth per monitor; we refuse to provision above
+// these so a mis-specified monitor cannot quietly eat the 5,000/month
+// plan.
+//
+// MAX_ESTIMATED_CREDITS is the PER-MONITOR cap, and was for a long time
+// the only one — which left a hole. The fleet's largest single monitor
+// estimates 720, so no monitor has ever come within half of 1,600 and
+// this guard has never once fired, while the five together reached
+// 2,740/month (measured 15 September 2026) with nothing checking the
+// sum. A cap that cannot fire is not a cap.
 const MAX_ESTIMATED_CREDITS = 1600;
+
+// MAX_TOTAL_ESTIMATED_CREDITS is the fleet cap: 3,000 of the plan's
+// 5,000/month. That sits only ~260 above today's fleet, deliberately.
+// Audit hold F-020 — the plan tier, and who owns the other monitors on
+// this API key — is still open, so the next material URL addition
+// should stop here and force that answer rather than grow the bill on
+// an assumption. Raising it is the account owner's call, not a
+// session's.
+const MAX_TOTAL_ESTIMATED_CREDITS = 3000;
 
 // Press rooms — moved here from scripts/news-monitor/monitor.mjs, whose
 // hand-rolled link-diffing once surfaced "Visit our Facebook page" as a
@@ -65,20 +83,10 @@ const PRESS_PAGES = [
   "https://www.bankfab.com/en-ae/about-fab/group/news",
 ];
 
-function readCardUrls() {
-  const kfs = new Set();
-  const product = new Set();
-  for (const file of readdirSync(BANKS_DIR).filter((f) => f.endsWith(".urls.json"))) {
-    for (const card of JSON.parse(readFileSync(`${BANKS_DIR}/${file}`, "utf8"))) {
-      const u = card?.urls ?? {};
-      if (u.kfs) kfs.add(u.kfs);
-      if (u.product) product.add(u.product);
-    }
-  }
-  return { kfs: [...kfs], product: [...product] };
-}
-
-const { kfs, product } = readCardUrls();
+// readCardUrls now lives in ./_routing.mjs so poll.mjs can compare what
+// this script would provision against what the live monitors actually
+// watch. One source of truth, or the drift check is checking itself.
+const { kfs, product } = readCardUrls(BANKS_DIR);
 const offers = readRegistryUrls(OFFERS_REGISTRY);
 const salaryTransfer = readRegistryUrls(SALARY_TRANSFER_REGISTRY);
 
@@ -96,8 +104,20 @@ const MONITORS = [
     name: "dubaipoints-product-pages",
     urls: product,
     schedule: { text: "weekly", timezone: "UTC" },
+    // The goal steers Firecrawl's judge, which only ever suppresses noise
+    // (Charter §6 — its opinion never becomes a fact). Two words of it
+    // were load-bearing against us. It named neither "welcome bonus" nor
+    // any synonym, and it told the judge to ignore "marketing carousels",
+    // which is where a welcome-bonus line lives on most issuer pages. The
+    // judge surfaced ADCB's 6 September 2026 cut anyway, but had to argue
+    // past the goal to do it — its own words: "While the goal focuses on
+    // earn rates and fees, a welcome bonus is a core financial reward
+    // benefit of the card." A rule that survives only because the judge
+    // overrode it is not a rule we should be relying on, so the bonus is
+    // named and the ignore list is narrowed to furniture that carries no
+    // figures.
     goal:
-      "Alert when a card's earn rate, cashback percentage, reward category, lounge or travel benefit, eligibility requirement or fee changes. Ignore navigation, cookie banners, marketing carousels and layout changes.",
+      "Alert when a card's welcome bonus, joining bonus, sign-up offer, introductory cashback, earn rate, cashback percentage, reward category, lounge or travel benefit, eligibility requirement or fee changes — including any change to an amount, a spend threshold, a qualifying window or an offer end date, and including one that appears in a promotional banner or hero tile. Ignore navigation, cookie banners, footers, application-form controls, CAPTCHA widgets and layout changes.",
   },
   {
     key: "offers",
@@ -157,19 +177,43 @@ if (!KEY) {
   process.exit(1);
 }
 
+// The API's own estimate is exactly urls x checks/month x 2, which all
+// five monitors matched to the credit on 15 September 2026
+// (product-pages 57 x 5 x 2 = 570, fee-docs 12 x 30 x 2 = 720, and so
+// on). The old local formula used 1 credit per URL and 4.3 weekly
+// checks, so it under-reported the figure the guard actually tests by
+// roughly half: the dry run printed ~1,317/month for a fleet the API
+// priced at 2,740.
+//
+// It is a worst case, not a forecast. The second credit is the judge,
+// which only validates pages that changed, so actuals land lower —
+// product-pages billed 90 against an estimated 110 on 13 September.
+const CREDITS_PER_URL_PER_CHECK = 2;
+const checksPerMonth = (m) => (m.schedule.text.startsWith("weekly") ? 5 : 30);
+const monthlyCredits = (m) => m.urls.length * checksPerMonth(m) * CREDITS_PER_URL_PER_CHECK;
+
 console.log("Monitors to provision:\n");
 for (const m of planned) {
-  const perMonth = m.schedule.text.startsWith("weekly") ? m.urls.length * 4.3 : m.urls.length * 30;
-  console.log(`  ${m.name.padEnd(30)} ${String(m.urls.length).padStart(3)} URLs  ${m.schedule.text.padEnd(16)} ~${Math.round(perMonth)} credits/mo`);
+  console.log(`  ${m.name.padEnd(30)} ${String(m.urls.length).padStart(3)} URLs  ${m.schedule.text.padEnd(16)} ~${monthlyCredits(m)} credits/mo`);
 }
 for (const m of skipped) {
   console.log(`  ${m.name.padEnd(30)}   0 URLs  SKIPPED (no URLs configured yet)`);
 }
-const estimate = planned.reduce(
-  (n, m) => n + (m.schedule.text.startsWith("weekly") ? m.urls.length * 4.3 : m.urls.length * 30),
-  0,
+const estimate = planned.reduce((n, m) => n + monthlyCredits(m), 0);
+console.log(
+  `\n  local estimate: ~${estimate} credits/month ` +
+    `(per-monitor cap ${MAX_ESTIMATED_CREDITS}, fleet cap ${MAX_TOTAL_ESTIMATED_CREDITS})\n`,
 );
-console.log(`\n  local estimate: ~${Math.round(estimate)} credits/month (cap ${MAX_ESTIMATED_CREDITS})\n`);
+
+if (estimate > MAX_TOTAL_ESTIMATED_CREDITS) {
+  console.error(
+    `ABORT: the fleet estimates ${estimate} credits/month, above the ` +
+      `${MAX_TOTAL_ESTIMATED_CREDITS} cap. Raising the cap is the account owner's\n` +
+      `call and needs audit hold F-020 answered first (plan tier, and who else\n` +
+      `owns monitors on this API key). Reduce a cadence or a URL set instead.`,
+  );
+  process.exit(1);
+}
 
 if (KEY === "skip") {
   console.log("[dry-run] no network calls made, nothing written.");

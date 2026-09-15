@@ -41,10 +41,20 @@ import {
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
   registryUrlToBank,
+  isReadableCheck,
+  pageFetchLimit,
+  coverageGapsFor,
+  readCardUrls,
+  readRegistryUrls,
+  unwatchedUrls,
 } from "./_routing.mjs";
 
 const KEY = process.env.FIRECRAWL_API_KEY;
-const API = "https://api.firecrawl.dev/v2/monitor";
+// Overridable so tests/monitor/poll.test.ts can drive this file — the real
+// one, not a re-implementation of it — against a local stand-in. The unit
+// tests cover the coverage rules; this exists so the wiring that consumes
+// them is covered too, which is the half that actually failed.
+const API = process.env.MONITOR_API_BASE ?? "https://api.firecrawl.dev/v2/monitor";
 const MONITORS_PATH = "data/monitor/monitors.json";
 const STATE_PATH = "data/monitor/state.json";
 const BANKS_DIR = "scripts/scrape/banks";
@@ -96,15 +106,67 @@ async function api(path) {
 const cardFindings = [];
 const newsFindings = [];
 const salaryFindings = [];
+const coverageWarnings = [];
 const banksToScrape = new Set();
 let creditsThisPoll = 0;
 
+/**
+ * What each monitor is supposed to be watching, from the same files
+ * setup.mjs provisions from. Only the sets that are derived from the repo
+ * are checked; press-rooms is a literal list inside setup.mjs and has
+ * nothing here to drift from.
+ */
+function expectedUrls() {
+  const { kfs, product } = readCardUrls(BANKS_DIR);
+  return {
+    "fee-docs": kfs,
+    "product-pages": product,
+    offers: readRegistryUrls(OFFERS_REGISTRY),
+    "salary-transfer": readRegistryUrls(SALARY_TRANSFER_REGISTRY),
+  };
+}
+
+const EXPECTED = expectedUrls();
+
 for (const [key, mon] of Object.entries(monitors)) {
   if (!mon?.id) continue;
+
+  // Is this monitor still watching everything the repo says it should?
+  // Reading a monitor definition costs no credits. A URL in the config but
+  // not on the monitor produces no check, no diff and no alert — it is
+  // indistinguishable from a page that never changes, which is the most
+  // expensive kind of silence this pipeline can produce.
+  if (EXPECTED[key]?.length) {
+    try {
+      const def = await api(`/${mon.id}`);
+      const missing = unwatchedUrls(EXPECTED[key], def?.data ?? def);
+      if (missing.length) {
+        coverageWarnings.push({
+          monitor: key,
+          checkId: "(monitor definition)",
+          kind: "unwatched",
+          count: missing.length,
+          note:
+            `${missing.length} URL(s) in the repo config are not on the live ` +
+            `monitor and have never been checked: ${missing.join(", ")}. ` +
+            `Re-run scripts/monitor/setup.mjs to provision them.`,
+        });
+        console.error(`[${key}] ${missing.length} unwatched URL(s) — setup.mjs is due`);
+      }
+    } catch (e) {
+      console.error(`[${key}] definition read failed: ${String(e).slice(0, 140)}`);
+    }
+  }
+
   let checks;
   try {
-    const res = await api(`/${mon.id}/checks?status=completed&limit=10`);
-    checks = res?.data ?? res?.checks ?? [];
+    // Listed without a server-side status filter, then narrowed here.
+    // Asking the API for `status=completed` silently dropped every
+    // `partial` check — a completed check with one failed page in it —
+    // and with it every good page that check had diffed. See
+    // READABLE_CHECK_STATUSES in ./_routing.mjs for what that cost.
+    const res = await api(`/${mon.id}/checks?limit=10`);
+    checks = (res?.data ?? res?.checks ?? []).filter(isReadableCheck);
   } catch (e) {
     console.error(`[${key}] checks list failed: ${String(e).slice(0, 140)}`);
     continue;
@@ -134,11 +196,28 @@ for (const [key, mon] of Object.entries(monitors)) {
 
     let pages;
     try {
-      const detail = await api(`/${mon.id}/checks/${check.id}?status=changed&limit=50`);
+      const detail = await api(
+        `/${mon.id}/checks/${check.id}?status=changed&limit=${pageFetchLimit(check)}`,
+      );
       pages = detail?.data?.pages ?? detail?.pages ?? [];
     } catch (e) {
       console.error(`[${key}] check detail failed: ${String(e).slice(0, 140)}`);
+      coverageWarnings.push({
+        monitor: key,
+        checkId: check.id,
+        kind: "unread",
+        count: check?.summary?.changed ?? 0,
+        note: `the check could not be read at all: ${String(e).slice(0, 140)}`,
+      });
       continue;
+    }
+
+    // Report what this check could not see. An unread page is not a
+    // change deferred to next week — the next check diffs against this
+    // one's scrape, so it is a change no run will ever surface.
+    for (const gap of coverageGapsFor(check, pages.length)) {
+      coverageWarnings.push({ monitor: key, checkId: check.id, ...gap });
+      console.error(`[${key}] coverage gap (${gap.kind}): ${gap.note}`);
     }
 
     for (const page of pages) {
@@ -199,20 +278,44 @@ function renderFindings(findings, title, preamble) {
   return lines.join("\n");
 }
 
-if (cardFindings.length) {
+/**
+ * What this poll could not see, rendered for a human.
+ *
+ * Kept separate from findings on purpose: a finding says something moved,
+ * a coverage gap says we do not know whether something moved and never
+ * will for that page. The second is the more dangerous of the two and
+ * must not be filed under the first.
+ */
+function renderCoverage(warnings) {
+  const lines = [
+    "## Coverage gaps — pages this poll could not read",
+    "",
+    "_Not a change signal. Each line is a page whose diff no run will surface:_",
+    "_the next check diffs against this check's scrape, so a page missed here_",
+    "_is missed permanently. Re-read these by hand against the issuer's page._",
+    "",
+  ];
+  for (const w of warnings) {
+    lines.push(`- **${w.monitor}** · check \`${w.checkId}\` · ${w.kind} — ${w.note}`);
+  }
+  lines.push("");
+  return lines.join("\n");
+}
+
+if (cardFindings.length || coverageWarnings.length) {
   const path = `.council/monitoring/card-change-${stamp}.md`;
-  writeFileSync(
-    path,
-    renderFindings(
-      cardFindings,
-      "Card data change signals",
-      "_CHANGE SIGNAL ONLY. Diffs and judge reasoning below are context for a human._\n" +
-        "_Every figure must be re-derived by the deterministic scraper before it_\n" +
-        "_reaches cards.json (Charter §6). Offers changes are editor-typed by hand_\n" +
-        "_per the scrape merge contract — they are never auto-scraped._",
-    ),
+  const body = renderFindings(
+    cardFindings,
+    "Card data change signals",
+    "_CHANGE SIGNAL ONLY. Diffs and judge reasoning below are context for a human._\n" +
+      "_Every figure must be re-derived by the deterministic scraper before it_\n" +
+      "_reaches cards.json (Charter §6). Offers changes are editor-typed by hand_\n" +
+      "_per the scrape merge contract — they are never auto-scraped._",
   );
-  console.log(`Wrote ${path} (${cardFindings.length} findings)`);
+  writeFileSync(path, coverageWarnings.length ? `${body}\n${renderCoverage(coverageWarnings)}` : body);
+  console.log(
+    `Wrote ${path} (${cardFindings.length} findings, ${coverageWarnings.length} coverage gaps)`,
+  );
 }
 
 if (salaryFindings.length) {
