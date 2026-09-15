@@ -29,6 +29,7 @@ import {
   coverageGapsFor,
   isReadableCheck,
   newestFirst,
+  pageAll,
   pageFetchLimit,
 } from "../../scripts/monitor/_routing.mjs";
 
@@ -122,4 +123,58 @@ test("merged check lists sort newest first", () => {
   );
   // Missing timestamps must not throw or reorder unpredictably.
   assert.equal(newestFirst({}, {}), 0);
+});
+
+// ── the duplicate-monitor incident, 15 September 2026 ─────────────────
+//
+// setup.mjs matches existing monitors by name to decide update-vs-create.
+// It listed them with one unpaged request; the endpoint defaults to
+// limit=25 and this key carries 47 monitors, so all five of ours fell
+// outside the page and the script created five duplicates beside the
+// originals. The duplicates had no check history, the poller read them
+// instead of the live monitors and reported "no new checks" for a fleet
+// that was still running, and both sets billed — 5,330 credits/month
+// against a 5,000/month plan.
+//
+// One unpaged list request is the whole bug, so paging is asserted.
+
+test("pageAll follows every page, not just the first", async () => {
+  const all = Array.from({ length: 47 }, (_, i) => ({ id: `m${i}` }));
+  const seen: Array<[number, number]> = [];
+  const got = await pageAll(
+    async (limit, offset) => {
+      seen.push([limit, offset]);
+      return all.slice(offset, offset + limit);
+    },
+    { limit: 25 },
+  );
+  assert.equal(got.length, 47, "a 47-monitor key must not come back as 25");
+  assert.deepEqual(got.map((m) => m.id), all.map((m) => m.id));
+  assert.deepEqual(seen, [[25, 0], [25, 25]], "second page requested with the right offset");
+});
+
+test("pageAll stops on a short page and on an exactly-full final page", async () => {
+  // Short first page → one request.
+  let calls = 0;
+  assert.equal(
+    (await pageAll(async () => { calls += 1; return [{ id: "a" }]; }, { limit: 25 })).length,
+    1,
+  );
+  assert.equal(calls, 1);
+
+  // Exactly `limit` then empty → two requests, no infinite loop.
+  const pages = [Array.from({ length: 25 }, (_, i) => ({ id: `x${i}` })), []];
+  let n = 0;
+  assert.equal((await pageAll(async () => pages[n++] ?? [], { limit: 25 })).length, 25);
+  assert.equal(n, 2);
+});
+
+test("pageAll refuses to loop forever on a server that never shortens a page", async () => {
+  await assert.rejects(
+    () => pageAll(async (limit) => Array.from({ length: limit }, () => ({ id: "same" })), {
+      limit: 25,
+      hardCap: 100,
+    }),
+    /did not terminate/,
+  );
 });
