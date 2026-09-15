@@ -42,6 +42,8 @@ import {
   SALARY_TRANSFER_REGISTRY,
   registryUrlToBank,
   isReadableCheck,
+  checkListQueries,
+  newestFirst,
   pageFetchLimit,
   coverageGapsFor,
   readCardUrls,
@@ -160,13 +162,17 @@ for (const [key, mon] of Object.entries(monitors)) {
 
   let checks;
   try {
-    // Listed without a server-side status filter, then narrowed here.
-    // Asking the API for `status=completed` silently dropped every
-    // `partial` check — a completed check with one failed page in it —
-    // and with it every good page that check had diffed. See
-    // READABLE_CHECK_STATUSES in ./_routing.mjs for what that cost.
-    const res = await api(`/${mon.id}/checks?limit=10`);
-    checks = (res?.data ?? res?.checks ?? []).filter(isReadableCheck);
+    // One request per readable status, merged. The API's `status` takes a
+    // single value and omitting it does NOT mean "all" — an unfiltered list
+    // leaves `partial` out, so there is no default to lean on. See
+    // checkListQueries() in ./_routing.mjs for what asking for `completed`
+    // alone cost.
+    const byId = new Map();
+    for (const query of checkListQueries(10)) {
+      const res = await api(`/${mon.id}/checks${query}`);
+      for (const c of res?.data ?? res?.checks ?? []) if (c?.id) byId.set(c.id, c);
+    }
+    checks = [...byId.values()].filter(isReadableCheck).sort(newestFirst);
   } catch (e) {
     console.error(`[${key}] checks list failed: ${String(e).slice(0, 140)}`);
     continue;

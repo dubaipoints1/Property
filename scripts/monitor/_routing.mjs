@@ -96,6 +96,40 @@ export function isReadableCheck(check) {
 }
 
 /**
+ * The check-list requests needed to see every readable check.
+ *
+ * The API's `status` query parameter takes ONE value, and omitting it does
+ * not mean "all": an unfiltered `GET /checks` returns completed checks and
+ * leaves `partial` out. Verified on 15 September 2026 — the first attempt
+ * at this fix simply dropped `?status=completed`, the poll came back
+ * "[product-pages] no new checks", and the 6 September partial check stayed
+ * invisible. So the poller asks for each status by name and merges; there
+ * is no default to rely on.
+ */
+export function checkListQueries(limit = 10) {
+  return [...READABLE_CHECK_STATUSES].map((status) => `?status=${status}&limit=${limit}`);
+}
+
+/**
+ * Newest check first, by the time it was scheduled.
+ *
+ * The API returns Postgres-style stamps — "2026-09-06 00:00:00+00" — which
+ * Date.parse rejects twice over: the space instead of a T, and the bare
+ * two-digit offset where ISO 8601 wants "+00:00". Both have to be repaired
+ * or every stamp comes back NaN, the comparator returns 0 for every pair,
+ * and the sort silently becomes a no-op that looks like it worked.
+ */
+export function checkTime(check) {
+  const raw = String(check?.scheduledFor ?? check?.createdAt ?? "");
+  const iso = raw.replace(" ", "T").replace(/([+-])(\d{2})$/, "$1$2:00");
+  return Date.parse(iso) || 0;
+}
+
+export function newestFirst(a, b) {
+  return checkTime(b) - checkTime(a);
+}
+
+/**
  * How many changed pages to ask for.
  *
  * The API returns no pagination cursor, so the only defence against a
