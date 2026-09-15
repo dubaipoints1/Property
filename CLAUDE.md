@@ -406,13 +406,33 @@ Cashback welcome bonus went from AED 300 to AED 250 unseen on 6 September
 2026 — the monitor caught it, `meaningful: true` at high confidence, and
 the poller asked the API only for `completed` while one unrelated page in
 that run had errored. Found by hand on 13 September, fixed on the 15th.
-Three rules follow, asserted in `tests/monitor/coverage.test.ts` and
-driven end to end against the real script in `tests/monitor/poll.test.ts`:
-`partial` is readable; the changed-page fetch asks for more than the check
-says changed and verifies the count it got back; and any page the check
-could not read is written into the digest under **Coverage gaps**, kept
-separate from findings because "we do not know whether this moved" is a
-worse signal than "this moved", not a milder one.
+Four rules follow, asserted in `tests/monitor/coverage.test.ts` and driven
+end to end against the real script in `tests/monitor/poll.test.ts`.
+
+1. `partial` is readable.
+2. **The listing asks for each status by name.** The API's `status` query
+   parameter takes ONE value, and omitting it does not mean "all" — an
+   unfiltered `GET /checks` returns completed checks and leaves `partial`
+   out. The first attempt at this fix merely dropped `?status=completed`,
+   merged on that basis, and did nothing: the next poll printed
+   "[product-pages] no new checks" and the 6 September check stayed
+   invisible. `checkListQueries()` now issues one request per readable
+   status and merges them, newest first. Reading checks costs no credits,
+   so the extra request is free.
+3. The changed-page fetch asks for more than the check says changed and
+   verifies the count it got back.
+4. Any page the check could not read is written into the digest under
+   **Coverage gaps**, kept separate from findings because "we do not know
+   whether this moved" is a worse signal than "this moved", not a milder
+   one.
+
+One warning for anyone extending `tests/monitor/poll.test.ts`: **its
+stand-in API must refuse what the real one refuses.** The first version
+answered any `/checks` request with the partial check regardless of
+`status`, so it was more permissive than the service it stood for, and all
+three of its assertions passed against a poller that did not work against
+the live API. A fake that answers requests the real service would refuse
+proves nothing.
 
 The monitor answers *"did something move?"*. The scraper answers *"what
 is it now?"*. Those stay separate, and nothing in `scripts/monitor/`

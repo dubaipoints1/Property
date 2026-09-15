@@ -25,8 +25,10 @@ import assert from "node:assert/strict";
 
 import {
   READABLE_CHECK_STATUSES,
+  checkListQueries,
   coverageGapsFor,
   isReadableCheck,
+  newestFirst,
   pageFetchLimit,
 } from "../../scripts/monitor/_routing.mjs";
 
@@ -89,4 +91,35 @@ test("a clean check reports no gaps", () => {
 test("both gaps are reported when a check errors and truncates", () => {
   const gaps = coverageGapsFor({ summary: { changed: 60, error: 2 } }, 50);
   assert.deepEqual(gaps.map((g) => g.kind).sort(), ["errored", "truncated"]);
+});
+
+test("the check list is requested per status, never unfiltered", () => {
+  // The API's `status` takes ONE value and omitting it does not mean "all":
+  // an unfiltered list returns completed checks and leaves `partial` out.
+  // The first attempt at this fix relied on that default, the poll reported
+  // "no new checks", and the 6 September partial stayed invisible.
+  const queries = checkListQueries(10);
+  assert.equal(queries.length, READABLE_CHECK_STATUSES.size);
+  assert.ok(
+    queries.some((q) => q.includes("status=partial")),
+    "partial must be asked for by name — it is not in the default",
+  );
+  assert.ok(queries.some((q) => q.includes("status=completed")));
+  for (const q of queries) {
+    assert.match(q, /^\?status=[a-z]+&limit=10$/);
+  }
+});
+
+test("merged check lists sort newest first", () => {
+  const sorted = [
+    { id: "old", scheduledFor: "2026-08-30 00:00:00+00" },
+    { id: "new", scheduledFor: "2026-09-13 00:00:00+00" },
+    { id: "mid", scheduledFor: "2026-09-06 00:00:00+00" },
+  ].sort(newestFirst);
+  assert.deepEqual(
+    sorted.map((c) => c.id),
+    ["new", "mid", "old"],
+  );
+  // Missing timestamps must not throw or reorder unpredictably.
+  assert.equal(newestFirst({}, {}), 0);
 });

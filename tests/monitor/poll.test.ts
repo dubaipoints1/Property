@@ -64,7 +64,17 @@ async function runPoller() {
       const limit = Number(new URL(req.url, "http://x").searchParams.get("limit") ?? 0);
       res.end(JSON.stringify({ data: { pages: CHANGED_PAGES.slice(0, limit) } }));
     } else if (req.url?.includes("/checks")) {
-      res.end(JSON.stringify({ data: [PARTIAL_CHECK] }));
+      // Filter by `status` exactly as the real API does, and this is the
+      // load-bearing line of the whole fixture. The first version of this
+      // stand-in returned the partial check for ANY /checks request, so it
+      // was more permissive than the API it stood in for: the tests passed
+      // against a poller that had merely dropped `?status=completed`, while
+      // the live API — where an unfiltered list omits `partial` and `status`
+      // takes one value — still returned nothing new. A fake that answers
+      // requests the real service would refuse proves nothing.
+      const status = new URL(req.url, "http://x").searchParams.get("status");
+      const match = status === null ? status === "completed" : status === PARTIAL_CHECK.status;
+      res.end(JSON.stringify({ data: match ? [PARTIAL_CHECK] : [] }));
     } else {
       res.statusCode = 404;
       res.end("{}");
