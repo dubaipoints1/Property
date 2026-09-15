@@ -248,8 +248,11 @@ external-link sweep only tells the truth from GitHub Actions
 the repo) because the web sandbox's egress allowlist blocks nearly every
 issuer host. `playwright` is pinned exactly (1.56.1) because its bundled
 Chromium build 1194 is the one pre-installed in the web session; `DP_CHROME_PATH`
-overrides. `public/_headers` is still a recommendation printed by
-`audit:static`, not a file — adding it is a T3 production change. See
+overrides. `public/_headers` **ships** since 15 September 2026 (Chairman
+ruling R7): the four static headers plus a 7-day HSTS with no preload and
+no subdomains. A Content-Security-Policy, report-only or enforced, is a
+separate T3 item pending the inline-script inventory; `audit:static` will
+list it as the one missing recommended header until then. See
 `scripts/audit/README.md`.
 
 ## Architecture — the three-layer card model
