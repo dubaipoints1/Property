@@ -289,6 +289,15 @@ const news = defineCollection({
     // it, the news-expiry sweep (scripts/ci/check-news-expiry.mjs) flags
     // the story until updatedAt is bumped past staleAfter by a re-check.
     staleAfter: z.coerce.date().optional(),
+    // The date an editor confirmed the story has no natural expiry — a
+    // masthead post, a cycle-end record, a rate change that simply took
+    // effect. The expiry sweep's warning tells the editor to "confirm it
+    // is evergreen, or set one", but until 15 September 2026 there was no
+    // way to record the first half, so three correctly-evergreen stories
+    // warned on every run with no action that could ever clear them. A
+    // date rather than a boolean, to match the house habit of naming when
+    // a thing was verified and by which pass.
+    evergreenConfirmed: z.coerce.date().optional(),
     category: NEWS_CATEGORY.default("news"),
     beat: NEWS_BEAT.optional(),
     relatedCards: z.array(reference("cards")).default([]),

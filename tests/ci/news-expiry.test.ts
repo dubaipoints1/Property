@@ -154,3 +154,46 @@ test("a date mentioned in prose does not count", () => {
   assert.ok(parsed);
   assert.equal(parsed.staleAfter, undefined);
 });
+
+test("a story confirmed evergreen is never warned about", () => {
+  const old = new Date("2026-01-01T00:00:00Z");
+  const today = new Date("2026-09-15T00:00:00Z");
+
+  // Without the confirmation, a 250-day-old story with no staleAfter warns.
+  const unconfirmed = checkNewsExpiry([{ id: "masthead", publishedAt: old }], today);
+  assert.equal(unconfirmed.warnings.length, 1);
+
+  // With it, silence — and the story is still not "stale", which is a
+  // different state entirely.
+  const confirmed = checkNewsExpiry(
+    [{ id: "masthead", publishedAt: old, evergreenConfirmed: new Date("2026-09-15T00:00:00Z") }],
+    today,
+  );
+  assert.deepEqual(confirmed.warnings, []);
+  assert.equal(confirmed.ok, true);
+});
+
+test("evergreenConfirmed never suppresses a real staleAfter breach", () => {
+  // The two fields answer different questions, and a confirmation must not
+  // become a way to silence a live promotion window that has closed.
+  const r = checkNewsExpiry(
+    [
+      {
+        id: "promo",
+        publishedAt: new Date("2026-08-01T00:00:00Z"),
+        staleAfter: new Date("2026-08-31T00:00:00Z"),
+        evergreenConfirmed: new Date("2026-09-15T00:00:00Z"),
+      },
+    ],
+    new Date("2026-09-15T00:00:00Z"),
+  );
+  assert.equal(r.ok, false);
+  assert.equal(r.stale[0].id, "promo");
+});
+
+test("parseNewsFrontmatter reads evergreenConfirmed", () => {
+  const fm = parseNewsFrontmatter(
+    ["---", "publishedAt: 2026-05-18", "evergreenConfirmed: 2026-09-15", "---", "body"].join("\n"),
+  );
+  assert.equal(fm?.evergreenConfirmed?.toISOString().slice(0, 10), "2026-09-15");
+});
