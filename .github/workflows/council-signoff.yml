@@ -65,9 +65,28 @@ permissions:
   contents: read
   pull-requests: read
 
+# ── Concurrency: never cancel, and key by commit ──────────────────────
+#
+# `cancel-in-progress: true` is wrong for a REQUIRED status check, and it
+# cost three merges on 15 September 2026 alone. A cancelled run reports
+# "cancelled", not "success", so GitHub refuses the merge with
+#
+#   405 Required status check "council-signoff" is expected/queued/in progress
+#
+# until some later run succeeds. The saving was about fifteen seconds of
+# runner time; the cost was a merge that needed a manual re-run to go
+# through. For a job this short, never cancelling is strictly better.
+#
+# The key was also split across the two triggers: on `push`
+# `github.event.pull_request` is undefined so the group fell back to
+# `github.ref` (the branch), while a `pull_request` event grouped by PR
+# number. The same commit therefore landed in two different groups and the
+# two runs raced to report on one SHA. Keying by the head commit puts them
+# in one group, and with cancellation off they queue instead of racing —
+# both report, and the check is green either way.
 concurrency:
-  group: council-signoff-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  group: council-signoff-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: false
 
 jobs:
   council-signoff:

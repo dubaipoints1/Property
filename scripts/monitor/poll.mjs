@@ -168,11 +168,20 @@ for (const [key, mon] of Object.entries(monitors)) {
     // checkListQueries() in ./_routing.mjs for what asking for `completed`
     // alone cost.
     const byId = new Map();
+    const counts = [];
     for (const query of checkListQueries(10)) {
       const res = await api(`/${mon.id}/checks${query}`);
-      for (const c of res?.data ?? res?.checks ?? []) if (c?.id) byId.set(c.id, c);
+      const got = res?.data ?? res?.checks ?? [];
+      counts.push(`${query.match(/status=([a-z]+)/)?.[1] ?? "?"}=${got.length}`);
+      for (const c of got) if (c?.id) byId.set(c.id, c);
     }
     checks = [...byId.values()].filter(isReadableCheck).sort(newestFirst);
+    // Log what each status query actually returned. Two fixes to this
+    // poller in a row were shipped on an assumption about what the API
+    // hands back, and both times the only symptom was a cheerful "no new
+    // checks" — a line that looks identical whether nothing changed or the
+    // request was wrong. The counts make the difference visible.
+    console.log(`[${key}] listed ${counts.join(" ")} → ${byId.size} unique`);
   } catch (e) {
     console.error(`[${key}] checks list failed: ${String(e).slice(0, 140)}`);
     continue;
