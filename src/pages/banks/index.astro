@@ -8,6 +8,7 @@
 // the sidebar where the reader expects "next action".
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
@@ -37,12 +38,15 @@ const tabs = [
   { label: "All banks", active: true, href: "/banks/" },
   { label: "Salary-transfer tracker", href: "/salary-transfer/" },
 ];
+const siteUrl = siteUrlFrom(Astro.site);
+const schema = collectionPageGraph({ siteUrl, path: "/banks/", name: "UAE banks directory", description: "Every UAE bank we cover, with a hub page each.", crumbs: [{ name: "Banks", path: "/banks/" }] });
 ---
 
 <BaseLayout
   title="UAE banks directory | DubaiPoints"
   description="Every UAE bank we cover, with a hub page each: salary-transfer offer, card lineup, and reward currencies."
   fullWidth
+  schema={schema}
 >
   <header class="intel-pagehead">
     <div class="intel-pagehead-inner">

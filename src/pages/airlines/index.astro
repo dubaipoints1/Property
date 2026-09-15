@@ -12,6 +12,7 @@
 // the rail isn't empty.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 
@@ -27,6 +28,14 @@ const guides = (await getCollection("guides")).sort(
 // otherwise the first A–Z.
 const featured = programmes.find((p) => p.id === "skywards") ?? programmes[0];
 const others = programmes.filter((p) => p.id !== featured?.id);
+// R5 (Chairman ruling, 15 Sep 2026): hotel programmes keep their /airlines/
+// URLs until the hotel desk has briefs for them; the directory groups them
+// under their own heading so the page stops calling Bonvoy an airline.
+const HOTEL_PROGRAMMES = new Set(["marriott-bonvoy", "hilton-honors", "accor-all"]);
+const programmeGroups = [
+  { id: "airline-programmes", heading: "Airline programmes", items: others.filter((p) => !HOTEL_PROGRAMMES.has(p.id)) },
+  { id: "hotel-programmes", heading: "Hotel programmes", items: others.filter((p) => HOTEL_PROGRAMMES.has(p.id)) },
+].filter((g) => g.items.length > 0);
 
 // Trending rail — cross-section guides today (programmes collection is
 // thin). Falls back to programmes once the section has ≥ 6 entries.
@@ -42,12 +51,15 @@ const tabs = [
   { label: "All programmes", active: true, href: "/airlines/" },
   { label: "Valuations method", href: "/valuations/" },
 ];
+const siteUrl = siteUrlFrom(Astro.site);
+const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airlines & loyalty programmes", description: "Skywards, Etihad Guest, Qatar Privilege Club and the hotel programmes UAE residents earn and redeem in.", crumbs: [{ name: "Airlines & loyalty", path: "/airlines/" }] });
 ---
 
 <BaseLayout
   title="UAE airlines & loyalty programmes | DubaiPoints"
   description="Skywards, Etihad Guest, Qatar Privilege Club, Saudia Alfursan and the hotel programmes UAE residents earn and redeem in. Tiers, sweet spots, transfer partners and expiry policy."
   fullWidth
+  schema={schema}
 >
   <header class="intel-pagehead">
     <div class="intel-pagehead-inner">
@@ -107,27 +119,32 @@ const tabs = [
       )}
 
       {others.length > 0 ? (
-        <ul class="intel-card-grid">
-          {others.map((p) => (
-            <li class="intel-card-item">
-              <a href={`/airlines/${p.id}/`} class="intel-card">
-                <StockImage
-                  slug={`programme-${p.id}`}
-                  coverTitle={p.data.name}
-                  coverCategory="Programme"
-                  coverSize="med"
-                  class="intel-card-image"
-                />
-                <div class="intel-card-body">
-                  <span class="intel-card-cat">{p.data.region}</span>
-                  <h3>{p.data.name}</h3>
-                  <p>{p.data.currencyName} · {p.data.sweetSpots[0]?.title ?? "Programme guide"}</p>
-                  <span class="intel-card-meta">{p.data.transferPartners.length} transfer partner{p.data.transferPartners.length === 1 ? "" : "s"}</span>
-                </div>
-              </a>
-            </li>
-          ))}
-        </ul>
+        programmeGroups.map((g) => (
+          <section class="airlines-group" aria-labelledby={g.id}>
+            <h2 id={g.id} class="airlines-group-heading">{g.heading}</h2>
+            <ul class="intel-card-grid">
+              {g.items.map((p) => (
+                <li class="intel-card-item">
+                  <a href={`/airlines/${p.id}/`} class="intel-card">
+                    <StockImage
+                      slug={`programme-${p.id}`}
+                      coverTitle={p.data.name}
+                      coverCategory="Programme"
+                      coverSize="med"
+                      class="intel-card-image"
+                    />
+                    <div class="intel-card-body">
+                      <span class="intel-card-cat">{p.data.region}</span>
+                      <h3>{p.data.name}</h3>
+                      <p>{p.data.currencyName} · {p.data.sweetSpots[0]?.title ?? "Programme guide"}</p>
+                      <span class="intel-card-meta">{p.data.transferPartners.length} transfer partner{p.data.transferPartners.length === 1 ? "" : "s"}</span>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
       ) : (
         <section class="airlines-roster">
           <span class="airlines-roster-eyebrow">More programmes coming</span>
@@ -392,6 +409,11 @@ const tabs = [
     border-radius: 18px;
     padding: 32px 32px 36px;
     display: grid; gap: 12px;
+  }
+  .airlines-group + .airlines-group { margin-top: 32px; }
+  .airlines-group-heading {
+    font-family: "Fraunces", serif; font-weight: 500; font-size: 22px;
+    letter-spacing: -0.2px; margin: 0 0 14px;
   }
   .airlines-roster-eyebrow {
     font-family: 'DM Sans', system-ui, sans-serif;

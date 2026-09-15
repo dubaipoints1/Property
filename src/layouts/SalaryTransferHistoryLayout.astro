@@ -6,6 +6,7 @@
 // + scoped timeline rendering on .dp-* tokens.
 
 import BaseLayout from "./BaseLayout.astro";
+import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 
 interface TimelineEntry {
   validFrom: Date;
@@ -26,9 +27,11 @@ const { title, description, bankName, entries } = Astro.props;
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+const siteUrl = siteUrlFrom(Astro.site);
+const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path: "/salary-transfer/" }, { name: bankName, path: `/salary-transfer/${Astro.params.bank ?? ""}/` }, { name: "Offer history", path: Astro.url.pathname }]);
 ---
 
-<BaseLayout title={title} description={description} fullWidth>
+<BaseLayout title={title} description={description} fullWidth schema={schema}>
   <header class="dp-pagehead is-narrow">
     <div class="crumb"><a href="/salary-transfer/" class="crumb-link">Salary transfer</a> · Offer history</div>
     <h1>{bankName}</h1>

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import SalaryTransferTrackerLayout from "~/layouts/SalaryTransferTrackerLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
 import Disclaimer from "~/components/Disclaimer.astro";
@@ -58,6 +59,7 @@ if (props.kind === "band") {
     }),
   );
 }
+const siteUrl = siteUrlFrom(Astro.site);
 ---
 
 {
@@ -81,6 +83,7 @@ if (props.kind === "band") {
       title={`${props.bankName} salary transfer offer${bankStamp ? ` (${bankStamp})` : ""} | DubaiPoints`}
       description={`Deep-dive on ${props.bankName}'s current salary transfer offer: bands, clawback, payout timing, and expat-relevant gotchas.`}
       fullWidth
+      schema={breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path: "/salary-transfer/" }, { name: props.bankName, path: Astro.url.pathname }])}
     >
       <article class="dp-article is-wide">
         <header class="dp-article-head">

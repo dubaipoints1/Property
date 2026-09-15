@@ -15,6 +15,7 @@
 //     newsletter + RSS for notification.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
@@ -54,12 +55,15 @@ const tabs = [
   { label: "All live deals", active: true, href: "/deals/" },
   { label: "Salary-transfer tracker", href: "/salary-transfer/" },
 ];
+const siteUrl = siteUrlFrom(Astro.site);
+const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank & card deals", description: "Current UAE deals, each dated, sourced and checked against its recorded expiry.", crumbs: [{ name: "Deals", path: "/deals/" }] });
 ---
 
 <BaseLayout
   title="Current UAE bank & card deals | DubaiPoints"
   description="Current UAE deals: welcome bonuses, salary-transfer top-ups, spend promos and fee waivers. Every offer is dated, sourced and checked against its recorded expiry."
   fullWidth
+  schema={schema}
 >
   <header class="intel-pagehead">
     <div class="intel-pagehead-inner">
