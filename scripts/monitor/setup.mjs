@@ -37,6 +37,7 @@ import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync } from 
 import {
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
+  pageAll,
   readCardUrls,
   readRegistryUrls,
 } from "./_routing.mjs";
@@ -220,8 +221,67 @@ if (KEY === "skip") {
   process.exit(0);
 }
 
-const existing = await api("", "GET").then((r) => r?.data ?? r?.monitors ?? []).catch(() => []);
+/**
+ * Every monitor on the key, paged to exhaustion.
+ *
+ * This is the idempotence hinge, and getting it wrong cost real money on
+ * 15 September 2026. The previous one line was
+ *
+ *   await api("", "GET").then((r) => r?.data ?? ...).catch(() => [])
+ *
+ * and it had two faults that combined into one bad outcome. The List
+ * Monitors endpoint defaults to `limit=25`; this key carries 47 monitors
+ * (audit hold F-020), so our five were simply not in the page that came
+ * back. `byName.get()` missed all five, and the script POSTed five
+ * duplicates alongside the originals — new monitors with no check
+ * history, which the poller then read instead of the real ones and
+ * reported "no new checks" for all five while the live monitors kept
+ * running unseen. Both sets billed: 5,330 credits/month against a
+ * 5,000/month plan.
+ *
+ * The `.catch(() => [])` was the second fault and the more dangerous one:
+ * it turned any failure to list — a timeout, a 500, an expired key — into
+ * "no monitors exist", whose only possible next step is to create
+ * everything again. A script that cannot see what exists must refuse to
+ * act, not assume the slate is clean.
+ */
+function listAllMonitors() {
+  // 100 is the endpoint's documented maximum (limit: 1..100, default 25).
+  return pageAll(async (limit, offset) => {
+    const res = await api(`?limit=${limit}&offset=${offset}`, "GET");
+    return res?.data ?? res?.monitors ?? [];
+  });
+}
+
+let existing;
+try {
+  existing = await listAllMonitors();
+} catch (e) {
+  console.error(
+    `ABORT: could not list existing monitors (${String(e).slice(0, 160)}).\n` +
+      `Refusing to continue: without the current list this script cannot tell an\n` +
+      `update from a create, and guessing "nothing exists" duplicates the whole\n` +
+      `fleet. Re-run once the API answers.`,
+  );
+  process.exit(1);
+}
+
 const byName = new Map(existing.map((m) => [m.name, m]));
+console.log(`\n${existing.length} monitor(s) already on this key.`);
+
+// A name we are about to provision that already exists TWICE is a
+// duplicate pair from exactly the bug above. Say so loudly rather than
+// silently picking one.
+for (const m of MONITORS) {
+  const dupes = existing.filter((e) => e.name === m.name);
+  if (dupes.length > 1) {
+    console.error(
+      `WARNING: ${dupes.length} monitors are named ${m.name} — ${dupes
+        .map((d) => d.id)
+        .join(", ")}. Delete the extras; this run will update the first.`,
+    );
+  }
+}
 
 const out = existsSync(OUT_PATH) ? JSON.parse(readFileSync(OUT_PATH, "utf8")) : { monitors: {} };
 out.monitors ??= {};

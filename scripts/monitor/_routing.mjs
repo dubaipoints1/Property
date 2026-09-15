@@ -219,3 +219,28 @@ export function unwatchedUrls(expected, definition) {
   const live = new Set(liveMonitorUrls(definition));
   return expected.filter((u) => !live.has(u));
 }
+
+/**
+ * Page a "list monitors" endpoint to exhaustion.
+ *
+ * Takes the page fetcher rather than calling the API itself, so the paging
+ * contract is testable without a network. `fetchPage(limit, offset)` must
+ * resolve to that page's array.
+ *
+ * This exists because relying on one unpaged request cost real money on
+ * 15 September 2026: the List Monitors endpoint defaults to limit=25, this
+ * key carries 47 monitors, so setup.mjs's name lookup missed all five of
+ * ours and POSTed five duplicates beside the originals. The duplicates had
+ * no check history, the poller read them instead of the real monitors and
+ * reported "no new checks" for a fleet that was still running, and both
+ * sets billed — 5,330 credits/month against a 5,000/month plan.
+ */
+export async function pageAll(fetchPage, { limit = 100, hardCap = 5000 } = {}) {
+  const all = [];
+  for (let offset = 0; ; offset += limit) {
+    const page = (await fetchPage(limit, offset)) ?? [];
+    all.push(...page);
+    if (page.length < limit) return all;
+    if (all.length > hardCap) throw new Error("monitor list did not terminate");
+  }
+}
