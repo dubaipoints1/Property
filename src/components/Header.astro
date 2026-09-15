@@ -8,6 +8,15 @@ import { dpValueSub } from "~/lib/valuations";
 
 const currentPath = Astro.url.pathname;
 import { newsletterLive, newsletterNavLabel } from "~/lib/newsletter";
+import { getCollection } from "astro:content";
+
+// R9 (Chairman ruling, 15 Sep 2026): the deals slot stays, and the label
+// carries the live count so the number argues for itself. Same filter as
+// the homepage live desk and /deals/.
+const liveDealCount = (await getCollection("deals")).filter(
+  (d) => !d.data.archived && d.data.expiresOn.getTime() >= Date.now(),
+).length;
+const dealsLabel = `Deals · ${liveDealCount} live`;
 
 const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
@@ -23,7 +32,7 @@ const mobileTop = [
   ...(newsletterLive
     ? [{ href: "/newsletter/", label: newsletterNavLabel, subscribe: true }]
     : []),
-  { href: "/deals/",      label: "Deals" },
+  { href: "/deals/",      label: dealsLabel },
   { href: "/guides/",     label: "Guides" },
   { href: "/news/",       label: "News" },
   ...(newsletterLive
@@ -217,7 +226,7 @@ const publicationRows: SubRow[] = [
       </div>
 
       <a href="/guides/" class={isActive("/guides/") ? "is-active" : ""}>Guides</a>
-      <a href="/deals/" class={isActive("/deals/") ? "is-active" : ""}>Deals</a>
+      <a href="/deals/" class={isActive("/deals/") ? "is-active" : ""}>{dealsLabel}</a>
       <a href="/news/" class={isActive("/news/") ? "is-active" : ""}>News</a>
     </nav>
 

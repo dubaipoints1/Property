@@ -727,6 +727,64 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-09-15 — Six audit rulings (R2 homepage, R5 hotel programmes, R6 schema, R7 headers, R8 self-monitor, R9 deals)
+
+On Chairman direction (15 September 2026), the six decision questions
+left open by the 6–7 September site audit
+(`.council/research/2026-09/site-audit-uiux-2026-09-06.md` §10) are
+ruled. The Chairman's words, given in-session against the memo at
+`.council/research/2026-09/audit-rulings-memo-r2-r5-r9-2026-09-14.md`,
+are recorded verbatim and are the ruling; the gloss beneath each is the
+session's reading of what they permit now.
+
+**R2 — "ratify the homepage as shipped; keep the H1, fix the space bug."**
+The eight-band homepage built on 29 August under the Chairman's v0
+direction is the ratified page; the 2026-05-08 four-section Quiet Ledger
+homepage spec is superseded (`SITE_ARCHITECTURE.md` §4 supersede entry
+and status row updated). The H1 stays "Fly further. *Pay less.*"; its
+italic `<em>` is a carve-out from the §5.4 no-italic rule for this one
+element. The F-040 announcement bug is fixed by a normal space plus
+`white-space: nowrap`. Palette unchanged.
+
+**R5 — "fix the label now; hotels move to /hotels/ when their briefs
+exist."** Marriott Bonvoy, Hilton Honors and Accor ALL keep their
+`/airlines/` URLs for now. The `/airlines/` directory groups them under
+their own "Hotel programmes" heading and the Travel panel's hotel row
+links that anchor. The move to `/hotels/` with three 301s is T3 and
+returns behind real hotel-programme briefs, per the 2026-07-27 ruling.
+
+**R6 — "reconcile the schema spec first; the no-ruling items proceed."**
+Technical Lead and SEO Strategist draft one reconciled §9 for Chairman
+ratification before any template is brought "up to spec"; a
+schema-per-template test lands with the implementation. The items both
+candidate specs already agree on ship now: `CollectionPage` +
+`BreadcrumbList` on the directories, `BreadcrumbList` on the
+salary-transfer tracker family, and the empty `sameAs` removed
+(`src/lib/schema.ts`).
+
+**R7 — "ship the four headers and short HSTS; CSP is a separate item."**
+`public/_headers` ships with `X-Content-Type-Options`,
+`Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options` and a
+short-lived `Strict-Transport-Security` (no preload). A Content-Security-
+Policy, report-only or enforced, is its own item once the inline-script
+inventory (theme toggle, nav script) is known. Part II's "Audit harness"
+paragraph is corrected accordingly.
+
+**R8 — "no self-monitor until the credit count is done; the harness is
+our self-check."** No Firecrawl monitor is provisioned on dubaipoints.ae.
+The F-020 verification hold (plan tier; ownership of the other monitors
+on the key) is an account-owner action and stays open. The deterministic
+audit harness (`npm run audit:all`) is the site's self-check.
+
+**R9 — "keep deals in the nav with an honest count; expired deals stay
+as dated records; open the DSF brief."** The Deals primary-nav label
+carries the live count, computed at build. Expired deals keep their
+pages with `archived: true` and the expired banner, and are never
+redirected — the salary-transfer history precedent, now a rule. The DSF
+cadence brief is `.council/briefs/2026-09-15-dsf-deals-cadence.md`.
+
+— Chairman, 15 September 2026.
+
 ### 2026-09-10 — Four audit rulings (R1 palette, R3 newsletter, R4 calculators, R10 valuations)
 
 On site-owner/Chairman direction (10 September 2026), four of the ten

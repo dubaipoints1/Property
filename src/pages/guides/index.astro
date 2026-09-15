@@ -18,6 +18,7 @@
 //   - .dp-feed numbered list
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
 
@@ -46,12 +47,15 @@ const tabs = [
   { label: "Eligibility", href: "/guides/uae-credit-card-eligibility-2026/" },
   { label: "Redemptions", href: "/airlines/" },
 ];
+const siteUrl = siteUrlFrom(Astro.site);
+const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE points, miles & banking guides", description: "Long-form, AED-first guides to UAE cards, salary transfer and miles.", crumbs: [{ name: "Guides", path: "/guides/" }] });
 ---
 
 <BaseLayout
   title="UAE points, miles & banking guides | DubaiPoints"
   description="Long-form, AED-first guides to UAE credit-card eligibility, salary-transfer mechanics, miles redemption strategy, and expat-specific friction."
   fullWidth
+  schema={schema}
 >
   <!-- ── 1. Page header ─────────────────────────────────────────────── -->
   <header class="intel-pagehead">

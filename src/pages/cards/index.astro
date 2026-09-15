@@ -27,6 +27,7 @@
 //     system"); annual fee uses `--ink`. No new colour utilities.
 
 import { PERK_PAGES } from "~/data/perkPages";
+import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import { cardsTracked, banksCovered } from "~/lib/trustFacts";
 import BaseLayout from "~/layouts/BaseLayout.astro";
@@ -133,12 +134,15 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
 // Year-1 vs year-2 annual-fee qualifier lives in cardsDataFormat.ts
 // (see `annualFeeLabel`) so every listing surface (Top picks, row list,
 // SpecCard, comparison tables) routes through the same primitive.
+const siteUrl = siteUrlFrom(Astro.site);
+const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit cards", description: "UAE credit cards covered by DubaiPoints, checked against primary issuer sources.", crumbs: [{ name: "Cards", path: "/cards/" }] });
 ---
 
 <BaseLayout
   title={`The best UAE credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
   description="UAE credit cards covered by DubaiPoints, sorted by welcome-bonus value. Annual fees and earn rates checked against primary issuer sources."
   fullWidth
+  schema={schema}
 >
   <!-- ── 1. Page header ─────────────────────────────────────────────── -->
   <header class="cards-pagehead">

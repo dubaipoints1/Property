@@ -18,6 +18,7 @@
 // .dp-hist-empty, 10 June 2026 fresh-eyes audit).
 
 import type { CollectionEntry } from "astro:content";
+import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getCollection } from "astro:content";
@@ -81,9 +82,14 @@ const FEED_BY_DESK: Record<Props["activeDesk"], string> = {
 };
 const feedHref = FEED_BY_DESK[activeDesk];
 const feedLabel = activeDesk === "all" ? "DubaiPoints" : `DubaiPoints — ${heading}`;
+const siteUrl = siteUrlFrom(Astro.site);
+const newsPath = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const newsName = title.replace(/\s*\|\s*DubaiPoints\s*$/, "");
+const newsCrumbs = newsPath === "/news/" ? [{ name: "News", path: "/news/" }] : [{ name: "News", path: "/news/" }, { name: newsName, path: newsPath }];
+const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, description, crumbs: newsCrumbs });
 ---
 
-<BaseLayout title={title} description={description} fullWidth>
+<BaseLayout title={title} description={description} fullWidth schema={schema}>
   <link
     slot="head"
     rel="alternate"
