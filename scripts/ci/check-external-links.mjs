@@ -284,6 +284,16 @@ export function classifyResponse(r, { proxied = false } = {}) {
   // Behind an egress proxy neither the local resolver nor a refused
   // connection is authoritative about the target.
   if (proxied && status === null) return { state: "unverifiable", detail: "egress-blocked" };
+  // Undici caps response headers at 16 KB and throws rather than reading
+  // the body. That is a limit of our client, not a statement about the
+  // target: the CBD Key-Facts PDF answers in a browser and was reported
+  // broken on 2026-09-14 purely because its headers overflow. There is no
+  // maxHeaderSize knob on global fetch without adding undici as a
+  // dependency, so the honest classification is "a human with a browser
+  // has to look", which is exactly what `unverifiable` means here.
+  if (/UND_ERR_HEADERS_OVERFLOW|Headers Overflow/i.test(error)) {
+    return { state: "unverifiable", detail: "oversized response headers" };
+  }
   if (status === null) return { state: "network", detail: r.error ? String(r.error) : "no response" };
 
   if (status === 403 || status === 429 || status === 503) {
@@ -460,8 +470,20 @@ export async function fetchWithPolicy(url, { timeoutMs = 15000, ua = USER_AGENT,
   };
 
   const head = await attempt("HEAD");
-  if (head.timedOut) return head;
-  if (head.error || HEAD_FALLBACK_STATUSES.has(head.status)) return attempt("GET");
+  // A HEAD that times out is NOT evidence of a dead link, and returning it
+  // as one is how the 2026-09-14 sweep produced a wall of false positives:
+  // 10 of its 15 "broken" links were HEAD timeouts on hosts that serve a
+  // page perfectly well (emirates.com media-centre pages, etihad.com/offers,
+  // malloftheemirates.com). Plenty of servers — CDNs and marketing stacks
+  // especially — stall or black-hole a HEAD while answering GET normally.
+  // So a HEAD timeout gets the same GET fallback a refused HEAD does; only
+  // a GET that also fails to answer counts as a timeout.
+  if (head.timedOut || head.error || HEAD_FALLBACK_STATUSES.has(head.status)) {
+    const get = await attempt("GET");
+    // If the GET is the one that timed out, report the GET — otherwise a
+    // HEAD-only stall would be indistinguishable from a real dead host.
+    return get;
+  }
   return head;
 }
 

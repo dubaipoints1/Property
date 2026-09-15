@@ -43,7 +43,14 @@ export const WARN_AFTER_DAYS = 60;
  * the story with the window's end in view; that story passes even though
  * the date is behind us, because the flag did its job.
  *
- * @param {Array<{id: string, publishedAt: Date, updatedAt?: Date, staleAfter?: Date, beat?: string}>} entries
+ * A story with `evergreenConfirmed` set is never warned about: the
+ * warning's own text asks the editor to "confirm it is evergreen, or set
+ * one", and until 15 September 2026 there was no way to record the first
+ * half — so a masthead post, a cycle-end record and a rate change that
+ * simply took effect warned on every run with no action that could clear
+ * them. A warning nobody can action is one people learn to scroll past.
+ *
+ * @param {Array<{id: string, publishedAt: Date, updatedAt?: Date, staleAfter?: Date, evergreenConfirmed?: Date, beat?: string}>} entries
  * @param {Date} today
  * @returns {{ok: boolean,
  *   stale: Array<{id: string, staleAfter: Date, daysOverdue: number, beat?: string}>,
@@ -65,7 +72,10 @@ export function checkNewsExpiry(entries, today) {
           beat: e.beat,
         });
       }
-    } else if (today.getTime() - touched.getTime() > WARN_AFTER_DAYS * DAY_MS) {
+    } else if (
+      !e.evergreenConfirmed &&
+      today.getTime() - touched.getTime() > WARN_AFTER_DAYS * DAY_MS
+    ) {
       warnings.push({
         id: e.id,
         lastTouched: touched,
@@ -85,7 +95,7 @@ export function checkNewsExpiry(entries, today) {
  * the schema fails the build for that long before this check matters.
  *
  * @param {string} raw
- * @returns {{publishedAt: Date, updatedAt?: Date, staleAfter?: Date, beat?: string}|null}
+ * @returns {{publishedAt: Date, updatedAt?: Date, staleAfter?: Date, evergreenConfirmed?: Date, beat?: string}|null}
  */
 export function parseNewsFrontmatter(raw) {
   const fm = raw.match(/^---\n([\s\S]*?)\n---/);
@@ -100,6 +110,7 @@ export function parseNewsFrontmatter(raw) {
     publishedAt,
     updatedAt: date("updatedAt"),
     staleAfter: date("staleAfter"),
+    evergreenConfirmed: date("evergreenConfirmed"),
     // beat routes the flag to the owning desk in the sweep output.
     beat: fm[1].match(/^beat:\s*["']?([a-z-]+)/m)?.[1],
   };

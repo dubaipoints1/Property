@@ -436,3 +436,71 @@ test("renderExternalLinksMd lists each broken link with its source, groups unver
   assert.doesNotMatch(md, /Egress-proxied run/);
   assert.match(renderExternalLinksMd(buildReport([], { egressProxy: true })), /\*\*Egress-proxied run\.\*\*/);
 });
+
+// ── the 2026-09-14 false-positive wall ────────────────────────────────
+//
+// That sweep filed 15 "broken" links (issue #364). Ten were HEAD timeouts
+// on hosts that serve a page perfectly well, and one was a PDF whose
+// response headers overflow undici's 16 KB cap. Neither is link rot, and
+// reporting them as broken sent an editor hunting for moved pages that had
+// never moved. Both classifications are pinned here.
+
+test("a HEAD that times out falls back to GET", async () => {
+  let heads = 0;
+  let gets = 0;
+  const fetchImpl = async (_url: string, init: { method: string; signal: AbortSignal }) => {
+    if (init.method === "HEAD") {
+      heads += 1;
+      // Stall until the caller's timeout aborts us, like a server that
+      // black-holes HEAD.
+      return new Promise((_resolve, reject) => {
+        init.signal.addEventListener("abort", () => reject(new Error("aborted")));
+      });
+    }
+    gets += 1;
+    return new Response("ok", { status: 200, headers: { "content-type": "text/html" } });
+  };
+
+  const r = await fetchWithPolicy("https://www.emirates.com/media-centre/x/", {
+    timeoutMs: 60,
+    fetchImpl: fetchImpl as unknown as typeof fetch,
+  });
+
+  assert.equal(heads, 1);
+  assert.equal(gets, 1, "the GET fallback must run — a stalled HEAD is not a dead link");
+  assert.equal(r.status, 200);
+  assert.equal(r.method, "GET");
+  assert.equal(r.timedOut, false);
+  assert.equal(classifyResponse(r).state, "ok");
+});
+
+test("a GET that also times out is still a timeout", async () => {
+  const fetchImpl = async (_url: string, init: { signal: AbortSignal }) =>
+    new Promise((_resolve, reject) => {
+      init.signal.addEventListener("abort", () => reject(new Error("aborted")));
+    });
+
+  const r = await fetchWithPolicy("https://dead.example/x", {
+    timeoutMs: 60,
+    fetchImpl: fetchImpl as unknown as typeof fetch,
+  });
+
+  assert.equal(r.timedOut, true, "a host that answers neither verb is genuinely unreachable");
+  assert.equal(classifyResponse(r).state, "timeout");
+});
+
+test("oversized response headers are unverifiable, not broken", () => {
+  const r = {
+    status: null,
+    headers: {},
+    bodySnippet: "",
+    error: "UND_ERR_HEADERS_OVERFLOW Headers Overflow Error",
+    timedOut: false,
+    finalUrl: null,
+  };
+  const c = classifyResponse(r as never);
+  assert.equal(c.state, "unverifiable");
+  assert.match(c.detail, /oversized response headers/);
+  // And it must not be counted as broken — that was the reported defect.
+  assert.equal(isBroken(c.state), false);
+});
