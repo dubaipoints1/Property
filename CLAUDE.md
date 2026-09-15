@@ -396,6 +396,24 @@ drives Firecrawl's judge, used *only* to suppress alert noise; its
 opinion never becomes a fact. Every number still comes from the regex
 parsers in `scripts/scrape/_lib.ts` / `_normaliser.ts`.
 
+**A dropped check is a lost change, not a late one.** `poll.mjs` reads
+checks whose status is `completed` **or `partial`** — a partial check is a
+completed check with a hole in it, and every page that did scrape still
+carries its diff and its judgment. This is not a nicety: the *next* check
+diffs against *this* check's scrape, so a page the poller never reads has
+no later run that can surface it. That is exactly how ADCB's Essential
+Cashback welcome bonus went from AED 300 to AED 250 unseen on 6 September
+2026 — the monitor caught it, `meaningful: true` at high confidence, and
+the poller asked the API only for `completed` while one unrelated page in
+that run had errored. Found by hand on 13 September, fixed on the 15th.
+Three rules follow, asserted in `tests/monitor/coverage.test.ts` and
+driven end to end against the real script in `tests/monitor/poll.test.ts`:
+`partial` is readable; the changed-page fetch asks for more than the check
+says changed and verifies the count it got back; and any page the check
+could not read is written into the digest under **Coverage gaps**, kept
+separate from findings because "we do not know whether this moved" is a
+worse signal than "this moved", not a milder one.
+
 The monitor answers *"did something move?"*. The scraper answers *"what
 is it now?"*. Those stay separate, and nothing in `scripts/monitor/`
 writes to `cards.json`.

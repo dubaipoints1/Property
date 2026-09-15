@@ -37,6 +37,7 @@ import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync } from 
 import {
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
+  readCardUrls,
   readRegistryUrls,
 } from "./_routing.mjs";
 
@@ -65,20 +66,10 @@ const PRESS_PAGES = [
   "https://www.bankfab.com/en-ae/about-fab/group/news",
 ];
 
-function readCardUrls() {
-  const kfs = new Set();
-  const product = new Set();
-  for (const file of readdirSync(BANKS_DIR).filter((f) => f.endsWith(".urls.json"))) {
-    for (const card of JSON.parse(readFileSync(`${BANKS_DIR}/${file}`, "utf8"))) {
-      const u = card?.urls ?? {};
-      if (u.kfs) kfs.add(u.kfs);
-      if (u.product) product.add(u.product);
-    }
-  }
-  return { kfs: [...kfs], product: [...product] };
-}
-
-const { kfs, product } = readCardUrls();
+// readCardUrls now lives in ./_routing.mjs so poll.mjs can compare what
+// this script would provision against what the live monitors actually
+// watch. One source of truth, or the drift check is checking itself.
+const { kfs, product } = readCardUrls(BANKS_DIR);
 const offers = readRegistryUrls(OFFERS_REGISTRY);
 const salaryTransfer = readRegistryUrls(SALARY_TRANSFER_REGISTRY);
 
@@ -96,8 +87,20 @@ const MONITORS = [
     name: "dubaipoints-product-pages",
     urls: product,
     schedule: { text: "weekly", timezone: "UTC" },
+    // The goal steers Firecrawl's judge, which only ever suppresses noise
+    // (Charter §6 — its opinion never becomes a fact). Two words of it
+    // were load-bearing against us. It named neither "welcome bonus" nor
+    // any synonym, and it told the judge to ignore "marketing carousels",
+    // which is where a welcome-bonus line lives on most issuer pages. The
+    // judge surfaced ADCB's 6 September 2026 cut anyway, but had to argue
+    // past the goal to do it — its own words: "While the goal focuses on
+    // earn rates and fees, a welcome bonus is a core financial reward
+    // benefit of the card." A rule that survives only because the judge
+    // overrode it is not a rule we should be relying on, so the bonus is
+    // named and the ignore list is narrowed to furniture that carries no
+    // figures.
     goal:
-      "Alert when a card's earn rate, cashback percentage, reward category, lounge or travel benefit, eligibility requirement or fee changes. Ignore navigation, cookie banners, marketing carousels and layout changes.",
+      "Alert when a card's welcome bonus, joining bonus, sign-up offer, introductory cashback, earn rate, cashback percentage, reward category, lounge or travel benefit, eligibility requirement or fee changes — including any change to an amount, a spend threshold, a qualifying window or an offer end date, and including one that appears in a promotional banner or hero tile. Ignore navigation, cookie banners, footers, application-form controls, CAPTCHA widgets and layout changes.",
   },
   {
     key: "offers",
