@@ -3,11 +3,11 @@
 // Creates (or updates) the five monitors that replace blind scheduled
 // scraping with event-driven alerts:
 //
-//   fee-docs         12 KFS / Schedule-of-Fees documents      daily
+//   fee-docs         12 KFS / Schedule-of-Fees documents      weekly
 //   product-pages    57 card product pages                    weekly
-//   offers           bank offers/promotions landing pages     daily
+//   offers           bank offers/promotions landing pages     daily 13:00
 //   salary-transfer  bank salary-transfer offer pages + T&Cs  weekly
-//   press-rooms       9 issuer press indexes                  daily
+//   press-rooms       9 issuer press indexes                  daily 14:00
 //
 // ── The §6 boundary, which is why this file looks the way it does ─────
 // Charter §6 bans LLM extraction for typed numerics: fees, salary bands,
@@ -96,7 +96,21 @@ const MONITORS = [
     key: "fee-docs",
     name: "dubaipoints-fee-docs",
     urls: kfs,
-    schedule: { text: "daily at 03:00", timezone: "UTC" },
+    // WEEKLY, not daily, and this is the single biggest credit lever in
+    // the fleet. Measured actuals on 16 September 2026: this monitor bills
+    // ~110 credits per check against an estimate of 24, because a KFS or
+    // Schedule of Fees is a PDF and PDFs bill per PAGE, not per URL. Daily
+    // that is ~3,300 credits/month — roughly two thirds of everything we
+    // spend, on documents that are versioned quarterly ("Ver.46/February
+    // 2026"). Weekly costs ~475 and still catches a fee change inside
+    // seven days, which is well within the window that matters for the
+    // failure this fleet exists to prevent.
+    //
+    // It also vacates 03:00 UTC. 37 monitors belonging to an unrelated
+    // project share this API key on Asia/Dubai time, 21 of them firing in
+    // that one hour, and our 12 PDF jobs landing in the middle of it is
+    // what tripped Firecrawl's concurrent-browser limit on 16 September.
+    schedule: { text: "weekly", timezone: "UTC" },
     goal:
       "Alert when an annual fee, foreign-currency or FX transaction fee, minimum salary requirement, late-payment fee or interest/profit rate changes. Ignore navigation, cookie banners, contact details, document version stamps and layout changes.",
   },
@@ -124,7 +138,7 @@ const MONITORS = [
     key: "offers",
     name: "dubaipoints-offers",
     urls: offers,
-    schedule: { text: "daily at 04:00", timezone: "UTC" },
+    schedule: { text: "daily at 13:00", timezone: "UTC" },
     goal:
       "Alert when a welcome bonus, sign-up offer, limited-time promotion, cashback campaign or partner deal is added, changed, extended or withdrawn. Include the offer's end date when it appears. Ignore navigation, cookie banners and layout changes.",
   },
@@ -144,7 +158,7 @@ const MONITORS = [
     key: "press-rooms",
     name: "dubaipoints-press-rooms",
     urls: PRESS_PAGES,
-    schedule: { text: "daily at 05:00", timezone: "UTC" },
+    schedule: { text: "daily at 14:00", timezone: "UTC" },
     goal:
       "Alert when a new press release or news item is published. Ignore navigation, cookie banners, social links, careers listings and layout changes.",
   },
