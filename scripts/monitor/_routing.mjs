@@ -244,3 +244,75 @@ export async function pageAll(fetchPage, { limit = 100, hardCap = 5000 } = {}) {
     if (all.length > hardCap) throw new Error("monitor list did not terminate");
   }
 }
+
+// ── Schedule: one batch per hour, never two at once ───────────────────
+//
+// Explicit cron, not the API's natural-language `text` field. The create
+// endpoint takes "either `cron` or `text`", and cron is the half we can
+// assert: "weekly" silently resolved to Sunday 00:00 UTC, which is how
+// three of our five monitors ended up firing 88 URLs simultaneously
+// without anyone choosing that.
+//
+// The constraint is CONCURRENCY, not credits, and the unit that matters
+// is the size of a single batch. This API key carries 42 monitors and 37
+// of them belong to an unrelated AI-governance project — but those are
+// many small search jobs, already staggered across 02:00–03:00 UTC, and
+// they were not the problem. Ours are a handful of very large page
+// batches, and a 57-URL batch landing on top of their queue is what
+// amplified a few minutes of their delay into Firecrawl's
+// concurrent-browser limit on 16 September 2026.
+//
+// So every DubaiPoints batch gets its own hour, and all of them sit in
+// 09:00–15:00 UTC where that fleet is silent. Sunday 00:00 UTC is
+// specifically vacated: it held product-pages (57) + salary-transfer
+// (19) + fee-docs (12) at the same instant.
+//
+// Times are UTC. Dubai is UTC+4, so 09:00 UTC is 13:00 local — well
+// clear of the 06:00–08:00 local window the other fleet occupies.
+export const MONITOR_CRONS = {
+  // Weekly, heaviest first, two hours apart.
+  "product-pages": "0 9 * * 0", //  57 URLs — Sunday 09:00 UTC
+  "salary-transfer": "0 11 * * 0", // 19 URLs — Sunday 11:00 UTC
+  "fee-docs": "0 9 * * 1", //        12 PDFs — Monday 09:00 UTC
+  // Daily, an hour apart. A check finishes in under a minute, so an hour
+  // is enormous headroom; the point is that they never coincide.
+  offers: "0 13 * * *", //           12 URLs — daily 13:00 UTC
+  "press-rooms": "0 14 * * *", //     9 URLs — daily 14:00 UTC
+};
+
+/**
+ * Expand a monitor's cron into the set of (weekday, hour) slots it fires
+ * in, so two schedules can be compared for collision. Only the shapes
+ * this fleet uses are supported — `M H * * D` with a literal hour, and
+ * `*` or a single digit for the day.
+ *
+ * @param {string} cron
+ * @returns {Set<string>} e.g. {"0:9"} for Sunday 09:00, or every day at 13
+ */
+export function cronSlots(cron) {
+  const [, hour, , , dow] = cron.split(/\s+/);
+  const days = dow === "*" ? [0, 1, 2, 3, 4, 5, 6] : [Number(dow)];
+  return new Set(days.map((d) => `${d}:${Number(hour)}`));
+}
+
+/**
+ * Every pair of monitors that would fire in the same hour on the same
+ * day. Empty is the invariant; anything else is a batch collision of the
+ * kind that tripped the concurrency limit.
+ *
+ * @param {Record<string, string>} crons
+ * @returns {Array<[string, string, string]>} [a, b, slot]
+ */
+export function scheduleCollisions(crons = MONITOR_CRONS) {
+  const keys = Object.keys(crons);
+  const out = [];
+  for (let i = 0; i < keys.length; i += 1) {
+    for (let j = i + 1; j < keys.length; j += 1) {
+      const a = cronSlots(crons[keys[i]]);
+      for (const slot of cronSlots(crons[keys[j]])) {
+        if (a.has(slot)) out.push([keys[i], keys[j], slot]);
+      }
+    }
+  }
+  return out;
+}
