@@ -37,6 +37,7 @@ import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync } from 
 import {
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
+  MONITOR_CRONS,
   pageAll,
   readCardUrls,
   readRegistryUrls,
@@ -110,7 +111,7 @@ const MONITORS = [
     // project share this API key on Asia/Dubai time, 21 of them firing in
     // that one hour, and our 12 PDF jobs landing in the middle of it is
     // what tripped Firecrawl's concurrent-browser limit on 16 September.
-    schedule: { text: "weekly", timezone: "UTC" },
+    schedule: { cron: MONITOR_CRONS["fee-docs"], timezone: "UTC" },
     goal:
       "Alert when an annual fee, foreign-currency or FX transaction fee, minimum salary requirement, late-payment fee or interest/profit rate changes. Ignore navigation, cookie banners, contact details, document version stamps and layout changes.",
   },
@@ -118,7 +119,7 @@ const MONITORS = [
     key: "product-pages",
     name: "dubaipoints-product-pages",
     urls: product,
-    schedule: { text: "weekly", timezone: "UTC" },
+    schedule: { cron: MONITOR_CRONS["product-pages"], timezone: "UTC" },
     // The goal steers Firecrawl's judge, which only ever suppresses noise
     // (Charter §6 — its opinion never becomes a fact). Two words of it
     // were load-bearing against us. It named neither "welcome bonus" nor
@@ -138,7 +139,7 @@ const MONITORS = [
     key: "offers",
     name: "dubaipoints-offers",
     urls: offers,
-    schedule: { text: "daily at 13:00", timezone: "UTC" },
+    schedule: { cron: MONITOR_CRONS["offers"], timezone: "UTC" },
     goal:
       "Alert when a welcome bonus, sign-up offer, limited-time promotion, cashback campaign or partner deal is added, changed, extended or withdrawn. Include the offer's end date when it appears. Ignore navigation, cookie banners and layout changes.",
   },
@@ -150,7 +151,7 @@ const MONITORS = [
     key: "salary-transfer",
     name: "dubaipoints-salary-transfer",
     urls: salaryTransfer,
-    schedule: { text: "weekly", timezone: "UTC" },
+    schedule: { cron: MONITOR_CRONS["salary-transfer"], timezone: "UTC" },
     goal:
       "Alert when a salary-transfer offer changes: the cash or voucher amount, the salary bands that qualify, the minimum salary, the payout timing, the tenure or lock-in period, the clawback terms, any bundled credit-card or finance requirement, or the offer's validity dates. Alert when such an offer is launched or withdrawn. Ignore navigation, cookie banners, branch locators and layout changes.",
   },
@@ -158,7 +159,7 @@ const MONITORS = [
     key: "press-rooms",
     name: "dubaipoints-press-rooms",
     urls: PRESS_PAGES,
-    schedule: { text: "daily at 14:00", timezone: "UTC" },
+    schedule: { cron: MONITOR_CRONS["press-rooms"], timezone: "UTC" },
     goal:
       "Alert when a new press release or news item is published. Ignore navigation, cookie banners, social links, careers listings and layout changes.",
   },
@@ -204,12 +205,16 @@ if (!KEY) {
 // which only validates pages that changed, so actuals land lower —
 // product-pages billed 90 against an estimated 110 on 13 September.
 const CREDITS_PER_URL_PER_CHECK = 2;
-const checksPerMonth = (m) => (m.schedule.text.startsWith("weekly") ? 5 : 30);
+// Day-of-week `*` means daily (~30 checks/month); a literal day means
+// weekly (~5). Reads the cron because that is now what we send — the
+// API takes "either cron or text", and `text: "weekly"` was resolving to
+// Sunday 00:00 UTC for three monitors at once without anyone picking it.
+const checksPerMonth = (m) => (m.schedule.cron.split(/\s+/)[4] === "*" ? 30 : 5);
 const monthlyCredits = (m) => m.urls.length * checksPerMonth(m) * CREDITS_PER_URL_PER_CHECK;
 
 console.log("Monitors to provision:\n");
 for (const m of planned) {
-  console.log(`  ${m.name.padEnd(30)} ${String(m.urls.length).padStart(3)} URLs  ${m.schedule.text.padEnd(16)} ~${monthlyCredits(m)} credits/mo`);
+  console.log(`  ${m.name.padEnd(30)} ${String(m.urls.length).padStart(3)} URLs  ${m.schedule.cron.padEnd(14)} ~${monthlyCredits(m)} credits/mo`);
 }
 for (const m of skipped) {
   console.log(`  ${m.name.padEnd(30)}   0 URLs  SKIPPED (no URLs configured yet)`);
@@ -326,7 +331,7 @@ for (const m of planned) {
     process.exit(1);
   }
 
-  out.monitors[m.key] = { id: data?.id, name: m.name, urls: m.urls.length, schedule: m.schedule.text };
+  out.monitors[m.key] = { id: data?.id, name: m.name, urls: m.urls.length, schedule: m.schedule.cron };
 }
 
 mkdirSync("data/monitor", { recursive: true });

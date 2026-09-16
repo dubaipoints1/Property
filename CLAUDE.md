@@ -353,10 +353,10 @@ scrape runs *in response*:
 
 | Monitor | URLs | Cadence | On change |
 |---|---|---|---|
-| `dubaipoints-fee-docs` | 12 KFS / SoF documents | weekly | issue + auto-scrape that bank |
-| `dubaipoints-product-pages` | 57 card product pages | weekly | issue + auto-scrape that bank |
+| `dubaipoints-fee-docs` | 12 KFS / SoF documents | Mon 09:00 UTC | issue + auto-scrape that bank |
+| `dubaipoints-product-pages` | 57 card product pages | Sun 09:00 UTC | issue + auto-scrape that bank |
 | `dubaipoints-offers` | 12 bank offers/promotions pages | daily 13:00 UTC | issue → editor, **no** auto-scrape |
-| `dubaipoints-salary-transfer` | 19 bank salary-transfer pages + T&Cs | weekly | issue → editor, **no** auto-scrape |
+| `dubaipoints-salary-transfer` | 19 bank salary-transfer pages + T&Cs | Sun 11:00 UTC | issue → editor, **no** auto-scrape |
 | `dubaipoints-press-rooms` | 9 issuer press indexes | daily 14:00 UTC | news digest → desks |
 
 ```
@@ -486,17 +486,32 @@ Weekly costs ~475 and still catches a fee change inside seven days.
 Salary-transfer stays weekly for the same reason it always did: these
 promotions move on quarterly campaign cycles.
 
-**Scheduling is a shared-key problem, not just a cadence one.** This API
-key carries **42 active monitors and only five are ours** — the other 37
-belong to an unrelated AI-governance research project, run on
-`Asia/Dubai` time, and cluster into 02:00–04:00 UTC (21 of them in the
-03:00 hour alone). fee-docs used to fire at 03:00 UTC into the middle of
-that, and on 16 September its 12 concurrent PDF jobs tripped Firecrawl's
-concurrent-browser limit. Nothing was lost — queued jobs still complete —
-but our daily monitors now run at **13:00 and 14:00 UTC**, hours in which
-nothing else on the key runs at all. Check the histogram of actual last-run
-times before adding a monitor or moving one; the estimate that matters is
-concurrency, not credits.
+**Scheduling: one batch per hour, and the batch size is the variable.**
+This API key carries **42 active monitors and only five are ours** — the
+other 37 belong to an unrelated AI-governance research project and run
+on `Asia/Dubai` time, clustering into 02:00–03:00 UTC. They are not the
+problem, and blaming their count was the wrong read: they are many
+*small search jobs*, already staggered. Ours are a handful of very large
+*page batches*, and a 57-URL batch landing on a queue that is already a
+few minutes behind is what turned their delay into Firecrawl's
+concurrent-browser limit on 16 September 2026.
+
+So the rule is **never two DubaiPoints monitors in the same hour**, with
+every one of them inside 09:00–15:00 UTC where that fleet is silent. The
+schedules live in `MONITOR_CRONS` (`scripts/monitor/_routing.mjs`) as
+**explicit cron**, not the API's natural-language `text` field: the
+create endpoint takes "either `cron` or `text`", and `text: "weekly"`
+silently resolved to Sunday 00:00 UTC — which is how product-pages (57),
+salary-transfer (19) and fee-docs (12) came to fire 88 URLs at the same
+instant without anyone choosing that. `scheduleCollisions()` asserts the
+invariant in `tests/monitor/coverage.test.ts`, including the subtle case
+of a daily monitor landing on a weekly one's hour.
+
+Nothing was ever lost to this — queued jobs still complete — but a
+limit you are brushing against is a limit you will eventually exceed.
+Before adding a monitor or moving one, add its cron to `MONITOR_CRONS`
+and let the test place it; the estimate that matters is concurrency, not
+credits.
 
 Audit hold F-020 is answered on the ownership half: the other monitors
 are that AI-governance project. The plan-tier half is still the account

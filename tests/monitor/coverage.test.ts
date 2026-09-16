@@ -28,8 +28,10 @@ import {
   checkListQueries,
   coverageGapsFor,
   isReadableCheck,
+  MONITOR_CRONS,
   newestFirst,
   pageAll,
+  scheduleCollisions,
   pageFetchLimit,
 } from "../../scripts/monitor/_routing.mjs";
 
@@ -177,4 +179,62 @@ test("pageAll refuses to loop forever on a server that never shortens a page", a
     }),
     /did not terminate/,
   );
+});
+
+// ── batch collision, 16 September 2026 ────────────────────────────────
+//
+// Firecrawl's concurrent-browser limit tripped because three of our five
+// monitors fired at the same instant — "weekly" resolves to Sunday 00:00
+// UTC, so product-pages (57 URLs), salary-transfer (19) and fee-docs (12)
+// launched 88 pages together. The 37 unrelated monitors sharing this API
+// key were NOT the cause: they are many small search jobs, already
+// staggered across 02:00–03:00 UTC. Our few very large page batches are
+// what amplified their few-minute delays into a hard limit.
+//
+// So the invariant is about OUR batches, and it is simply: never two at
+// once. Asserted rather than commented, because the last version of this
+// schedule was also believed to be staggered.
+
+test("no two monitors fire in the same hour", () => {
+  assert.deepEqual(
+    scheduleCollisions(),
+    [],
+    "two monitors sharing an hour is the 16 September concurrency failure",
+  );
+});
+
+test("scheduleCollisions actually detects a collision", () => {
+  // The guard above is worthless if the detector cannot fail. This is
+  // the exact shape that broke: three monitors on Sunday 00:00.
+  const broken = {
+    "product-pages": "0 0 * * 0",
+    "salary-transfer": "0 0 * * 0",
+    "fee-docs": "0 0 * * 0",
+  };
+  const found = scheduleCollisions(broken);
+  assert.equal(found.length, 3, "all three pairs collide");
+  for (const [, , slot] of found) assert.equal(slot, "0:0");
+});
+
+test("a daily monitor collides with a weekly one in the same hour", () => {
+  // Daily expands to all seven days, so it must clash with a weekly
+  // monitor at that hour — the subtler case a hand-check would miss.
+  assert.deepEqual(
+    scheduleCollisions({ daily: "0 9 * * *", weekly: "0 9 * * 0" }),
+    [["daily", "weekly", "0:9"]],
+  );
+  // ...and not with one an hour away.
+  assert.deepEqual(scheduleCollisions({ daily: "0 9 * * *", weekly: "0 10 * * 0" }), []);
+});
+
+test("every monitor is scheduled clear of the shared key's busy window", () => {
+  // 37 monitors belonging to another project run on Asia/Dubai time and
+  // cluster into 02:00–03:00 UTC. Ours must not be in there.
+  for (const [key, cron] of Object.entries(MONITOR_CRONS)) {
+    const hour = Number(cron.split(/\s+/)[1]);
+    assert.ok(
+      hour >= 8 && hour <= 15,
+      `${key} at ${hour}:00 UTC is outside the quiet 08:00–15:00 band`,
+    );
+  }
 });
