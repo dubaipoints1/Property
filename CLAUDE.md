@@ -353,11 +353,11 @@ scrape runs *in response*:
 
 | Monitor | URLs | Cadence | On change |
 |---|---|---|---|
-| `dubaipoints-fee-docs` | 10 KFS / SoF documents | daily | issue + auto-scrape that bank |
-| `dubaipoints-product-pages` | 52 card product pages | weekly | issue + auto-scrape that bank |
-| `dubaipoints-offers` | bank offers/promotions pages | daily | issue → editor, **no** auto-scrape |
-| `dubaipoints-salary-transfer` | bank salary-transfer pages + T&Cs | weekly | issue → editor, **no** auto-scrape |
-| `dubaipoints-press-rooms` | 9 issuer press indexes | daily | news digest → desks |
+| `dubaipoints-fee-docs` | 12 KFS / SoF documents | weekly | issue + auto-scrape that bank |
+| `dubaipoints-product-pages` | 57 card product pages | weekly | issue + auto-scrape that bank |
+| `dubaipoints-offers` | 12 bank offers/promotions pages | daily 13:00 UTC | issue → editor, **no** auto-scrape |
+| `dubaipoints-salary-transfer` | 19 bank salary-transfer pages + T&Cs | weekly | issue → editor, **no** auto-scrape |
+| `dubaipoints-press-rooms` | 9 issuer press indexes | daily 14:00 UTC | news digest → desks |
 
 ```
 scripts/monitor/setup.mjs            # idempotent provisioning (FIRECRAWL_API_KEY=skip to dry-run)
@@ -457,16 +457,51 @@ That both editor-typed monitors stay off the auto-scrape path is now an
 asserted invariant, not a convention: `tests/monitor/routing.test.ts`
 fails if either is added to `AUTO_SCRAPE`.
 
-**Budget.** Firecrawl's own estimate is exactly **URLs × checks/month ×
-2**, where weekly is 5 checks and daily is 30 — all five monitors matched
-that to the credit on 15 September 2026. The second credit is the judge,
-so the estimate is a worst case and actuals land lower (product-pages
-billed 90 against an estimated 110 on 13 September). The fleet as
-provisioned on 15 September: fee-docs 720, product-pages 570, offers 720,
-salary-transfer 190, press-rooms 540 — **2,740/month** against the
-5,000/month Hobby plan. Salary-transfer stays weekly because these
-promotions move on quarterly campaign cycles, so daily would buy nothing
-for 6× the credits.
+**Budget — and the estimate is not the bill.** Firecrawl's own estimate
+is exactly **URLs × checks/month × 2**, where weekly is 5 checks and
+daily is 30. That formula predicts the *reservation*, not the charge, and
+the difference splits cleanly by content type. Measured actuals,
+16 September 2026:
+
+| Monitor | est/check | actual/check | ratio |
+|---|---|---|---|
+| fee-docs (PDF) | 24 | **110** | **4.6×** |
+| salary-transfer (has T&C PDFs) | 36 | **64** | **1.8×** |
+| product-pages (HTML) | 114 | 90–97 | 0.85× |
+| press-rooms (HTML) | 18 | 14–16 | 0.85× |
+| offers (HTML) | 24 | 12–18 | 0.6× |
+
+**PDFs bill per page, not per URL.** HTML lands under the estimate
+because the second credit is the judge and it is a worst case; a PDF
+blows straight through it. An earlier version of this paragraph read
+"the estimate is a worst case and actuals land lower" and cited
+product-pages billing 90 against 110 — true, and generalised from the
+one HTML case to the whole fleet. It understated the real bill by
+roughly half.
+
+Weekly fee-docs is the correction that follows. Daily, 12 PDFs cost
+~3,300 credits/month — about two thirds of everything the fleet spends,
+to re-read documents versioned quarterly ("Ver.46/February 2026").
+Weekly costs ~475 and still catches a fee change inside seven days.
+Salary-transfer stays weekly for the same reason it always did: these
+promotions move on quarterly campaign cycles.
+
+**Scheduling is a shared-key problem, not just a cadence one.** This API
+key carries **42 active monitors and only five are ours** — the other 37
+belong to an unrelated AI-governance research project, run on
+`Asia/Dubai` time, and cluster into 02:00–04:00 UTC (21 of them in the
+03:00 hour alone). fee-docs used to fire at 03:00 UTC into the middle of
+that, and on 16 September its 12 concurrent PDF jobs tripped Firecrawl's
+concurrent-browser limit. Nothing was lost — queued jobs still complete —
+but our daily monitors now run at **13:00 and 14:00 UTC**, hours in which
+nothing else on the key runs at all. Check the histogram of actual last-run
+times before adding a monitor or moving one; the estimate that matters is
+concurrency, not credits.
+
+Audit hold F-020 is answered on the ownership half: the other monitors
+are that AI-governance project. The plan-tier half is still the account
+owner's call — those 37 estimate ~18,330 credits/month on their own,
+against a 5,000/month Hobby plan.
 
 Two guards in `setup.mjs`, and the second exists because the first could
 not fire. `MAX_ESTIMATED_CREDITS` (1,600) is **per monitor** and the

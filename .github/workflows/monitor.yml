@@ -101,13 +101,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Reuses the single-bank `bank` input already present on
-          # scrape.yml — no new scraping code, no new data path.
-          for BANK in ${{ steps.poll.outputs.banks }}; do
-            echo "Dispatching scrape for $BANK"
-            gh workflow run scrape.yml -f bank="$BANK" \
-              || echo "dispatch failed for $BANK"
-          done
+          # ONE dispatch carrying every changed bank, not one run each.
+          # scrape.yml's `bank` input is already space-separated — it does
+          # `BANKS="$INPUT"` and then `for BANK in $BANKS`, so a list has
+          # always worked. Dispatching per bank meant the 15 September poll
+          # opened four scrape runs and four pull requests, all editing
+          # src/data/cards.json, all carrying the same unrelated
+          # re-serialised line, and therefore all conflicting with each
+          # other the moment one merged. One run, one PR, one review.
+          BANKS="${{ steps.poll.outputs.banks }}"
+          echo "Dispatching one scrape for: $BANKS"
+          gh workflow run scrape.yml -f bank="$BANKS" \
+            || echo "dispatch failed for: $BANKS"
 
       - name: Save digests + state to automation-state
         run: |

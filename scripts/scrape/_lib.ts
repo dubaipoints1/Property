@@ -170,9 +170,30 @@ function htmlToMarkdownFallback(html: string): string {
 
 // ── Parsers (pure, unit-testable) ────────────────────────────────────────
 
-/** Parse "AED 1,575" or "AED1,575/year" or "AED 1575" → 1575. */
+/**
+ * Parse "AED 1,575" or "AED1,575/year" or "AED 1575" → 1575.
+ *
+ * Tolerates markdown emphasis around the currency token — `_AED_ 1,200`,
+ * `**AED** 8,000`, `*AED* 500`. We scrape in markdown mode, and a bank
+ * that styles the currency in its page copy hands us the emphasis marks
+ * verbatim. ADCB does exactly this, and the bare AED-then-whitespace
+ * pattern this replaces
+ * returned null for every amount on every ADCB page: the `_` sits between
+ * "AED" and the digits, so `\s*` never matched. The visible symptom was
+ * four "welcome bonus copy detected but could not be parsed into the
+ * typed shape — fell back to free-text" warnings on the 15 September 2026
+ * scrape, and it is the same failure class that let ADCB's Essential
+ * Cashback welcome bonus sit un-typed while it was cut twice: the monitor
+ * saw `Enjoy a welcome bonus of up to _AED_ 250`, and nothing downstream
+ * could read a number out of it.
+ *
+ * Deliberately narrow: only emphasis immediately hugging the AED token,
+ * so `USD 300` and `SAUDI 500` still do not match. Stripping emphasis
+ * from the whole input would break parseMinSalary's FAB bold layout
+ * ("Minimum Monthly Salary **5,000**"), which reads `**` as the signal.
+ */
 export function parseAED(input: string): number | null {
-  const m = input.match(/AED\s*([\d,]+(?:\.\d+)?)/i);
+  const m = input.match(/(?:\*\*|__|[_*])?AED(?:\*\*|__|[_*])?\s*([\d,]+(?:\.\d+)?)/i);
   if (!m) return null;
   const n = Number(m[1].replace(/,/g, ""));
   return Number.isFinite(n) ? n : null;
