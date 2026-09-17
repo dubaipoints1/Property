@@ -251,9 +251,18 @@ Chromium build 1194 is the one pre-installed in the web session; `DP_CHROME_PATH
 overrides. `public/_headers` **ships** since 15 September 2026 (Chairman
 ruling R7): the four static headers plus a 7-day HSTS with no preload and
 no subdomains. A Content-Security-Policy, report-only or enforced, is a
-separate T3 item pending the inline-script inventory; `audit:static` will
-list it as the one missing recommended header until then. See
-`scripts/audit/README.md`.
+separate T3 item; `audit:static` lists it as the one missing recommended
+header until it lands. **The inventory R7 asked for is done** —
+`.council/research/2026-09/csp-inline-script-inventory-2026-09-17.md` — and
+it moved the problem: the inline `<script>` blocks are trivial (11
+executable, 175 of the 186 are non-executable `ld+json`/`json` that
+`script-src` does not govern), but the site renders **3,625 inline
+event-handler attributes**, which no hash or nonce can ever allow. 3,402
+are the `onerror` logo fallback in `BankLogo.astro` / `ProgrammeLogo.astro`
+that six text-placeholder issuers depend on, and 223 are the stylesheet
+preload flip in `BaseLayout.astro`. A strict CSP therefore needs both
+handlers moved into hashed scripts and a build-time hash list first — it is
+a brief, not a header edit. See `scripts/audit/README.md`.
 
 ## Architecture — the three-layer card model
 
@@ -303,6 +312,27 @@ rules in
   `parseWelcomeBonus()` path was validated. The raw wording still lands in
   `_scraped_freetext.welcomeBonus` so an editor can audit the structured
   parse against the source copy.
+- **The currency token is defined once**, as `AED` in `_normaliser.ts`, and
+  interpolated into every pattern that needs it. Until 17 September 2026
+  there were five independent copies of `AED\s*` in that file plus a sixth
+  in `parseAED` over in `_lib.ts`, so fixing `parseAED` for markdown
+  emphasis on the 16th changed nothing for welcome bonuses — that path
+  never called it, and the ADCB warnings survived a fix reported as
+  addressing them. Add a currency phrasing in one place or it will not
+  hold. The token carries the emphasis marks (`_AED_`, `**AED**`) because
+  ADCB writes them on every product page; stripping emphasis from the whole
+  input instead would break `parseMinSalary`'s FAB bold layout, which reads
+  `**` as its signal.
+- **`parseWelcomeBonus()` refuses more than it accepts, on purpose.** It
+  types a bonus only when the copy is unambiguous, and three refusals are
+  asserted in `tests/scrape/_normaliser.test.ts` against real scraped
+  strings: two different figures in one sentence (ADCB Shukran quotes
+  AED 1,200 for one segment and AED 1,000 for another — an editorial call),
+  a "welcome bonus" phrase followed by unrelated copy whose nearest figure
+  is the **annual fee** (ADCB Betaqti — a looser regex would have typed
+  AED 2,100 as a welcome bonus and looked like the fix working), and
+  scrape debris. A figure that reaches `cards.json` wrong is worse than a
+  figure an editor has to type by hand.
 - `_features` is a Zod discriminated union (14 typed perk types —
   lounge access, cinema BOGO, hotel discount, etc.) defined in
   `src/lib/cardsData.ts`. The matcher reads only this; free-text
