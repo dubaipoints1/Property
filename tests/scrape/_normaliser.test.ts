@@ -1147,3 +1147,102 @@ test("Islamic profit-rate lines never resolve as the FX fee", () => {
   assert.equal(draft.fxFee, 3.7, "the international-usage fee wins");
   assert.notEqual(draft.fxFee, 3.25, "the Salam profit rate must never be promoted to FX");
 });
+
+// ── welcome-bonus typing, 17 September 2026 ───────────────────────────
+//
+// Every ADCB card logged "welcome bonus copy detected but could not be
+// parsed into the typed shape" on every scrape. Two defects, and the
+// second is why fixing parseAED on 16 September changed nothing here:
+//
+//  1. The currency was matched by five independent copies of `AED\s*`
+//     across this file, none of which called parseAED. Markdown emphasis
+//     (ADCB writes `_AED_ 250`) defeated all of them.
+//  2. detectUnit had no pattern for a bonus quoted straight in dirhams.
+//     "Welcome bonus of AED 250" carries no unit noun, so it bailed
+//     before ever looking for an amount — a CLEAN, unemphasised string
+//     failed too. The emphasis was never the whole story.
+//
+// Fixtures are the real `_scraped_freetext.welcomeBonus` values from the
+// 16 September scrape (PR #383), not invented copy.
+
+test("parseWelcomeBonus types a dirham welcome bonus, emphasised or not", () => {
+  assert.deepEqual(
+    parseWelcomeBonus("Enjoy a welcome bonus of AED 250 when you apply"),
+    { amount: 250, unit: "aed_cashback", spend_threshold_aed: null, qualify_window_days: null },
+    "a clean dirham bonus with no unit noun — this failed before the unit pattern existed",
+  );
+  assert.equal(
+    parseWelcomeBonus(
+      "welcome bonus of up to _AED_ 250 when you apply for the ADCB Essential Cashback Credit Card on select digital channels",
+    )?.amount,
+    250,
+    "the card whose AED 300 → 250 cut went untyped for nine days",
+  );
+  assert.equal(
+    parseWelcomeBonus(
+      "Welcome bonus of _AED_ 365 - Enjoy a welcome bonus of _AED_ 365 when you sign up for the card",
+    )?.amount,
+    365,
+    "the same figure twice is not an ambiguity",
+  );
+});
+
+test("parseWelcomeBonus reads threshold and window through emphasis", () => {
+  assert.deepEqual(
+    parseWelcomeBonus(
+      "Welcome bonus of up to _AED_ 750 will be applicable for cards applied via the digital channels only such as talabat application, ADCB website, ADCB Mobile Banking App, Hayyak App & talabat app subject to a minimum spend condition of _AED_ 5,000 in first 45 days",
+    ),
+    { amount: 750, unit: "aed_cashback", spend_threshold_aed: 5000, qualify_window_days: 45 },
+  );
+});
+
+test("parseWelcomeBonus refuses copy it cannot read unambiguously", () => {
+  // Two offers in one sentence — ADCB Shukran quotes AED 1,200 for one
+  // segment and AED 1,000 for another. Which applies to this reader is an
+  // editorial call, so it stays free text.
+  assert.equal(
+    parseWelcomeBonus(
+      "welcome bonus of _AED_ 1,200 and UAE residents will receive a welcome bonus of _AED_ 1,000",
+    ),
+    null,
+  );
+
+  // The dangerous one. ADCB Betaqti scrapes with the words "welcome bonus"
+  // followed by unrelated copy whose nearest figure is the ANNUAL FEE. A
+  // looser "first AED amount after 'welcome bonus'" would type 2,100 as a
+  // welcome bonus — and would have looked exactly like the fix working.
+  assert.equal(
+    parseWelcomeBonus(
+      "welcome bonus ### Keep in mind - An annual fee of _AED_ 2,100 (inclusive of VAT) is applicable - Earn up to 750,000 Anniversary TouchPoints",
+    ),
+    null,
+    "an annual fee must never be typed as a welcome bonus",
+  );
+
+  assert.equal(parseWelcomeBonus("Up to 1 LuLu Points<br>- 0"), null);
+});
+
+test("a named loyalty currency still beats the dirham fallback", () => {
+  // The bare-AED unit pattern sits last so points bonuses are unaffected.
+  const r = parseWelcomeBonus(
+    "Receive a welcome bonus of 30,000 FAB Rewards when you spend AED 5,000 in the first 60 days",
+  );
+  assert.equal(r?.unit, "fab_rewards");
+  assert.equal(r?.amount, 30000);
+  assert.equal(r?.spend_threshold_aed, 5000);
+});
+
+test("a footnote marker between 'bonus' and the amount is tolerated", () => {
+  // ENBD's Noon One scrapes as "Get a welcome bonus\* of **AED 500**" —
+  // the escaped asterisk is a footnote marker, and it blocked the anchor.
+  const r = parseWelcomeBonus(
+    "Welcome bonus #### Get a welcome bonus\\* of **AED 500** when you spend **AED 5,000** in the first 60 days",
+  );
+  assert.equal(r?.amount, 500);
+  assert.equal(r?.spend_threshold_aed, 5000);
+  // Still narrow: "###" is not a footnote marker, so Betaqti stays refused.
+  assert.equal(
+    parseWelcomeBonus("welcome bonus ### Keep in mind - An annual fee of _AED_ 2,100 is applicable"),
+    null,
+  );
+});

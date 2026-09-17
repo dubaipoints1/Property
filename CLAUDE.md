@@ -303,6 +303,27 @@ rules in
   `parseWelcomeBonus()` path was validated. The raw wording still lands in
   `_scraped_freetext.welcomeBonus` so an editor can audit the structured
   parse against the source copy.
+- **The currency token is defined once**, as `AED` in `_normaliser.ts`, and
+  interpolated into every pattern that needs it. Until 17 September 2026
+  there were five independent copies of `AED\s*` in that file plus a sixth
+  in `parseAED` over in `_lib.ts`, so fixing `parseAED` for markdown
+  emphasis on the 16th changed nothing for welcome bonuses — that path
+  never called it, and the ADCB warnings survived a fix reported as
+  addressing them. Add a currency phrasing in one place or it will not
+  hold. The token carries the emphasis marks (`_AED_`, `**AED**`) because
+  ADCB writes them on every product page; stripping emphasis from the whole
+  input instead would break `parseMinSalary`'s FAB bold layout, which reads
+  `**` as its signal.
+- **`parseWelcomeBonus()` refuses more than it accepts, on purpose.** It
+  types a bonus only when the copy is unambiguous, and three refusals are
+  asserted in `tests/scrape/_normaliser.test.ts` against real scraped
+  strings: two different figures in one sentence (ADCB Shukran quotes
+  AED 1,200 for one segment and AED 1,000 for another — an editorial call),
+  a "welcome bonus" phrase followed by unrelated copy whose nearest figure
+  is the **annual fee** (ADCB Betaqti — a looser regex would have typed
+  AED 2,100 as a welcome bonus and looked like the fix working), and
+  scrape debris. A figure that reaches `cards.json` wrong is worse than a
+  figure an editor has to type by hand.
 - `_features` is a Zod discriminated union (14 typed perk types —
   lounge access, cinema BOGO, hotel discount, etc.) defined in
   `src/lib/cardsData.ts`. The matcher reads only this; free-text

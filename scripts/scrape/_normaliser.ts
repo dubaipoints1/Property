@@ -396,6 +396,24 @@ export interface StructuredWelcomeBonus {
  * Synced by hand with REWARD_UNIT in src/lib/cardsData.ts. If you add
  * a new unit there, add a phrase here too.
  */
+/**
+ * The currency token, as it actually arrives from a markdown scrape.
+ *
+ * Defined ONCE and interpolated everywhere, because the alternative is what
+ * this file had until 17 September 2026: five independent copies of
+ * `AED\\s*` across detectAmount, detectSpendThreshold and UNIT_PATTERNS,
+ * plus a sixth in parseAED over in _lib.ts. Fixing parseAED for markdown
+ * emphasis on 16 September therefore changed nothing here — the welcome-bonus
+ * path never called it — and the ADCB "could not be parsed into the typed
+ * shape" warnings survived a fix that was reported as addressing them.
+ *
+ * ADCB wraps the currency in emphasis on every product page (`_AED_ 250`),
+ * so the marks have to be part of the token, not stripped from the input:
+ * stripping all emphasis would break parseMinSalary's FAB bold layout, which
+ * reads `**` as its signal.
+ */
+const AED = String.raw`(?:\*\*|__|[_*])?(?:AED|Dhs?)(?:\*\*|__|[_*])?`;
+
 const UNIT_PATTERNS: Array<{ rx: RegExp; unit: RewardUnit }> = [
   { rx: /skywards\s+miles?/i, unit: "skywards_miles" },
   { rx: /etihad\s+guest(?:\s+miles?)?/i, unit: "etihad_guest_miles" },
@@ -409,9 +427,17 @@ const UNIT_PATTERNS: Array<{ rx: RegExp; unit: RewardUnit }> = [
   { rx: /smiles\s+points?|smiles(?=\s|$)/i, unit: "enbd_smiles" },
   { rx: /adcb\s+touch\s*points?|touch\s*points?/i, unit: "adcb_touchpoints" },
   { rx: /salaam\s+points?|mashreq\s+salaam/i, unit: "mashreq_salaam" },
-  { rx: /(?:aed|dh)\s*[\d,]+\s+cashback|cashback/i, unit: "aed_cashback" },
+  { rx: new RegExp(`${AED}\\s*[\\d,]+\\s+cashback|cashback`, "i"), unit: "aed_cashback" },
   { rx: /voucher/i, unit: "aed_voucher" },
   { rx: /statement\s+credit|credit\s+back/i, unit: "aed_credit" },
+  // LAST on purpose. A welcome bonus quoted straight in dirhams — "welcome
+  // bonus of AED 250" — carries no unit noun at all, and every pattern above
+  // needs one, so detectUnit returned null and parseWelcomeBonus gave up
+  // before it ever looked for an amount. That is why even a clean
+  // "Enjoy a welcome bonus of AED 250 when you apply" failed to type.
+  // Sitting last means a card paying points still matches its own currency
+  // first; this only catches the copy where the dirham IS the unit.
+  { rx: new RegExp(`welcome\\s+bonus\\\\?[*\u2020\u2021]?\\s+(?:of\\s+)?(?:up\\s+to\\s+)?${AED}\\s*[\\d,]+`, "i"), unit: "aed_cashback" },
 ];
 
 function detectUnit(text: string): RewardUnit | null {
@@ -443,19 +469,51 @@ function detectAmount(text: string, unit: RewardUnit): number | null {
   // "spend", not by "cashback").
   if (unit === "aed_cashback" || unit === "aed_voucher" || unit === "aed_credit") {
     const verbed = text.match(
-      /(?:earn|receive|get|enjoy)\s+(?:up\s+to\s+)?AED\s*([\d,]+)\s*(?:cashback|voucher|credit|back)/i,
+      new RegExp(
+        `(?:earn|receive|get|enjoy)\\s+(?:up\\s+to\\s+)?${AED}\\s*([\\d,]+)\\s*(?:cashback|voucher|credit|back)`,
+        "i",
+      ),
     );
     if (verbed) {
       const n = Number(verbed[1].replace(/,/g, ""));
       if (Number.isFinite(n) && n > 0) return n;
     }
     const verbless = text.match(
-      /(?:up\s+to\s+)?AED\s*([\d,]+)\s+(?:cashback|voucher|credit|statement\s+credit|credit\s+back)\b/i,
+      new RegExp(
+        `(?:up\\s+to\\s+)?${AED}\\s*([\\d,]+)\\s+(?:cashback|voucher|credit|statement\\s+credit|credit\\s+back)\\b`,
+        "i",
+      ),
     );
     if (verbless) {
       const n = Number(verbless[1].replace(/,/g, ""));
       if (Number.isFinite(n) && n > 0) return n;
     }
+    // Last: the bonus quoted straight in dirhams with no unit noun —
+    // "Welcome bonus of up to AED 750". Anchored hard on the phrase
+    // "welcome bonus" with nothing but an optional "of" / "up to" before
+    // the currency, and that tightness is the point. ADCB's Betaqti copy
+    // scrapes as "welcome bonus ### Keep in mind - An annual fee of
+    // AED 2,100 …", where the nearest figure is the ANNUAL FEE; a looser
+    // "first AED amount after the words welcome bonus" would have typed
+    // 2,100 as a welcome bonus and no test would have caught it, because
+    // it would have looked like the fix working.
+    const anchored = [
+      ...text.matchAll(
+        new RegExp(
+          `welcome\\s+bonus\\\\?[*\u2020\u2021]?\\s+(?:of\\s+)?(?:up\\s+to\\s+)?${AED}\\s*([\\d,]+)`,
+          "gi",
+        ),
+      ),
+    ]
+      .map((m) => Number(m[1].replace(/,/g, "")))
+      .filter((n) => Number.isFinite(n) && n > 0);
+
+    // Two DIFFERENT figures means the page is quoting more than one offer —
+    // ADCB Shukran advertises AED 1,200 for one segment and AED 1,000 for
+    // another in a single sentence. Which one applies to this reader is an
+    // editorial judgement, so it stays free text and an editor types it.
+    const distinct = [...new Set(anchored)];
+    if (distinct.length === 1) return distinct[0];
     return null;
   }
 
@@ -486,8 +544,11 @@ function detectAmount(text: string, unit: RewardUnit): number | null {
  */
 function detectSpendThreshold(text: string): number | null {
   const m =
-    text.match(/(?:spend(?:ing)?|on|after)\s+AED\s*([\d,]+)/i) ??
-    text.match(/AED\s*([\d,]+)\s+(?:cumulative\s+)?spend/i);
+    text.match(new RegExp(`(?:spend(?:ing)?|on|after)\\s+${AED}\\s*([\\d,]+)`, "i")) ??
+    // "minimum spend condition of AED 5,000", "minimum spend of AED 3,000" —
+    // a few words may sit between the verb and the figure.
+    text.match(new RegExp(`spend(?:ing)?\\s+(?:\\w+\\s+){0,2}?of\\s+${AED}\\s*([\\d,]+)`, "i")) ??
+    text.match(new RegExp(`${AED}\\s*([\\d,]+)\\s+(?:cumulative\\s+)?spend`, "i"));
   if (m) {
     const n = Number(m[1].replace(/,/g, ""));
     if (Number.isFinite(n) && n > 0) return n;
