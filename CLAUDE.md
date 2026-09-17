@@ -251,9 +251,18 @@ Chromium build 1194 is the one pre-installed in the web session; `DP_CHROME_PATH
 overrides. `public/_headers` **ships** since 15 September 2026 (Chairman
 ruling R7): the four static headers plus a 7-day HSTS with no preload and
 no subdomains. A Content-Security-Policy, report-only or enforced, is a
-separate T3 item pending the inline-script inventory; `audit:static` will
-list it as the one missing recommended header until then. See
-`scripts/audit/README.md`.
+separate T3 item; `audit:static` lists it as the one missing recommended
+header until it lands. **The inventory R7 asked for is done** —
+`.council/research/2026-09/csp-inline-script-inventory-2026-09-17.md` — and
+it moved the problem: the inline `<script>` blocks are trivial (11
+executable, 175 of the 186 are non-executable `ld+json`/`json` that
+`script-src` does not govern), but the site renders **3,625 inline
+event-handler attributes**, which no hash or nonce can ever allow. 3,402
+are the `onerror` logo fallback in `BankLogo.astro` / `ProgrammeLogo.astro`
+that six text-placeholder issuers depend on, and 223 are the stylesheet
+preload flip in `BaseLayout.astro`. A strict CSP therefore needs both
+handlers moved into hashed scripts and a build-time hash list first — it is
+a brief, not a header edit. See `scripts/audit/README.md`.
 
 ## Architecture — the three-layer card model
 
