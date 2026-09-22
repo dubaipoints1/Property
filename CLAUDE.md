@@ -487,6 +487,9 @@ with the label, **fall back to an unlabelled issue** so the finding still
 reaches a human, and only then fail the step with an `::error`
 annotation. An unlabelled issue beats no issue; a red run beats a green
 lie. Never reintroduce a bare `|| echo` on an alert path.
+Verified end to end on 22 September 2026: a dispatched `monitor.yml` run
+on the fixed workflow opened issues #391 (card-change) and #392
+(news-digest) on the first, labelled attempt.
 
 **Offers are alert-only** because the merge contract says typed editor
 fields (`welcomeBonus`, `annualFeeWaiver`, `_features`) are never
@@ -568,16 +571,26 @@ are that AI-governance project. The plan-tier half is still the account
 owner's call — those 37 estimate ~18,330 credits/month on their own,
 against a 5,000/month Hobby plan.
 
-**Measured, 22 September 2026: 945 credits left of 5,000 with 23 days of
-the period still to run** — 4,055 consumed in seven days, ~580/day, which
-exhausts the plan around the 24th. That rate matches the other project's
-~600/day estimate almost exactly; ours is ~70/day. August ran at 11,321
-credits against the 5,000 plan (7,945 on the `Default` key, 3,376 on
-`Connected app`, which is the MCP channel — i.e. Claude sessions). So the
-overrun is structural and predates this note. Until the plan tier or the
-key split is decided, expect checks to start returning
-`skipped_no_credits` and the change-signal pipeline to stop silently.
-Tracked in issue #389.
+**Measured, 22 September 2026: 945 credits left of 5,000, with the billing
+period (15 September – 15 October) 23 days from closing.** Resist the
+obvious subtraction. 5,000 − 945 does **not** give 4,055 consumed since
+the 15th — an earlier version of this paragraph said exactly that and
+derived a ~580/day burn from it. The per-key history refutes it: the whole
+of calendar September, its first fortnight included, totals 3,736 credits
+(2,228 `Default` + 1,508 `Connected app`), which is *less* than the
+subtraction claims for a strictly shorter window. The balance did not open
+the period at a full 5,000, so it is not a period-to-date meter. Two
+readings hours apart on the 22nd both returned exactly 945, which a
+~580/day burn would not do. **Read the burn from
+`firecrawl_credit_usage` history, never from the remaining balance.**
+
+What the history does support: August ran 11,321 credits against the
+5,000 plan (7,945 on the `Default` key, 3,376 on `Connected app`, which
+is the MCP channel — i.e. Claude sessions), so the overrun is structural
+and predates this note, and our own fleet is a small part of it — a full
+poll on the 22nd reported 29 credits. Until the plan tier or the key
+split is decided, expect checks to start returning `skipped_no_credits`
+and the change-signal pipeline to stop silently. Tracked in issue #389.
 
 Two guards in `setup.mjs`, and the second exists because the first could
 not fire. `MAX_ESTIMATED_CREDITS` (1,600) is **per monitor** and the
