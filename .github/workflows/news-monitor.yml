@@ -58,12 +58,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           latest=$(ls -t .council/monitoring/digest-*.md | head -1)
-          # only raise an issue for a digest created in this run
+          # only raise an issue for a digest created in this run. See the note
+          # in monitor.yml: an unlabelled issue beats no issue, and a silent
+          # failure here is how 42 digests went unread.
           if [ -n "$(git status --porcelain "$latest")" ]; then
-            gh issue create \
-              --title "News digest: $(basename "$latest" .md | sed 's/digest-//')" \
-              --body-file "$latest" \
-              --label "news-digest" || echo "issue creation failed (label may not exist) — digest still committed"
+            title="News digest: $(basename "$latest" .md | sed 's/digest-//')"
+            gh issue create --title "$title" --body-file "$latest" --label "news-digest" \
+              || gh issue create --title "$title" --body-file "$latest" \
+              || { echo "::error title=News digest alert lost::Could not open an issue for $latest."; exit 1; }
           fi
 
       - name: Save digest + state to automation-state

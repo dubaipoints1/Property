@@ -468,6 +468,26 @@ The monitor answers *"did something move?"*. The scraper answers *"what
 is it now?"*. Those stay separate, and nothing in `scripts/monitor/`
 writes to `cards.json`.
 
+**A digest nobody reads is the failure this pipeline exists to prevent.**
+`monitor.yml` and `news-monitor.yml` raise a GitHub issue carrying the
+digest body; until 22 September 2026 they did it as
+`gh issue create --label "card-change" || echo "issue creation failed"`.
+Neither `card-change` nor `news-digest` existed as a repository label, so
+`gh` refused client-side, the `|| echo` swallowed it, and **every run
+since the workflow shipped reported green while telling nobody**. 42
+digests accumulated on `automation-state`, including nine `offers`
+findings over 18–22 September — four of them the Emirates Islamic page
+dropping the Switch Cashback welcome bonus that `cards.json` still
+published. Found only because someone asked why the site had stopped
+updating.
+
+Both labels now exist, and all three issue-raising steps use the ladder
+the deal-expiry, link-audit and news-expiry workflows already had: try
+with the label, **fall back to an unlabelled issue** so the finding still
+reaches a human, and only then fail the step with an `::error`
+annotation. An unlabelled issue beats no issue; a red run beats a green
+lie. Never reintroduce a bare `|| echo` on an alert path.
+
 **Offers are alert-only** because the merge contract says typed editor
 fields (`welcomeBonus`, `annualFeeWaiver`, `_features`) are never
 written by the scraper — it emits free text under `_scraped_freetext.*`
@@ -548,6 +568,17 @@ are that AI-governance project. The plan-tier half is still the account
 owner's call — those 37 estimate ~18,330 credits/month on their own,
 against a 5,000/month Hobby plan.
 
+**Measured, 22 September 2026: 945 credits left of 5,000 with 23 days of
+the period still to run** — 4,055 consumed in seven days, ~580/day, which
+exhausts the plan around the 24th. That rate matches the other project's
+~600/day estimate almost exactly; ours is ~70/day. August ran at 11,321
+credits against the 5,000 plan (7,945 on the `Default` key, 3,376 on
+`Connected app`, which is the MCP channel — i.e. Claude sessions). So the
+overrun is structural and predates this note. Until the plan tier or the
+key split is decided, expect checks to start returning
+`skipped_no_credits` and the change-signal pipeline to stop silently.
+Tracked in issue #389.
+
 Two guards in `setup.mjs`, and the second exists because the first could
 not fire. `MAX_ESTIMATED_CREDITS` (1,600) is **per monitor** and the
 largest single monitor estimates 720, so it had never once triggered
@@ -596,9 +627,11 @@ step by design.
 
 ### Firecrawl credentials — three separate channels
 
-The same Firecrawl Hobby subscription (5,000 credits/month, refreshed
-on the 20th) is consumed through three independent credential channels.
-Setting one does not set the others.
+The same Firecrawl Hobby subscription (5,000 credits/month, billing
+period running **15th to 15th** — an earlier version of this line said
+the 20th, corrected 22 September 2026 against the live
+`firecrawl_credit_usage` reading) is consumed through three independent
+credential channels. Setting one does not set the others.
 
 | Channel | Used by | Where to configure |
 |---|---|---|
