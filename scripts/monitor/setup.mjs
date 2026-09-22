@@ -7,7 +7,7 @@
 //   product-pages    57 card product pages                    weekly
 //   offers           bank offers/promotions landing pages     daily 13:00
 //   salary-transfer  bank salary-transfer offer pages + T&Cs  weekly
-//   press-rooms       9 issuer press indexes                  daily 14:00
+//   press-rooms      10 issuer press indexes                  daily 14:00
 //
 // ── The §6 boundary, which is why this file looks the way it does ─────
 // Charter §6 bans LLM extraction for typed numerics: fees, salary bands,
@@ -76,6 +76,17 @@ const MAX_TOTAL_ESTIMATED_CREDITS = 3000;
 const PRESS_PAGES = [
   "https://www.emirates.com/media-centre/",
   "https://www.etihad.com/en-ae/news",
+  // flydubai, added 22 September 2026. It was missing from this list
+  // although `flydubai` has always been in the news-monitor's own UAE
+  // relevance regex, so the only flydubai signal the desks ever got came
+  // from aggregators — which the sourcing ladder makes discovery, never a
+  // citable fact. On 17 September an aggregator reported flydubai crossing
+  // 100 aircraft and retrofitting 21 MAX with lie-flat business; the
+  // airline's own newsroom carried no such release and its boilerplate
+  // still read 98 aircraft, so the story could not be written. Note the
+  // host: `media.flydubai.com` (in Part II's allowlist table) no longer
+  // resolves at all — the newsroom is Prezly-hosted at news.flydubai.com.
+  "https://news.flydubai.com/",
   "https://www.qatarairways.com/press-releases/en-ww",
   "https://news.marriott.com/",
   "https://stories.hilton.com/",
