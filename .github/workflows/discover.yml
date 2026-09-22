@@ -24,7 +24,7 @@ on:
   workflow_dispatch:
     inputs:
       surface:
-        description: "Which registry surface to discover URLs for, or 'verify' to fetch pending candidates"
+        description: "Which surface to discover: a registry URL surface, 'verify' to fetch pending candidates, or 'feeds' to probe issuer RSS (free)"
         required: true
         default: salary-transfer
         type: choice
@@ -32,6 +32,7 @@ on:
           - salary-transfer
           - offers
           - verify
+          - feeds
       ref:
         description: "Branch/ref to run the discovery scripts from"
         required: false
@@ -80,6 +81,14 @@ jobs:
           if [ "${{ inputs.surface }}" = "verify" ]; then
             script="scripts/monitor/verify-candidates.ts"
             runner="npx tsx"
+          elif [ "${{ inputs.surface }}" = "feeds" ]; then
+            # 'feeds' asks a different question again, and asks it for
+            # free: which issuer newsrooms publish RSS? A feed is a
+            # primary source we can poll at zero cost, so it has to be
+            # ruled out before any paid monitor URL is added. No
+            # Firecrawl key is used or required.
+            script="scripts/news-monitor/discover-feeds.mjs"
+            runner="node"
           else
             script="scripts/monitor/discover-${{ inputs.surface }}.mjs"
             runner="node"
@@ -88,14 +97,19 @@ jobs:
             echo "::error::$script not found on this ref (${{ inputs.ref || github.ref }})."
             exit 1
           fi
-          if [ -z "$FIRECRAWL_API_KEY" ]; then
+          # The feeds probe makes only plain fetches, so a missing key
+          # must not stop it — the check is scoped to the surfaces that
+          # actually spend credits.
+          if [ "${{ inputs.surface }}" != "feeds" ] && [ -z "$FIRECRAWL_API_KEY" ]; then
             echo "::error::FIRECRAWL_API_KEY secret is unset — set it in repo settings."
             exit 1
           fi
           $runner "$script" 2>&1 | tee discovery-output.txt
 
+      # The feeds probe writes its own table to the step summary, so
+      # this generic log dump would only repeat it.
       - name: Publish candidates to the job summary
-        if: always() && hashFiles('discovery-output.txt') != ''
+        if: always() && inputs.surface != 'feeds' && hashFiles('discovery-output.txt') != ''
         run: |
           {
             echo "## Candidate ${{ inputs.surface }} URLs"
