@@ -387,7 +387,7 @@ scrape runs *in response*:
 | `dubaipoints-product-pages` | 57 card product pages | Sun 09:00 UTC | issue + auto-scrape that bank |
 | `dubaipoints-offers` | 12 bank offers/promotions pages | daily 13:00 UTC | issue → editor, **no** auto-scrape |
 | `dubaipoints-salary-transfer` | 19 bank salary-transfer pages + T&Cs | Sun 11:00 UTC | issue → editor, **no** auto-scrape |
-| `dubaipoints-press-rooms` | 9 issuer press indexes | daily 14:00 UTC | news digest → desks |
+| `dubaipoints-press-rooms` | 10 issuer press indexes | daily 14:00 UTC | news digest → desks |
 
 ```
 scripts/monitor/setup.mjs            # idempotent provisioning (FIRECRAWL_API_KEY=skip to dry-run)
@@ -834,7 +834,7 @@ Confirmed status as of 2026-05-24:
 | `content.presspage.com` | 403 | Bank / issuer press kits hosted on Presspage |
 | `www.emirates.com` | 403 | Emirates Media Centre — primary press library |
 | `www.etihad.com` | 403 | Etihad press kit |
-| `media.flydubai.com` | 000 | flydubai press centre |
+| `media.flydubai.com` | 000 | flydubai press centre — **the host itself is dead**, see below |
 
 Re-confirmed 2026-07-29, and two API hosts added:
 
@@ -846,6 +846,17 @@ Re-confirmed 2026-07-29, and two API hosts added:
 Both have a working Actions channel (`seed-images-*.yml`,
 `refetch-image.yml`, `gen-ai-image.yml`), so neither blocks the
 imagery pipeline — they only block running it in-session.
+
+**Not every `000` in this table is an allowlist problem, and
+`media.flydubai.com` never was.** Firecrawl's own infrastructure — a
+different network entirely — also fails to resolve it, so the host is
+simply gone: flydubai's newsroom is Prezly-hosted at
+**`news.flydubai.com`**, which resolves and scrapes fine. Adding the old
+host to an allowlist request would have achieved nothing. Recorded 22
+September 2026, after the press-rooms monitor was found to have no
+flydubai coverage at all; `news.flydubai.com` is now the tenth URL on it.
+When a row here reads `000`, check whether the name still exists before
+filing it as egress.
 
 Added 2026-08-05:
 
@@ -881,7 +892,7 @@ Reviewing a preview visually remains a workstation task.
 - Raise these hosts with the environment owner to be added to the
   effective allowlist. The minimum viable set for editorial
   operations is: `images.unsplash.com`, `images.pexels.com`,
-  `www.emirates.com`, `www.etihad.com`, `media.flydubai.com`,
+  `www.emirates.com`, `www.etihad.com`, `news.flydubai.com`,
   `news.marriott.com`, `content.presspage.com`. Equivalent press
   centres for Qatar Airways, Saudia, ADCB, FAB, Emirates NBD,
   ENBD, Mashreq, RAKBANK, and DIB should be added at the same time.
