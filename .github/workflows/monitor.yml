@@ -74,13 +74,27 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # A missing label must never cost us the alert. Until 22 September
+          # 2026 this read `|| echo "issue creation failed"`, the `card-change`
+          # label did not exist, and so every run since the workflow shipped
+          # failed at the label step, swallowed the error and reported green.
+          # 42 digests accumulated on the automation-state branch and no human
+          # was ever told — including nine offers findings over 18-22 September,
+          # four of them the Emirates Islamic page dropping the very welcome
+          # bonus we publish.
+          #
+          # Same ladder the deal-expiry, link-audit and news-expiry workflows
+          # already used: try with the label, fall back to an unlabelled issue
+          # so the finding still reaches someone, and only then fail — loudly,
+          # because a digest nobody reads is the failure this whole pipeline
+          # exists to prevent.
           latest=$(ls -t .council/monitoring/card-change-*.md | head -1)
           # only raise an issue for a digest created in this run
           if [ -n "$(git status --porcelain "$latest")" ]; then
-            gh issue create \
-              --title "Card change signals: $(basename "$latest" .md | sed 's/card-change-//')" \
-              --body-file "$latest" \
-              --label "card-change" || echo "issue creation failed (label may not exist) — digest still committed"
+            title="Card change signals: $(basename "$latest" .md | sed 's/card-change-//')"
+            gh issue create --title "$title" --body-file "$latest" --label "card-change" \
+              || gh issue create --title "$title" --body-file "$latest" \
+              || { echo "::error title=Card-change alert lost::Could not open an issue for $latest. The digest is committed to automation-state but nobody has been notified."; exit 1; }
           fi
 
       - name: Open news digest issue
@@ -90,10 +104,10 @@ jobs:
         run: |
           latest=$(ls -t .council/monitoring/digest-*.md | head -1)
           if [ -n "$(git status --porcelain "$latest")" ]; then
-            gh issue create \
-              --title "News digest: $(basename "$latest" .md | sed 's/digest-//')" \
-              --body-file "$latest" \
-              --label "news-digest" || echo "issue creation failed — digest still committed"
+            title="News digest: $(basename "$latest" .md | sed 's/digest-//')"
+            gh issue create --title "$title" --body-file "$latest" --label "news-digest" \
+              || gh issue create --title "$title" --body-file "$latest" \
+              || { echo "::error title=News digest alert lost::Could not open an issue for $latest."; exit 1; }
           fi
 
       - name: Dispatch targeted scrape for changed banks
