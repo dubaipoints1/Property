@@ -22,6 +22,7 @@ import {
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
   autoScrapes,
+  needsBaseline,
   digestFor,
   readRegistryUrls,
   registryUrlToBank,
@@ -155,4 +156,29 @@ test("the shipped registries parse and are the shape the readers expect", () => 
     assert.ok(Array.isArray(readRegistryUrls(reg)), `${reg} did not parse`);
     assert.ok(registryUrlToBank(reg) instanceof Map, `${reg} did not map`);
   }
+});
+
+// Moving to a new Firecrawl account re-creates every monitor under its
+// old name with a new ID. A baseline flag keyed by name would call each
+// new monitor "already baselined" and read its first check as a real diff.
+test("a monitor re-created under the same name gets a fresh baseline", () => {
+  const oldId = "019fd16a-85e3-77fc-aed3-759fc1b3714a"; // product-pages, old account
+  const newId = "01a0ffff-0000-7000-8000-000000000000";
+  assert.equal(needsBaseline(oldId, newId), true);
+});
+
+test("the same monitor is not re-baselined", () => {
+  const id = "019fd16a-85e3-77fc-aed3-759fc1b3714a";
+  assert.equal(needsBaseline(id, id), false);
+});
+
+test("a never-seen monitor is baselined", () => {
+  assert.equal(needsBaseline(undefined, "01a0ce3d-bddf-722d-9df6-2c4ea5876b48"), true);
+});
+
+// The legacy `true` must NOT trigger a baseline. Doing so would treat the
+// next real check on every live monitor as a baseline and silently drop
+// it — a lost change, which is the failure this pipeline exists to stop.
+test("the legacy `true` flag is honoured once, not re-baselined", () => {
+  assert.equal(needsBaseline(true, "019fd16a-8a76-768f-b1fe-7cbbd2a4b04a"), false);
 });

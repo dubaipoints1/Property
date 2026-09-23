@@ -37,6 +37,7 @@ import { readFileSync, readdirSync, writeFileSync, mkdirSync, existsSync, append
 import {
   AUTO_SCRAPE,
   NEWS,
+  needsBaseline,
   SALARY_TRANSFER,
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
@@ -197,7 +198,7 @@ for (const [key, mon] of Object.entries(monitors)) {
   // A monitor's first observed check reports every page as `new` — that
   // is the baseline snapshot, not 62 simultaneous changes. Record it and
   // dispatch nothing.
-  const isBaseline = !state.baselined[key];
+  const isBaseline = needsBaseline(state.baselined[key], mon.id);
 
   for (const check of fresh) {
     seen.push(check.id);
@@ -261,7 +262,7 @@ for (const [key, mon] of Object.entries(monitors)) {
     }
   }
 
-  state.baselined[key] = true;
+  state.baselined[key] = mon.id;
 }
 
 state.lastPolled = new Date().toISOString();

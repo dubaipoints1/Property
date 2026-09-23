@@ -673,6 +673,59 @@ problem — not the GitHub Actions secret. Fix is to set the env var in
 the environment configuration and **start a new session**; MCP servers
 read credentials at container boot.
 
+#### Moving to a new Firecrawl account
+
+Directed 23 September 2026 (issue #389): DubaiPoints leaves the account it
+shares with the AI-governance project. **A second API key on the same
+account does not do this.** Credits belong to the account (the team), not
+the key — `firecrawl_credit_usage` reports "the authenticated Firecrawl
+*team's* current credit balance", and the per-key split in its history is
+attribution only. A new key on the shared account draws on the same
+exhausted balance. It has to be a separate account with its own plan. The
+fleet estimates ~2,280 credits/month, so the 5,000/month Hobby tier fits it
+with room.
+
+Order matters, because the monitors belong to whichever account created
+them and one step needs the **old** key:
+
+1. **Owner:** create the new Firecrawl account and plan; generate its key.
+2. **Owner:** Repo settings → Secrets → Actions → replace
+   `FIRECRAWL_API_KEY` with the new key. This moves `monitor.yml`,
+   `scrape.yml`, `discover.yml` and `provision-monitors.yml` in one step.
+3. **Session:** dispatch `provision-monitors` — dry run, then live. On the
+   new account it must print **`created`** for all seven, followed by a
+   WARNING listing the seven old monitor IDs it could not see. `updated`
+   on any line means the secret still holds the old key: stop.
+4. **Session holding the old key, or the old account's dashboard:** delete
+   or pause the seven old monitors. The new key cannot see them, and until
+   they go they keep running and billing the old account. The IDs on
+   23 September 2026:
+
+   | Monitor | Old-account ID |
+   |---|---|
+   | fee-docs | `01a0a8a8-ae19-7138-8c9b-172a885a2037` |
+   | product-pages | `019fd16a-85e3-77fc-aed3-759fc1b3714a` |
+   | offers | `019fd591-513c-726c-8079-ad281ab1f51b` |
+   | salary-transfer | `01a0a8a8-8664-73bd-b327-ca3e7b238540` |
+   | press-rooms | `019fd16a-8a76-768f-b1fe-7cbbd2a4b04a` |
+   | programme-offers | `01a0ce3d-bddf-722d-9df6-2c4ea5876b48` |
+   | press-rooms-weekly | `01a0ce3d-c0f5-7469-af7e-218f9b919398` |
+
+5. **Owner:** environment config → `FIRECRAWL_API_KEY` → new key, then
+   start a new session (MCP reads it at boot). This also moves session
+   usage — the `Connected app` line, 3,376 credits in August — onto the
+   new account, which is the point.
+6. **Owner:** local `.env`, if one exists.
+
+Two consequences to expect. Every re-created monitor's first check is a
+**baseline** and alerts on nothing, so each monitor is blind for one
+cycle — up to seven days for the weekly ones. And the poller no longer
+mistakes a re-created monitor for an old one: `state.baselined` records
+the monitor **ID** it baselined, not `true`, so a new ID gets a fresh
+baseline (`needsBaseline()` in `_routing.mjs`, asserted in
+`tests/monitor/routing.test.ts`). The legacy `true` is honoured once and
+converted on the next poll, which must run on the new code before step 2.
+
 > Status (2026-06-11): **verified.** Hobby plan subscribed. GitHub
 > Actions secret provisioned. MCP server token in Claude Code on the
 > web environment confirmed working — live `firecrawl_scrape` of

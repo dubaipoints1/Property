@@ -48,6 +48,36 @@ export function digestFor(key) {
   return "card";
 }
 
+/**
+ * Whether this poll's first unseen check for a monitor is its baseline.
+ *
+ * The poller used to record `baselined[key] = true`, keyed by the monitor's
+ * NAME. That is wrong the moment a monitor is re-created under the same
+ * name — which is exactly what moving to a new Firecrawl account does: all
+ * seven monitors come back with their old names and new IDs, and a
+ * name-keyed flag says "already baselined", so each new monitor's first
+ * check would be read as a real diff. Every page is `new` on that check,
+ * and the page fetch asks only for `status=changed`, so in practice it
+ * would probably come back empty — but "one of two guards happens to
+ * hold" is the shape of the partial-check bug, and a flood here would
+ * dispatch a scrape for every bank on the product-pages monitor.
+ *
+ * So the flag now records WHICH monitor was baselined: its ID. A different
+ * ID is a different monitor and gets its own baseline.
+ *
+ * `true` is the legacy value. It is honoured once, as "the current ID is
+ * baselined", and the poller then overwrites it with the ID. Treating it
+ * as un-baselined instead would silence one real check on every live
+ * monitor the day this shipped — and a dropped check is a lost change.
+ *
+ * @param {string|boolean|undefined} stored  state.baselined[key]
+ * @param {string} monitorId                 the monitor's current ID
+ */
+export function needsBaseline(stored, monitorId) {
+  if (stored === true) return false;
+  return stored !== monitorId;
+}
+
 /** Whether a monitor's findings may dispatch a scrape run. */
 export function autoScrapes(key) {
   return AUTO_SCRAPE.has(key);

@@ -388,6 +388,8 @@ for (const m of MONITORS) {
 const out = existsSync(OUT_PATH) ? JSON.parse(readFileSync(OUT_PATH, "utf8")) : { monitors: {} };
 out.monitors ??= {};
 
+const orphaned = [];
+
 for (const m of planned) {
   const payload = {
     name: m.name,
@@ -414,7 +416,27 @@ for (const m of planned) {
     process.exit(1);
   }
 
+  // A CREATE for a name we already hold an ID for means this API key
+  // cannot see the monitor we recorded — almost always because the key now
+  // points at a different Firecrawl account. The recorded monitor is still
+  // running on the old account and billing it. Nothing here can delete it
+  // (this key cannot see it), so name it, loudly, for whoever holds the old
+  // key. See CLAUDE.md, "Moving to a new Firecrawl account".
+  const previousId = out.monitors[m.key]?.id;
+  if (!found && previousId && previousId !== data?.id) {
+    orphaned.push({ key: m.key, name: m.name, previousId });
+  }
+
   out.monitors[m.key] = { id: data?.id, name: m.name, urls: m.urls.length, schedule: m.schedule.cron };
+}
+
+if (orphaned.length) {
+  console.warn(
+    `\nWARNING: ${orphaned.length} monitor(s) were CREATED although an ID was already recorded for them.\n` +
+      `This key cannot see the recorded monitors, so they are most likely still running — and\n` +
+      `billing — on the previous Firecrawl account. Delete or pause them there, with the old key:\n` +
+      orphaned.map((o) => `  ${o.name.padEnd(32)} ${o.previousId}`).join("\n"),
+  );
 }
 
 mkdirSync("data/monitor", { recursive: true });
