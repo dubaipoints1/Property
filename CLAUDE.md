@@ -568,6 +568,26 @@ Before adding a monitor or moving one, add its cron to `MONITOR_CRONS`
 and let the test place it; the estimate that matters is concurrency, not
 credits.
 
+**Provisioning must not re-send an unchanged URL list — doing so blinded
+every monitor for weeks.** Firecrawl answers any `targets` in a PATCH by
+*replacing* the monitor's target, and a new target has no scrape history:
+the next check reports every page as `new` and diffs nothing. `setup.mjs`
+sent the full list on every update, so every provisioning run — 15, 16,
+22 and 23 September 2026, each made to change something else — silently
+reset every monitor. Found 23 September only because a routine check
+noticed that day's offers and press-rooms checks read `new: 12, changed: 0`
+and `new: 10, changed: 0`. The weekly monitors were worse: product-pages
+(`new: 54` on 20 Sep), fee-docs and salary-transfer had not diffed a page
+since at least 13 September, and the 23rd's run reset them again, so their
+first real comparison is 4–5 October. Three weeks blind on the fields this
+pipeline exists to watch, every run green.
+
+`setup.mjs` now reads each monitor's live URLs (free) and omits `targets`
+when `sameUrlSet()` says nothing changed — verified that an update without
+`targets` keeps the same target ID. A genuine URL change still replaces the
+target, and the script says so. **Treat a provisioning run as costing each
+changed monitor one blind cycle, and do not re-run it casually.**
+
 Audit hold F-020 is answered on the ownership half: the other monitors
 are that AI-governance project. The plan-tier half is still the account
 owner's call — those 37 estimate ~18,330 credits/month on their own,

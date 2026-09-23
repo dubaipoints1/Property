@@ -218,6 +218,28 @@ export function liveMonitorUrls(definition) {
 }
 
 /**
+ * Whether two URL lists name the same pages, ignoring order and repeats.
+ *
+ * setup.mjs uses this to decide whether an update may send `targets` at
+ * all. Sending them — even an identical list — makes Firecrawl REPLACE the
+ * monitor's target with a new one, and a new target has no scrape history,
+ * so the monitor's next check reports every page as `new` and diffs
+ * nothing. Found 23 September 2026: two routine provisioning runs had
+ * reset every monitor's history, and that day's offers and press-rooms
+ * checks came back `new: 12, changed: 0` and `new: 10, changed: 0`.
+ *
+ * @param {string[]} a
+ * @param {string[]} b
+ */
+export function sameUrlSet(a, b) {
+  const sa = new Set(a);
+  const sb = new Set(b);
+  if (sa.size !== sb.size) return false;
+  for (const u of sa) if (!sb.has(u)) return false;
+  return true;
+}
+
+/**
  * URLs the repo expects a monitor to watch but which it does not.
  *
  * One-directional on purpose: a URL live but not in the repo is usually a
