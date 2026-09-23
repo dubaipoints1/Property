@@ -22,6 +22,7 @@ import {
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
   autoScrapes,
+  sameUrlSet,
   digestFor,
   readRegistryUrls,
   registryUrlToBank,
@@ -155,4 +156,26 @@ test("the shipped registries parse and are the shape the readers expect", () => 
     assert.ok(Array.isArray(readRegistryUrls(reg)), `${reg} did not parse`);
     assert.ok(registryUrlToBank(reg) instanceof Map, `${reg} did not map`);
   }
+});
+
+// Sending `targets` in a PATCH replaces the monitor's target and wipes its
+// scrape history, so setup.mjs may only send them when the pages changed.
+// The check must treat a reordered but identical list as unchanged — the
+// real press-rooms list, as provisioned on 23 September 2026.
+const PRESS = [
+  "https://www.emirates.com/media-centre/",
+  "https://www.etihad.com/en-ae/news",
+  "https://news.flydubai.com/",
+  "https://www.qatarairways.com/press-releases/en-ww",
+];
+
+test("an identical URL list is unchanged, whatever its order", () => {
+  assert.equal(sameUrlSet(PRESS, [...PRESS].reverse()), true);
+  assert.equal(sameUrlSet(PRESS, [...PRESS, PRESS[0]]), true);
+});
+
+test("adding, removing or swapping a URL is a change", () => {
+  assert.equal(sameUrlSet(PRESS, [...PRESS, "https://press.airarabia.com/"]), false);
+  assert.equal(sameUrlSet(PRESS, PRESS.slice(1)), false);
+  assert.equal(sameUrlSet(PRESS, [...PRESS.slice(1), "https://press.airarabia.com/"]), false);
 });

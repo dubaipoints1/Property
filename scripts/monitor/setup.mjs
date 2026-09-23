@@ -40,6 +40,8 @@ import {
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
   MONITOR_CRONS,
+  liveMonitorUrls,
+  sameUrlSet,
   pageAll,
   readCardUrls,
   readRegistryUrls,
@@ -397,6 +399,28 @@ for (const m of planned) {
     retentionDays: 30,
   };
   const found = byName.get(m.name);
+
+  // Never re-send an unchanged URL list. Firecrawl answers ANY `targets`
+  // in a PATCH by replacing the target, and a new target has no history:
+  // the monitor's next check reports every page as `new` and diffs
+  // nothing. A provisioning run meant to change one monitor's schedule was
+  // silently blinding all of them for a cycle — up to a week for the
+  // weekly ones. Omitting `targets` keeps the target and its history
+  // (verified 23 September 2026: same target ID before and after).
+  // Reading the definition costs no credits.
+  if (found) {
+    const live = await api(`/${found.id}`, "GET").then((r) => r?.data ?? r);
+    if (sameUrlSet(liveMonitorUrls(live), m.urls)) {
+      delete payload.targets;
+    } else {
+      console.warn(
+        `NOTE: ${m.name} URL set changed — Firecrawl will replace its target, so its next ` +
+          `check is a baseline and diffs nothing. Expected once per URL change; do not re-run ` +
+          `provisioning casually.`,
+      );
+    }
+  }
+
   const res = found
     ? await api(`/${found.id}`, "PATCH", payload)
     : await api("", "POST", payload);
