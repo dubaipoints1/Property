@@ -378,7 +378,7 @@ gotchas live in `scripts/scrape/banks/<slug>.notes.md`.
 Scheduled scraping used to be the only way we learned that a bank had
 changed anything — which is why the ADCB FX error (0.525% published
 against a Schedule of Fees saying 2.99%) sat live until a sweep caught
-it. Five Firecrawl monitors now watch the sources directly and the
+it. Seven Firecrawl monitors now watch the sources directly and the
 scrape runs *in response*:
 
 | Monitor | URLs | Cadence | On change |
@@ -388,6 +388,8 @@ scrape runs *in response*:
 | `dubaipoints-offers` | 12 bank offers/promotions pages | daily 13:00 UTC | issue → editor, **no** auto-scrape |
 | `dubaipoints-salary-transfer` | 19 bank salary-transfer pages + T&Cs | Sun 11:00 UTC | issue → editor, **no** auto-scrape |
 | `dubaipoints-press-rooms` | 10 issuer press indexes | daily 14:00 UTC | news digest → desks |
+| `dubaipoints-programme-offers` | 6 loyalty-programme promo indexes | Wed 10:00 UTC | news digest → desks, **no** auto-scrape |
+| `dubaipoints-press-rooms-weekly` | 2 second-tier newsrooms (Air Arabia, IHG) | Thu 10:00 UTC | news digest → desks |
 
 ```
 scripts/monitor/setup.mjs            # idempotent provisioning (FIRECRAWL_API_KEY=skip to dry-run)
@@ -581,8 +583,21 @@ of calendar September, its first fortnight included, totals 3,736 credits
 subtraction claims for a strictly shorter window. The balance did not open
 the period at a full 5,000, so it is not a period-to-date meter. Two
 readings hours apart on the 22nd both returned exactly 945, which a
-~580/day burn would not do. **Read the burn from
-`firecrawl_credit_usage` history, never from the remaining balance.**
+~580/day burn would not do.
+
+**Correction, 23 September 2026: the rule this paragraph drew from that —
+"read the burn from history, never from the balance" — was wrong too.**
+A day later the two meters disagreed in the *opposite* direction: the
+per-key history rose by only 65 credits (60 of them this session's own
+MCP calls), while the balance fell 345, from 945 to 600. Neither meter
+reconciles with the other, in either direction. The likeliest explanation
+is that monitor *reservations* debit the balance without appearing in
+usage history — the Budget section below already establishes that the
+estimate is a reservation — but that is unconfirmed and only the account
+owner can see it in the dashboard. What holds: **the balance is what is
+spendable, and when it reaches zero every monitor returns
+`skipped_no_credits`.** Report both numbers; derive a daily burn from
+neither.
 
 What the history does support: August ran 11,321 credits against the
 5,000 plan (7,945 on the `Default` key, 3,376 on `Connected app`, which

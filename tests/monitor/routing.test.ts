@@ -54,6 +54,12 @@ test("each monitor routes to exactly one digest", () => {
   assert.equal(digestFor("offers"), "card");
   assert.equal(digestFor("salary-transfer"), "salary-transfer");
   assert.equal(digestFor("press-rooms"), "news");
+  // Loyalty promotions are desk stories, not card fields: nothing on a
+  // programme promo page can reach cards.json, so it must not land in the
+  // card digest or dispatch a scrape.
+  assert.equal(digestFor("programme-offers"), "news");
+  assert.equal(digestFor("press-rooms-weekly"), "news");
+  assert.equal(autoScrapes("programme-offers"), false);
 });
 
 test("routing sets are disjoint", () => {
