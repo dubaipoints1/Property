@@ -86,3 +86,18 @@ export const hasLatin = (s) => (s.match(/[A-Za-z]/g) || []).length >= 3;
 // they are already first-party and low-volume).
 export const RELEVANT = /\b(uae|dubai|abu dhabi|sharjah|dxb|auh|dwc|shj|emirates|skywards|etihad|flydubai|air arabia|qatar airways|avios|privilege club|alfursan|saudia|gcc|bonvoy|rotana|jumeirah|address hotels|staycation)\b/i;
 
+
+// A "soft 404": HTTP 200 with an error page for a body. airarabia.com and
+// saudia.com both answer a dead path this way, and discover-feeds.mjs
+// reported both as reachable on 22 September 2026 because it trusted the
+// status code. Those two candidates were then verified by hand on the
+// 23rd and found to be 404 pages, which would have become monitor URLs
+// diffing an error page forever.
+//
+// Two signals, either sufficient: the server redirected to a not-found
+// route, or the document titles itself as one.
+export function isSoft404(finalUrl, html) {
+  if (/\/(404|not-?found)(\/|$|\?)/i.test(finalUrl ?? "")) return true;
+  const title = (html?.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1] ?? "";
+  return /^\s*(404\b|page not found|not found)\b/i.test(title.trim());
+}

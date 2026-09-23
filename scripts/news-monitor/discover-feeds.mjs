@@ -24,6 +24,8 @@
 // nearly every issuer host returns 000 on the session allowlist
 // (CLAUDE.md §"Network allowlist").
 
+import { isSoft404 } from "./_feeds.mjs";
+
 const UA = "dubaipoints-news-monitor/1.0 (+https://dubaipoints.ae)";
 const TIMEOUT_MS = 15000;
 
@@ -35,13 +37,18 @@ const CANDIDATES = [
   // Emirates, Etihad, Qatar and flydubai are already on the press-rooms
   // monitor. These are the gaps. Air Arabia is the glaring one: Sharjah
   // is a UAE airport in our own relevance regex and we watch nothing.
-  { id: "air-arabia", tier: "airline", name: "Air Arabia (SHJ)", home: "https://www.airarabia.com/en/news",
-    guesses: ["https://www.airarabia.com/en/rss", "https://www.airarabia.com/en/feed"] },
+  // The newsroom is Presspage-hosted at press.airarabia.com; the path on
+  // the main site is a soft 404. On the paid weekly monitor since 23 Sep.
+  { id: "air-arabia", tier: "airline", name: "Air Arabia (SHJ)", home: "https://press.airarabia.com/",
+    guesses: ["https://press.airarabia.com/feed", "https://press.airarabia.com/rss"] },
   { id: "wizz-abu-dhabi", tier: "airline", name: "Wizz Air Abu Dhabi", home: "https://wizzair.com/en-gb/information-and-services/about-us/news",
     guesses: ["https://wizzair.com/rss", "https://corporate.wizzair.com/en-GB/rss"] },
   { id: "gulf-air", tier: "airline", name: "Gulf Air (Falconflyer)", home: "https://www.gulfair.com/about-gulf-air/media-centre",
     guesses: ["https://www.gulfair.com/rss", "https://www.gulfair.com/feed"] },
-  { id: "saudia", tier: "airline", name: "Saudia (Alfursan)", home: "https://www.saudia.com/about-saudia/media-center",
+  // media-center is a soft 404; information/media-centre is real but
+  // renders its release list client-side, so neither a feed nor a monitor
+  // can read it. Kept as a candidate in case a feed ever appears.
+  { id: "saudia", tier: "airline", name: "Saudia (Alfursan)", home: "https://www.saudia.com/information/media-centre",
     guesses: ["https://www.saudia.com/rss", "https://www.saudia.com/feed"] },
   { id: "oman-air", tier: "airline", name: "Oman Air (Sindbad)", home: "https://www.omanair.com/en/media-centre",
     guesses: ["https://www.omanair.com/rss", "https://www.omanair.com/feed"] },
@@ -125,6 +132,10 @@ function declaredFeeds(html, baseUrl) {
 const results = [];
 for (const c of CANDIDATES) {
   const home = await get(c.home);
+  if (home.status === 200 && isSoft404(home.finalUrl, home.body)) {
+    home.status = 404;
+    home.error = "soft 404 (200 with an error page)";
+  }
   const declared = home.body ? declaredFeeds(home.body, home.finalUrl) : [];
   const tried = [...declared, ...c.guesses];
   let hit = null;

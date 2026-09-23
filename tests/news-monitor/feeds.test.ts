@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { RSS_FEEDS, RELEVANT, parseFeed, hasLatin } from "../../scripts/news-monitor/_feeds.mjs";
+import { RSS_FEEDS, RELEVANT, parseFeed, hasLatin, isSoft404 } from "../../scripts/news-monitor/_feeds.mjs";
 
 // flydubai's real Prezly feed, 22 September 2026: RSS 2.0, CDATA titles,
 // and every release published TWICE — once Arabic, once English, minutes
@@ -93,4 +93,27 @@ test("the relevance regex still matches the UAE terms the desks rely on", () => 
     assert.ok(RELEVANT.test(s), `${s} should be relevant`);
   }
   assert.equal(RELEVANT.test("Best credit cards in Ohio"), false);
+});
+
+// The exact signals the two real soft 404s sent on 23 September 2026.
+// Both answered HTTP 200, and the feed probe had reported both reachable.
+test("isSoft404 catches the redirect-to-error-route shape (Air Arabia, Saudia)", () => {
+  assert.equal(isSoft404("https://www.airarabia.com/en/not-found", "<title>Not Found</title>"), true);
+  assert.equal(isSoft404("https://www.saudia.com/en-US/404", "<title>Page</title>"), true);
+});
+
+test("isSoft404 catches an error page served at the original URL", () => {
+  assert.equal(isSoft404("https://example.com/news", "<title>404 - Page not found</title>"), true);
+  assert.equal(isSoft404("https://example.com/news", "<title>Page Not Found | Example</title>"), true);
+});
+
+// The detector has to stay out of the way of real pages, including ones
+// whose paths or titles merely CONTAIN the words.
+test("isSoft404 leaves real pages alone", () => {
+  assert.equal(isSoft404("https://press.airarabia.com/", "<title>Newsroom Air Arabia</title>"), false);
+  assert.equal(
+    isSoft404("https://example.com/news/lost-and-not-found-luggage-rules", "<title>Lost luggage rules</title>"),
+    false,
+  );
+  assert.equal(isSoft404("https://example.com/offers", "<title>Earn 2X points — offer not found elsewhere</title>"), false);
 });

@@ -23,8 +23,17 @@ export const SALARY_TRANSFER_REGISTRY = "scripts/monitor/salary-transfer.registr
  */
 export const AUTO_SCRAPE = new Set(["fee-docs", "product-pages"]);
 
-/** Monitors that belong to the news desks rather than the card pipeline. */
-export const NEWS = new Set(["press-rooms"]);
+/**
+ * Monitors that belong to the news desks rather than the card pipeline.
+ *
+ * `programme-offers` is here rather than beside the bank `offers` monitor
+ * because nothing it finds can reach cards.json: an Etihad Guest bonus or
+ * a Hyatt points promotion is a story for the airline and hotel desks,
+ * not a field on a card. Routing it to the card digest would put loyalty
+ * promotions in front of the business-realestate editor and in no desk's
+ * queue.
+ */
+export const NEWS = new Set(["press-rooms", "press-rooms-weekly", "programme-offers"]);
 
 /** Monitors routed to the salary-transfer digest rather than the card one. */
 export const SALARY_TRANSFER = new Set(["salary-transfer"]);
@@ -277,7 +286,12 @@ export const MONITOR_CRONS = {
   // Daily, an hour apart. A check finishes in under a minute, so an hour
   // is enormous headroom; the point is that they never coincide.
   offers: "0 13 * * *", //           12 URLs — daily 13:00 UTC
-  "press-rooms": "0 14 * * *", //     9 URLs — daily 14:00 UTC
+  "press-rooms": "0 14 * * *", //    10 URLs — daily 14:00 UTC
+  // Weekly news-desk tier, added 23 September 2026. Mid-week on purpose:
+  // the weekend is already the heavy end of the fleet, and 10:00 is an
+  // hour no daily monitor uses, so these cannot land on one.
+  "programme-offers": "0 10 * * 3", // 6 URLs — Wednesday 10:00 UTC
+  "press-rooms-weekly": "0 10 * * 4", // 2 URLs — Thursday 10:00 UTC
 };
 
 /**

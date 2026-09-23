@@ -8,6 +8,8 @@
 //   offers           bank offers/promotions landing pages     daily 13:00
 //   salary-transfer  bank salary-transfer offer pages + T&Cs  weekly
 //   press-rooms      10 issuer press indexes                  daily 14:00
+//   programme-offers  6 loyalty-programme promotion indexes   weekly Wed 10:00
+//   press-rooms-weekly 2 second-tier issuer newsrooms         weekly Thu 10:00
 //
 // ── The §6 boundary, which is why this file looks the way it does ─────
 // Charter §6 bans LLM extraction for typed numerics: fees, salary bands,
@@ -96,6 +98,57 @@ const PRESS_PAGES = [
   "https://www.bankfab.com/en-ae/about-fab/group/news",
 ];
 
+// Loyalty-programme promotion indexes — added 23 September 2026.
+//
+// Until now the fleet watched twelve BANK offers pages and not one
+// loyalty-programme promo page, which is where transfer bonuses, points
+// sales, double-miles runs and status offers are actually announced. The
+// desks were learning about them from aggregators they cannot cite.
+//
+// Every URL below was scraped through Firecrawl on 23 September 2026 and
+// carried live, dated promotions. They are INDEX pages on purpose: an
+// individual offer page expires and 404s; the index is where the next one
+// appears. The candidates that failed are recorded here so they are not
+// re-added on a guess:
+//
+//   marriott.com/loyalty/promotionCentral.mi  redirects to a SIGN-IN page.
+//     A monitor there diffs a login form forever. offers.mi is public.
+//   all.accor.com/…/promotions-offers.html    a noindex shell that renders
+//     no offers to a scraper. Accor's MEAPAC promos exist only as
+//     individual pages; no index found.
+//   Qatar Privilege Club                      map returned no offers index.
+//
+// Weekly, not daily: a promotion runs for weeks, so a daily read buys
+// nothing but cost. This monitor is alert-only and routes to the news
+// desks (NEWS in _routing.mjs) — nothing it finds can reach cards.json.
+const PROMO_PAGES = [
+  "https://www.emirates.com/ae/english/special-offers/", // Skywards bonus-miles offers live here
+  "https://www.etihad.com/en/etihadguest/programme-offers",
+  "https://www.marriott.com/offers.mi",
+  "https://www.hilton.com/en/offers",
+  "https://www.ihg.com/content/us/en/offers",
+  "https://world.hyatt.com/content/gp/en/offers.html",
+];
+
+// Second-tier newsrooms, weekly — added 23 September 2026. Low-volume
+// issuers whose news is rarely same-day urgent; a daily read would cost
+// six times as much for the same stories a few days sooner.
+//
+// Verified the same day. Two rejections worth knowing, because both
+// passed a naive check:
+//
+//   airarabia.com/en/news and saudia.com/about-saudia/media-center both
+//     answer HTTP 200 with a "404 / Not Found" page body — soft 404s. The
+//     feed probe (discover-feeds.mjs) reported them as reachable on the
+//     22nd. Status code alone cannot tell a real page from an error page.
+//   saudia.com media centre and news pages render only site navigation to
+//     a scraper; the release list is client-side JavaScript. A monitor
+//     would watch an unchanging menu. Saudia is not covered.
+const TIER2_PRESS_PAGES = [
+  "https://press.airarabia.com/", // Sharjah carrier; Presspage newsroom, feed blocked
+  "https://www.ihgplc.com/en/news-and-media",
+];
+
 // readCardUrls now lives in ./_routing.mjs so poll.mjs can compare what
 // this script would provision against what the live monitors actually
 // watch. One source of truth, or the drift check is checking itself.
@@ -171,6 +224,25 @@ const MONITORS = [
     name: "dubaipoints-press-rooms",
     urls: PRESS_PAGES,
     schedule: { cron: MONITOR_CRONS["press-rooms"], timezone: "UTC" },
+    goal:
+      "Alert when a new press release or news item is published. Ignore navigation, cookie banners, social links, careers listings and layout changes.",
+  },
+  {
+    key: "programme-offers",
+    name: "dubaipoints-programme-offers",
+    urls: PROMO_PAGES,
+    schedule: { cron: MONITOR_CRONS["programme-offers"], timezone: "UTC" },
+    // The judge only suppresses noise (§6); it never types a number. Name
+    // the things that matter so it does not have to argue past the goal,
+    // which is what happened with welcome bonuses on product-pages.
+    goal:
+      "Alert when a loyalty promotion is added, changed or removed: bonus points or miles, points or miles sales, transfer bonuses, status or tier offers, double-earn campaigns, and their dates or deadlines. Ignore navigation, cookie banners, booking widgets, images, and generic room-rate discounts that carry no points or miles component.",
+  },
+  {
+    key: "press-rooms-weekly",
+    name: "dubaipoints-press-rooms-weekly",
+    urls: TIER2_PRESS_PAGES,
+    schedule: { cron: MONITOR_CRONS["press-rooms-weekly"], timezone: "UTC" },
     goal:
       "Alert when a new press release or news item is published. Ignore navigation, cookie banners, social links, careers listings and layout changes.",
   },
