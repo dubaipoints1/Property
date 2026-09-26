@@ -30,6 +30,7 @@ import {
   HostScheduler,
   fetchWithPolicy,
   checkExternalLinks,
+  reclassifyHostWideTimeouts,
   checkInternalAbsolute,
   buildReport,
   renderExternalLinksMd,
@@ -503,4 +504,29 @@ test("oversized response headers are unverifiable, not broken", () => {
   assert.match(c.detail, /oversized response headers/);
   // And it must not be counted as broken — that was the reported defect.
   assert.equal(isBroken(c.state), false);
+});
+
+test("host-wide timeouts are unverifiable; a lone timeout or a host that answered once stays broken", () => {
+  const t = (url: string, host: string) => ({ url, host, state: "timeout", detail: "no response within timeout" });
+  const out = reclassifyHostWideTimeouts([
+    // Tarpit: every link on the host timed out (the #364 emirates.com shape).
+    t("https://www.emirates.com/media-centre/a/", "www.emirates.com"),
+    t("https://www.emirates.com/media-centre/b/", "www.emirates.com"),
+    t("https://www.emirates.com/english/skywards/rules/", "www.emirates.com"),
+    // One timeout alone cannot tell a tarpit from a stalled page.
+    t("https://www.malloftheemirates.com/", "www.malloftheemirates.com"),
+    // The host answered another link, so its silence here is a finding.
+    t("https://bank.example/pdf", "bank.example"),
+    { url: "https://bank.example/ok", host: "bank.example", state: "ok", detail: "200" },
+    // A dead domain is network, never touched.
+    { url: "https://gone.example/", host: "gone.example", state: "network", detail: "ENOTFOUND" },
+    { url: "https://gone.example/x", host: "gone.example", state: "network", detail: "ENOTFOUND" },
+  ]);
+  const by = Object.fromEntries(out.map((r: { url: string; state: string }) => [r.url, r.state]));
+  assert.equal(by["https://www.emirates.com/media-centre/a/"], "unverifiable");
+  assert.equal(by["https://www.emirates.com/english/skywards/rules/"], "unverifiable");
+  assert.equal(by["https://www.malloftheemirates.com/"], "timeout");
+  assert.equal(by["https://bank.example/pdf"], "timeout");
+  assert.equal(by["https://gone.example/"], "network");
+  assert.equal(isBroken("unverifiable"), false);
 });

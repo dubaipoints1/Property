@@ -1,0 +1,40 @@
+# Primary-source reader. Prints the readable text of up to ten public
+# pages or PDFs into this run's log, so a Claude Code web session — whose
+# egress allowlist blocks nearly every issuer host — can read a source by
+# dispatching this workflow and reading the job log through the GitHub API.
+# Costs no Firecrawl credits. See scripts/ci/fetch-sources.mjs.
+#
+# Read-only: contents: read, no writes, no issues, no state. The URLs go
+# through an environment variable, never interpolated into the script, and
+# anything that is not an https URL is refused.
+
+name: fetch-sources
+
+on:
+  workflow_dispatch:
+    inputs:
+      urls:
+        description: "Space-separated https URLs to read (max 10)"
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Read sources
+        env:
+          SOURCE_URLS: ${{ inputs.urls }}
+        run: node scripts/ci/fetch-sources.mjs

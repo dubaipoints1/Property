@@ -282,7 +282,13 @@ function renderFindings(findings, title, preamble) {
   for (const [monitor, items] of Object.entries(byMonitor)) {
     lines.push(`## ${monitor}`, "");
     for (const f of items) {
-      lines.push(`- **${f.bank ?? "unmapped"}** — ${f.url}`);
+      // Newsrooms and programme pages belong to no bank; name the publisher's
+      // host rather than printing "unmapped", which read as a routing fault.
+      let who = f.bank;
+      if (!who) {
+        try { who = new URL(f.url).hostname.replace(/^www\./, ""); } catch { who = "unmapped"; }
+      }
+      lines.push(`- **${who}** — ${f.url}`);
       if (f.reason) lines.push(`  _${f.reason}_`);
       if (f.diff) {
         lines.push("", "  ```diff", ...f.diff.split("\n").slice(0, 40).map((l) => `  ${l}`), "  ```");

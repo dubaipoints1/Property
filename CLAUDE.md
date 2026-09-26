@@ -252,7 +252,13 @@ overrides. `public/_headers` **ships** since 15 September 2026 (Chairman
 ruling R7): the four static headers plus a 7-day HSTS with no preload and
 no subdomains. A Content-Security-Policy, report-only or enforced, is a
 separate T3 item; `audit:static` lists it as the one missing recommended
-header until it lands. **The inventory R7 asked for is done** —
+header until it lands. The external sweep reports a host on which
+**every** link (two or more) timed out as `unverifiable`, not broken:
+emirates.com and etihad.com tarpit data-centre clients, and on 21
+September 2026 that was ten of the thirteen "broken" links in #364 while
+the press-rooms monitor read the same host fine. A lone timeout, or a
+timeout on a host that answered another link, stays broken
+(`reclassifyHostWideTimeouts()`). **The inventory R7 asked for is done** —
 `.council/research/2026-09/csp-inline-script-inventory-2026-09-17.md` — and
 it moved the problem: the inline `<script>` blocks are trivial (11
 executable, 175 of the 186 are non-executable `ld+json`/`json` that
@@ -783,6 +789,17 @@ egress and are unaffected.
 Add `fal.run` to the allowlist request in the network-allowlist
 section below if in-session generation ever becomes worth having; it
 is not required for the pipeline to work.
+
+## Reading a primary source the sandbox cannot reach
+
+`.github/workflows/fetch-sources.yml` (manual dispatch, `urls` input, up to
+ten https URLs) prints each page's readable text — PDFs via `pdftotext` —
+into its job log. A web session dispatches it and reads the log through the
+GitHub API. It costs no Firecrawl credits, writes nothing, and runs no LLM:
+it shows what the page says, and every figure is still read from that text
+by a person or a regex (Charter §6). Added 26 September 2026, when the
+Firecrawl balance went negative and the news desks held a digest of flydubai
+headlines they were allowed to cite but had no way to read.
 
 ## Content collections
 
