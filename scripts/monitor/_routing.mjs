@@ -301,34 +301,56 @@ export async function pageAll(fetchPage, { limit = 100, hardCap = 5000 } = {}) {
 // Times are UTC. Dubai is UTC+4, so 09:00 UTC is 13:00 local — well
 // clear of the 06:00–08:00 local window the other fleet occupies.
 export const MONITOR_CRONS = {
-  // Weekly, heaviest first, two hours apart.
-  "product-pages": "0 9 * * 0", //  57 URLs — Sunday 09:00 UTC
-  "salary-transfer": "0 11 * * 0", // 19 URLs — Sunday 11:00 UTC
-  "fee-docs": "0 9 * * 1", //        12 PDFs — Monday 09:00 UTC
-  // Daily, an hour apart. A check finishes in under a minute, so an hour
-  // is enormous headroom; the point is that they never coincide.
-  offers: "0 13 * * *", //           12 URLs — daily 13:00 UTC
-  "press-rooms": "0 14 * * *", //    10 URLs — daily 14:00 UTC
+  // Cadence cut 26 September 2026, on the account owner's instruction to
+  // keep usage tight after a credit top-up. Priced from the measured
+  // per-check actuals in CLAUDE.md (16 September): the fleet drops from
+  // ~2,100 to ~770 credits/month. What it buys back is paid for in
+  // detection latency, and each line says how much.
+  //
+  // Day-of-month schedules deliberately leave day-of-week `*`: in standard
+  // cron, restricting BOTH fields ORs them ("the 1st OR any Monday"), which
+  // would quietly multiply the checks this cut exists to remove.
+  "product-pages": "0 9 1,15 * *", //   57 URLs — 1st and 15th, 09:00 (was weekly; welcome-bonus changes now up to ~2 weeks late)
+  "salary-transfer": "0 11 8,22 * *", // 19 URLs — 8th and 22nd, 11:00 (was weekly; campaigns run quarterly)
+  "fee-docs": "0 12 1 * *", //           12 PDFs — 1st of the month, 12:00 (was weekly; ~110 credits a check, documents versioned quarterly)
+  offers: "0 13 * * 1,4", //            12 URLs — Mon + Thu 13:00 (was daily)
+  "press-rooms": "0 14 * * 1,3,5", //    8 URLs — Mon/Wed/Fri 14:00 (was daily; flydubai + Hilton moved to free RSS)
   // Weekly news-desk tier, added 23 September 2026. Mid-week on purpose:
   // the weekend is already the heavy end of the fleet, and 10:00 is an
-  // hour no daily monitor uses, so these cannot land on one.
+  // hour no other monitor uses, so these cannot land on one.
   "programme-offers": "0 10 * * 3", // 6 URLs — Wednesday 10:00 UTC
   "press-rooms-weekly": "0 10 * * 4", // 2 URLs — Thursday 10:00 UTC
 };
 
 /**
  * Expand a monitor's cron into the set of (weekday, hour) slots it fires
- * in, so two schedules can be compared for collision. Only the shapes
- * this fleet uses are supported — `M H * * D` with a literal hour, and
- * `*` or a single digit for the day.
+ * in, so two schedules can be compared for collision. Supports the shapes
+ * this fleet uses: a literal hour; day-of-week `*`, a digit, or a comma
+ * list; and day-of-month `*` or a comma list. A day-of-month schedule can
+ * land on any weekday, so it conservatively occupies its hour on all
+ * seven — a monthly monitor must be clear of every weekly one.
  *
  * @param {string} cron
  * @returns {Set<string>} e.g. {"0:9"} for Sunday 09:00, or every day at 13
  */
 export function cronSlots(cron) {
-  const [, hour, , , dow] = cron.split(/\s+/);
-  const days = dow === "*" ? [0, 1, 2, 3, 4, 5, 6] : [Number(dow)];
+  const [, hour, dom, , dow] = cron.split(/\s+/);
+  const days = dom !== "*" || dow === "*" ? [0, 1, 2, 3, 4, 5, 6] : dow.split(",").map(Number);
   return new Set(days.map((d) => `${d}:${Number(hour)}`));
+}
+
+/**
+ * Checks a month for one of this fleet's crons — the multiplier in the
+ * credit estimate setup.mjs guards on. Day-of-month list: one per entry.
+ * Day-of-week `*`: 30. Day-of-week list: ~4.3 per listed day, rounded up.
+ *
+ * @param {string} cron
+ */
+export function checksPerMonth(cron) {
+  const [, , dom, , dow] = cron.split(/\s+/);
+  if (dom !== "*") return dom.split(",").length;
+  if (dow === "*") return 30;
+  return Math.ceil(dow.split(",").length * (30 / 7));
 }
 
 /**

@@ -389,13 +389,33 @@ scrape runs *in response*:
 
 | Monitor | URLs | Cadence | On change |
 |---|---|---|---|
-| `dubaipoints-fee-docs` | 12 KFS / SoF documents | Mon 09:00 UTC | issue + auto-scrape that bank |
-| `dubaipoints-product-pages` | 57 card product pages | Sun 09:00 UTC | issue + auto-scrape that bank |
-| `dubaipoints-offers` | 12 bank offers/promotions pages | daily 13:00 UTC | issue → editor, **no** auto-scrape |
-| `dubaipoints-salary-transfer` | 19 bank salary-transfer pages + T&Cs | Sun 11:00 UTC | issue → editor, **no** auto-scrape |
-| `dubaipoints-press-rooms` | 10 issuer press indexes | daily 14:00 UTC | news digest → desks |
+| `dubaipoints-fee-docs` | 12 KFS / SoF documents | 1st of month 12:00 UTC | issue + auto-scrape that bank |
+| `dubaipoints-product-pages` | 57 card product pages | 1st + 15th 09:00 UTC | issue + auto-scrape that bank |
+| `dubaipoints-offers` | 12 bank offers/promotions pages | Mon + Thu 13:00 UTC | issue → editor, **no** auto-scrape |
+| `dubaipoints-salary-transfer` | 19 bank salary-transfer pages + T&Cs | 8th + 22nd 11:00 UTC | issue → editor, **no** auto-scrape |
+| `dubaipoints-press-rooms` | 8 issuer press indexes | Mon/Wed/Fri 14:00 UTC | news digest → desks |
 | `dubaipoints-programme-offers` | 6 loyalty-programme promo indexes | Wed 10:00 UTC | news digest → desks, **no** auto-scrape |
 | `dubaipoints-press-rooms-weekly` | 2 second-tier newsrooms (Air Arabia, IHG) | Thu 10:00 UTC | news digest → desks |
+
+**Cadence cut, 26 September 2026 — the owner's instruction was "be tight
+with usage".** Priced from the measured per-check actuals below, the fleet
+went from ~2,100 to ~770 credits/month: fee-docs weekly → monthly (12 PDFs
+at ~110 a check, documents versioned quarterly), offers daily → twice a
+week, press-rooms daily → three times a week with flydubai and Hilton
+dropped (their RSS is already read free by the news monitor), and
+product-pages / salary-transfer weekly → twice a month. The price is
+latency: a welcome-bonus or salary-transfer change can now sit up to ~2
+weeks before it is flagged, a fee change up to a month. Day-of-month
+schedules keep day-of-week `*`, because standard cron ORs the two fields
+when both are set (asserted in `tests/monitor/coverage.test.ts`). The
+fleet cap in `setup.mjs` followed the fleet down to 1,000.
+
+**Sessions are the other meter.** August's `Connected app` usage — Claude
+sessions through the Firecrawl MCP — was 3,376 credits, more than this
+whole fleet now costs in a month. Read a public page through
+`fetch-sources.yml` first (free, see "Reading a primary source" below);
+reach for Firecrawl in-session only for a page that refuses a plain
+fetch.
 
 ```
 scripts/monitor/setup.mjs            # idempotent provisioning (FIRECRAWL_API_KEY=skip to dry-run)
