@@ -40,6 +40,7 @@ import {
   OFFERS_REGISTRY,
   SALARY_TRANSFER_REGISTRY,
   MONITOR_CRONS,
+  checksPerMonth,
   liveMonitorUrls,
   sameUrlSet,
   pageAll,
@@ -65,14 +66,14 @@ const OUT_PATH = "data/monitor/monitors.json";
 // sum. A cap that cannot fire is not a cap.
 const MAX_ESTIMATED_CREDITS = 1600;
 
-// MAX_TOTAL_ESTIMATED_CREDITS is the fleet cap: 3,000 of the plan's
-// 5,000/month. That sits only ~260 above today's fleet, deliberately.
-// Audit hold F-020 — the plan tier, and who owns the other monitors on
-// this API key — is still open, so the next material URL addition
-// should stop here and force that answer rather than grow the bill on
-// an assumption. Raising it is the account owner's call, not a
-// session's.
-const MAX_TOTAL_ESTIMATED_CREDITS = 3000;
+// MAX_TOTAL_ESTIMATED_CREDITS is the fleet cap. It was 3,000 until 26
+// September 2026, when the account owner asked for usage to be kept
+// tight and the cadences were cut to ~832/month by this estimate. The
+// cap follows the fleet down to 1,000, so ~170 of headroom: the next
+// material URL or cadence addition stops here and has to be argued for,
+// rather than quietly growing a bill the owner has said is too high.
+// Raising it is the account owner's call, not a session's.
+const MAX_TOTAL_ESTIMATED_CREDITS = 1000;
 
 // Press rooms — moved here from scripts/news-monitor/monitor.mjs, whose
 // hand-rolled link-diffing once surfaced "Visit our Facebook page" as a
@@ -90,10 +91,12 @@ const PRESS_PAGES = [
   // still read 98 aircraft, so the story could not be written. Note the
   // host: `media.flydubai.com` (in Part II's allowlist table) no longer
   // resolves at all — the newsroom is Prezly-hosted at news.flydubai.com.
-  "https://news.flydubai.com/",
+  // news.flydubai.com and stories.hilton.com were removed on 26 September
+  // 2026: both publish RSS that scripts/news-monitor/_feeds.mjs already
+  // reads daily as a primary source at no credit cost, so paying Firecrawl
+  // to diff the same index was duplicate spend.
   "https://www.qatarairways.com/press-releases/en-ww",
   "https://news.marriott.com/",
-  "https://stories.hilton.com/",
   "https://press.accor.com/",
   "https://www.emiratesnbd.com/en/media-centre",
   "https://www.adcb.com/en/about-us/media-centre/",
@@ -290,12 +293,12 @@ if (!KEY) {
 // which only validates pages that changed, so actuals land lower —
 // product-pages billed 90 against an estimated 110 on 13 September.
 const CREDITS_PER_URL_PER_CHECK = 2;
-// Day-of-week `*` means daily (~30 checks/month); a literal day means
-// weekly (~5). Reads the cron because that is now what we send — the
-// API takes "either cron or text", and `text: "weekly"` was resolving to
-// Sunday 00:00 UTC for three monitors at once without anyone picking it.
-const checksPerMonth = (m) => (m.schedule.cron.split(/\s+/)[4] === "*" ? 30 : 5);
-const monthlyCredits = (m) => m.urls.length * checksPerMonth(m) * CREDITS_PER_URL_PER_CHECK;
+// Reads the cron because that is what we send — the API takes "either
+// cron or text", and `text: "weekly"` was resolving to Sunday 00:00 UTC
+// for three monitors at once without anyone picking it. checksPerMonth()
+// (in _routing.mjs, tested) understands the day-of-month and day-list
+// shapes the 26 September 2026 cadence cut introduced.
+const monthlyCredits = (m) => m.urls.length * checksPerMonth(m.schedule.cron) * CREDITS_PER_URL_PER_CHECK;
 
 console.log("Monitors to provision:\n");
 for (const m of planned) {

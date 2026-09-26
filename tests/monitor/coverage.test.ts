@@ -32,6 +32,8 @@ import {
   newestFirst,
   pageAll,
   scheduleCollisions,
+  cronSlots,
+  checksPerMonth,
   pageFetchLimit,
 } from "../../scripts/monitor/_routing.mjs";
 
@@ -236,5 +238,33 @@ test("every monitor is scheduled clear of the shared key's busy window", () => {
       hour >= 8 && hour <= 15,
       `${key} at ${hour}:00 UTC is outside the quiet 08:00–15:00 band`,
     );
+  }
+});
+
+test("cronSlots handles the day-list and day-of-month shapes of the 26 Sep cadence cut", () => {
+  assert.deepEqual([...cronSlots("0 13 * * 1,4")].sort(), ["1:13", "4:13"]);
+  // A day-of-month schedule can fall on any weekday, so it occupies its
+  // hour on all seven — and therefore collides with any weekly monitor there.
+  assert.equal(cronSlots("0 12 1 * *").size, 7);
+  assert.deepEqual(scheduleCollisions({ monthly: "0 9 1 * *", weekly: "0 9 * * 0" }), [
+    ["monthly", "weekly", "0:9"],
+  ]);
+});
+
+test("checksPerMonth prices each cron shape the fleet uses", () => {
+  assert.equal(checksPerMonth("0 13 * * *"), 30);
+  assert.equal(checksPerMonth("0 10 * * 3"), 5);
+  assert.equal(checksPerMonth("0 13 * * 1,4"), 9);
+  assert.equal(checksPerMonth("0 14 * * 1,3,5"), 13);
+  assert.equal(checksPerMonth("0 9 1,15 * *"), 2);
+  assert.equal(checksPerMonth("0 12 1 * *"), 1);
+});
+
+test("no schedule restricts both day-of-month and day-of-week", () => {
+  // Standard cron ORs the two when both are set — "the 1st OR any Monday" —
+  // which would silently multiply the checks the cadence cut removed.
+  for (const [key, cron] of Object.entries(MONITOR_CRONS)) {
+    const [, , dom, , dow] = cron.split(/\s+/);
+    assert.ok(dom === "*" || dow === "*", `${key} (${cron}) restricts both day fields`);
   }
 });
