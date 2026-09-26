@@ -585,7 +585,47 @@ export async function checkExternalLinks(links, opts = {}) {
   };
 
   await Promise.all(Array.from({ length: Math.max(1, Math.min(concurrency, queue.length || 1)) }, worker));
-  return results;
+  return reclassifyHostWideTimeouts(results);
+}
+
+/**
+ * A host on which EVERY checked link timed out — two or more of them — is a
+ * host declining to answer this client, not a host whose pages are all gone.
+ * Report those links `unverifiable` rather than `timeout`.
+ *
+ * Why: the 14 and 21 September 2026 sweeps (issue #364) listed seven
+ * emirates.com media-centre / Skywards pages and two etihad.com pages as
+ * broken, every one a GET that never answered, while the Firecrawl
+ * press-rooms monitor was reading emirates.com/media-centre/ without trouble
+ * the same week. Akamai-fronted airline sites tarpit data-centre clients:
+ * the connection is accepted and nothing ever comes back. Ten of thirteen
+ * "broken" links were that, and a list that is mostly false alarms is a
+ * list nobody works — the real ones drown.
+ *
+ * Deliberately narrow. A removed page answers 404 quickly; a dead domain
+ * fails DNS or connect (`network`), neither of which this touches. A single
+ * timed-out link on a host is still `timeout`, because one link cannot
+ * distinguish a tarpit from a stalled page. And one working link on the
+ * host keeps every timeout there reported as broken — the host answered us,
+ * so its silence on the others means something.
+ */
+export function reclassifyHostWideTimeouts(results) {
+  const byHost = new Map();
+  for (const r of results) {
+    if (!r) continue;
+    const h = r.host ?? hostOf(r.url) ?? "";
+    if (!byHost.has(h)) byHost.set(h, []);
+    byHost.get(h).push(r);
+  }
+  const walled = new Set();
+  for (const [h, rs] of byHost) {
+    if (h && rs.length >= 2 && rs.every((r) => r.state === "timeout")) walled.add(h);
+  }
+  return results.map((r) =>
+    r && walled.has(r.host ?? hostOf(r.url) ?? "")
+      ? { ...r, state: "unverifiable", detail: "host-wide timeout (every link on this host went unanswered — likely a bot wall)" }
+      : r,
+  );
 }
 
 function defaultProgress({ done, total, result }) {
