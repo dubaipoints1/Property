@@ -87,14 +87,14 @@ jobs:
           # already used: try with the label, fall back to an unlabelled issue
           # so the finding still reaches someone, and only then fail — loudly,
           # because a digest nobody reads is the failure this whole pipeline
-          # exists to prevent.
+          # exists to prevent. That ladder now lives in post-digest.sh, which
+          # first appends to the label's open issue so a day of runs is one
+          # thread, not four new issues (26 September 2026).
           latest=$(ls -t .council/monitoring/card-change-*.md | head -1)
           # only raise an issue for a digest created in this run
           if [ -n "$(git status --porcelain "$latest")" ]; then
-            title="Card change signals: $(basename "$latest" .md | sed 's/card-change-//')"
-            gh issue create --title "$title" --body-file "$latest" --label "card-change" \
-              || gh issue create --title "$title" --body-file "$latest" \
-              || { echo "::error title=Card-change alert lost::Could not open an issue for $latest. The digest is committed to automation-state but nobody has been notified."; exit 1; }
+            bash scripts/ci/post-digest.sh card-change \
+              "Card change signals: $(basename "$latest" .md | sed 's/card-change-//')" "$latest"
           fi
 
       - name: Open news digest issue
@@ -104,10 +104,8 @@ jobs:
         run: |
           latest=$(ls -t .council/monitoring/digest-*.md | head -1)
           if [ -n "$(git status --porcelain "$latest")" ]; then
-            title="News digest: $(basename "$latest" .md | sed 's/digest-//')"
-            gh issue create --title "$title" --body-file "$latest" --label "news-digest" \
-              || gh issue create --title "$title" --body-file "$latest" \
-              || { echo "::error title=News digest alert lost::Could not open an issue for $latest."; exit 1; }
+            bash scripts/ci/post-digest.sh news-digest \
+              "News digest: $(basename "$latest" .md | sed 's/digest-//')" "$latest"
           fi
 
       - name: Dispatch targeted scrape for changed banks

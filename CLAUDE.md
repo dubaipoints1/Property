@@ -489,6 +489,17 @@ with the label, **fall back to an unlabelled issue** so the finding still
 reaches a human, and only then fail the step with an `::error`
 annotation. An unlabelled issue beats no issue; a red run beats a green
 lie. Never reintroduce a bare `|| echo` on an alert path.
+
+**One rolling issue per label, not one per run** (26 September 2026).
+With three crons raising digests, fresh-issue-per-run put eleven open
+digests in the list in five days and the reader could no longer tell what
+was new. `scripts/ci/post-digest.sh` now appends each digest as a comment
+on the label's open issue (a comment notifies like a new issue) and moves
+the title to the latest stamp; it opens a new issue only when none is open.
+**Closing the issue is how a human marks the digests handled.** The ladder
+above sits underneath it unchanged — any failure to reach the rolling issue
+falls through to labelled → unlabelled → red, asserted in
+`tests/ci/post-digest.test.ts`.
 Verified end to end on 22 September 2026: a dispatched `monitor.yml` run
 on the fixed workflow opened issues #391 (card-change) and #392
 (news-digest) on the first, labelled attempt.

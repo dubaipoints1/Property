@@ -62,10 +62,8 @@ jobs:
           # in monitor.yml: an unlabelled issue beats no issue, and a silent
           # failure here is how 42 digests went unread.
           if [ -n "$(git status --porcelain "$latest")" ]; then
-            title="News digest: $(basename "$latest" .md | sed 's/digest-//')"
-            gh issue create --title "$title" --body-file "$latest" --label "news-digest" \
-              || gh issue create --title "$title" --body-file "$latest" \
-              || { echo "::error title=News digest alert lost::Could not open an issue for $latest."; exit 1; }
+            bash scripts/ci/post-digest.sh news-digest \
+              "News digest: $(basename "$latest" .md | sed 's/digest-//')" "$latest"
           fi
 
       - name: Save digest + state to automation-state
