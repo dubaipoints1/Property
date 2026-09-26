@@ -21,8 +21,6 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
-  // TEMPORARY — removed in the same PR once refetch-image.yml lands both images.
-  "news-flydubai-interline-air-india-uzbekistan-airways": "image in flight via refetch-image.yml",
 };
 
 const manifest = JSON.parse(
