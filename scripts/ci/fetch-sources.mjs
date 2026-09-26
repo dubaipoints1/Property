@@ -46,6 +46,18 @@ export function parseUrls(raw) {
   return { urls: out.slice(0, MAX_URLS), refused, dropped: Math.max(0, out.length - MAX_URLS) };
 }
 
+// decodeEntities (shared with the link audit) knows only the entities that
+// appear in hrefs. Press releases are full of typographic ones — the first
+// run of this reader printed flydubai's text as "flydubai&rsquo;s".
+const TYPOGRAPHIC = {
+  nbsp: " ", rsquo: "\u2019", lsquo: "\u2018", rdquo: "\u201d", ldquo: "\u201c",
+  ndash: "\u2013", mdash: "\u2014", hellip: "\u2026", apos: "'", copy: "\u00a9",
+  reg: "\u00ae", trade: "\u2122", bull: "\u2022", middot: "\u00b7", eacute: "\u00e9",
+};
+export function decodeTypography(s) {
+  return String(s).replace(/&([a-z]+);/gi, (whole, name) => TYPOGRAPHIC[name.toLowerCase()] ?? whole);
+}
+
 const BLOCK = /<\/?(p|div|section|article|header|footer|ul|ol|tr|table|h[1-6]|br|hr|blockquote|figure|figcaption|dd|dt)\b[^>]*>/gi;
 
 /**
@@ -67,14 +79,14 @@ export function htmlToText(html) {
   s = s.replace(/<li\b[^>]*>/gi, "\n- ").replace(/<\/li>/gi, "");
   s = s.replace(BLOCK, "\n");
   s = s.replace(/<[^>]+>/g, "");
-  s = decodeEntities(s).replace(/&nbsp;/g, " ");
+  s = decodeTypography(decodeEntities(s));
   s = s
     .split("\n")
     .map((l) => l.replace(/[ \t ]+/g, " ").trim())
     .filter((l, i, a) => l || (i > 0 && a[i - 1]))
     .join("\n")
     .trim();
-  const t = decodeEntities(title);
+  const t = decodeTypography(decodeEntities(title));
   return t && !s.startsWith(t) ? `# ${t}\n\n${s}` : s;
 }
 

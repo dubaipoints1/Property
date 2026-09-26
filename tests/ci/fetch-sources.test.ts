@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import {
   parseUrls,
   htmlToText,
+  decodeTypography,
   readSource,
   renderSource,
   MAX_URLS,
@@ -63,4 +64,10 @@ test("readSource reports status and final URL, and never throws on failure", asy
   assert.equal(bad.status, null);
   assert.match(bad.text, /fetch failed/);
   assert.match(renderSource(bad), /^===== SOURCE https:\/\/e\.example\/x\nstatus: none/);
+});
+
+test("typographic entities decode — the first live run printed flydubai&rsquo;s", () => {
+  assert.equal(decodeTypography("flydubai&rsquo;s &ldquo;modern cabins&rdquo; &ndash; 25&nbsp;Sep"), "flydubai\u2019s \u201cmodern cabins\u201d \u2013 25 Sep");
+  assert.equal(decodeTypography("&unknown;"), "&unknown;");
+  assert.match(htmlToText("<article><p>Nepal&rsquo;s gateway</p></article>"), /Nepal\u2019s gateway/);
 });
