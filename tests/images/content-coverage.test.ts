@@ -21,7 +21,6 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
-  "news-minor-hotels-double-avios-iberia-club-31-october": "image in flight via refetch-image.yml",
 };
 
 const manifest = JSON.parse(
