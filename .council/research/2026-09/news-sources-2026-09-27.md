@@ -60,7 +60,13 @@ Avios before redeeming for others.
 Bling ("Qatar Rolls Back Avios Redemption Restrictions — No Paid
 Flight Needed") and Upgraded Points reported in September 2026 that
 Qatar had removed a qualifying-activity requirement for redeeming for
-others. Not confirmed by any Qatar page read.
+others. Not confirmed by any Qatar page read. URLs:
+https://pointsmilesandbling.com/qatars-avios-redemption-rules/ (read via
+`fetch-sources.yml` run 36327156455, 27 Sep — used only to confirm what the
+blog claims, no figure taken) and
+https://upgradedpoints.com/news/qatar-airways-privilege-club-redemption-rules/
+(located by search; not read). The post's structure follows Qatar's own
+clause order, not either blog's.
 
 ---
 

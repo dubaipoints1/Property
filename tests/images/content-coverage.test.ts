@@ -21,7 +21,6 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
-  "news-abu-dhabi-hotels-emirati-hospitality-standards-2027": "image in flight via refetch-image.yml",
 };
 
 const manifest = JSON.parse(
