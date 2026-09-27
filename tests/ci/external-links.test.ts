@@ -133,6 +133,11 @@ test("classifyResponse matrix — broken only when the target itself failed", ()
   assert.equal(c({ status: 403, headers: { server: "cloudflare" } }).detail, "cloudflare-403");
   assert.deepEqual(c({ status: 403, headers: { server: "AkamaiGHost" } }), { state: "unverifiable", detail: "akamai" });
   assert.equal(c({ status: 403, headers: {}, bodySnippet: "<h1>Access Denied</h1> Reference #18.2f4d1002" }).detail, "akamai");
+  // The raw page, as IHG served it on 2026-09-27: the "#" is an entity.
+  const ihg = '<HTML><HEAD><TITLE>Access Denied</TITLE></HEAD><BODY><H1>Access Denied</H1>You don\'t have permission to access "http&#58;&#47;&#47;www&#46;ihg&#46;com&#47;" on this server.<P>Reference&#32;&#35;18&#46;d71c2117&#46;1790527708&#46;3dcc1cd0<P>https&#58;&#47;&#47;errors&#46;edgesuite&#46;net&#47;18&#46;d71c2117</BODY></HTML>';
+  assert.deepEqual(c({ status: 403, headers: {}, bodySnippet: ihg }), { state: "unverifiable", detail: "akamai" });
+  // A plain 403 that merely says "access denied" is still a client error.
+  assert.equal(c({ status: 403, headers: {}, bodySnippet: "<p>Access denied to this resource.</p>" }).state, "client-error");
   assert.equal(c({ status: 403, headers: { "x-datadome": "protected" } }).detail, "datadome");
   assert.equal(c({ status: 403, headers: { "x-iinfo": "1-2-3" } }).detail, "incapsula");
   assert.equal(c({ status: 429, headers: {}, bodySnippet: "Pardon Our Interruption" }).detail, "distil");

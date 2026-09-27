@@ -248,7 +248,12 @@ function botWallDetail(status, headers, body) {
   if (/attention required/i.test(body)) return "cloudflare-block";
   if (status === 403 && /cloudflare/i.test(server)) return "cloudflare-403";
   if (/akamaighost/i.test(server)) return "akamai";
-  if (/access denied/i.test(body) && /reference #/i.test(body)) return "akamai";
+  // Akamai writes the reference as entities ("Reference&#32;&#35;18.…") and
+  // links errors.edgesuite.net; matching only the decoded "Reference #" let
+  // IHG's block page through as a broken link on 2026-09-27.
+  if (/access denied/i.test(body) && (/reference(?:\s|&#32;)+(?:#|&#35;)/i.test(body) || /errors\.edgesuite\.net/i.test(body))) {
+    return "akamai";
+  }
   if (Object.keys(headers).some((k) => k.startsWith("x-datadome"))) return "datadome";
   if (headers["x-iinfo"] !== undefined || /incapsula/i.test(headers["x-cdn"] ?? "") || /incapsula/i.test(body)) {
     return "incapsula";
