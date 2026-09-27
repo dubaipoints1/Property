@@ -1,5 +1,12 @@
 # News sourcing policy — travel news desks
 
+> **Amended 27 September 2026 (Chairman):** for news posts, facts may
+> come from any website, attributed inline and linked to the named outlet;
+> primary sources are still preferred when readable, and laundering is
+> still a kill. See CLAUDE.md, Amendments, "2026-09-27 — News may be
+> sourced from any website, attributed". Where this document says rung 2
+> or rung 3 may never be a fact base, that no longer applies to news.
+
 _Author: head-of-research. Council session:
 `.council/sessions/2026-07-27-travel-news-desks-strategy.md`._
 _Status: draft for synthesis; binding on the airline-news and

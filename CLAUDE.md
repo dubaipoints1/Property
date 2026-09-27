@@ -1002,6 +1002,47 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-09-27 — News may be sourced from any website, attributed
+
+On Chairman direction (27 September 2026), recorded verbatim as the basis
+of the ruling: "news on those topics it can be on any website". It
+followed the Chairman's observation that Head for Points, The Points Guy
+and similar sites carry far more news than this one, and a fact-check
+that held an Abu Dhabi hotel-standards story because the only source was
+Gulf News.
+
+**The rule.** For **news posts** (`src/content/news/`), a fact may come
+from any website — competitor blogs, trade press, newspapers, wire copy —
+not only from the issuer or authority. This amends, for news only, the
+2026-07-27 sourcing ladder (rungs 2 and 3 become citable) and two §10
+kill-list items as the fact-checker applies them to news: "a figure has
+no primary source" and "a UAE regulatory claim is not traceable to the
+relevant authority" no longer kill a news post whose every such fact is
+attributed as below.
+
+**What stays, because it is what the trust is built on:**
+
+1. **Attribution, visible and linked.** Every fact that did not come from
+   the issuer is credited inline to the named outlet with a link ("per
+   Head for Points", "Gulf News reports"), and the outlet is listed under
+   Sources. An unattributed secondary fact is still a kill.
+2. **Primary first when it is readable.** If the issuer's or authority's
+   own page can be read (the free `fetch-sources.yml` reader, or Firecrawl
+   for a page that refuses a plain fetch), cite it instead, and say where
+   it differs from the report.
+3. **Say what was not confirmed.** A post built on a secondary source
+   says plainly that the issuer has not confirmed it, if we looked and
+   could not.
+4. **Our own words and angle.** Content laundering — another site's
+   structure or wording presented as ours — remains a §10 kill. The UAE
+   angle is ours to add.
+5. **Scope.** Card reviews, `cards.json`, guides and the salary-transfer
+   tracker keep the full primary-source standard and §6 unchanged. The
+   2–3 airline and 1–2 hotel weekly cadence ceiling is not changed by
+   this ruling.
+
+— Chairman, 27 September 2026.
+
 ### 2026-09-15 — Six audit rulings (R2 homepage, R5 hotel programmes, R6 schema, R7 headers, R8 self-monitor, R9 deals)
 
 On Chairman direction (15 September 2026), the six decision questions
