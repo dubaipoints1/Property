@@ -136,11 +136,27 @@ read via Firecrawl scrape, 27 Sep, 1 credit.
 > Minor Hotels is a global hospitality group operating over 560 hotels, resorts and residences in 57 countries … diverse portfolio of eight hotel brands (Anantara, Elewana Collection, The Wolseley Hotels, Tivoli, Minor Reserve Collection, NH Collection, nhow, Avani, Colbert Collection, NH, Oaks and iStay) …
 > Minor Hotels is a valid partner for collecting Avios across all its hotel brands in Europe and America.
 
-The page shows no earning rates and no promotion.
+The page shows no earning rates and no promotion. Page title: "Avios offers
+in the accommodation sector – Iberia Spain"; the scrape returned the
+English-language version (locale en_ES), so the quote is Iberia's English,
+not our translation.
+
+Head for Points' own link for "the standard earning rate … shown here at
+iberia.com" is https://www.headforpoints.com/hfp/iberia-nh-hotels-page/.
+`fetch-sources.yml` run 36333189747 followed it: it redirects to
+https://www.iberia.com/es/iberiaplus/partners/hotels/ (HTTP 403 to the
+reader), which is the URL scraped above and which itself redirects to this
+accommodation page. So the page HfP cites for the rates is the one we read,
+and it shows none.
 
 ### 3b. Head for Points, 24 September 2026 (SECONDARY, attributed)
+Title: "How to earn Avios with Minor Hotels (NH, nhow, Anantara) – double
+Avios promo now on".
 URL: https://www.headforpoints.com/2026/09/24/earn-avios-with-minor-hotels/
-Read via `fetch-sources.yml` run 36327156455.
+Read in full via `fetch-sources.yml` run 36327156455. The full article text
+(not only the excerpts below) was checked: it does not mention Qatar
+Privilege Club, and says nothing about whether 31 October is a stay or a
+booking date.
 
 > The only bit of small print is that only hotels in Europe and the Americas allow you to earn Avios. This excludes the large footprint that Minor has in Asia and Australasia.
 > The standard earning rate across all Minor Hotels brands is shown here at iberia.com. You earn between 200 and 450 Avios per night depending on the quality of the hotel.
