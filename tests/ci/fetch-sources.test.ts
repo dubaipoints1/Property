@@ -8,6 +8,7 @@ import {
   parseUrls,
   htmlToText,
   decodeTypography,
+  extractLinks,
   readSource,
   renderSource,
   MAX_URLS,
@@ -70,4 +71,27 @@ test("typographic entities decode — the first live run printed flydubai&rsquo;
   assert.equal(decodeTypography("flydubai&rsquo;s &ldquo;modern cabins&rdquo; &ndash; 25&nbsp;Sep"), "flydubai\u2019s \u201cmodern cabins\u201d \u2013 25 Sep");
   assert.equal(decodeTypography("&unknown;"), "&unknown;");
   assert.match(htmlToText("<article><p>Nepal&rsquo;s gateway</p></article>"), /Nepal\u2019s gateway/);
+});
+
+test("extractLinks resolves, dedupes and keeps only http(s) — so an index page leads to its documents", () => {
+  const html = `<body><script>var a='<a href="/x">x</a>'</script>
+    <a href="/docs/circular-7-2026.pdf">Circular No. 7/2026 &amp; annex</a>
+    <a href='https://dct.gov.ae/docs/circular-7-2026.pdf#p2'>dup</a>
+    <a href="mailto:press@example.com">mail</a><a href="javascript:void(0)">js</a>
+    <a class="c" href="news/item?id=3"><span>Item</span> three</a></body>`;
+  const links = extractLinks(html, "https://dct.gov.ae/en/media.centre/circulars.aspx");
+  assert.deepEqual(links, [
+    { text: "Circular No. 7/2026 & annex", href: "https://dct.gov.ae/docs/circular-7-2026.pdf" },
+    { text: "Item three", href: "https://dct.gov.ae/en/media.centre/news/item?id=3" },
+  ]);
+});
+
+test("renderSource prints a LINKS section only when there are links", async () => {
+  const r = await readSource("https://e.example/a", {
+    fetchImpl: (async () =>
+      new Response('<article><p>Hi</p><a href="/doc.pdf">Doc</a></article>', { status: 200, headers: { "content-type": "text/html" } })) as unknown as typeof fetch,
+  });
+  const out = renderSource(r);
+  assert.match(out, /----- LINKS \(1\)\n- Doc → https:\/\/e\.example\/doc\.pdf/);
+  assert.doesNotMatch(renderSource({ ...r, links: [] }), /LINKS/);
 });
