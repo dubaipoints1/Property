@@ -87,14 +87,19 @@ For every claim in the draft:
 
 Per editorial standards §10. A draft is held back when:
 
-- A figure has no primary source.
+- A figure has no primary source. **News posts excepted** (Chairman,
+  27 Sep 2026): a figure from any website passes if it is attributed
+  inline to the named outlet with a link, and the post says when the
+  issuer has not confirmed it. Unattributed secondary figures still kill.
 - `lastVerified` would publish older than 90 days.
 - Affiliate / sponsored disclosure is missing or below the fold.
 - Orientalist headline or framing.
 - A recommendation contradicts the card's own KFS without an
   explicit, sourced explanation.
 - A UAE regulatory claim is not traceable to the relevant
-  authority.
+  authority. **News posts excepted** on the same terms: attributed to a
+  named outlet, and the post discloses that the authority's own
+  publication was not found.
 - A loyalty programme calculation uses stale earn rates or
   pre-transition currencies (e.g. Qatar Privilege Club Qmiles
   instead of Avios post-2022).

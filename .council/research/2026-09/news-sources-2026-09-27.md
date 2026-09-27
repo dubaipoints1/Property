@@ -115,7 +115,39 @@ Read via `fetch-sources.yml`, 27 September 2026, HTTP 200.
 
 ## Withheld the same day
 
-- **Minor Hotels / Anantara double Avios (to 31 Oct 2026):** reported
+- ~~Minor Hotels / Anantara double Avios~~ — written after the ruling, see §3. Originally: reported
   by Head for Points and InsideFlyer. Minor's own offers page (read via
   Firecrawl, 27 Sep) lists no Avios promotion; no Avios/Iberia page was
   found. Held for a primary source.
+
+---
+
+## 3. Minor Hotels / Avios (added after the 2026-09-27 Chairman ruling)
+
+The ruling of 27 September ("news on those topics it can be on any
+website") makes attributed secondary sources citable in news posts.
+Primary was still tried first.
+
+### 3a. Iberia — accommodation partners (PRIMARY, partnership and regions only)
+URL: https://www.iberia.com/es/iberia-club/partners/accommodation/ (redirect
+target of /es/iberiaplus/partners/hotels/). The free reader got HTTP 403;
+read via Firecrawl scrape, 27 Sep, 1 credit.
+
+> Minor Hotels is a global hospitality group operating over 560 hotels, resorts and residences in 57 countries … diverse portfolio of eight hotel brands (Anantara, Elewana Collection, The Wolseley Hotels, Tivoli, Minor Reserve Collection, NH Collection, nhow, Avani, Colbert Collection, NH, Oaks and iStay) …
+> Minor Hotels is a valid partner for collecting Avios across all its hotel brands in Europe and America.
+
+The page shows no earning rates and no promotion.
+
+### 3b. Head for Points, 24 September 2026 (SECONDARY, attributed)
+URL: https://www.headforpoints.com/2026/09/24/earn-avios-with-minor-hotels/
+Read via `fetch-sources.yml` run 36327156455.
+
+> The only bit of small print is that only hotels in Europe and the Americas allow you to earn Avios. This excludes the large footprint that Minor has in Asia and Australasia.
+> The standard earning rate across all Minor Hotels brands is shown here at iberia.com. You earn between 200 and 450 Avios per night depending on the quality of the hotel.
+> Note that, until 31st October 2026, there is a double Avios offer running. You could earn up to 900 Avios per night.
+> To earn Avios at Minor Hotels, you need to open an Iberia Club account at iberia.com and give your number at the hotel. The British Airways Club numbers are not accepted.
+> Once the Avios arrive in your Iberia Club account, you can transfer them to British Airways using the 'Move Avios' feature online.
+> PS. Minor Hotels is also part of the GHA DISCOVERY loyalty scheme which may be more valuable than earning Avios.
+
+InsideFlyer (read the same day) repeats the same facts and credits Head
+for Points as first to report; not used as a separate source.
