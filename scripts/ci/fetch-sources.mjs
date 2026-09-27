@@ -103,6 +103,38 @@ function pdfToText(buf) {
   }
 }
 
+export const MAX_LINKS = 80;
+
+/**
+ * The page's outbound links, so a session can follow an index page (a
+ * regulator's circulars list, a newsroom) to the document itself — the
+ * text alone names a circular but not where its PDF lives. Taken from the
+ * whole body, not just <article>, because index pages rarely use one.
+ * Resolved against the final URL, http(s) only, deduped, capped.
+ */
+export function extractLinks(html, baseUrl) {
+  const body = String(html ?? "").replace(/<(script|style|noscript|svg|template)\b[\s\S]*?<\/\1>/gi, "");
+  const out = [];
+  const seen = new Set();
+  for (const m of body.matchAll(/<a\b[^>]*?href\s*=\s*(["'])(.*?)\1[^>]*>([\s\S]*?)<\/a>/gi)) {
+    let href;
+    try {
+      href = new URL(decodeEntities(m[2].trim()), baseUrl);
+    } catch {
+      continue;
+    }
+    if (href.protocol !== "http:" && href.protocol !== "https:") continue;
+    href.hash = "";
+    const key = href.href;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const text = decodeTypography(decodeEntities(m[3].replace(/<[^>]+>/g, " "))).replace(/\s+/g, " ").trim();
+    out.push({ text: text.slice(0, 120), href: key });
+    if (out.length >= MAX_LINKS) break;
+  }
+  return out;
+}
+
 export async function readSource(url, { fetchImpl = fetch, timeoutMs = 30000 } = {}) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -115,10 +147,12 @@ export async function readSource(url, { fetchImpl = fetch, timeoutMs = 30000 } =
     const type = res.headers.get("content-type") ?? "";
     const buf = Buffer.from(await res.arrayBuffer());
     const isPdf = /pdf/i.test(type) || buf.subarray(0, 5).toString() === "%PDF-";
-    const text = isPdf ? pdfToText(buf) : htmlToText(buf.toString("utf8"));
-    return { url, status: res.status, finalUrl: res.url || url, type, text };
+    const html = isPdf ? "" : buf.toString("utf8");
+    const text = isPdf ? pdfToText(buf) : htmlToText(html);
+    const links = isPdf ? [] : extractLinks(html, res.url || url);
+    return { url, status: res.status, finalUrl: res.url || url, type, text, links };
   } catch (e) {
-    return { url, status: null, finalUrl: null, type: null, text: `[fetch failed: ${e.name === "AbortError" ? "timeout" : e.message}]` };
+    return { url, status: null, finalUrl: null, type: null, text: `[fetch failed: ${e.name === "AbortError" ? "timeout" : e.message}]`, links: [] };
   } finally {
     clearTimeout(timer);
   }
@@ -131,6 +165,9 @@ export function renderSource(r) {
     `status: ${r.status ?? "none"} · final: ${r.finalUrl ?? "—"} · type: ${r.type ?? "—"} · read: ${new Date().toISOString()}`,
     "",
     body,
+    ...((r.links ?? []).length
+      ? ["", `----- LINKS (${r.links.length}${r.links.length >= MAX_LINKS ? `, capped at ${MAX_LINKS}` : ""})`, ...r.links.map((l) => `- ${l.text || "(no text)"} → ${l.href}`)]
+      : []),
     `===== END ${r.url}`,
     "",
   ].join("\n");
