@@ -12,6 +12,8 @@ import {
   readSource,
   renderSource,
   MAX_URLS,
+  MAX_CHARS,
+  MAX_PDF_CHARS,
   // eslint-disable-next-line import/extensions
 } from "../../scripts/ci/fetch-sources.mjs";
 
@@ -94,4 +96,14 @@ test("renderSource prints a LINKS section only when there are links", async () =
   const out = renderSource(r);
   assert.match(out, /----- LINKS \(1\)\n- Doc → https:\/\/e\.example\/doc\.pdf/);
   assert.doesNotMatch(renderSource({ ...r, links: [] }), /LINKS/);
+});
+
+test("renderSource gives PDFs a longer cap than HTML pages", () => {
+  const long = "x".repeat(MAX_CHARS + 500);
+  const html = renderSource({ url: "https://e.example/a", status: 200, finalUrl: "https://e.example/a", type: "text/html", text: long, links: [] });
+  assert.match(html, new RegExp(`truncated at ${MAX_CHARS} characters`));
+  const pdf = renderSource({ url: "https://e.example/a.pdf", status: 200, finalUrl: "https://e.example/a.pdf", type: "application/pdf", text: long, links: [] });
+  assert.doesNotMatch(pdf, /truncated/);
+  const huge = renderSource({ url: "https://e.example/b.pdf", status: 200, finalUrl: "https://e.example/b.pdf", type: "application/pdf", text: "y".repeat(MAX_PDF_CHARS + 1), links: [] });
+  assert.match(huge, new RegExp(`truncated at ${MAX_PDF_CHARS} characters`));
 });
