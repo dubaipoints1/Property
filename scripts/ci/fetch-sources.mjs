@@ -28,6 +28,10 @@ export const USER_AGENT =
   "Mozilla/5.0 (compatible; DubaiPointsSourceReader/1.0; +https://dubaipoints.ae/about/)";
 export const MAX_URLS = 10;
 export const MAX_CHARS = 20000;
+// Terms PDFs run long, and UAE banks print them bilingual side by side, so
+// pdftotext doubles every clause. ENBD's payroll-cashback T&Cs reached the
+// clawback clauses only after 20,000 characters (1 October 2026).
+export const MAX_PDF_CHARS = 80000;
 
 /** https URLs only, deduped, capped — anything else is refused, not fetched. */
 export function parseUrls(raw) {
@@ -159,7 +163,8 @@ export async function readSource(url, { fetchImpl = fetch, timeoutMs = 30000 } =
 }
 
 export function renderSource(r) {
-  const body = r.text.length > MAX_CHARS ? `${r.text.slice(0, MAX_CHARS)}\n[… truncated at ${MAX_CHARS} characters]` : r.text;
+  const cap = /pdf/i.test(r.type ?? "") ? MAX_PDF_CHARS : MAX_CHARS;
+  const body = r.text.length > cap ? `${r.text.slice(0, cap)}\n[… truncated at ${cap} characters]` : r.text;
   return [
     `===== SOURCE ${r.url}`,
     `status: ${r.status ?? "none"} · final: ${r.finalUrl ?? "—"} · type: ${r.type ?? "—"} · read: ${new Date().toISOString()}`,

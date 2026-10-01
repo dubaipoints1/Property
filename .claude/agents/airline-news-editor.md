@@ -52,6 +52,11 @@ All stories land in `src/content/news/` with the airline category.
   tie-breaker across desks: whose currency moves, and who is the
   reader holding it. Contested stories go to the Managing Editor;
   you do not self-claim.
+- Incident, safety and security stories — accidents, emergencies,
+  diversions, onboard violence, hijack or terror alerts, crew conduct
+  — and the route suspensions or disruptions they cause. Skip them
+  entirely, even when the airline has issued a statement (Chairman
+  ruling, 1 October 2026; CLAUDE.md Amendments).
 
 ## Mandate
 
