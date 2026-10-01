@@ -37,6 +37,15 @@ export interface Correction {
 
 export const corrections: readonly Correction[] = [
   {
+    date: new Date("2026-10-01"),
+    title: "FAB Elite and FAB World Elite earn rates",
+    cardsAffected: ["fab-elite", "fab-world-elite"],
+    original:
+      'we said the <a href="/cards/fab-elite/">FAB Elite</a> earned <strong>1 FAB Reward per AED 1</strong> on everyday spend, and valued FAB Rewards at <strong>AED 0.02</strong> each, which put its luxury-spend return at 40% (AED 4,000 a month at the cap). We said the <a href="/cards/fab-world-elite/">FAB World Elite</a> earned <strong>10 FAB Rewards per AED 1</strong> on international spend and 1 on everything else. Neither base rate, nor the 10× international rate, had a primary source.',
+    corrected:
+      'FAB\'s Rewards terms and conditions (April 2025, version 4) give both cards <strong>5 FAB Rewards per AED 1</strong> on domestic and international spend, and 0.5 in excluded categories such as supermarkets, fuel and utilities. The World Elite has no international bonus. The same terms equate 334,000 FAB Rewards to AED 1,000 (the FAB Cashback card\'s monthly cap), so we now use an indicative <strong>AED 0.003</strong> each, and the FAB Elite\'s luxury return at the cap is about 6% (AED 600 a month). Both reviews, their card data and our premium-cards guide were corrected on 1 October 2026.',
+  },
+  {
     date: new Date("2026-06-11"),
     title: "ENBD Darna partner network",
     cardsAffected: [

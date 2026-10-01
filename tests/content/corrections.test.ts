@@ -28,7 +28,7 @@ test("every entry states both what we published and what is true", () => {
 });
 
 test("dates are real, machine-readable and not in the future", () => {
-  const now = new Date("2026-09-10");
+  const now = new Date();
   for (const c of corrections) {
     assert.ok(c.date instanceof Date, `${c.title}: date is not a Date`);
     assert.ok(!Number.isNaN(c.date.getTime()), `${c.title}: unparseable date`);
