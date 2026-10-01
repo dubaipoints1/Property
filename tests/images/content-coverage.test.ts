@@ -21,6 +21,10 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "news-world-of-hyatt-3000-bonus-points-every-three-nights-15-december":
+    "image being fetched via refetch-image.yml (weekly news run, 1 Oct 2026)",
+  "news-emirates-nbd-salary-transfer-cashback-up-to-aed-6000-24-december":
+    "image being fetched via refetch-image.yml (weekly news run, 1 Oct 2026)",
 };
 
 const manifest = JSON.parse(
