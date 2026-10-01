@@ -34,6 +34,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      # pdftotext comes from poppler-utils. Runner image 20260927 no longer
+      # ships it, and every PDF came back "[pdftotext failed: ENOENT]".
+      - name: Install pdftotext
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
       - name: Read sources
         env:
           SOURCE_URLS: ${{ inputs.urls }}
