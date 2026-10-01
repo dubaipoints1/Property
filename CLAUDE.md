@@ -1002,6 +1002,29 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-10-01 — No incident, safety or security stories
+
+On Chairman direction (1 October 2026), recorded verbatim as the basis of
+the ruling: "remove this story completely and these kind of stories lets
+skip it due to sensitives." It followed a draft on flydubai suspending its
+Israel flights after the FZ 1073 incident of 30 September, written from
+flydubai's own statements only. The draft was withdrawn before
+publication.
+
+**The rule.** The news desks do not cover incident, safety or security
+stories: accidents, emergencies and diversions, onboard or on-property
+violence, hijack or terror alerts, crew or staff conduct. They also do not
+cover the route suspensions, closures or disruptions those events cause.
+This holds even when the issuer's own statement is available. Such leads
+are passed over in the weekly run and noted as passed over, never
+drafted.
+
+**Unchanged.** Ordinary schedule and network changes (a route launched,
+cut or retimed for commercial reasons) remain news. The 2026-09-27
+sourcing ruling and the cadence ceiling stand.
+
+— Chairman, 1 October 2026.
+
 ### 2026-09-27 — News may be sourced from any website, attributed
 
 On Chairman direction (27 September 2026), recorded verbatim as the basis

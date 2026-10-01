@@ -8,69 +8,14 @@ channel returned it; figures in the posts are read from this text by hand
 
 ---
 
-## §1 flydubai — FZ 1073 statements (primary)
+## §1 flydubai FZ 1073: withdrawn
 
-URL: https://news.flydubai.com/updates-on-fz-1073-dxb-tlv-on-30-september-2026
-Channel: reader, run 36823339895, read 2026-10-01 06:10 UTC. The page
-carried three statements, newest first. The Russian-language page
-(https://news.flydubai.com/zaavlenia-o-fz-1073-dxb-tlv-30-sentabra-2026,
-reader run 36823689646) carried only statements 1 and 2, and the news
-monitor logged it at 2026-09-30 18:23 UTC — so statement 3 was posted
-after that, and before 06:10 UTC on 1 October.
-
-```
-===== SOURCE https://news.flydubai.com/updates-on-fz-1073-dxb-tlv-on-30-september-2026
-status: 200 · final: https://news.flydubai.com/updates-on-fz-1073-dxb-tlv-on-30-september-2026 · type: text/html; charset=utf-8 · read: 2026-10-01T06:10:14.595Z
-
-# Updates on FZ 1073 DXB-TLV on 30 September 2026
-
-# Updates on FZ 1073 DXB-TLV on 30 September 2026
-
-Statement 3 - To be attributed to a flydubai spokesperson
-
-Following the incident involving flight FZ 1073 on 30 September, and in coordination with the relevant authorities, flydubai flights to and from Israel will be suspended while the investigation continues.
-
-The safety and wellbeing of our passengers, crew and operations remain our highest priority. This temporary suspension will allow the relevant authorities to continue their work and establish all the facts surrounding the incident.
-
-We are fully committed to supporting the ongoing investigation and maintaining the highest safety standards across our network. We remain in close coordination with government authorities, regulators and airport stakeholders and will review the suspension as more information becomes available.
-
-We apologise to passengers whose travel plans have been affected and are working to provide support and alternative arrangements where possible.
-
--ends-
-
-Statement 2 - To be attributed to a flydubai spokesperson
-
-An altercation occurred in the flight deck of flight FZ 1073, operating from Dubai International (DXB) to Ben Gurion International Airport (TLV), on 30 September.
-
-The aircraft was successfully secured by on-duty flydubai crew travelling on the flight, who diverted and landed the aircraft safely at Tabuk Airport (TUU). All passengers and crew are safe and accounted for.
-
-We have deployed two replacement aircraft to Tabuk to relieve the passengers and crew.
-
-This incident has no impact on other scheduled operations across the flydubai network.
-
-At this early stage, the underlying reasons and motives behind this event are unknown and remain subject to a formal investigation. We urge all parties to refrain from premature speculation while authorities gather the facts.
-
-Our immediate priority is to ensure the ongoing safety, health, and wellbeing of all passengers and crew members involved in this incident and support the official investigation.
-
--ends-
-
-Statement 1 - To be attributed to a flydubai spokesperson
-
-flydubai can confirm that flight FZ 1073 operating from Dubai International (DXB) to Ben Gurion International Airport (TLV) on 30 September experienced an incident while en route. The aircraft has landed safely in Tabuk Airport (TUU) and all passengers are safe and accounted for. The safety and wellbeing of our passengers and crew remain our highest priority.
-
-Our teams are working closely with the relevant authorities. Further updates will be issued as additional confirmed details become available.
-
-Read more
-```
-
-Secondary reports read for context only (not used for any fact in the
-post): Live From A Lounge, "flydubai FZ1073 Diverts to Saudi Arabia After
-Cockpit Incident, Hijack Alert and Dramatic Loss of Altitude", 30 Sep 2026
-(reader run 36823689646); One Mile at a Time, "Terrifying: Flydubai 737
-Plunges 15K Feet…", 30 Sep 2026 (reader run 36823339895). Both relay
-claims from Israeli officials and media — including allegations about
-the crew's conduct, names and nationalities — that flydubai has not
-confirmed. The post deliberately repeats none of them.
+A post on flydubai's suspension of its Israel flights after the FZ 1073
+incident (30 September 2026) was drafted and then withdrawn before
+publication, on the Chairman's ruling of 1 October 2026 that the
+publication does not cover incident, safety or security stories (CLAUDE.md
+Amendments, 2026-10-01). The archived statements and secondary-report
+notes are removed with it.
 
 ---
 

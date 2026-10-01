@@ -1,28 +1,25 @@
-# Fact-check log — 2026-10-01 weekly news (3 posts)
+# Fact-check log — 2026-10-01 weekly news (2 posts; 1 withdrawn)
 
 _Source of record: `.council/research/2026-10/news-sources-2026-10-01.md` (§1 flydubai, §2 Hyatt, §3 ENBD)._
-_Drafts: `src/content/news/flydubai-suspends-israel-flights-after-fz1073-incident.mdx`, `src/content/news/world-of-hyatt-3000-bonus-points-every-three-nights-15-december.mdx`, `src/content/news/emirates-nbd-salary-transfer-cashback-up-to-aed-6000-24-december.mdx`._
+_Drafts: `src/content/news/world-of-hyatt-3000-bonus-points-every-three-nights-15-december.mdx`, `src/content/news/emirates-nbd-salary-transfer-cashback-up-to-aed-6000-24-december.mdx`._
 _Checked: 2026-10-01 by fact-checker, against the archive only (no WebFetch). Filed by the session on the Fact-Checker's behalf (no Write tool)._
 
 ## Verdicts
 
 | Post | Verdict | Redlines |
 |---|---|---|
-| flydubai FZ 1073 | **PASS-WITH-EDITS** | F1–F6 |
+| flydubai FZ 1073 | **WITHDRAWN** | n/a: removed before publication, Chairman ruling 1 Oct 2026 |
 | World of Hyatt 3K | **PASS-WITH-EDITS** | H1–H4 |
 | ENBD payroll cashback | **PASS-WITH-EDITS** | E1–E6 |
 
-Common checks: no affiliate or sponsored links, so disclosure is not applicable, and no COI. No kill-list triggers: no unattributed secondary figure, no Orientalist framing, no pre-transition currencies, and no LLM-extracted numerics (the Firecrawl reads were markdown scrapes, with figures read by hand, per Charter §6). 2026-09-27 amendment: flydubai and ENBD rest entirely on primary sources. Hyatt credits Head for Points inline with a link, and no Hyatt fact comes from Head for Points.
+Common checks (Hyatt, ENBD): no affiliate or sponsored links, so disclosure is not applicable, and no COI. No kill-list triggers: no unattributed secondary figure, no Orientalist framing, no pre-transition currencies, and no LLM-extracted numerics (the Firecrawl reads were markdown scrapes, with figures read by hand, per Charter §6). 2026-09-27 amendment: ENBD rests entirely on primary sources. Hyatt credits Head for Points inline with a link, and no Hyatt fact comes from Head for Points.
 
-## 1. flydubai — claims verified
+## 1. flydubai — withdrawn
 
-- **Statement 1.** DXB → Ben Gurion (TLV), 30 Sep, "experienced an incident while en route" (verbatim). Landed safely at Tabuk (TUU), all passengers safe. "in Saudi Arabia" is not in the statements but is common geographic knowledge. PASS.
-- **Statement 2.** "An altercation occurred in the flight deck" (verbatim). Secured by on-duty crew travelling on the flight, diverted and landed safely; all passengers and crew safe and accounted for; two replacement aircraft; reasons and motives "are unknown and remain subject to a formal investigation" (verbatim); "urge all parties to refrain from premature speculation". PASS. The "no impact" line was superseded by statement 3 (F3).
-- **Statement 3.** Suspension to and from Israel, in coordination with the authorities, while the investigation continues; to be reviewed as information becomes available; "working to provide support and alternative arrangements where possible" (verbatim). PASS.
-- **Unconfirmed claims.** None repeated: no names, nationalities, stabbing, squawk or hijack codes, or altitude figures. PASS.
-- **Duration.** "temporary suspension", no duration given. Tie the sentence to the read date (F4).
-- **Rebooking and refund terms.** "Has not published …" is not supported, because only the newsroom page was read (F5).
-- **Secondary reports.** The archive holds two (Live From A Lounge, One Mile at a Time), so "Several" becomes "Other" (F6).
+Withdrawn before publication on the Chairman's ruling of 1 October 2026:
+incident, safety and security stories are out of scope (CLAUDE.md
+Amendments, 2026-10-01). Its claim checks and redlines F1–F6 are removed
+with it.
 
 ## 2. World of Hyatt — claims verified
 
@@ -70,14 +67,6 @@ The internal link to `/news/enbd-bonus-interest-salary-transfer-explained/` reso
 
 ## Redlines (all applied by the session, 1 Oct 2026)
 
-**flydubai**
-- **F1, description.** Attribute safety: "flydubai says everyone on board is safe, and it has suspended its flights to and from Israel …"
-- **F2, opening.** Scope is Israel, not Tel Aviv only; drop "your flight is not operating".
-- **F3, statement 2.** "At that point it said the incident had no impact on other scheduled operations …"
-- **F4, duration.** "flydubai calls the suspension temporary but, as of 1 October, has not said how long it will last."
-- **F5, refunds.** "Its statements do not set out rebooking or refund terms."
-- **F6.** "Several outlets" becomes "Other outlets".
-
 **Hyatt**
 - **H1, description.** "Stays at participating UAE hotels count."
 - **H2, attribution.** "Head for Points reported it on 1 October."
@@ -94,7 +83,6 @@ The internal link to `/news/enbd-bonus-interest-salary-transfer-explained/` reso
 
 **Advisory**
 - Taken:
-  - flydubai `staleAfter` set to 2026-10-08, a 7-day re-check for a live suspension.
   - Hyatt closing advice changed to "book an eligible rate at a hotel in World of Hyatt".
 - Not taken:
   - Dial-A-Cheque and loan-on-card exclusions (ENBD step 3). The subset is not misleading.
@@ -102,4 +90,4 @@ The internal link to `/news/enbd-bonus-interest-salary-transfer-explained/` reso
 
 ## Outcome
 
-All three posts **PASS-WITH-EDITS**. The redlines were applied by the session on 1 October 2026 and re-checked against the archive text above. Next: Standards Editor (Stage 6.5, sampling after the ten-post ramp), then the Chairman. The Chairman cell is **pending**: this was an automated run.
+The Hyatt and ENBD posts **PASS-WITH-EDITS**; the flydubai post was withdrawn. The redlines were applied by the session on 1 October 2026 and re-checked against the archive text above. Next: Standards Editor (Stage 6.5, sampling after the ten-post ramp), then the Chairman. The Chairman cell is **pending**: this was an automated run.

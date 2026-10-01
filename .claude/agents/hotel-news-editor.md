@@ -59,6 +59,10 @@ All stories land in `src/content/news/` with the hotel category.
   the currency moving is airline miles — airline-news-editor. The
   cross-desk tie-breaker: whose currency moves, and who is the
   reader holding it. Contested stories go to the Managing Editor.
+- Incident, safety and security stories — attacks, fires,
+  evacuations, guest or staff harm — and the closures they cause.
+  Skip them entirely, even when the hotel has issued a statement
+  (Chairman ruling, 1 October 2026; CLAUDE.md Amendments).
 
 ## Mandate
 
