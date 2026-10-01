@@ -700,3 +700,26 @@ status: 200 · final: https://news.flydubai.com/flydubai-showcases-its-growing-s
   and Citi merchant offers added/removed — deals-desk material, not news;
   Emirates Islamic offers removed → handled by the scheduled 1 October
   Emirates Islamic check.
+
+---
+
+## §5 Re-checks for stories past `staleAfter` (30 September)
+
+- **FAB Cashback holiday offer**:
+  https://www.bankfab.com/en-ae/personal/promotions/cashback-credit-card-free-holiday-offer.
+  Reader run 36824934038, 2026-10-01 06:28 UTC. Status 200, but the final
+  URL is https://www.bankfab.com/en-ae/personal/credit-cards/cashback-credit-card
+  (a redirect). The card page's text lists cashback rates, lifestyle and
+  travel benefits, and has no Holiday Factory or holiday-voucher wording.
+- **Skywards–Marriott Bonvoy 5,000 points**:
+  https://www.emirates.com/ae/english/skywards/partners/marriott-bonvoy/.
+  The reader timed out (emirates.com tarpit); FC, 1 credit,
+  2026-10-01. The page lists the standing partnership only: dual
+  earning, tier benefits and 3:1 / 3:2 conversions, plus "5,000 bonus
+  Skywards Miles for every 60,000 Marriott Bonvoy points converted". There
+  is no campaign for 5,000 points per stay, and no 15 July – 30 September
+  promotion.
+- **Skywards summer push / DSS**: the end dates (30 August draw entry, 30
+  September redemption push) are from Emirates' own releases as already
+  cited in the story. The reader timed out on the release (tarpit), and no
+  fresh read was needed for a fixed past end date.
