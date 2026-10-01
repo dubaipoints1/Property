@@ -668,3 +668,33 @@ status: 200 · final: https://news.flydubai.com/flydubai-showcases-its-growing-s
   September redemption push) are from Emirates' own releases as already
   cited in the story. The reader timed out on the release (tarpit), and no
   fresh read was needed for a fixed past end date.
+
+---
+
+## §6 Emirates Islamic — 1 October re-check (Chairman direction, 22 September 2026)
+
+- **Switch Cashback welcome bonus: extended.**
+  - https://www.emiratesislamic.ae/en/offers/switch-cashback-credit-card-welcome-bonus:
+    reader run 36833924769, 200, 2026-10-01 08:03 UTC. Verbatim: "Earn AED
+    500 guaranteed Welcome Bonus & up to 8% monthly Cashback with the Switch
+    Cashback Credit Card … Offer is valid till 31 December 2026. … *Welcome
+    Bonus of AED 500 in the form of Cashback points will be awarded subject
+    to retail spends of AED 15,000 within 60 days of Card approval."
+  - https://www.emiratesislamic.ae/en/cards/credit-cards/switch-cashback-credit-card:
+    reader run 36833937719, 200. Verbatim: "Welcome Offer — Get 500 Cashback
+    points on spends of 15,000 within 60 days of Card approval. … Offer is
+    valid till 31 December 2026. … Cashback points if qualified for on
+    Switch Cashback card will be awarded as part of 3rd statement cycle."
+- **Salary Transfer Cashback (1 June – 30 September 2026): ended.**
+  - https://www.emiratesislamic.ae/en/offers/salary-transfer-cashback:
+    reader run 36833733275, 200, but the **final URL is**
+    https://www.emiratesislamic.ae/en/banking-packages (a redirect). That page
+    lists the Emarati package, Advantage Banking and the ALPHA Youth Account,
+    with no salary-transfer cashback. The reader's 20,000-character cap was
+    reached on that page.
+  - https://www.emiratesislamic.ae/en/offers: FC, 1 credit, 2026-10-01
+    (the list renders with JavaScript, so the reader saw only navigation).
+    "Latest Offers" and "Other Offers" list the Switch Cashback welcome bonus
+    and no salary-transfer cashback offer. "Load More" was not expanded.
+  - The "up to AED 6,000" headline seen on 25 September appears on neither
+    page.
