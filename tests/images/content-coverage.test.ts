@@ -21,6 +21,11 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  // Temporary, 4 Oct 2026: refetch-image.yml runs this suite after fetching
+  // ONE slug, so two new posts can never both pass in one run. Removed in
+  // the same PR once the Qatar cover has landed.
+  "news-qatar-avios-transfer-bonus-uae-banks-31-october":
+    "cover fetch queued behind the Emirates one (refetch-image.yml)",
 };
 
 const manifest = JSON.parse(
