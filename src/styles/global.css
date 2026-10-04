@@ -1342,11 +1342,15 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin: 0 0 24px;
 }
 .dp-live-desk .cols {
-  display: grid; grid-template-columns: 1fr;
+  /* minmax(0, 1fr), not 1fr: a bare 1fr lets a long offer row widen the
+     column past the viewport (2px of page scroll at 360px, render audit
+     4 Oct 2026). */
+  display: grid; grid-template-columns: minmax(0, 1fr);
   gap: 32px;
 }
+.dp-live-desk .col { min-width: 0; }
 @media (min-width: 1024px) {
-  .dp-live-desk .cols { grid-template-columns: 1fr 1fr; }
+  .dp-live-desk .cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
 .dp-live-desk .col-head {
   display: flex; align-items: baseline; justify-content: space-between;

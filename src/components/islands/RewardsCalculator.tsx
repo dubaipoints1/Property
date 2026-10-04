@@ -1248,7 +1248,7 @@ export default function RewardsCalculator({ cards }: Props) {
           text-transform: uppercase; font-weight: 700;
         }
         .dp-calc-tile-meta .chip.is-stale { color: var(--red); }
-        .dp-calc-tile-meta .chip.is-fallback { color: var(--gold); }
+        .dp-calc-tile-meta .chip.is-fallback { color: var(--gold-ink); } /* --gold is 3.2:1 at chip size; --gold-ink clears AA (axe, render audit 4 Oct 2026) */
 
         .dp-calc-toggle-all {
           margin-top: 16px;
