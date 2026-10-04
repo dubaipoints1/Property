@@ -3033,7 +3033,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.3px;
   font-variant-numeric: tabular-nums; color: #1f2328; overflow-wrap: break-word;
 }
-.dp-cr-facts dd small { font-size: 12px; font-weight: 500; color: #6b7178; margin-left: 2px; }
+.dp-cr-facts dd small { display: block; font-size: 12px; font-weight: 500; color: #6b7178; }
 .dp-cr-facts dd.is-unverified { color: #6b7178; font-style: italic; font-weight: 500; }
 .dp-cr-byline { margin: 0 0 24px; }
 
