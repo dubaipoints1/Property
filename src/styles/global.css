@@ -3850,7 +3850,7 @@ html * {
   .hp-hero-text > :nth-child(5) { animation-delay: 0.32s; }
   /* The h1 already rises; a second rise on its <em> compounded the two
      (motion audit F9). The LCP image fades briefly with no delay (F10). */
-  .hp-hero-show {
+  .hp-story-frame {
     animation: dp-fade 0.4s ease-out both;
   }
 

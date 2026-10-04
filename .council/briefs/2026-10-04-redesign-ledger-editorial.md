@@ -72,6 +72,18 @@ current idiom stays in force until each phase ships).
    and `hero-carry-on` a small generic crest on the suitcase — neither a
    real mark, both flagged for the Chairman's eye; `hero-window-coast`
    is clean.
+   **Scroll story, 4 October (Chairman, second reel).** The Chairman
+   sent a reel of a coffee site whose hero is one continuous render
+   scrubbed by scroll (GRIND → POUR → SIP), giant serif words behind the
+   object, and asked whether we could build it "for the dubaipoints". The
+   hero is now a pinned scroll story: EARN (card on a sill) → BOARD
+   (gate at dawn) → FLY (wing over the coast) → ARRIVE (Dubai at night),
+   a gold word behind each picture, step bars that fill as you scroll,
+   one line of copy per stage. Built on the four existing stills; each
+   stage can take a short video clip later with no markup change. AI
+   video clips (fal.ai, paid per clip) await the Chairman's go-ahead and
+   a priced quote. Phones get the headline first and the story under it;
+   reduced motion gets no pinning and tap-to-switch steps.
 4. **Card review template** — shipped 4 October: ledger tile replaces the
    CSS card-face mock and its per-issuer tints (trial findings 4 and 19,
    resolved on the house palette rather than by ruling); breadcrumb nav;

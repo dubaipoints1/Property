@@ -1060,10 +1060,12 @@ guarantee is met for that one surface in two other places: every hero
 image's manifest entry still carries `source: "ai-generated"`, the model
 and the full prompt (the provenance record is untouched), and
 `/editorial-policy/` names the homepage hero pictures as AI
-illustrations in its image-provenance paragraph. The slideshow's stop
-mechanism (WCAG 2.2.2) is the picture dashes themselves: choosing one
-stops the automatic change; hover, focus, a hidden tab and
-`prefers-reduced-motion` stop it too.
+illustrations in its image-provenance paragraph. Since the same day the
+hero is a **scroll story** (EARN · BOARD · FLY · ARRIVE, after a second
+reel the Chairman sent): the reader's scroll position is the play head
+and nothing moves on its own, so there is no autoplay for WCAG 2.2.2 to
+govern; under `prefers-reduced-motion` the stage does not pin and the
+step buttons switch pictures in place.
 
 **Scope, and this is the load-bearing part.** This exemption is the
 homepage hero only. Everywhere else — article covers, guide heroes, card
