@@ -232,6 +232,38 @@ npm run scrape:propose # merges latest data/scraped/<bank>/*.json into src/data/
 
 Run a single test file: `node --import tsx --test tests/scrape/_normaliser.test.ts`.
 
+## Claude Code automation (`.claude/`)
+
+Added 4 October 2026 from the `claude-code-setup` recommender:
+
+- **SessionStart** (`.claude/hooks/session-start.sh`): `npm install` in cloud
+  sessions only, so `check`, `test` and `build` work from the first turn.
+  Synchronous on purpose — a session never races an install.
+- **PreToolUse** (`guard-frozen.mjs`): refuses Edit/Write on
+  `data/monitor/monitors.json`, `data/news-monitor/state.json` (frozen
+  migration seeds) and `package-lock.json` (npm-generated). It does not see
+  shell writes; the rule in "The automation-state branch" still applies.
+- **PostToolUse** (`validate-cards.mjs`): after an edit to
+  `src/data/cards.json`, loads it through the real Zod schema in
+  `src/lib/cardsData.ts` (~0.5 s) and reports the failing field paths.
+- **Skills**: `/signoff` (PR sign-off block and tier), `/add-card` (L2 + L3
+  checklist), `web-design-guidelines` (UI code review), `ui-ux-pro-max`
+  (offline style / palette / font-pairing lookup, vendored at `477bcb2`; a
+  keyword-matched reference, not a decision-maker — see its preamble).
+- **MCP**: `context7` in `.mcp.json` for current Astro 7 / Tailwind 4 docs.
+  `mcp.context7.com` is denied by the web environment's egress policy as of
+  4 October 2026, so it works from a workstation only until the host is
+  allowlisted.
+- **MCP**: `21st` (21st.dev Magic, UI component generation) in `.mcp.json`.
+  The key is read from the `API_KEY_21ST` environment variable and is
+  never committed. `21st.dev` is also egress-blocked in web sessions as of
+  4 October 2026. Its output is React + Tailwind: under the 2026-07-25
+  amendment it is a **mockup**, rebuilt in the house idiom (Astro / Preact,
+  CSS tokens) before anything ships. The 21st plugin's seven skills
+  (`21st-ui-explore`, `-ui-build`, `-ui-review`, `-ai`, `-cli-use`,
+  `-design-sync`, `-registry`) are vendored at `f76b07a` under the same rules;
+  publishing anything to 21st.dev needs the Chairman's approval each time.
+
 ## Audit harness (opt-in)
 
 Reproducible UI/UX, accessibility, performance and link probes live under
@@ -1001,6 +1033,46 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-10-04 — The site's look is open to a redesign; reference design systems permitted
+
+On Chairman direction (4 October 2026), recorded verbatim as the basis of
+the ruling: "if we need to make changes to the council charter or design
+that is fine we want like similair premium looking sites. Thats ehy even
+awesome design is ok i am open to changing the look of the site". It
+followed the adoption of the `web-design-guidelines` skill (PR #424) and a
+session note that DESIGN.md reference sets were being held back as
+"copying other brands".
+
+**The rule.**
+
+1. **The visual idiom is open.** The palette (including the two-accent
+   and no-third-hue rules of 2026-07-25 and R1 of 2026-09-10), the
+   typefaces and the `.dp-*` look may be replaced by a redesign. A
+   redesign is T3: a brief, a direction the Chairman picks from rendered
+   options, then a phased build. **Until the Chairman ratifies a new
+   direction, the current idiom stays in force** — opening the question
+   does not suspend the existing rules mid-flight.
+2. **Reference design systems are permitted as inspiration.** DESIGN.md
+   analyses of premium sites (e.g. `VoltAgent/awesome-design-md`), and
+   the sites themselves, may inform type scale, spacing, layout, numeric
+   treatment and component patterns. What is not taken: another
+   company's logo or wordmark, its proprietary typefaces, or a signature
+   identity element a reader would recognise as that company's (Stripe's
+   gradient mesh, Apple's product-tile system as a whole). The result has
+   to read as DubaiPoints, not as a clone of the reference.
+3. **The direction is chosen from mockups.** The first set — Ledger
+   (fintech), Broadsheet (editorial), Gallery (photo-first) — was built
+   on 4 October 2026 with real L2 figures for FAB Etihad Guest Infinite
+   and ADCB Traveller and bracketed placeholders for everything else.
+
+**Unchanged.** The 2026-07-25 rule that AI design tools produce mockups
+and never code; §6 (no invented figures, in mockups or on the site); the
+AI-imagery permit/ban line of 2026-07-29; honest-nav; and the
+`web-design-guidelines` checklist, which applies to whatever idiom is in
+force.
+
+— Chairman, 4 October 2026.
 
 ### 2026-10-01 — No incident, safety or security stories
 
