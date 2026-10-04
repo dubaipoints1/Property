@@ -432,7 +432,7 @@ const dealRows = await Promise.all(
   </header>
 
   <!-- ── S2. Tools band ─────────────────────────────────────────────── -->
-  <section class="hp-tools" id="tools" aria-label="Tools">
+  <section class="hp-tools" data-reveal id="tools" aria-label="Tools">
     <div class="hp-tools-head">
       <div>
         <span class="hp-band-eyebrow">Know what you need?</span>
@@ -478,7 +478,7 @@ const dealRows = await Promise.all(
 
   <!-- ── S2b. Editor's picks — swipeable carousel (Phase 3, 4 Oct 2026) ─ -->
   {picks.length > 0 && (
-    <section class="hp-picks" aria-label="Editor's picks">
+    <section class="hp-picks" data-reveal aria-label="Editor's picks">
       <div class="hp-picks-head">
         <div>
           <span class="hp-band-eyebrow">Editor's picks</span>
@@ -515,7 +515,7 @@ const dealRows = await Promise.all(
 
   <!-- ── S3. Live desk — salary offers + deals, one module ──────────── -->
   {(offerRows.length > 0 || dealRows.length > 0) && (
-    <section class="dp-live-desk" aria-label="Live data desk">
+    <section class="dp-live-desk" data-reveal aria-label="Live data desk">
       <div class="head">
         <div class="dp-featured-eyebrow">
           <span>Live desk</span>
@@ -573,7 +573,7 @@ const dealRows = await Promise.all(
   )}
 
   <!-- ── S4. Latest analysis ────────────────────────────────────────── -->
-  <section class="dp-featured-band hp-fresh" id="latest" aria-label="Latest analysis">
+  <section class="dp-featured-band hp-fresh" data-reveal id="latest" aria-label="Latest analysis">
     <div class="hp-fresh-head">
       <div>
         <span class="hp-band-eyebrow">Checked against primary sources</span>
@@ -614,7 +614,7 @@ const dealRows = await Promise.all(
   </section>
 
   <!-- ── S5. Strategy panel — goal-ranked, no-JS radio tabs ─────────── -->
-  <section class="dp-strategy is-navy" aria-label="Build your points strategy">
+  <section class="dp-strategy is-navy" data-reveal aria-label="Build your points strategy">
     <div class="inner">
       <div class="dp-featured-eyebrow">
         <span>Build your strategy</span>
@@ -677,7 +677,7 @@ const dealRows = await Promise.all(
   </section>
 
   <!-- ── S6. Start here — directory ─────────────────────────────────── -->
-  <section class="hp-dir" aria-label="Browse dubaipoints.ae">
+  <section class="hp-dir" data-reveal aria-label="Browse dubaipoints.ae">
     <div class="dp-featured-eyebrow">
       <span>Start here</span>
       <span class="rule"></span>
@@ -724,7 +724,7 @@ const dealRows = await Promise.all(
   </section>
 
   <!-- ── S7. Trust + press + newsletter ─────────────────────────────── -->
-  <section class="hp-trust" aria-label="Why trust DubaiPoints">
+  <section class="hp-trust" data-reveal aria-label="Why trust DubaiPoints">
     <div class="dp-featured-eyebrow">
       <span>Why trust us</span>
       <span class="rule"></span>
@@ -753,7 +753,7 @@ const dealRows = await Promise.all(
 
   <PressStrip />
 
-  <section class="hp-news is-navy" aria-label="Newsletter">
+  <section class="hp-news is-navy" data-reveal aria-label="Newsletter">
     <div class="inner">
       <div class="hp-news-text">
         <span class="hp-news-eyebrow">A little useful, every Friday</span>
@@ -845,7 +845,7 @@ const dealRows = await Promise.all(
     background: var(--gold); color: var(--ink);
     font-size: 15px; font-weight: 700;
     text-decoration: none;
-    transition: background 0.15s, transform 0.15s;
+    transition: background 0.15s, transform 0.15s var(--dp-ease-hover);
   }
   .hp-hero-cta:hover { background: var(--gold-hover); transform: translateY(-1px); }
   .hp-hero-cta.is-ghost {
@@ -955,13 +955,9 @@ const dealRows = await Promise.all(
     height: 100%; padding: 20px 20px 18px;
     background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
     text-decoration: none; color: var(--ink);
-    transition: border-color 0.15s, transform 0.2s ease, box-shadow 0.2s ease;
+    /* Lift + shadow come from the shared rule in the global.css motion layer. */
   }
-  .hp-pick:hover {
-    border-color: var(--green);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 24px -16px rgba(15, 42, 68, 0.45);
-  }
+  .hp-pick:hover { border-color: var(--green); }
   .hp-pick-tier {
     font-size: 10px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase;
     color: var(--gold-ink); /* --gold on paper is 3.2:1 at 10px; --gold-ink clears AA */

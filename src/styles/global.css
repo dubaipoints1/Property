@@ -99,6 +99,10 @@
   --gold-ink:  #8a6118;
   --gold-lift: #d9a441;          /* gold on navy (5.3:1): hero em, kicker, focus ring on dark bands */
   --gold-hover:#c9933a;          /* gold CTA hover (ink text 5.8:1) */
+  --navy-pin:  #16202c;          /* dark-theme pin for navy bands (same on both themes); the card-review tile sits one step below it */
+  /* Motion (audit 4 Oct 2026, finding 15): one entrance curve, one hover curve. */
+  --dp-ease:       cubic-bezier(0.22, 1, 0.36, 1);
+  --dp-ease-hover: cubic-bezier(0.2, 0, 0, 1);
   --brand:     #1a5fc6;          /* legacy alias to --link */
   --brand-deep:#154fa3;
   --brand-soft:#eef3fb;
@@ -2959,7 +2963,8 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-cr-tile {
   aspect-ratio: 1.586 / 1; width: 100%; max-width: 320px;
   border-radius: 12px; padding: 22px 24px;
-  background: linear-gradient(160deg, #16202c 0%, #0f1f2e 100%);
+  /* One step below --navy-pin so the tile keeps an edge on the dark band. */
+  background: linear-gradient(160deg, #0f1c29 0%, #0a1522 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 48px -28px rgba(0, 0, 0, 0.6);
   display: flex; flex-direction: column; justify-content: space-between;
@@ -2991,7 +2996,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 .dp-cr-hero .crumb .crumb-link:hover,
-.dp-cr-hero .crumb .crumb-link:focus {
+.dp-cr-hero .crumb .crumb-link:focus-visible {
   color: #fff;
   text-decoration-color: #fff;
 }
@@ -3025,15 +3030,17 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; overflow: hidden;
   max-width: 620px;
 }
-.dp-cr-facts > div { background: rgba(253, 252, 248, 0.96); padding: 12px 14px; min-width: 0; }
+/* Opaque paper: at 0.96 over navy the #6b7178 labels measured 4.48:1 (UX review, 4 Oct 2026). */
+.dp-cr-facts > div { background: #fdfcf8; padding: 12px 14px; min-width: 0; }
 /* Literal ink, not var(--ink): the tile surface is literal paper on both
    themes, and the dark theme's inverted --ink would be light-on-light. */
-.dp-cr-facts dt { font-size: 10px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: #6b7178; margin: 0 0 4px; }
+.dp-cr-facts dt { font-size: 11px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: #6b7178; margin: 0 0 4px; }
 .dp-cr-facts dd {
   margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.3px;
   font-variant-numeric: tabular-nums; color: #1f2328; overflow-wrap: break-word;
 }
 .dp-cr-facts dd small { display: block; font-size: 12px; font-weight: 500; color: #6b7178; }
+.dp-cr-facts dd.is-date { font-size: 14px; letter-spacing: -0.2px; } /* "17 September 2026" (house format) in a 130px tile */
 .dp-cr-facts dd.is-unverified { color: #6b7178; font-style: italic; font-weight: 500; }
 .dp-cr-byline { margin: 0 0 24px; }
 
@@ -3796,7 +3803,7 @@ html * {
 [data-theme="dark"] .dp-band-green,
 [data-theme="dark"] .dp-feature-card,
 [data-theme="dark"] .dp-nav-live-strip {
-  background: #16202c;
+  background: var(--navy-pin);
 }
 /* The feat-arrow is white-circle + var(--navy) glyph; inverted --navy is
    near-white in dark mode — pin the glyph to the dark surface colour. */
@@ -3831,26 +3838,25 @@ html * {
 @media (prefers-reduced-motion: no-preference) {
   /* Hero entrance — staggered rise of kicker, headline, lede, CTAs. */
   .hp-hero-text > * {
-    animation: dp-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: dp-rise 0.7s var(--dp-ease) both;
   }
   .hp-hero-text > :nth-child(2) { animation-delay: 0.08s; }
   .hp-hero-text > :nth-child(3) { animation-delay: 0.16s; }
   .hp-hero-text > :nth-child(4) { animation-delay: 0.24s; }
   .hp-hero-text > :nth-child(5) { animation-delay: 0.32s; }
-  .hp-hero h1 em {
-    display: inline-block;
-    animation: dp-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
-  }
+  /* The h1 already rises; a second rise on its <em> compounded the two
+     (motion audit F9). The LCP image fades briefly with no delay (F10). */
   .hp-hero-media {
-    animation: dp-fade 1s ease-out 0.2s both;
+    animation: dp-fade 0.4s ease-out both;
   }
 
   /* Scroll reveal — only once the module has marked the page. */
   .dp-motion .dp-reveal {
     opacity: 0;
     transform: translateY(18px);
-    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 0.5s var(--dp-ease), transform 0.5s var(--dp-ease);
+    /* --dp-i is the element's index within the batch that entered the
+       viewport together (0–3), never its position in the DOM (audit F2). */
     transition-delay: calc(var(--dp-i, 0) * 60ms);
   }
   .dp-motion .dp-reveal.is-in {
@@ -3858,39 +3864,40 @@ html * {
     transform: none;
   }
 
-  /* Lift on hover for directory tiles and tool cards. */
-  .dp-dir-tile, .dp-tool {
-    transition: border-color 0.15s, transform 0.2s ease, box-shadow 0.2s ease;
+  /* Lift on hover — declared once for directory tiles, tool cards and the
+     homepage picks (audit F6: the same rule had three copies). */
+  .dp-dir-tile, .dp-tool, .hp-pick {
+    transition: border-color 0.15s, transform 0.2s var(--dp-ease-hover), box-shadow 0.2s var(--dp-ease-hover);
   }
-  .dp-dir-tile:hover, .dp-tool:hover {
+  .dp-dir-tile:hover, .dp-tool:hover, .hp-pick:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px -16px rgba(15, 42, 68, 0.45);
   }
 
-  /* Shine sweep across the primary hero CTA. */
+  /* The primary hero CTA keeps its once-only load shimmer (::before, below)
+     and the 1px lift. The hover sweep that sat on ::after is gone: three
+     motions on one button, and it swept back on mouse-out (audit F7, F8). */
   .hp-hero-cta:not(.is-ghost) {
     position: relative;
     overflow: hidden;
   }
-  .hp-hero-cta:not(.is-ghost)::after {
-    content: "";
-    position: absolute; inset: 0;
-    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.22) 50%, transparent 70%);
-    transform: translateX(-120%);
-    transition: transform 0.7s ease;
-    pointer-events: none;
-  }
-  .hp-hero-cta:not(.is-ghost):hover::after { transform: translateX(120%); }
 }
 
 /* Cursor spotlight — a soft gold glow that follows the pointer across a
-   tile. Pointer devices only; --dp-mx/--dp-my are set by the module. */
+   tile. Pointer devices only; --dp-mx/--dp-my are set by the module.
+   Drawn by a ::after moved with transform, so each pointermove is a
+   compositor update, not a background repaint (audit F5). */
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .dp-dir-tile, .dp-tool {
-    background-image: radial-gradient(
-      220px circle at var(--dp-mx, -300px) var(--dp-my, -300px),
-      rgba(184, 132, 42, 0.12), transparent 70%);
+  .dp-dir-tile, .dp-tool { position: relative; overflow: hidden; }
+  .dp-dir-tile::after, .dp-tool::after {
+    content: ""; position: absolute; top: 0; left: 0;
+    width: 220px; height: 220px; margin: -110px 0 0 -110px;
+    border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle, rgba(184, 132, 42, 0.12), transparent 70%);
+    transform: translate(var(--dp-mx, -300px), var(--dp-my, -300px));
+    opacity: 0; transition: opacity 0.15s;
   }
+  .dp-dir-tile:hover::after, .dp-tool:hover::after { opacity: 1; }
 }
 
 /* Figures keep their width while a ticker counts up. */
@@ -3939,6 +3946,7 @@ html * {
   transition: border-color 0.15s, color 0.15s, transform 0.15s;
 }
 .dp-carousel-btn:hover { border-color: var(--green); color: var(--green); }
+.dp-carousel-btn:active:not(:disabled) { transform: scale(0.96); }
 .dp-carousel-btn:disabled { opacity: 0.35; cursor: default; }
 .dp-carousel-btn[hidden] { display: none; }
 
@@ -3966,14 +3974,19 @@ html * {
   .has-peek:hover .dp-peek, .has-peek:focus-visible .dp-peek { display: block; }
 }
 @media (prefers-reduced-motion: no-preference) and (hover: hover) {
-  .has-peek:hover .dp-peek, .has-peek:focus-visible .dp-peek { animation: dp-rise 0.22s ease-out both; }
+  .has-peek:hover .dp-peek, .has-peek:focus-visible .dp-peek { animation: dp-rise 0.22s var(--dp-ease) both; }
 }
 
 /* ── Phase 3 motion: hero drift, gold shimmer, mobile-menu stagger ──── */
 @media (prefers-reduced-motion: no-preference) {
-  /* A slow gold/navy light drifts across the hero band (18s loop). */
-  /* Plays once and settles — WCAG 2.2.2 forbids an uncontrolled loop > 5 s. */
-  .hp-hero::before, .dp-cr-hero::before { animation: dp-drift 14s ease-out 1 forwards; }
+  /* A slow gold/navy light drifts across the homepage hero once (14 s) and
+     settles. WCAG 2.2.2 covers any motion lasting > 5 s alongside content;
+     the brief records why this one is kept (a 12% translate of a soft
+     gradient, below the threshold at which it reads as movement).
+     The card review gets the short, translate-only variant: a reader opens
+     several reviews a session (audit F11; UX review 4 Oct 2026). */
+  .hp-hero::before { animation: dp-drift 14s ease-out 1 forwards; }
+  .dp-cr-hero::before { animation: dp-drift-soft 4.5s ease-out 1 forwards; }
 
   /* Continuous soft sheen on the gold CTA; the hover sweep sits on top. */
   .hp-hero-cta:not(.is-ghost)::before {
@@ -3985,25 +3998,18 @@ html * {
     pointer-events: none;
   }
 
-  /* Mobile menu: rows rise in one after another when the overlay opens. */
-  /* :not(input) — the expand checkboxes are hidden with opacity: 0, and a
-     filled animation would override that and draw them. */
-  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :not(input) {
-    animation: dp-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(2):not(input) { animation-delay: 0.04s; }
-  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(3):not(input) { animation-delay: 0.08s; }
-  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(4):not(input) { animation-delay: 0.12s; }
-  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(5):not(input) { animation-delay: 0.16s; }
-  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(6):not(input) { animation-delay: 0.20s; }
-  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(7):not(input) { animation-delay: 0.24s; }
-  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(n+8):not(input) { animation-delay: 0.28s; }
-  .dp-nav-overlay { transition-duration: 0.32s; transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+  /* The mobile menu's staggered row entrance and backdrop blur were removed
+     on 4 Oct 2026 (motion audit F12, F13): navigation is a daily utility and
+     opens from the keyboard too, so the panel slide (Header.astro) is the
+     one orientation cue. */
 }
-.dp-nav-backdrop { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 @keyframes dp-drift {
   from { transform: translate3d(-6%, -4%, 0) scale(1); }
   to   { transform: translate3d(6%, 5%, 0) scale(1.12); }
+}
+@keyframes dp-drift-soft {
+  from { transform: translate3d(-4%, -3%, 0) scale(1); }
+  to   { transform: translate3d(4%, 3%, 0) scale(1.04); }
 }
 @keyframes dp-shimmer {
   0%   { background-position: 120% 0; }

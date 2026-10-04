@@ -40,6 +40,15 @@ current idiom stays in force until each phase ships).
    strategy rows, Editor's picks carousel (L3 `tier` editors-pick/strong,
    L2 figures), outlined footer wordmark, mobile-menu stagger. Remaining:
    S3–S8 restyle to the A+B board.
+   **Motion audit, 4 October** (`.council/research/2026-10/motion-audit-
+   2026-10-04.md`, `design-motion-principles` AUDIT mode): 15 findings, all
+   applied the same day — reveal made opt-in (`data-reveal`) so no prose
+   section is ever hidden, batch stagger, transform-driven spotlight, hover
+   sweep and mobile-menu stagger removed, backdrop blur removed, one easing
+   token pair. The homepage hero's 14 s drift is kept against the audit's
+   letter: it is a 12% translate of a soft gradient that plays once, below
+   the level at which it reads as movement, on the one surface the skill
+   preamble licenses for showpiece motion. Card reviews get a 4.5 s variant.
 4. **Card review template** — shipped 4 October: ledger tile replaces the
    CSS card-face mock and its per-issuer tints (trial findings 4 and 19,
    resolved on the house palette rather than by ruling); breadcrumb nav;
@@ -50,6 +59,12 @@ current idiom stays in force until each phase ships).
    still never passed a score; precedent-setting, Chairman) and 11/13–15
    (byline wording done; HeroImage credit size, StockImage label
    placement and scrim colour untouched).
+   **Head of UX Stage 5.5, 4 October** (`.council/research/2026-10/head-of-
+   ux-review-phase4-card-review-2026-10-04.md`): pass-with-edits; the edits
+   (opaque tile surface for label contrast, house date format, "None" for
+   0% FX, JSON-LD breadcrumb aligned to the visible trail, `--navy-pin`)
+   shipped in the follow-up the same day. Trial finding 1 (the verdict pill
+   is never passed a score) remains the one open kill-list item: Chairman.
 5. **Directories, guides, news** — template by template.
 
 ## Guardrails

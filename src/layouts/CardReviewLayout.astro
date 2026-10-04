@@ -253,7 +253,12 @@ const schema = {
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
         { "@type": "ListItem", position: 2, name: "Cards", item: `${siteUrl}/cards/` },
-        { "@type": "ListItem", position: 3, name: cardName, item: canonicalUrl },
+        // Mirrors the visible trail (Cards → bank → this page); the bank
+        // step is omitted when the issuer has no hub.
+        ...(bankSlug
+          ? [{ "@type": "ListItem", position: 3, name: bankName, item: `${siteUrl}/banks/${bankSlug}/` },
+             { "@type": "ListItem", position: 4, name: cardName, item: canonicalUrl }]
+          : [{ "@type": "ListItem", position: 3, name: cardName, item: canonicalUrl }]),
       ],
     },
   ],
@@ -345,10 +350,12 @@ const schema = {
           <dd class={fxFeeProvenance === "needs-review" ? "is-unverified" : ""}>
             {fxFeeProvenance === "needs-review"
               ? <><span aria-hidden="true">—</span><span class="sr-only">not yet verified</span></>
+              : fxFee === 0
+              ? "None"
               : `${fxFee.toFixed(2)}%`}
           </dd>
         </div>
-        <div><dt>Verified</dt><dd>{lastVerified.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</dd></div>
+        <div><dt>Verified</dt><dd class="is-date">{fmt(lastVerified)}</dd></div>
       </dl>
     </div>
   </header>

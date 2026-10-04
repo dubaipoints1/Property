@@ -794,9 +794,11 @@ const publicationRows: SubRow[] = [
   position: fixed; inset: 0;
   background: rgba(13, 17, 25, 0.55);
   opacity: 0; pointer-events: none;
-  transition: opacity 0.2s ease;
+  /* visibility, not display: a display flip in the same rule cancelled the
+     fade both ways (motion audit F13). */
+  visibility: hidden;
+  transition: opacity 0.15s ease, visibility 0s linear 0.15s;
   z-index: 200;
-  display: none;
 }
 .dp-nav-overlay {
   position: fixed; inset: 0;
@@ -805,17 +807,21 @@ const publicationRows: SubRow[] = [
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   transform: translateX(-100%);
-  transition: transform 0.25s cubic-bezier(.2,.7,.3,1);
+  /* The one declaration of the slide (global.css no longer overrides it).
+     Exit is shorter than enter, below. */
+  transition: transform 0.28s var(--dp-ease);
   display: flex;
   flex-direction: column;
 }
 
 .dp-nav-toggle:checked ~ .dp-nav-backdrop {
-  opacity: 1; pointer-events: auto; display: block;
+  opacity: 1; pointer-events: auto; visibility: visible;
+  transition: opacity 0.15s ease;
 }
 .dp-nav-toggle:checked ~ .dp-nav-overlay {
   transform: translateX(0);
 }
+.dp-nav-toggle:not(:checked) ~ .dp-nav-overlay { transition-duration: 0.2s; }
 
 /* Body scroll lock — :has() + fallback */
 :global(html:has(.dp-nav-toggle:checked)) { overflow: hidden; }
