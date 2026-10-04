@@ -2891,16 +2891,32 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   padding: 48px 32px;
   display: grid; grid-template-columns: 280px 1fr; gap: 40px;
   align-items: center;
+  position: relative; overflow: hidden;
 }
+/* Phase 4 (4 Oct 2026): same drifting gold/navy light as the homepage
+   hero; the animation lives in the motion layer and is off under
+   reduced motion. */
+.dp-cr-hero::before {
+  content: ""; position: absolute; inset: -20%; pointer-events: none;
+  background:
+    radial-gradient(45% 55% at 80% 15%, rgba(184, 132, 42, 0.26), transparent 62%),
+    radial-gradient(40% 50% at 10% 90%, rgba(143, 179, 204, 0.2), transparent 60%);
+}
+.dp-cr-hero > * { position: relative; z-index: 1; }
+/* The global focus ring is --green, which is this band's navy. */
+.dp-cr-hero :is(a, button):focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 3px; }
 @media (max-width: 768px) {
   .dp-cr-hero {
-    grid-template-columns: 1fr; gap: 24px; padding: 32px 22px;
+    /* minmax(0,1fr): a bare 1fr keeps the fact grid's min-content width
+       and the fourth tile is clipped by the band's overflow: hidden. */
+    grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 32px 22px;
   }
+  .dp-cr-hero .dp-cr-text { min-width: 0; }
   /* Reorder: text-block (crumb / h1 / verdict pill / strap) renders
      before the card-art mock on mobile so the verdict surfaces in the
      first viewport. UX kill-list rule 2 (buried verdicts). */
   .dp-cr-hero .dp-cr-text { order: 0; }
-  .dp-cr-hero .dp-cr-mock,
+  .dp-cr-hero .dp-cr-tile,
   .dp-cr-hero .dp-cr-photo { order: 1; max-width: 100%; }
 }
 
@@ -2936,103 +2952,37 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   font-family: var(--font-display); font-weight: 600;
   font-size: 18px; letter-spacing: -0.3px; line-height: 1.2;
 }
-.dp-cr-mock {
-  aspect-ratio: 1.586 / 1;
-  background: linear-gradient(135deg, #0a2540 0%, #06182d 100%);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 14px;
-  padding: 18px;
+/* Ledger tile (Phase 4, 4 Oct 2026). Replaces the CSS card-face mock and
+   its per-issuer tints: the mock read as a product image (2026-07-29
+   documentation line) and the tints were third hues (2026-07-25, R1).
+   Same three facts, on the house palette. */
+.dp-cr-tile {
+  aspect-ratio: 1.586 / 1; width: 100%; max-width: 320px;
+  border-radius: 12px; padding: 22px 24px;
+  background: linear-gradient(160deg, #16202c 0%, #0f1f2e 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 24px 48px -28px rgba(0, 0, 0, 0.6);
   display: flex; flex-direction: column; justify-content: space-between;
-  color: white; position: relative; overflow: hidden;
-  max-width: 360px;
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.06) inset,
-    0 12px 32px rgba(0,0,0,0.18);
+  color: #fff;
 }
-.dp-cr-mock::before {
-  content: ''; position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    135deg, transparent 0 22px, rgba(255,255,255,0.04) 22px 23px
-  );
-  pointer-events: none;
+.dp-cr-tile .b {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold-lift);
 }
-.dp-cr-mock::after {
-  content: ''; position: absolute;
-  width: 180px; height: 180px;
-  right: -40px; top: -40px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.10), transparent 60%);
-  pointer-events: none;
+.dp-cr-tile .n {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(20px, 2.2vw, 26px); line-height: 1.15; letter-spacing: -0.3px;
+  text-wrap: balance;
 }
-.dp-cr-mock .b {
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  opacity: 0.78; position: relative; align-self: flex-start;
-}
-.dp-cr-mock .n {
-  font-family: var(--font-display); font-weight: 600;
-  font-size: 20px; letter-spacing: -0.3px;
-  position: relative; text-wrap: balance;
-}
-.dp-cr-mock .dp-cr-mock-row {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  position: relative;
-}
-.dp-cr-mock-chip {
-  width: 38px; height: 28px;
-  background: linear-gradient(135deg, #d9b465 0%, #b8842a 100%);
-  border-radius: 5px;
-  position: relative;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,0.10) inset,
-    0 1px 2px rgba(0,0,0,0.3);
-}
-.dp-cr-mock-chip::before {
-  content: ''; position: absolute; inset: 4px 6px;
-  background:
-    linear-gradient(to bottom, transparent 33%, rgba(0,0,0,0.18) 33%, rgba(0,0,0,0.18) 35%, transparent 35%, transparent 65%, rgba(0,0,0,0.18) 65%, rgba(0,0,0,0.18) 67%, transparent 67%),
-    linear-gradient(to right, transparent 48%, rgba(0,0,0,0.18) 48%, rgba(0,0,0,0.18) 52%, transparent 52%);
-}
-.dp-cr-mock-mark {
-  font-family: var(--font-ui);
-  font-weight: 700; font-size: 22px;
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.10);
-  display: inline-flex; align-items: center; justify-content: center;
-  letter-spacing: 0;
-  color: rgba(255,255,255,0.92);
-}
-
-/* Per-issuer tints — applied via [data-bank] selector. Default falls back
-   to the navy gradient set on .dp-cr-mock. Slugs match cards.json (`bank`
-   field): today that's `emirates-nbd` and `fab`. Short-form aliases
-   (`enbd`, `scb`, etc.) are kept for forward compatibility with any
-   future short-slug migration. */
-.dp-cr-mock[data-bank="fab"],
-.dp-cr-mock[data-bank="first-abu-dhabi-bank"]      { background: linear-gradient(135deg, #0d3b6c 0%, #1a1a2e 100%); }
-.dp-cr-mock[data-bank="enbd"],
-.dp-cr-mock[data-bank="emirates-nbd"]              { background: linear-gradient(135deg, #a30016 0%, #1a1a1e 100%); }
-.dp-cr-mock[data-bank="mashreq"]                   { background: linear-gradient(135deg, #e36d12 0%, #1c1310 100%); }
-.dp-cr-mock[data-bank="adcb"]                      { background: linear-gradient(135deg, #a90b15 0%, #2a1f1a 100%); }
-.dp-cr-mock[data-bank="hsbc"]                      { background: linear-gradient(135deg, #db0011 0%, #1a0405 100%); }
-.dp-cr-mock[data-bank="dib"],
-.dp-cr-mock[data-bank="dubai-islamic-bank"]        { background: linear-gradient(135deg, #0d6a35 0%, #0a1a14 100%); }
-.dp-cr-mock[data-bank="adib"],
-.dp-cr-mock[data-bank="abu-dhabi-islamic-bank"]    { background: linear-gradient(135deg, #13513a 0%, #0a1a14 100%); }
-.dp-cr-mock[data-bank="liv"]                       { background: linear-gradient(135deg, #00bfb3 0%, #002a2a 100%); }
-.dp-cr-mock[data-bank="rakbank"]                   { background: linear-gradient(135deg, #b9051a 0%, #1c0a0d 100%); }
-.dp-cr-mock[data-bank="cbd"],
-.dp-cr-mock[data-bank="commercial-bank-of-dubai"]  { background: linear-gradient(135deg, #003d7a 0%, #1a1a2e 100%); }
-.dp-cr-mock[data-bank="standard-chartered"],
-.dp-cr-mock[data-bank="scb"]                       { background: linear-gradient(135deg, #0e7a47 0%, #0a1a14 100%); }
-.dp-cr-mock[data-bank="citi"],
-.dp-cr-mock[data-bank="citibank"]                  { background: linear-gradient(135deg, #056dae 0%, #0a1a2e 100%); }
+.dp-cr-tile .b:last-child { color: rgba(255, 255, 255, 0.6); }
 
 .dp-cr-hero .crumb {
   color: rgba(255,255,255,0.6);
   font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
   font-weight: 600; margin-bottom: 12px;
 }
+.dp-cr-hero .crumb ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 6px; }
+.dp-cr-hero .crumb li + li::before { content: "/"; margin-right: 6px; color: rgba(255,255,255,0.35); }
 .dp-cr-hero .crumb .crumb-link {
   color: rgba(255,255,255,0.85);
   text-decoration: underline;
@@ -3066,6 +3016,26 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   font-size: 18px; font-weight: 500;
   color: white;
 }
+/* Fact tiles on the band — Stripe-style tabular numerics on near-white
+   surfaces (design-references/stripe, body-tabular). */
+.dp-cr-facts {
+  margin: 4px 0 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
+  gap: 1px; background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; overflow: hidden;
+  max-width: 620px;
+}
+.dp-cr-facts > div { background: rgba(253, 252, 248, 0.96); padding: 12px 14px; min-width: 0; }
+/* Literal ink, not var(--ink): the tile surface is literal paper on both
+   themes, and the dark theme's inverted --ink would be light-on-light. */
+.dp-cr-facts dt { font-size: 10px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: #6b7178; margin: 0 0 4px; }
+.dp-cr-facts dd {
+  margin: 0; font-size: 19px; font-weight: 600; letter-spacing: -0.3px;
+  font-variant-numeric: tabular-nums; color: #1f2328; overflow-wrap: break-word;
+}
+.dp-cr-facts dd small { display: block; font-size: 12px; font-weight: 500; color: #6b7178; }
+.dp-cr-facts dd.is-unverified { color: #6b7178; font-style: italic; font-weight: 500; }
+.dp-cr-byline { margin: 0 0 24px; }
 
 .dp-verdict-pill {
   display: inline-flex; align-items: center; gap: 14px;
@@ -3113,7 +3083,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 
 .dp-cr-aside { display: flex; flex-direction: column; gap: 24px; }
 @media (min-width: 1024px) {
-  .dp-cr-aside { position: sticky; top: 32px; align-self: flex-start; }
+  .dp-cr-aside { position: sticky; top: 96px; align-self: flex-start; } /* header is 80px at ≥1024 */
 }
 
 .dp-spec-card {
@@ -3122,18 +3092,44 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   border-radius: 16px;
   padding: 22px;
 }
-.dp-spec-card h3 {
+.dp-spec-card h2, .dp-spec-card h3 {
   font-family: var(--font-ui);
   font-size: 11px; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--green);
   margin: 0 0 16px; font-weight: 700;
 }
+.dp-spec-rows { margin: 0; }
 .dp-spec-row {
-  display: flex; justify-content: space-between;
+  display: flex; justify-content: space-between; gap: 12px;
   padding: 10px 0;
   border-bottom: 1px solid var(--line-soft);
   font-size: 13px;
 }
+.dp-spec-row .k, .dp-spec-row .v { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.dp-spec-row .v { text-align: right; }
+.dp-spec-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.dp-spec-list li { font-size: 13px; color: var(--ink-soft); line-height: 1.5; padding-left: 14px; position: relative; }
+.dp-spec-list .mark { position: absolute; left: 0; color: var(--green); font-weight: 700; }
+/* Head-to-head links (was unstyled since the 2026-09-06 F-013 fix). */
+.dp-cr-matchups {
+  max-width: var(--container-listing); margin: 0 auto; padding: 0 32px 56px;
+}
+.dp-cr-matchups h2 {
+  font-family: var(--font-display); font-weight: 500; font-size: 26px;
+  letter-spacing: -0.4px; margin: 0 0 16px; padding-bottom: 12px; border-bottom: 1px solid var(--ink);
+}
+.dp-cr-matchups ul {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;
+}
+.dp-cr-matchups li {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 16px 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper);
+}
+.dp-cr-matchups li a { font-weight: 700; color: var(--ink); text-decoration: none; }
+.dp-cr-matchups li a:hover { color: var(--green); }
+.dp-cr-matchups li span { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+@media (max-width: 640px) { .dp-cr-matchups { padding: 0 16px 40px; } }
 .dp-spec-row:last-child { border-bottom: 0; }
 .dp-spec-row .k { color: var(--ink-soft); }
 .dp-spec-row .v {
@@ -3977,7 +3973,7 @@ html * {
 @media (prefers-reduced-motion: no-preference) {
   /* A slow gold/navy light drifts across the hero band (18s loop). */
   /* Plays once and settles — WCAG 2.2.2 forbids an uncontrolled loop > 5 s. */
-  .hp-hero::before { animation: dp-drift 14s ease-out 1 forwards; }
+  .hp-hero::before, .dp-cr-hero::before { animation: dp-drift 14s ease-out 1 forwards; }
 
   /* Continuous soft sheen on the gold CTA; the hover sweep sits on top. */
   .hp-hero-cta:not(.is-ghost)::before {
