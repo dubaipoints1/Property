@@ -168,6 +168,28 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
          nothing is hidden until this has run. -->
     <script>
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      // Carousel prev/next: buttons stay hidden until wired, so no-JS readers
+      // get a plain swipeable row with nothing inert on it. Not motion, so it
+      // runs under reduced motion too (with instant scrolling).
+      document.querySelectorAll("[data-carousel]").forEach((track) => {
+        const section = track.closest("section") ?? track.parentElement;
+        const prev = section?.querySelector("[data-carousel-prev]") as HTMLButtonElement | null;
+        const next = section?.querySelector("[data-carousel-next]") as HTMLButtonElement | null;
+        if (!prev || !next) return;
+        const el = track as HTMLElement;
+        const page = () => Math.max(el.clientWidth * 0.8, 240);
+        const sync = () => {
+          prev.disabled = el.scrollLeft <= 2;
+          next.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
+        };
+        prev.hidden = next.hidden = false;
+        prev.addEventListener("click", () => el.scrollBy({ left: -page(), behavior: reduced ? "auto" : "smooth" }));
+        next.addEventListener("click", () => el.scrollBy({ left: page(), behavior: reduced ? "auto" : "smooth" }));
+        el.addEventListener("scroll", sync, { passive: true });
+        window.addEventListener("resize", sync, { passive: true });
+        sync();
+      });
+
       if (!reduced && "IntersectionObserver" in window) {
         document.documentElement.classList.add("dp-motion");
 
@@ -206,7 +228,9 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
             const dur = 900;
             const step = (now: number) => {
               const p = Math.min((now - t0) / dur, 1);
-              el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3))).toLocaleString("en-US");
+              const v = Math.round(end * (1 - Math.pow(1 - p, 3)));
+              // Never paint "0" over the server-rendered figure on frame one.
+              if (v > 0) el.textContent = v.toLocaleString("en-US");
               if (p < 1) requestAnimationFrame(step);
             };
             requestAnimationFrame(step);
@@ -214,35 +238,20 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
         });
         document.querySelectorAll("[data-count]").forEach((el) => tick.observe(el));
 
-        // Carousel prev/next: buttons stay hidden until wired, so no-JS
-        // readers get a plain swipeable row with nothing inert on it.
-        document.querySelectorAll("[data-carousel]").forEach((track) => {
-          const section = track.closest("section") ?? track.parentElement;
-          const prev = section?.querySelector("[data-carousel-prev]") as HTMLButtonElement | null;
-          const next = section?.querySelector("[data-carousel-next]") as HTMLButtonElement | null;
-          if (!prev || !next) return;
-          const el = track as HTMLElement;
-          const page = () => Math.max(el.clientWidth * 0.8, 240);
-          const sync = () => {
-            prev.disabled = el.scrollLeft <= 2;
-            next.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
-          };
-          prev.hidden = next.hidden = false;
-          prev.addEventListener("click", () => el.scrollBy({ left: -page(), behavior: "smooth" }));
-          next.addEventListener("click", () => el.scrollBy({ left: page(), behavior: "smooth" }));
-          el.addEventListener("scroll", sync, { passive: true });
-          window.addEventListener("resize", sync, { passive: true });
-          sync();
-        });
-
         // Cursor spotlight on tiles (pointer devices).
         if (window.matchMedia("(hover: hover)").matches) {
+          // One layout read per tile entered, not per pointermove.
+          let last: HTMLElement | null = null;
+          let rect: DOMRect | null = null;
+          const reset = () => { last = null; rect = null; };
+          window.addEventListener("scroll", reset, { passive: true });
+          window.addEventListener("resize", reset, { passive: true });
           document.addEventListener("pointermove", (ev) => {
             const tile = (ev.target as Element | null)?.closest?.(".dp-dir-tile, .dp-tool") as HTMLElement | null;
             if (!tile) return;
-            const r = tile.getBoundingClientRect();
-            tile.style.setProperty("--dp-mx", `${ev.clientX - r.left}px`);
-            tile.style.setProperty("--dp-my", `${ev.clientY - r.top}px`);
+            if (tile !== last || !rect) { last = tile; rect = tile.getBoundingClientRect(); }
+            tile.style.setProperty("--dp-mx", `${ev.clientX - rect.left}px`);
+            tile.style.setProperty("--dp-my", `${ev.clientY - rect.top}px`);
           }, { passive: true });
         }
       }

@@ -49,6 +49,8 @@ import {
   compareByWelcomeValue,
   annualFeeLabel,
   welcomeBonusHeadline,
+  isStructuredWelcomeBonus,
+  isBifurcatedWelcomeBonus,
 } from "~/lib/cardsDataFormat";
 import { getStockEntry } from "~/lib/stockManifest";
 import { getLiveOffers } from "~/lib/offerAdapter";
@@ -155,6 +157,13 @@ type ActiveCard = ReturnType<typeof getActiveCards>[number];
 const bankNameOf = (c: ActiveCard) =>
   allBanks.find((b) => b.id === c.bank)?.data.name ?? c.bank;
 
+// A welcome bonus is shown as a figure only when L2 holds a typed one;
+// free-text sentences (up to ~240 chars on some cards) stay on the review.
+const typedBonus = (v: unknown) =>
+  isStructuredWelcomeBonus(v as never) || isBifurcatedWelcomeBonus(v as never)
+    ? welcomeBonusHeadline(v as Parameters<typeof welcomeBonusHeadline>[0])
+    : null;
+
 // ── Redesign Phase 3 (4 Oct 2026) ─────────────────────────────────────
 // Editor's picks carousel: the L3 `tier` is the editor's own verdict
 // (editors-pick / strong), joined to L2 by slug. Figures below are L2.
@@ -174,7 +183,7 @@ const picks = cards
     bankName: bankNameOf(c),
     tier: TIER_LABEL[tierOf.get(c.slug) as string] ?? "",
     fee: annualFeeLabel(c),
-    bonus: welcomeBonusHeadline(c.welcomeBonus as Parameters<typeof welcomeBonusHeadline>[0]),
+    bonus: typedBonus(c.welcomeBonus),
     fx: typeof c.fxFee === "number" ? `${c.fxFee}%` : null,
     verified: new Date(c.lastVerified),
   }));
@@ -185,7 +194,7 @@ const peekFor = (slug: string) => {
   if (!c) return null;
   return {
     fee: annualFeeLabel(c),
-    bonus: welcomeBonusHeadline(c.welcomeBonus as Parameters<typeof welcomeBonusHeadline>[0]) || null,
+    bonus: typedBonus(c.welcomeBonus),
     fx: typeof c.fxFee === "number" ? `${c.fxFee}%` : null,
   };
 };
@@ -473,7 +482,7 @@ const dealRows = await Promise.all(
       <div class="hp-picks-head">
         <div>
           <span class="hp-band-eyebrow">Editor's picks</span>
-          <h2>Cards the desk rates.</h2>
+          <h2>Cards we rate.</h2>
         </div>
         <div class="dp-carousel-nav">
           <button type="button" class="dp-carousel-btn" data-carousel-prev aria-label="Previous cards" hidden>
@@ -769,9 +778,15 @@ const dealRows = await Promise.all(
      light and dark themes read the same here. */
   .hp-hero {
     position: relative; overflow: hidden;
-    background: var(--navy); color: #fff;
+    /* Literal navy, not var(--navy): that token inverts to pale blue in
+       the dark theme and the white copy here would land at 1.5:1. */
+    background: #1f3a4d; color: #fff;
     padding: 72px 32px 64px;
   }
+  :global([data-theme="dark"]) .hp-hero { background: #16202c; }
+  /* The global ring is --green, which equals this band's navy: invisible.
+     Dark-band controls must override locally (global.css, focus rules). */
+  .hp-hero :is(a, button):focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 3px; }
   .hp-hero::before {
     content: ""; position: absolute; inset: -20%; pointer-events: none;
     background:
@@ -794,7 +809,7 @@ const dealRows = await Promise.all(
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
-    color: #d9a441;
+    color: var(--gold-lift);
     margin-bottom: 18px;
   }
   .hp-hero-kicker .dot {
@@ -812,7 +827,7 @@ const dealRows = await Promise.all(
      Chairman direction (29 Aug 2026) in the primary accent. */
   .hp-hero h1 em {
     font-style: italic;
-    color: #d9a441;
+    color: var(--gold-lift);
     white-space: nowrap; /* keeps "Pay less" on one line without a &nbsp; that some readers join into one word (F-040) */
   }
   .hp-hero-lede {
@@ -832,13 +847,13 @@ const dealRows = await Promise.all(
     text-decoration: none;
     transition: background 0.15s, transform 0.15s;
   }
-  .hp-hero-cta:hover { background: #c9933a; transform: translateY(-1px); }
+  .hp-hero-cta:hover { background: var(--gold-hover); transform: translateY(-1px); }
   .hp-hero-cta.is-ghost {
     background: transparent; color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.4);
     padding: 13px 20px; font-weight: 600;
   }
-  .hp-hero-cta.is-ghost:hover { background: transparent; color: #d9a441; border-color: #d9a441; }
+  .hp-hero-cta.is-ghost:hover { background: transparent; color: var(--gold-lift); border-color: var(--gold-lift); }
   .hp-hero-micro {
     font-size: 12px; color: rgba(255, 255, 255, 0.6);
     margin: 14px 0 0;
@@ -964,11 +979,16 @@ const dealRows = await Promise.all(
   }
   .hp-pick-facts > span { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
   .hp-pick-facts small { color: var(--muted); font-size: 12px; }
-  .hp-pick-facts strong { font-weight: 700; text-align: right; }
+  .hp-pick-facts strong {
+    font-weight: 700; text-align: right;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
   .hp-pick-facts em { font-style: normal; font-weight: 400; color: var(--muted); font-size: 11px; }
   .hp-pick-foot { margin-top: auto; padding-top: 10px; font-size: 12px; font-weight: 600; color: var(--green); }
   @media (max-width: 640px) {
     .hp-picks { padding: 36px 20px 16px; }
+    /* Full-bleed track: the next card peeks past the 20px gutter on purpose. */
+    .hp-picks .dp-carousel { max-width: none; margin-inline: -20px; }
   }
 
   /* ── S2 tools band — sand surface ─────────────────────────────────── */

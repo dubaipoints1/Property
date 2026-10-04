@@ -97,6 +97,8 @@
      and Verified-badge colour; small text uses this shade of the same
      hue (2026-09-06 audit, F-004). Not a new hue: same family, darker. */
   --gold-ink:  #8a6118;
+  --gold-lift: #d9a441;          /* gold on navy (5.3:1): hero em, kicker, focus ring on dark bands */
+  --gold-hover:#c9933a;          /* gold CTA hover (ink text 5.8:1) */
   --brand:     #1a5fc6;          /* legacy alias to --link */
   --brand-deep:#154fa3;
   --brand-soft:#eef3fb;
@@ -1840,7 +1842,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   position: absolute;
   bottom: -22px; right: -10px;
   font-family: var(--font-display);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 140px;
   line-height: 0.85;
   letter-spacing: -6px;
@@ -1902,7 +1904,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin-bottom: 14px;
 }
 .dp-pagehead h1 {
-  font-family: var(--font-display); font-weight: 800;
+  font-family: var(--font-display); font-weight: 700;
   font-size: clamp(38px, 5vw, 56px);
   letter-spacing: -1.4px; line-height: 1;
   margin: 0 0 12px; color: var(--ink);
@@ -2992,7 +2994,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 }
 .dp-cr-mock-mark {
   font-family: var(--font-ui);
-  font-weight: 800; font-size: 22px;
+  font-weight: 700; font-size: 22px;
   width: 30px; height: 30px;
   border-radius: 50%;
   background: rgba(255,255,255,0.10);
@@ -3749,6 +3751,8 @@ html * {
      dark mode, so light text sat on it at 2.1:1 (2026-09-06 audit, F-003). */
   --gold-soft: #2e2a1c;
   --gold-ink:  #d9a85a;
+  --gold-lift: #d9a441;
+  --gold-hover:#c9933a;
 
   /* Signal and feedback tokens had NO dark values, so they kept their
      light-theme hues against the dark surface: --red at 3.3:1 on the "Our
@@ -3915,11 +3919,20 @@ html * {
   grid-auto-columns: min(300px, 78vw);
   gap: 16px;
   overflow-x: auto; overscroll-behavior-x: contain;
-  scroll-snap-type: x mandatory; scroll-padding-inline: 32px;
+  scroll-snap-type: x mandatory; scroll-padding-inline: var(--dp-carousel-gutter, 0px);
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  padding-inline: var(--dp-carousel-gutter, 0px);
 }
-.dp-carousel::-webkit-scrollbar { display: none; }
+/* The scrollbar is the one no-JS overflow cue for mouse users; hide it only
+   where the prev/next buttons stand in, and keep it under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .dp-carousel { scrollbar-width: none; }
+  .dp-carousel::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 640px) {
+  /* Full-bleed on phones: the next card peeks past the gutter on purpose. */
+  .dp-carousel { --dp-carousel-gutter: 20px; margin-inline: -20px; }
+}
 .dp-carousel-item { scroll-snap-align: start; }
 .dp-carousel-nav { display: flex; gap: 8px; }
 .dp-carousel-btn {
@@ -3945,12 +3958,13 @@ html * {
   background: var(--paper); color: var(--ink);
   border: 1px solid var(--line); border-radius: 8px;
   box-shadow: 0 18px 40px -18px rgba(15, 31, 46, 0.45);
-  font-size: 12px; font-weight: 500; text-align: left; white-space: nowrap;
+  max-width: 320px;
+  font-size: 12px; font-weight: 500; text-align: left; white-space: normal;
   pointer-events: none;
 }
 .dp-peek-row { display: flex; justify-content: space-between; gap: 18px; padding: 3px 0; }
 .dp-peek-row span { color: var(--muted); }
-.dp-peek-row strong { font-weight: 700; font-variant-numeric: tabular-nums; }
+.dp-peek-row strong { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; overflow-wrap: anywhere; }
 .dp-peek-more { display: block; margin-top: 8px; font-weight: 700; color: var(--green); }
 @media (hover: hover) {
   .has-peek:hover .dp-peek, .has-peek:focus-visible .dp-peek { display: block; }
@@ -3962,7 +3976,8 @@ html * {
 /* ── Phase 3 motion: hero drift, gold shimmer, mobile-menu stagger ──── */
 @media (prefers-reduced-motion: no-preference) {
   /* A slow gold/navy light drifts across the hero band (18s loop). */
-  .hp-hero::before { animation: dp-drift 18s ease-in-out infinite alternate; }
+  /* Plays once and settles — WCAG 2.2.2 forbids an uncontrolled loop > 5 s. */
+  .hp-hero::before { animation: dp-drift 14s ease-out 1 forwards; }
 
   /* Continuous soft sheen on the gold CTA; the hover sweep sits on top. */
   .hp-hero-cta:not(.is-ghost)::before {
@@ -3970,7 +3985,7 @@ html * {
     position: absolute; inset: 0;
     background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.28) 50%, transparent 80%);
     background-size: 250% 100%;
-    animation: dp-shimmer 3.2s ease-in-out infinite;
+    animation: dp-shimmer 2.4s ease-in-out 0.6s 1 both;
     pointer-events: none;
   }
 
@@ -3988,8 +4003,8 @@ html * {
   .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(7):not(input) { animation-delay: 0.24s; }
   .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(n+8):not(input) { animation-delay: 0.28s; }
   .dp-nav-overlay { transition-duration: 0.32s; transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
-  .dp-nav-backdrop { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 }
+.dp-nav-backdrop { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 @keyframes dp-drift {
   from { transform: translate3d(-6%, -4%, 0) scale(1); }
   to   { transform: translate3d(6%, 5%, 0) scale(1.12); }
