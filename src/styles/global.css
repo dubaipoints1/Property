@@ -3813,3 +3813,89 @@ html * {
     transition: none !important;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Motion layer — 2026-10-04 redesign, Phase 1 (A+B direction).
+   Patterns modelled on the animated libraries on 21st.dev (scroll reveal,
+   number ticker, cursor spotlight, CTA shine), rebuilt in house CSS + a
+   small vanilla module in BaseLayout.astro — no React, no animation lib.
+   Rules: transform/opacity only; everything is fully visible without JS
+   (the module adds .dp-motion to <html> before anything hides); and the
+   whole layer is off under prefers-reduced-motion.
+   ════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero entrance — staggered rise of kicker, headline, lede, CTAs. */
+  .hp-hero-text > * {
+    animation: dp-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .hp-hero-text > :nth-child(2) { animation-delay: 0.08s; }
+  .hp-hero-text > :nth-child(3) { animation-delay: 0.16s; }
+  .hp-hero-text > :nth-child(4) { animation-delay: 0.24s; }
+  .hp-hero-text > :nth-child(5) { animation-delay: 0.32s; }
+  .hp-hero h1 em {
+    display: inline-block;
+    animation: dp-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+  }
+  .hp-hero-media {
+    animation: dp-fade 1s ease-out 0.2s both;
+  }
+
+  /* Scroll reveal — only once the module has marked the page. */
+  .dp-motion .dp-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--dp-i, 0) * 60ms);
+  }
+  .dp-motion .dp-reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Lift on hover for directory tiles and tool cards. */
+  .dp-dir-tile, .dp-tool {
+    transition: border-color 0.15s, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .dp-dir-tile:hover, .dp-tool:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -16px rgba(15, 42, 68, 0.45);
+  }
+
+  /* Shine sweep across the primary hero CTA. */
+  .hp-hero-cta:not(.is-ghost) {
+    position: relative;
+    overflow: hidden;
+  }
+  .hp-hero-cta:not(.is-ghost)::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.22) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.7s ease;
+    pointer-events: none;
+  }
+  .hp-hero-cta:not(.is-ghost):hover::after { transform: translateX(120%); }
+}
+
+/* Cursor spotlight — a soft gold glow that follows the pointer across a
+   tile. Pointer devices only; --dp-mx/--dp-my are set by the module. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .dp-dir-tile, .dp-tool {
+    background-image: radial-gradient(
+      220px circle at var(--dp-mx, -300px) var(--dp-my, -300px),
+      rgba(184, 132, 42, 0.12), transparent 70%);
+  }
+}
+
+/* Figures keep their width while a ticker counts up. */
+[data-count] { font-variant-numeric: tabular-nums; }
+
+@keyframes dp-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes dp-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
