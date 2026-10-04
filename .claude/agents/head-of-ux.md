@@ -117,6 +117,11 @@ Reject layouts that do any of:
 4. Apply the kill-list. Each violation is a redline with a
    specific fix proposal (preferably visual: replace prose with
    list / callout / table / illustration).
+4a. If the brief touches a layout, component, island or
+   `global.css`, read `.claude/skills/web-design-guidelines/SKILL.md`
+   and review the changed source files against it. Its house
+   overrides are binding; route copy findings to the Standards
+   Editor and slug / nav / palette findings to the Chairman.
 5. Mark the draft `ux-status: pass`, `ux-status: pass-with-edits`,
    or `ux-status: fail` in the frontmatter.
 6. Hand annotated draft back to the section editor (if `fail`)
@@ -127,6 +132,8 @@ Reject layouts that do any of:
 1. Inventory every route in `src/pages/**`.
 2. Walk each route at 390px and 1280px.
 3. Score each on the three scannability questions + the kill-list.
+3a. Run the `web-design-guidelines` checklist over `src/layouts/`,
+   `src/components/` and `src/styles/global.css`.
 4. Produce a prioritised remediation list: P0 (broken), P1
    (text-heavy), P2 (could be sharper), P3 (nice-to-have).
 5. Hand to Managing Editor, who tickets the work to section
