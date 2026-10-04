@@ -1045,6 +1045,39 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-10-04 — Homepage hero carries no image caption; disclosure moves to the policy page
+
+On Chairman direction (4 October 2026), recorded verbatim as the basis of
+the ruling, against a screenshot of the caption row under the hero
+picture ("Illustration: generated with recraft-v3 via fal.ai · not a
+photograph", the picture dashes and the pause button): "What is that
+under the image make sure none of that exist and also make sure you have
+images that attract."
+
+**The rule.** The homepage hero slideshow renders **no caption, credit
+or label under the picture**. The 2026-07-29 amendment's labelling
+guarantee is met for that one surface in two other places: every hero
+image's manifest entry still carries `source: "ai-generated"`, the model
+and the full prompt (the provenance record is untouched), and
+`/editorial-policy/` names the homepage hero pictures as AI
+illustrations in its image-provenance paragraph. The slideshow's stop
+mechanism (WCAG 2.2.2) is the picture dashes themselves: choosing one
+stops the automatic change; hover, focus, a hidden tab and
+`prefers-reduced-motion` stop it too.
+
+**Scope, and this is the load-bearing part.** This exemption is the
+homepage hero only. Everywhere else — article covers, guide heroes, card
+and bank pages — `StockImage.astro` keeps rendering the visible "not a
+photograph" label, and a missing label there remains a §10 kill. A real
+photograph (the Dubai night skyline that closes the set is a
+licensed Pexels photograph, not a render) needs no label anywhere.
+
+Recorded for the record: the session advised that the visible label was
+the amendment's stated guarantee and that this ruling narrows it. The
+Chairman directed the change regardless.
+
+— Chairman, 4 October 2026.
+
 ### 2026-10-04 — The site's look is open to a redesign; reference design systems permitted
 
 On Chairman direction (4 October 2026), recorded verbatim as the basis of

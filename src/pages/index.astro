@@ -146,13 +146,11 @@ const featureImg = intel[0] ? getStockEntry(intel[0].imageSlug) : undefined;
 // never a real card face, livery or person. Each entry carries its prompt
 // as provenance and the band renders the "not a photograph" label.
 // Falls back to the feature photo while the renders are still landing.
-const HERO_SLIDE_SLUGS = ["hero-card-desk", "hero-gate-dawn", "hero-window-coast", "hero-carry-on"];
+const HERO_SLIDE_SLUGS = ["hero-card-desk", "hero-gate-dawn", "hero-window-coast", "hero-dubai-night"];
 const heroSlides = HERO_SLIDE_SLUGS.map((slug) => getStockEntry(slug)).filter(
   (e): e is NonNullable<typeof e> => Boolean(e),
 );
 if (heroSlides.length === 0 && featureImg) heroSlides.push(featureImg);
-const heroAi = heroSlides.some((e) => e.source === "ai-generated");
-const heroGenerator = heroSlides.find((e) => e.source === "ai-generated")?.generator;
 
 const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
 const flagshipProgramme =
@@ -418,25 +416,13 @@ const dealRows = await Promise.all(
               />
             ))}
           </div>
-          <div class="hp-hero-show-bar">
-            {heroAi ? (
-              <span class="hp-hero-label">Illustration: generated with {heroGenerator} · not a photograph</span>
-            ) : (
-              <span class="hp-hero-label">Image: {heroSlides[0].photographer}</span>
-            )}
-            {heroSlides.length > 1 && (
-              <div class="hp-hero-show-ctl">
-                <div class="hp-hero-dots" role="group" aria-label="Choose a picture">
-                  {heroSlides.map((img, i) => (
-                    <button type="button" data-hero-dot={i} aria-label={`Picture ${i + 1}: ${img.alt}`} aria-pressed={i === 0 ? "true" : "false"}></button>
-                  ))}
-                </div>
-                <button type="button" class="hp-hero-pause" data-hero-pause aria-pressed="false" aria-label="Pause the picture change">
-                  <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" fill="currentColor"/><rect x="9.5" y="2" width="3.5" height="12" fill="currentColor"/></svg>
-                </button>
-              </div>
-            )}
-          </div>
+          {heroSlides.length > 1 && (
+            <div class="hp-hero-dots" role="group" aria-label="Choose a picture (choosing one stops the automatic change)">
+              {heroSlides.map((img, i) => (
+                <button type="button" data-hero-dot={i} aria-label={`Picture ${i + 1}: ${img.alt}`} aria-pressed={i === 0 ? "true" : "false"}></button>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -469,16 +455,17 @@ const dealRows = await Promise.all(
   </header>
 
   <script>
-    // Hero slideshow. Pictures crossfade every 6 s; the change pauses on
-    // hover, on focus, while the tab is hidden, and on the pause button
-    // (WCAG 2.2.2 — auto-updating content needs a control). Under
-    // reduced motion nothing cycles; the dots still switch pictures by
-    // hand. No JS: the first picture shows and the controls are inert.
+    // Hero slideshow. Pictures crossfade every 4.5 s with a slow zoom; the
+    // change pauses on hover, on focus and while the tab is hidden, and
+    // choosing a picture by its dash stops it for good (the WCAG 2.2.2
+    // stop mechanism — Chairman direction, 4 Oct 2026, removed the pause
+    // button and the caption row). Under reduced motion nothing cycles;
+    // the dashes still switch pictures by hand. No JS: the first picture
+    // shows and the dashes are inert.
     const show = document.querySelector("[data-hero-show]") as HTMLElement | null;
     if (show) {
       const slides = Array.from(show.querySelectorAll<HTMLImageElement>("[data-hero-slide]"));
       const dots = Array.from(show.querySelectorAll<HTMLButtonElement>("[data-hero-dot]"));
-      const pause = show.querySelector<HTMLButtonElement>("[data-hero-pause]");
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       let i = 0;
       let paused = reduced;
@@ -493,22 +480,13 @@ const dealRows = await Promise.all(
         if (!paused && !hovered && !document.hidden) go(i + 1);
       };
       const start = () => {
-        if (slides.length > 1 && timer === undefined) timer = window.setInterval(tick, 6000);
+        if (slides.length > 1 && timer === undefined) timer = window.setInterval(tick, 4500);
       };
-      dots.forEach((d, k) => d.addEventListener("click", () => go(k)));
-      pause?.addEventListener("click", () => {
-        paused = !paused;
-        pause.setAttribute("aria-pressed", String(paused));
-        pause.setAttribute("aria-label", paused ? "Resume the picture change" : "Pause the picture change");
-      });
+      dots.forEach((d, k) => d.addEventListener("click", () => { paused = true; go(k); }));
       show.addEventListener("pointerenter", () => { hovered = true; });
       show.addEventListener("pointerleave", () => { hovered = false; });
       show.addEventListener("focusin", () => { hovered = true; });
       show.addEventListener("focusout", () => { hovered = false; });
-      if (reduced && pause) {
-        pause.setAttribute("aria-pressed", "true");
-        pause.setAttribute("aria-label", "Resume the picture change");
-      }
       start();
     }
   </script>
@@ -966,65 +944,57 @@ const dealRows = await Promise.all(
      render fade into the band so the object sits on the page, not in a
      frame (the reel's seamless look). Transform/opacity only. */
   .hp-hero-show { position: relative; }
+  /* Clean rounded frame with a soft drop shadow. A paper-coloured edge
+     vignette was tried and removed: on the night photograph it greyed the
+     edges into a murky frame (Chairman review, 4 Oct 2026). */
   .hp-hero-slides {
     position: relative; width: 100%; aspect-ratio: 4 / 3;
-    border-radius: 14px; overflow: hidden;
+    border-radius: 16px; overflow: hidden;
+    background: #0f1f2e;
+    box-shadow: 0 30px 60px -32px rgba(15, 31, 46, 0.55), 0 0 0 1px rgba(15, 31, 46, 0.06);
   }
-  /* Edge vignette to the band colour, so the render sits on the page
-     rather than in a frame; follows the theme because it is var(--paper). */
-  .hp-hero-slides::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    box-shadow: inset 0 0 72px 28px var(--paper);
-  }
+  /* Each picture arrives through a 1.6 s crossfade and keeps drifting in
+     (a slow 6% zoom over the whole dwell) so the hand-off reads as one
+     continuous motion rather than a slide change — the nearest CSS gets
+     to the reel's pour, which is a video. */
   .hp-hero-slides > img {
     position: absolute; inset: 0;
     width: 100%; height: 100%; object-fit: cover;
-    opacity: 0; transform: scale(1.03);
-    transition: opacity 1.1s var(--dp-ease), transform 7s linear;
+    opacity: 0; transform: scale(1);
+    transition: opacity 1.6s var(--dp-ease), transform 1.6s var(--dp-ease);
   }
-  .hp-hero-slides > img.is-active { opacity: 1; transform: scale(1); }
+  .hp-hero-slides > img.is-active {
+    opacity: 1; transform: scale(1.06);
+    transition: opacity 1.6s var(--dp-ease), transform 6.5s linear;
+  }
   :global([data-theme="dark"]) .hp-hero-slides > img { filter: brightness(0.88); }
-  .hp-hero-show-bar {
-    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
-    gap: 10px 16px;
-    margin-top: 6px;
+  /* Thin dashes over the foot of the picture, as in the reel. */
+  .hp-hero-dots {
+    position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+    display: flex; gap: 6px; z-index: 2;
   }
-  .hp-hero-label { font-size: 11px; color: var(--muted); }
-  .hp-hero-show-ctl { display: flex; align-items: center; gap: 10px; }
-  .hp-hero-dots { display: flex; gap: 6px; }
   .hp-hero-dots button {
-    width: 22px; height: 22px; padding: 0; border: 0; background: transparent; cursor: pointer;
+    width: 28px; height: 20px; padding: 0; border: 0; background: transparent; cursor: pointer;
     display: grid; place-items: center; touch-action: manipulation;
   }
   .hp-hero-dots button::before {
-    content: ""; width: 7px; height: 7px; border-radius: 50%;
-    background: var(--line);
+    content: ""; width: 22px; height: 2px; border-radius: 1px;
+    background: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 0 1px rgba(15, 31, 46, 0.12);
     transition: background 0.15s, transform 0.2s var(--dp-ease-hover);
   }
-  .hp-hero-dots button:hover::before { background: var(--muted); }
-  .hp-hero-dots button[aria-pressed="true"]::before { background: var(--gold); transform: scale(1.3); }
-  .hp-hero-pause {
-    width: 26px; height: 26px; padding: 0; border-radius: 50%;
-    border: 1px solid var(--line); background: transparent; color: var(--muted);
-    display: inline-grid; place-items: center; cursor: pointer; touch-action: manipulation;
-    transition: color 0.15s, border-color 0.15s;
-  }
-  .hp-hero-pause:hover { color: var(--ink); border-color: var(--muted); }
-  .hp-hero-pause[aria-pressed="true"] { color: var(--green); border-color: var(--green); }
-  .hp-hero-pause[aria-pressed="true"] svg { display: none; }
-  .hp-hero-pause[aria-pressed="true"]::before {
-    content: ""; width: 0; height: 0; margin-left: 2px;
-    border-left: 8px solid currentColor; border-top: 5px solid transparent; border-bottom: 5px solid transparent;
-  }
+  .hp-hero-dots button:hover::before { background: #fff; }
+  .hp-hero-dots button[aria-pressed="true"]::before { background: var(--gold-lift); transform: scaleY(1.5); }
+  .hp-hero-dots button:focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 2px; border-radius: 4px; }
   @media (prefers-reduced-motion: reduce) {
-    .hp-hero-slides > img { transition: none; transform: none; }
+    .hp-hero-slides > img, .hp-hero-slides > img.is-active { transition: none; transform: none; }
   }
   @media (max-width: 899px) {
     .hp-hero-show { margin-inline: -8px; }
   }
 
   /* ── S2b Editor's picks carousel (Phase 3) ────────────────────────── */
-  .hp-picks { padding: 48px 32px 24px; }
+  .hp-picks { padding: 48px 32px 24px; overflow-x: clip; } /* the full-bleed track at ≤640px otherwise adds 2px of page scroll at 360 (render audit, 4 Oct 2026) */
   .hp-picks-head,
   .hp-picks .dp-carousel {
     max-width: var(--container-listing);
