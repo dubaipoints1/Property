@@ -49,6 +49,29 @@ current idiom stays in force until each phase ships).
    letter: it is a 12% translate of a soft gradient that plays once, below
    the level at which it reads as movement, on the one surface the skill
    preamble licenses for showpiece motion. Card reviews get a 4.5 s variant.
+   **Hero slideshow, 4 October (Chairman direction, from a reel).** The
+   Chairman sent a screen recording of a coffee site whose hero is a large
+   product render on the left — cycling ice cube → glass → paper cup —
+   beside a serif headline on the right, on a light ground, with the
+   words "make dubaipoints like that. Maybe a credit card, traveller on a
+   plane or … whatever the team thinks fits". Built as: the hero band
+   moves from navy to paper, the picture takes the left column, the
+   headline the right, and four AI illustrations crossfade every 6 s
+   (`hero-card-desk`, `hero-gate-dawn`, `hero-window-coast`,
+   `hero-carry-on`; `gen-ai-image.yml`, recraft-v3, one credit each,
+   briefs per the art-direction SOP). What was not built, and why: no
+   traveller — a photorealistic invented person is on the 2026-07-29 ban
+   list, so the "traveller" reads as the empty gate and the window seat;
+   no real card face — the card is a plain unprinted navy slab. Every
+   slide carries the "not a photograph" label under it; the cycle pauses
+   on hover, focus, hidden tab and a pause button (WCAG 2.2.2), and does
+   not run under reduced motion (dots still switch by hand). Render
+   review: `hero-gate-dawn` came back with a model-invented gate sign and
+   was cropped to the left 72% and re-cut to 4:3 rather than re-rolled
+   (SOP §6); `hero-card-desk` carries an illegible glyph row on the card
+   and `hero-carry-on` a small generic crest on the suitcase — neither a
+   real mark, both flagged for the Chairman's eye; `hero-window-coast`
+   is clean.
 4. **Card review template** — shipped 4 October: ledger tile replaces the
    CSS card-face mock and its per-issuer tints (trial findings 4 and 19,
    resolved on the house palette rather than by ruling); breadcrumb nav;
