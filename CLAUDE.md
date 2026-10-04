@@ -232,6 +232,27 @@ npm run scrape:propose # merges latest data/scraped/<bank>/*.json into src/data/
 
 Run a single test file: `node --import tsx --test tests/scrape/_normaliser.test.ts`.
 
+## Claude Code automation (`.claude/`)
+
+Added 4 October 2026 from the `claude-code-setup` recommender:
+
+- **SessionStart** (`.claude/hooks/session-start.sh`): `npm install` in cloud
+  sessions only, so `check`, `test` and `build` work from the first turn.
+  Synchronous on purpose — a session never races an install.
+- **PreToolUse** (`guard-frozen.mjs`): refuses Edit/Write on
+  `data/monitor/monitors.json`, `data/news-monitor/state.json` (frozen
+  migration seeds) and `package-lock.json` (npm-generated). It does not see
+  shell writes; the rule in "The automation-state branch" still applies.
+- **PostToolUse** (`validate-cards.mjs`): after an edit to
+  `src/data/cards.json`, loads it through the real Zod schema in
+  `src/lib/cardsData.ts` (~0.5 s) and reports the failing field paths.
+- **Skills**: `/signoff` (PR sign-off block and tier), `/add-card` (L2 + L3
+  checklist), `web-design-guidelines` (UI code review).
+- **MCP**: `context7` in `.mcp.json` for current Astro 7 / Tailwind 4 docs.
+  `mcp.context7.com` is denied by the web environment's egress policy as of
+  4 October 2026, so it works from a workstation only until the host is
+  allowlisted.
+
 ## Audit harness (opt-in)
 
 Reproducible UI/UX, accessibility, performance and link probes live under
