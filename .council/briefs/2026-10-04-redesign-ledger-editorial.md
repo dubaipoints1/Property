@@ -40,9 +40,16 @@ current idiom stays in force until each phase ships).
    strategy rows, Editor's picks carousel (L3 `tier` editors-pick/strong,
    L2 figures), outlined footer wordmark, mobile-menu stagger. Remaining:
    S3–S8 restyle to the A+B board.
-4. **Card review template** — A+B treatment plus trial findings 3, 5–9,
-   12, 16–18, 20 (`.council/research/2026-10/web-design-guidelines-trial-
-   card-review-2026-10-04.md`).
+4. **Card review template** — shipped 4 October: ledger tile replaces the
+   CSS card-face mock and its per-issuer tints (trial findings 4 and 19,
+   resolved on the house palette rather than by ruling); breadcrumb nav;
+   four fact tiles on the band (annual fee, min salary, FX, verified);
+   aside as `<dl>` rows under `h2`s; perks without inline styles;
+   matchups styled; sticky offset 96px; gold focus ring. Trial findings 3,
+   5–10, 12, 16–20 closed. Open: finding 1 (the score/verdict pill is
+   still never passed a score; precedent-setting, Chairman) and 11/13–15
+   (byline wording done; HeroImage credit size, StockImage label
+   placement and scrim colour untouched).
 5. **Directories, guides, news** — template by template.
 
 ## Guardrails
