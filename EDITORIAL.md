@@ -68,8 +68,11 @@ homepage band switches to read from it.
 074d770) consolidated the previous two-idiom split. The single editorial
 language is:
 
-- **Type.** Fraunces (serif) for headlines, eyebrows, "Our take" labels,
-  and section heads. DM Sans for body, meta, and UI.
+- **Type.** Newsreader (serif) for headlines, eyebrows, "Our take" labels,
+  and section heads. Geist for body, meta, and UI. (Redesign Phase 2,
+  4 October 2026: replaced Fraunces + DM Sans; components read
+  `--font-display` / `--font-ui`, never a literal font name. Earlier
+  rulings below that name Fraunces now mean the display serif.)
 - **Palette.** CSS custom properties only — `--ink`, `--ink-soft`,
   `--paper`, `--bg`, `--line`, `--brand`, `--brand-deep`, `--brand-soft`,
   `--gold`, `--gold-soft`, `--red`, `--green`, `--muted`. No Tailwind

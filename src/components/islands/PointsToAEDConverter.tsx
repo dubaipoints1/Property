@@ -73,7 +73,7 @@ export default function PointsToAEDConverter({ programmes }: Props) {
         .dp-p2a label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--ink); }
         .dp-p2a .dp-calc-num { width: 100%; }
         .dp-p2a-out { margin: 12px 0 0; font-size: 15px; color: var(--ink-soft); font-feature-settings: 'tnum'; }
-        .dp-p2a-out strong { font-family: 'Fraunces', serif; font-size: 22px; color: var(--ink); }
+        .dp-p2a-out strong { font-family: var(--font-display); font-size: 22px; color: var(--ink); }
         .dp-p2a-note { margin: 6px 0 0; font-size: 11px; color: var(--muted); line-height: 1.5; }
         @media (max-width: 640px) { .dp-p2a { margin-left: 16px; margin-right: 16px; } }
       `}</style>

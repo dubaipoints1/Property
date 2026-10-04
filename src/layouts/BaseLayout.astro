@@ -123,19 +123,19 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Font loading: preconnect first, then a non-render-blocking stylesheet.
-         Weights pruned to in-use axes only (~9 files vs 14). -->
+         Redesign Phase 2 (A+B): Newsreader display + Geist UI. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=optional"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&display=optional"
       media="print"
       onload="this.setAttribute('media','all')"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=optional"
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&display=optional"
       />
     </noscript>
     {schema && <SchemaJsonLd schema={schema} />}
@@ -158,6 +158,104 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
       <slot />
     </main>
     <Footer />
+
+    <!-- Motion layer (2026-10-04 redesign, Phase 1): scroll reveal, number
+         ticker, cursor spotlight. Styles live at the end of global.css.
+         Processed by Astro, which inlines it as one <script type="module">
+         at this size: one more executable inline script for the CSP
+         inventory (.council/research/2026-09/csp-inline-script-inventory-
+         2026-09-17.md). Does nothing under prefers-reduced-motion, and
+         nothing is hidden until this has run. -->
+    <script>
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      // Carousel prev/next: buttons stay hidden until wired, so no-JS readers
+      // get a plain swipeable row with nothing inert on it. Not motion, so it
+      // runs under reduced motion too (with instant scrolling).
+      document.querySelectorAll("[data-carousel]").forEach((track) => {
+        const section = track.closest("section") ?? track.parentElement;
+        const prev = section?.querySelector("[data-carousel-prev]") as HTMLButtonElement | null;
+        const next = section?.querySelector("[data-carousel-next]") as HTMLButtonElement | null;
+        if (!prev || !next) return;
+        const el = track as HTMLElement;
+        const page = () => Math.max(el.clientWidth * 0.8, 240);
+        const sync = () => {
+          prev.disabled = el.scrollLeft <= 2;
+          next.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
+        };
+        prev.hidden = next.hidden = false;
+        prev.addEventListener("click", () => el.scrollBy({ left: -page(), behavior: reduced ? "auto" : "smooth" }));
+        next.addEventListener("click", () => el.scrollBy({ left: page(), behavior: reduced ? "auto" : "smooth" }));
+        el.addEventListener("scroll", sync, { passive: true });
+        window.addEventListener("resize", sync, { passive: true });
+        sync();
+      });
+
+      if (!reduced && "IntersectionObserver" in window) {
+        document.documentElement.classList.add("dp-motion");
+
+        // Scroll reveal: sections and tiles rise in as they enter view.
+        const targets = document.querySelectorAll(
+          "main section, .dp-dir-tile, .dp-tool, .dp-featured-band article",
+        );
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                e.target.classList.add("is-in");
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+        );
+        targets.forEach((el) => {
+          const siblings = el.parentElement ? Array.from(el.parentElement.children) : [];
+          const i = Math.min(siblings.indexOf(el), 6);
+          (el as HTMLElement).style.setProperty("--dp-i", String(Math.max(i, 0)));
+          el.classList.add("dp-reveal");
+          io.observe(el);
+        });
+
+        // Number ticker: counts integers up to the server-rendered value.
+        const tick = new IntersectionObserver((entries) => {
+          for (const e of entries) {
+            if (!e.isIntersecting) continue;
+            tick.unobserve(e.target);
+            const el = e.target as HTMLElement;
+            const end = parseInt((el.textContent || "").replace(/[^0-9]/g, ""), 10);
+            if (!Number.isFinite(end) || end <= 0) continue;
+            const t0 = performance.now();
+            const dur = 900;
+            const step = (now: number) => {
+              const p = Math.min((now - t0) / dur, 1);
+              const v = Math.round(end * (1 - Math.pow(1 - p, 3)));
+              // Never paint "0" over the server-rendered figure on frame one.
+              if (v > 0) el.textContent = v.toLocaleString("en-US");
+              if (p < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+          }
+        });
+        document.querySelectorAll("[data-count]").forEach((el) => tick.observe(el));
+
+        // Cursor spotlight on tiles (pointer devices).
+        if (window.matchMedia("(hover: hover)").matches) {
+          // One layout read per tile entered, not per pointermove.
+          let last: HTMLElement | null = null;
+          let rect: DOMRect | null = null;
+          const reset = () => { last = null; rect = null; };
+          window.addEventListener("scroll", reset, { passive: true });
+          window.addEventListener("resize", reset, { passive: true });
+          document.addEventListener("pointermove", (ev) => {
+            const tile = (ev.target as Element | null)?.closest?.(".dp-dir-tile, .dp-tool") as HTMLElement | null;
+            if (!tile) return;
+            if (tile !== last || !rect) { last = tile; rect = tile.getBoundingClientRect(); }
+            tile.style.setProperty("--dp-mx", `${ev.clientX - rect.left}px`);
+            tile.style.setProperty("--dp-my", `${ev.clientY - rect.top}px`);
+          }, { passive: true });
+        }
+      }
+    </script>
 
     <!-- Back-to-top — visible after 600px scroll, click smooths to top -->
     <button id="dp-to-top" class="dp-to-top" type="button" aria-label="Back to top">

@@ -112,6 +112,11 @@ const year = new Date().getFullYear();
       </div>
     </div>
 
+    <!-- Phase 3 (4 Oct 2026): outlined display wordmark that fills on
+         hover, after 21st.dev's "Hover Footer". Decorative; the real
+         wordmark link sits in the brand column above. -->
+    <div class="dp-footer-mark" aria-hidden="true">DubaiPoints</div>
+
     <div class="dp-footer-bottom">
       <span>© {year} DubaiPoints. UAE-resident-led, independent.</span>
       <a href="mailto:info@dubaipoints.ae" class="dp-footer-bottom-mail">info@dubaipoints.ae</a>
@@ -156,7 +161,7 @@ const year = new Date().getFullYear();
     gap: 12px;
   }
   .dp-footer-wordmark {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-weight: 800;
     font-size: 22px;
     letter-spacing: -0.6px;
@@ -169,7 +174,7 @@ const year = new Date().getFullYear();
   .dp-footer-wordmark .dot { color: var(--green); }
 
   .dp-footer-tag {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-size: 15px;
     line-height: 1.4;
     color: rgba(255, 255, 255, 0.7);
@@ -232,7 +237,7 @@ const year = new Date().getFullYear();
 
   /* Column headings */
   .dp-footer-col .dp-footer-heading {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 2.5px;
@@ -311,6 +316,25 @@ const year = new Date().getFullYear();
     color: #fff;
     text-decoration: underline;
     text-underline-offset: 3px;
+  }
+
+  /* Outlined wordmark */
+  .dp-footer-mark {
+    margin-top: 40px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(56px, 11vw, 148px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-align: center;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.28);
+    user-select: none;
+    transition: color 0.6s ease, -webkit-text-stroke-color 0.6s ease;
+  }
+  .dp-footer:hover .dp-footer-mark {
+    color: rgba(184, 132, 42, 0.22);
+    -webkit-text-stroke-color: rgba(184, 132, 42, 0.6);
   }
 
   /* Disclaimer */

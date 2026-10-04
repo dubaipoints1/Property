@@ -1,6 +1,8 @@
-/* Fonts now loaded via <link> in BaseLayout.astro with preconnect for
-   non-blocking critical-render. Weight inventory trimmed to actually-used
-   axes only (DM Sans 400/500/600/700/800; Fraunces 500/600/700 + ital 500). */
+/* Fonts load via <link> in BaseLayout.astro with preconnect for
+   non-blocking critical render. Redesign Phase 2 (4 October 2026, A+B
+   direction): Newsreader (display) + Geist (UI/body) replace Fraunces +
+   DM Sans. Every font-family in src/ reads --font-display / --font-ui, so
+   the next change is one line here, not 300 edits. */
 @import "tailwindcss";
 
 /* Body + main shells — moved out of inline styles to dedupe per-page bytes */
@@ -18,6 +20,9 @@
 }
 
 :root {
+  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-ui:      'Geist', system-ui, -apple-system, sans-serif;
+
   /* Claude Design handoff palette — locked 2026-05-09 (supersedes TPG pivot).
      Source: Claude Design bundle JVW6dPIKTdYcvhrGrNtGfg, palette A "Editorial green".
      Session doc: .council/sessions/2026-05-09-design-handoff.md.
@@ -92,6 +97,8 @@
      and Verified-badge colour; small text uses this shade of the same
      hue (2026-09-06 audit, F-004). Not a new hue: same family, darker. */
   --gold-ink:  #8a6118;
+  --gold-lift: #d9a441;          /* gold on navy (5.3:1): hero em, kicker, focus ring on dark bands */
+  --gold-hover:#c9933a;          /* gold CTA hover (ink text 5.8:1) */
   --brand:     #1a5fc6;          /* legacy alias to --link */
   --brand-deep:#154fa3;
   --brand-soft:#eef3fb;
@@ -119,7 +126,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html, body { background: var(--bg); }
 body {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
   font-size: 17px;            /* Stage 1 redesign: 16→17 toward competitor 17-18px band (2026-05-25) */
@@ -172,7 +179,7 @@ img { display: block; max-width: 100%; }
   border-radius: 16px;
   overflow: hidden;
   color: var(--dpst-navy);
-  font-family: "DM Sans", system-ui, sans-serif;
+  font-family: var(--font-ui);
 }
 /* green corner accent (moved off the design's header, which the page provides) */
 .dpst::before {
@@ -283,7 +290,7 @@ img { display: block; max-width: 100%; }
 }
 .dpst-count { font-weight: 600; color: var(--dpst-navy); }
 .dpst-count b {
-  font-family: "Fraunces", serif; font-size: 17px; font-weight: 700;
+  font-family: var(--font-display); font-size: 17px; font-weight: 700;
   color: var(--dpst-accent); font-variant-numeric: tabular-nums;
 }
 .dpst-meta .applied { font-size: 12px; }
@@ -320,7 +327,7 @@ img { display: block; max-width: 100%; }
   width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   background: var(--dpst-navy);
-  font-family: "Fraunces", serif; font-weight: 700; font-size: 13px;
+  font-family: var(--font-display); font-weight: 700; font-size: 13px;
   color: #fff; letter-spacing: -0.3px;
 }
 a.dpst-bank-name { font-weight: 600; line-height: 1.2; color: var(--dpst-navy); text-decoration: none; }
@@ -341,11 +348,11 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dpst-badge.points { background: rgba(31, 58, 77, 0.1); color: var(--dpst-navy); }
 .dpst-badge.points .ic { background: var(--dpst-navy); }
 .dpst-value {
-  font-family: "Fraunces", serif; font-weight: 700; font-size: 19px;
+  font-family: var(--font-display); font-weight: 700; font-size: 19px;
   letter-spacing: -0.4px; font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .dpst-value .cur {
-  font-family: "DM Sans", sans-serif; font-size: 11px; font-weight: 600;
+  font-family: var(--font-ui); font-size: 11px; font-weight: 600;
   color: var(--dpst-navy-soft); margin-right: 3px; vertical-align: 1px;
 }
 .dpst-band-cell { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--dpst-navy); }
@@ -420,8 +427,8 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 
 /* ── EMPTY STATE ───────────────────────────────────────────── */
 .dpst-empty { padding: 64px 34px; text-align: center; }
-.dpst-empty .mark { font-family: "Fraunces", serif; font-size: 48px; color: var(--dpst-line); margin-bottom: 10px; }
-.dpst-empty h4 { font-family: "Fraunces", serif; font-weight: 600; font-size: 22px; margin: 0 0 8px; }
+.dpst-empty .mark { font-family: var(--font-display); font-size: 48px; color: var(--dpst-line); margin-bottom: 10px; }
+.dpst-empty h4 { font-family: var(--font-display); font-weight: 600; font-size: 22px; margin: 0 0 8px; }
 .dpst-empty p { font-size: 14px; color: var(--dpst-navy-soft); margin: 0 0 20px; }
 .dpst-empty button {
   appearance: none; cursor: pointer; font-family: inherit;
@@ -484,13 +491,13 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
    typography audit). The island was the last surface still carrying the
    pre-handoff Tailwind slate palette and the retired electric-blue
    `brand-*` tokens — the one page on the site that didn't match.
-   Fraunces headings, DM Sans UI, --green primary / --gold trust accents,
+   Newsreader headings, Geist UI (via --font-display / --font-ui), --green primary / --gold trust accents,
    mirroring the .dpst tracker idiom above. */
 .dpsc {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
   gap: 28px;
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
 }
 .dpsc-form {
   display: flex; flex-direction: column; gap: 22px;
@@ -546,20 +553,20 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin: 0 0 6px;
 }
 .dpsc-best h2 {
-  font-family: 'Fraunces', serif; font-weight: 500;
+  font-family: var(--font-display); font-weight: 500;
   font-size: clamp(18px, 3vw, 22px);
   letter-spacing: -0.3px; color: var(--ink);
   margin: 0;
 }
 .dpsc-best-offer { font-size: 14px; color: var(--ink-soft); margin: 2px 0 0; }
 .dpsc-best-figure {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 32px; letter-spacing: -0.6px;
   color: var(--ink); margin: 14px 0 0;
   font-variant-numeric: tabular-nums;
 }
 .dpsc-best-figure .unit {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: 13px; font-weight: 500; letter-spacing: 0;
   color: var(--muted); margin-left: 8px;
 }
@@ -589,11 +596,11 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   gap: 6px 12px;
 }
 .dpsc-row-head h3 {
-  font-family: 'Fraunces', serif; font-weight: 500;
+  font-family: var(--font-display); font-weight: 500;
   font-size: 17px; letter-spacing: -0.2px;
   color: var(--ink); margin: 0;
 }
-.dpsc-rank { color: var(--muted); font-family: 'DM Sans', system-ui, sans-serif; font-size: 13px; font-weight: 600; margin-right: 8px; }
+.dpsc-rank { color: var(--muted); font-family: var(--font-ui); font-size: 13px; font-weight: 600; margin-right: 8px; }
 .dpsc-status {
   font-size: 10px; font-weight: 700;
   letter-spacing: 1.5px; text-transform: uppercase;
@@ -645,7 +652,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-article-eyebrow.is-red { color: var(--red); }
 .dp-article-eyebrow.is-ink { color: var(--ink); }   /* opt-out for navy-band contexts */
 .dp-article-title {
-  font-family: 'Fraunces', serif; font-weight: 700;   /* TPG-adapted bump from QL 600 */
+  font-family: var(--font-display); font-weight: 700;   /* TPG-adapted bump from QL 600 */
   font-size: clamp(32px, 5.4vw, 52px);   /* Stage 1 redesign: larger H1 (2026-05-25) */
   line-height: 1.05; letter-spacing: -1.3px;
   color: var(--ink); text-wrap: balance;
@@ -690,7 +697,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   background: var(--ink);
   color: white;
   display: inline-flex; align-items: center; justify-content: center;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
 }
 .dp-byline-sep { color: var(--line); }
@@ -718,7 +725,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin-bottom: 4px;
 }
 .dp-stat dd {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 18px; letter-spacing: -0.3px; color: var(--ink);
   margin: 0;
 }
@@ -738,7 +745,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin-bottom: 10px;
 }
 .dp-take p {
-  font-family: 'Fraunces', serif; font-weight: 500;
+  font-family: var(--font-display); font-weight: 500;
   font-size: 19px; line-height: 1.5;
   color: var(--ink);
   text-wrap: pretty;
@@ -764,7 +771,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   display: block;
 }
 .dp-callout-tip p {
-  font-family: 'DM Sans', system-ui, sans-serif; font-weight: 400;
+  font-family: var(--font-ui); font-weight: 400;
   font-size: 15px; line-height: 1.55;
   color: var(--ink);
   margin: 0; max-width: 60ch;
@@ -781,7 +788,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 /* Section heading inside an article */
 .dp-article-section { margin-block: 48px; }
 .dp-article-section > h2 {
-  font-family: 'Fraunces', serif; font-weight: 500;
+  font-family: var(--font-display); font-weight: 500;
   font-size: clamp(20px, 3vw, 26px);
   letter-spacing: -0.4px; color: var(--ink);
   margin-bottom: 16px;
@@ -790,7 +797,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   .dp-article-section { margin-block: 36px; }
 }
 .dp-article-section > h3 {
-  font-family: 'Fraunces', serif; font-weight: 500;
+  font-family: var(--font-display); font-weight: 500;
   font-size: 18px; letter-spacing: -0.2px; color: var(--ink);
   margin-bottom: 10px;
 }
@@ -828,7 +835,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-data-table td:first-child { color: var(--ink); }
 .dp-data-table td.num {
   text-align: right;
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   color: var(--ink);
 }
 
@@ -882,7 +889,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   .dp-prose { font-size: 18px; }
 }
 .dp-prose h2 {
-  font-family: 'Fraunces', serif; font-weight: 700;
+  font-family: var(--font-display); font-weight: 700;
   font-size: clamp(26px, 4vw, 34px);
   letter-spacing: -0.6px; color: var(--green);
   margin: 60px 0 20px;                                      /* rhythm pass: 56/18 → 60/20 */
@@ -893,7 +900,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 }
 .dp-prose h2:first-child { margin-top: 0; }
 .dp-prose h3 {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 20px; letter-spacing: -0.3px; color: var(--ink);
   margin: 36px 0 14px;                                      /* rhythm pass: 32/12 → 36/14 */
   line-height: 1.3;
@@ -916,7 +923,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-prose blockquote {
   border-left: 3px solid var(--ink);
   padding: 6px 0 6px 18px; margin: 22px 0;                  /* rhythm pass: 4/16/18 → 6/18/22 */
-  font-family: 'Fraunces', serif; font-style: normal;
+  font-family: var(--font-display); font-style: normal;
   font-weight: 500;
   color: var(--ink); font-size: 18px; line-height: 1.6;     /* rhythm pass: 1.5 → 1.6 */
 }
@@ -941,7 +948,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   -webkit-overflow-scrolling: touch;
   border-collapse: collapse;
   margin: 0 0 28px;
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: 15px;
   line-height: 1.55;
 }
@@ -1012,7 +1019,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 }
 .dp-prose figcaption {
   margin-top: 10px;
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: 13px;
   line-height: 1.5;
   color: var(--ink-soft);
@@ -1134,7 +1141,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   display: inline-flex; align-items: center; gap: 8px;
 }
 .dp-dir-tile .title {
-  font-family: 'Fraunces', serif; font-weight: 500;
+  font-family: var(--font-display); font-weight: 500;
   font-size: 18px; letter-spacing: -0.2px;
   color: var(--ink); line-height: 1.3;
 }
@@ -1189,7 +1196,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   text-transform: uppercase; color: var(--muted);
 }
 .dp-tool .title {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-weight: 600; font-size: 14px;
   color: var(--ink);
   transition: color 0.15s;
@@ -1238,7 +1245,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin-bottom: 4px;
 }
 .dp-tool-strip.is-boxed .title {
-  font-family: 'Fraunces', serif; font-weight: 500;
+  font-family: var(--font-display); font-weight: 500;
   font-size: 19px; letter-spacing: -0.2px;
 }
 .dp-tool-strip.is-boxed .go {
@@ -1324,7 +1331,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin: 0 auto;
 }
 .dp-live-desk .head h2 {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: clamp(24px, 3vw, 32px);
   letter-spacing: -0.5px;
   color: var(--ink);
@@ -1450,7 +1457,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   color: var(--gold);
 }
 .dp-feature-card .feat-title {
-  font-family: 'Fraunces', serif; font-weight: 700;
+  font-family: var(--font-display); font-weight: 700;
   font-size: clamp(22px, 3.6vw, 30px);
   line-height: 1.18; letter-spacing: -0.6px;
   color: white; text-wrap: balance;
@@ -1491,7 +1498,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin: 0 auto;
 }
 .dp-strategy h2 {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: clamp(24px, 3vw, 32px);
   letter-spacing: -0.5px;
   color: var(--ink);
@@ -1510,7 +1517,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   padding: 8px 18px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: 13px; font-weight: 600;
   color: var(--ink-soft);
   cursor: pointer;
@@ -1633,7 +1640,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   text-decoration: none;
 }
 .dps-cards .rank {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 16px; color: var(--muted);
 }
 .dps-cards .name {
@@ -1672,7 +1679,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   text-transform: uppercase; color: var(--muted);
 }
 .dps-aside .t {
-  font-family: 'Fraunces', serif; font-weight: 500;
+  font-family: var(--font-display); font-weight: 500;
   font-size: 16px; line-height: 1.3;
   color: var(--ink);
   transition: color 0.15s;
@@ -1759,14 +1766,14 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   pointer-events: none;
 }
 .dp-card-tile .art .art-bank {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 11px; font-weight: 700;
   letter-spacing: 1.5px; text-transform: uppercase;
   color: rgba(255,255,255,0.85);
   position: relative;
 }
 .dp-card-tile .art .art-name {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 15px;
   line-height: 1.2; letter-spacing: -0.2px;
   position: relative;
@@ -1788,7 +1795,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   color: var(--green);
 }
 .dp-card-tile .body .title {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 17px; line-height: 1.25; letter-spacing: -0.3px;
   color: var(--ink); text-wrap: balance;
 }
@@ -1834,8 +1841,8 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-card-tile .art .art-monogram {
   position: absolute;
   bottom: -22px; right: -10px;
-  font-family: 'Fraunces', serif;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-weight: 700;
   font-size: 140px;
   line-height: 0.85;
   letter-spacing: -6px;
@@ -1861,15 +1868,15 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 6px;
-  font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 14px;
+  font-family: var(--font-ui); font-weight: 700; font-size: 14px;
   color: var(--ink);
 }
 .dp-valuation-row .name {
-  font-family: 'DM Sans', sans-serif; font-weight: 600;
+  font-family: var(--font-ui); font-weight: 600;
   font-size: 16px; color: var(--ink);
 }
 .dp-valuation-row .value {
-  font-family: 'Fraunces', serif; font-weight: 700;
+  font-family: var(--font-display); font-weight: 700;
   font-size: clamp(28px, 4vw, 36px);
   letter-spacing: -0.6px; color: var(--ink);
   white-space: nowrap;
@@ -1897,7 +1904,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin-bottom: 14px;
 }
 .dp-pagehead h1 {
-  font-family: 'Fraunces', serif; font-weight: 800;
+  font-family: var(--font-display); font-weight: 700;
   font-size: clamp(38px, 5vw, 56px);
   letter-spacing: -1.4px; line-height: 1;
   margin: 0 0 12px; color: var(--ink);
@@ -2027,7 +2034,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   color: var(--green); font-weight: 700; letter-spacing: 1.5px;
 }
 .dp-story-card h3 {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 21px; letter-spacing: -0.4px; line-height: 1.2;
   margin: 0; text-wrap: balance; color: var(--ink);
   transition: color 0.15s;
@@ -2056,14 +2063,14 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   text-align: center; position: relative;
 }
 .dp-pullquote .mark {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-size: 120px; font-weight: 700; line-height: 0.6;
   color: var(--green); opacity: 0.18;
   position: absolute; left: 48px; top: 36px;
   user-select: none;
 }
 .dp-pullquote blockquote {
-  font-family: 'Fraunces', serif; font-style: italic; font-weight: 500;
+  font-family: var(--font-display); font-style: italic; font-weight: 500;
   font-size: 30px; line-height: 1.32; letter-spacing: -0.5px;
   color: var(--ink); max-width: 30ch; margin: 0 auto;
   text-wrap: balance;
@@ -2092,7 +2099,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin: 0 32px;
 }
 .dp-list-head .t {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-size: 28px; font-weight: 700;
   letter-spacing: -0.6px; color: var(--ink);
 }
@@ -2128,7 +2135,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin-top: 6px;
 }
 .dp-feed-row h3 {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 23px; letter-spacing: -0.45px; line-height: 1.18;
   margin: 0 0 10px; color: var(--ink);
   text-wrap: balance; transition: color 0.15s;
@@ -2212,7 +2219,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   align-items: center;
   gap: 10px;
   margin-bottom: 14px;
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -2241,7 +2248,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   letter-spacing: -1.2px;
 }
 .dp-pagehead .deck {
-  font-family: 'Fraunces', serif; font-style: italic;
+  font-family: var(--font-display); font-style: italic;
   font-size: clamp(18px, 2.2vw, 22px);
   color: var(--ink-soft);
   max-width: 48ch; margin-top: 18px;
@@ -2263,7 +2270,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   background: var(--shade-2);
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'DM Sans', sans-serif; font-weight: 700;
+  font-family: var(--font-ui); font-weight: 700;
   font-size: 13px; color: var(--ink);
 }
 .dp-byline-strip .name { font-size: 13px; font-weight: 600; color: var(--ink); }
@@ -2356,7 +2363,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 
 /* Drop-cap on first paragraph of prose */
 .dp-prose > p:first-of-type::first-letter {
-  font-family: 'Fraunces', serif; font-weight: 700;
+  font-family: var(--font-display); font-weight: 700;
   font-size: 54px; line-height: 0.9;
   float: left;
   padding: 6px 10px 0 0;
@@ -2371,7 +2378,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin: 24px 0;
 }
 .dp-pullbox h4 {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 11px; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--green);
   margin: 0 0 12px; font-weight: 700;
@@ -2440,7 +2447,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 /* The one-line reason the business is named. Body-sized and serif, so it
    reads as editorial judgement rather than as marketing copy. */
 .dp-pullbox .dp-example-why {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-size: 17px;
   line-height: 1.5;
   color: var(--ink);
@@ -2467,7 +2474,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 }
 .dp-example-name {
   display: block;
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-weight: 600;
   font-size: 22px;
   letter-spacing: -0.4px;
@@ -2496,7 +2503,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   padding: 22px;
 }
 .dp-toc-card .dp-rail-heading {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 11px; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--green);
   margin: 0 0 12px; font-weight: 700;
@@ -2532,7 +2539,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   padding: 22px;
 }
 .dp-trending-card .dp-rail-heading {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 11px; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--green);
   margin: 0 0 12px; font-weight: 700;
@@ -2557,7 +2564,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 }
 .dp-trending-card a {
   color: var(--ink);
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-weight: 500;
   letter-spacing: -0.2px;
 }
@@ -2573,13 +2580,13 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   gap: 8px;
 }
 .dp-aside-newsletter .eyebrow {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 10px; font-weight: 700;
   letter-spacing: 2.5px; text-transform: uppercase;
   color: rgba(255, 255, 255, 0.75);
 }
 .dp-aside-newsletter .dp-rail-heading {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: 19px;
   line-height: 1.2;
@@ -2589,7 +2596,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   text-wrap: balance;
 }
 .dp-aside-newsletter p {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: 13px;
   line-height: 1.5;
   color: rgba(255, 255, 255, 0.88);
@@ -2603,7 +2610,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   background: white;
   color: var(--green);
   border-radius: 999px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.4px;
@@ -2627,13 +2634,13 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin-bottom: 24px;
 }
 .dp-article-related-head .eyebrow {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 11px; font-weight: 700;
   letter-spacing: 2.5px; text-transform: uppercase;
   color: var(--green);
 }
 .dp-article-related-head h2 {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(22px, 2.6vw, 30px);
   letter-spacing: -0.6px;
@@ -2678,13 +2685,13 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   gap: 8px;
 }
 .dp-article-related-card .cat {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 10px; font-weight: 700;
   letter-spacing: 2px; text-transform: uppercase;
   color: var(--green);
 }
 .dp-article-related-card h3 {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: 18px;
   letter-spacing: -0.3px;
@@ -2792,7 +2799,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-trust-body .dp-prose section { margin-block: 32px; }
 .dp-trust-body .dp-prose section:first-child { margin-top: 0; }
 .dp-trust-body .dp-prose section h2 {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: clamp(22px, 2.6vw, 26px);
   letter-spacing: -0.4px;
   color: var(--ink);
@@ -2808,7 +2815,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   border-top: 1px solid var(--line);
 }
 .dp-trust-body .dp-prose .related h3 {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2.5px;
@@ -2853,7 +2860,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   border-top: 1px solid var(--line);
 }
 .dp-trust-body .dp-prose .dp-glossary dt {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: 18px;
   letter-spacing: -0.3px;
@@ -2926,7 +2933,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   opacity: 0.72;
 }
 .dp-cr-photo-cap .dp-cr-photo-name {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 18px; letter-spacing: -0.3px; line-height: 1.2;
 }
 .dp-cr-mock {
@@ -2962,7 +2969,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   opacity: 0.78; position: relative; align-self: flex-start;
 }
 .dp-cr-mock .n {
-  font-family: 'Fraunces', serif; font-weight: 600;
+  font-family: var(--font-display); font-weight: 600;
   font-size: 20px; letter-spacing: -0.3px;
   position: relative; text-wrap: balance;
 }
@@ -2986,8 +2993,8 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
     linear-gradient(to right, transparent 48%, rgba(0,0,0,0.18) 48%, rgba(0,0,0,0.18) 52%, transparent 52%);
 }
 .dp-cr-mock-mark {
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-weight: 800; font-size: 22px;
+  font-family: var(--font-ui);
+  font-weight: 700; font-size: 22px;
   width: 30px; height: 30px;
   border-radius: 50%;
   background: rgba(255,255,255,0.10);
@@ -3039,7 +3046,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   text-decoration-color: #fff;
 }
 .dp-cr-hero h1 {
-  font-family: 'Fraunces', serif; font-weight: 700;
+  font-family: var(--font-display); font-weight: 700;
   font-size: clamp(28px, 4.5vw, 42px);
   letter-spacing: -1px; line-height: 1.05;
   margin: 0 0 12px; color: white; text-wrap: balance;
@@ -3055,7 +3062,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   color: rgba(255,255,255,0.55);
 }
 .dp-cr-hero .strap-value {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-size: 18px; font-weight: 500;
   color: white;
 }
@@ -3069,7 +3076,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   font-size: 12px; color: white;
 }
 .dp-verdict-pill .score {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-size: 24px; font-weight: 700; line-height: 1;
 }
 .dp-verdict-pill .score .denom {
@@ -3097,7 +3104,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 }
 .dp-cr-body { max-width: 680px; margin-inline: auto; width: 100%; min-width: 0; }
 .dp-cr-body .deck {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-size: 23px; font-style: italic;
   color: var(--ink-soft); line-height: 1.45;
   margin: 24px 0 36px; max-width: 48ch; text-wrap: pretty;
@@ -3116,7 +3123,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   padding: 22px;
 }
 .dp-spec-card h3 {
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-ui);
   font-size: 11px; letter-spacing: 2.5px;
   text-transform: uppercase; color: var(--green);
   margin: 0 0 16px; font-weight: 700;
@@ -3218,7 +3225,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-metric-strip .metric:last-child { border-right: 0; }
 .dp-metric-strip .metric:first-child { padding-left: 0; }
 .dp-metric-strip .metric .v {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-weight: 500;
   font-size: clamp(22px, 3vw, 28px);
   letter-spacing: -0.6px;
@@ -3228,7 +3235,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   display: block;
 }
 .dp-metric-strip .metric .v .sub {
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-weight: 400;
   font-size: 13px;
   color: var(--muted);
@@ -3238,7 +3245,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-metric-strip .metric .l {
   display: block;
   margin-top: 6px;
-  font-family: 'DM Sans', system-ui, sans-serif;
+  font-family: var(--font-ui);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 1.8px;
@@ -3530,7 +3537,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   .dp-compare-row .v[data-card]::before {
     content: attr(data-card);
     display: block;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 1.5px;
@@ -3553,7 +3560,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 /* Verdict row — desktop styling for the welcome-value pills */
 .dp-compare-row.is-verdict { padding: 24px 32px; }
 .dp-compare-row .v.is-welcome-value {
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 24px;
   color: var(--green);
@@ -3625,7 +3632,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   margin: 28px 0 32px;
   display: grid;
   gap: 14px;
-  font-family: "DM Sans", system-ui, sans-serif;
+  font-family: var(--font-ui);
 }
 .dp-conditions dt {
   font-weight: 700;
@@ -3744,6 +3751,8 @@ html * {
      dark mode, so light text sat on it at 2.1:1 (2026-09-06 audit, F-003). */
   --gold-soft: #2e2a1c;
   --gold-ink:  #d9a85a;
+  --gold-lift: #d9a441;
+  --gold-hover:#c9933a;
 
   /* Signal and feedback tokens had NO dark values, so they kept their
      light-theme hues against the dark surface: --red at 3.3:1 on the "Our
@@ -3812,4 +3821,195 @@ html * {
   html, html * {
     transition: none !important;
   }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Motion layer — 2026-10-04 redesign, Phase 1 (A+B direction).
+   Patterns modelled on the animated libraries on 21st.dev (scroll reveal,
+   number ticker, cursor spotlight, CTA shine), rebuilt in house CSS + a
+   small vanilla module in BaseLayout.astro — no React, no animation lib.
+   Rules: transform/opacity only; everything is fully visible without JS
+   (the module adds .dp-motion to <html> before anything hides); and the
+   whole layer is off under prefers-reduced-motion.
+   ════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero entrance — staggered rise of kicker, headline, lede, CTAs. */
+  .hp-hero-text > * {
+    animation: dp-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .hp-hero-text > :nth-child(2) { animation-delay: 0.08s; }
+  .hp-hero-text > :nth-child(3) { animation-delay: 0.16s; }
+  .hp-hero-text > :nth-child(4) { animation-delay: 0.24s; }
+  .hp-hero-text > :nth-child(5) { animation-delay: 0.32s; }
+  .hp-hero h1 em {
+    display: inline-block;
+    animation: dp-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+  }
+  .hp-hero-media {
+    animation: dp-fade 1s ease-out 0.2s both;
+  }
+
+  /* Scroll reveal — only once the module has marked the page. */
+  .dp-motion .dp-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--dp-i, 0) * 60ms);
+  }
+  .dp-motion .dp-reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Lift on hover for directory tiles and tool cards. */
+  .dp-dir-tile, .dp-tool {
+    transition: border-color 0.15s, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .dp-dir-tile:hover, .dp-tool:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -16px rgba(15, 42, 68, 0.45);
+  }
+
+  /* Shine sweep across the primary hero CTA. */
+  .hp-hero-cta:not(.is-ghost) {
+    position: relative;
+    overflow: hidden;
+  }
+  .hp-hero-cta:not(.is-ghost)::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.22) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 0.7s ease;
+    pointer-events: none;
+  }
+  .hp-hero-cta:not(.is-ghost):hover::after { transform: translateX(120%); }
+}
+
+/* Cursor spotlight — a soft gold glow that follows the pointer across a
+   tile. Pointer devices only; --dp-mx/--dp-my are set by the module. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .dp-dir-tile, .dp-tool {
+    background-image: radial-gradient(
+      220px circle at var(--dp-mx, -300px) var(--dp-my, -300px),
+      rgba(184, 132, 42, 0.12), transparent 70%);
+  }
+}
+
+/* Figures keep their width while a ticker counts up. */
+[data-count] { font-variant-numeric: tabular-nums; }
+
+@keyframes dp-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes dp-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Phase 3 idioms (4 Oct 2026): carousel + hover peek ─────────────── */
+/* Swipeable row: CSS scroll-snap, so it works with no JS (swipe, drag,
+   trackpad, keyboard). The motion module only unhides the prev/next
+   buttons and scrolls by one viewport of items. */
+.dp-carousel {
+  list-style: none; margin: 0; padding: 4px 0 12px;
+  display: grid; grid-auto-flow: column;
+  grid-auto-columns: min(300px, 78vw);
+  gap: 16px;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-padding-inline: var(--dp-carousel-gutter, 0px);
+  -webkit-overflow-scrolling: touch;
+  padding-inline: var(--dp-carousel-gutter, 0px);
+}
+/* The scrollbar is the one no-JS overflow cue for mouse users; hide it only
+   where the prev/next buttons stand in, and keep it under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .dp-carousel { scrollbar-width: none; }
+  .dp-carousel::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 640px) {
+  /* Full-bleed on phones: the next card peeks past the gutter on purpose. */
+  .dp-carousel { --dp-carousel-gutter: 20px; margin-inline: -20px; }
+}
+.dp-carousel-item { scroll-snap-align: start; }
+.dp-carousel-nav { display: flex; gap: 8px; }
+.dp-carousel-btn {
+  width: 40px; height: 40px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; touch-action: manipulation;
+  transition: border-color 0.15s, color 0.15s, transform 0.15s;
+}
+.dp-carousel-btn:hover { border-color: var(--green); color: var(--green); }
+.dp-carousel-btn:disabled { opacity: 0.35; cursor: default; }
+.dp-carousel-btn[hidden] { display: none; }
+
+/* Hover peek: a fact card that appears over a card link on pointer hover
+   or keyboard focus. Decorative (aria-hidden): the same facts live on the
+   review page the link opens. Never shown on touch-only devices. */
+.has-peek { position: relative; }
+.dp-peek {
+  display: none;
+  position: absolute; left: 42px; bottom: calc(100% + 6px); z-index: 5;
+  min-width: 240px;
+  padding: 14px 16px;
+  background: var(--paper); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 8px;
+  box-shadow: 0 18px 40px -18px rgba(15, 31, 46, 0.45);
+  max-width: 320px;
+  font-size: 12px; font-weight: 500; text-align: left; white-space: normal;
+  pointer-events: none;
+}
+.dp-peek-row { display: flex; justify-content: space-between; gap: 18px; padding: 3px 0; }
+.dp-peek-row span { color: var(--muted); }
+.dp-peek-row strong { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; overflow-wrap: anywhere; }
+.dp-peek-more { display: block; margin-top: 8px; font-weight: 700; color: var(--green); }
+@media (hover: hover) {
+  .has-peek:hover .dp-peek, .has-peek:focus-visible .dp-peek { display: block; }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .has-peek:hover .dp-peek, .has-peek:focus-visible .dp-peek { animation: dp-rise 0.22s ease-out both; }
+}
+
+/* ── Phase 3 motion: hero drift, gold shimmer, mobile-menu stagger ──── */
+@media (prefers-reduced-motion: no-preference) {
+  /* A slow gold/navy light drifts across the hero band (18s loop). */
+  /* Plays once and settles — WCAG 2.2.2 forbids an uncontrolled loop > 5 s. */
+  .hp-hero::before { animation: dp-drift 14s ease-out 1 forwards; }
+
+  /* Continuous soft sheen on the gold CTA; the hover sweep sits on top. */
+  .hp-hero-cta:not(.is-ghost)::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.28) 50%, transparent 80%);
+    background-size: 250% 100%;
+    animation: dp-shimmer 2.4s ease-in-out 0.6s 1 both;
+    pointer-events: none;
+  }
+
+  /* Mobile menu: rows rise in one after another when the overlay opens. */
+  /* :not(input) — the expand checkboxes are hidden with opacity: 0, and a
+     filled animation would override that and draw them. */
+  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :not(input) {
+    animation: dp-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(2):not(input) { animation-delay: 0.04s; }
+  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(3):not(input) { animation-delay: 0.08s; }
+  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(4):not(input) { animation-delay: 0.12s; }
+  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(5):not(input) { animation-delay: 0.16s; }
+  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(6):not(input) { animation-delay: 0.20s; }
+  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(7):not(input) { animation-delay: 0.24s; }
+  .dp-nav-toggle:checked ~ .dp-nav-overlay .dp-nav-overlay-body > :nth-child(n+8):not(input) { animation-delay: 0.28s; }
+  .dp-nav-overlay { transition-duration: 0.32s; transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+}
+.dp-nav-backdrop { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+@keyframes dp-drift {
+  from { transform: translate3d(-6%, -4%, 0) scale(1); }
+  to   { transform: translate3d(6%, 5%, 0) scale(1.12); }
+}
+@keyframes dp-shimmer {
+  0%   { background-position: 120% 0; }
+  100% { background-position: -120% 0; }
 }

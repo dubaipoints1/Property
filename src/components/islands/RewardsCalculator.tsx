@@ -1030,7 +1030,7 @@ export default function RewardsCalculator({ cards }: Props) {
           margin-bottom: 14px;
         }
         .dp-calc-form-head h2 {
-          font-family: 'Fraunces', serif; font-weight: 500;
+          font-family: var(--font-display); font-weight: 500;
           font-size: 17px; color: var(--ink); margin: 0;
         }
         .dp-calc-total {
@@ -1055,7 +1055,7 @@ export default function RewardsCalculator({ cards }: Props) {
         }
         .dp-calc-num {
           width: 88px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-ui);
           font-feature-settings: 'tnum';
           font-size: 13px; padding: 4px 6px;
           border: 1px solid var(--line); border-radius: 3px;
@@ -1083,7 +1083,7 @@ export default function RewardsCalculator({ cards }: Props) {
           border: 1px solid var(--line);
           color: var(--ink);
           padding: 5px 10px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-ui);
           font-size: 12px; font-weight: 600;
           border-radius: 2px;
           cursor: pointer;
@@ -1151,7 +1151,7 @@ export default function RewardsCalculator({ cards }: Props) {
           margin-bottom: 18px;
         }
         .dp-calc-routing h3 {
-          font-family: 'Fraunces', serif; font-weight: 500;
+          font-family: var(--font-display); font-weight: 500;
           font-size: 17px; color: var(--ink); margin: 0 0 10px;
         }
         .dp-calc-routing .dp-data-table { margin: 0; }
@@ -1170,7 +1170,7 @@ export default function RewardsCalculator({ cards }: Props) {
         .dp-calc-tile-facts strong { color: var(--ink); font-weight: 600; }
 
         .dp-calc-results-head h2 {
-          font-family: 'Fraunces', serif; font-weight: 500;
+          font-family: var(--font-display); font-weight: 500;
           font-size: 20px; color: var(--ink); margin: 0 0 6px;
         }
         .dp-calc-results-sub {
@@ -1197,7 +1197,7 @@ export default function RewardsCalculator({ cards }: Props) {
           color: var(--muted); font-size: 13px;
         }
         .dp-calc-tile-head .title {
-          font-family: 'Fraunces', serif; font-weight: 500;
+          font-family: var(--font-display); font-weight: 500;
           font-size: 17px; color: var(--ink); text-decoration: none;
         }
         .dp-calc-tile-head .title:hover { color: var(--green); }
@@ -1221,7 +1221,7 @@ export default function RewardsCalculator({ cards }: Props) {
           color: var(--muted);
         }
         .num-value {
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-ui);
           font-feature-settings: 'tnum';
           font-size: 17px; font-weight: 600; color: var(--ink);
         }

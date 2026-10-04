@@ -66,7 +66,7 @@ const render = hasApply || hasSkip;
     gap: 28px;
     margin: 8px 0 32px;
     padding: 0;
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
   }
   /* Single-side fallback — if only applyIf or only skipIf is present,
      collapse to one column so the block stays balanced. */
@@ -100,7 +100,7 @@ const render = hasApply || hasSkip;
   }
   .dp-great-card-if .body {
     margin: 0;
-    font-family: "Fraunces", serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 17px;
     letter-spacing: -0.2px;

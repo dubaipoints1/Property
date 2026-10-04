@@ -249,7 +249,16 @@ Added 4 October 2026 from the `claude-code-setup` recommender:
 - **Skills**: `/signoff` (PR sign-off block and tier), `/add-card` (L2 + L3
   checklist), `web-design-guidelines` (UI code review), `ui-ux-pro-max`
   (offline style / palette / font-pairing lookup, vendored at `477bcb2`; a
-  keyword-matched reference, not a decision-maker — see its preamble).
+  keyword-matched reference, not a decision-maker — see its preamble),
+  `taste-skill` (full anti-slop / motion skill, vendored at `ce26fc2`, used
+  in its redesign-preserve mode under a house preamble).
+- **Motion layer** (redesign Phase 1, `.council/briefs/2026-10-04-redesign-
+  ledger-editorial.md`): CSS at the end of `global.css` plus one module in
+  `BaseLayout.astro` — hero entrance, scroll reveal (`.dp-reveal`), number
+  ticker (`data-count`), cursor spotlight and lift on `.dp-dir-tile` /
+  `.dp-tool`. Transform/opacity only, visible without JS, off under
+  `prefers-reduced-motion`. Astro inlines the module, so it is one more
+  executable inline script for the CSP inventory.
 - **MCP**: `context7` in `.mcp.json` for current Astro 7 / Tailwind 4 docs.
   `mcp.context7.com` is denied by the web environment's egress policy as of
   4 October 2026, so it works from a workstation only until the host is
@@ -885,8 +894,10 @@ code, not lint rules — match them when adding pages:
   on bank hubs). Each colour has a single job — don't mix them in
   one element. The legacy electric-blue `--brand` token survives
   only as a fallback alias to `--link`; new code uses `--green`.
-- **Type.** Fraunces (serif) for headlines / eyebrows / "Our take"
-  labels; DM Sans for body and UI.
+- **Type.** Newsreader (serif) for headlines / eyebrows / "Our take"
+  labels; Geist for body and UI — via `--font-display` / `--font-ui` in
+  `global.css` since redesign Phase 2 (4 October 2026). Never a literal
+  font name in a component.
 - **Long-form page skeleton.** `BaseLayout` with `fullWidth`, then
   `<article class="dp-article">`, then `.dp-article-head` +
   sections. **Directory pages:** `<article class="dp-article
