@@ -146,11 +146,21 @@ const featureImg = intel[0] ? getStockEntry(intel[0].imageSlug) : undefined;
 // never a real card face, livery or person. Each entry carries its prompt
 // as provenance and the band renders the "not a photograph" label.
 // Falls back to the feature photo while the renders are still landing.
-const HERO_SLIDE_SLUGS = ["hero-card-desk", "hero-gate-dawn", "hero-window-coast", "hero-dubai-night"];
-const heroSlides = HERO_SLIDE_SLUGS.map((slug) => getStockEntry(slug)).filter(
-  (e): e is NonNullable<typeof e> => Boolean(e),
-);
-if (heroSlides.length === 0 && featureImg) heroSlides.push(featureImg);
+// Scroll story (Chairman direction, 4 Oct 2026, from a reel of a coffee
+// site whose hero is one continuous render scrubbed by scroll — GRIND,
+// POUR, SIP — with giant words behind the object). Four stages of the
+// points journey; each stage is a picture today and can take a short
+// video clip later without changing the markup around it.
+const STORY = [
+  { slug: "hero-card-desk", word: "Earn", line: "Pick the card that pays you back on what you already spend." },
+  { slug: "hero-gate-dawn", word: "Board", line: "Move the points to the programme that takes you furthest." },
+  { slug: "hero-window-coast", word: "Fly", line: "Spend miles where each one is worth the most." },
+  { slug: "hero-dubai-night", word: "Arrive", line: "Home to Dubai, with the next trip already earning." },
+];
+const heroSlides = STORY.flatMap((st) => {
+  const img = getStockEntry(st.slug);
+  return img ? [{ ...st, img }] : [];
+});
 
 const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
 const flagshipProgramme =
@@ -399,33 +409,6 @@ const dealRows = await Promise.all(
   <!-- ── S1. Hero: masthead + feature story ─────────────────────────── -->
   <header class="dp-pagehead is-hero hp-hero">
     <div class="hp-hero-grid">
-      {heroSlides.length > 0 && (
-        <div class="hp-hero-show" data-hero-show>
-          <div class="hp-hero-slides">
-            {heroSlides.map((img, i) => (
-              <img
-                src={`/${img.file}`}
-                alt={img.alt}
-                width={img.width}
-                height={img.height}
-                loading={i === 0 ? "eager" : "lazy"}
-                fetchpriority={i === 0 ? "high" : undefined}
-                decoding="async"
-                class={i === 0 ? "is-active" : undefined}
-                data-hero-slide
-              />
-            ))}
-          </div>
-          {heroSlides.length > 1 && (
-            <div class="hp-hero-dots" role="group" aria-label="Choose a picture (choosing one stops the automatic change)">
-              {heroSlides.map((img, i) => (
-                <button type="button" data-hero-dot={i} aria-label={`Picture ${i + 1}: ${img.alt}`} aria-pressed={i === 0 ? "true" : "false"}></button>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
       <div class="hp-hero-text">
         <span class="hp-hero-kicker"><span class="dot" aria-hidden="true"></span>Independent UAE points &amp; miles publication</span>
         <h1>Fly further. <em>Pay less.</em></h1>
@@ -451,43 +434,106 @@ const dealRows = await Promise.all(
           </a>
         )}
       </div>
+
+      {heroSlides.length > 0 && (
+        <div class="hp-story" data-story data-lines={JSON.stringify(heroSlides.map((st) => st.line))}>
+          <div class="hp-story-stage" data-story-stage>
+            <div class="hp-story-words" aria-hidden="true">
+              {heroSlides.map((st, i) => (
+                <span class={i === 0 ? "is-active" : undefined} data-story-word>{st.word}</span>
+              ))}
+            </div>
+            <div class="hp-story-frame">
+              {heroSlides.map((st, i) => (
+                <img
+                  src={`/${st.img.file}`}
+                  alt={st.img.alt}
+                  width={st.img.width}
+                  height={st.img.height}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  fetchpriority={i === 0 ? "high" : undefined}
+                  decoding="async"
+                  class={i === 0 ? "is-active" : undefined}
+                  data-story-slide
+                />
+              ))}
+            </div>
+            <ol class="hp-story-steps" aria-label="The points journey">
+              {heroSlides.map((st, i) => (
+                <li>
+                  <button type="button" data-story-step={i} aria-current={i === 0 ? "step" : undefined}>
+                    <span class="n">{String(i + 1).padStart(2, "0")}</span>
+                    <span class="w">{st.word}</span>
+                    <span class="bar" aria-hidden="true"><i></i></span>
+                  </button>
+                </li>
+              ))}
+            </ol>
+            <p class="hp-story-line" aria-live="polite" data-story-line>{heroSlides[0].line}</p>
+          </div>
+        </div>
+      )}
     </div>
   </header>
 
   <script>
-    // Hero slideshow. Pictures crossfade every 4.5 s with a slow zoom; the
-    // change pauses on hover, on focus and while the tab is hidden, and
-    // choosing a picture by its dash stops it for good (the WCAG 2.2.2
-    // stop mechanism — Chairman direction, 4 Oct 2026, removed the pause
-    // button and the caption row). Under reduced motion nothing cycles;
-    // the dashes still switch pictures by hand. No JS: the first picture
-    // shows and the dashes are inert.
-    const show = document.querySelector("[data-hero-show]") as HTMLElement | null;
-    if (show) {
-      const slides = Array.from(show.querySelectorAll<HTMLImageElement>("[data-hero-slide]"));
-      const dots = Array.from(show.querySelectorAll<HTMLButtonElement>("[data-hero-dot]"));
+    // Scroll story. The stage pins while the reader scrolls through a
+    // tall track; scroll position picks the stage (word, picture, line)
+    // and drives a slow zoom inside it, so the reader is the play head —
+    // nothing ever moves on its own, which is what WCAG 2.2.2 asks for.
+    // The step buttons jump to a stage. Under reduced motion there is no
+    // tall track and no zoom: the buttons swap the stage in place. With
+    // no JS the first stage shows and the page reads normally.
+    const story = document.querySelector("[data-story]") as HTMLElement | null;
+    if (story) {
+      const stage = story.querySelector("[data-story-stage]") as HTMLElement;
+      const slides = Array.from(story.querySelectorAll<HTMLElement>("[data-story-slide]"));
+      const words = Array.from(story.querySelectorAll<HTMLElement>("[data-story-word]"));
+      const steps = Array.from(story.querySelectorAll<HTMLButtonElement>("[data-story-step]"));
+      const lineEl = story.querySelector("[data-story-line]") as HTMLElement;
+      const texts: string[] = JSON.parse(story.dataset.lines || "[]");
+      const n = slides.length;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let i = 0;
-      let paused = reduced;
-      let hovered = false;
-      let timer: number | undefined;
-      const go = (n: number) => {
-        i = (n + slides.length) % slides.length;
-        slides.forEach((el, k) => el.classList.toggle("is-active", k === i));
-        dots.forEach((d, k) => d.setAttribute("aria-pressed", k === i ? "true" : "false"));
+      let current = 0;
+      const show = (k: number) => {
+        if (k === current) return;
+        current = k;
+        slides.forEach((el, j) => el.classList.toggle("is-active", j === k));
+        words.forEach((el, j) => el.classList.toggle("is-active", j === k));
+        steps.forEach((el, j) => {
+          if (j === k) el.setAttribute("aria-current", "step");
+          else el.removeAttribute("aria-current");
+          el.classList.toggle("is-done", j < k);
+        });
+        if (texts[k]) lineEl.textContent = texts[k];
       };
-      const tick = () => {
-        if (!paused && !hovered && !document.hidden) go(i + 1);
-      };
-      const start = () => {
-        if (slides.length > 1 && timer === undefined) timer = window.setInterval(tick, 4500);
-      };
-      dots.forEach((d, k) => d.addEventListener("click", () => { paused = true; go(k); }));
-      show.addEventListener("pointerenter", () => { hovered = true; });
-      show.addEventListener("pointerleave", () => { hovered = false; });
-      show.addEventListener("focusin", () => { hovered = true; });
-      show.addEventListener("focusout", () => { hovered = false; });
-      start();
+      if (reduced || n < 2) {
+        steps.forEach((b, k) => b.addEventListener("click", () => show(k)));
+      } else {
+        document.documentElement.classList.add("dp-story-on");
+        const pinTop = () => parseFloat(getComputedStyle(stage).top) || 0;
+        let ticking = false;
+        const update = () => {
+          ticking = false;
+          const r = story.getBoundingClientRect();
+          const run = r.height - stage.offsetHeight;
+          const p = run > 0 ? Math.min(Math.max((pinTop() - r.top) / run, 0), 0.9999) : 0;
+          const k = Math.floor(p * n);
+          const t = p * n - k;
+          stage.style.setProperty("--t", t.toFixed(3));
+          show(k);
+        };
+        const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll, { passive: true });
+        update();
+        steps.forEach((b, k) => b.addEventListener("click", () => {
+          const r = story.getBoundingClientRect();
+          const run = r.height - stage.offsetHeight;
+          const y = window.scrollY + r.top - pinTop() + run * ((k + 0.08) / n);
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }));
+      }
     }
   </script>
 
@@ -839,7 +885,9 @@ const dealRows = await Promise.all(
      reduced motion), now faint on paper so the pictures' off-white
      studio fields blend into the band. */
   .hp-hero {
-    position: relative; overflow: hidden;
+    /* clip, not hidden: hidden makes the band a scroll container and the
+       pinned story stage could no longer stick to the viewport. */
+    position: relative; overflow: clip;
     background: var(--paper); color: var(--ink);
     padding: 56px 32px 56px;
   }
@@ -940,57 +988,121 @@ const dealRows = await Promise.all(
   .hp-hero-feature:hover .t { color: var(--green); }
   .hp-hero-feature .m { font-size: 12px; font-weight: 600; color: var(--green); }
 
-  /* Hero slideshow — pictures stacked and crossfaded; the edges of each
-     render fade into the band so the object sits on the page, not in a
-     frame (the reel's seamless look). Transform/opacity only. */
-  .hp-hero-show { position: relative; }
-  /* Clean rounded frame with a soft drop shadow. A paper-coloured edge
-     vignette was tried and removed: on the night photograph it greyed the
-     edges into a murky frame (Chairman review, 4 Oct 2026). */
-  .hp-hero-slides {
-    position: relative; width: 100%; aspect-ratio: 4 / 3;
-    border-radius: 16px; overflow: hidden;
-    background: #0f1f2e;
-    box-shadow: 0 30px 60px -32px rgba(15, 31, 46, 0.55), 0 0 0 1px rgba(15, 31, 46, 0.06);
+  /* ── Scroll story (reel direction, 4 Oct 2026) ─────────────────────
+     .hp-story is the track; .hp-story-stage pins inside it. The track is
+     only tall once the script has run (html.dp-story-on), so no-JS and
+     reduced-motion readers get an ordinary block. */
+  .hp-story { position: relative; }
+  .hp-story {
+    --word: clamp(84px, 12vw, 184px);
+    --pin: 132px; /* sticky header + quick-links strip (116px) + air */
   }
-  /* Each picture arrives through a 1.6 s crossfade and keeps drifting in
-     (a slow 6% zoom over the whole dwell) so the hand-off reads as one
-     continuous motion rather than a slide change — the nearest CSS gets
-     to the reel's pour, which is a video. */
-  .hp-hero-slides > img {
+  .hp-story-stage {
+    position: relative;
+    display: grid; justify-items: center;
+    /* The frame covers the lower ~40% of the word, as the object covers
+       the lettering in the reel. */
+    padding-top: calc(var(--word) * 0.74);
+    /* One width for frame, steps and caption. Never taller than the
+       viewport leaves room for: a short laptop screen shrinks the frame
+       rather than push the steps off screen. */
+    --fw: min(100%, 560px, calc((100svh - var(--pin) - var(--word) * 0.74 - 130px) * 4 / 3));
+  }
+  :global(.dp-story-on) .hp-story { height: 330svh; }
+  :global(.dp-story-on) .hp-story-stage {
+    position: sticky; top: var(--pin);
+  }
+  /* Giant word behind the picture: the frame covers its lower half, as
+     the object covers the lettering in the reel. Decorative (aria-hidden);
+     the step list carries the same words for assistive tech. */
+  .hp-story-words {
+    position: absolute; inset: 0 0 auto 0; z-index: 0;
+    height: var(--word);
+    pointer-events: none;
+  }
+  .hp-story-words > span {
+    position: absolute; left: 50%; top: 0;
+    transform: translate(-50%, 18px);
+    font-family: var(--font-display); font-weight: 700;
+    font-size: var(--word); line-height: 0.82; letter-spacing: -0.04em;
+    text-transform: uppercase; white-space: nowrap;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.5s var(--dp-ease), transform 0.6s var(--dp-ease);
+  }
+  .hp-story-words > span.is-active { opacity: 1; transform: translate(-50%, 0); }
+  :global([data-theme="dark"]) .hp-story-words > span { color: var(--gold-lift); }
+
+  .hp-story-frame {
+    position: relative; z-index: 1;
+    /* Never taller than the viewport leaves room for: short laptop
+       screens shrink the frame rather than push the steps off screen. */
+    width: var(--fw);
+    aspect-ratio: 4 / 3;
+    border-radius: 18px; overflow: hidden;
+    background: #0f1f2e;
+    box-shadow: 0 34px 70px -34px rgba(15, 31, 46, 0.6), 0 0 0 1px rgba(15, 31, 46, 0.06);
+  }
+  .hp-story-frame > img {
     position: absolute; inset: 0;
     width: 100%; height: 100%; object-fit: cover;
-    opacity: 0; transform: scale(1);
-    transition: opacity 1.6s var(--dp-ease), transform 1.6s var(--dp-ease);
+    opacity: 0;
+    transform: scale(calc(1.02 + var(--t, 0) * 0.1));
+    transition: opacity 0.7s var(--dp-ease);
+    will-change: transform, opacity;
   }
-  .hp-hero-slides > img.is-active {
-    opacity: 1; transform: scale(1.06);
-    transition: opacity 1.6s var(--dp-ease), transform 6.5s linear;
+  .hp-story-frame > img.is-active { opacity: 1; }
+  :global([data-theme="dark"]) .hp-story-frame > img { filter: brightness(0.9); }
+
+  .hp-story-steps {
+    list-style: none; margin: 18px 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
+    width: var(--fw);
   }
-  :global([data-theme="dark"]) .hp-hero-slides > img { filter: brightness(0.88); }
-  /* Thin dashes over the foot of the picture, as in the reel. */
-  .hp-hero-dots {
-    position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
-    display: flex; gap: 6px; z-index: 2;
+  .hp-story-steps button {
+    width: 100%; padding: 6px 0 0; border: 0; background: transparent; cursor: pointer;
+    display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 2px 6px;
+    text-align: left; color: var(--muted);
+    font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+    touch-action: manipulation;
+    transition: color 0.2s;
   }
-  .hp-hero-dots button {
-    width: 28px; height: 20px; padding: 0; border: 0; background: transparent; cursor: pointer;
-    display: grid; place-items: center; touch-action: manipulation;
+  .hp-story-steps .n { font-variant-numeric: tabular-nums; opacity: 0.7; }
+  .hp-story-steps .bar {
+    grid-column: 1 / -1; order: -1;
+    height: 2px; border-radius: 1px; background: var(--line); overflow: hidden;
   }
-  .hp-hero-dots button::before {
-    content: ""; width: 22px; height: 2px; border-radius: 1px;
-    background: rgba(255, 255, 255, 0.55);
-    box-shadow: 0 0 0 1px rgba(15, 31, 46, 0.12);
-    transition: background 0.15s, transform 0.2s var(--dp-ease-hover);
+  .hp-story-steps .bar i {
+    display: block; height: 100%; background: var(--gold);
+    transform-origin: left; transform: scaleX(0);
   }
-  .hp-hero-dots button:hover::before { background: #fff; }
-  .hp-hero-dots button[aria-pressed="true"]::before { background: var(--gold-lift); transform: scaleY(1.5); }
-  .hp-hero-dots button:focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 2px; border-radius: 4px; }
+  .hp-story-steps button[aria-current="step"] { color: var(--ink); }
+  .hp-story-steps button[aria-current="step"] .bar i { transform: scaleX(var(--t, 1)); }
+  .hp-story-steps button.is-done .bar i { transform: scaleX(1); }
+  .hp-story-steps button:hover { color: var(--ink); }
+  .hp-story-steps button:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 2px; }
+  .hp-story-line {
+    margin: 12px 0 0; width: var(--fw);
+    font-family: var(--font-display); font-size: 18px; line-height: 1.4;
+    color: var(--ink-soft, var(--muted));
+    min-height: 2.8em;
+  }
   @media (prefers-reduced-motion: reduce) {
-    .hp-hero-slides > img, .hp-hero-slides > img.is-active { transition: none; transform: none; }
+    .hp-story-words > span, .hp-story-frame > img { transition: none; transform: translate(-50%, 0); }
+    .hp-story-frame > img { transform: none; }
+  }
+  /* Desktop: text column pins alongside the stage. Phones: text first,
+     then the story track, so the H1 is on the first screen. */
+  @media (min-width: 900px) {
+    .hp-hero-grid { align-items: start; }
+    .hp-story { order: -1; }
+    :global(.dp-story-on) .hp-hero-text { position: sticky; top: calc(var(--pin, 132px) + 40px); }
+    .hp-hero-text { padding-top: 40px; }
   }
   @media (max-width: 899px) {
-    .hp-hero-show { margin-inline: -8px; }
+    .hp-story { --word: clamp(64px, 21vw, 120px); --pin: max(104px, calc(50svh - 250px)); }
+    :global(.dp-story-on) .hp-story { height: 280svh; }
+    .hp-story-line { font-size: 16px; }
   }
 
   /* ── S2b Editor's picks carousel (Phase 3) ────────────────────────── */
