@@ -146,7 +146,7 @@ const featureImg = intel[0] ? getStockEntry(intel[0].imageSlug) : undefined;
 // never a real card face, livery or person. Each entry carries its prompt
 // as provenance and the band renders the "not a photograph" label.
 // Falls back to the feature photo while the renders are still landing.
-// Scroll story (Chairman direction, 4 Oct 2026, from a reel of a coffee
+// Hero story (Chairman direction, 4 Oct 2026, from a reel of a coffee
 // site whose hero is one continuous render scrubbed by scroll — GRIND,
 // POUR, SIP — with giant words behind the object). Four stages of the
 // points journey; each stage is a picture today and can take a short
@@ -477,13 +477,13 @@ const dealRows = await Promise.all(
   </header>
 
   <script>
-    // Scroll story. The stage pins while the reader scrolls through a
-    // tall track; scroll position picks the stage (word, picture, line)
-    // and drives a slow zoom inside it, so the reader is the play head —
-    // nothing ever moves on its own, which is what WCAG 2.2.2 asks for.
-    // The step buttons jump to a stage. Under reduced motion there is no
-    // tall track and no zoom: the buttons swap the stage in place. With
-    // no JS the first stage shows and the page reads normally.
+    // Hero story. The four stages change on their own every 5 s while the
+    // step bar fills; the page itself scrolls normally (a pinned scroll
+    // track was tried and removed the same day: "I dont like this.
+    // Annoying" — Chairman, 4 Oct 2026). WCAG 2.2.2: hover, focus and a
+    // hidden tab pause it; choosing a step stops it for good. Under
+    // reduced motion nothing advances and the steps switch by hand. No
+    // JS: the first stage shows.
     const story = document.querySelector("[data-story]") as HTMLElement | null;
     if (story) {
       const stage = story.querySelector("[data-story-stage]") as HTMLElement;
@@ -494,45 +494,42 @@ const dealRows = await Promise.all(
       const texts: string[] = JSON.parse(story.dataset.lines || "[]");
       const n = slides.length;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const DWELL = 5000;
       let current = 0;
+      let stopped = reduced;
+      let held = false;
+      let elapsed = 0;
+      let last = performance.now();
       const show = (k: number) => {
-        if (k === current) return;
-        current = k;
-        slides.forEach((el, j) => el.classList.toggle("is-active", j === k));
-        words.forEach((el, j) => el.classList.toggle("is-active", j === k));
+        current = (k + n) % n;
+        elapsed = 0;
+        slides.forEach((el, j) => el.classList.toggle("is-active", j === current));
+        words.forEach((el, j) => el.classList.toggle("is-active", j === current));
         steps.forEach((el, j) => {
-          if (j === k) el.setAttribute("aria-current", "step");
+          if (j === current) el.setAttribute("aria-current", "step");
           else el.removeAttribute("aria-current");
-          el.classList.toggle("is-done", j < k);
+          el.classList.toggle("is-done", j < current);
         });
-        if (texts[k]) lineEl.textContent = texts[k];
+        if (texts[current]) lineEl.textContent = texts[current];
+        stage.style.setProperty("--t", stopped ? "1" : "0");
       };
-      if (reduced || n < 2) {
-        steps.forEach((b, k) => b.addEventListener("click", () => show(k)));
-      } else {
-        document.documentElement.classList.add("dp-story-on");
-        const pinTop = () => parseFloat(getComputedStyle(stage).top) || 0;
-        let ticking = false;
-        const update = () => {
-          ticking = false;
-          const r = story.getBoundingClientRect();
-          const run = r.height - stage.offsetHeight;
-          const p = run > 0 ? Math.min(Math.max((pinTop() - r.top) / run, 0), 0.9999) : 0;
-          const k = Math.floor(p * n);
-          const t = p * n - k;
-          stage.style.setProperty("--t", t.toFixed(3));
-          show(k);
+      steps.forEach((b, k) => b.addEventListener("click", () => { stopped = true; show(k); }));
+      if (!stopped && n > 1) {
+        stage.addEventListener("pointerenter", () => { held = true; });
+        stage.addEventListener("pointerleave", () => { held = false; });
+        stage.addEventListener("focusin", () => { held = true; });
+        stage.addEventListener("focusout", () => { held = false; });
+        const frame = (now: number) => {
+          const dt = now - last;
+          last = now;
+          if (!stopped) {
+            if (!held && !document.hidden) elapsed += Math.min(dt, 100);
+            if (elapsed >= DWELL) show(current + 1);
+            else stage.style.setProperty("--t", (elapsed / DWELL).toFixed(3));
+            requestAnimationFrame(frame);
+          }
         };
-        const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
-        window.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", onScroll, { passive: true });
-        update();
-        steps.forEach((b, k) => b.addEventListener("click", () => {
-          const r = story.getBoundingClientRect();
-          const run = r.height - stage.offsetHeight;
-          const y = window.scrollY + r.top - pinTop() + run * ((k + 0.08) / n);
-          window.scrollTo({ top: y, behavior: "smooth" });
-        }));
+        requestAnimationFrame(frame);
       }
     }
   </script>
@@ -988,14 +985,11 @@ const dealRows = await Promise.all(
   .hp-hero-feature:hover .t { color: var(--green); }
   .hp-hero-feature .m { font-size: 12px; font-weight: 600; color: var(--green); }
 
-  /* ── Scroll story (reel direction, 4 Oct 2026) ─────────────────────
-     .hp-story is the track; .hp-story-stage pins inside it. The track is
-     only tall once the script has run (html.dp-story-on), so no-JS and
-     reduced-motion readers get an ordinary block. */
+  /* ── Hero story (reel direction, 4 Oct 2026) ────────────────────────
+     Four stages that change on a 5 s timer; the page scrolls normally. */
   .hp-story { position: relative; }
   .hp-story {
     --word: clamp(84px, 12vw, 184px);
-    --pin: 132px; /* sticky header + quick-links strip (116px) + air */
   }
   .hp-story-stage {
     position: relative;
@@ -1006,11 +1000,7 @@ const dealRows = await Promise.all(
     /* One width for frame, steps and caption. Never taller than the
        viewport leaves room for: a short laptop screen shrinks the frame
        rather than push the steps off screen. */
-    --fw: min(100%, 560px, calc((100svh - var(--pin) - var(--word) * 0.74 - 130px) * 4 / 3));
-  }
-  :global(.dp-story-on) .hp-story { height: 330svh; }
-  :global(.dp-story-on) .hp-story-stage {
-    position: sticky; top: var(--pin);
+    --fw: min(100%, 560px);
   }
   /* Giant word behind the picture: the frame covers its lower half, as
      the object covers the lettering in the reel. Decorative (aria-hidden);
@@ -1047,7 +1037,7 @@ const dealRows = await Promise.all(
     position: absolute; inset: 0;
     width: 100%; height: 100%; object-fit: cover;
     opacity: 0;
-    transform: scale(calc(1.02 + var(--t, 0) * 0.1));
+    transform: scale(calc(1.02 + var(--t, 0) * 0.05));
     transition: opacity 0.7s var(--dp-ease);
     will-change: transform, opacity;
   }
@@ -1096,12 +1086,10 @@ const dealRows = await Promise.all(
   @media (min-width: 900px) {
     .hp-hero-grid { align-items: start; }
     .hp-story { order: -1; }
-    :global(.dp-story-on) .hp-hero-text { position: sticky; top: calc(var(--pin, 132px) + 40px); }
     .hp-hero-text { padding-top: 40px; }
   }
   @media (max-width: 899px) {
-    .hp-story { --word: clamp(64px, 21vw, 120px); --pin: max(104px, calc(50svh - 250px)); }
-    :global(.dp-story-on) .hp-story { height: 280svh; }
+    .hp-story { --word: clamp(64px, 21vw, 120px); }
     .hp-story-line { font-size: 16px; }
   }
 
