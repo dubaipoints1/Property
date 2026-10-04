@@ -84,6 +84,11 @@ current idiom stays in force until each phase ships).
    video clips (fal.ai, paid per clip) await the Chairman's go-ahead and
    a priced quote. Phones get the headline first and the story under it;
    reduced motion gets no pinning and tap-to-switch steps.
+   **Pinning pulled, same evening.** On a phone the pinned stage held the
+   reader on one picture with a blank gap beneath for four screens; the
+   Chairman: "I dont like this. Annoying". The stage no longer pins; the
+   four stages advance on a 5 s timer with the step bar filling, the page
+   scrolls normally, and a step tap stops the timer.
 4. **Card review template** — shipped 4 October: ledger tile replaces the
    CSS card-face mock and its per-issuer tints (trial findings 4 and 19,
    resolved on the house palette rather than by ruling); breadcrumb nav;

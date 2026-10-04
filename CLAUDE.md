@@ -1061,11 +1061,13 @@ image's manifest entry still carries `source: "ai-generated"`, the model
 and the full prompt (the provenance record is untouched), and
 `/editorial-policy/` names the homepage hero pictures as AI
 illustrations in its image-provenance paragraph. Since the same day the
-hero is a **scroll story** (EARN · BOARD · FLY · ARRIVE, after a second
-reel the Chairman sent): the reader's scroll position is the play head
-and nothing moves on its own, so there is no autoplay for WCAG 2.2.2 to
-govern; under `prefers-reduced-motion` the stage does not pin and the
-step buttons switch pictures in place.
+hero is a four-stage **story** (EARN · BOARD · FLY · ARRIVE, after a
+second reel the Chairman sent). A scroll-pinned version shipped and was
+pulled within hours on the Chairman's word ("I dont like this.
+Annoying"): **do not pin the homepage to scroll**. The stages now advance
+on a 5-second timer while the page scrolls normally; hover, focus and a
+hidden tab pause it, choosing a step stops it (WCAG 2.2.2), and under
+`prefers-reduced-motion` nothing advances.
 
 **Scope, and this is the load-bearing part.** This exemption is the
 homepage hero only. Everywhere else — article covers, guide heroes, card
