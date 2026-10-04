@@ -254,6 +254,12 @@ Added 4 October 2026 from the `claude-code-setup` recommender:
   `mcp.context7.com` is denied by the web environment's egress policy as of
   4 October 2026, so it works from a workstation only until the host is
   allowlisted.
+- **MCP**: `21st` (21st.dev Magic, UI component generation) in `.mcp.json`.
+  The key is read from the `TWENTYFIRST_API_KEY` environment variable and is
+  never committed. `21st.dev` is also egress-blocked in web sessions as of
+  4 October 2026. Its output is React + Tailwind: under the 2026-07-25
+  amendment it is a **mockup**, rebuilt in the house idiom (Astro / Preact,
+  CSS tokens) before anything ships.
 
 ## Audit harness (opt-in)
 
