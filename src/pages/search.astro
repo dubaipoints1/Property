@@ -80,10 +80,10 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     --pagefind-ui-border-radius: 10px;
     --pagefind-ui-image-border-radius: 8px;
     --pagefind-ui-image-box-ratio: 3 / 2;
-    --pagefind-ui-font: 'DM Sans', system-ui, sans-serif;
+    --pagefind-ui-font: var(--font-ui);
   }
   :global(.pagefind-ui__search-input) {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 16px !important;
   }
   .dp-search-fallback,

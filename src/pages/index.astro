@@ -47,6 +47,8 @@ import {
   loyaltyTag,
   welcomeBonusRank,
   compareByWelcomeValue,
+  annualFeeLabel,
+  welcomeBonusHeadline,
 } from "~/lib/cardsDataFormat";
 import { getStockEntry } from "~/lib/stockManifest";
 import { getLiveOffers } from "~/lib/offerAdapter";
@@ -152,6 +154,42 @@ const heroSweetSpot = flagshipProgramme?.data.sweetSpots[0];
 type ActiveCard = ReturnType<typeof getActiveCards>[number];
 const bankNameOf = (c: ActiveCard) =>
   allBanks.find((b) => b.id === c.bank)?.data.name ?? c.bank;
+
+// ── Redesign Phase 3 (4 Oct 2026) ─────────────────────────────────────
+// Editor's picks carousel: the L3 `tier` is the editor's own verdict
+// (editors-pick / strong), joined to L2 by slug. Figures below are L2.
+const cardsL3 = await getCollection("cards");
+const tierOf = new Map(cardsL3.map((e) => [e.data.slug, e.data.tier]));
+const TIER_LABEL: Record<string, string> = { "editors-pick": "Editor's pick", strong: "Strong" };
+const picks = cards
+  .filter((c) => tierOf.get(c.slug) === "editors-pick" || tierOf.get(c.slug) === "strong")
+  .sort((a, b) =>
+    (tierOf.get(a.slug) === "editors-pick" ? 0 : 1) - (tierOf.get(b.slug) === "editors-pick" ? 0 : 1) ||
+    a.name.localeCompare(b.name),
+  )
+  .slice(0, 12)
+  .map((c) => ({
+    slug: c.slug,
+    name: c.name,
+    bankName: bankNameOf(c),
+    tier: TIER_LABEL[tierOf.get(c.slug) as string] ?? "",
+    fee: annualFeeLabel(c),
+    bonus: welcomeBonusHeadline(c.welcomeBonus as Parameters<typeof welcomeBonusHeadline>[0]),
+    fx: typeof c.fxFee === "number" ? `${c.fxFee}%` : null,
+    verified: new Date(c.lastVerified),
+  }));
+
+// Hover preview (desktop pointer only, pure CSS) for the strategy rows.
+const peekFor = (slug: string) => {
+  const c = cards.find((x) => x.slug === slug);
+  if (!c) return null;
+  return {
+    fee: annualFeeLabel(c),
+    bonus: welcomeBonusHeadline(c.welcomeBonus as Parameters<typeof welcomeBonusHeadline>[0]) || null,
+    fx: typeof c.fxFee === "number" ? `${c.fxFee}%` : null,
+  };
+};
+
 const spendRate = (c: ActiveCard, key: string): number => {
   const v = (c.earnRates as Record<string, unknown>)[key];
   return typeof v === "number" ? v : (c.earnRates.everythingElse ?? 0);
@@ -429,6 +467,43 @@ const dealRows = await Promise.all(
     </div>
   </section>
 
+  <!-- ── S2b. Editor's picks — swipeable carousel (Phase 3, 4 Oct 2026) ─ -->
+  {picks.length > 0 && (
+    <section class="hp-picks" aria-label="Editor's picks">
+      <div class="hp-picks-head">
+        <div>
+          <span class="hp-band-eyebrow">Editor's picks</span>
+          <h2>Cards the desk rates.</h2>
+        </div>
+        <div class="dp-carousel-nav">
+          <button type="button" class="dp-carousel-btn" data-carousel-prev aria-label="Previous cards" hidden>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 6 9 12 15 18"/></svg>
+          </button>
+          <button type="button" class="dp-carousel-btn" data-carousel-next aria-label="Next cards" hidden>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>
+          </button>
+        </div>
+      </div>
+      <ul class="dp-carousel" data-carousel>
+        {picks.map((c) => (
+          <li class="dp-carousel-item">
+            <a href={`/cards/${c.slug}/`} class="hp-pick">
+              <span class="hp-pick-tier">{c.tier}</span>
+              <span class="hp-pick-name">{c.name}</span>
+              <span class="hp-pick-bank">{c.bankName}</span>
+              <span class="hp-pick-facts">
+                <span><small>Annual fee</small><strong>{c.fee.amount}{c.fee.qual ? <em> {c.fee.qual}</em> : null}</strong></span>
+                {c.bonus ? <span><small>Welcome</small><strong>{c.bonus}</strong></span> : null}
+                {c.fx ? <span><small>FX fee</small><strong>{c.fx}</strong></span> : null}
+              </span>
+              <span class="hp-pick-foot">Verified {fmtShort(c.verified)} · Read the review →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
   <!-- ── S3. Live desk — salary offers + deals, one module ──────────── -->
   {(offerRows.length > 0 || dealRows.length > 0) && (
     <section class="dp-live-desk" aria-label="Live data desk">
@@ -556,13 +631,21 @@ const dealRows = await Promise.all(
           <ol class="dps-cards">
             {g.cards.map((c, i) => (
               <li>
-                <a href={`/cards/${c.slug}/`}>
+                <a href={`/cards/${c.slug}/`} class="has-peek">
                   <span class="rank">{i + 1}</span>
                   <span>
                     <span class="name">{c.name}</span>
                     <span class="bank">{c.bank}</span>
                   </span>
                   <span class="stat">{c.stat}{c.statSub && <small>{c.statSub}</small>}</span>
+                  {(() => { const pk = peekFor(c.slug); return pk && (
+                    <span class="dp-peek" aria-hidden="true">
+                      <span class="dp-peek-row"><span>Annual fee</span><strong>{pk.fee.amount}{pk.fee.qual ? ` ${pk.fee.qual}` : ""}</strong></span>
+                      {pk.bonus && <span class="dp-peek-row"><span>Welcome</span><strong>{pk.bonus}</strong></span>}
+                      {pk.fx && <span class="dp-peek-row"><span>FX fee</span><strong>{pk.fx}</strong></span>}
+                      <span class="dp-peek-more">Read the review →</span>
+                    </span>
+                  ); })()}
                 </a>
               </li>
             ))}
@@ -680,11 +763,22 @@ const dealRows = await Promise.all(
 
 <style>
   /* ── S1 hero — page-unique ─────────────────────────────────────────── */
+  /* Phase 3 (4 Oct 2026, A+B direction): the hero is a navy band with a
+     slow gold/navy light drifting behind it (animation in global.css,
+     off under reduced motion). Text colours are fixed for the band, so
+     light and dark themes read the same here. */
   .hp-hero {
-    /* Keep the 3px ink masthead rule — the Quiet Ledger idiom. */
-    border-top: 3px solid var(--ink);
-    padding: 56px 32px 48px;
+    position: relative; overflow: hidden;
+    background: var(--navy); color: #fff;
+    padding: 72px 32px 64px;
   }
+  .hp-hero::before {
+    content: ""; position: absolute; inset: -20%; pointer-events: none;
+    background:
+      radial-gradient(45% 55% at 78% 18%, rgba(184, 132, 42, 0.30), transparent 62%),
+      radial-gradient(40% 50% at 12% 88%, rgba(143, 179, 204, 0.24), transparent 60%);
+  }
+  .hp-hero-grid { position: relative; z-index: 1; }
   .hp-hero-grid {
     max-width: var(--container-listing);
     margin: 0 auto;
@@ -700,7 +794,7 @@ const dealRows = await Promise.all(
     display: inline-flex; align-items: center; gap: 8px;
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
-    color: var(--green);
+    color: #d9a441;
     margin-bottom: 18px;
   }
   .hp-hero-kicker .dot {
@@ -708,22 +802,22 @@ const dealRows = await Promise.all(
     background: var(--gold);
   }
   .hp-hero h1 {
-    font-family: 'Fraunces', serif; font-weight: 700;
+    font-family: var(--font-display); font-weight: 700;
     font-size: clamp(46px, 5.6vw, 72px);
-    letter-spacing: -1.8px; line-height: 1.04;
-    color: var(--ink);
+    letter-spacing: -1.4px; line-height: 1.02;
+    color: #fff;
     margin: 0 0 18px;
   }
   /* The italic accent word is the v0 design's signature, readopted on
      Chairman direction (29 Aug 2026) in the primary accent. */
   .hp-hero h1 em {
     font-style: italic;
-    color: var(--green);
+    color: #d9a441;
     white-space: nowrap; /* keeps "Pay less" on one line without a &nbsp; that some readers join into one word (F-040) */
   }
   .hp-hero-lede {
-    font-size: 17px; line-height: 1.6;
-    color: var(--ink-soft);
+    font-size: 18px; line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
     max-width: 46ch;
     margin: 0 0 26px;
   }
@@ -732,19 +826,21 @@ const dealRows = await Promise.all(
   .hp-hero-cta {
     display: inline-flex; align-items: center;
     padding: 14px 24px;
-    background: var(--ink); color: var(--paper);
-    font-size: 14px; font-weight: 600;
+    border-radius: 6px;
+    background: var(--gold); color: var(--ink);
+    font-size: 15px; font-weight: 700;
     text-decoration: none;
-    transition: background 0.15s, opacity 0.15s;
+    transition: background 0.15s, transform 0.15s;
   }
-  .hp-hero-cta:hover { opacity: 0.9; }
+  .hp-hero-cta:hover { background: #c9933a; transform: translateY(-1px); }
   .hp-hero-cta.is-ghost {
-    background: transparent; color: var(--ink);
-    padding: 14px 6px;
+    background: transparent; color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 13px 20px; font-weight: 600;
   }
-  .hp-hero-cta.is-ghost:hover { color: var(--green); }
+  .hp-hero-cta.is-ghost:hover { background: transparent; color: #d9a441; border-color: #d9a441; }
   .hp-hero-micro {
-    font-size: 12px; color: var(--muted);
+    font-size: 12px; color: rgba(255, 255, 255, 0.6);
     margin: 14px 0 0;
   }
   .hp-hero-trust {
@@ -752,11 +848,11 @@ const dealRows = await Promise.all(
     margin: 30px 0 0;
     font-size: 11px; font-weight: 600;
     letter-spacing: 1.4px; text-transform: uppercase;
-    color: var(--muted);
+    color: rgba(255, 255, 255, 0.62);
   }
   .hp-hero-trust span { padding-right: 14px; }
   .hp-hero-trust span + span {
-    border-left: 1px solid var(--line);
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
     padding-left: 14px;
   }
 
@@ -811,7 +907,7 @@ const dealRows = await Promise.all(
     color: var(--muted);
   }
   .hp-hero-play .t {
-    font-family: 'Fraunces', serif; font-weight: 500;
+    font-family: var(--font-display); font-weight: 500;
     font-size: 19px; line-height: 1.25; letter-spacing: -0.2px;
     color: var(--ink);
     transition: color 0.15s;
@@ -820,6 +916,59 @@ const dealRows = await Promise.all(
   .hp-hero-play .m {
     font-size: 12px; font-weight: 600;
     color: var(--green);
+  }
+
+  /* ── S2b Editor's picks carousel (Phase 3) ────────────────────────── */
+  .hp-picks { padding: 48px 32px 24px; }
+  .hp-picks-head,
+  .hp-picks .dp-carousel {
+    max-width: var(--container-listing);
+    margin-left: auto; margin-right: auto;
+  }
+  .hp-picks-head {
+    display: flex; flex-wrap: wrap;
+    align-items: flex-end; justify-content: space-between;
+    gap: 12px 32px; margin-bottom: 20px;
+  }
+  .hp-picks-head h2 {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(26px, 3vw, 34px); letter-spacing: -0.5px; line-height: 1.1;
+    color: var(--ink); margin: 0;
+  }
+  .hp-pick {
+    display: flex; flex-direction: column; gap: 8px;
+    height: 100%; padding: 20px 20px 18px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
+    text-decoration: none; color: var(--ink);
+    transition: border-color 0.15s, transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hp-pick:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -16px rgba(15, 42, 68, 0.45);
+  }
+  .hp-pick-tier {
+    font-size: 10px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--gold-ink); /* --gold on paper is 3.2:1 at 10px; --gold-ink clears AA */
+  }
+  .hp-pick-name {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 21px; line-height: 1.2; letter-spacing: -0.2px;
+  }
+  .hp-pick:hover .hp-pick-name { color: var(--green); }
+  .hp-pick-bank { font-size: 12px; color: var(--muted); }
+  .hp-pick-facts {
+    display: grid; gap: 8px; margin-top: 8px; padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .hp-pick-facts > span { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
+  .hp-pick-facts small { color: var(--muted); font-size: 12px; }
+  .hp-pick-facts strong { font-weight: 700; text-align: right; }
+  .hp-pick-facts em { font-style: normal; font-weight: 400; color: var(--muted); font-size: 11px; }
+  .hp-pick-foot { margin-top: auto; padding-top: 10px; font-size: 12px; font-weight: 600; color: var(--green); }
+  @media (max-width: 640px) {
+    .hp-picks { padding: 36px 20px 16px; }
   }
 
   /* ── S2 tools band — sand surface ─────────────────────────────────── */
@@ -847,7 +996,7 @@ const dealRows = await Promise.all(
   }
   .hp-tools-head h2,
   .hp-fresh-head h2 {
-    font-family: 'Fraunces', serif; font-weight: 600;
+    font-family: var(--font-display); font-weight: 600;
     font-size: clamp(28px, 3.4vw, 40px);
     letter-spacing: -0.7px; line-height: 1.1;
     color: var(--ink);
@@ -1001,7 +1150,7 @@ const dealRows = await Promise.all(
     margin-bottom: 12px;
   }
   .hp-news h2 {
-    font-family: 'Fraunces', serif; font-weight: 600;
+    font-family: var(--font-display); font-weight: 600;
     font-size: clamp(28px, 3.6vw, 42px);
     letter-spacing: -0.7px; line-height: 1.1;
     color: #ffffff;

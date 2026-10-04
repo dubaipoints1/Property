@@ -32,12 +32,14 @@ current idiom stays in force until each phase ships).
 1. **Motion layer** — shipped first (this brief's opening PR): hero
    entrance, scroll reveal, number ticker, cursor spotlight, tile lift, CTA
    shine. Reduced-motion safe, visible without JS.
-2. **Typography** — Fraunces → Newsreader, DM Sans → Geist. The font names
-   are literal strings in ~41 files; the swap should introduce
-   `--font-display` / `--font-ui` tokens so the next change is one line.
-   Held: a bulk in-place rewrite across 41 files needs the Chairman's go
-   for that method (the session's permission layer blocked it).
-3. **Homepage** — rebuild S1–S8 to the A+B board.
+2. **Typography** — shipped 4 October ("Do all"): `--font-display`
+   (Newsreader) / `--font-ui` (Geist) tokens; 336 literals in 53 files
+   replaced; the Google Fonts link and the SVG cover updated.
+3. **Homepage** — first six items shipped 4 October: navy hero band with a
+   drifting gold/navy light, gold shimmer CTA, hover previews on the
+   strategy rows, Editor's picks carousel (L3 `tier` editors-pick/strong,
+   L2 figures), outlined footer wordmark, mobile-menu stagger. Remaining:
+   S3–S8 restyle to the A+B board.
 4. **Card review template** — A+B treatment plus trial findings 3, 5–9,
    12, 16–18, 20 (`.council/research/2026-10/web-design-guidelines-trial-
    card-review-2026-10-04.md`).

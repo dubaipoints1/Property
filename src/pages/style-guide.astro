@@ -22,12 +22,12 @@ const palette = [
 ];
 
 const typeScale = [
-  { label: "Hero h1",        sample: "What's a UAE Mile actually worth?", style: "font-family:'Fraunces',serif;font-weight:500;font-size:clamp(32px,4.5vw,48px);letter-spacing:-1.2px;color:var(--ink);" },
-  { label: "Section h2",     sample: "How the score works",               style: "font-family:'Fraunces',serif;font-weight:500;font-size:clamp(20px,2.6vw,26px);letter-spacing:-0.4px;color:var(--ink);" },
-  { label: "Italic deck",    sample: "AED-first, source-verified, UAE-resident.", style: "font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:22px;color:var(--ink-soft);" },
-  { label: "Body p",         sample: "DubaiPoints publishes UAE-resident analysis.", style: "font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.65;color:var(--ink-soft);" },
-  { label: "Eyebrow",        sample: "EDITORIAL POLICY",                  style: "font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);" },
-  { label: "Tabular num",    sample: "AED 12,400.00",                     style: "font-family:'DM Sans',sans-serif;font-feature-settings:'tnum';font-size:15px;font-weight:600;color:var(--ink);" },
+  { label: "Hero h1",        sample: "What's a UAE Mile actually worth?", style: "font-family: var(--font-display);font-weight:500;font-size:clamp(32px,4.5vw,48px);letter-spacing:-1.2px;color:var(--ink);" },
+  { label: "Section h2",     sample: "How the score works",               style: "font-family: var(--font-display);font-weight:500;font-size:clamp(20px,2.6vw,26px);letter-spacing:-0.4px;color:var(--ink);" },
+  { label: "Italic deck",    sample: "AED-first, source-verified, UAE-resident.", style: "font-family: var(--font-display);font-style:italic;font-weight:500;font-size:22px;color:var(--ink-soft);" },
+  { label: "Body p",         sample: "DubaiPoints publishes UAE-resident analysis.", style: "font-family: var(--font-ui);font-size:15px;line-height:1.65;color:var(--ink-soft);" },
+  { label: "Eyebrow",        sample: "EDITORIAL POLICY",                  style: "font-family: var(--font-ui);font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);" },
+  { label: "Tabular num",    sample: "AED 12,400.00",                     style: "font-family: var(--font-ui);font-feature-settings:'tnum';font-size:15px;font-weight:600;color:var(--ink);" },
 ];
 
 const components = [
@@ -48,7 +48,7 @@ const components = [
   { name: ".dp-feed",                desc: "Numbered feed list — used on section index pages below the featured grid." },
   { name: ".dp-story-card",          desc: "Hero / med / sm story card variants for the featured band." },
   { name: ".dp-trust-meta",          desc: "Compact 'Last updated · Editorial standards' strip below trust-page heads." },
-  { name: ".dp-glossary",            desc: "<dl> styling for glossary terms — Fraunces dt, soft-ink dd, hairline rules." },
+  { name: ".dp-glossary",            desc: "<dl> styling for glossary terms — display-serif dt, soft-ink dd, hairline rules." },
 ];
 ---
 
@@ -191,7 +191,7 @@ const components = [
   }
   section { margin-bottom: 48px; }
   section h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(22px, 2.6vw, 28px);
     letter-spacing: -0.5px;
@@ -313,7 +313,7 @@ const components = [
   }
   .sg-kill-row:last-child { border-bottom: 0; }
   .sg-kill-row .r {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 1.8px;

@@ -237,14 +237,14 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   }
   .intel-pagehead-inner { max-width: var(--container-listing); margin: 0 auto; }
   .intel-pagehead .crumb {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
     margin-bottom: 16px;
   }
   .intel-pagehead h1 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(38px, 5.6vw, 58px);
     letter-spacing: -1.6px;
@@ -266,7 +266,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   }
   .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
   .intel-tab {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
     color: var(--ink-soft);
     padding: 8px 14px;
@@ -281,7 +281,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   .intel-tab.is-active { background: var(--ink); color: var(--paper); cursor: default; }
   .intel-feed {
     display: inline-flex; align-items: center; gap: 6px;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 1.5px; text-transform: uppercase;
     color: var(--muted);
@@ -310,7 +310,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   }
   .intel-search input[type="search"] {
     border: 0; background: transparent; outline: none;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 16px;
     color: var(--ink);
     width: 100%;
@@ -362,13 +362,13 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   }
   .intel-featured-body { padding: 24px 28px 28px; display: grid; gap: 10px; }
   .intel-featured-eyebrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
   }
   .intel-featured-body h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(24px, 3.4vw, 34px);
     letter-spacing: -0.9px;
@@ -386,7 +386,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     max-width: 64ch;
   }
   .intel-featured-meta {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.3px;
@@ -426,13 +426,13 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   }
   .intel-card-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
   .intel-card-cat {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--green);
   }
   .intel-card h3 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 18px;
     letter-spacing: -0.3px;
@@ -447,7 +447,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     color: var(--ink-soft); margin: 0;
   }
   .intel-card-meta {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; color: var(--muted);
     letter-spacing: 0.2px; margin-top: 2px;
   }
@@ -465,13 +465,13 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     gap: 14px;
   }
   .news-empty :global(.news-empty-eyebrow) {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
   }
   .news-empty :global(h2) {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(26px, 3.4vw, 36px);
     letter-spacing: -0.9px;
@@ -503,7 +503,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     background: var(--ink);
     color: var(--paper);
     border-radius: 999px;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.3px;
@@ -533,7 +533,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     padding: 22px;
   }
   .intel-trending .dp-rail-heading {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; letter-spacing: 2.5px;
     text-transform: uppercase; color: var(--green);
     margin: 0 0 14px; font-weight: 700;
@@ -556,7 +556,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   }
   .intel-trending a {
     color: var(--ink);
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500; letter-spacing: -0.2px;
     text-decoration: none;
   }
@@ -572,20 +572,20 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     display: grid; gap: 8px;
   }
   .intel-insider .eyebrow {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: rgba(255, 255, 255, 0.75);
   }
   .intel-insider .dp-rail-heading {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500; font-size: 19px;
     line-height: 1.2; letter-spacing: -0.4px;
     color: white; margin: 0;
     text-wrap: balance;
   }
   .intel-insider p {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px; line-height: 1.5;
     color: rgba(255, 255, 255, 0.88);
     margin: 4px 0 6px;
@@ -595,7 +595,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     height: 36px; padding: 0 16px;
     background: white; color: var(--green);
     border-radius: 999px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px; font-weight: 700; letter-spacing: 0.4px;
     text-decoration: none; align-self: start;
     transition: opacity 0.15s ease;

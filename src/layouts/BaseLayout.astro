@@ -123,19 +123,19 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Font loading: preconnect first, then a non-render-blocking stylesheet.
-         Weights pruned to in-use axes only (~9 files vs 14). -->
+         Redesign Phase 2 (A+B): Newsreader display + Geist UI. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=optional"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&display=optional"
       media="print"
       onload="this.setAttribute('media','all')"
     />
     <noscript>
       <link
         rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=optional"
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&display=optional"
       />
     </noscript>
     {schema && <SchemaJsonLd schema={schema} />}
@@ -213,6 +213,27 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
           }
         });
         document.querySelectorAll("[data-count]").forEach((el) => tick.observe(el));
+
+        // Carousel prev/next: buttons stay hidden until wired, so no-JS
+        // readers get a plain swipeable row with nothing inert on it.
+        document.querySelectorAll("[data-carousel]").forEach((track) => {
+          const section = track.closest("section") ?? track.parentElement;
+          const prev = section?.querySelector("[data-carousel-prev]") as HTMLButtonElement | null;
+          const next = section?.querySelector("[data-carousel-next]") as HTMLButtonElement | null;
+          if (!prev || !next) return;
+          const el = track as HTMLElement;
+          const page = () => Math.max(el.clientWidth * 0.8, 240);
+          const sync = () => {
+            prev.disabled = el.scrollLeft <= 2;
+            next.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
+          };
+          prev.hidden = next.hidden = false;
+          prev.addEventListener("click", () => el.scrollBy({ left: -page(), behavior: "smooth" }));
+          next.addEventListener("click", () => el.scrollBy({ left: page(), behavior: "smooth" }));
+          el.addEventListener("scroll", sync, { passive: true });
+          window.addEventListener("resize", sync, { passive: true });
+          sync();
+        });
 
         // Cursor spotlight on tiles (pointer devices).
         if (window.matchMedia("(hover: hover)").matches) {

@@ -894,8 +894,10 @@ code, not lint rules — match them when adding pages:
   on bank hubs). Each colour has a single job — don't mix them in
   one element. The legacy electric-blue `--brand` token survives
   only as a fallback alias to `--link`; new code uses `--green`.
-- **Type.** Fraunces (serif) for headlines / eyebrows / "Our take"
-  labels; DM Sans for body and UI.
+- **Type.** Newsreader (serif) for headlines / eyebrows / "Our take"
+  labels; Geist for body and UI — via `--font-display` / `--font-ui` in
+  `global.css` since redesign Phase 2 (4 October 2026). Never a literal
+  font name in a component.
 - **Long-form page skeleton.** `BaseLayout` with `fullWidth`, then
   `<article class="dp-article">`, then `.dp-article-head` +
   sections. **Directory pages:** `<article class="dp-article
