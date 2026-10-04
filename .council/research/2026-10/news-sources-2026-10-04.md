@@ -41,6 +41,21 @@ Verbatim:
 > Tickets can be booked now on emirates.com, the Emirates App or via
 > travel agents.
 
+Added after Stage 6 (fact-check findings 7 and 8 asked for the words):
+
+> The daily service has been scheduled to ensure smooth onward
+> connections, offering convenient access to and from key destinations
+> across East and Southeast Asia, and connectivity across West Asia and
+> popular Indian Ocean points; major cities in Africa, the Middle East and
+> GCC; as well as Australasia.
+
+> Emirates Holidays, the airline's tour operating arm, offers curated
+> holiday packages to Finland, covering Helsinki and Lapland, including
+> Rovaniemi, also known as the Official Hometown of Santa Claus.
+
+> Premium Economy, the airline's award-winning new cabin offers enhanced
+> comfort …
+
 Post: `src/content/news/emirates-launches-daily-dubai-helsinki-a350.mdx`.
 
 ---
@@ -73,6 +88,37 @@ HfP verbatim (secondary — discovery and attribution only, see Charter
 > transfers worth 100,000+ Avios
 
 > Rule 5: Bonus points will arrive by 30th November 2026
+
+Added after Stage 6 (findings 22, 24, 26 asked for the words). HfP's full
+rules list and valuation passage, verbatim:
+
+> Rule 1: You must convert your hotel points to Qatar Airways Privilege
+> Club Avios by 31st October. This is the date by which the points must
+> leave your hotel account, not arrive at qatarairways.com ("Bonus Avios
+> will be credited as per the transaction date notified by the relevant
+> Participating Partner to Qatar Airways Privilege Club")
+
+> Rule 4: There are no minimum transfer requirements beyond whatever the
+> usual minimum is for moving out of these schemes
+
+No registration step appears anywhere in HfP's five rules.
+
+> In general, hotel points are best redeemed for hotel stays.
+
+> ALL Accor – 15,000 ALL points = 7,500 Avios (2 : 1) or a €300 (£250)
+> room based on €1 = 50 ALL points
+
+> Forget ALL Accor. There's a very simple reason. If you transfer ALL
+> Accor points to Iberia Avios, you get 1:1. The rate to Qatar Airways
+> Avios is 2:1.5, so you need the 35% bonus to beat, very marginally,
+> Iberia's 1:1!
+
+> You are probably better leaving large stashes of IHG One Rewards,
+> Shangri-La Circle or World of Hyatt hotel points where they are.
+
+Note for the post: HfP's own Accor → Qatar rate differs between its table
+(2:1) and its prose (2:1.5), so the post attributes the conclusion and not
+the ratio figures.
 
 Primary page text: see §2a below (reader run pending at time of writing).
 
