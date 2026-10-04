@@ -26,9 +26,11 @@ Where a rule below conflicts with the house, the house wins:
 4. This file.
 
 Never "fix" a finding by introducing a Tailwind palette utility, a new
-hue, a new font, or a stock component library. Fixes use the existing
-tokens (`--ink`, `--green`, `--gold`, `--navy-lift`, …) and `.dp-*`
-classes.
+hue, a new font, or a stock component library. Fixes use the tokens and
+classes of the idiom in force — today `--ink`, `--green`, `--gold`,
+`--navy-lift`, … and `.dp-*`. The 2026-10-04 amendment opens the look to
+a redesign; once the Chairman ratifies a new direction, its tokens take
+this place and this checklist applies to them unchanged.
 
 ### House overrides to the upstream rules
 

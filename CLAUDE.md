@@ -1002,6 +1002,46 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-10-04 — The site's look is open to a redesign; reference design systems permitted
+
+On Chairman direction (4 October 2026), recorded verbatim as the basis of
+the ruling: "if we need to make changes to the council charter or design
+that is fine we want like similair premium looking sites. Thats ehy even
+awesome design is ok i am open to changing the look of the site". It
+followed the adoption of the `web-design-guidelines` skill (PR #424) and a
+session note that DESIGN.md reference sets were being held back as
+"copying other brands".
+
+**The rule.**
+
+1. **The visual idiom is open.** The palette (including the two-accent
+   and no-third-hue rules of 2026-07-25 and R1 of 2026-09-10), the
+   typefaces and the `.dp-*` look may be replaced by a redesign. A
+   redesign is T3: a brief, a direction the Chairman picks from rendered
+   options, then a phased build. **Until the Chairman ratifies a new
+   direction, the current idiom stays in force** — opening the question
+   does not suspend the existing rules mid-flight.
+2. **Reference design systems are permitted as inspiration.** DESIGN.md
+   analyses of premium sites (e.g. `VoltAgent/awesome-design-md`), and
+   the sites themselves, may inform type scale, spacing, layout, numeric
+   treatment and component patterns. What is not taken: another
+   company's logo or wordmark, its proprietary typefaces, or a signature
+   identity element a reader would recognise as that company's (Stripe's
+   gradient mesh, Apple's product-tile system as a whole). The result has
+   to read as DubaiPoints, not as a clone of the reference.
+3. **The direction is chosen from mockups.** The first set — Ledger
+   (fintech), Broadsheet (editorial), Gallery (photo-first) — was built
+   on 4 October 2026 with real L2 figures for FAB Etihad Guest Infinite
+   and ADCB Traveller and bracketed placeholders for everything else.
+
+**Unchanged.** The 2026-07-25 rule that AI design tools produce mockups
+and never code; §6 (no invented figures, in mockups or on the site); the
+AI-imagery permit/ban line of 2026-07-29; honest-nav; and the
+`web-design-guidelines` checklist, which applies to whatever idiom is in
+force.
+
+— Chairman, 4 October 2026.
+
 ### 2026-10-01 — No incident, safety or security stories
 
 On Chairman direction (1 October 2026), recorded verbatim as the basis of
