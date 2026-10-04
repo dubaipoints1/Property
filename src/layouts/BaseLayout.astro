@@ -193,25 +193,29 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
       if (!reduced && "IntersectionObserver" in window) {
         document.documentElement.classList.add("dp-motion");
 
-        // Scroll reveal: sections and tiles rise in as they enter view.
+        // Scroll reveal: opt-in. Homepage bands carry data-reveal; directory
+        // tiles, tool cards and the featured band's articles are included by
+        // class. Never a prose <section> on a reading page (motion audit F1),
+        // and never an element inside another reveal (F3).
         const targets = document.querySelectorAll(
-          "main section, .dp-dir-tile, .dp-tool, .dp-featured-band article",
+          "[data-reveal], .dp-dir-tile, .dp-tool, .dp-featured-band article",
         );
         const io = new IntersectionObserver(
           (entries) => {
+            // Stagger by position within the batch that entered together,
+            // capped at 3 × 60 ms — not by DOM index (F2).
+            let i = 0;
             for (const e of entries) {
-              if (e.isIntersecting) {
-                e.target.classList.add("is-in");
-                io.unobserve(e.target);
-              }
+              if (!e.isIntersecting) continue;
+              (e.target as HTMLElement).style.setProperty("--dp-i", String(Math.min(i++, 3)));
+              e.target.classList.add("is-in");
+              io.unobserve(e.target);
             }
           },
           { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
         );
         targets.forEach((el) => {
-          const siblings = el.parentElement ? Array.from(el.parentElement.children) : [];
-          const i = Math.min(siblings.indexOf(el), 6);
-          (el as HTMLElement).style.setProperty("--dp-i", String(Math.max(i, 0)));
+          if (el.parentElement?.closest(".dp-reveal, [data-reveal]")) return;
           el.classList.add("dp-reveal");
           io.observe(el);
         });
@@ -225,7 +229,7 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
             const end = parseInt((el.textContent || "").replace(/[^0-9]/g, ""), 10);
             if (!Number.isFinite(end) || end <= 0) continue;
             const t0 = performance.now();
-            const dur = 900;
+            const dur = 600;
             const step = (now: number) => {
               const p = Math.min((now - t0) / dur, 1);
               const v = Math.round(end * (1 - Math.pow(1 - p, 3)));
@@ -236,7 +240,11 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
             requestAnimationFrame(step);
           }
         });
-        document.querySelectorAll("[data-count]").forEach((el) => tick.observe(el));
+        // Start after the hero entrance has brought the figure to full
+        // opacity, so no part of the count runs unseen (F4).
+        setTimeout(() => {
+          document.querySelectorAll("[data-count]").forEach((el) => tick.observe(el));
+        }, 750);
 
         // Cursor spotlight on tiles (pointer devices).
         if (window.matchMedia("(hover: hover)").matches) {
