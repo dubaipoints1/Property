@@ -407,10 +407,55 @@ const dealRows = await Promise.all(
 >
   <!-- ── S1. Hero: masthead + feature story ─────────────────────────── -->
   <header class="dp-pagehead is-hero hp-hero">
+    <div class="hp-story" data-story data-clip={REEL.clip} data-lines={JSON.stringify(REEL_STAGES.map((st) => st.line))}>
+      <div class="hp-story-stage" data-story-stage>
+        <div class="hp-story-words" aria-hidden="true">
+          {REEL_STAGES.map((st, i) => (
+            <span class={i === 0 ? "is-active" : undefined} data-story-word>{st.word}</span>
+          ))}
+        </div>
+        <div class="hp-story-frame">
+          <video
+            muted
+            playsinline
+            loop
+            preload="metadata"
+            poster={REEL.poster ? `/${REEL.poster.file}` : undefined}
+            width="1280"
+            height="960"
+            aria-label="A navy card turns into an aircraft window, the view becomes Dubai lit up at night, and the city lights gather back into the card"
+            data-story-video
+          >
+            <source src={REEL.srcSmall} type="video/mp4" media="(max-width: 899px)" />
+            <source src={REEL.src} type="video/mp4" />
+          </video>
+        </div>
+        <div class="hp-story-controls">
+          <ol class="hp-story-steps" aria-label="The points journey">
+            {REEL_STAGES.map((st, i) => (
+              <li>
+                <button type="button" data-story-step={i} aria-current={i === 0 ? "step" : undefined}>
+                  <span class="n">{String(i + 1).padStart(2, "0")}</span>
+                  <span class="w">{st.word}</span>
+                  <span class="bar" aria-hidden="true"><i></i></span>
+                </button>
+              </li>
+            ))}
+          </ol>
+          <button type="button" class="hp-story-toggle" data-story-toggle data-state="playing" aria-label="Pause the video" hidden>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" data-icon="pause"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" data-icon="play"><path d="M4 2.5v11a1 1 0 0 0 1.5.86l9-5.5a1 1 0 0 0 0-1.72l-9-5.5A1 1 0 0 0 4 2.5Z" /></svg>
+          </button>
+        </div>
+        <p class="hp-story-line" data-story-line>{REEL_STAGES[0].line}</p>
+      </div>
+    </div>
     <div class="hp-hero-grid">
       <div class="hp-hero-text">
         <span class="hp-hero-kicker"><span class="dot" aria-hidden="true"></span>Independent UAE points &amp; miles publication</span>
         <h1>Fly further. <em>Pay less.</em></h1>
+      </div>
+      <div class="hp-hero-text hp-hero-body">
         <p class="hp-hero-lede">
           UAE-resident guides to the card combinations, salary-transfer
           bonuses and miles redemptions that stretch a Dubai paycheque
@@ -434,49 +479,6 @@ const dealRows = await Promise.all(
         )}
       </div>
 
-      <div class="hp-story" data-story data-clip={REEL.clip} data-lines={JSON.stringify(REEL_STAGES.map((st) => st.line))}>
-        <div class="hp-story-stage" data-story-stage>
-          <div class="hp-story-words" aria-hidden="true">
-            {REEL_STAGES.map((st, i) => (
-              <span class={i === 0 ? "is-active" : undefined} data-story-word>{st.word}</span>
-            ))}
-          </div>
-          <div class="hp-story-frame">
-            <video
-              muted
-              playsinline
-              loop
-              preload="metadata"
-              poster={REEL.poster ? `/${REEL.poster.file}` : undefined}
-              width="1280"
-              height="960"
-              aria-label="A navy card turns into an aircraft window, the view becomes Dubai lit up at night, and the city lights gather back into the card"
-              data-story-video
-            >
-              <source src={REEL.srcSmall} type="video/mp4" media="(max-width: 899px)" />
-              <source src={REEL.src} type="video/mp4" />
-            </video>
-          </div>
-          <div class="hp-story-controls">
-            <ol class="hp-story-steps" aria-label="The points journey">
-              {REEL_STAGES.map((st, i) => (
-                <li>
-                  <button type="button" data-story-step={i} aria-current={i === 0 ? "step" : undefined}>
-                    <span class="n">{String(i + 1).padStart(2, "0")}</span>
-                    <span class="w">{st.word}</span>
-                    <span class="bar" aria-hidden="true"><i></i></span>
-                  </button>
-                </li>
-              ))}
-            </ol>
-            <button type="button" class="hp-story-toggle" data-story-toggle data-state="playing" aria-label="Pause the video" hidden>
-              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" data-icon="pause"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
-              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" data-icon="play"><path d="M4 2.5v11a1 1 0 0 0 1.5.86l9-5.5a1 1 0 0 0 0-1.72l-9-5.5A1 1 0 0 0 4 2.5Z" /></svg>
-            </button>
-          </div>
-          <p class="hp-story-line" aria-live="polite" data-story-line>{REEL_STAGES[0].line}</p>
-        </div>
-      </div>
     </div>
   </header>
 
@@ -537,6 +539,9 @@ const dealRows = await Promise.all(
         else { userPaused = true; video.pause(); }
       });
       steps.forEach((b, k) => b.addEventListener("click", () => {
+        // Announce the line only when a reader chose the stage; while the
+        // loop runs it changes every 5 s and would talk over the page.
+        lineEl.setAttribute("aria-live", "polite");
         // Land just after the change into stage k (or on its frame, when
         // reduced motion keeps the video still).
         const start = (k * clip - clip / 2 + total) % total;
@@ -901,8 +906,7 @@ const dealRows = await Promise.all(
      reduced motion), now faint on paper so the pictures' off-white
      studio fields blend into the band. */
   .hp-hero {
-    /* clip, not hidden: hidden makes the band a scroll container and the
-       pinned story stage could no longer stick to the viewport. */
+    /* clip, not hidden: hidden would make the band a scroll container. */
     position: relative; overflow: clip;
     background: var(--paper); color: var(--ink);
     padding: 56px 32px 56px;
@@ -916,14 +920,15 @@ const dealRows = await Promise.all(
   .hp-hero-grid { position: relative; z-index: 1; }
   .hp-hero-grid {
     max-width: var(--container-listing);
-    margin: 0 auto;
+    margin: 48px auto 0;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 40px;
-    align-items: center;
+    gap: 20px;
+    align-items: start;
   }
+  /* Under the reel: headline left, lede and actions right. */
   @media (min-width: 900px) {
-    .hp-hero-grid { grid-template-columns: 1.1fr 1fr; gap: 56px; }
+    .hp-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; margin-top: 64px; }
   }
   .hp-hero-kicker {
     display: inline-flex; align-items: center; gap: 8px;
@@ -937,6 +942,7 @@ const dealRows = await Promise.all(
     background: var(--gold);
   }
   .hp-hero h1 {
+    text-wrap: balance;
     font-family: var(--font-display); font-weight: 700;
     font-size: clamp(46px, 5.6vw, 72px);
     letter-spacing: -1.4px; line-height: 1.02;
@@ -1005,26 +1011,34 @@ const dealRows = await Promise.all(
   .hp-hero-feature .m { font-size: 12px; font-weight: 600; color: var(--green); }
 
   /* ── Hero reel (4–5 Oct 2026) ──────────────────────────────────────
-     One looping video; the giant word follows its clock. The page
-     scrolls normally. */
-  .hp-story { position: relative; }
+     The reel owns the middle of the hero, as in the reference reels: a
+     giant word spanning the width, the video centred in front of its
+     lower half, the headline below. The word is sized from the reel's
+     OWN width (container units), never the viewport's, so the longest
+     word cannot run into anything whatever font loads — it did on
+     5 Oct 2026, when ARRIVE at 184px overran a 560px column into the H1.
+     The page scrolls normally. */
   .hp-story {
-    --word: clamp(84px, 12vw, 184px);
+    position: relative;
+    max-width: var(--container-listing);
+    margin: 0 auto;
+    container-type: inline-size;
   }
   .hp-story-stage {
+    /* ARRIVE is ~4.2em wide at this tracking: 17cqi keeps it inside ~72%
+       of the reel, with room for a wider fallback face. */
+    --word: min(17cqi, 250px);
     position: relative;
     display: grid; justify-items: center;
-    /* The frame covers the lower ~40% of the word, as the object covers
+    /* The frame covers the lower part of the word, as the object covers
        the lettering in the reel. */
-    padding-top: calc(var(--word) * 0.74);
-    /* One width for frame, steps and caption. Never taller than the
-       viewport leaves room for: a short laptop screen shrinks the frame
-       rather than push the steps off screen. */
-    --fw: min(100%, 560px);
+    padding-top: calc(var(--word) * 0.8);
+    /* As wide as the hero allows, but short enough that word, video and
+       steps fit one screen on a laptop. */
+    --fw: min(100%, 960px, max(420px, calc((100svh - 400px) * 4 / 3)));
   }
-  /* Giant word behind the picture: the frame covers its lower half, as
-     the object covers the lettering in the reel. Decorative (aria-hidden);
-     the step list carries the same words for assistive tech. */
+  /* Giant word behind the picture. Decorative (aria-hidden); the step
+     list carries the same words for assistive tech. */
   .hp-story-words {
     position: absolute; inset: 0 0 auto 0; z-index: 0;
     height: var(--word);
@@ -1032,6 +1046,7 @@ const dealRows = await Promise.all(
   }
   .hp-story-words > span {
     position: absolute; left: 50%; top: 0;
+    max-width: 100%;
     transform: translate(-50%, 18px);
     font-family: var(--font-display); font-weight: 700;
     font-size: var(--word); line-height: 0.82; letter-spacing: -0.04em;
@@ -1045,8 +1060,6 @@ const dealRows = await Promise.all(
 
   .hp-story-frame {
     position: relative; z-index: 1;
-    /* Never taller than the viewport leaves room for: short laptop
-       screens shrink the frame rather than push the steps off screen. */
     width: var(--fw);
     aspect-ratio: 4 / 3;
     border-radius: 18px; overflow: hidden;
@@ -1106,7 +1119,7 @@ const dealRows = await Promise.all(
   .hp-story-steps button:hover { color: var(--ink); }
   .hp-story-steps button:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 2px; }
   .hp-story-line {
-    margin: 12px 0 0; width: var(--fw);
+    margin: 12px 0 0; width: var(--fw); text-align: center;
     font-family: var(--font-display); font-size: 18px; line-height: 1.4;
     color: var(--ink-soft, var(--muted));
     min-height: 2.8em;
@@ -1114,15 +1127,11 @@ const dealRows = await Promise.all(
   @media (prefers-reduced-motion: reduce) {
     .hp-story-words > span { transition: none; transform: translate(-50%, 0); }
   }
-  /* Desktop: text column pins alongside the stage. Phones: text first,
-     then the story track, so the H1 is on the first screen. */
   @media (min-width: 900px) {
-    .hp-hero-grid { align-items: start; }
-    .hp-story { order: -1; }
-    .hp-hero-text { padding-top: 40px; }
+    .hp-hero-body { padding-top: 34px; }
   }
   @media (max-width: 899px) {
-    .hp-story { --word: clamp(64px, 21vw, 120px); }
+    .hp-story-stage { --word: 21cqi; }
     .hp-story-line { font-size: 16px; }
   }
 
