@@ -36,6 +36,10 @@ interface Args {
   prompt: string;
   model: string;
   duration: "5" | "10";
+  /** Re-download a request fal.ai already finished (and billed) instead of
+   *  submitting a new one. The first runs on 5 October 2026 generated three
+   *  clips and then lost them to a missing ffmpeg on the runner. */
+  requestId?: string;
 }
 
 export interface VideoEntry {
@@ -63,6 +67,7 @@ function parseArgs(argv: string[]): Args {
     prompt: out.prompt ?? "",
     model: out.model || DEFAULT_MODEL,
     duration: out.duration === "10" ? "10" : "5",
+    requestId: out["request-id"] || undefined,
   };
   if (!/^[a-z0-9-]+$/.test(a.slug)) throw new Error("--slug must be kebab-case [a-z0-9-]+");
   if (!a.prompt) throw new Error('Required: --prompt "<motion prompt>"');
@@ -91,6 +96,31 @@ async function falJson(url: string, key: string, init?: RequestInit): Promise<an
   return res.json();
 }
 
+async function submitAndWait(args: Args, key: string): Promise<string> {
+  const queued = await falJson(`https://queue.fal.run/${args.model}`, key, {
+    method: "POST",
+    body: JSON.stringify({
+      prompt: args.prompt,
+      image_url: await dataUri(args.start),
+      tail_image_url: await dataUri(args.end),
+      duration: args.duration,
+      negative_prompt: "text, letters, numbers, logo, watermark, people, faces, hands, blur, distortion, low quality",
+    }),
+  });
+  // Re-dispatch with request_id=<this id> to recover the clip if a later step fails.
+  console.log(`Queued ${queued.request_id}`);
+
+  // Kling takes a few minutes; poll the queue's own status URL.
+  const deadline = Date.now() + 20 * 60_000;
+  for (;;) {
+    if (Date.now() > deadline) throw new Error("Timed out waiting for fal.ai");
+    await new Promise((r) => setTimeout(r, 10_000));
+    const st = await falJson(queued.status_url, key);
+    console.log(`  ${st.status}${st.queue_position != null ? ` (queue ${st.queue_position})` : ""}`);
+    if (st.status === "COMPLETED") return queued.response_url;
+  }
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const key = process.env.FAL_KEY;
@@ -108,28 +138,16 @@ async function main(): Promise<void> {
     return;
   }
 
-  const queued = await falJson(`https://queue.fal.run/${args.model}`, key, {
-    method: "POST",
-    body: JSON.stringify({
-      prompt: args.prompt,
-      image_url: await dataUri(args.start),
-      tail_image_url: await dataUri(args.end),
-      duration: args.duration,
-      negative_prompt: "text, letters, numbers, logo, watermark, people, faces, hands, blur, distortion, low quality",
-    }),
-  });
-  console.log(`Queued ${queued.request_id}`);
-
-  // Kling takes a few minutes; poll the queue's own status URL.
-  const deadline = Date.now() + 20 * 60_000;
-  for (;;) {
-    if (Date.now() > deadline) throw new Error("Timed out waiting for fal.ai");
-    await new Promise((r) => setTimeout(r, 10_000));
-    const st = await falJson(queued.status_url, key);
-    console.log(`  ${st.status}${st.queue_position != null ? ` (queue ${st.queue_position})` : ""}`);
-    if (st.status === "COMPLETED") break;
+  let resultUrl: string;
+  if (args.requestId) {
+    // Queue results live under the app id (owner/app), not the full path.
+    const app = args.model.split("/").slice(0, 2).join("/");
+    resultUrl = `https://queue.fal.run/${app}/requests/${args.requestId}`;
+    console.log(`Fetching finished request ${args.requestId} (no new generation)`);
+  } else {
+    resultUrl = await submitAndWait(args, key);
   }
-  const result = await falJson(queued.response_url, key);
+  const result = await falJson(resultUrl, key);
   const url: string | undefined = result?.video?.url;
   if (!url) throw new Error(`fal.ai returned no video: ${JSON.stringify(result).slice(0, 300)}`);
 
