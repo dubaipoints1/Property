@@ -1064,16 +1064,22 @@ illustrations in its image-provenance paragraph. Since the same day the
 hero is a four-stage **story** (EARN · BOARD · FLY · ARRIVE, after a
 second reel the Chairman sent). A scroll-pinned version shipped and was
 pulled within hours on the Chairman's word ("I dont like this.
-Annoying"): **do not pin the homepage to scroll**. A stills-on-a-timer
-version followed and was rejected too ("I completely dont like that ...
-From the videos i sent you"), so since 5 October 2026 the hero is **real
-video**: three Kling start→end-frame clips made with `gen-ai-video.yml`
-(provenance and prompts in `data/stock/videos.json`) joined into one
-muted 15-second loop, card → plane window → Dubai at night → card, with
-EARN · FLY · ARRIVE following the video's clock. It autoplays while the
-page scrolls normally; a pause button and the step buttons satisfy WCAG
-2.2.2, a hidden tab pauses it, and under `prefers-reduced-motion` it
-does not play. The same no-caption rule covers the video.
+Annoying"), and a stills-on-a-timer version and a small autoplaying
+loop were both rejected too ("From the videos i sent you"; "your not
+going to just have this in the middle"). **Since 5 October 2026 the hero
+is a full-bleed, scroll-scrubbed video**, on the Chairman's direction
+against a 21st.dev scroll-locked video hero ("why cant we have this but
+for my travels?"), which supersedes the earlier no-pinning note: two
+Kling start→end-frame clips made with `gen-ai-video.yml` (provenance and
+prompts in `data/stock/videos.json`), card → plane window → Dubai at
+night, played forwards and backwards by scroll while the stage sticks
+under the site header; "Fly further. Pay less." blurs away as it starts
+and "Home to Dubai, with the next trip already earning." resolves at the
+end. **The page must never be locked:** the 21st component pins `body`
+with `position: fixed` and never releases it, which would make every
+section below the hero unreachable; ours scrolls natively through a tall
+track and continues after the last frame. Reduced motion or no JS gets
+one static screen. The same no-caption rule covers the video.
 
 **Scope, and this is the load-bearing part.** This exemption is the
 homepage hero only. Everywhere else — article covers, guide heroes, card
