@@ -4016,3 +4016,39 @@ html * {
   0%   { background-position: 120% 0; }
   100% { background-position: -120% 0; }
 }
+
+/* ── Scroll motion, site-wide (5 Oct 2026) ──────────────────────────────
+   Carries the homepage reel's language down every page, after the
+   Chairman found the scroll-video hero "not going well" with static
+   sections below it. From the 21st.dev catalogue, rebuilt in CSS (the
+   2026-07-25 rule): "Scroll media expansion" → pictures open from a
+   framed crop to full size as they scroll in, with a light parallax;
+   the reel's own title treatment → section headings resolve from a blur
+   as they arrive. Pure CSS scroll-driven animations: no library, no JS,
+   compositor-only properties plus one filter. Browsers without
+   animation-timeline (Firefox today) simply show the static page, and
+   reduced motion turns all of it off. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    main h2:not(.eyebrow):not(.sr-only),
+    .hp-hero-lede {
+      animation: dp-focus-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+    img[data-stock-slug],
+    svg.dp-cover {
+      animation: dp-media-open linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 55%;
+    }
+  }
+}
+@keyframes dp-focus-in {
+  from { opacity: 0.15; filter: blur(8px); transform: translateY(18px); }
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+@keyframes dp-media-open {
+  from { transform: scale(1.12) translateY(4%); clip-path: inset(7% 5% round 14px); }
+  to { transform: scale(1) translateY(0); clip-path: inset(0 round 0); }
+}

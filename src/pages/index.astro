@@ -882,8 +882,11 @@ const dealRows = await Promise.all(
   .hp-hero {
     /* clip, not hidden: hidden would make the band a scroll container. */
     position: relative; overflow: clip;
-    background: var(--paper); color: var(--ink);
-    padding: 0 0 56px;
+    /* Night bridge (5 Oct 2026): the band under the reel stays the night
+       navy the video ends on, so the page does not cut from a cinematic
+       night sky to a flat beige band. Same in both themes. */
+    background: var(--navy-pin); color: #fdfcf8;
+    padding: 0 0 104px;
   }
   .hp-hero::before {
     content: ""; position: absolute; inset: -20%; pointer-events: none;
@@ -955,6 +958,19 @@ const dealRows = await Promise.all(
     padding: 13px 20px; font-weight: 600;
   }
   .hp-hero-cta.is-ghost:hover { background: transparent; color: var(--green); border-color: var(--green); }
+  /* On the night bridge. */
+  .hp-hero .hp-hero-lede { color: rgba(253, 252, 248, 0.78); font-size: clamp(18px, 1.5vw, 21px); }
+  .hp-hero .hp-hero-cta.is-ghost { color: #fdfcf8; border-color: rgba(253, 252, 248, 0.3); }
+  .hp-hero .hp-hero-cta.is-ghost:hover { color: var(--gold-lift); border-color: var(--gold-lift); }
+  .hp-hero .hp-hero-trust { color: rgba(253, 252, 248, 0.62); }
+  .hp-hero .hp-hero-trust > span + span { border-left-color: rgba(253, 252, 248, 0.18); }
+  .hp-hero .hp-hero-feature { border-top-color: rgba(253, 252, 248, 0.18); }
+  .hp-hero .hp-hero-feature .eyebrow { color: rgba(253, 252, 248, 0.6); }
+  .hp-hero .hp-hero-feature .t { color: #fdfcf8; }
+  .hp-hero .hp-hero-feature:hover .t { color: var(--gold-lift); }
+  .hp-hero .hp-hero-feature .m { color: var(--gold-lift); }
+  .hp-hero .hp-hero-cta:focus-visible,
+  .hp-hero .hp-hero-feature:focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 3px; }
   .hp-hero-trust {
     display: flex; flex-wrap: wrap; gap: 0;
     margin: 30px 0 0;
@@ -1138,9 +1154,14 @@ const dealRows = await Promise.all(
   }
 
   /* ── S2 tools band — sand surface ─────────────────────────────────── */
+  /* The tools band slides over the night bridge as a sheet. */
   .hp-tools {
+    position: relative; z-index: 1;
+    margin-top: -48px;
+    border-radius: 28px 28px 0 0;
+    box-shadow: 0 -24px 48px -24px rgba(10, 16, 24, 0.45);
     background: var(--shade-2);
-    padding: 48px 32px 56px;
+    padding: 56px 32px 56px;
   }
   .hp-tools-head,
   .hp-tools .dp-tool-strip {
@@ -1350,9 +1371,9 @@ const dealRows = await Promise.all(
 
   /* ── Responsive padding ────────────────────────────────────────────── */
   @media (max-width: 768px) {
-    .hp-hero { padding: 0 0 36px; }
+    .hp-hero { padding: 0 0 72px; }
     .hp-hero-grid { padding: 0 24px; }
-    .hp-tools { padding: 36px 24px 44px; }
+    .hp-tools { padding: 40px 24px 44px; margin-top: -32px; border-radius: 20px 20px 0 0; }
     .hp-fresh { padding-top: 32px; }
     .hp-dir, .hp-trust { padding: 28px 24px 8px; }
     .hp-news.is-navy { padding: 44px 24px 40px; }
