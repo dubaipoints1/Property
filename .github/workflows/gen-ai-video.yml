@@ -1,0 +1,132 @@
+# Homepage hero video — Kling image-to-video via fal.ai, start → end frame.
+#
+# Sibling of gen-ai-image.yml, and for the same reason it is a workflow:
+# fal.run is unreachable from a Claude Code web session. Added 5 October
+# 2026 on Chairman direction ("yes") to make the hero move the way the
+# reference reels do — one object changing in one continuous shot.
+#
+# Both keyframes must already be site images (public/images/...), so every
+# clip starts and ends on a picture that is already in the manifest and the
+# clips chain into a loop. The prompt passes the same bannedSubjects()
+# guard as the image generator and is recorded verbatim in
+# data/stock/videos.json as the provenance record.
+#
+# COST: v2.5-turbo pro is $0.07 a second — a 5-second clip is about $0.35.
+# Watch the clip before generating the next one; two identical failures
+# mean changing the keyframes or the model, not the adjectives.
+
+name: gen-ai-video
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to (never main)"
+        required: true
+        type: string
+      slug:
+        description: "Clip slug, kebab-case (e.g. hero-earn-fly)"
+        required: true
+        type: string
+      start:
+        description: "Start keyframe, repo path under public/images/"
+        required: true
+        type: string
+      end:
+        description: "End keyframe, repo path under public/images/"
+        required: true
+        type: string
+      prompt:
+        description: "Motion prompt — recorded verbatim as provenance"
+        required: true
+        type: string
+      model:
+        description: "fal.ai video model"
+        required: false
+        default: "fal-ai/kling-video/v2.5-turbo/pro/image-to-video"
+        type: string
+      duration:
+        description: "Seconds"
+        required: false
+        default: "5"
+        type: choice
+        options: ["5", "10"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gen-ai-video-${{ inputs.branch }}-${{ inputs.slug }}
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Refuse main
+        if: inputs.branch == 'main'
+        run: |
+          echo "::error::Dispatch with a feature branch; main only changes via pull request."
+          exit 1
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch }}
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Generate clip
+        env:
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+          SLUG: ${{ inputs.slug }}
+          START: ${{ inputs.start }}
+          END: ${{ inputs.end }}
+          PROMPT: ${{ inputs.prompt }}
+          MODEL: ${{ inputs.model }}
+          DURATION: ${{ inputs.duration }}
+        run: |
+          if [ -z "$FAL_KEY" ]; then echo "::error::FAL_KEY secret is not set."; exit 1; fi
+          npm run gen:video -- --slug "$SLUG" --start "$START" --end "$END" \
+            --prompt "$PROMPT" --model "$MODEL" --duration "$DURATION"
+
+      # Web encodes: no audio track, H.264 for every browser, moov atom up
+      # front so playback starts before the download ends. A 720-wide copy
+      # for phones keeps the mobile hero small.
+      - name: Encode for the web
+        env:
+          SLUG: ${{ inputs.slug }}
+        run: |
+          RAW="public/videos/$SLUG.mp4"
+          mv "$RAW" "/tmp/$SLUG-raw.mp4"
+          ffmpeg -y -loglevel error -i "/tmp/$SLUG-raw.mp4" -an -vf "scale=1280:-2" \
+            -c:v libx264 -preset slow -crf 26 -pix_fmt yuv420p -movflags +faststart "$RAW"
+          ffmpeg -y -loglevel error -i "/tmp/$SLUG-raw.mp4" -an -vf "scale=720:-2" \
+            -c:v libx264 -preset slow -crf 28 -pix_fmt yuv420p -movflags +faststart "public/videos/$SLUG-720.mp4"
+          ls -la public/videos/
+
+      - name: Commit and push
+        env:
+          SLUG: ${{ inputs.slug }}
+          PROMPT: ${{ inputs.prompt }}
+          MODEL: ${{ inputs.model }}
+          BRANCH: ${{ inputs.branch }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/videos.json "public/videos/$SLUG.mp4" "public/videos/$SLUG-720.mp4"
+          git commit -m "feat(video): hero clip $SLUG" \
+            -m "Generated with $MODEL via .github/workflows/gen-ai-video.yml." \
+            -m "Prompt: $PROMPT"
+          # Several clips may be dispatched at once against one branch.
+          for i in 1 2 3 4; do
+            git pull --rebase origin "$BRANCH" && git push origin "HEAD:$BRANCH" && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
