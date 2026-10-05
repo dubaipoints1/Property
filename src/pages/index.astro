@@ -139,28 +139,27 @@ if (newsSorted[0]) {
 // controls its own eager/priority loading and navy fallback panel.
 const featureImg = intel[0] ? getStockEntry(intel[0].imageSlug) : undefined;
 
-// Hero slideshow (Chairman direction, 4 Oct 2026, from a reel of a coffee
-// site whose hero render cycles ice cube → glass → cup beside a serif
-// headline): four AI illustrations, generated with gen-ai-image.yml under
-// the 2026-07-29 amendment — unbranded objects and empty places only,
-// never a real card face, livery or person. Each entry carries its prompt
-// as provenance and the band renders the "not a photograph" label.
-// Falls back to the feature photo while the renders are still landing.
-// Hero story (Chairman direction, 4 Oct 2026, from a reel of a coffee
-// site whose hero is one continuous render scrubbed by scroll — GRIND,
-// POUR, SIP — with giant words behind the object). Four stages of the
-// points journey; each stage is a picture today and can take a short
-// video clip later without changing the markup around it.
-const STORY = [
-  { slug: "hero-card-desk", word: "Earn", line: "Pick the card that pays you back on what you already spend." },
-  { slug: "hero-gate-dawn", word: "Board", line: "Move the points to the programme that takes you furthest." },
-  { slug: "hero-window-coast", word: "Fly", line: "Spend miles where each one is worth the most." },
-  { slug: "hero-dubai-night", word: "Arrive", line: "Home to Dubai, with the next trip already earning." },
+// Hero reel (Chairman direction, 4–5 Oct 2026, from two reels of a coffee
+// site: one object changing in one continuous shot, giant words behind it —
+// GRIND, POUR, SIP). Stills on a timer missed the point ("I completely dont
+// like that ... From the videos i sent you"), so this is real video: three
+// Kling start→end-frame clips (gen-ai-video.yml, provenance and prompts in
+// data/stock/videos.json) joined into one 15 s loop. card → window → Dubai
+// at night → card. Each clip turns one object into the next at its
+// midpoint, so the word changes there: EARN until the card becomes the
+// window, FLY until the window becomes the city, ARRIVE until the lights
+// become the card again. Never pinned to scroll (2026-10-04 amendment).
+const REEL = {
+  src: "/videos/hero-journey.mp4",
+  srcSmall: "/videos/hero-journey-720.mp4",
+  poster: getStockEntry("hero-card-desk"),
+  clip: 15.25 / 3,
+};
+const REEL_STAGES = [
+  { word: "Earn", line: "Pick the card that pays you back on what you already spend." },
+  { word: "Fly", line: "Move the points and spend them where each mile is worth the most." },
+  { word: "Arrive", line: "Home to Dubai, with the next trip already earning." },
 ];
-const heroSlides = STORY.flatMap((st) => {
-  const img = getStockEntry(st.slug);
-  return img ? [{ ...st, img }] : [];
-});
 
 const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
 const flagshipProgramme =
@@ -435,31 +434,32 @@ const dealRows = await Promise.all(
         )}
       </div>
 
-      {heroSlides.length > 0 && (
-        <div class="hp-story" data-story data-lines={JSON.stringify(heroSlides.map((st) => st.line))}>
-          <div class="hp-story-stage" data-story-stage>
-            <div class="hp-story-words" aria-hidden="true">
-              {heroSlides.map((st, i) => (
-                <span class={i === 0 ? "is-active" : undefined} data-story-word>{st.word}</span>
-              ))}
-            </div>
-            <div class="hp-story-frame">
-              {heroSlides.map((st, i) => (
-                <img
-                  src={`/${st.img.file}`}
-                  alt={st.img.alt}
-                  width={st.img.width}
-                  height={st.img.height}
-                  loading={i === 0 ? "eager" : "lazy"}
-                  fetchpriority={i === 0 ? "high" : undefined}
-                  decoding="async"
-                  class={i === 0 ? "is-active" : undefined}
-                  data-story-slide
-                />
-              ))}
-            </div>
+      <div class="hp-story" data-story data-clip={REEL.clip} data-lines={JSON.stringify(REEL_STAGES.map((st) => st.line))}>
+        <div class="hp-story-stage" data-story-stage>
+          <div class="hp-story-words" aria-hidden="true">
+            {REEL_STAGES.map((st, i) => (
+              <span class={i === 0 ? "is-active" : undefined} data-story-word>{st.word}</span>
+            ))}
+          </div>
+          <div class="hp-story-frame">
+            <video
+              muted
+              playsinline
+              loop
+              preload="metadata"
+              poster={REEL.poster ? `/${REEL.poster.file}` : undefined}
+              width="1280"
+              height="960"
+              aria-label="A navy card turns into an aircraft window, the view becomes Dubai lit up at night, and the city lights gather back into the card"
+              data-story-video
+            >
+              <source src={REEL.srcSmall} type="video/mp4" media="(max-width: 899px)" />
+              <source src={REEL.src} type="video/mp4" />
+            </video>
+          </div>
+          <div class="hp-story-controls">
             <ol class="hp-story-steps" aria-label="The points journey">
-              {heroSlides.map((st, i) => (
+              {REEL_STAGES.map((st, i) => (
                 <li>
                   <button type="button" data-story-step={i} aria-current={i === 0 ? "step" : undefined}>
                     <span class="n">{String(i + 1).padStart(2, "0")}</span>
@@ -469,68 +469,87 @@ const dealRows = await Promise.all(
                 </li>
               ))}
             </ol>
-            <p class="hp-story-line" aria-live="polite" data-story-line>{heroSlides[0].line}</p>
+            <button type="button" class="hp-story-toggle" data-story-toggle data-state="playing" aria-label="Pause the video" hidden>
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" data-icon="pause"><rect x="3" y="2" width="3.5" height="12" rx="1" /><rect x="9.5" y="2" width="3.5" height="12" rx="1" /></svg>
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" data-icon="play"><path d="M4 2.5v11a1 1 0 0 0 1.5.86l9-5.5a1 1 0 0 0 0-1.72l-9-5.5A1 1 0 0 0 4 2.5Z" /></svg>
+            </button>
           </div>
+          <p class="hp-story-line" aria-live="polite" data-story-line>{REEL_STAGES[0].line}</p>
         </div>
-      )}
+      </div>
     </div>
   </header>
 
   <script>
-    // Hero story. The four stages change on their own every 5 s while the
-    // step bar fills; the page itself scrolls normally (a pinned scroll
-    // track was tried and removed the same day: "I dont like this.
-    // Annoying" — Chairman, 4 Oct 2026). WCAG 2.2.2: hover, focus and a
-    // hidden tab pause it; choosing a step stops it for good. Under
-    // reduced motion nothing advances and the steps switch by hand. No
-    // JS: the first stage shows.
+    // Hero reel. One muted 15 s loop of three clips; the word, step and
+    // line follow the video's own clock, switching at each clip's midpoint
+    // where the object becomes the next one. The page scrolls normally
+    // (pinning was pulled on 4 Oct 2026). WCAG 2.2.2: a pause button, and
+    // a step press jumps there. Reduced motion: nothing plays; the poster
+    // shows and a step press seeks to that stage's frame. No JS: poster.
     const story = document.querySelector("[data-story]") as HTMLElement | null;
-    if (story) {
+    const video = story?.querySelector("[data-story-video]") as HTMLVideoElement | null;
+    if (story && video) {
       const stage = story.querySelector("[data-story-stage]") as HTMLElement;
-      const slides = Array.from(story.querySelectorAll<HTMLElement>("[data-story-slide]"));
       const words = Array.from(story.querySelectorAll<HTMLElement>("[data-story-word]"));
       const steps = Array.from(story.querySelectorAll<HTMLButtonElement>("[data-story-step]"));
+      const toggle = story.querySelector("[data-story-toggle]") as HTMLButtonElement;
       const lineEl = story.querySelector("[data-story-line]") as HTMLElement;
       const texts: string[] = JSON.parse(story.dataset.lines || "[]");
-      const n = slides.length;
+      const clip = Number(story.dataset.clip) || 5;
+      const n = steps.length;
+      const total = clip * n;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const DWELL = 5000;
-      let current = 0;
-      let stopped = reduced;
-      let held = false;
-      let elapsed = 0;
-      let last = performance.now();
+      // Stage k runs from the middle of clip k-1 to the middle of clip k;
+      // stage 0 wraps across the loop point.
+      const stageAt = (t: number) => Math.floor(((t + clip / 2) % total) / clip) % n;
+      const progressAt = (t: number) => (((t + clip / 2) % total) % clip) / clip;
+      let current = -1;
+      let userPaused = reduced;
       const show = (k: number) => {
-        current = (k + n) % n;
-        elapsed = 0;
-        slides.forEach((el, j) => el.classList.toggle("is-active", j === current));
-        words.forEach((el, j) => el.classList.toggle("is-active", j === current));
+        if (k === current) return;
+        current = k;
+        words.forEach((el, j) => el.classList.toggle("is-active", j === k));
         steps.forEach((el, j) => {
-          if (j === current) el.setAttribute("aria-current", "step");
+          if (j === k) el.setAttribute("aria-current", "step");
           else el.removeAttribute("aria-current");
-          el.classList.toggle("is-done", j < current);
+          el.classList.toggle("is-done", j < k);
         });
-        if (texts[current]) lineEl.textContent = texts[current];
-        stage.style.setProperty("--t", stopped ? "1" : "0");
+        if (texts[k]) lineEl.textContent = texts[k];
       };
-      steps.forEach((b, k) => b.addEventListener("click", () => { stopped = true; show(k); }));
-      if (!stopped && n > 1) {
-        stage.addEventListener("pointerenter", () => { held = true; });
-        stage.addEventListener("pointerleave", () => { held = false; });
-        stage.addEventListener("focusin", () => { held = true; });
-        stage.addEventListener("focusout", () => { held = false; });
-        const frame = (now: number) => {
-          const dt = now - last;
-          last = now;
-          if (!stopped) {
-            if (!held && !document.hidden) elapsed += Math.min(dt, 100);
-            if (elapsed >= DWELL) show(current + 1);
-            else stage.style.setProperty("--t", (elapsed / DWELL).toFixed(3));
-            requestAnimationFrame(frame);
-          }
-        };
-        requestAnimationFrame(frame);
-      }
+      const tick = () => {
+        const t = video.currentTime;
+        show(stageAt(t));
+        stage.style.setProperty("--t", userPaused && reduced ? "1" : progressAt(t).toFixed(3));
+        if (!video.paused) requestAnimationFrame(tick);
+      };
+      const setIcon = () => {
+        const playing = !video.paused;
+        toggle.setAttribute("aria-label", playing ? "Pause the video" : "Play the video");
+        toggle.dataset.state = playing ? "playing" : "paused";
+      };
+      video.addEventListener("play", () => { setIcon(); requestAnimationFrame(tick); });
+      video.addEventListener("pause", setIcon);
+      video.addEventListener("seeked", tick);
+      toggle.hidden = false;
+      toggle.addEventListener("click", () => {
+        if (video.paused) { userPaused = false; video.play().catch(() => {}); }
+        else { userPaused = true; video.pause(); }
+      });
+      steps.forEach((b, k) => b.addEventListener("click", () => {
+        // Land just after the change into stage k (or on its frame, when
+        // reduced motion keeps the video still).
+        const start = (k * clip - clip / 2 + total) % total;
+        video.currentTime = reduced ? (start + clip / 2) % total : start + 0.05;
+        show(k);
+      }));
+      // A hidden tab stops the decode; coming back resumes unless paused.
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) video.pause();
+        else if (!userPaused) video.play().catch(() => {});
+      });
+      if (!reduced) video.play().catch(() => setIcon());
+      setIcon();
     }
   </script>
 
@@ -985,8 +1004,9 @@ const dealRows = await Promise.all(
   .hp-hero-feature:hover .t { color: var(--green); }
   .hp-hero-feature .m { font-size: 12px; font-weight: 600; color: var(--green); }
 
-  /* ── Hero story (reel direction, 4 Oct 2026) ────────────────────────
-     Four stages that change on a 5 s timer; the page scrolls normally. */
+  /* ── Hero reel (4–5 Oct 2026) ──────────────────────────────────────
+     One looping video; the giant word follows its clock. The page
+     scrolls normally. */
   .hp-story { position: relative; }
   .hp-story {
     --word: clamp(84px, 12vw, 184px);
@@ -1033,21 +1053,35 @@ const dealRows = await Promise.all(
     background: #0f1f2e;
     box-shadow: 0 34px 70px -34px rgba(15, 31, 46, 0.6), 0 0 0 1px rgba(15, 31, 46, 0.06);
   }
-  .hp-story-frame > img {
+  .hp-story-frame > video {
     position: absolute; inset: 0;
     width: 100%; height: 100%; object-fit: cover;
-    opacity: 0;
-    transform: scale(calc(1.02 + var(--t, 0) * 0.05));
-    transition: opacity 0.7s var(--dp-ease);
-    will-change: transform, opacity;
+    display: block;
   }
-  .hp-story-frame > img.is-active { opacity: 1; }
-  :global([data-theme="dark"]) .hp-story-frame > img { filter: brightness(0.9); }
+  :global([data-theme="dark"]) .hp-story-frame > video { filter: brightness(0.92); }
+
+  .hp-story-controls {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 14px;
+    width: var(--fw); margin-top: 18px;
+  }
+  .hp-story-toggle {
+    display: inline-grid; place-items: center;
+    width: 32px; height: 32px; padding: 0;
+    border: 1px solid var(--line); border-radius: 999px;
+    background: transparent; color: var(--ink); cursor: pointer;
+    touch-action: manipulation;
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  .hp-story-toggle svg { fill: currentColor; }
+  .hp-story-toggle[data-state="playing"] [data-icon="play"],
+  .hp-story-toggle[data-state="paused"] [data-icon="pause"] { display: none; }
+  .hp-story-toggle:hover { border-color: var(--gold); }
+  .hp-story-toggle:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+  .hp-story-toggle[hidden] { display: none; }
 
   .hp-story-steps {
-    list-style: none; margin: 18px 0 0; padding: 0;
-    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px;
-    width: var(--fw);
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px;
   }
   .hp-story-steps button {
     width: 100%; padding: 6px 0 0; border: 0; background: transparent; cursor: pointer;
@@ -1078,8 +1112,7 @@ const dealRows = await Promise.all(
     min-height: 2.8em;
   }
   @media (prefers-reduced-motion: reduce) {
-    .hp-story-words > span, .hp-story-frame > img { transition: none; transform: translate(-50%, 0); }
-    .hp-story-frame > img { transform: none; }
+    .hp-story-words > span { transition: none; transform: translate(-50%, 0); }
   }
   /* Desktop: text column pins alongside the stage. Phones: text first,
      then the story track, so the H1 is on the first screen. */

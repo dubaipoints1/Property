@@ -51,6 +51,11 @@ on:
         default: "5"
         type: choice
         options: ["5", "10"]
+      request_id:
+        description: "Recover a request fal.ai already finished (no new spend); leave blank to generate"
+        required: false
+        default: ""
+        type: string
 
 permissions:
   contents: write
@@ -82,6 +87,15 @@ jobs:
 
       - run: npm ci
 
+      # ubuntu-latest no longer ships ffmpeg. Install it BEFORE generating:
+      # on 5 October 2026 three paid clips were lost because the encode
+      # step found no ffmpeg after fal.ai had already billed them.
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version | head -1
+
       - name: Generate clip
         env:
           FAL_KEY: ${{ secrets.FAL_KEY }}
@@ -91,10 +105,12 @@ jobs:
           PROMPT: ${{ inputs.prompt }}
           MODEL: ${{ inputs.model }}
           DURATION: ${{ inputs.duration }}
+          REQUEST_ID: ${{ inputs.request_id }}
         run: |
           if [ -z "$FAL_KEY" ]; then echo "::error::FAL_KEY secret is not set."; exit 1; fi
-          npm run gen:video -- --slug "$SLUG" --start "$START" --end "$END" \
-            --prompt "$PROMPT" --model "$MODEL" --duration "$DURATION"
+          ARGS=(--slug "$SLUG" --start "$START" --end "$END" --prompt "$PROMPT" --model "$MODEL" --duration "$DURATION")
+          if [ -n "$REQUEST_ID" ]; then ARGS+=(--request-id "$REQUEST_ID"); fi
+          npm run gen:video -- "${ARGS[@]}"
 
       # Web encodes: no audio track, H.264 for every browser, moov atom up
       # front so playback starts before the download ends. A 720-wide copy

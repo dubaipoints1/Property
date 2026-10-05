@@ -1064,10 +1064,16 @@ illustrations in its image-provenance paragraph. Since the same day the
 hero is a four-stage **story** (EARN · BOARD · FLY · ARRIVE, after a
 second reel the Chairman sent). A scroll-pinned version shipped and was
 pulled within hours on the Chairman's word ("I dont like this.
-Annoying"): **do not pin the homepage to scroll**. The stages now advance
-on a 5-second timer while the page scrolls normally; hover, focus and a
-hidden tab pause it, choosing a step stops it (WCAG 2.2.2), and under
-`prefers-reduced-motion` nothing advances.
+Annoying"): **do not pin the homepage to scroll**. A stills-on-a-timer
+version followed and was rejected too ("I completely dont like that ...
+From the videos i sent you"), so since 5 October 2026 the hero is **real
+video**: three Kling start→end-frame clips made with `gen-ai-video.yml`
+(provenance and prompts in `data/stock/videos.json`) joined into one
+muted 15-second loop, card → plane window → Dubai at night → card, with
+EARN · FLY · ARRIVE following the video's clock. It autoplays while the
+page scrolls normally; a pause button and the step buttons satisfy WCAG
+2.2.2, a hidden tab pauses it, and under `prefers-reduced-motion` it
+does not play. The same no-caption rule covers the video.
 
 **Scope, and this is the load-bearing part.** This exemption is the
 homepage hero only. Everywhere else — article covers, guide heroes, card
