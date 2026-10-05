@@ -9,6 +9,8 @@
 #                               full-size frames, so a tall screen is not
 #                               a 4-5x blow-up of a small landscape copy
 # Both keep a keyframe every 6 frames so scroll-scrubbing seeks cleanly.
+# With upscale: true each clip is first upscaled to ~4K (Topaz Proteus via
+# fal, non-generative), and screens >= 1600 px get a 2560 px encode.
 # Added 5 October 2026 after the Chairman flagged the reel as not sharp.
 
 name: encode-hero-reel
@@ -33,6 +35,16 @@ on:
         description: "x264 quality (lower = sharper, larger)"
         required: false
         default: "21"
+        type: string
+      upscale:
+        description: "AI-upscale each clip to ~4K first (Topaz Proteus on fal, ~$0.30 per 5 s clip)"
+        required: false
+        default: false
+        type: boolean
+      upscale_ids:
+        description: "Recover finished upscale requests instead of paying again (comma-separated, same order)"
+        required: false
+        default: ""
         type: string
 
 permissions:
@@ -79,15 +91,57 @@ jobs:
             echo "file '/tmp/reel/$i.mp4'" >> /tmp/reel/list.txt
           done
 
+      # Topaz Proteus is a classic (non-generative) upscaler: it sharpens
+      # what is there and invents nothing, so the frames stay the same
+      # pictures. Factor 2.32 takes the 1660 px Kling output just past
+      # 3840 px. Each request id is printed so a later failure never
+      # costs a second upscale (pass them back as upscale_ids).
+      - name: Upscale to 4K
+        if: inputs.upscale
+        env:
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+          IDS: ${{ inputs.request_ids }}
+          UPSCALE_IDS: ${{ inputs.upscale_ids }}
+          MODEL: ${{ inputs.model }}
+        run: |
+          APP=$(echo "$MODEL" | cut -d/ -f1-2)
+          UP="topaz/upscale/video/precision"
+          i=0
+          set -- $(echo "$UPSCALE_IDS" | tr ',' ' ')
+          for id in $(echo "$IDS" | tr ',' ' '); do
+            i=$((i+1))
+            if [ -n "${1:-}" ]; then
+              rid="$1"; shift
+              echo "clip $i: recovering upscale $rid (no new spend)"
+            else
+              src=$(curl -fsS -H "Authorization: Key $FAL_KEY" "https://queue.fal.run/$APP/requests/$id" | jq -r '.video.url')
+              rid=$(curl -fsS -X POST -H "Authorization: Key $FAL_KEY" -H "Content-Type: application/json" \
+                -d "$(jq -n --arg u "$src" '{video_url:$u, model:"Proteus", upscale_factor:2.32, H264_output:true}')" \
+                "https://queue.fal.run/$UP" | jq -r '.request_id')
+              echo "clip $i: upscale request $rid  <- keep this id"
+              for n in $(seq 1 120); do
+                st=$(curl -fsS -H "Authorization: Key $FAL_KEY" "https://queue.fal.run/topaz/upscale/requests/$rid/status" | jq -r '.status')
+                [ "$st" = "COMPLETED" ] && break
+                sleep 10
+              done
+              [ "$st" = "COMPLETED" ] || { echo "::error::upscale $rid did not finish (last: $st)"; exit 1; }
+            fi
+            url=$(curl -fsS -H "Authorization: Key $FAL_KEY" "https://queue.fal.run/topaz/upscale/requests/$rid" | jq -r '.video.url')
+            curl -fsSL "$url" -o "/tmp/reel/$i.mp4"
+            echo "clip $i upscaled:"; ffprobe -v error -show_entries stream=width,height -of compact "/tmp/reel/$i.mp4"
+          done
+
       - name: Encode
         env:
           CRF: ${{ inputs.crf }}
         run: |
           COMMON="-an -c:v libx264 -preset slow -g 6 -keyint_min 6 -sc_threshold 0 -bf 0 -pix_fmt yuv420p -movflags +faststart"
-          ffmpeg -y -loglevel error -f concat -safe 0 -i /tmp/reel/list.txt $COMMON -crf "$CRF" public/videos/hero-journey-scrub.mp4
+          # Large screens (>= 1600 px) get 2560 px; laptops 1920 px at most.
+          ffmpeg -y -loglevel error -f concat -safe 0 -i /tmp/reel/list.txt -vf "scale='min(1920,iw)':-2" $COMMON -crf "$CRF" public/videos/hero-journey-scrub.mp4
+          ffmpeg -y -loglevel error -f concat -safe 0 -i /tmp/reel/list.txt -vf "scale='min(2560,iw)':-2" $COMMON -crf "$CRF" public/videos/hero-journey-scrub-2560.mp4
           # Phones: centre 2:3 crop at full height, then cap at 1080 tall.
           ffmpeg -y -loglevel error -f concat -safe 0 -i /tmp/reel/list.txt \
-            -vf "crop=trunc(ih*2/3/2)*2:ih,scale=-2:'min(1080,ih)'" $COMMON -crf "$((CRF + 2))" public/videos/hero-journey-scrub-720.mp4
+            -vf "crop=trunc(ih*2/3/2)*2:ih,scale=-2:'min(1440,ih)'" $COMMON -crf "$((CRF + 2))" public/videos/hero-journey-scrub-720.mp4
           for f in public/videos/hero-journey-scrub*.mp4; do
             echo "$f"; ffprobe -v error -show_entries stream=width,height -show_entries format=duration,size -of compact "$f"
           done
@@ -100,6 +154,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/videos/hero-journey-scrub.mp4 public/videos/hero-journey-scrub-720.mp4
+          git add public/videos/hero-journey-scrub*.mp4
           git commit -m "feat(video): re-encode hero reel from fal originals (crf $CRF)" -m "Requests: $IDS"
           git push origin "HEAD:$BRANCH"

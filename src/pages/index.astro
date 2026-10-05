@@ -150,9 +150,13 @@ const featureImg = intel[0] ? getStockEntry(intel[0].imageSlug) : undefined;
 // natively through a tall track and carries on after the last frame.
 // Video: three Kling start→end-frame clips (gen-ai-video.yml, prompts in
 // data/stock/videos.json): card → plane window, then window → Dubai at night,
-// encoded with a keyframe every 6 frames so seeking is smooth.
+// upscaled to ~4K (Topaz Proteus, non-generative) and encoded by
+// encode-hero-reel.yml with a keyframe every 6 frames so seeking is
+// smooth: 2560 px for large screens, 1920 px otherwise, a portrait crop
+// for phones.
 const REEL = {
   src: "/videos/hero-journey-scrub.mp4",
+  srcLarge: "/videos/hero-journey-scrub-2560.mp4",
   srcSmall: "/videos/hero-journey-scrub-720.mp4",
   poster: getStockEntry("hero-card-desk"),
   tagline: "Home to Dubai, with the next trip already earning.",
@@ -418,6 +422,7 @@ const dealRows = await Promise.all(
           data-reel-video
         >
           <source src={REEL.srcSmall} type="video/mp4" media="(max-width: 899px)" />
+          <source src={REEL.srcLarge} type="video/mp4" media="(min-width: 1600px)" />
           <source src={REEL.src} type="video/mp4" />
         </video>
         <div class="hp-reel-scrim" aria-hidden="true"></div>
