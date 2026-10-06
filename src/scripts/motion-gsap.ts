@@ -120,6 +120,134 @@ if (!reduced) {
     return () => cleanups.forEach((fn) => fn());
   });
 
+  // 5. Card review pages (6 Oct 2026): the card glides in and tilts
+  //    toward the cursor, the hero figures count up, the scorecard stars
+  //    pop in, and the fit criteria and spec rows arrive in sequence.
+  //    Only runs where the card-review hero exists.
+  const crHero = document.querySelector<HTMLElement>(".dp-cr-hero");
+  if (crHero) cardReviewMotion(crHero, mm);
+
   // Images and late fonts change heights after load; re-measure once.
   window.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
+}
+
+// ── Card review helpers ────────────────────────────────────────────────
+
+/** Count the first number in an element up from zero, keeping its
+ *  decimals, thousands separators and any text around it. Leaves dates,
+ *  unverified dashes and words ("Free", "None") alone. */
+function countUp(el: HTMLElement, trigger: Element) {
+  if (el.matches(".is-date, .is-unverified")) return;
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  let node: Text | null = null;
+  while (walker.nextNode()) {
+    const t = walker.currentNode as Text;
+    if (/\d/.test(t.data)) { node = t; break; }
+  }
+  if (!node) return;
+  const original = node.data;
+  const m = original.match(/\d[\d,]*(?:\.\d+)?/);
+  if (!m) return;
+  const end = parseFloat(m[0].replace(/,/g, ""));
+  if (!Number.isFinite(end) || end <= 0) return;
+  const decimals = (m[0].split(".")[1] ?? "").length;
+  const grouped = m[0].includes(",");
+  const before = original.slice(0, m.index);
+  const after = original.slice((m.index ?? 0) + m[0].length);
+  const fmt = (v: number) =>
+    grouped
+      ? v.toLocaleString("en-US", { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+      : v.toFixed(decimals);
+  const state = { v: 0 };
+  const target = node;
+  gsap.to(state, {
+    v: end,
+    duration: 1.1,
+    ease: "power3.out",
+    scrollTrigger: { trigger, start: "top 92%", once: true },
+    onStart: () => { target.data = before + fmt(0) + after; },
+    onUpdate: () => { target.data = before + fmt(state.v) + after; },
+    onComplete: () => { target.data = original; },
+  });
+}
+
+function cardReviewMotion(hero: HTMLElement, mm: gsap.MatchMedia) {
+  const card = hero.querySelector<HTMLElement>(".dp-cr-photo, .dp-cr-tile");
+
+  if (card) {
+    gsap.set(card, { transformPerspective: 900, transformOrigin: "50% 50%" });
+    // Arrival: from a tilted, lowered position to rest.
+    gsap.from(card, { rotateY: -22, rotateX: 12, y: 36, opacity: 0, duration: 1.2, ease: "expo.out", delay: 0.1 });
+
+    // Mouse: tilt toward the cursor with a moving sheen.
+    mm.add("(hover: hover) and (pointer: fine)", () => {
+      card.classList.add("dp-tilt");
+      const rx = gsap.quickTo(card, "rotateX", { duration: 0.5, ease: "power3.out" });
+      const ry = gsap.quickTo(card, "rotateY", { duration: 0.5, ease: "power3.out" });
+      let rect: DOMRect | null = null;
+      const move = (e: PointerEvent) => {
+        if (!rect) rect = card.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+        ry((px - 0.5) * 18);
+        rx((0.5 - py) * 14);
+        card.style.setProperty("--gx", `${(px * 100).toFixed(1)}%`);
+        card.style.setProperty("--gy", `${(py * 100).toFixed(1)}%`);
+      };
+      const leave = () => { rect = null; rx(0); ry(0); card.style.removeProperty("--gx"); };
+      hero.addEventListener("pointermove", move);
+      hero.addEventListener("pointerleave", leave);
+      return () => {
+        hero.removeEventListener("pointermove", move);
+        hero.removeEventListener("pointerleave", leave);
+        card.classList.remove("dp-tilt");
+        gsap.set(card, { rotateX: 0, rotateY: 0 });
+      };
+    });
+
+    // Touch: a gentle turn as the hero scrolls away instead.
+    mm.add("(hover: none)", () => {
+      const t = gsap.to(card, {
+        rotateX: 14, y: -12, ease: "none",
+        scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
+      });
+      return () => { t.scrollTrigger?.kill(); t.kill(); gsap.set(card, { rotateX: 0, y: 0 }); };
+    });
+  }
+
+  // Hero figures and scores count up.
+  hero.querySelectorAll<HTMLElement>(".dp-cr-facts dd, .dp-verdict-pill .score").forEach((el) => countUp(el, el));
+  document.querySelectorAll<HTMLElement>(".dp-editor-scorecard .score-num").forEach((el) => countUp(el, el));
+
+  // Hero fact tiles arrive in sequence.
+  gsap.from(hero.querySelectorAll(".dp-cr-facts > div"), {
+    y: 18, opacity: 0, duration: 0.7, ease: "power3.out", stagger: 0.08, delay: 0.35,
+  });
+
+  // Scorecard stars pop in row by row.
+  document.querySelectorAll<HTMLElement>(".dp-editor-scorecard .star-meter").forEach((meter) => {
+    gsap.from(meter.querySelectorAll(".star"), {
+      scale: 0, opacity: 0, duration: 0.45, ease: "back.out(2.2)", stagger: 0.06,
+      scrollTrigger: { trigger: meter, start: "top 92%", once: true },
+    });
+  });
+
+  // "Great card if" from the left, "Skip if" from the right.
+  document.querySelectorAll<HTMLElement>(".dp-great-card-if, .dp-editor-scorecard .apply-skip").forEach((pair) => {
+    const sides = pair.querySelectorAll<HTMLElement>(".side, .apply, .skip");
+    sides.forEach((side, i) => {
+      gsap.from(side, {
+        x: i === 0 ? -28 : 28, opacity: 0, duration: 0.8, ease: "expo.out",
+        scrollTrigger: { trigger: pair, start: "top 88%", once: true },
+      });
+    });
+  });
+
+  // Spec sheet rows.
+  document.querySelectorAll<HTMLElement>(".dp-spec-rows, .dp-spec-list").forEach((list) => {
+    gsap.from(list.children, {
+      y: 12, opacity: 0, duration: 0.5, ease: "power2.out", stagger: 0.04,
+      scrollTrigger: { trigger: list, start: "top 90%", once: true },
+    });
+  });
 }

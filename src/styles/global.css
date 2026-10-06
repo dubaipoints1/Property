@@ -4076,3 +4076,16 @@ html * {
   box-sizing: border-box;
 }
 .hp-picks.is-pinned-stage > * { width: 100%; }
+
+/* Card-review tilt (6 Oct 2026): a soft sheen that follows the cursor
+   across the card; GSAP drives the rotation and the --gx/--gy point. */
+.dp-tilt { position: relative; will-change: transform; transform-style: preserve-3d; }
+.dp-tilt::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  border-radius: 14px;
+  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 30%), rgba(255, 255, 255, 0.22), transparent 55%);
+  opacity: 0; transition: opacity 0.3s ease;
+  mix-blend-mode: soft-light;
+}
+.dp-tilt.dp-cr-photo::after { bottom: auto; aspect-ratio: 1.586 / 1; }
+.dp-cr-hero:hover .dp-tilt::after { opacity: 1; }
