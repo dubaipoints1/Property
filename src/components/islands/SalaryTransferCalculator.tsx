@@ -7,6 +7,7 @@ import {
   offerTitle,
   rankOffers,
 } from "../../lib/salaryTransfer";
+import { Tween, useFlip } from "./motion";
 
 interface Props {
   offers: SalaryTransferOffer[];
@@ -63,6 +64,7 @@ export default function SalaryTransferCalculator({ offers }: Props) {
 
   const eligible = results.filter((r) => r.status !== "disqualified");
   const top = eligible[0];
+  const rowList = useFlip<HTMLDivElement>([results.map((r) => r.offer.id).join("|")]);
 
   const toggleProduct = (p: AdditionalProduct) => {
     setWillingProducts((prev) =>
@@ -169,7 +171,7 @@ export default function SalaryTransferCalculator({ offers }: Props) {
               {offerTitle(top.offer.bankName, top.offer.name)}
             </p>
             <p class="dpsc-best-figure">
-              {formatAED(top.cashEquivalentAED)}
+              <Tween value={top.cashEquivalentAED} format={formatAED} />
               <span class="unit">cash-equivalent</span>
             </p>
             <p class="dpsc-best-basis">
@@ -190,10 +192,11 @@ export default function SalaryTransferCalculator({ offers }: Props) {
           </div>
         )}
 
-        <div class="dpsc-rows">
+        <div class="dpsc-rows" ref={rowList}>
           {results.map((r, idx) => (
             <article
               key={r.offer.id}
+              data-flip={r.offer.id}
               class={`dpsc-row ${STATUS_CLASS[r.status]}`}
             >
               <header class="dpsc-row-head">
@@ -210,7 +213,7 @@ export default function SalaryTransferCalculator({ offers }: Props) {
 
               {r.matchedBand && (
                 <div class="dpsc-row-value">
-                  <strong>{formatAED(r.cashEquivalentAED)}</strong>{" "}
+                  <strong><Tween value={r.cashEquivalentAED} format={formatAED} /></strong>{" "}
                   cash-equivalent
                   {r.cashEquivalentAED !== r.rawRewardAED && (
                     <span class="face">

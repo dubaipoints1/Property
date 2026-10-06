@@ -31,6 +31,7 @@ import { useEffect, useMemo, useState } from "preact/hooks";
 import type { CardData } from "../../lib/cardsData";
 import { formatEarnRate } from "../../lib/cardsDataFormat";
 import { NINETY_DAYS_MS } from "../../lib/verification";
+import { Tween, useFlip } from "./motion";
 import {
   type EarnBasis,
   earnsAED,
@@ -680,6 +681,9 @@ export default function RewardsCalculator({ cards }: Props) {
       setSpend((prev) => ({ ...prev, [key]: clamped }));
     };
 
+  const visible = showAll ? ranked : ranked.slice(0, 3);
+  const tileList = useFlip<HTMLUListElement>([visible.map((r) => r.card.slug).join("|")]);
+
   if (cards.length === 0) {
     return (
       <div class="dp-calc-empty" role="status">
@@ -688,7 +692,6 @@ export default function RewardsCalculator({ cards }: Props) {
     );
   }
 
-  const visible = showAll ? ranked : ranked.slice(0, 3);
 
   return (
     <div class="dp-calc">
@@ -888,9 +891,9 @@ export default function RewardsCalculator({ cards }: Props) {
           </p>
         )}
 
-        <ul class="dp-calc-tile-list">
+        <ul class="dp-calc-tile-list" ref={tileList}>
           {visible.map((r, idx) => (
-            <li key={r.card.slug} class="dp-calc-tile">
+            <li key={r.card.slug} class="dp-calc-tile" data-flip={r.card.slug}>
               <div class="dp-calc-tile-head">
                 <span class="rank">#{idx + 1}</span>
                 <a class="title" href={`/cards/${r.card.slug}/`}>
@@ -903,7 +906,10 @@ export default function RewardsCalculator({ cards }: Props) {
                 <div class="num-block">
                   <span class="num-label">Monthly reward</span>
                   <strong class="num-value">
-                    {fmtNative(r.monthlyRewardNative, r.card.earnUnit, r.rateBasis)}
+                    <Tween
+                      value={r.monthlyRewardNative}
+                      format={(n) => fmtNative(n, r.card.earnUnit, r.rateBasis)}
+                    />
                   </strong>
                   <span class="num-sub">
                     {r.rateBasis === "cashback"
@@ -920,7 +926,7 @@ export default function RewardsCalculator({ cards }: Props) {
                   </strong>
                   {netOfFee && (
                     <span class="num-sub">
-                      Net: {fmtAED(r.netMonthlyAED)}/mo
+                      Net: <Tween value={r.netMonthlyAED} format={fmtAED} />/mo
                     </span>
                   )}
                 </div>
