@@ -4024,13 +4024,13 @@ html * {
    2026-07-25 rule): "Scroll media expansion" → pictures open from a
    framed crop to full size as they scroll in, with a light parallax;
    the reel's own title treatment → section headings resolve from a blur
-   as they arrive. Pure CSS scroll-driven animations: no library, no JS,
+   as they arrive (headings moved to the GSAP module on 6 Oct 2026, which
+   splits them word by word). Pure CSS scroll-driven animations: no library, no JS,
    compositor-only properties plus one filter. Browsers without
    animation-timeline (Firefox today) simply show the static page, and
    reduced motion turns all of it off. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    main h2:not(.eyebrow):not(.sr-only),
     .hp-hero-lede {
       animation: dp-focus-in linear both;
       animation-timeline: view();
@@ -4052,3 +4052,27 @@ html * {
   from { transform: scale(1.12) translateY(4%); clip-path: inset(7% 5% round 14px); }
   to { transform: scale(1) translateY(0); clip-path: inset(0 round 0); }
 }
+
+/* ── Page transitions (6 Oct 2026) ─────────────────────────────────────
+   Cross-document view transitions: moving between pages fades the old
+   page down and the new one up instead of a hard blink, the way the
+   template sites feel. CSS only; browsers without support navigate as
+   before. The header keeps its own name so it stays put. */
+@view-transition { navigation: auto; }
+.dp-header { view-transition-name: dp-header; }
+::view-transition-old(root) { animation: dp-vt-out 0.22s ease-in both; }
+::view-transition-new(root) { animation: dp-vt-in 0.38s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes dp-vt-out { to { opacity: 0; transform: translateY(-12px); } }
+@keyframes dp-vt-in { from { opacity: 0; transform: translateY(18px); } }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+/* The homepage picks row while GSAP scrubs it: snapping would fight the
+   tween. */
+.dp-carousel.is-scrubbed { scroll-snap-type: none; }
+.hp-picks.is-pinned-stage {
+  min-height: calc(100svh - var(--dp-pin-head, 0px));
+  display: flex; flex-direction: column; justify-content: center;
+  box-sizing: border-box;
+}
+.hp-picks.is-pinned-stage > * { width: 100%; }
