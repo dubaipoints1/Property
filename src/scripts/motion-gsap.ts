@@ -127,6 +127,10 @@ if (!reduced) {
   const crHero = document.querySelector<HTMLElement>(".dp-cr-hero");
   if (crHero) cardReviewMotion(crHero, mm);
 
+  // 5b. Cinematic page stage (6 Oct 2026): every page head marked
+  //     .dp-stage opens like the homepage hero.
+  document.querySelectorAll<HTMLElement>(".dp-stage").forEach(stageMotion);
+
   // 6. Guides (6 Oct 2026): a reading-progress bar along the top, the
   //    "In this guide" list follows the section you are in, and tables and
   //    figures in the prose rise in as they arrive.
@@ -337,4 +341,42 @@ function bankMotion(body: HTMLElement) {
       onEnter: () => offer.classList.add("is-glint"),
     });
   }
+}
+
+// ── Cinematic page stage ───────────────────────────────────────────────
+
+function stageMotion(stage: HTMLElement) {
+  const parts = Array.from(stage.children) as HTMLElement[];
+  const h1 = stage.querySelector<HTMLElement>("h1");
+
+  // Arrival: the photo settles from a closer crop, the title rises word by
+  // word, everything else follows.
+  gsap.fromTo(stage, { "--stage-s": 1.22 }, { "--stage-s": 1.06, duration: 2.4, ease: "expo.out" });
+  if (h1) {
+    const split = SplitText.create(h1, { type: "words", mask: "words", aria: "auto" });
+    gsap.from(split.words, { yPercent: 115, duration: 1.1, ease: "expo.out", stagger: 0.06, delay: 0.15 });
+  }
+  // Direct children other than the title; where the title sits inside an
+  // inner wrapper (directory heads), that wrapper's other children instead.
+  const rest = parts.flatMap((el) =>
+    el === h1 ? [] : h1 && el.contains(h1) ? (Array.from(el.children) as HTMLElement[]).filter((c) => c !== h1) : [el],
+  );
+  gsap.from(rest, {
+    y: 18, opacity: 0, duration: 0.9, ease: "power3.out", stagger: 0.07, delay: 0.35,
+  });
+
+  // Scroll: the photo drifts and pushes in; the words blur away as the
+  // band leaves, like the hero's opening line.
+  gsap.to(stage, {
+    "--stage-y": () => `${Math.round(stage.offsetHeight * 0.22)}px`,
+    "--stage-s": 1.16,
+    ease: "none",
+    scrollTrigger: { trigger: stage, start: "top top", end: "bottom top", scrub: true, invalidateOnRefresh: true },
+  });
+  gsap.fromTo(parts, { y: 0, opacity: 1, filter: "blur(0px)" }, {
+    y: -48, opacity: 0, filter: "blur(8px)",
+    ease: "none",
+    immediateRender: false,
+    scrollTrigger: { trigger: stage, start: "top top", end: "bottom 20%", scrub: true },
+  });
 }

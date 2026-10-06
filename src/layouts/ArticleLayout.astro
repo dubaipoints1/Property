@@ -19,6 +19,7 @@
 
 import BaseLayout from "./BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
+import { stagePhoto, stageStyle } from "~/lib/stage";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
 import { getCollection } from "astro:content";
 
@@ -92,6 +93,10 @@ const fmt = (d?: Date) =>
         year: "numeric",
       })
     : null;
+
+// Cinematic stage: a licensed hero photo becomes the stage backdrop and
+// leaves the body; AI or missing heroes keep the body figure.
+const stageOwnsHero = showHero && stagePhoto(heroSlug) != null;
 
 const showUpdated =
   updatedAt && publishedAt && updatedAt.getTime() !== publishedAt.getTime();
@@ -167,7 +172,7 @@ const schema = {
 ---
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
-  <header class="dp-pagehead is-narrow">
+  <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class="dp-pagehead is-narrow dp-stage">
     {crumb && (
       <div class="crumb">
         {/* 10 June 2026 SEO punch-list #3: visible crumb segments anchored
@@ -219,7 +224,7 @@ const schema = {
 
   <div class="dp-article-body-grid">
     <article class="dp-article-body">
-      {showHero && (
+      {showHero && !stageOwnsHero && (
         heroSlug ? (
           <StockImage
             slug={heroSlug}
