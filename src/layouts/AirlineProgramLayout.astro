@@ -14,6 +14,7 @@
 
 import BaseLayout from "./BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
+import { stagePhoto, stageStyle } from "~/lib/stage";
 import { hasStockEntry } from "~/lib/stockManifest";
 
 interface RelatedCard {
@@ -52,6 +53,9 @@ const {
 
 const heroSlug = slug ? `programme-${slug}` : null;
 const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
+// A licensed photo moves up into the cinematic stage; an AI illustration
+// stays in the body, where StockImage gives it its visible label.
+const stageOwnsHero = stagePhoto(heroSlug) != null;
 
 // JSON-LD: programmes emit a Product entity (the loyalty programme itself)
 // + BreadcrumbList. Region and currency name carry through. PR-D
@@ -87,7 +91,7 @@ const schema = {
 ---
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
-  <header class="dp-pagehead is-narrow">
+  <header style={stageStyle(heroSlug)} class="dp-pagehead is-narrow dp-stage">
     <div class="crumb">{region} · <a href="/airlines/" class="crumb-link">Loyalty programme</a></div>
     <h1>{programName}</h1>
     <p class="deck">Loyalty currency: <strong>{currencyName}</strong>.</p>
@@ -114,7 +118,7 @@ const schema = {
 
   <div class="dp-prog-grid">
     <article class="dp-prog-body">
-      {hasHero && heroSlug && (
+      {hasHero && heroSlug && !stageOwnsHero && (
         <StockImage
           slug={heroSlug}
           coverTitle={programName}

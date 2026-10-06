@@ -275,6 +275,18 @@ Added 4 October 2026 from the `claude-code-setup` recommender:
   Preact-side in `src/components/islands/motion.tsx` (`Tween`, `useFlip`),
   not GSAP; the animated copy is `aria-hidden` beside an `sr-only` final
   value so the `aria-live` results do not announce every frame.
+  **Cinematic page stage** (6 October 2026, Chairman: "that style we should
+  see it in all pages"): every page head carrying `.dp-stage` (all
+  `.dp-pagehead`, `.intel-pagehead` and `.cards-pagehead` heads except the
+  homepage and the style guide) is a full-bleed night band over a
+  photograph that zooms and drifts on scroll while the title blurs away.
+  `src/lib/stage.ts` picks the page's own manifest photo (`bank-<slug>`,
+  `programme-<slug>`, a guide's hero) **only when it is a licensed
+  photograph** — an AI illustration needs its visible label, which a CSS
+  background cannot carry, so it stays in the body — else
+  `hero-dubai-night`. Inside the stage the colour tokens are re-pointed to
+  on-dark values, so new head content recolours itself; style it with
+  tokens, not literal colours.
 - **MCP**: `context7` in `.mcp.json` for current Astro 7 / Tailwind 4 docs.
   `mcp.context7.com` is denied by the web environment's egress policy as of
   4 October 2026, so it works from a workstation only until the host is

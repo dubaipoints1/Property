@@ -8,6 +8,7 @@
 
 import BaseLayout from "./BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
+import { stagePhoto, stageStyle } from "~/lib/stage";
 import { hasStockEntry } from "~/lib/stockManifest";
 
 interface Props {
@@ -46,6 +47,9 @@ const fmtVerified = (d: Date) =>
 
 const heroSlug = slug ? `bank-${slug}` : null;
 const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
+// A licensed photo moves up into the cinematic stage; an AI illustration
+// stays in the body, where StockImage gives it its visible label.
+const stageOwnsHero = stagePhoto(heroSlug) != null;
 
 // JSON-LD: bank hubs emit Organization (sub-type FinancialService) +
 // BreadcrumbList. Customer-service contact and the issuer website are
@@ -87,7 +91,7 @@ const schema = {
 ---
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
-  <header class="dp-pagehead is-narrow">
+  <header style={stageStyle(heroSlug)} class="dp-pagehead is-narrow dp-stage">
     <div class="crumb"><a href="/banks/" class="crumb-link">UAE bank</a></div>
     <h1>{bankName}</h1>
     {description && <p class="deck">{description}</p>}
@@ -118,7 +122,7 @@ const schema = {
   </header>
 
   <article class="dp-bank-body">
-    {hasHero && heroSlug && (
+    {hasHero && heroSlug && !stageOwnsHero && (
       <StockImage
         slug={heroSlug}
         coverTitle={bankName}
