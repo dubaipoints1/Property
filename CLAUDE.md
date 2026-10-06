@@ -267,6 +267,14 @@ Added 4 October 2026 from the `claude-code-setup` recommender:
   (tweens the carousel's own `scrollLeft`, so its buttons still work),
   magnetic primary buttons. Cross-document view transitions are CSS in
   `global.css`. All of it is off under `prefers-reduced-motion`. ~52 KB gzip.
+  Extended the same day per page type: card reviews (3D tilt, count-up
+  figures), guides (gold reading-progress bar, TOC follows the section on
+  screen), bank hubs (metric count-up, card row, one gold glint on the
+  salary-transfer offer). Count-ups restore the original text and skip
+  dates. The calculator islands re-render per keystroke, so their motion is
+  Preact-side in `src/components/islands/motion.tsx` (`Tween`, `useFlip`),
+  not GSAP; the animated copy is `aria-hidden` beside an `sr-only` final
+  value so the `aria-live` results do not announce every frame.
 - **MCP**: `context7` in `.mcp.json` for current Astro 7 / Tailwind 4 docs.
   `mcp.context7.com` is denied by the web environment's egress policy as of
   4 October 2026, so it works from a workstation only until the host is

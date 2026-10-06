@@ -4089,3 +4089,31 @@ html * {
 }
 .dp-tilt.dp-cr-photo::after { bottom: auto; aspect-ratio: 1.586 / 1; }
 .dp-cr-hero:hover .dp-tilt::after { opacity: 1; }
+
+/* Guides (6 Oct 2026): reading progress along the very top of the window,
+   and the "In this guide" row for the section on screen. GSAP scales the
+   bar; without it (or under reduced motion) the bar is never created. */
+.dp-read-progress {
+  position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 200;
+  background: var(--gold);
+  transform: scaleX(0); transform-origin: 0 50%;
+  pointer-events: none;
+}
+.dp-toc-card li { transition: color 0.25s ease; }
+.dp-toc-card li.is-current a { color: var(--green); font-weight: 600; }
+.dp-toc-card li.is-current .num { color: var(--gold); }
+[data-theme="dark"] .dp-toc-card li.is-current a { color: var(--navy-lift); }
+
+/* Bank pages (6 Oct 2026): one gold glint across the salary-transfer
+   offer when it first scrolls into view. */
+.dp-gsap .dp-bank-callout { position: relative; overflow: hidden; }
+.dp-bank-callout.is-glint::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(217, 164, 65, 0.28) 50%, transparent 65%);
+  transform: translateX(-100%);
+  animation: dp-glint 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+}
+@keyframes dp-glint { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .dp-bank-callout.is-glint::after { display: none; }
+}

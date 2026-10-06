@@ -127,6 +127,17 @@ if (!reduced) {
   const crHero = document.querySelector<HTMLElement>(".dp-cr-hero");
   if (crHero) cardReviewMotion(crHero, mm);
 
+  // 6. Guides (6 Oct 2026): a reading-progress bar along the top, the
+  //    "In this guide" list follows the section you are in, and tables and
+  //    figures in the prose rise in as they arrive.
+  const guideBody = document.querySelector<HTMLElement>(".dp-article-body");
+  if (guideBody) guideMotion(guideBody);
+
+  // 7. Bank pages (6 Oct 2026): headline figures count up, the bank's cards
+  //    arrive as a row, and the salary-transfer offer catches a gold glint.
+  const bankBody = document.querySelector<HTMLElement>(".dp-bank-body");
+  if (bankBody) bankMotion(bankBody);
+
   // Images and late fonts change heights after load; re-measure once.
   window.addEventListener("load", () => ScrollTrigger.refresh(), { once: true });
 }
@@ -138,6 +149,8 @@ if (!reduced) {
  *  unverified dashes and words ("Free", "None") alone. */
 function countUp(el: HTMLElement, trigger: Element) {
   if (el.matches(".is-date, .is-unverified")) return;
+  // Dates ("17 September 2026") are not quantities.
+  if (/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\b/.test(el.textContent ?? "")) return;
   const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
   let node: Text | null = null;
   while (walker.nextNode()) {
@@ -250,4 +263,78 @@ function cardReviewMotion(hero: HTMLElement, mm: gsap.MatchMedia) {
       scrollTrigger: { trigger: list, start: "top 90%", once: true },
     });
   });
+}
+
+// ── Guides ─────────────────────────────────────────────────────────────
+
+function guideMotion(body: HTMLElement) {
+  // Progress: how far through the article body the reader is.
+  const bar = document.createElement("div");
+  bar.className = "dp-read-progress";
+  bar.setAttribute("aria-hidden", "true");
+  document.body.appendChild(bar);
+  gsap.to(bar, {
+    scaleX: 1, ease: "none",
+    scrollTrigger: { trigger: body, start: "top 20%", end: "bottom bottom", scrub: 0.3 },
+  });
+
+  // Table of contents: mark the section currently on screen.
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".dp-toc-card a[href^='#']"));
+  const setCurrent = (id: string) =>
+    links.forEach((a) => {
+      const on = a.getAttribute("href") === `#${id}`;
+      a.parentElement?.classList.toggle("is-current", on);
+      if (on) a.setAttribute("aria-current", "location");
+      else a.removeAttribute("aria-current");
+    });
+  links.forEach((a, i) => {
+    const id = decodeURIComponent(a.getAttribute("href")!.slice(1));
+    const target = document.getElementById(id);
+    if (!target) return;
+    ScrollTrigger.create({
+      trigger: target,
+      start: "top 45%",
+      onEnter: () => setCurrent(id),
+      onLeaveBack: () => {
+        const prev = links[i - 1];
+        if (prev) setCurrent(decodeURIComponent(prev.getAttribute("href")!.slice(1)));
+        else setCurrent("");
+      },
+    });
+  });
+
+  // Tables and figures rise in.
+  body.querySelectorAll<HTMLElement>(".dp-prose table, .dp-prose figure, .dp-prose .dp-callout, .dp-prose .dp-take").forEach((el) => {
+    gsap.from(el, {
+      y: 24, opacity: 0, duration: 0.8, ease: "expo.out",
+      scrollTrigger: { trigger: el, start: "top 90%", once: true },
+    });
+  });
+}
+
+// ── Bank pages ─────────────────────────────────────────────────────────
+
+function bankMotion(body: HTMLElement) {
+  const strip = document.querySelector<HTMLElement>(".dp-metric-strip");
+  if (strip) {
+    strip.querySelectorAll<HTMLElement>(".metric .v").forEach((el) => countUp(el, strip));
+    gsap.from(strip.querySelectorAll(".metric"), {
+      y: 18, opacity: 0, duration: 0.7, ease: "power3.out", stagger: 0.08, delay: 0.2,
+    });
+  }
+
+  body.querySelectorAll<HTMLElement>(".dp-bank-cards-grid").forEach((grid) => {
+    gsap.from(grid.children, {
+      y: 28, opacity: 0, duration: 0.7, ease: "expo.out", stagger: 0.06,
+      scrollTrigger: { trigger: grid, start: "top 88%", once: true },
+    });
+  });
+
+  const offer = body.querySelector<HTMLElement>(".dp-bank-callout");
+  if (offer) {
+    ScrollTrigger.create({
+      trigger: offer, start: "top 80%", once: true,
+      onEnter: () => offer.classList.add("is-glint"),
+    });
+  }
 }
