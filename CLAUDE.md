@@ -259,6 +259,14 @@ Added 4 October 2026 from the `claude-code-setup` recommender:
   `.dp-tool`. Transform/opacity only, visible without JS, off under
   `prefers-reduced-motion`. Astro inlines the module, so it is one more
   executable inline script for the CSP inventory.
+- **GSAP motion** (6 October 2026, Chairman's choice of the free route over
+  a paid template): `src/scripts/motion-gsap.ts`, loaded once from
+  `BaseLayout.astro`. GSAP 3.15 (free incl. SplitText/ScrollTrigger) + Lenis:
+  smooth scroll on fine pointers only, `main h2` split and raised word by
+  word, the homepage picks row pinned and scrubbed sideways at ≥ 1024 px
+  (tweens the carousel's own `scrollLeft`, so its buttons still work),
+  magnetic primary buttons. Cross-document view transitions are CSS in
+  `global.css`. All of it is off under `prefers-reduced-motion`. ~52 KB gzip.
 - **MCP**: `context7` in `.mcp.json` for current Astro 7 / Tailwind 4 docs.
   `mcp.context7.com` is denied by the web environment's egress policy as of
   4 October 2026, so it works from a workstation only until the host is
