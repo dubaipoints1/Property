@@ -91,7 +91,7 @@ const schema = {
 ---
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
-  <header style={stageStyle(heroSlug)} class="dp-pagehead is-narrow dp-stage">
+  <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead is-narrow", { "dp-stage": stageOwnsHero }]}>
     <div class="crumb">{region} · <a href="/airlines/" class="crumb-link">Loyalty programme</a></div>
     <h1>{programName}</h1>
     <p class="deck">Loyalty currency: <strong>{currencyName}</strong>.</p>

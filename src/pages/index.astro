@@ -429,6 +429,18 @@ const dealRows = await Promise.all(
         <div class="hp-reel-title">
           <span class="hp-hero-kicker"><span class="dot" aria-hidden="true"></span>Independent UAE points &amp; miles publication</span>
           <h1>Fly further. <em>Pay less.</em></h1>
+          <!-- 7 Oct 2026 UX review: the deck and the main action belong on
+               the first screen, not after the reel. They fade with the
+               title as the trip plays. -->
+          <p class="hp-hero-lede">
+            UAE-resident guides to the card combinations, salary-transfer
+            bonuses and miles redemptions that stretch a Dubai paycheque
+            further — AED-first, dated and sourced.
+          </p>
+          <div class="hp-hero-ctas">
+            <a href="#tools" class="hp-hero-cta">Start with a tool ↗</a>
+            <a href="#latest" class="hp-hero-cta is-ghost">Read the latest →</a>
+          </div>
         </div>
         <p class="hp-reel-tagline">{REEL.tagline}</p>
         <div class="hp-reel-hint" aria-hidden="true">
@@ -438,18 +450,7 @@ const dealRows = await Promise.all(
         <div class="hp-reel-progress" aria-hidden="true"><i></i></div>
       </div>
     </section>
-    <div class="hp-hero-grid">
-      <div class="hp-hero-text">
-        <p class="hp-hero-lede">
-          UAE-resident guides to the card combinations, salary-transfer
-          bonuses and miles redemptions that stretch a Dubai paycheque
-          further — AED-first, dated and sourced.
-        </p>
-        <div class="hp-hero-ctas">
-          <a href="#tools" class="hp-hero-cta">Start with a tool ↗</a>
-          <a href="#latest" class="hp-hero-cta is-ghost">Read the latest →</a>
-        </div>
-      </div>
+    <div class="hp-hero-grid is-single">
       <div class="hp-hero-text hp-hero-body">
         <p class="hp-hero-trust">
           <span><span data-count>{cards.length}</span> cards · <span data-count>{allBanks.length}</span> banks</span>
@@ -513,6 +514,8 @@ const dealRows = await Promise.all(
           const run = reel.offsetHeight - stage.offsetHeight;
           target = run > 0 ? Math.min(1, Math.max(0, -reel.getBoundingClientRect().top / run)) : 0;
           reel.classList.toggle("is-moving", target > 0.01);
+          // Once the title has faded, its links leave the tab order too.
+          reel.classList.toggle("is-past-title", target > 0.3);
           if (!running) { running = true; requestAnimationFrame(frame); }
         };
         const frame = () => {
@@ -1045,6 +1048,14 @@ const dealRows = await Promise.all(
     pointer-events: none;
   }
   .hp-reel-title .hp-hero-kicker { color: var(--gold-lift); margin-bottom: 20px; }
+  .hp-reel-title .hp-hero-lede {
+    margin: 22px auto 0; max-width: 42ch;
+    color: rgba(253, 252, 248, 0.86);
+    text-shadow: 0 2px 16px rgba(10, 16, 24, 0.55);
+  }
+  .hp-reel-title .hp-hero-ctas { justify-content: center; margin-top: 24px; pointer-events: auto; }
+  .hp-reel.is-past-title .hp-reel-title { visibility: hidden; }
+  .hp-hero-grid.is-single { grid-template-columns: minmax(0, 1fr); max-width: 760px; }
   .hp-reel-title .hp-hero-kicker .dot { background: var(--gold-lift); }
   .hp-hero .hp-reel-title h1 {
     margin: 0;
@@ -1094,6 +1105,13 @@ const dealRows = await Promise.all(
   }
   @media (max-width: 899px) {
     .hp-reel { --hp-head: 92px; }
+    /* Shorter trip on phones, and the buttons replace the scroll hint. */
+    .hp-reel.is-scrub { height: calc(200svh - var(--hp-head)); }
+    .hp-reel.is-scrub .hp-reel-hint { display: none; }
+    .hp-hero .hp-reel-title h1 { font-size: clamp(44px, 12vw, 64px); }
+    .hp-reel-title .hp-hero-lede { font-size: 16px; line-height: 1.5; margin-top: 16px; }
+    .hp-reel-title .hp-hero-kicker { margin-bottom: 14px; }
+    .hp-reel-title .hp-hero-ctas { gap: 10px; margin-top: 20px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .hp-reel-hint svg { animation: none; }

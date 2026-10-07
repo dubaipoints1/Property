@@ -172,7 +172,7 @@ const schema = {
 ---
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
-  <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class="dp-pagehead is-narrow dp-stage">
+  <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead is-narrow", { "dp-stage": stageOwnsHero }]}>
     {crumb && (
       <div class="crumb">
         {/* 10 June 2026 SEO punch-list #3: visible crumb segments anchored
