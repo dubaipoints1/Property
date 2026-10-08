@@ -21,7 +21,6 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
-  "news-qatar-privilege-deals-october-sharjah-book-by-14-october": "weekly news run 8 Oct 2026 — image fetched next",
   "news-ihg-garner-hotels-uae-dubai-al-jaddaf-ras-al-khaimah": "weekly news run 8 Oct 2026 — image fetched next",
   "news-emirates-nbd-new-account-air-arabia-return-ticket-31-december": "weekly news run 8 Oct 2026 — image fetched next",
 };
