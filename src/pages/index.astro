@@ -892,7 +892,10 @@ const dealRows = await Promise.all(
     padding: 0 0 104px;
   }
   .hp-hero::before {
-    content: ""; position: absolute; inset: -20%; pointer-events: none;
+    /* Fixed offsets, not a percentage: the hero grows when the reel switches
+       to its tall scroll track after load, and a %-inset glow moved with it
+       (layout shift 0.21 on the homepage, 8 Oct 2026 audit). */
+    content: ""; position: absolute; inset: -160px; pointer-events: none;
     background:
       radial-gradient(45% 55% at 22% 18%, rgba(184, 132, 42, 0.14), transparent 62%),
       radial-gradient(40% 50% at 88% 88%, rgba(31, 58, 77, 0.10), transparent 60%);
