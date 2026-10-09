@@ -215,6 +215,18 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
     margin-inline: auto;
     box-sizing: border-box;
   }
+  /* The tracker island renders inside <astro-island> (display: contents),
+     so the width rule has to reach the island's own root. */
+  .st-page :global(.dpst) {
+    max-width: calc(var(--container-listing) - 64px);
+    margin-inline: auto;
+  }
+  @media (max-width: 1240px) {
+    .st-page :global(.dpst) { margin-inline: 20px; }
+  }
+  @media (max-width: 640px) {
+    .st-page :global(.dpst) { margin-inline: 0; }
+  }
   .st-page > :global(.dp-pagehead) {
     max-width: none;
     padding-inline: max(20px, calc((100% - var(--container-listing)) / 2 + 32px));
