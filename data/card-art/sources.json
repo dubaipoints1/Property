@@ -90,10 +90,11 @@
     "note": "No card-face image on the page. og:image points at http://newdibuat.dib.ae/images/default-source/og/consumer-card.png (a UAT host, not used)"
   },
   "emirates-islamic-switch-cashback": {
-    "url": "https://www.emiratesislamic.ae/-/media/ei/images/cards/switchcard_600x500_en.jpg?h=500&w=600&la=en&hash=13E934D6E1304C90516FDE9F444D71FA",
+    "url": null,
     "page": "https://www.emiratesislamic.ae/en/cards/credit-cards/switch-cashback-credit-card",
     "alt": null,
-    "note": "Hero image, no alt; a 600x500 JPG named 'switchcard', may be card art on a background rather than a clean card face. Verify visually."
+    "note": "rejected on review 9 Oct 2026: a lifestyle banner with a person, not a card face",
+    "rejectedUrl": "https://www.emiratesislamic.ae/-/media/ei/images/cards/switchcard_600x500_en.jpg?h=500&w=600&la=en&hash=13E934D6E1304C90516FDE9F444D71FA"
   },
   "emirates-nbd-darna-select-visa": {
     "url": "https://www.emiratesnbd.com/-/media/enbd/images/card/credit-card/darna/aldar_darna_select_card_latt_image.png?la=en&h=556&w=880&hash=F35871501603812759513EDD6693CEFA",
@@ -306,10 +307,11 @@
     "note": "Hero card image (class hbcc-image), empty alt, 466x327"
   },
   "hsbc-live-plus": {
-    "url": "https://www.hsbc.ae/content/dam/hsbc/en/images/16-9/13903-live-plus-card-01-signature-red-1-generic-2000x1125.jpg",
+    "url": null,
     "page": "https://www.hsbc.ae/credit-cards/products/live-plus/",
     "alt": null,
-    "note": "Only card image on the page: a 2000x1125 16:9 JPG hero whose filename names the Live+ card. Likely the card shot on a background, not a cut-out card face. Verify visually."
+    "note": "rejected on review 9 Oct 2026: card photographed in a scene, not a clean card face",
+    "rejectedUrl": "https://www.hsbc.ae/content/dam/hsbc/en/images/16-9/13903-live-plus-card-01-signature-red-1-generic-2000x1125.jpg"
   },
   "liv-cashback": {
     "url": "https://www.liv.me/-/media/liv/website/liv-rebranding/credit-card/calc/liv-platinum-cc-front-1.svg?la=en&hash=DF1D6D8761BF849EE0D1A1C76D5E57E9",
@@ -342,9 +344,10 @@
     "note": "No clean card face. Only candidate is the 1600x490 hero banner https://av.sc.com/ae/content/images/ae-platinum-x-credit-card-1600x490px.jpg (alt 'Platinum X credit card'), a wide lifestyle banner, not used"
   },
   "wio-credit": {
-    "url": "https://images.ctfassets.net/l65m9bcr2nac/UU79OgsQwepE9cN8ObPhF/c96b09151b20eab3f211b6831c106ef8/cardImage.webp?fm=webp&q=80",
+    "url": null,
     "page": "https://wio.io/personal-credit",
     "alt": "wio-ctf-credit-personal-feature-card-img",
-    "note": "Hosted on Wio's Contentful space (l65m9bcr2nac, the same space that serves Wio's KFS PDFs). Rendered small (116x150, portrait), so it may be a cropped feature thumbnail rather than a full card face. Verify visually."
+    "note": "rejected on review 9 Oct 2026: a phone app screenshot, not a card face",
+    "rejectedUrl": "https://images.ctfassets.net/l65m9bcr2nac/UU79OgsQwepE9cN8ObPhF/c96b09151b20eab3f211b6831c106ef8/cardImage.webp?fm=webp&q=80"
   }
 }

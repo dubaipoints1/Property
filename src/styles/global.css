@@ -2946,7 +2946,9 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
      first viewport. UX kill-list rule 2 (buried verdicts). */
   .dp-cr-hero .dp-cr-text { order: 0; }
   .dp-cr-hero .dp-cr-tile,
-  .dp-cr-hero .dp-cr-photo { order: 1; max-width: 100%; }
+  .dp-cr-hero .dp-cr-photo,
+  .dp-cr-hero .dp-cr-art { order: 1; max-width: 100%; }
+  .dp-cr-hero .dp-cr-art img { max-width: 300px; }
 }
 
 /* Card-review hero photograph — wraps a manifest-tracked Pexels image
@@ -2985,6 +2987,17 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
    its per-issuer tints: the mock read as a product image (2026-07-29
    documentation line) and the tints were third hues (2026-07-25, R1).
    Same three facts, on the house palette. */
+/* Issuer card art in the review hero (9 Oct 2026): the real card face
+   from the issuer's website, credited underneath. */
+.dp-cr-art { margin: 0; max-width: 340px; position: relative; z-index: 1; }
+.dp-cr-art img {
+  display: block; width: 100%; height: auto;
+  filter: drop-shadow(0 26px 30px rgba(0, 0, 0, 0.45));
+}
+.dp-cr-art figcaption {
+  margin-top: 12px; font-size: 11px; letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.6);
+}
 .dp-cr-tile {
   aspect-ratio: 1.586 / 1; width: 100%; max-width: 320px;
   border-radius: 12px; padding: 22px 24px;
