@@ -1078,6 +1078,30 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-10-09 — Issuer card art may be shown, from the issuer's own website only
+
+On Chairman direction (9 October 2026), recorded verbatim as the basis of
+the ruling: "for the cards pull the actual images not a block of
+notihing".
+
+**The rule.** A card's own face may be shown wherever the site depicts
+that card (homepage tiles, `/cards/`, the review hero, related rows), on
+the terms the 2026-05-21 amendment set for press-library imagery: taken
+**only from the issuer's own website** (product page or the issuer's own
+image host), used unmodified apart from trimming and resizing, credited
+to the issuer where it leads a page ("Card image: <bank>"), source URL
+and product page recorded in `data/card-art/manifest.json`, takedown
+honoured within 24 hours. Fetched by `fetch-card-art.yml` from
+`data/card-art/sources.json`, never on main.
+
+**Unchanged.** The 2026-07-29 ban on AI-generated card art stands: an
+image is the issuer's or there is none. A lifestyle banner, a photo of
+the card in a scene, an app screenshot or another card's art is not card
+art and is rejected on review (three were on 9 October); a card without
+clean art keeps the typographic face.
+
+— Chairman, 9 October 2026.
+
 ### 2026-10-04 — Homepage hero carries no image caption; disclosure moves to the policy page
 
 On Chairman direction (4 October 2026), recorded verbatim as the basis of
