@@ -1,0 +1,92 @@
+# Phase E.16 — imagery for the 9 October 2026 news run and two new deals.
+#
+# Five slots render the typographic Cover fallback: three airline news
+# posts and two bank-card deals filed on 9 October from a web session,
+# where api.pexels.com is blocked. Chairman, in-session the same day:
+# "the news are missing pictures".
+#
+# Query discipline as E.14/E.15: no alcohol, no religious architecture as
+# product imagery, bright enough at tile size, matched to the story, and
+# nothing branded or identifiable (a licensed stock photo is mood, never
+# documentation of a named airline, card or shop).
+#
+# Runs on a push of this file to a claude/** branch (the repo's workaround
+# for dispatching a workflow not yet on main; see fetch-partner-logo.yml)
+# and commits the images back to that same branch for review. Remove the
+# five ALLOWED_MISSING entries in tests/images/content-coverage.test.ts
+# once the images land.
+#
+# Prereq: PEXELS_API_KEY repo secret (provisioned).
+
+name: seed-images-e16
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to seed (commits land here; never main)"
+        required: true
+        type: string
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/seed-images-e16.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: ${{ inputs.branch || github.ref_name }}
+    steps:
+      - name: Refuse main
+        run: |
+          if [ "$TARGET_BRANCH" = "main" ]; then echo "::error::seed against a feature branch"; exit 1; fi
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: "npm"
+      - run: npm ci
+
+      - name: Fetch news + deal imagery
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          while IFS='|' read -r slug query alt; do
+            [ -z "$slug" ] && continue
+            echo "::group::$slug"
+            npm run fetch:stock -- \
+              --slug "$slug" \
+              --query "$query" \
+              --orientation landscape \
+              --pick 0 \
+              --alt "$alt" || echo "::warning::fetch failed for $slug"
+            echo "::endgroup::"
+          done <<'SEEDS'
+          news-etihad-guest-points-exchange-bonus-up-to-40-percent-31-october|airplane wing above clouds sunrise window|Aircraft wing above the clouds at sunrise
+          news-qatar-privilege-deals-october-sharjah-book-by-14-october|airport terminal travellers departures bright|Travellers walking through a bright airport terminal
+          news-my-emirates-pass-winter-2026-boarding-pass-discounts-31-march|dubai skyline daytime clear sky|Dubai skyline on a clear day
+          deal-fab-lulu-20pct-online|grocery delivery bags fresh produce kitchen|Grocery delivery bags with fresh produce
+          deal-adib-careem-food-30pct|food delivery meal containers table|Takeaway meal containers on a table
+          SEEDS
+
+      - name: Validate
+        run: npm run check
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/stock/manifest.json public/images/stock/
+          if git diff --staged --quiet; then echo "No new images fetched (is PEXELS_API_KEY set?)."; exit 0; fi
+          git commit \
+            -m "feat(images): Phase E.16 — imagery for the 9 Oct news run and two new deals" \
+            -m "Seeds the five unphotographed slots filed on 9 October 2026 (three airline news posts, FAB Lulu and ADIB Careem Food deals). Licensed Pexels photographs, unbranded mood imagery."
+          git push origin "HEAD:$TARGET_BRANCH"
