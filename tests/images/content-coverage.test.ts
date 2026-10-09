@@ -25,6 +25,15 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Filed 9 Oct 2026 from a web session, where api.pexels.com is blocked; image to be seeded via seed-images/refetch-image.yml on a non-main branch, then this exception removed.",
   "deal-adib-careem-food-30pct":
     "Filed 9 Oct 2026 from a web session, where api.pexels.com is blocked; image to be seeded via seed-images/refetch-image.yml on a non-main branch, then this exception removed.",
+  // News-desk run of 9 October 2026: the session was instructed not to
+  // fetch or generate images, so these three ship on the typographic Cover
+  // until an image is seeded via refetch-image.yml / seed-images-*.yml.
+  "news-etihad-guest-points-exchange-bonus-up-to-40-percent-31-october":
+    "filed 9 Oct 2026 without an image by instruction; typographic cover pending a seeded photo",
+  "news-qatar-privilege-deals-october-sharjah-book-by-14-october":
+    "filed 9 Oct 2026 without an image by instruction; typographic cover pending a seeded photo",
+  "news-my-emirates-pass-winter-2026-boarding-pass-discounts-31-march":
+    "filed 9 Oct 2026 without an image by instruction; typographic cover pending a seeded photo",
 };
 
 const manifest = JSON.parse(
