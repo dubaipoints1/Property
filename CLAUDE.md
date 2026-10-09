@@ -277,6 +277,17 @@ Added 4 October 2026 from the `claude-code-setup` recommender:
   now appears only on pages that own a licensed photograph (bank hubs,
   programmes, story articles), static and short on phones. Do not
   reintroduce decorative motion without a Chairman ruling.
+- **Homepage motion, 9 October 2026 (Chairman ruling in-session: "make it
+  look exciting some cool animations").** Below the hero only, in
+  `src/pages/index.astro`: each section stages its entry as it scrolls in
+  (kicker rule draws, heading sharpens from a blur, rows and tiles rise in
+  turn, a gold hairline sweeps each row once), the three card faces deal in
+  like a hand and tilt toward a fine pointer with a gold sheen, and the
+  proof and closing figures count up (`aria-hidden` copy beside an
+  `sr-only` final value). Transform / opacity / filter only, no library,
+  scroll never touched; sections already on screen render final, so
+  nothing flashes, and reduced motion or no JS shows the final state. The
+  rest of the site stays calm.
 - **Fonts are self-hosted** (`@fontsource-variable/newsreader`, `/geist`,
   imported in `BaseLayout.astro` with the two Latin files preloaded).
   Google Fonts with `display=optional` left many first visits in

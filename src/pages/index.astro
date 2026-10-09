@@ -418,17 +418,17 @@ const DIRECTORY = [
   <!-- ── Dusk (8 Oct 2026, direction B "night to day"): the reel ends on
        night; this band carries the proof line and fades the night into
        the paper page, so the hero and the page below are one surface. ── -->
-  <div class="hp-dusk">
+  <div class="hp-dusk" data-hp-anim>
     <p class="hp-proof">
-      <span><b>{cards.length}</b> cards</span>
-      <span><b>{allBanks.length}</b> banks</span>
+      <span><b><span class="sr-only">{cards.length}</span><span aria-hidden="true" data-count-to={cards.length}>{cards.length}</span></b> cards</span>
+      <span><b><span class="sr-only">{allBanks.length}</span><span aria-hidden="true" data-count-to={allBanks.length}>{allBanks.length}</span></b> banks</span>
       <span>Every figure <strong>dated &amp; sourced</strong></span>
       <span><strong>No</strong> paid placements</span>
     </p>
   </div>
 
   <!-- ── Tools: numbered hairline rows ─────────────────────────────── -->
-  <section class="hp-sec hp-sec-tools" id="tools" data-reveal aria-labelledby="hp-tools-h">
+  <section class="hp-sec hp-sec-tools" id="tools" data-hp-anim aria-labelledby="hp-tools-h">
     <div class="hp-sec-head">
       <div>
         <p class="hp-kicker">Tools</p>
@@ -438,7 +438,7 @@ const DIRECTORY = [
     </div>
     <ol class="hp-tools">
       {TOOLS.map((t, i) => (
-        <li>
+        <li style={`--i:${i}`}>
           <a href={t.href}>
             <span class="n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
             <h3>{t.title}</h3>
@@ -452,7 +452,7 @@ const DIRECTORY = [
 
   <!-- ── Cards we rate: typographic tiles, L2 figures only ────────── -->
   {rated.length > 0 && (
-    <section class="hp-sec" data-reveal aria-labelledby="hp-cards-h">
+    <section class="hp-sec" data-hp-anim aria-labelledby="hp-cards-h">
       <div class="hp-sec-head">
         <div>
           <p class="hp-kicker">Cards we rate</p>
@@ -462,8 +462,8 @@ const DIRECTORY = [
       </div>
       <ul class="hp-cards">
         {rated.map((c, i) => (
-          <li>
-            <a href={`/cards/${c.slug}/`} class="hp-card">
+          <li style={`--i:${i}`}>
+            <a href={`/cards/${c.slug}/`} class="hp-card" data-tilt>
               <span class={`hp-tile tone-${i % 3}`} aria-hidden="true">
                 <span class="bank">{c.bankName}</span>
                 <span class="cname">{c.shortName}</span>
@@ -489,7 +489,7 @@ const DIRECTORY = [
 
   <!-- ── Live now: salary-transfer offers + deals ──────────────────── -->
   {(offerRows.length > 0 || dealRows.length > 0) && (
-    <section class="hp-sec" data-reveal aria-labelledby="hp-live-h">
+    <section class="hp-sec" data-hp-anim aria-labelledby="hp-live-h">
       <div class="hp-sec-head">
         <div>
           <p class="hp-kicker">Live now</p>
@@ -541,7 +541,7 @@ const DIRECTORY = [
   )}
 
   <!-- ── Latest: type-led list, no thumbnails ─────────────────────── -->
-  <section class="hp-sec" id="latest" data-reveal aria-labelledby="hp-latest-h">
+  <section class="hp-sec" id="latest" data-hp-anim aria-labelledby="hp-latest-h">
     <div class="hp-sec-head">
       <div>
         <p class="hp-kicker">Latest</p>
@@ -550,8 +550,8 @@ const DIRECTORY = [
       <a href="/news/" class="hp-more">All news →</a>
     </div>
     <ul class="hp-latest">
-      {latest.map((item) => (
-        <li>
+      {latest.map((item, i) => (
+        <li style={`--i:${i}`}>
           <a href={item.href}>
             <span class="meta"><span class="cat">{item.category}</span> <span>{fmtLong(item.date)}</span></span>
             <h3>{item.title}</h3>
@@ -563,7 +563,7 @@ const DIRECTORY = [
   </section>
 
   <!-- ── Strategy: goal-ranked, no-JS radio tabs (unchanged logic) ─── -->
-  <section class="dp-strategy hp-strategy" data-reveal aria-label="Build your points strategy">
+  <section class="dp-strategy hp-strategy" data-hp-anim aria-label="Build your points strategy">
     <div class="inner">
       <p class="hp-kicker">Build your strategy</p>
       <h2>What are you <em>optimising for?</em></h2>
@@ -614,7 +614,7 @@ const DIRECTORY = [
   </section>
 
   <!-- ── Everything on the site: hairline grid ─────────────────────── -->
-  <section class="hp-sec" data-reveal aria-labelledby="hp-dir-h">
+  <section class="hp-sec" data-hp-anim aria-labelledby="hp-dir-h">
     <div class="hp-sec-head">
       <div>
         <p class="hp-kicker">Start here</p>
@@ -622,8 +622,8 @@ const DIRECTORY = [
       </div>
     </div>
     <ul class="hp-grid">
-      {DIRECTORY.map((d) => (
-        <li>
+      {DIRECTORY.map((d, i) => (
+        <li style={`--i:${i}`}>
           <a href={d.href}>
             <span class="count">{d.count}</span>
             <h3>{d.title}</h3>
@@ -638,13 +638,13 @@ const DIRECTORY = [
 
   <!-- ── Night close: how we work + the Friday brief. Runs straight into
        the footer, so the page ends where the hero began. ─────────── -->
-  <section class="hp-close" data-reveal aria-labelledby="hp-close-h">
+  <section class="hp-close" data-hp-anim aria-labelledby="hp-close-h">
     <div class="hp-close-in">
       <p class="hp-kicker">How we work</p>
       <h2 id="hp-close-h">Every figure dated, sourced and <em>in dirhams.</em></h2>
       <dl class="hp-stats">
-        <div><dt>cards checked against issuer documents</dt><dd>{cards.length}</dd></div>
-        <div><dt>UAE banks covered</dt><dd>{allBanks.length}</dd></div>
+        <div><dt>cards checked against issuer documents</dt><dd><span class="sr-only">{cards.length}</span><span aria-hidden="true" data-count-to={cards.length}>{cards.length}</span></dd></div>
+        <div><dt>UAE banks covered</dt><dd><span class="sr-only">{allBanks.length}</span><span aria-hidden="true" data-count-to={allBanks.length}>{allBanks.length}</span></dd></div>
         <div><dt>first, on every price we print</dt><dd class="is-word">AED</dd></div>
         <div><dt>paid placements</dt><dd>0</dd></div>
       </dl>
@@ -731,6 +731,77 @@ const DIRECTORY = [
         };
         window.addEventListener("scroll", read, { passive: true });
         read();
+      }
+    }
+  </script>
+  <script>
+    // Homepage motion below the hero (9 Oct 2026, Chairman: "make it look
+    // exciting some cool animations"). Each section stages its own entry
+    // when it scrolls in: kicker rule draws, heading sharpens from a blur,
+    // rows and tiles rise in turn, figures count up. Card faces tilt
+    // toward the pointer with a gold sheen. Transform, opacity and filter
+    // only; no library; scrolling is never touched. Without JS, or under
+    // reduced motion, every section simply renders in its final state.
+    // Sections already on screen when this runs are shown at once, so
+    // nothing flashes out and back in.
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-hp-anim]"));
+
+    const countUp = (root: HTMLElement) => {
+      root.querySelectorAll<HTMLElement>("[data-count-to]").forEach((el) => {
+        const to = Number(el.dataset.countTo);
+        if (!Number.isFinite(to) || to <= 0) return;
+        const t0 = performance.now();
+        const dur = 1400;
+        const step = (now: number) => {
+          const k = Math.min(1, (now - t0) / dur);
+          el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 4))));
+          if (k < 1) requestAnimationFrame(step);
+        };
+        el.textContent = "0";
+        requestAnimationFrame(step);
+      });
+    };
+
+    if (!reduce && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            const el = e.target as HTMLElement;
+            el.classList.add("is-in");
+            el.classList.remove("is-pending");
+            countUp(el);
+            io.unobserve(el);
+          });
+        },
+        { rootMargin: "0px 0px -15% 0px", threshold: 0 },
+      );
+      sections.forEach((el) => {
+        if (el.getBoundingClientRect().top < window.innerHeight * 0.9) return;
+        el.classList.add("is-pending");
+        io.observe(el);
+      });
+
+      // Pointer tilt on the card faces: fine pointers only.
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((card) => {
+          const tile = card.querySelector<HTMLElement>(".hp-tile");
+          if (!tile) return;
+          card.addEventListener("pointermove", (ev) => {
+            const r = tile.getBoundingClientRect();
+            const x = (ev.clientX - r.left) / r.width - 0.5;
+            const y = (ev.clientY - r.top) / r.height - 0.5;
+            tile.style.setProperty("--rx", `${(-y * 10).toFixed(2)}deg`);
+            tile.style.setProperty("--ry", `${(x * 12).toFixed(2)}deg`);
+            tile.style.setProperty("--mx", `${((x + 0.5) * 100).toFixed(1)}%`);
+          });
+          card.addEventListener("pointerleave", () => {
+            tile.style.removeProperty("--rx");
+            tile.style.removeProperty("--ry");
+            tile.style.removeProperty("--mx");
+          });
+        });
       }
     }
   </script>
@@ -1132,5 +1203,99 @@ const DIRECTORY = [
     .hp-close { padding: 128px 48px 96px; }
     .hp-stats { grid-template-columns: repeat(4, 1fr); }
     .hp-brief { grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+  }
+
+  /* ── Motion below the hero (9 Oct 2026, Chairman direction) ────────
+     .is-pending is set by the page script only on sections still below
+     the fold, and only when motion is allowed, so the default state is
+     the final state. */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+  }
+  [data-hp-anim] { --ease: cubic-bezier(0.22, 1, 0.36, 1); }
+  [data-hp-anim] .hp-kicker::before { transform-origin: left; transition: transform 0.7s var(--ease); }
+  [data-hp-anim] h2 { transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), filter 0.9s var(--ease); }
+  [data-hp-anim] h2 em { display: inline-block; transition: opacity 0.9s var(--ease) 0.18s, transform 0.9s var(--ease) 0.18s, filter 0.9s var(--ease) 0.18s; }
+  [data-hp-anim] .hp-sec-sub,
+  [data-hp-anim] .hp-sec-head .hp-more,
+  [data-hp-anim] .dps-lede,
+  [data-hp-anim] .dps-pills { transition: opacity 0.8s var(--ease) 0.25s, transform 0.8s var(--ease) 0.25s; }
+  [data-hp-anim] :is(.hp-tools, .hp-cards, .hp-latest, .hp-grid) > li {
+    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    transition-delay: calc(0.2s + var(--i, 0) * 0.09s);
+  }
+  [data-hp-anim] .hp-rows li { transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+  [data-hp-anim] .hp-rows li:nth-child(2) { transition-delay: 0.08s; }
+  [data-hp-anim] .hp-rows li:nth-child(3) { transition-delay: 0.16s; }
+  [data-hp-anim] .hp-rows li:nth-child(4) { transition-delay: 0.24s; }
+  [data-hp-anim] .hp-stats > div,
+  [data-hp-anim] .hp-proof > span { transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+  [data-hp-anim] .hp-stats > div:nth-child(2), [data-hp-anim] .hp-proof > span:nth-child(2) { transition-delay: 0.1s; }
+  [data-hp-anim] .hp-stats > div:nth-child(3), [data-hp-anim] .hp-proof > span:nth-child(3) { transition-delay: 0.2s; }
+  [data-hp-anim] .hp-stats > div:nth-child(4), [data-hp-anim] .hp-proof > span:nth-child(4) { transition-delay: 0.3s; }
+
+  .is-pending .hp-kicker::before { transform: scaleX(0); }
+  .is-pending h2, .is-pending h2 em { opacity: 0; transform: translateY(22px); filter: blur(10px); }
+  .is-pending :is(.hp-sec-sub, .hp-sec-head .hp-more, .dps-lede, .dps-pills) { opacity: 0; transform: translateY(14px); }
+  .is-pending :is(.hp-tools, .hp-latest, .hp-grid) > li,
+  .is-pending .hp-rows li,
+  .is-pending .hp-stats > div,
+  .is-pending .hp-proof > span { opacity: 0; transform: translateY(26px); }
+  /* The three card faces deal in like a hand of cards. */
+  .is-pending .hp-cards > li { opacity: 0; transform: translateY(48px) rotate(calc(-5deg + var(--i, 0) * 5deg)) scale(0.96); }
+
+  /* Hairlines draw left to right as their row arrives. */
+  .hp-tools li, .hp-latest li, .hp-grid li, .hp-rows li { position: relative; }
+  [data-hp-anim] :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before {
+    content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 1px;
+    background: var(--gold); transform-origin: left; transform: scaleX(0); opacity: 0;
+    pointer-events: none;
+  }
+  [data-hp-anim].is-in :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before {
+    animation: hp-rule 1.6s var(--ease) calc(0.15s + var(--i, 0) * 0.09s) 1 both;
+  }
+  @keyframes hp-rule {
+    0% { transform: scaleX(0); opacity: 1; }
+    60% { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(1); opacity: 0; }
+  }
+
+  /* Card faces: pointer tilt, gold sheen, a one-off sheen as they land. */
+  .hp-card { perspective: 900px; }
+  .hp-tile {
+    position: relative; overflow: hidden;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.35s var(--dp-ease-hover, ease), box-shadow 0.35s ease;
+    will-change: transform;
+  }
+  .hp-card:hover .hp-tile { transform: translateY(-6px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 40px 50px -30px rgba(19, 35, 47, 0.6); }
+  .hp-tile::after {
+    content: ""; position: absolute; inset: -40% -60%; pointer-events: none;
+    background: linear-gradient(105deg, transparent 40%, rgba(255, 236, 196, 0.22) 50%, transparent 60%);
+    transform: translateX(-60%); opacity: 0;
+  }
+  .hp-card:hover .hp-tile::after {
+    opacity: 1; transform: translateX(calc(var(--mx, 50%) - 50%));
+    transition: transform 0.25s ease-out, opacity 0.2s;
+  }
+  [data-hp-anim].is-in .hp-tile::after { animation: hp-sheen 1.4s var(--ease) calc(0.6s + var(--i, 0) * 0.15s) 1 both; }
+  @keyframes hp-sheen {
+    0% { opacity: 0; transform: translateX(-60%); }
+    30% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(60%); }
+  }
+  .hp-tile .chip { position: relative; overflow: hidden; }
+
+  /* Small hover details. */
+  .hp-tools .ar, .hp-more { transition: transform 0.25s var(--ease), color 0.2s; }
+  .hp-tools a:hover .ar { transform: translate(3px, -3px); }
+  .hp-more { background: linear-gradient(var(--gold), var(--gold)) left bottom / 0 1px no-repeat; transition: background-size 0.35s var(--ease), color 0.2s; }
+  .hp-more:hover { background-size: 100% 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hp-tile, .hp-tile::after, .hp-tools .ar, .hp-more,
+    :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before { transition: none !important; animation: none !important; }
+    .hp-card:hover .hp-tile { transform: none; }
   }
 </style>
