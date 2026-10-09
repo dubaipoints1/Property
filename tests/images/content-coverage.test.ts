@@ -21,6 +21,10 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "deal-fab-lulu-20pct-online":
+    "Filed 9 Oct 2026 from a web session, where api.pexels.com is blocked; image to be seeded via seed-images/refetch-image.yml on a non-main branch, then this exception removed.",
+  "deal-adib-careem-food-30pct":
+    "Filed 9 Oct 2026 from a web session, where api.pexels.com is blocked; image to be seeded via seed-images/refetch-image.yml on a non-main branch, then this exception removed.",
 };
 
 const manifest = JSON.parse(
