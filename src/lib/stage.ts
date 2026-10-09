@@ -1,9 +1,10 @@
 // Cinematic page stage (6 Oct 2026).
 //
-// The Chairman asked for every page to open like the homepage hero. Page
-// heads that carry the `dp-stage` class become a full-bleed dark band over
-// a photograph that zooms and drifts as the reader scrolls (global.css +
-// src/scripts/motion-gsap.ts).
+// The Chairman asked for every page to open like the homepage hero. Since
+// the 7 Oct 2026 UX review only pages that own a licensed photograph (bank
+// hubs, programmes, story articles) get the stage: a full-bleed dark band
+// over that photograph, static (global.css). Directory and tool pages keep
+// the plain paper head.
 //
 // Only licensed photographs are used as a backdrop. An AI illustration
 // must carry its visible "not a photograph" label (2026-07-29 amendment),

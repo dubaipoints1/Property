@@ -7,14 +7,14 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
   description="Search every UAE credit card review, salary-transfer offer, points-and-miles guide, and lifestyle deal on DubaiPoints."
   fullWidth
 >
-  <header class="dp-pagehead is-narrow dp-stage">
+  <header class="dp-pagehead is-narrow">
     <div class="crumb">Search</div>
     <h1>What are you looking for?</h1>
     <p class="deck">Every card review, salary-transfer offer, guide, deal and news note currently included on DubaiPoints — searchable.</p>
   </header>
 
   <div class="dp-search-body">
-    <div id="search" data-pagefind-ignore></div>
+    <div id="search" class="dp-search-results" data-pagefind-ignore></div>
 
     <noscript>
       <p class="dp-search-fallback">
@@ -56,6 +56,10 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 </script>
 
 <style>
+  /* Reserve room for the results Pagefind injects, so the tip and footer
+     below do not jump when they arrive (layout shift 0.47 on a phone,
+     8 Oct 2026 audit). */
+  .dp-search-results { min-height: 70vh; }
   .dp-search-body {
     max-width: 760px;
     margin: 0 auto;
