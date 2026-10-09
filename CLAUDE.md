@@ -277,6 +277,17 @@ Added 4 October 2026 from the `claude-code-setup` recommender:
   now appears only on pages that own a licensed photograph (bank hubs,
   programmes, story articles), static and short on phones. Do not
   reintroduce decorative motion without a Chairman ruling.
+- **Homepage motion, 9 October 2026 (Chairman ruling in-session: "make it
+  look exciting some cool animations").** Below the hero only, in
+  `src/pages/index.astro`: each section stages its entry as it scrolls in
+  (kicker rule draws, heading sharpens from a blur, rows and tiles rise in
+  turn, a gold hairline sweeps each row once), the three card faces deal in
+  like a hand and tilt toward a fine pointer with a gold sheen, and the
+  proof and closing figures count up (`aria-hidden` copy beside an
+  `sr-only` final value). Transform / opacity / filter only, no library,
+  scroll never touched; sections already on screen render final, so
+  nothing flashes, and reduced motion or no JS shows the final state. The
+  rest of the site stays calm.
 - **Fonts are self-hosted** (`@fontsource-variable/newsreader`, `/geist`,
   imported in `BaseLayout.astro` with the two Latin files preloaded).
   Google Fonts with `display=optional` left many first visits in
@@ -1066,6 +1077,30 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-10-09 — Issuer card art may be shown, from the issuer's own website only
+
+On Chairman direction (9 October 2026), recorded verbatim as the basis of
+the ruling: "for the cards pull the actual images not a block of
+notihing".
+
+**The rule.** A card's own face may be shown wherever the site depicts
+that card (homepage tiles, `/cards/`, the review hero, related rows), on
+the terms the 2026-05-21 amendment set for press-library imagery: taken
+**only from the issuer's own website** (product page or the issuer's own
+image host), used unmodified apart from trimming and resizing, credited
+to the issuer where it leads a page ("Card image: <bank>"), source URL
+and product page recorded in `data/card-art/manifest.json`, takedown
+honoured within 24 hours. Fetched by `fetch-card-art.yml` from
+`data/card-art/sources.json`, never on main.
+
+**Unchanged.** The 2026-07-29 ban on AI-generated card art stands: an
+image is the issuer's or there is none. A lifestyle banner, a photo of
+the card in a scene, an app screenshot or another card's art is not card
+art and is rejected on review (three were on 9 October); a card without
+clean art keeps the typographic face.
+
+— Chairman, 9 October 2026.
 
 ### 2026-10-04 — Homepage hero carries no image caption; disclosure moves to the policy page
 
