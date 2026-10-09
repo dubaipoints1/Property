@@ -1,0 +1,87 @@
+# Fetch issuer card art into public/images/cards/ (9 October 2026).
+#
+# Chairman direction in-session: "for the cards pull the actual images".
+# A card face is a factual claim about a product, so it comes only from the
+# issuer's own website: data/card-art/sources.json names each image URL and
+# the product page it was found on, and scripts/images/fetch-card-art.mjs
+# downloads, trims and resizes it, recording provenance in
+# data/card-art/manifest.json. Takedown requests are honoured within 24
+# hours (same terms as the 2026-05-21 press-library amendment).
+#
+# Runs in Actions because the web sandbox cannot reach issuer hosts. The
+# push trigger is the repo's existing workaround for dispatching a workflow
+# that is not yet on the default branch (see fetch-partner-logo.yml): it
+# runs whenever sources.json changes on a claude/** branch and commits the
+# images back to that same branch for review. It never runs on main.
+
+name: fetch-card-art
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to commit to (never main)"
+        required: true
+        type: string
+      force:
+        description: "Re-download every image"
+        required: false
+        type: boolean
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - "data/card-art/sources.json"
+      - ".github/workflows/fetch-card-art.yml"
+      - "scripts/images/fetch-card-art.mjs"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-card-art-${{ inputs.branch || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    env:
+      TARGET_BRANCH: ${{ inputs.branch || github.ref_name }}
+      FORCE: ${{ inputs.force && '--force' || '' }}
+    steps:
+      - name: Refuse main
+        run: |
+          if [ "$TARGET_BRANCH" = "main" ]; then
+            echo "::error::fetch-card-art commits images for review; dispatch it against a feature branch."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TARGET_BRANCH }}
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+          cache: "npm"
+
+      - run: npm ci
+
+      - name: Fetch card art
+        run: node scripts/images/fetch-card-art.mjs $FORCE
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/images/cards/ data/card-art/manifest.json
+          if git diff --staged --quiet; then
+            echo "No change to commit."
+            exit 0
+          fi
+          git commit \
+            -m "images(cards): issuer card art via fetch-card-art" \
+            -m "Downloaded from the URLs in data/card-art/sources.json (issuer websites only); provenance in data/card-art/manifest.json."
+          git push origin "HEAD:$TARGET_BRANCH"

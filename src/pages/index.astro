@@ -38,6 +38,7 @@ import { getLiveOffers } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 import { newsletterLive } from "~/lib/newsletter";
+import { getCardArt } from "~/lib/cardArt";
 
 const allGuides = await getCollection("guides");
 const allPrograms = await getCollection("programs");
@@ -155,6 +156,7 @@ const rated = cards
         c.name,
       ),
       network: c.network,
+      art: getCardArt(c.slug),
       tier: TIER_LABEL[tierOf.get(c.slug) as string] ?? "",
       fee: annualFeeLabel(c),
       minSalary: c.eligibility.invitationOnly
@@ -464,11 +466,24 @@ const DIRECTORY = [
         {rated.map((c, i) => (
           <li style={`--i:${i}`}>
             <a href={`/cards/${c.slug}/`} class="hp-card" data-tilt>
-              <span class={`hp-tile tone-${i % 3}`} aria-hidden="true">
-                <span class="bank">{c.bankName}</span>
-                <span class="cname">{c.shortName}</span>
-                <span class="foot"><span class="chip"></span><span>{c.network}</span></span>
-              </span>
+              {c.art ? (
+                <span class="hp-tile is-art">
+                  <img
+                    src={`/${c.art.file}`}
+                    width={c.art.width}
+                    height={c.art.height}
+                    alt={`${c.name} card, as shown by ${c.bankName}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </span>
+              ) : (
+                <span class={`hp-tile tone-${i % 3}`} aria-hidden="true">
+                  <span class="bank">{c.bankName}</span>
+                  <span class="cname">{c.shortName}</span>
+                  <span class="foot"><span class="chip"></span><span>{c.network}</span></span>
+                </span>
+              )}
               <span class="hp-card-meta">
                 <h3>{c.name}</h3>
                 <span class="tag">{c.tier}</span>
@@ -479,7 +494,7 @@ const DIRECTORY = [
                 {c.fx && <div><dt>FX fee</dt><dd>{c.fx}</dd></div>}
                 {c.bonus && <div><dt>Welcome</dt><dd class="is-long">{c.bonus}</dd></div>}
               </dl>
-              <span class="hp-verified">Verified {fmtShort(c.verified)} · read the review →</span>
+              <span class="hp-verified">Verified {fmtShort(c.verified)}{c.art ? ` · card image: ${c.bankName}` : ""} · read the review →</span>
             </a>
           </li>
         ))}
@@ -1298,4 +1313,14 @@ const DIRECTORY = [
     :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before { transition: none !important; animation: none !important; }
     .hp-card:hover .hp-tile { transform: none; }
   }
+
+  /* Issuer card art: the picture is the card, so no painted face behind it. */
+  .hp-tile.is-art {
+    padding: 0; background: none; box-shadow: none; border-radius: 14px;
+    display: block; aspect-ratio: auto;
+  }
+  .hp-tile.is-art img {
+    display: block; width: 100%; height: auto; border-radius: 14px;
+  }
+  .hp-card:hover .hp-tile.is-art { box-shadow: none; }
 </style>
