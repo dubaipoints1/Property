@@ -1,6 +1,8 @@
 ---
 import ArticleLayout from "~/layouts/ArticleLayout.astro";
 import { getCollection, render } from "astro:content";
+import { getActiveCards } from "~/lib/cardsData";
+import { annualFeeLabel } from "~/lib/cardsDataFormat";
 
 export async function getStaticPaths() {
   const guides = await getCollection("guides");
@@ -9,6 +11,24 @@ export async function getStaticPaths() {
 
 const { guide } = Astro.props;
 const { Content, headings } = await render(guide);
+
+// Cards the guide discusses, in the author's order, for the strip under
+// the byline (10 Oct 2026). Figures are L2 reads at build.
+const active = getActiveCards();
+const banks = await getCollection("banks");
+const guideCards = guide.data.relatedCards
+  .map((ref) => active.find((c) => c.slug === ref.id))
+  .filter((c): c is NonNullable<typeof c> => Boolean(c))
+  .slice(0, 6)
+  .map((c) => {
+    const fee = annualFeeLabel(c);
+    return {
+      slug: c.slug,
+      name: c.name,
+      bank: banks.find((b) => b.id === c.bank)?.data.name ?? c.bank,
+      fee: `Annual fee ${fee.amount}${fee.qual ? ` (${fee.qual})` : ""}`,
+    };
+  });
 
 // Surface H2s as TOC entries — already anchored by Astro/MDX.
 const toc = headings
@@ -25,6 +45,7 @@ const toc = headings
   publishedAt={guide.data.publishedAt}
   updatedAt={guide.data.updatedAt}
   toc={toc}
+  cards={guideCards}
   showHero
   heroSlug={`guide-${guide.id}`}
   heroCategory="Guide"

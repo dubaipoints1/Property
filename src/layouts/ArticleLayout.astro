@@ -21,6 +21,7 @@ import BaseLayout from "./BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { stagePhoto, stageStyle } from "~/lib/stage";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import CardImage from "~/components/CardImage.astro";
 import { getCollection } from "astro:content";
 
 interface Props {
@@ -52,6 +53,10 @@ interface Props {
   toc?: { id: string; label: string }[];
   sources?: string[];
   showHero?: boolean;
+  /** Cards the piece discusses (10 Oct 2026, direction B): rendered as a
+   *  "Cards in this guide" strip under the byline, issuer card art first.
+   *  Order is the author's; the strip makes no ranking claim. */
+  cards?: Array<{ slug: string; name: string; bank: string; fee: string }>;
   heroLabel?: string;
   /**
    * Stock-image slug for the article hero. Resolves via the manifest
@@ -73,6 +78,7 @@ const {
   eyebrow,
   readMinutes,
   deck,
+  cards = [],
   author = "DubaiPoints Editorial",
   authorRole,
   publishedAt,
@@ -221,6 +227,23 @@ const schema = {
       <span>Share</span><span>·</span><span>Save</span>
     </div>
   </div>
+
+  {cards.length > 0 && (
+    <section class="dp-guide-cards" aria-labelledby="dp-guide-cards-h">
+      <p class="dp-guide-cards-kicker" id="dp-guide-cards-h">Cards in this guide</p>
+      <ul>
+        {cards.map((c) => (
+          <li>
+            <a href={`/cards/${c.slug}/`}>
+              <CardImage cardSlug={c.slug} cardName={c.name} bankName={c.bank} coverSize="thumb" />
+              <span class="n">{c.name}</span>
+              <span class="f">{c.fee}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
 
   <div class="dp-article-body-grid">
     <article class="dp-article-body">
