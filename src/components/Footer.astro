@@ -1,126 +1,77 @@
 ---
-// Footer — Claude Design (polished pass, July 2026)
-// Improvements: better responsive grid, clickable email, newsletter CTA,
-// social placeholder, stronger disclaimer, smoother hover states.
-
-import { getCollection } from "astro:content";
-import BankLogo from "~/components/BankLogo.astro";
-import { newsletterCtaLabel } from "~/lib/newsletter";
-
-const banks = (await getCollection("banks")).sort((a, b) =>
-  a.data.name.localeCompare(b.data.name),
-);
-const programs = await getCollection("programs");
+// Footer — simplified 9 October 2026 on Chairman direction ("at the bottom
+// of the page remove that big ugly word dubaipoints and the footer with all
+// that looks messy clean it up somehow").
+//
+// Was: six columns (fourteen bank rows with logos, seven salary bands, six
+// programmes, twelve site links, ten trust links), an outlined display
+// wordmark, then a copyright row and a disclaimer — ~60 small links that
+// also made up most of the audit's undersized tap targets. Now: one brand
+// line, three short columns, one quiet bottom line. Every page dropped from
+// here is still one tap away from the header menu or its section index
+// (/banks/, /airlines/, /salary-transfer/).
 
 const year = new Date().getFullYear();
+
+const COLUMNS = [
+  {
+    heading: "Explore",
+    links: [
+      { href: "/cards/", label: "Credit cards" },
+      { href: "/banks/", label: "Banks" },
+      { href: "/airlines/", label: "Miles & hotel programmes" },
+      { href: "/salary-transfer/", label: "Salary transfer" },
+      { href: "/deals/", label: "Deals" },
+      { href: "/guides/", label: "Guides" },
+      { href: "/news/", label: "News" },
+    ],
+  },
+  {
+    heading: "Tools",
+    links: [
+      { href: "/cards/finder/", label: "Card finder" },
+      { href: "/cards/compare/", label: "Compare cards" },
+      { href: "/calculator/", label: "Spend-return calculator" },
+      { href: "/salary-transfer/calculator/", label: "Salary-transfer calculator" },
+      { href: "/cards/fees/", label: "Card fee index" },
+      { href: "/valuations/", label: "Points valuations" },
+    ],
+  },
+  {
+    heading: "About",
+    links: [
+      { href: "/about/", label: "About DubaiPoints" },
+      { href: "/editorial-policy/", label: "Editorial policy" },
+      { href: "/how-we-make-money/", label: "How we make money" },
+      { href: "/corrections/", label: "Corrections" },
+      { href: "/tip/", label: "Send a tip" },
+    ],
+  },
+];
 ---
 
 <footer class="dp-footer">
   <div class="dp-footer-inner">
     <div class="dp-footer-top">
-      <!-- Brand column: wordmark + tagline + newsletter CTA -->
       <div class="dp-footer-brand">
-        <a href="/" class="dp-footer-wordmark" aria-label="DubaiPoints home">
-          DubaiPoints<span class="dot">.</span>
-        </a>
-        <p class="dp-footer-tag">UAE rewards. Sourced, dated, AED-first.</p>
-        <a href="/newsletter/" class="dp-footer-cta">
-          {newsletterCtaLabel}
-          <span class="dp-footer-cta-arrow" aria-hidden="true">→</span>
-        </a>
-
-        {/* Social icons removed until real profile URLs exist — dead
-            href="#" placeholders shipped to every page violate the
-            no-dead-links standard (July 2026 merge review). The
-            .dp-footer-social styles below are retained for the day
-            real URLs land. */}
+        <a href="/" class="dp-footer-wordmark">DubaiPoints</a>
+        <p class="dp-footer-tag">Independent UAE points, miles and card guides. Every figure dated, sourced and in dirhams.</p>
       </div>
-
-      <!-- Salary transfer -->
-      <div class="dp-footer-col">
-        <div class="dp-footer-heading">Salary transfer</div>
-        <ul>
-          <li><a href="/salary-transfer/">Salary-transfer tracker</a></li>
-          <li><a href="/salary-transfer/calculator/">Salary-transfer calculator</a></li>
-          <li><a href="/salary-transfer/aed-5000-to-8000/">AED 5,000 – 8,000</a></li>
-          <li><a href="/salary-transfer/aed-8000-to-15000/">AED 8,000 – 15,000</a></li>
-          <li><a href="/salary-transfer/aed-15000-to-30000/">AED 15,000 – 30,000</a></li>
-          <li><a href="/salary-transfer/aed-30000-to-50000/">AED 30,000 – 50,000</a></li>
-          <li><a href="/salary-transfer/aed-50000-plus/">AED 50,000+</a></li>
-        </ul>
-      </div>
-
-      <!-- Banks -->
-      <div class="dp-footer-col">
-        <div class="dp-footer-heading">Banks</div>
-        <ul>
-          {banks.map((b) => (
-            <li>
-              <a href={`/banks/${b.id}/`} class="dp-footer-bank-row">
-                <BankLogo slug={b.id} name={b.data.name} size="sm" decorative />
-                <span>{b.data.name}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <!-- Programmes -->
-      <div class="dp-footer-col">
-        <div class="dp-footer-heading">Programmes</div>
-        <ul>
-          {programs.map((p) => (
-            <li><a href={`/airlines/${p.id}/`}>{p.data.name}</a></li>
-          ))}
-        </ul>
-      </div>
-
-      <!-- Site -->
-      <div class="dp-footer-col">
-        <div class="dp-footer-heading">Site</div>
-        <ul>
-          <li><a href="/cards/">All cards</a></li>
-          <li><a href="/cards/compare/">Compare cards</a></li>
-          <li><a href="/cards/fees/">Card fee index</a></li>
-          <li><a href="/valuations/">Points &amp; miles valuations</a></li>
-          <li><a href="/calculator/">Spend-return calculator</a></li>
-          <li><a href="/calculator/interest/">Interest &amp; payoff calculator</a></li>
-          <li><a href="/guides/">Guides</a></li>
-          <li><a href="/guides/expat-starter/">Expat Starter</a></li>
-          <li><a href="/best-of/">Best-of roundups</a></li>
-          <li><a href="/topics/">All topics</a></li>
-          <li><a href="/search/">Search</a></li>
-          <li><a href="/rss.xml">RSS</a></li>
-        </ul>
-      </div>
-
-      <!-- Trust -->
-      <div class="dp-footer-col">
-        <div class="dp-footer-heading">Trust</div>
-        <ul>
-          <li><a href="/about/">Why we built it</a></li>
-          <li><a href="/editorial-policy/">Editorial policy</a></li>
-          <li><a href="/how-we-make-money/">How we make money</a></li>
-          <li><a href="/partnership/">Partnerships</a></li>
-          <li><a href="/corrections/">Corrections log</a></li>
-          <li><a href="/team/">The team</a></li>
-          <li><a href="/glossary/">Glossary</a></li>
-          <li><a href="/press/">Press</a></li>
-          <li><a href="/tip/">Submit a tip</a></li>
-          <li><a href="mailto:info@dubaipoints.ae">Contact</a></li>
-        </ul>
-      </div>
+      {COLUMNS.map((col) => (
+        <nav class="dp-footer-col" aria-label={col.heading}>
+          <p class="dp-footer-heading">{col.heading}</p>
+          <ul>
+            {col.links.map((l) => (
+              <li><a href={l.href}>{l.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      ))}
     </div>
 
-    <div class="dp-footer-bottom">
-      <span>© {year} DubaiPoints. UAE-resident-led, independent.</span>
-      <a href="mailto:info@dubaipoints.ae" class="dp-footer-bottom-mail">info@dubaipoints.ae</a>
-    </div>
-
-    <p class="dp-footer-disclaimer">
-      DubaiPoints is independent and not affiliated with any bank or
-      financial institution. Content is for informational purposes only —
-      always verify terms directly with the provider.
+    <p class="dp-footer-bottom">
+      <span>© {year} DubaiPoints · Not affiliated with any bank, airline or hotel programme. Check terms with the provider before you apply.</span>
+      <a href="mailto:info@dubaipoints.ae">info@dubaipoints.ae</a>
     </p>
   </div>
 </footer>
@@ -128,253 +79,69 @@ const year = new Date().getFullYear();
 <style>
   .dp-footer {
     background: var(--navy-deep);
-    color: rgba(255, 255, 255, 0.78);
+    color: rgba(255, 255, 255, 0.72);
     margin-top: 96px;
-    padding: 56px 32px 32px;
+    padding: 64px 48px 32px;
   }
-  @media (max-width: 768px) {
-    .dp-footer { margin-top: 64px; padding: 40px 20px 24px; }
-  }
-
-  .dp-footer-inner {
-    max-width: var(--container-listing);
-    margin: 0 auto;
-  }
-
+  .dp-footer-inner { max-width: var(--container-listing); margin: 0 auto; }
   .dp-footer-top {
     display: grid;
-    grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr 1fr;
-    gap: 32px;
-    margin-bottom: 40px;
-  }
-
-  /* Brand column */
-  .dp-footer-brand {
-    grid-column: span 1;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .dp-footer-wordmark {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-weight: 800;
-    font-size: 22px;
-    letter-spacing: -0.6px;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 24px;
+    letter-spacing: -0.01em;
     color: #fff;
     text-decoration: none;
-    display: inline-block;
-    transition: opacity 0.15s ease;
   }
-  .dp-footer-wordmark:hover { opacity: 0.85; }
-  .dp-footer-wordmark .dot { color: var(--green); }
-
   .dp-footer-tag {
-    font-family: 'Fraunces', serif;
-    font-size: 15px;
-    line-height: 1.4;
-    color: rgba(255, 255, 255, 0.7);
-    margin: 0;
-    max-width: 26ch;
-    text-wrap: balance;
-  }
-
-  /* Newsletter CTA */
-  .dp-footer-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-    padding: 10px 16px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    color: #fff;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    text-decoration: none;
-    transition: background 0.15s ease, border-color 0.15s ease;
-    width: fit-content;
-  }
-  .dp-footer-cta:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.25);
-  }
-  .dp-footer-cta-arrow {
-    transition: transform 0.15s ease;
-  }
-  .dp-footer-cta:hover .dp-footer-cta-arrow {
-    transform: translateX(3px);
-  }
-
-  /* Social links */
-  .dp-footer-social {
-    display: flex;
-    gap: 10px;
-    margin-top: 8px;
-  }
-  .dp-social-link {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    margin: 12px 0 0;
+    max-width: 30ch;
+    font-size: 14px;
+    line-height: 1.55;
     color: rgba(255, 255, 255, 0.6);
-    text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease;
   }
-  .dp-social-link:hover {
-    background: rgba(255, 255, 255, 0.18);
-    color: #fff;
-  }
-
-  /* Column headings */
-  .dp-footer-col .dp-footer-heading {
-    font-family: 'DM Sans', system-ui, sans-serif;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: #9bb1a4;
+  .dp-footer-heading {
     margin: 0 0 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-lift);
   }
-
-  /* Link lists */
-  .dp-footer-col ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
+  .dp-footer-col ul { list-style: none; margin: 0; padding: 0; }
   .dp-footer-col a {
-    color: rgba(255, 255, 255, 0.78);
-    font-size: 12px;
-    text-decoration: none;
-    transition: color 0.15s ease, padding-left 0.15s ease;
     display: inline-block;
-    padding: 1px 0;
-    position: relative;
+    padding: 6px 0;
+    font-size: 14.5px;
+    color: rgba(255, 255, 255, 0.82);
+    text-decoration: none;
+    transition: color 0.15s;
   }
-  .dp-footer-col a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.4);
-    transition: width 0.2s ease;
-  }
-  .dp-footer-col a:hover {
-    color: #fff;
-  }
-  .dp-footer-col a:hover::after {
-    width: 100%;
-  }
-
-  /* Bank rows with logos */
-  .dp-footer-bank-row {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .dp-footer-bank-row :global(img) {
-    filter: invert(1) brightness(0.85);
-    opacity: 0.8;
-    transition: opacity 0.15s ease;
-  }
-  .dp-footer-bank-row:hover :global(img) { opacity: 1; }
-
-  /* Bottom bar */
+  .dp-footer-col a:hover,
+  .dp-footer-wordmark:hover { color: var(--gold-lift); }
+  .dp-footer a:focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 3px; }
   .dp-footer-bottom {
-    margin-top: 16px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 24px;
-    font-size: 11px;
+    gap: 16px 32px;
+    margin: 24px 0 0;
+    font-size: 12.5px;
+    line-height: 1.6;
     color: rgba(255, 255, 255, 0.5);
   }
-  .dp-footer-bottom-mail {
-    font-variant-numeric: tabular-nums;
-    color: rgba(255, 255, 255, 0.6);
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
-  .dp-footer-bottom-mail:hover {
-    color: #fff;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
+  .dp-footer-bottom a { color: rgba(255, 255, 255, 0.72); white-space: nowrap; margin-right: 64px; }
 
-  /* Disclaimer */
-  .dp-footer-disclaimer {
-    margin-top: 16px;
-    font-size: 10px;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.5);    /* was 0.35 — now readable */
-    max-width: 80ch;
-  }
-
-  /* ─── Responsive ─────────────────────────────────────────────── */
-
-  /* Tablet: 3 columns, brand spans full width */
-  @media (max-width: 1024px) {
-    .dp-footer-top {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
-    }
-    .dp-footer-brand {
-      grid-column: span 3;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 16px 32px;
-      margin-bottom: 8px;
-    }
-    .dp-footer-tag { max-width: 40ch; }
-    .dp-footer-cta { margin-top: 0; }
-    .dp-footer-social { margin-top: 0; }
-  }
-
-  /* Mobile: 2 columns, brand on top */
-  @media (max-width: 768px) {
-    .dp-footer-top {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 28px;
-      margin-bottom: 28px;
-    }
-    .dp-footer-brand {
-      grid-column: span 2;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-    }
-    .dp-footer-tag { max-width: none; }
-    .dp-footer-cta { margin-top: 4px; }
-    .dp-footer-social { margin-top: 4px; }
-    .dp-footer-bottom {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      padding-top: 16px;
-    }
-  }
-
-  /* Very narrow: single column */
-  @media (max-width: 480px) {
-    .dp-footer-top {
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-    .dp-footer-brand { grid-column: span 1; }
-    .dp-footer-col .dp-footer-heading { margin-bottom: 10px; }
-    .dp-footer-col ul { gap: 6px; }
+  @media (max-width: 900px) {
+    .dp-footer { margin-top: 64px; padding: 48px 20px 96px; }
+    .dp-footer-top { grid-template-columns: 1fr 1fr; gap: 32px 20px; }
+    .dp-footer-brand { grid-column: 1 / -1; }
+    .dp-footer-col a { padding: 9px 0; }
+    .dp-footer-bottom { flex-direction: column; }
   }
 </style>

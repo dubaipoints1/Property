@@ -232,6 +232,80 @@ npm run scrape:propose # merges latest data/scraped/<bank>/*.json into src/data/
 
 Run a single test file: `node --import tsx --test tests/scrape/_normaliser.test.ts`.
 
+## Claude Code automation (`.claude/`)
+
+Added 4 October 2026 from the `claude-code-setup` recommender:
+
+- **SessionStart** (`.claude/hooks/session-start.sh`): `npm install` in cloud
+  sessions only, so `check`, `test` and `build` work from the first turn.
+  Synchronous on purpose — a session never races an install.
+- **PreToolUse** (`guard-frozen.mjs`): refuses Edit/Write on
+  `data/monitor/monitors.json`, `data/news-monitor/state.json` (frozen
+  migration seeds) and `package-lock.json` (npm-generated). It does not see
+  shell writes; the rule in "The automation-state branch" still applies.
+- **PostToolUse** (`validate-cards.mjs`): after an edit to
+  `src/data/cards.json`, loads it through the real Zod schema in
+  `src/lib/cardsData.ts` (~0.5 s) and reports the failing field paths.
+- **Skills**: `/signoff` (PR sign-off block and tier), `/add-card` (L2 + L3
+  checklist), `web-design-guidelines` (UI code review), `ui-ux-pro-max`
+  (offline style / palette / font-pairing lookup, vendored at `477bcb2`; a
+  keyword-matched reference, not a decision-maker — see its preamble),
+  `taste-skill` (full anti-slop / motion skill, vendored at `ce26fc2`, used
+  in its redesign-preserve mode under a house preamble).
+- **Motion layer** (redesign Phase 1, `.council/briefs/2026-10-04-redesign-
+  ledger-editorial.md`): CSS at the end of `global.css` plus one module in
+  `BaseLayout.astro` — hero entrance, scroll reveal (`.dp-reveal`), number
+  ticker (`data-count`), cursor spotlight and lift on `.dp-dir-tile` /
+  `.dp-tool`. Transform/opacity only, visible without JS, off under
+  `prefers-reduced-motion`. Astro inlines the module, so it is one more
+  executable inline script for the CSP inventory.
+- **Motion, after the 7 October 2026 UX review.** On 6 October GSAP +
+  Lenis were added site-wide (smooth scroll, word-by-word headings, a pinned
+  picks row, magnetic buttons, card tilt, count-ups, a gold glint) and a
+  full-bleed photo "stage" was put on every page head. The next day the
+  Chairman said "to be honest i am not happy"; the Head of UX and an independent design
+  review both found the site read as several design systems stacked
+  together, with motion that made a finance reference feel like a demo.
+  **All of that was removed and GSAP/Lenis uninstalled.** What remains:
+  the CSS scroll reveal on tiles (`.dp-reveal`), the homepage scroll-played
+  video (deck and buttons now on its first screen; 200svh track on
+  phones), `src/scripts/reading.ts` (gold reading-progress bar and "In this
+  guide" highlight, no library), and the calculator islands' `Tween` /
+  `useFlip` in `src/components/islands/motion.tsx` (feedback on the
+  reader's own input; the animated copy is `aria-hidden` beside an
+  `sr-only` final value). The photo stage (`.dp-stage`, `src/lib/stage.ts`)
+  now appears only on pages that own a licensed photograph (bank hubs,
+  programmes, story articles), static and short on phones. Do not
+  reintroduce decorative motion without a Chairman ruling.
+- **Homepage motion, 9 October 2026 (Chairman ruling in-session: "make it
+  look exciting some cool animations").** Below the hero only, in
+  `src/pages/index.astro`: each section stages its entry as it scrolls in
+  (kicker rule draws, heading sharpens from a blur, rows and tiles rise in
+  turn, a gold hairline sweeps each row once), the three card faces deal in
+  like a hand and tilt toward a fine pointer with a gold sheen, and the
+  proof and closing figures count up (`aria-hidden` copy beside an
+  `sr-only` final value). Transform / opacity / filter only, no library,
+  scroll never touched; sections already on screen render final, so
+  nothing flashes, and reduced motion or no JS shows the final state. The
+  rest of the site stays calm.
+- **Fonts are self-hosted** (`@fontsource-variable/newsreader`, `/geist`,
+  imported in `BaseLayout.astro` with the two Latin files preloaded).
+  Google Fonts with `display=optional` left many first visits in
+  Georgia/system-ui.
+- **MCP**: `context7` in `.mcp.json` for current Astro 7 / Tailwind 4 docs.
+  `mcp.context7.com` is denied by the web environment's egress policy as of
+  4 October 2026, so it works from a workstation only until the host is
+  allowlisted.
+- **MCP**: `21st` (21st.dev Magic, UI component generation) in `.mcp.json`.
+  The key is read from the `API_KEY_21ST` environment variable and is
+  never committed. `21st.dev` is also egress-blocked in web sessions as of
+  4 October 2026. Its output is React + Tailwind: under the 2026-07-25
+  amendment it is a **mockup**, rebuilt in the house idiom (Astro / Preact,
+  CSS tokens) before anything ships. The 21st plugin's seven skills
+  (`21st-ui-explore`, `-ui-build`, `-ui-review`, `-ai`, `-cli-use`,
+  `-design-sync`, `-registry`) are vendored at `f76b07a` under the same rules;
+  publishing anything to 21st.dev needs the Chairman's approval each time.
+
 ## Audit harness (opt-in)
 
 Reproducible UI/UX, accessibility, performance and link probes live under
@@ -853,8 +927,10 @@ code, not lint rules — match them when adding pages:
   on bank hubs). Each colour has a single job — don't mix them in
   one element. The legacy electric-blue `--brand` token survives
   only as a fallback alias to `--link`; new code uses `--green`.
-- **Type.** Fraunces (serif) for headlines / eyebrows / "Our take"
-  labels; DM Sans for body and UI.
+- **Type.** Newsreader (serif) for headlines / eyebrows / "Our take"
+  labels; Geist for body and UI — via `--font-display` / `--font-ui` in
+  `global.css` since redesign Phase 2 (4 October 2026). Never a literal
+  font name in a component.
 - **Long-form page skeleton.** `BaseLayout` with `fullWidth`, then
   `<article class="dp-article">`, then `.dp-article-head` +
   sections. **Directory pages:** `<article class="dp-article
@@ -1001,6 +1077,119 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-10-09 — Issuer card art may be shown, from the issuer's own website only
+
+On Chairman direction (9 October 2026), recorded verbatim as the basis of
+the ruling: "for the cards pull the actual images not a block of
+notihing".
+
+**The rule.** A card's own face may be shown wherever the site depicts
+that card (homepage tiles, `/cards/`, the review hero, related rows), on
+the terms the 2026-05-21 amendment set for press-library imagery: taken
+**only from the issuer's own website** (product page or the issuer's own
+image host), used unmodified apart from trimming and resizing, credited
+to the issuer where it leads a page ("Card image: <bank>"), source URL
+and product page recorded in `data/card-art/manifest.json`, takedown
+honoured within 24 hours. Fetched by `fetch-card-art.yml` from
+`data/card-art/sources.json`, never on main.
+
+**Unchanged.** The 2026-07-29 ban on AI-generated card art stands: an
+image is the issuer's or there is none. A lifestyle banner, a photo of
+the card in a scene, an app screenshot or another card's art is not card
+art and is rejected on review (three were on 9 October); a card without
+clean art keeps the typographic face.
+
+— Chairman, 9 October 2026.
+
+### 2026-10-04 — Homepage hero carries no image caption; disclosure moves to the policy page
+
+On Chairman direction (4 October 2026), recorded verbatim as the basis of
+the ruling, against a screenshot of the caption row under the hero
+picture ("Illustration: generated with recraft-v3 via fal.ai · not a
+photograph", the picture dashes and the pause button): "What is that
+under the image make sure none of that exist and also make sure you have
+images that attract."
+
+**The rule.** The homepage hero slideshow renders **no caption, credit
+or label under the picture**. The 2026-07-29 amendment's labelling
+guarantee is met for that one surface in two other places: every hero
+image's manifest entry still carries `source: "ai-generated"`, the model
+and the full prompt (the provenance record is untouched), and
+`/editorial-policy/` names the homepage hero pictures as AI
+illustrations in its image-provenance paragraph. Since the same day the
+hero is a four-stage **story** (EARN · BOARD · FLY · ARRIVE, after a
+second reel the Chairman sent). A scroll-pinned version shipped and was
+pulled within hours on the Chairman's word ("I dont like this.
+Annoying"), and a stills-on-a-timer version and a small autoplaying
+loop were both rejected too ("From the videos i sent you"; "your not
+going to just have this in the middle"). **Since 5 October 2026 the hero
+is a full-bleed, scroll-scrubbed video**, on the Chairman's direction
+against a 21st.dev scroll-locked video hero ("why cant we have this but
+for my travels?"), which supersedes the earlier no-pinning note: two
+Kling start→end-frame clips made with `gen-ai-video.yml` (provenance and
+prompts in `data/stock/videos.json`), card → plane window → Dubai at
+night, played forwards and backwards by scroll while the stage sticks
+under the site header; "Fly further. Pay less." blurs away as it starts
+and "Home to Dubai, with the next trip already earning." resolves at the
+end. **The page must never be locked:** the 21st component pins `body`
+with `position: fixed` and never releases it, which would make every
+section below the hero unreachable; ours scrolls natively through a tall
+track and continues after the last frame. Reduced motion or no JS gets
+one static screen. The same no-caption rule covers the video.
+
+**Scope, and this is the load-bearing part.** This exemption is the
+homepage hero only. Everywhere else — article covers, guide heroes, card
+and bank pages — `StockImage.astro` keeps rendering the visible "not a
+photograph" label, and a missing label there remains a §10 kill. A real
+photograph (the Dubai night skyline that closes the set is a
+licensed Pexels photograph, not a render) needs no label anywhere.
+
+Recorded for the record: the session advised that the visible label was
+the amendment's stated guarantee and that this ruling narrows it. The
+Chairman directed the change regardless.
+
+— Chairman, 4 October 2026.
+
+### 2026-10-04 — The site's look is open to a redesign; reference design systems permitted
+
+On Chairman direction (4 October 2026), recorded verbatim as the basis of
+the ruling: "if we need to make changes to the council charter or design
+that is fine we want like similair premium looking sites. Thats ehy even
+awesome design is ok i am open to changing the look of the site". It
+followed the adoption of the `web-design-guidelines` skill (PR #424) and a
+session note that DESIGN.md reference sets were being held back as
+"copying other brands".
+
+**The rule.**
+
+1. **The visual idiom is open.** The palette (including the two-accent
+   and no-third-hue rules of 2026-07-25 and R1 of 2026-09-10), the
+   typefaces and the `.dp-*` look may be replaced by a redesign. A
+   redesign is T3: a brief, a direction the Chairman picks from rendered
+   options, then a phased build. **Until the Chairman ratifies a new
+   direction, the current idiom stays in force** — opening the question
+   does not suspend the existing rules mid-flight.
+2. **Reference design systems are permitted as inspiration.** DESIGN.md
+   analyses of premium sites (e.g. `VoltAgent/awesome-design-md`), and
+   the sites themselves, may inform type scale, spacing, layout, numeric
+   treatment and component patterns. What is not taken: another
+   company's logo or wordmark, its proprietary typefaces, or a signature
+   identity element a reader would recognise as that company's (Stripe's
+   gradient mesh, Apple's product-tile system as a whole). The result has
+   to read as DubaiPoints, not as a clone of the reference.
+3. **The direction is chosen from mockups.** The first set — Ledger
+   (fintech), Broadsheet (editorial), Gallery (photo-first) — was built
+   on 4 October 2026 with real L2 figures for FAB Etihad Guest Infinite
+   and ADCB Traveller and bracketed placeholders for everything else.
+
+**Unchanged.** The 2026-07-25 rule that AI design tools produce mockups
+and never code; §6 (no invented figures, in mockups or on the site); the
+AI-imagery permit/ban line of 2026-07-29; honest-nav; and the
+`web-design-guidelines` checklist, which applies to whatever idiom is in
+force.
+
+— Chairman, 4 October 2026.
 
 ### 2026-10-01 — No incident, safety or security stories
 

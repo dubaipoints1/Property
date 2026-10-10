@@ -14,6 +14,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
+import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
 
 const programmes = (await getCollection("programs")).sort((a, b) =>
@@ -105,6 +106,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
             coverCategory="Programme"
             coverSize="hero"
             class="intel-featured-image"
+            sizes={LISTING_SIZES.featured}
             loading="eager"
           />
           <div class="intel-featured-body">
@@ -132,6 +134,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
                       coverCategory="Programme"
                       coverSize="med"
                       class="intel-card-image"
+                      sizes={LISTING_SIZES.tile}
                     />
                     <div class="intel-card-body">
                       <span class="intel-card-cat">{p.data.region}</span>
@@ -202,14 +205,14 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   }
   .intel-pagehead-inner { max-width: var(--container-listing); margin: 0 auto; }
   .intel-pagehead .crumb {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
     margin-bottom: 16px;
   }
   .intel-pagehead h1 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(38px, 5.6vw, 58px);
     letter-spacing: -1.6px;
@@ -231,7 +234,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   }
   .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
   .intel-tab {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
     color: var(--ink-soft);
     padding: 8px 14px;
@@ -262,7 +265,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   }
   .intel-search input[type="search"] {
     border: 0; background: transparent; outline: none;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 16px;
     color: var(--ink);
     width: 100%;
@@ -313,13 +316,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   }
   .intel-featured-body { padding: 24px 28px 28px; display: grid; gap: 10px; }
   .intel-featured-eyebrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
   }
   .intel-featured-body h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(24px, 3.4vw, 34px);
     letter-spacing: -0.9px;
@@ -337,7 +340,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     max-width: 64ch;
   }
   .intel-featured-meta {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.3px;
@@ -377,13 +380,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   }
   .intel-card-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
   .intel-card-cat {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--green);
   }
   .intel-card h3 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 18px;
     letter-spacing: -0.3px;
@@ -398,7 +401,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     color: var(--ink-soft); margin: 0;
   }
   .intel-card-meta {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; color: var(--muted);
     letter-spacing: 0.2px; margin-top: 2px;
   }
@@ -412,17 +415,17 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   }
   .airlines-group + .airlines-group { margin-top: 32px; }
   .airlines-group-heading {
-    font-family: "Fraunces", serif; font-weight: 500; font-size: 22px;
+    font-family: var(--font-display); font-weight: 500; font-size: 22px;
     letter-spacing: -0.2px; margin: 0 0 14px;
   }
   .airlines-roster-eyebrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
   }
   .airlines-roster h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(22px, 3vw, 30px);
     letter-spacing: -0.7px;
@@ -454,7 +457,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     padding: 22px;
   }
   .intel-trending .dp-rail-heading {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; letter-spacing: 2.5px;
     text-transform: uppercase; color: var(--green);
     margin: 0 0 14px; font-weight: 700;
@@ -477,7 +480,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   }
   .intel-trending a {
     color: var(--ink);
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500; letter-spacing: -0.2px;
     text-decoration: none;
   }
@@ -493,20 +496,20 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     display: grid; gap: 8px;
   }
   .intel-insider .eyebrow {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: rgba(255, 255, 255, 0.75);
   }
   .intel-insider .dp-rail-heading {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500; font-size: 19px;
     line-height: 1.2; letter-spacing: -0.4px;
     color: white; margin: 0;
     text-wrap: balance;
   }
   .intel-insider p {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px; line-height: 1.5;
     color: rgba(255, 255, 255, 0.88);
     margin: 4px 0 6px;
@@ -516,7 +519,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     height: 36px; padding: 0 16px;
     background: white; color: var(--green);
     border-radius: 999px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px; font-weight: 700; letter-spacing: 0.4px;
     text-decoration: none; align-self: start;
     transition: opacity 0.15s ease;

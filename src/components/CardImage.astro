@@ -1,0 +1,80 @@
+---
+// CardImage — the issuer's own card art when we hold it (data/card-art,
+// fetched from the issuer's website, see src/lib/cardArt.ts), otherwise
+// the existing stock photograph / typographic Cover via StockImage.
+//
+// 9 Oct 2026, Chairman: "for the cards pull the actual images". The card
+// sits centred on a quiet panel that takes the same class as the image it
+// replaces, so every grid keeps its dimensions.
+import StockImage from "./StockImage.astro";
+import { getCardArt } from "../lib/cardArt";
+import { cardArtSrcset } from "../lib/stockDerivatives";
+
+interface Props {
+  cardSlug: string;
+  cardName: string;
+  bankName?: string;
+  coverSize?: "hero" | "med" | "sm" | "thumb";
+  class?: string;
+  loading?: "eager" | "lazy";
+  /** Rendered slot width; used with the card-art or photo srcset. */
+  sizes?: string;
+}
+
+const { cardSlug, cardName, bankName, coverSize = "med", class: className, loading = "lazy", sizes } = Astro.props;
+const art = getCardArt(cardSlug);
+// A 360w derivative (scripts/images/make-thumbs.mjs) serves the small
+// rows; `sizes` is set only alongside a srcset, never alone.
+const artSrcset = art ? cardArtSrcset(cardSlug, art) : undefined;
+const artSizes = artSrcset ? (sizes ?? "100vw") : undefined;
+---
+
+{art ? (
+  <span class:list={["dp-card-art", className, `is-${coverSize}`]}>
+    <img
+      src={`/${art.file}`}
+      srcset={artSrcset}
+      sizes={artSizes}
+      width={art.width}
+      height={art.height}
+      alt={`${cardName} card${bankName ? `, as shown by ${bankName}` : ""}`}
+      loading={loading}
+      fetchpriority={loading === "eager" ? "high" : "low"}
+      decoding="async"
+      data-card-art={cardSlug}
+    />
+  </span>
+) : (
+  <StockImage
+    slug={`card-${cardSlug}`}
+    coverTitle={cardName}
+    coverCategory="Review"
+    coverSize={coverSize}
+    class={className}
+    loading={loading}
+    sizes={sizes}
+  />
+)}
+
+<style>
+  .dp-card-art {
+    display: grid !important;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    width: 100%;
+    padding: 9% 12%;
+    box-sizing: border-box;
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(184, 132, 42, 0.10), transparent 60%),
+      var(--shade-1);
+    overflow: hidden;
+  }
+  .dp-card-art.is-thumb { padding: 10% 8%; }
+  .dp-card-art img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 16px rgba(19, 35, 47, 0.28));
+  }
+</style>

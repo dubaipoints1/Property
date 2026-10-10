@@ -31,6 +31,7 @@ import { useEffect, useMemo, useState } from "preact/hooks";
 import type { CardData } from "../../lib/cardsData";
 import { formatEarnRate } from "../../lib/cardsDataFormat";
 import { NINETY_DAYS_MS } from "../../lib/verification";
+import { Tween, useFlip } from "./motion";
 import {
   type EarnBasis,
   earnsAED,
@@ -680,6 +681,9 @@ export default function RewardsCalculator({ cards }: Props) {
       setSpend((prev) => ({ ...prev, [key]: clamped }));
     };
 
+  const visible = showAll ? ranked : ranked.slice(0, 3);
+  const tileList = useFlip<HTMLUListElement>([visible.map((r) => r.card.slug).join("|")]);
+
   if (cards.length === 0) {
     return (
       <div class="dp-calc-empty" role="status">
@@ -688,7 +692,6 @@ export default function RewardsCalculator({ cards }: Props) {
     );
   }
 
-  const visible = showAll ? ranked : ranked.slice(0, 3);
 
   return (
     <div class="dp-calc">
@@ -888,9 +891,9 @@ export default function RewardsCalculator({ cards }: Props) {
           </p>
         )}
 
-        <ul class="dp-calc-tile-list">
+        <ul class="dp-calc-tile-list" ref={tileList}>
           {visible.map((r, idx) => (
-            <li key={r.card.slug} class="dp-calc-tile">
+            <li key={r.card.slug} class="dp-calc-tile" data-flip={r.card.slug}>
               <div class="dp-calc-tile-head">
                 <span class="rank">#{idx + 1}</span>
                 <a class="title" href={`/cards/${r.card.slug}/`}>
@@ -903,7 +906,10 @@ export default function RewardsCalculator({ cards }: Props) {
                 <div class="num-block">
                   <span class="num-label">Monthly reward</span>
                   <strong class="num-value">
-                    {fmtNative(r.monthlyRewardNative, r.card.earnUnit, r.rateBasis)}
+                    <Tween
+                      value={r.monthlyRewardNative}
+                      format={(n) => fmtNative(n, r.card.earnUnit, r.rateBasis)}
+                    />
                   </strong>
                   <span class="num-sub">
                     {r.rateBasis === "cashback"
@@ -920,7 +926,7 @@ export default function RewardsCalculator({ cards }: Props) {
                   </strong>
                   {netOfFee && (
                     <span class="num-sub">
-                      Net: {fmtAED(r.netMonthlyAED)}/mo
+                      Net: <Tween value={r.netMonthlyAED} format={fmtAED} />/mo
                     </span>
                   )}
                 </div>
@@ -1030,7 +1036,7 @@ export default function RewardsCalculator({ cards }: Props) {
           margin-bottom: 14px;
         }
         .dp-calc-form-head h2 {
-          font-family: 'Fraunces', serif; font-weight: 500;
+          font-family: var(--font-display); font-weight: 500;
           font-size: 17px; color: var(--ink); margin: 0;
         }
         .dp-calc-total {
@@ -1055,7 +1061,7 @@ export default function RewardsCalculator({ cards }: Props) {
         }
         .dp-calc-num {
           width: 88px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-ui);
           font-feature-settings: 'tnum';
           font-size: 13px; padding: 4px 6px;
           border: 1px solid var(--line); border-radius: 3px;
@@ -1083,7 +1089,7 @@ export default function RewardsCalculator({ cards }: Props) {
           border: 1px solid var(--line);
           color: var(--ink);
           padding: 5px 10px;
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-ui);
           font-size: 12px; font-weight: 600;
           border-radius: 2px;
           cursor: pointer;
@@ -1151,7 +1157,7 @@ export default function RewardsCalculator({ cards }: Props) {
           margin-bottom: 18px;
         }
         .dp-calc-routing h3 {
-          font-family: 'Fraunces', serif; font-weight: 500;
+          font-family: var(--font-display); font-weight: 500;
           font-size: 17px; color: var(--ink); margin: 0 0 10px;
         }
         .dp-calc-routing .dp-data-table { margin: 0; }
@@ -1170,7 +1176,7 @@ export default function RewardsCalculator({ cards }: Props) {
         .dp-calc-tile-facts strong { color: var(--ink); font-weight: 600; }
 
         .dp-calc-results-head h2 {
-          font-family: 'Fraunces', serif; font-weight: 500;
+          font-family: var(--font-display); font-weight: 500;
           font-size: 20px; color: var(--ink); margin: 0 0 6px;
         }
         .dp-calc-results-sub {
@@ -1197,7 +1203,7 @@ export default function RewardsCalculator({ cards }: Props) {
           color: var(--muted); font-size: 13px;
         }
         .dp-calc-tile-head .title {
-          font-family: 'Fraunces', serif; font-weight: 500;
+          font-family: var(--font-display); font-weight: 500;
           font-size: 17px; color: var(--ink); text-decoration: none;
         }
         .dp-calc-tile-head .title:hover { color: var(--green); }
@@ -1221,7 +1227,7 @@ export default function RewardsCalculator({ cards }: Props) {
           color: var(--muted);
         }
         .num-value {
-          font-family: 'DM Sans', sans-serif;
+          font-family: var(--font-ui);
           font-feature-settings: 'tnum';
           font-size: 17px; font-weight: 600; color: var(--ink);
         }
@@ -1248,7 +1254,7 @@ export default function RewardsCalculator({ cards }: Props) {
           text-transform: uppercase; font-weight: 700;
         }
         .dp-calc-tile-meta .chip.is-stale { color: var(--red); }
-        .dp-calc-tile-meta .chip.is-fallback { color: var(--gold); }
+        .dp-calc-tile-meta .chip.is-fallback { color: var(--gold-ink); } /* --gold is 3.2:1 at chip size; --gold-ink clears AA (axe, render audit 4 Oct 2026) */
 
         .dp-calc-toggle-all {
           margin-top: 16px;

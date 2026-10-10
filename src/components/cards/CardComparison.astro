@@ -143,7 +143,7 @@ function vatTagFor(
     background: var(--paper);
     border-collapse: collapse;
     table-layout: fixed;
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
   }
 
   /* Header row — bank eyebrow + card name. The left-most column in
@@ -173,7 +173,7 @@ function vatTagFor(
     margin-bottom: 4px;
   }
   .dp-card-comparison .card-name {
-    font-family: "Fraunces", serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 16px;
     letter-spacing: -0.2px;
@@ -254,7 +254,7 @@ function vatTagFor(
   /* Phase 2a.2.3 — VAT tag stays --muted even on the winner row so the
      winner's green emphasis stays on the value, not the qualifier. */
   .dp-card-comparison .vat-tag {
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-weight: 500;
     font-size: 11px;
     color: var(--muted);

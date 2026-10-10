@@ -20,6 +20,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
+import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
 
 const guides = (await getCollection("guides")).sort(
@@ -103,6 +104,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
             coverCategory="Guide"
             coverSize="hero"
             class="intel-featured-image"
+            sizes={LISTING_SIZES.featured}
             loading="eager"
           />
           <div class="intel-featured-body">
@@ -127,6 +129,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
                   coverCategory="Guide"
                   coverSize="med"
                   class="intel-card-image"
+                  sizes={LISTING_SIZES.tile}
                 />
                 <div class="intel-card-body">
                   <span class="intel-card-cat">Guide</span>
@@ -178,14 +181,14 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     margin: 0 auto;
   }
   .intel-pagehead .crumb {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
     margin-bottom: 16px;
   }
   .intel-pagehead h1 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(38px, 5.6vw, 58px);
     letter-spacing: -1.6px;
@@ -212,7 +215,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     gap: 6px;
   }
   .intel-tab {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.2px;
@@ -256,7 +259,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     border: 0;
     background: transparent;
     outline: none;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 16px;
     color: var(--ink);
     width: 100%;
@@ -318,7 +321,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     gap: 10px;
   }
   .intel-featured-eyebrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 2.5px;
@@ -326,7 +329,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     color: var(--green);
   }
   .intel-featured-body h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(24px, 3.4vw, 34px);
     letter-spacing: -0.9px;
@@ -344,7 +347,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     max-width: 64ch;
   }
   .intel-featured-meta {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.3px;
@@ -396,7 +399,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     gap: 8px;
   }
   .intel-card-cat {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -404,7 +407,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     color: var(--green);
   }
   .intel-card h3 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 18px;
     letter-spacing: -0.3px;
@@ -421,7 +424,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     margin: 0;
   }
   .intel-card-meta {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px;
     color: var(--muted);
     letter-spacing: 0.2px;
@@ -444,7 +447,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     padding: 22px;
   }
   .intel-trending .dp-rail-heading {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; letter-spacing: 2.5px;
     text-transform: uppercase; color: var(--green);
     margin: 0 0 14px; font-weight: 700;
@@ -471,7 +474,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
   }
   .intel-trending a {
     color: var(--ink);
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     letter-spacing: -0.2px;
     text-decoration: none;
@@ -489,13 +492,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     gap: 8px;
   }
   .intel-insider .eyebrow {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: rgba(255, 255, 255, 0.75);
   }
   .intel-insider .dp-rail-heading {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 19px;
     line-height: 1.2;
@@ -505,7 +508,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     text-wrap: balance;
   }
   .intel-insider p {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px;
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.88);
@@ -519,7 +522,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     background: white;
     color: var(--green);
     border-radius: 999px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.4px;

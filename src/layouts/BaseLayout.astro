@@ -1,4 +1,11 @@
 ---
+// Fonts are self-hosted (7 Oct 2026, UX review): Google Fonts with
+// display=optional often left a phone's first visit in Georgia/system-ui.
+import "@fontsource-variable/newsreader/opsz.css";
+import "@fontsource-variable/newsreader/opsz-italic.css";
+import "@fontsource-variable/geist/wght.css";
+import newsreaderLatin from "@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url";
+import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import "~/styles/global.css";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
@@ -122,22 +129,9 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Font loading: preconnect first, then a non-render-blocking stylesheet.
-         Weights pruned to in-use axes only (~9 files vs 14). -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=optional"
-      media="print"
-      onload="this.setAttribute('media','all')"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&display=optional"
-      />
-    </noscript>
+    <!-- Self-hosted fonts: preload the two Latin faces used above the fold. -->
+    <link rel="preload" href={newsreaderLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
     {schema && <SchemaJsonLd schema={schema} />}
     <SchemaJsonLd schema={defaultGraph} />
 
@@ -159,7 +153,72 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     </main>
     <Footer />
 
-    <!-- Back-to-top — visible after 600px scroll, click smooths to top -->
+    <!-- Motion layer (2026-10-04 redesign, Phase 1): scroll reveal. The
+         number ticker and cursor spotlight were removed on 7 Oct 2026
+         (UX review: figures arrive still). Styles live at the end of global.css.
+         Processed by Astro, which inlines it as one <script type="module">
+         at this size: one more executable inline script for the CSP
+         inventory (.council/research/2026-09/csp-inline-script-inventory-
+         2026-09-17.md). Does nothing under prefers-reduced-motion, and
+         nothing is hidden until this has run. -->
+    <script>
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      // Carousel prev/next: buttons stay hidden until wired, so no-JS readers
+      // get a plain swipeable row with nothing inert on it. Not motion, so it
+      // runs under reduced motion too (with instant scrolling).
+      document.querySelectorAll("[data-carousel]").forEach((track) => {
+        const section = track.closest("section") ?? track.parentElement;
+        const prev = section?.querySelector("[data-carousel-prev]") as HTMLButtonElement | null;
+        const next = section?.querySelector("[data-carousel-next]") as HTMLButtonElement | null;
+        if (!prev || !next) return;
+        const el = track as HTMLElement;
+        const page = () => Math.max(el.clientWidth * 0.8, 240);
+        const sync = () => {
+          prev.disabled = el.scrollLeft <= 2;
+          next.disabled = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
+        };
+        prev.hidden = next.hidden = false;
+        prev.addEventListener("click", () => el.scrollBy({ left: -page(), behavior: reduced ? "auto" : "smooth" }));
+        next.addEventListener("click", () => el.scrollBy({ left: page(), behavior: reduced ? "auto" : "smooth" }));
+        el.addEventListener("scroll", sync, { passive: true });
+        window.addEventListener("resize", sync, { passive: true });
+        sync();
+      });
+
+      if (!reduced && "IntersectionObserver" in window) {
+        document.documentElement.classList.add("dp-motion");
+
+        // Scroll reveal: opt-in. Homepage bands carry data-reveal; directory
+        // tiles, tool cards and the featured band's articles are included by
+        // class. Never a prose <section> on a reading page (motion audit F1),
+        // and never an element inside another reveal (F3).
+        const targets = document.querySelectorAll(
+          "[data-reveal], .dp-dir-tile, .dp-tool, .dp-featured-band article",
+        );
+        const io = new IntersectionObserver(
+          (entries) => {
+            // Stagger by position within the batch that entered together,
+            // capped at 3 × 60 ms — not by DOM index (F2).
+            let i = 0;
+            for (const e of entries) {
+              if (!e.isIntersecting) continue;
+              (e.target as HTMLElement).style.setProperty("--dp-i", String(Math.min(i++, 3)));
+              e.target.classList.add("is-in");
+              io.unobserve(e.target);
+            }
+          },
+          { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+        );
+        targets.forEach((el) => {
+          if (el.parentElement?.closest(".dp-reveal, [data-reveal]")) return;
+          el.classList.add("dp-reveal");
+          io.observe(el);
+        });
+
+      }
+    </script>
+
+    <!-- Back-to-top — visible after three screens, click returns to top -->
     <button id="dp-to-top" class="dp-to-top" type="button" aria-label="Back to top">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
            stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
@@ -173,7 +232,9 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
         if (!btn) return;
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         function update() {
-          if (window.scrollY > 600) btn.classList.add('is-visible');
+          // Only after three screens, so it never sits over the first
+          // screens of content (7 Oct 2026 UX review).
+          if (window.scrollY > window.innerHeight * 3) btn.classList.add('is-visible');
           else btn.classList.remove('is-visible');
         }
         window.addEventListener('scroll', update, { passive: true });
@@ -182,6 +243,10 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
           window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
         });
       })();
+    </script>
+    <script>
+      // Reading progress bar and contents highlight on articles.
+      import "../scripts/reading";
     </script>
   </body>
 </html>

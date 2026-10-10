@@ -237,7 +237,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     text-transform: uppercase; color: var(--green); margin-bottom: 14px;
   }
   .sp-title {
-    font-family: 'Fraunces', serif; font-weight: 700;
+    font-family: var(--font-display); font-weight: 700;
     font-size: clamp(34px, 5.4vw, 52px); line-height: 1.05;
     letter-spacing: -1.4px; color: var(--ink); text-wrap: balance;
     margin: 0;
@@ -296,7 +296,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     text-transform: uppercase; color: var(--green);
   }
   .sp-value-v {
-    font-family: 'Fraunces', serif; font-weight: 700; font-size: 20px;
+    font-family: var(--font-display); font-weight: 700; font-size: 20px;
     color: var(--ink); font-variant-numeric: tabular-nums;
   }
   .sp-value-n { font-size: 13px; color: var(--ink-soft); }
@@ -327,7 +327,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     text-transform: uppercase; color: var(--muted);
   }
   .sp-fact-v {
-    font-family: 'Fraunces', serif; font-weight: 600; font-size: 22px;
+    font-family: var(--font-display); font-weight: 600; font-size: 22px;
     color: var(--ink); font-variant-numeric: tabular-nums; line-height: 1.1;
   }
   .sp-fact-n { font-size: 12px; color: var(--ink-soft); line-height: 1.4; }
@@ -336,13 +336,13 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
   .sp-prose { max-width: var(--sp-measure); font-size: 19px; line-height: 1.72; color: var(--ink); }
   .sp-prose p { margin: 0 0 24px; text-wrap: pretty; }
   .sp-prose h2 {
-    font-family: 'Fraunces', serif; font-weight: 700;
+    font-family: var(--font-display); font-weight: 700;
     font-size: clamp(27px, 4vw, 34px); letter-spacing: -0.6px;
     color: var(--green); line-height: 1.18; margin: 48px 0 16px;
   }
   .sp-prose h2[id] { scroll-margin-top: 24px; }
   .sp-prose h3 {
-    font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px;
+    font-family: var(--font-display); font-weight: 600; font-size: 21px;
     letter-spacing: -0.3px; color: var(--ink); margin: 32px 0 12px; line-height: 1.3;
   }
 
@@ -412,11 +412,11 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     text-transform: uppercase; color: var(--gold); margin-bottom: 10px;
   }
   .sp-verdict p {
-    font-family: 'Fraunces', serif; font-weight: 500; font-size: 17px;
+    font-family: var(--font-display); font-weight: 500; font-size: 17px;
     line-height: 1.5; margin: 0 0 16px; color: #f4f2ec;
   }
   .sp-score { display: flex; align-items: baseline; gap: 6px; }
-  .sp-score-n { font-family: 'Fraunces', serif; font-weight: 700; font-size: 32px; color: #fff; }
+  .sp-score-n { font-family: var(--font-display); font-weight: 700; font-size: 32px; color: #fff; }
   .sp-score-d { font-size: 12px; color: rgba(255,255,255,0.7); }
 
   .sp-toc {

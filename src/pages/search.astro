@@ -14,7 +14,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
   </header>
 
   <div class="dp-search-body">
-    <div id="search" data-pagefind-ignore></div>
+    <div id="search" class="dp-search-results" data-pagefind-ignore></div>
 
     <noscript>
       <p class="dp-search-fallback">
@@ -56,6 +56,10 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 </script>
 
 <style>
+  /* Reserve room for the results Pagefind injects, so the tip and footer
+     below do not jump when they arrive (layout shift 0.47 on a phone,
+     8 Oct 2026 audit). */
+  .dp-search-results { min-height: 70vh; }
   .dp-search-body {
     max-width: 760px;
     margin: 0 auto;
@@ -65,6 +69,15 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     .dp-search-body { padding: 24px 16px 56px; }
   }
   #search { margin-bottom: 24px; }
+  /* The remaining shift was inside the list, not below it (10 Oct 2026
+     CLS probe at 390px, throttled, ?q=): Pagefind draws each result as a
+     ~114px loading skeleton, then swaps in the real row (often ~60px) as
+     each fragment arrives, so every row under a loaded one jumps. Keep the
+     list unpainted until no row is still loading; it then appears once,
+     settled. The result count above it stays visible meanwhile. Shifts of
+     unpainted nodes are not layout shifts. Browsers without :has() keep
+     the old behaviour. */
+  :global(.pagefind-ui__results:has(.pagefind-ui__loading)) { visibility: hidden; }
   /* Override Pagefind UI defaults to match design idiom */
   /* Pagefind keeps its Clear button in the tab order while it is
      invisible (opacity 0) — a focus stop with no visible ring
@@ -80,10 +93,10 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     --pagefind-ui-border-radius: 10px;
     --pagefind-ui-image-border-radius: 8px;
     --pagefind-ui-image-box-ratio: 3 / 2;
-    --pagefind-ui-font: 'DM Sans', system-ui, sans-serif;
+    --pagefind-ui-font: var(--font-ui);
   }
   :global(.pagefind-ui__search-input) {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 16px !important;
   }
   .dp-search-fallback,

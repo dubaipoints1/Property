@@ -17,6 +17,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
+import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 
@@ -127,6 +128,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                 coverCategory="Deal"
                 coverSize="hero"
                 class="intel-featured-image"
+                sizes={LISTING_SIZES.featured}
                 loading="eager"
               />
               <div class="intel-featured-body">
@@ -152,6 +154,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                         coverCategory="Deal"
                         coverSize="med"
                         class="intel-card-image"
+                        sizes={LISTING_SIZES.tile}
                       />
                       <div class="intel-card-body">
                         <span class="intel-card-cat">
@@ -213,14 +216,14 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   }
   .intel-pagehead-inner { max-width: var(--container-listing); margin: 0 auto; }
   .intel-pagehead .crumb {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
     margin-bottom: 16px;
   }
   .intel-pagehead h1 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(38px, 5.6vw, 58px);
     letter-spacing: -1.6px;
@@ -242,7 +245,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   }
   .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
   .intel-tab {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
     color: var(--ink-soft);
     padding: 8px 14px;
@@ -273,7 +276,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   }
   .intel-search input[type="search"] {
     border: 0; background: transparent; outline: none;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 16px;
     color: var(--ink);
     width: 100%;
@@ -324,13 +327,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   }
   .intel-featured-body { padding: 24px 28px 28px; display: grid; gap: 10px; }
   .intel-featured-eyebrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
   }
   .intel-featured-body h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(24px, 3.4vw, 34px);
     letter-spacing: -0.9px;
@@ -348,7 +351,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     max-width: 64ch;
   }
   .intel-featured-meta {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.3px;
@@ -388,13 +391,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   }
   .intel-card-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
   .intel-card-cat {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--green);
   }
   .intel-card h3 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 18px;
     letter-spacing: -0.3px;
@@ -409,7 +412,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     color: var(--ink-soft); margin: 0;
   }
   .intel-card-meta {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; color: var(--muted);
     letter-spacing: 0.2px; margin-top: 2px;
   }
@@ -421,13 +424,18 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--shade-1);
+    /* --muted on --shade-1 was 4.25:1 in light (axe, 10 Oct 2026).
+       --ink-soft is 5.5:1 there and 5.7:1 on the dark --shade-1. */
+    color: var(--ink-soft);
     font-weight: 700;
     align-self: start;
   }
   .deals-countdown.is-soon {
     border-color: var(--gold);
-    background: var(--gold-soft, #fff6e7);
-    color: #6c4a18;
+    background: var(--gold-soft);
+    /* --gold-ink is theme-aware; the old literal #6c4a18 fell to ~2:1 on
+       the dark --gold-soft. */
+    color: var(--gold-ink);
   }
 
   /* Empty state — same shape as /news/. */
@@ -439,13 +447,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     display: grid; gap: 14px;
   }
   .news-empty-eyebrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
   }
   .news-empty h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(26px, 3.4vw, 36px);
     letter-spacing: -0.9px;
@@ -475,7 +483,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     background: var(--ink);
     color: var(--paper);
     border-radius: 999px;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.3px;
@@ -503,7 +511,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     padding: 22px;
   }
   .intel-trending .dp-rail-heading {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; letter-spacing: 2.5px;
     text-transform: uppercase; color: var(--green);
     margin: 0 0 14px; font-weight: 700;
@@ -526,7 +534,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   }
   .intel-trending a {
     color: var(--ink);
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500; letter-spacing: -0.2px;
     text-decoration: none;
   }
@@ -542,20 +550,20 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     display: grid; gap: 8px;
   }
   .intel-insider .eyebrow {
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: rgba(255, 255, 255, 0.75);
   }
   .intel-insider .dp-rail-heading {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500; font-size: 19px;
     line-height: 1.2; letter-spacing: -0.4px;
     color: white; margin: 0;
     text-wrap: balance;
   }
   .intel-insider p {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px; line-height: 1.5;
     color: rgba(255, 255, 255, 0.88);
     margin: 4px 0 6px;
@@ -565,7 +573,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     height: 36px; padding: 0 16px;
     background: white; color: var(--green);
     border-radius: 999px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px; font-weight: 700; letter-spacing: 0.4px;
     text-decoration: none; align-self: start;
     transition: opacity 0.15s ease;

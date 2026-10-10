@@ -31,7 +31,7 @@ import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema"
 import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import { cardsTracked, banksCovered } from "~/lib/trustFacts";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import StockImage from "~/components/StockImage.astro";
+import CardImage from "~/components/CardImage.astro";
 import { getEntry } from "astro:content";
 import {
   getActiveCards,
@@ -182,12 +182,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
           const fee = annualFeeLabel(f.card);
           return (
           <article class="cards-top-card">
-            <StockImage
-              slug={`card-${f.card.slug}`}
-              coverTitle={f.card.name}
-              coverCategory="Review"
+            <CardImage
+              cardSlug={f.card.slug}
+              cardName={f.card.name}
+              bankName={f.bankName}
               coverSize="med"
               class="cards-top-card-image"
+              sizes="(max-width: 640px) 70vw, (max-width: 960px) 540px, 420px"
             />
             <div class="cards-top-card-body">
               <span class="cards-top-card-bank">{f.bankName}</span>
@@ -241,12 +242,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
           <li class="cards-row">
             <a href={`/cards/${f.card.slug}/`} class="cards-row-link">
               <div class="cards-row-art">
-                <StockImage
-                  slug={`card-${f.card.slug}`}
-                  coverTitle={f.card.name}
-                  coverCategory="Review"
+                <CardImage
+                  cardSlug={f.card.slug}
+                  cardName={f.card.name}
+                  bankName={f.bankName}
                   coverSize="thumb"
                   class="cards-row-art-image"
+                  sizes="(max-width: 640px) 84px, 140px"
                 />
               </div>
               <div class="cards-row-id">
@@ -327,14 +329,14 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     text-align: center;
   }
   .cards-pagehead .crumb {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
     margin-bottom: 18px;
   }
   .cards-pagehead h1 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(32px, 5vw, 56px);
     letter-spacing: -1.4px;
@@ -361,14 +363,14 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   }
   .cards-section-eyebrow {
     display: inline-block;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
     margin-bottom: 12px;
   }
   .cards-section-head h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(24px, 3.5vw, 36px);
     letter-spacing: -0.9px;
@@ -409,13 +411,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     display: grid; gap: 14px;
   }
   .cards-top-card-bank {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--green);
   }
   .cards-top-card h3 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 24px;
     letter-spacing: -0.6px;
@@ -432,14 +434,14 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   }
   .cards-top-card-stats > div { display: grid; gap: 2px; }
   .cards-top-card-stats dt {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 1.8px; text-transform: uppercase;
     color: var(--muted);
   }
   .cards-top-card-stats dd {
     margin: 0;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-weight: 600;
     font-size: 15px;
     color: var(--ink);
@@ -454,7 +456,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     background: var(--ink);
     color: var(--paper);
     border-radius: 999px;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px; font-weight: 700;
     letter-spacing: 0.3px;
     text-decoration: none;
@@ -477,7 +479,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     border-bottom: 1px solid var(--line);
   }
   .cards-compare-head h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(24px, 3vw, 34px);
     letter-spacing: -0.8px;
@@ -504,7 +506,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
      link-in-text-block (1.06:1 against the surrounding grey). */
   .cards-pagehead-snapshot a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
   .cards-compare-sort {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px;
     color: var(--ink-soft);
   }
@@ -549,7 +551,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     flex-shrink: 0;
   }
   .cards-top-card-fee-qual {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px;
     font-weight: 500;
     /* --ink-soft (#56606b) measures ~6.4:1 on --paper — WCAG AA pass for
@@ -567,13 +569,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   }
   .cards-row-id { display: grid; gap: 4px; }
   .cards-row-bank {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--green);
   }
   .cards-row-name {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 17px;
     letter-spacing: -0.3px;
@@ -583,7 +585,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   .cards-row:hover .cards-row-name { color: var(--green); }
   .cards-row-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
   .cards-row-chip {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 600;
     letter-spacing: 0.2px;
     color: var(--ink-soft);
@@ -597,13 +599,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   .cards-row-fee,
   .cards-row-earn { display: grid; gap: 2px; }
   .cards-row-label {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 1.5px; text-transform: uppercase;
     color: var(--muted);
   }
   .cards-row-value {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-weight: 600;
     font-size: 14px;
     color: var(--ink);
@@ -631,7 +633,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     color: var(--ink);
     border: 1px solid var(--line);
     border-radius: 999px;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 12px; font-weight: 700;
     letter-spacing: 0.3px;
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
@@ -642,7 +644,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     border-color: var(--ink);
   }
   .cards-row-verified {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px;
     color: var(--muted);
     letter-spacing: 0.3px;
@@ -671,7 +673,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     align-items: center;
   }
   .cards-callout-text h2 {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(26px, 3.4vw, 36px);
     letter-spacing: -0.9px;
@@ -708,13 +710,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     transform: translateY(-2px);
   }
   .cards-callout-cta-eyebrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--navy-lift);
   }
   .cards-callout-cta-title {
-    font-family: 'Fraunces', serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 16px;
     letter-spacing: -0.2px;
@@ -723,7 +725,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     text-wrap: balance;
   }
   .cards-callout-cta-arrow {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 18px;
     color: var(--navy-lift);
     justify-self: end;
@@ -735,7 +737,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
      the tile is the year-2+ rate; the qualifier disambiguates so the
      reader doesn't see a contradiction against the body text. */
   .cards-row-fee-qual {
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 11px;
     font-weight: 500;
     /* Same WCAG-AA contrast fix as .cards-top-card-fee-qual above

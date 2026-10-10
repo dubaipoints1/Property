@@ -18,6 +18,8 @@
 import BaseLayout from "./BaseLayout.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
 import StockImage from "~/components/StockImage.astro";
+import CardImage from "~/components/CardImage.astro";
+import { getCardArt } from "~/lib/cardArt";
 import HeroImage from "~/components/cards/HeroImage.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
 import { formatEarnRate, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
@@ -206,6 +208,9 @@ const relatedCards = getActiveCards()
 // fallback for every card that doesn't yet have a curated photograph.
 const stockSlug = slug ? `card-${slug}` : null;
 const hasPhoto = stockSlug ? hasStockEntry(stockSlug) : false;
+// Issuer card art (9 Oct 2026) outranks the stock photograph: the reader
+// is looking at a review of this card, so show this card.
+const cardArt = slug ? getCardArt(slug) : undefined;
 
 // JSON-LD: every card review emits a Product entity with a FinancialProduct
 // additionalType so search engines parse it as a credit card. The fee and
@@ -253,7 +258,12 @@ const schema = {
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
         { "@type": "ListItem", position: 2, name: "Cards", item: `${siteUrl}/cards/` },
-        { "@type": "ListItem", position: 3, name: cardName, item: canonicalUrl },
+        // Mirrors the visible trail (Cards → bank → this page); the bank
+        // step is omitted when the issuer has no hub.
+        ...(bankSlug
+          ? [{ "@type": "ListItem", position: 3, name: bankName, item: `${siteUrl}/banks/${bankSlug}/` },
+             { "@type": "ListItem", position: 4, name: cardName, item: canonicalUrl }]
+          : [{ "@type": "ListItem", position: 3, name: cardName, item: canonicalUrl }]),
       ],
     },
   ],
@@ -264,7 +274,20 @@ const schema = {
 
   <!-- Navy hero band: card photograph (when registered) or CSS mock fallback -->
   <header class="dp-cr-hero">
-    {hasPhoto && stockSlug ? (
+    {cardArt ? (
+      <figure class="dp-cr-art">
+        <img
+          src={`/${cardArt.file}`}
+          width={cardArt.width}
+          height={cardArt.height}
+          alt={`${cardName} card, as shown by ${bankName}`}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption>Card image: {bankName}</figcaption>
+      </figure>
+    ) : hasPhoto && stockSlug ? (
       <figure class="dp-cr-photo" data-bank={bankSlug ?? "default"}>
         <StockImage
           slug={stockSlug}
@@ -281,32 +304,32 @@ const schema = {
         </figcaption>
       </figure>
     ) : (
-      <div class="dp-cr-mock" data-bank={bankSlug ?? "default"} aria-hidden="true">
-        <div class="dp-cr-mock-chip"></div>
-        <div class="dp-cr-mock-row">
-          <div class="b">{bankName}</div>
-          <div class="dp-cr-mock-mark">{network.slice(0, 1)}</div>
-        </div>
-        <div class="n">{cardName}</div>
-        <div class="b">{network}</div>
+      <div class="dp-cr-tile" aria-hidden="true">
+        <span class="b">{bankName}</span>
+        <span class="n">{cardName}</span>
+        <span class="b">{network}</span>
       </div>
     )}
 
     <div class="dp-cr-text">
-      <div class="crumb">
-        {/* 10 June 2026 SEO audit: the bank-name segment is now an inline
-            link to /banks/<slug>/, giving every card review a visible
-            inbound link to its issuer hub (was schema-only via
-            BreadcrumbList). Closes the audit's "0/54 card reviews link
-            visibly to bank hub" finding without rewiring each MDX file. */}
-        {category === "Cards" ? "Cards / " : `Cards / ${category} / `}
-        {bankSlug ? (
-          <a href={`/banks/${bankSlug}/`} class="crumb-link">{bankName}</a>
-        ) : (
-          bankName
-        )}
-      </div>
-      <h1>{heading ?? title}</h1>
+      <nav class="crumb" aria-label="Breadcrumb">
+        {/* 10 June 2026 SEO audit: the bank segment links to /banks/<slug>/ so
+            every review carries a visible inbound link to its issuer hub. */}
+        <ol>
+          <li><a href="/cards/" class="crumb-link">Cards</a></li>
+          {category !== "Cards" && <li>{category}</li>}
+          <li>{bankSlug ? <a href={`/banks/${bankSlug}/`} class="crumb-link">{bankName}</a> : bankName}</li>
+        </ol>
+      </nav>
+      {(() => {
+        // Direction B (10 Oct 2026): the card's name in roman, the
+        // "review (Month YYYY)" tail in italic gold, as on the homepage.
+        const h = heading ?? title;
+        const i = h.search(/\sreview\b/i);
+        return i > 0
+          ? <h1>{h.slice(0, i)} <em>{h.slice(i + 1)}</em></h1>
+          : <h1>{h}</h1>;
+      })()}
 
       {(score != null || verdictLabel) && (
         <div class="dp-verdict-pill">
@@ -331,6 +354,35 @@ const schema = {
           <span class="strap-value">{welcomeBonusStrap}</span>
         </p>
       )}
+
+      {/* Phase 4 (4 Oct 2026, A+B): the four facts a reader scans first,
+          as tiles on the band. Same L2 values the sidebar used to repeat. */}
+      <dl class="dp-cr-facts">
+        <div><dt>Annual fee</dt><dd>{annualFee === 0 ? "Free" : formatAED(annualFee)}</dd></div>
+        <div>
+          <dt>Min salary</dt>
+          <dd class={eligibilityProvenance === "needs-review" ? "is-unverified" : ""}>
+            {invitationOnly
+              ? "Invitation only"
+              : eligibilityProvenance === "needs-review"
+              ? <><span aria-hidden="true">—</span><span class="sr-only">not yet verified</span></>
+              : minSalary === 0
+              ? "No minimum"
+              : <>{formatAED(minSalary)}<small>/mo</small></>}
+          </dd>
+        </div>
+        <div>
+          <dt>FX markup</dt>
+          <dd class={fxFeeProvenance === "needs-review" ? "is-unverified" : ""}>
+            {fxFeeProvenance === "needs-review"
+              ? <><span aria-hidden="true">—</span><span class="sr-only">not yet verified</span></>
+              : fxFee === 0
+              ? "None"
+              : `${fxFee.toFixed(2)}%`}
+          </dd>
+        </div>
+        <div><dt>Verified</dt><dd class="is-date">{fmt(lastVerified)}</dd></div>
+      </dl>
     </div>
   </header>
 
@@ -345,11 +397,11 @@ const schema = {
     <article class="dp-cr-body">
 
       <!-- Byline -->
-      <div class="dp-byline-strip" style="margin: 0 0 24px;">
+      <div class="dp-byline-strip dp-cr-byline">
         <div class="av" aria-hidden="true">{initials}</div>
         <div>
           <div class="name">{verifiedBy}</div>
-          <div class="when">Filed {fmt(lastVerified)} · Verified against issuer T&Cs</div>
+          <div class="when">Verified {fmt(lastVerified)} against issuer T&amp;Cs</div>
         </div>
       </div>
 
@@ -383,39 +435,17 @@ const schema = {
 
     <!-- Sticky sidebar -->
     <aside class="dp-cr-aside">
-      <div class="dp-spec-card">
-        <h3>At a glance</h3>
-        <div class="dp-spec-row"><span class="k">Annual fee</span><span class="v">{annualFee === 0 ? "Free" : formatAED(annualFee)}</span></div>
-        <div class="dp-spec-row">
-          <span class="k">Min salary</span>
-          <span class={`v ${eligibilityProvenance === "needs-review" ? "is-unverified" : ""}`}>
-            {invitationOnly
-              ? "Invitation only"
-              : eligibilityProvenance === "needs-review"
-              ? "—"
-              : minSalary === 0
-              ? "No minimum"
-              : `AED ${minSalary.toLocaleString()}/mo`}
-          </span>
-        </div>
-        <div class="dp-spec-row">
-          <span class="k">FX markup</span>
-          <span class={`v ${fxFeeProvenance === "needs-review" ? "is-unverified" : ""}`}>
-            {fxFeeProvenance === "needs-review" ? "—" : `+${fxFee.toFixed(2)}%`}
-          </span>
-        </div>
-        <div class="dp-spec-row"><span class="k">Network</span><span class="v">{network}</span></div>
-      </div>
-
       {earnRows.length > 0 && (
         <div class="dp-spec-card">
-          <h3>Earn rates by category</h3>
-          {earnRows.map(([k, v]) => (
-            <div class="dp-spec-row">
-              <span class="k">{formatEarnKey(k)}</span>
-              <span class={`v ${v >= 3 ? "flag" : ""}`}>{formatEarnRate(v, earnUnit, categories)}</span>
-            </div>
-          ))}
+          <h2>Earn rates by category</h2>
+          <dl class="dp-spec-rows">
+            {earnRows.map(([k, v]) => (
+              <div class="dp-spec-row">
+                <dt class="k">{formatEarnKey(k)}</dt>
+                <dd class={`v ${v >= 3 ? "flag" : ""}`}>{formatEarnRate(v, earnUnit, categories)}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       )}
 
@@ -442,13 +472,10 @@ const schema = {
         });
         return cleanPerks.length > 0 ? (
           <div class="dp-spec-card">
-            <h3>Perks</h3>
-            <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px;">
+            <h2>Perks</h2>
+            <ul class="dp-spec-list">
               {cleanPerks.slice(0, 6).map((p) => (
-                <li style="font-size: 13px; color: var(--ink-soft); line-height: 1.5; padding-left: 12px; position: relative;">
-                  <span style="position: absolute; left: 0; color: var(--green); font-weight: 700;">+</span>
-                  {p}
-                </li>
+                <li><span class="mark" aria-hidden="true">+</span>{p}</li>
               ))}
             </ul>
           </div>
@@ -496,10 +523,10 @@ const schema = {
       <div class="dp-article-related-grid">
         {relatedCards.map((c) => (
           <a href={`/cards/${c.slug}/`} class="dp-article-related-card">
-            <StockImage
-              slug={`card-${c.slug}`}
-              coverTitle={c.name}
-              coverCategory="Review"
+            <CardImage
+              cardSlug={c.slug}
+              cardName={c.name}
+              bankName={relatedBankName(c.bank)}
               coverSize="med"
             />
             <div class="body">

@@ -372,12 +372,12 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     padding: 0 32px;
   }
   .dp-compare-matchups h2 {
-    font-family: "Fraunces", serif;
+    font-family: var(--font-display);
     font-size: 24px;
     margin: 0 0 6px;
   }
   .dp-compare-matchups > p {
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 15px;
     color: var(--ink-soft);
     margin: 0 0 18px;
@@ -399,7 +399,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     display: inline-flex;
     align-items: center;
     min-height: 32px;
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 15px;
     font-weight: 600;
     color: var(--green);
@@ -408,7 +408,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   .dp-compare-matchups a:hover { text-decoration: underline; }
   .dp-compare-matchups .deck {
     display: block;
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px;
     color: var(--ink-soft);
     line-height: 1.5;
@@ -464,7 +464,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     transform: rotate(180deg);
   }
   .dp-compare-picker-title {
-    font-family: "Fraunces", serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 18px;
     color: var(--ink);
@@ -487,7 +487,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     gap: 24px;
   }
   .dp-compare-picker-group .dp-compare-picker-label {
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
@@ -527,7 +527,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     border-top: 1px solid var(--line-soft);
   }
   .dp-compare-picker-actions button {
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.3px;
@@ -575,7 +575,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     padding: 20px;
     display: grid;
     gap: 16px;
-    font-family: "DM Sans", system-ui, sans-serif;
+    font-family: var(--font-ui);
   }
   .dp-compare-col-head {
     display: grid;
@@ -592,7 +592,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
   .dp-compare-col-head h2 {
     margin: 0;
-    font-family: "Fraunces", serif;
+    font-family: var(--font-display);
     font-weight: 500;
     font-size: 20px;
     letter-spacing: -0.3px;
