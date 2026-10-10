@@ -4163,3 +4163,75 @@ html * {
   :root body .dp-stage .dp-metric-strip .metric .v { font-size: 20px; }
   :root body .dp-stage .dp-metric-strip .metric .meta { display: none; }
 }
+
+/* ── Card review, direction B "night to day" (10 Oct 2026) ─────────────
+   Chairman: card reviews in the same style as the homepage. The head is
+   the night band (constant in both themes) with the issuer's card art on
+   the right at desktop, the title in serif with an italic gold tail, and
+   the four facts as hairline cells instead of white tiles. Below it the
+   body drops its boxes: at-a-glance, pros/cons and the sidebar read as
+   type divided by hairlines. Doubled class selectors outrank the
+   components' scoped (0,2,0) rules without !important. */
+.dp-cr-hero.dp-cr-hero {
+  background: linear-gradient(180deg, var(--navy-pin) 0%, var(--navy-pin) 62%, #1f3a4d 100%);
+  padding: clamp(40px, 6vw, 88px) max(22px, calc((100% - 1180px) / 2 + 32px)) clamp(40px, 6vw, 80px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+  gap: clamp(28px, 5vw, 72px);
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-text { order: 0; }
+.dp-cr-hero.dp-cr-hero :is(.dp-cr-art, .dp-cr-photo, .dp-cr-tile) { order: 1; justify-self: end; }
+.dp-cr-hero.dp-cr-hero .dp-cr-art { max-width: 380px; width: 100%; }
+.dp-cr-hero.dp-cr-hero h1 {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(34px, 4.6vw, 60px); line-height: 1.04; letter-spacing: -0.02em;
+  text-wrap: balance; color: #fff;
+}
+.dp-cr-hero.dp-cr-hero h1 em { font-style: italic; font-weight: 400; color: var(--gold-lift); }
+.dp-cr-hero.dp-cr-hero .dp-cr-facts {
+  background: none; border: 0; border-radius: 0; gap: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; margin-top: 20px;
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-facts > div {
+  background: none; padding: 14px 16px 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dt { color: rgba(255, 255, 255, 0.62); }
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd {
+  color: #fff; font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -0.01em;
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd.is-date { font-family: var(--font-ui); font-size: 16px; font-weight: 600; }
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd small { color: rgba(255, 255, 255, 0.62); display: inline; margin-left: 2px; }
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd.is-unverified { color: rgba(255, 255, 255, 0.62); }
+@media (min-width: 1360px) {
+  .dp-cr-hero.dp-cr-hero .dp-cr-facts { grid-template-columns: repeat(4, max-content); column-gap: 36px; }
+}
+@media (max-width: 768px) {
+  .dp-cr-hero.dp-cr-hero { grid-template-columns: minmax(0, 1fr); }
+  .dp-cr-hero.dp-cr-hero :is(.dp-cr-art, .dp-cr-photo, .dp-cr-tile) { justify-self: start; }
+}
+
+/* Body: type and hairlines, no boxes. */
+.dp-cr-body .dp-at-a-glance.dp-at-a-glance {
+  border: 0; border-radius: 0; background: none;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.dp-cr-body .dp-at-a-glance.dp-at-a-glance .tile:first-child { padding-left: 0; }
+.dp-cr-body .dp-proscons-v2.dp-proscons-v2 {
+  border: 0; border-radius: 0; background: none; box-shadow: none;
+  border-top: 1px solid var(--line);
+}
+.dp-cr-body .dp-proscons-v2.dp-proscons-v2 .dp-proscons-v2-col { padding-left: 0; }
+.dp-cr-body .dp-proscons-v2.dp-proscons-v2 .dp-proscons-v2-col.is-cons { padding-left: 24px; }
+@media (max-width: 640px) {
+  .dp-cr-body .dp-proscons-v2.dp-proscons-v2 .dp-proscons-v2-col.is-cons { padding-left: 0; }
+}
+.dp-cr-aside .dp-spec-card.dp-spec-card {
+  background: none; border: 0; border-radius: 0; box-shadow: none;
+  border-top: 1px solid var(--line); padding: 18px 0 0;
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd { white-space: nowrap; font-size: clamp(20px, 2vw, 26px); }
+@media (max-width: 640px) {
+  .dp-cr-body .dp-at-a-glance.dp-at-a-glance .tile:nth-child(odd) { padding-left: 0; }
+}
