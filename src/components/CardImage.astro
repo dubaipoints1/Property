@@ -8,6 +8,7 @@
 // replaces, so every grid keeps its dimensions.
 import StockImage from "./StockImage.astro";
 import { getCardArt } from "../lib/cardArt";
+import { cardArtSrcset } from "../lib/stockDerivatives";
 
 interface Props {
   cardSlug: string;
@@ -16,16 +17,24 @@ interface Props {
   coverSize?: "hero" | "med" | "sm" | "thumb";
   class?: string;
   loading?: "eager" | "lazy";
+  /** Rendered slot width; used with the card-art or photo srcset. */
+  sizes?: string;
 }
 
-const { cardSlug, cardName, bankName, coverSize = "med", class: className, loading = "lazy" } = Astro.props;
+const { cardSlug, cardName, bankName, coverSize = "med", class: className, loading = "lazy", sizes } = Astro.props;
 const art = getCardArt(cardSlug);
+// A 360w derivative (scripts/images/make-thumbs.mjs) serves the small
+// rows; `sizes` is set only alongside a srcset, never alone.
+const artSrcset = art ? cardArtSrcset(cardSlug, art) : undefined;
+const artSizes = artSrcset ? (sizes ?? "100vw") : undefined;
 ---
 
 {art ? (
   <span class:list={["dp-card-art", className, `is-${coverSize}`]}>
     <img
       src={`/${art.file}`}
+      srcset={artSrcset}
+      sizes={artSizes}
       width={art.width}
       height={art.height}
       alt={`${cardName} card${bankName ? `, as shown by ${bankName}` : ""}`}
@@ -43,6 +52,7 @@ const art = getCardArt(cardSlug);
     coverSize={coverSize}
     class={className}
     loading={loading}
+    sizes={sizes}
   />
 )}
 

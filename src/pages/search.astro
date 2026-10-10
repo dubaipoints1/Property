@@ -69,6 +69,15 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     .dp-search-body { padding: 24px 16px 56px; }
   }
   #search { margin-bottom: 24px; }
+  /* The remaining shift was inside the list, not below it (10 Oct 2026
+     CLS probe at 390px, throttled, ?q=): Pagefind draws each result as a
+     ~114px loading skeleton, then swaps in the real row (often ~60px) as
+     each fragment arrives, so every row under a loaded one jumps. Keep the
+     list unpainted until no row is still loading; it then appears once,
+     settled. The result count above it stays visible meanwhile. Shifts of
+     unpainted nodes are not layout shifts. Browsers without :has() keep
+     the old behaviour. */
+  :global(.pagefind-ui__results:has(.pagefind-ui__loading)) { visibility: hidden; }
   /* Override Pagefind UI defaults to match design idiom */
   /* Pagefind keeps its Clear button in the tab order while it is
      invisible (opacity 0) — a focus stop with no visible ring

@@ -20,6 +20,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
+import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
 
 const guides = (await getCollection("guides")).sort(
@@ -103,6 +104,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
             coverCategory="Guide"
             coverSize="hero"
             class="intel-featured-image"
+            sizes={LISTING_SIZES.featured}
             loading="eager"
           />
           <div class="intel-featured-body">
@@ -127,6 +129,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
                   coverCategory="Guide"
                   coverSize="med"
                   class="intel-card-image"
+                  sizes={LISTING_SIZES.tile}
                 />
                 <div class="intel-card-body">
                   <span class="intel-card-cat">Guide</span>
