@@ -21,6 +21,7 @@ import type { CollectionEntry } from "astro:content";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
+import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
 
 interface Props {
@@ -160,6 +161,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
                 coverCategory="News"
                 coverSize="hero"
                 class="intel-featured-image"
+                sizes={LISTING_SIZES.featured}
                 loading="eager"
               />
               <div class="intel-featured-body">
@@ -184,6 +186,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
                       coverCategory="News"
                       coverSize="med"
                       class="intel-card-image"
+                      sizes={LISTING_SIZES.tile}
                     />
                     <div class="intel-card-body">
                       <span class="intel-card-cat">{formatCategory(p.data.category)}</span>

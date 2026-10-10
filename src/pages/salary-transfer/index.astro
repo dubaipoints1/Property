@@ -220,6 +220,8 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   .st-page :global(.dpst) {
     max-width: calc(var(--container-listing) - 64px);
     margin-inline: auto;
+    width: auto; /* with side margins, a width of 100% overran by 40px */
+    box-sizing: border-box;
   }
   @media (max-width: 1240px) {
     .st-page :global(.dpst) { margin-inline: 20px; }

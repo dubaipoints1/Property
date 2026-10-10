@@ -321,7 +321,15 @@ const schema = {
           <li>{bankSlug ? <a href={`/banks/${bankSlug}/`} class="crumb-link">{bankName}</a> : bankName}</li>
         </ol>
       </nav>
-      <h1>{heading ?? title}</h1>
+      {(() => {
+        // Direction B (10 Oct 2026): the card's name in roman, the
+        // "review (Month YYYY)" tail in italic gold, as on the homepage.
+        const h = heading ?? title;
+        const i = h.search(/\sreview\b/i);
+        return i > 0
+          ? <h1>{h.slice(0, i)} <em>{h.slice(i + 1)}</em></h1>
+          : <h1>{h}</h1>;
+      })()}
 
       {(score != null || verdictLabel) && (
         <div class="dp-verdict-pill">

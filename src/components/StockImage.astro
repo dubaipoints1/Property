@@ -27,17 +27,21 @@
 // Photographs are unaffected: the label element only exists for
 // ai-generated entries, so no existing layout gains a node.
 
-// No `sizes` attribute, deliberately. It used to be a prop and four call
-// sites passed one, but the manifest holds a single file per slug and
-// these are raw <img src> from public/ rather than astro:assets, so there
-// was never a `srcset` for `sizes` to choose from — the browser ignored
-// it and the markup claimed responsive behaviour the page did not have
-// (2026-09-06 audit, F-054). It comes back with the derivative pipeline,
-// which is F-010 and a T3 change; adding the attribute again before then
-// would restore the lie, not the behaviour.
+// `srcset` + `sizes` (restored 10 Oct 2026). The 2026-09-06 audit (F-054)
+// removed a `sizes` prop because there was no `srcset` for it to choose
+// from — one file per slug, raw <img src> from public/. The derivative
+// pipeline now exists (F-010): scripts/images/make-thumbs.mjs writes 640w
+// and 1200w WebP beside each original, and src/lib/stockDerivatives.ts
+// lists only the ones on disk. `sizes` is emitted only when a `srcset`
+// is, so the attribute never again claims behaviour the page lacks. Call
+// sites that know their slot width pass `sizes`; the rest get "100vw",
+// the browser's own default, which still swaps a 1880px JPEG for the
+// 1200px WebP on most screens. The original stays `src` and closes the
+// srcset, so provenance (the manifest entry) is unchanged.
 
 import { getStockEntry } from "../lib/stockManifest";
 import Cover from "./Cover.astro";
+import { stockSrcset } from "../lib/stockDerivatives";
 
 interface Props {
   slug: string;
@@ -46,6 +50,8 @@ interface Props {
   coverSize?: "hero" | "med" | "sm" | "thumb";
   class?: string;
   loading?: "eager" | "lazy";
+  /** Rendered slot width, e.g. LISTING_SIZES.tile. Used only with a srcset. */
+  sizes?: string;
 }
 
 const {
@@ -55,6 +61,7 @@ const {
   coverSize = "med",
   class: className,
   loading = "lazy",
+  sizes,
 } = Astro.props;
 
 const entry = getStockEntry(slug);
@@ -65,6 +72,8 @@ const isAi = entry?.source === "ai-generated";
 // renders, not depend on a call site remembering a caption. The
 // photographer field holds the credit owner per the manifest contract.
 const isEditorial = entry?.source === "editorial";
+const srcset = entry ? stockSrcset(entry) : undefined;
+const sizesAttr = srcset ? (sizes ?? "100vw") : undefined;
 ---
 
 {entry ? (
@@ -72,6 +81,8 @@ const isEditorial = entry?.source === "editorial";
     <span class="dp-ai-figure">
       <img
         src={`/${entry.file}`}
+        srcset={srcset}
+        sizes={sizesAttr}
         alt={entry.alt}
         width={entry.width}
         height={entry.height}
@@ -92,6 +103,8 @@ const isEditorial = entry?.source === "editorial";
   ) : (
     <img
       src={`/${entry.file}`}
+      srcset={srcset}
+      sizes={sizesAttr}
       alt={entry.alt}
       width={entry.width}
       height={entry.height}

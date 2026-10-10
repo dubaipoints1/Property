@@ -32,6 +32,7 @@
     "scrape:propose": "tsx scripts/scrape/propose-changes.ts",
     "fetch:stock": "tsx scripts/images/fetch-stock.ts",
     "gen:ai": "tsx scripts/images/generate-ai.ts",
+    "images:thumbs": "node scripts/images/make-thumbs.mjs",
     "gen:video": "tsx scripts/images/generate-video.ts",
     "audit:serve": "http-server dist -a 127.0.0.1 -p 8099 -c-1",
     "audit:render": "node scripts/audit/render-probe.mjs",
