@@ -4063,7 +4063,7 @@ html * {
 }
 .dp-toc-card li { transition: color 0.25s ease; }
 .dp-toc-card li.is-current a { color: var(--green); font-weight: 600; }
-.dp-toc-card li.is-current .num { color: var(--gold); }
+.dp-toc-card li.is-current .num { color: var(--gold-ink); } /* --gold failed 4.5:1 on paper (render audit, 10 Oct 2026) */
 [data-theme="dark"] .dp-toc-card li.is-current a { color: var(--navy-lift); }
 
 /* ════════════════════════════════════════════════════════════════════════
