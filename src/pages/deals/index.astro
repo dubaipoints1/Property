@@ -17,6 +17,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
+import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 
@@ -65,7 +66,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   fullWidth
   schema={schema}
 >
-  <header class="intel-pagehead dp-stage">
+  <header class="intel-pagehead">
     <div class="intel-pagehead-inner">
       <div class="crumb">DubaiPoints / Deals</div>
       <h1>Current deals.</h1>
@@ -127,6 +128,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                 coverCategory="Deal"
                 coverSize="hero"
                 class="intel-featured-image"
+                sizes={LISTING_SIZES.featured}
                 loading="eager"
               />
               <div class="intel-featured-body">
@@ -152,6 +154,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                         coverCategory="Deal"
                         coverSize="med"
                         class="intel-card-image"
+                        sizes={LISTING_SIZES.tile}
                       />
                       <div class="intel-card-body">
                         <span class="intel-card-cat">
@@ -421,13 +424,18 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--shade-1);
+    /* --muted on --shade-1 was 4.25:1 in light (axe, 10 Oct 2026).
+       --ink-soft is 5.5:1 there and 5.7:1 on the dark --shade-1. */
+    color: var(--ink-soft);
     font-weight: 700;
     align-self: start;
   }
   .deals-countdown.is-soon {
     border-color: var(--gold);
-    background: var(--gold-soft, #fff6e7);
-    color: #6c4a18;
+    background: var(--gold-soft);
+    /* --gold-ink is theme-aware; the old literal #6c4a18 fell to ~2:1 on
+       the dark --gold-soft. */
+    color: var(--gold-ink);
   }
 
   /* Empty state — same shape as /news/. */

@@ -259,34 +259,39 @@ Added 4 October 2026 from the `claude-code-setup` recommender:
   `.dp-tool`. Transform/opacity only, visible without JS, off under
   `prefers-reduced-motion`. Astro inlines the module, so it is one more
   executable inline script for the CSP inventory.
-- **GSAP motion** (6 October 2026, Chairman's choice of the free route over
-  a paid template): `src/scripts/motion-gsap.ts`, loaded once from
-  `BaseLayout.astro`. GSAP 3.15 (free incl. SplitText/ScrollTrigger) + Lenis:
-  smooth scroll on fine pointers only, `main h2` split and raised word by
-  word, the homepage picks row pinned and scrubbed sideways at ≥ 1024 px
-  (tweens the carousel's own `scrollLeft`, so its buttons still work),
-  magnetic primary buttons. Cross-document view transitions are CSS in
-  `global.css`. All of it is off under `prefers-reduced-motion`. ~52 KB gzip.
-  Extended the same day per page type: card reviews (3D tilt, count-up
-  figures), guides (gold reading-progress bar, TOC follows the section on
-  screen), bank hubs (metric count-up, card row, one gold glint on the
-  salary-transfer offer). Count-ups restore the original text and skip
-  dates. The calculator islands re-render per keystroke, so their motion is
-  Preact-side in `src/components/islands/motion.tsx` (`Tween`, `useFlip`),
-  not GSAP; the animated copy is `aria-hidden` beside an `sr-only` final
-  value so the `aria-live` results do not announce every frame.
-  **Cinematic page stage** (6 October 2026, Chairman: "that style we should
-  see it in all pages"): every page head carrying `.dp-stage` (all
-  `.dp-pagehead`, `.intel-pagehead` and `.cards-pagehead` heads except the
-  homepage and the style guide) is a full-bleed night band over a
-  photograph that zooms and drifts on scroll while the title blurs away.
-  `src/lib/stage.ts` picks the page's own manifest photo (`bank-<slug>`,
-  `programme-<slug>`, a guide's hero) **only when it is a licensed
-  photograph** — an AI illustration needs its visible label, which a CSS
-  background cannot carry, so it stays in the body — else
-  `hero-dubai-night`. Inside the stage the colour tokens are re-pointed to
-  on-dark values, so new head content recolours itself; style it with
-  tokens, not literal colours.
+- **Motion, after the 7 October 2026 UX review.** On 6 October GSAP +
+  Lenis were added site-wide (smooth scroll, word-by-word headings, a pinned
+  picks row, magnetic buttons, card tilt, count-ups, a gold glint) and a
+  full-bleed photo "stage" was put on every page head. The next day the
+  Chairman said "to be honest i am not happy"; the Head of UX and an independent design
+  review both found the site read as several design systems stacked
+  together, with motion that made a finance reference feel like a demo.
+  **All of that was removed and GSAP/Lenis uninstalled.** What remains:
+  the CSS scroll reveal on tiles (`.dp-reveal`), the homepage scroll-played
+  video (deck and buttons now on its first screen; 200svh track on
+  phones), `src/scripts/reading.ts` (gold reading-progress bar and "In this
+  guide" highlight, no library), and the calculator islands' `Tween` /
+  `useFlip` in `src/components/islands/motion.tsx` (feedback on the
+  reader's own input; the animated copy is `aria-hidden` beside an
+  `sr-only` final value). The photo stage (`.dp-stage`, `src/lib/stage.ts`)
+  now appears only on pages that own a licensed photograph (bank hubs,
+  programmes, story articles), static and short on phones. Do not
+  reintroduce decorative motion without a Chairman ruling.
+- **Homepage motion, 9 October 2026 (Chairman ruling in-session: "make it
+  look exciting some cool animations").** Below the hero only, in
+  `src/pages/index.astro`: each section stages its entry as it scrolls in
+  (kicker rule draws, heading sharpens from a blur, rows and tiles rise in
+  turn, a gold hairline sweeps each row once), the three card faces deal in
+  like a hand and tilt toward a fine pointer with a gold sheen, and the
+  proof and closing figures count up (`aria-hidden` copy beside an
+  `sr-only` final value). Transform / opacity / filter only, no library,
+  scroll never touched; sections already on screen render final, so
+  nothing flashes, and reduced motion or no JS shows the final state. The
+  rest of the site stays calm.
+- **Fonts are self-hosted** (`@fontsource-variable/newsreader`, `/geist`,
+  imported in `BaseLayout.astro` with the two Latin files preloaded).
+  Google Fonts with `display=optional` left many first visits in
+  Georgia/system-ui.
 - **MCP**: `context7` in `.mcp.json` for current Astro 7 / Tailwind 4 docs.
   `mcp.context7.com` is denied by the web environment's egress policy as of
   4 October 2026, so it works from a workstation only until the host is
@@ -1072,6 +1077,30 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-10-09 — Issuer card art may be shown, from the issuer's own website only
+
+On Chairman direction (9 October 2026), recorded verbatim as the basis of
+the ruling: "for the cards pull the actual images not a block of
+notihing".
+
+**The rule.** A card's own face may be shown wherever the site depicts
+that card (homepage tiles, `/cards/`, the review hero, related rows), on
+the terms the 2026-05-21 amendment set for press-library imagery: taken
+**only from the issuer's own website** (product page or the issuer's own
+image host), used unmodified apart from trimming and resizing, credited
+to the issuer where it leads a page ("Card image: <bank>"), source URL
+and product page recorded in `data/card-art/manifest.json`, takedown
+honoured within 24 hours. Fetched by `fetch-card-art.yml` from
+`data/card-art/sources.json`, never on main.
+
+**Unchanged.** The 2026-07-29 ban on AI-generated card art stands: an
+image is the issuer's or there is none. A lifestyle banner, a photo of
+the card in a scene, an app screenshot or another card's art is not card
+art and is rejected on review (three were on 9 October); a card without
+clean art keeps the typographic face.
+
+— Chairman, 9 October 2026.
 
 ### 2026-10-04 — Homepage hero carries no image caption; disclosure moves to the policy page
 

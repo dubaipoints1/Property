@@ -104,7 +104,8 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   fullWidth
   schema={schema}
 >
-  <div class="dp-pagehead dp-stage">
+  <div class="st-page">
+  <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Salary-transfer tracker</div>
     <h1>The salary-transfer tracker.</h1>
     <p>Each listed salary-transfer offer has been checked against a bank product page or campaign terms and dated per offer. Filter by salary band, reward type, or specific bank.</p>
@@ -117,9 +118,11 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
       )}
     </div>
 
-    {/* Collapsed on phones: at 390px this paragraph filled the first
-        viewport and pushed the table below the fold (2026-09-06 audit,
-        F-019). The inline script opens it from 768px up. */}
+    {/* Collapsed by default at every width (9 Oct 2026, Chairman: the
+        open paragraph left "extra spaces" above the table on desktop; at
+        390px it already filled the first viewport, 2026-09-06 audit
+        F-019). The summary line states the coverage; the detail is one
+        tap away. */}
     <details class="dp-coverage-note" id="coverage-note">
       <summary>
         <strong>Coverage status.</strong> {trackedBanks.size} of {coveredCount} covered
@@ -156,12 +159,6 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
         {" "}Absence from the table is not evidence that no offer exists.
       </p>
     </details>
-    <script is:inline>
-      (() => {
-        const d = document.getElementById("coverage-note");
-        if (d && window.matchMedia("(min-width: 768px)").matches) d.open = true;
-      })();
-    </script>
   </div>
 
   <!-- Preact island handles filter UI + sortable table -->
@@ -204,4 +201,36 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
     <span><a href="/editorial-policy/">Methodology</a> · <a href="mailto:info@dubaipoints.ae">Submit a correction</a></span>
     <span><a href="/rss.xml">Subscribe to changes</a></span>
   </div>
+  </div>
 </BaseLayout>
+
+<style>
+  /* One column for the whole page (9 Oct 2026): the head used to run from
+     the screen's left edge while the table spanned the full width, which
+     on a desktop left a wide empty band beside the title. Everything now
+     sits in the same centred listing column; the head keeps its full-bleed
+     background. */
+  .st-page > :global(*) {
+    max-width: var(--container-listing);
+    margin-inline: auto;
+    box-sizing: border-box;
+  }
+  /* The tracker island renders inside <astro-island> (display: contents),
+     so the width rule has to reach the island's own root. */
+  .st-page :global(.dpst) {
+    max-width: calc(var(--container-listing) - 64px);
+    margin-inline: auto;
+    width: auto; /* with side margins, a width of 100% overran by 40px */
+    box-sizing: border-box;
+  }
+  @media (max-width: 1240px) {
+    .st-page :global(.dpst) { margin-inline: 20px; }
+  }
+  @media (max-width: 640px) {
+    .st-page :global(.dpst) { margin-inline: 0; }
+  }
+  .st-page > :global(.dp-pagehead) {
+    max-width: none;
+    padding-inline: max(20px, calc((100% - var(--container-listing)) / 2 + 32px));
+  }
+</style>

@@ -1,4 +1,11 @@
 ---
+// Fonts are self-hosted (7 Oct 2026, UX review): Google Fonts with
+// display=optional often left a phone's first visit in Georgia/system-ui.
+import "@fontsource-variable/newsreader/opsz.css";
+import "@fontsource-variable/newsreader/opsz-italic.css";
+import "@fontsource-variable/geist/wght.css";
+import newsreaderLatin from "@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url";
+import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import "~/styles/global.css";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
@@ -122,22 +129,9 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Font loading: preconnect first, then a non-render-blocking stylesheet.
-         Redesign Phase 2 (A+B): Newsreader display + Geist UI. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&display=optional"
-      media="print"
-      onload="this.setAttribute('media','all')"
-    />
-    <noscript>
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&display=optional"
-      />
-    </noscript>
+    <!-- Self-hosted fonts: preload the two Latin faces used above the fold. -->
+    <link rel="preload" href={newsreaderLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
     {schema && <SchemaJsonLd schema={schema} />}
     <SchemaJsonLd schema={defaultGraph} />
 
@@ -159,8 +153,9 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     </main>
     <Footer />
 
-    <!-- Motion layer (2026-10-04 redesign, Phase 1): scroll reveal, number
-         ticker, cursor spotlight. Styles live at the end of global.css.
+    <!-- Motion layer (2026-10-04 redesign, Phase 1): scroll reveal. The
+         number ticker and cursor spotlight were removed on 7 Oct 2026
+         (UX review: figures arrive still). Styles live at the end of global.css.
          Processed by Astro, which inlines it as one <script type="module">
          at this size: one more executable inline script for the CSP
          inventory (.council/research/2026-09/csp-inline-script-inventory-
@@ -220,52 +215,10 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
           io.observe(el);
         });
 
-        // Number ticker: counts integers up to the server-rendered value.
-        const tick = new IntersectionObserver((entries) => {
-          for (const e of entries) {
-            if (!e.isIntersecting) continue;
-            tick.unobserve(e.target);
-            const el = e.target as HTMLElement;
-            const end = parseInt((el.textContent || "").replace(/[^0-9]/g, ""), 10);
-            if (!Number.isFinite(end) || end <= 0) continue;
-            const t0 = performance.now();
-            const dur = 600;
-            const step = (now: number) => {
-              const p = Math.min((now - t0) / dur, 1);
-              const v = Math.round(end * (1 - Math.pow(1 - p, 3)));
-              // Never paint "0" over the server-rendered figure on frame one.
-              if (v > 0) el.textContent = v.toLocaleString("en-US");
-              if (p < 1) requestAnimationFrame(step);
-            };
-            requestAnimationFrame(step);
-          }
-        });
-        // Start after the hero entrance has brought the figure to full
-        // opacity, so no part of the count runs unseen (F4).
-        setTimeout(() => {
-          document.querySelectorAll("[data-count]").forEach((el) => tick.observe(el));
-        }, 750);
-
-        // Cursor spotlight on tiles (pointer devices).
-        if (window.matchMedia("(hover: hover)").matches) {
-          // One layout read per tile entered, not per pointermove.
-          let last: HTMLElement | null = null;
-          let rect: DOMRect | null = null;
-          const reset = () => { last = null; rect = null; };
-          window.addEventListener("scroll", reset, { passive: true });
-          window.addEventListener("resize", reset, { passive: true });
-          document.addEventListener("pointermove", (ev) => {
-            const tile = (ev.target as Element | null)?.closest?.(".dp-dir-tile, .dp-tool") as HTMLElement | null;
-            if (!tile) return;
-            if (tile !== last || !rect) { last = tile; rect = tile.getBoundingClientRect(); }
-            tile.style.setProperty("--dp-mx", `${ev.clientX - rect.left}px`);
-            tile.style.setProperty("--dp-my", `${ev.clientY - rect.top}px`);
-          }, { passive: true });
-        }
       }
     </script>
 
-    <!-- Back-to-top — visible after 600px scroll, click smooths to top -->
+    <!-- Back-to-top — visible after three screens, click returns to top -->
     <button id="dp-to-top" class="dp-to-top" type="button" aria-label="Back to top">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none"
            stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
@@ -279,7 +232,9 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
         if (!btn) return;
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         function update() {
-          if (window.scrollY > 600) btn.classList.add('is-visible');
+          // Only after three screens, so it never sits over the first
+          // screens of content (7 Oct 2026 UX review).
+          if (window.scrollY > window.innerHeight * 3) btn.classList.add('is-visible');
           else btn.classList.remove('is-visible');
         }
         window.addEventListener('scroll', update, { passive: true });
@@ -290,9 +245,8 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
       })();
     </script>
     <script>
-      // Site-wide GSAP motion: smooth scroll, word-by-word headings, the
-      // homepage picks row, magnetic buttons. See src/scripts/motion-gsap.ts.
-      import "../scripts/motion-gsap";
+      // Reading progress bar and contents highlight on articles.
+      import "../scripts/reading";
     </script>
   </body>
 </html>

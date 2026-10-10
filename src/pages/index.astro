@@ -1,44 +1,25 @@
 ---
-// Homepage — full rewrite, August 2026 site audit.
+// Homepage.
 //
-// Executes the May 2026 redesign briefs that were never applied here:
-// the Quiet Ledger 4-section spec (ux-redesign-brief.md — "index.astro:
-// full rewrite") merged with the TPG brief's typographic-hero ruling
-// ("adopt verbatim") and its 6-section IA, expressed in the current
-// warm-paper tokens. Five sections, down from ten bands:
+// 8 Oct 2026 rebuild (Chairman: the hero "looks good but it doesnt fit
+// together" with the page; direction B "night to day" chosen from
+// mockups, section rhythm after the 21st.dev Hirael library). The
+// scroll-scrubbed reel is unchanged. Below it:
 //
-//   S1  Hero: masthead + rect feature photo w/ overlay play-card
-//   S2  Tools band — sand surface, boxed icon tiles (.dp-tool-strip.is-boxed)
-//   S3  Live desk — salary offers + deals, boxed columns
-//   S4  Fresh from the desk — big heading, search, uniform 3-up
-//   S5  Strategy panel — navy band, underline tabs (.dp-strategy.is-navy)
-//   S6  Start here — .dp-dir-tile directory
-//   S7  Trust row + press + navy newsletter band
+//   Dusk     proof line on night, fading into the paper page
+//   Tools    four numbered hairline rows
+//   Cards    three typographic card faces + four L2 facts each
+//   Live     salary-transfer offers and deals, hairline lists
+//   Latest   newest news and guides, type only, no thumbnails
+//   Strategy goal-ranked cards (shared .dp-strategy, unboxed)
+//   Start    everything on the site, hairline grid
+//   Close    night band: how we work + the Friday brief, into the footer
 //
-// Aug 2026 v0-design amendment (Chairman direction, 29 Aug, from the
-// owner's v0 screenshots): the page adopts the prototype's composition —
-// the boxes (icon tool tiles, boxed live desk, overlay play-card, square
-// CTAs) and the band flow — rebuilt in house tokens. The italic display
-// accent returns by the same direction. Supersedes the TPG
-// typographic-only hero; palette unchanged (navy + gold, no third hue).
-//
-// The 29 Aug direction also made the closing newsletter band a full-bleed
-// GOLD one, as a deliberate one-page exception to gold's chip-only role.
-// That exception was withdrawn on 7 September 2026 — the Chairman's words
-// were "this colour doesn't go with the rest of the page" — and the band is
-// the brand navy the article newsletter rail already uses. The band flow is
-// now paper → sand → paper → navy → navy. This header kept describing the
-// gold version for three days after the CSS changed; corrected 10 September
-// alongside the R1 palette work, which is the same class of drift.
-//
-// Shared primitives over scoped CSS wherever one exists (.dp-pagehead,
-// .dp-featured-band/-grid, .dp-story-card, .dp-dir-grid/-tile,
-// .dp-band-green, .dp-live-desk). Scoped styles below cover only what
-// is genuinely page-unique: the hero grid, the story index, the trust
-// footnote row.
+// No boxes, no stock photos, gold only on small labels. Every figure is
+// computed from L2 / collections at build (§6). Earlier history (the
+// August v0 composition, the 7 Sept gold-band withdrawal) is in git.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import StockImage from "~/components/StockImage.astro";
 import PressStrip from "~/components/PressStrip.astro";
 import NewsletterSignup from "~/components/NewsletterSignup.astro";
 import { getCollection } from "astro:content";
@@ -57,6 +38,7 @@ import { getLiveOffers } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 import { newsletterLive } from "~/lib/newsletter";
+import { getCardArt } from "~/lib/cardArt";
 
 const allGuides = await getCollection("guides");
 const allPrograms = await getCollection("programs");
@@ -78,66 +60,29 @@ const guidesSorted = [...allGuides].sort(
 const newsSorted = [...allNews].sort(
   (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
 );
-const newestCard = [...cards].sort(
-  (a, b) =>
-    new Date(b.lastVerified).getTime() - new Date(a.lastVerified).getTime(),
-)[0];
-
-type IntelItem = {
-  href: string;
-  category: string;
-  title: string;
-  excerpt: string;
-  meta: string;
-  imageSlug: string;
-  coverCategory: "Guide" | "Review" | "Deal" | "News" | "Programme" | "Topic";
-};
-
-const intel: IntelItem[] = [];
-for (const g of guidesSorted.slice(0, 4)) {
-  intel.push({
-    href: `/guides/${g.id}/`,
-    category: "Guide",
-    title: g.data.title,
-    excerpt: g.data.description,
-    meta: `Updated ${fmtShort(g.data.updatedAt)}`,
-    imageSlug: `guide-${g.id}`,
-    coverCategory: "Guide",
-  });
-}
-if (newestCard) {
-  const bankName =
-    allBanks.find((b) => b.id === newestCard.bank)?.data.name ??
-    newestCard.bank;
-  intel.push({
-    href: `/cards/${newestCard.slug}/`,
-    category: "Card review",
-    title: newestCard.name,
-    excerpt: `${bankName} · annual fee AED ${newestCard.annualFee.amount.toLocaleString()}`,
-    meta: `Verified ${fmtShort(new Date(newestCard.lastVerified))}`,
-    imageSlug: `card-${newestCard.slug}`,
-    coverCategory: "Review",
-  });
-}
-if (newsSorted[0]) {
-  const n = newsSorted[0];
-  intel.push({
+// Latest (8 Oct 2026 homepage rebuild): the three newest news posts and
+// guides, by their own dates, as a type-led list with no thumbnails.
+type LatestItem = { href: string; category: string; title: string; excerpt: string; date: Date };
+const latest: LatestItem[] = [
+  ...newsSorted.slice(0, 3).map((n) => ({
     href: `/news/${n.id}/`,
     category: "News",
     title: n.data.title,
     excerpt: n.data.description,
-    meta: `Filed ${fmtShort(n.data.publishedAt)}`,
-    imageSlug: `news-${n.id}`,
-    coverCategory: "News",
-  });
-}
-
-// Hero feature story — intel[0] leads the hero as a rectangular photo
-// with an overlay "This week's read" card; the Fresh grid shows
-// intel[1] + the newest card review + newest news, so hero and grid
-// never repeat. Bare manifest entry (not <StockImage>) so the hero
-// controls its own eager/priority loading and navy fallback panel.
-const featureImg = intel[0] ? getStockEntry(intel[0].imageSlug) : undefined;
+    date: n.data.publishedAt,
+  })),
+  ...guidesSorted.slice(0, 3).map((g) => ({
+    href: `/guides/${g.id}/`,
+    category: "Guide",
+    title: g.data.title,
+    excerpt: g.data.description,
+    date: g.data.updatedAt,
+  })),
+]
+  .sort((x, y) => y.date.getTime() - x.date.getTime())
+  .slice(0, 3);
+const fmtLong = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 // Hero reel (Chairman direction, 4–5 Oct 2026). The Chairman sent two
 // coffee-site reels, then a 21st.dev "scroll-locked video hero": one
@@ -162,10 +107,6 @@ const REEL = {
   tagline: "Home to Dubai, with the next trip already earning.",
 };
 
-const liveWelcomeCount = cards.filter((c) => Boolean(c.welcomeBonus)).length;
-const flagshipProgramme =
-  allPrograms.find((p) => p.id === "skywards") ?? allPrograms[0];
-const heroSweetSpot = flagshipProgramme?.data.sweetSpots[0];
 
 // ── S4 Strategy panel — goal-ranked top-3s, all deterministic L2 ─────
 // Uses the card finder's building blocks (spendRate fallback,
@@ -193,34 +134,48 @@ const typedBonus = (v: unknown) =>
 const cardsL3 = await getCollection("cards");
 const tierOf = new Map(cardsL3.map((e) => [e.data.slug, e.data.tier]));
 const TIER_LABEL: Record<string, string> = { "editors-pick": "Editor's pick", strong: "Strong" };
-const picks = cards
+const rated = cards
   .filter((c) => tierOf.get(c.slug) === "editors-pick" || tierOf.get(c.slug) === "strong")
   .sort((a, b) =>
     (tierOf.get(a.slug) === "editors-pick" ? 0 : 1) - (tierOf.get(b.slug) === "editors-pick" ? 0 : 1) ||
     a.name.localeCompare(b.name),
   )
-  .slice(0, 12)
-  .map((c) => ({
-    slug: c.slug,
-    name: c.name,
-    bankName: bankNameOf(c),
-    tier: TIER_LABEL[tierOf.get(c.slug) as string] ?? "",
-    fee: annualFeeLabel(c),
-    bonus: typedBonus(c.welcomeBonus),
-    fx: typeof c.fxFee === "number" ? `${c.fxFee}%` : null,
-    verified: new Date(c.lastVerified),
-  }));
+  // One card per bank, so three tiles are three issuers.
+  .filter((c, i, all) => all.findIndex((x) => x.bank === c.bank) === i)
+  .slice(0, 3)
+  .map((c) => {
+    const bankName = bankNameOf(c);
+    return {
+      slug: c.slug,
+      name: c.name,
+      bankName,
+      // The tile prints the product name without the issuer it already
+      // names above it ("FAB Etihad Guest Infinite" -> "Etihad Guest Infinite").
+      shortName: [bankName, c.bank.toUpperCase()].reduce(
+        (n, prefix) => (n.toLowerCase().startsWith(`${prefix.toLowerCase()} `) ? n.slice(prefix.length + 1) : n),
+        c.name,
+      ),
+      network: c.network,
+      art: getCardArt(c.slug),
+      tier: TIER_LABEL[tierOf.get(c.slug) as string] ?? "",
+      fee: annualFeeLabel(c),
+      minSalary: c.eligibility.invitationOnly
+        ? "By invitation"
+        : c.eligibility.minSalary > 0
+          ? `${formatAED(c.eligibility.minSalary)} /mo`
+          : "None stated",
+      bonus: typedBonus(c.welcomeBonus),
+      fx: typeof c.fxFee === "number" ? `${c.fxFee}%` : null,
+      verified: new Date(c.lastVerified),
+    };
+  });
 
-// Hover preview (desktop pointer only, pure CSS) for the strategy rows.
-const peekFor = (slug: string) => {
-  const c = cards.find((x) => x.slug === slug);
-  if (!c) return null;
-  return {
-    fee: annualFeeLabel(c),
-    bonus: typedBonus(c.welcomeBonus),
-    fx: typeof c.fxFee === "number" ? `${c.fxFee}%` : null,
-  };
-};
+const TOOLS = [
+  { href: "/cards/finder/", title: "Card finder", desc: `Rank ${cards.length} cards against your own monthly spending.` },
+  { href: "/calculator/", title: "Spend-return calculator", desc: "What a card pays back, in AED, on the way you actually spend." },
+  { href: "/salary-transfer/calculator/", title: "Salary-transfer calculator", desc: "Match your salary band to the live bank offers." },
+  { href: "/cards/compare/", title: "Compare cards", desc: "Put a shortlist side by side: fees, earn, FX and eligibility." },
+];
 
 const spendRate = (c: ActiveCard, key: string): number => {
   const v = (c.earnRates as Record<string, unknown>)[key];
@@ -399,6 +354,16 @@ const dealRows = await Promise.all(
     ends: fmtShort(d.data.expiresOn),
   })),
 );
+
+// "Everything on DubaiPoints" grid. Counts are computed, never typed.
+const DIRECTORY = [
+  { href: "/cards/", count: `${cards.length} cards`, title: "Credit-card reviews", desc: "Cashback, miles and Islamic cards compared on fees, earn rates and eligibility." },
+  { href: "/banks/", count: `${allBanks.length} banks`, title: "Bank guides", desc: "Every covered UAE issuer — fees, eligibility and card line-ups." },
+  { href: "/airlines/", count: `${allPrograms.length} programmes`, title: "Miles & loyalty", desc: "Skywards, Etihad Guest, Qatar and the hotel programmes — tiers, partners and sweet spots." },
+  { href: "/salary-transfer/", count: `${offerRows.length} live offers`, title: "Salary-transfer tracker", desc: "Band-by-band cash and rate offers across UAE banks, every entry dated." },
+  { href: "/deals/", count: dealRows.length > 0 ? `${dealRows.length} live` : "Deals desk", title: "Lifestyle deals", desc: "Time-bound UAE dining, retail and travel offers — dated, sourced, archived when they end." },
+  { href: "/guides/", count: `${allGuides.length} guides`, title: "Guides", desc: "The expat starter series, eligibility, AECB credit, transfer ratios and the groundwork." },
+];
 ---
 
 <BaseLayout
@@ -429,6 +394,18 @@ const dealRows = await Promise.all(
         <div class="hp-reel-title">
           <span class="hp-hero-kicker"><span class="dot" aria-hidden="true"></span>Independent UAE points &amp; miles publication</span>
           <h1>Fly further. <em>Pay less.</em></h1>
+          <!-- 7 Oct 2026 UX review: the deck and the main action belong on
+               the first screen, not after the reel. They fade with the
+               title as the trip plays. -->
+          <p class="hp-hero-lede">
+            UAE-resident guides to the card combinations, salary-transfer
+            bonuses and miles redemptions that stretch a Dubai paycheque
+            further — AED-first, dated and sourced.
+          </p>
+          <div class="hp-hero-ctas">
+            <a href="#tools" class="hp-hero-cta">Start with a tool ↗</a>
+            <a href="#latest" class="hp-hero-cta is-ghost">Read the latest →</a>
+          </div>
         </div>
         <p class="hp-reel-tagline">{REEL.tagline}</p>
         <div class="hp-reel-hint" aria-hidden="true">
@@ -438,34 +415,273 @@ const dealRows = await Promise.all(
         <div class="hp-reel-progress" aria-hidden="true"><i></i></div>
       </div>
     </section>
-    <div class="hp-hero-grid">
-      <div class="hp-hero-text">
-        <p class="hp-hero-lede">
-          UAE-resident guides to the card combinations, salary-transfer
-          bonuses and miles redemptions that stretch a Dubai paycheque
-          further — AED-first, dated and sourced.
-        </p>
-        <div class="hp-hero-ctas">
-          <a href="#tools" class="hp-hero-cta">Start with a tool ↗</a>
-          <a href="#latest" class="hp-hero-cta is-ghost">Read the latest →</a>
-        </div>
+  </header>
+
+  <!-- ── Dusk (8 Oct 2026, direction B "night to day"): the reel ends on
+       night; this band carries the proof line and fades the night into
+       the paper page, so the hero and the page below are one surface. ── -->
+  <div class="hp-dusk" data-hp-anim>
+    <p class="hp-proof">
+      <span><b><span class="sr-only">{cards.length}</span><span aria-hidden="true" data-count-to={cards.length}>{cards.length}</span></b> cards</span>
+      <span><b><span class="sr-only">{allBanks.length}</span><span aria-hidden="true" data-count-to={allBanks.length}>{allBanks.length}</span></b> banks</span>
+      <span>Every figure <strong>dated &amp; sourced</strong></span>
+      <span><strong>No</strong> paid placements</span>
+    </p>
+  </div>
+
+  <!-- ── Tools: numbered hairline rows ─────────────────────────────── -->
+  <section class="hp-sec hp-sec-tools" id="tools" data-hp-anim aria-labelledby="hp-tools-h">
+    <div class="hp-sec-head">
+      <div>
+        <p class="hp-kicker">Tools</p>
+        <h2 id="hp-tools-h">Start with <em>a tool.</em></h2>
       </div>
-      <div class="hp-hero-text hp-hero-body">
-        <p class="hp-hero-trust">
-          <span><span data-count>{cards.length}</span> cards · <span data-count>{allBanks.length}</span> banks</span>
-          <span>AED-first</span>
-          <span>No paid placements</span>
-        </p>
-        {intel[0] && (
-          <a href={intel[0].href} class="hp-hero-feature">
-            <span class="eyebrow">Featured read</span>
-            <span class="t">{intel[0].title}</span>
-            <span class="m">{intel[0].category} · {intel[0].meta} ↗</span>
+      <p class="hp-sec-sub">Rank, compare and calculate against verified card data — before you apply.</p>
+    </div>
+    <ol class="hp-tools">
+      {TOOLS.map((t, i) => (
+        <li style={`--i:${i}`}>
+          <a href={t.href}>
+            <span class="n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+            <h3>{t.title}</h3>
+            <p>{t.desc}</p>
+            <span class="ar" aria-hidden="true">↗</span>
           </a>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <!-- ── Cards we rate: typographic tiles, L2 figures only ────────── -->
+  {rated.length > 0 && (
+    <section class="hp-sec" data-hp-anim aria-labelledby="hp-cards-h">
+      <div class="hp-sec-head">
+        <div>
+          <p class="hp-kicker">Cards we rate</p>
+          <h2 id="hp-cards-h">{cards.length} cards. <em>{rated.length === 3 ? "Three" : rated.length} to start.</em></h2>
+        </div>
+        <a href="/cards/" class="hp-more">All {cards.length} cards across {allBanks.length} banks →</a>
+      </div>
+      <ul class="hp-cards">
+        {rated.map((c, i) => (
+          <li style={`--i:${i}`}>
+            <a href={`/cards/${c.slug}/`} class="hp-card" data-tilt>
+              {c.art ? (
+                <span class="hp-tile is-art">
+                  <img
+                    src={`/${c.art.file}`}
+                    width={c.art.width}
+                    height={c.art.height}
+                    alt={`${c.name} card, as shown by ${c.bankName}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </span>
+              ) : (
+                <span class={`hp-tile tone-${i % 3}`} aria-hidden="true">
+                  <span class="bank">{c.bankName}</span>
+                  <span class="cname">{c.shortName}</span>
+                  <span class="foot"><span class="chip"></span><span>{c.network}</span></span>
+                </span>
+              )}
+              <span class="hp-card-meta">
+                <h3>{c.name}</h3>
+                <span class="tag">{c.tier}</span>
+              </span>
+              <dl class="hp-facts">
+                <div><dt>Annual fee</dt><dd>{c.fee.amount}{c.fee.qual ? <small> {c.fee.qual}</small> : null}</dd></div>
+                <div><dt>Min salary</dt><dd>{c.minSalary}</dd></div>
+                {c.fx && <div><dt>FX fee</dt><dd>{c.fx}</dd></div>}
+                {c.bonus && <div><dt>Welcome</dt><dd class="is-long">{c.bonus}</dd></div>}
+              </dl>
+              <span class="hp-verified">Verified {fmtShort(c.verified)}{c.art ? ` · card image: ${c.bankName}` : ""} · read the review →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <!-- ── Live now: salary-transfer offers + deals ──────────────────── -->
+  {(offerRows.length > 0 || dealRows.length > 0) && (
+    <section class="hp-sec" data-hp-anim aria-labelledby="hp-live-h">
+      <div class="hp-sec-head">
+        <div>
+          <p class="hp-kicker">Live now</p>
+          <h2 id="hp-live-h">What's on offer <em>right now.</em></h2>
+        </div>
+        <p class="hp-sec-sub">Checked against each bank's published terms. Offers change without notice — verify before applying.</p>
+      </div>
+      <div class="hp-live">
+        {offerRows.length > 0 && (
+          <div role="group" aria-labelledby="hp-live-st">
+            <div class="hp-live-head">
+              <h3 id="hp-live-st">Salary transfer</h3>
+              <a href="/salary-transfer/" class="hp-more">Tracker →</a>
+            </div>
+            <ul class="hp-rows">
+              {offerRows.slice(0, 4).map((r) => (
+                <li>
+                  <a href={`/salary-transfer/${r.bankSlug}/`}>
+                    <span class="who">{r.bankName}</span>
+                    <span class="what">Up to <strong>{r.upTo}</strong> · {r.from}{r.sharia ? " · Sharia-compliant" : ""}</span>
+                    <span class="when">Verified {r.verified} · ends {r.ends}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {dealRows.length > 0 && (
+          <div role="group" aria-labelledby="hp-live-deals">
+            <div class="hp-live-head">
+              <h3 id="hp-live-deals">Deals</h3>
+              <a href="/deals/" class="hp-more">All deals →</a>
+            </div>
+            <ul class="hp-rows">
+              {dealRows.slice(0, 4).map((r) => (
+                <li>
+                  <a href={`/deals/${r.id}/`}>
+                    <span class="who">{r.issuer}</span>
+                    <span class="what">{r.title}</span>
+                    <span class="when">Ends {r.ends}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
+    </section>
+  )}
+
+  <!-- ── Latest: type-led list, no thumbnails ─────────────────────── -->
+  <section class="hp-sec" id="latest" data-hp-anim aria-labelledby="hp-latest-h">
+    <div class="hp-sec-head">
+      <div>
+        <p class="hp-kicker">Latest</p>
+        <h2 id="hp-latest-h">Fresh from <em>the desk.</em></h2>
+      </div>
+      <a href="/news/" class="hp-more">All news →</a>
     </div>
-  </header>
+    <ul class="hp-latest">
+      {latest.map((item, i) => (
+        <li style={`--i:${i}`}>
+          <a href={item.href}>
+            <span class="meta"><span class="cat">{item.category}</span> <span>{fmtLong(item.date)}</span></span>
+            <h3>{item.title}</h3>
+            <p>{item.excerpt}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- ── Strategy: goal-ranked, no-JS radio tabs (unchanged logic) ─── -->
+  <section class="dp-strategy hp-strategy" data-hp-anim aria-label="Build your points strategy">
+    <div class="inner">
+      <p class="hp-kicker">Build your strategy</p>
+      <h2>What are you <em>optimising for?</em></h2>
+      <p class="dps-lede">
+        Pick a goal and the cards are ranked for it — straight from the
+        verified card database.
+      </p>
+      <input type="radio" name="dps-goal" id="dps-travel" class="dps-radio" checked />
+      <input type="radio" name="dps-goal" id="dps-cashback" class="dps-radio" />
+      <input type="radio" name="dps-goal" id="dps-welcome" class="dps-radio" />
+      <input type="radio" name="dps-goal" id="dps-first" class="dps-radio" />
+      <div class="dps-pills">
+        {goals.map((g) => (
+          <label for={`dps-${g.id}`}>{g.label}</label>
+        ))}
+      </div>
+      {goals.map((g) => (
+        <div class={`dps-panel is-${g.id}`}>
+          <ol class="dps-cards">
+            {g.cards.map((c, i) => (
+              <li>
+                <a href={`/cards/${c.slug}/`}>
+                  <span class="rank">{i + 1}</span>
+                  <span>
+                    <span class="name">{c.name}</span>
+                    <span class="bank">{c.bank}</span>
+                  </span>
+                  <span class="stat">{c.stat}{c.statSub && <small>{c.statSub}</small>}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <div class="dps-aside">
+            <a href={`/guides/${g.guide.slug}/`}>
+              <span class="eyebrow">Guide</span>
+              <span class="t">{g.guide.title}</span>
+              <span class="m">{g.guide.meta}</span>
+            </a>
+            <a href={g.tool.href}>
+              <span class="eyebrow">{g.tool.eyebrow}</span>
+              <span class="t">{g.tool.title}</span>
+              <span class="m">{g.tool.meta}</span>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ── Everything on the site: hairline grid ─────────────────────── -->
+  <section class="hp-sec" data-hp-anim aria-labelledby="hp-dir-h">
+    <div class="hp-sec-head">
+      <div>
+        <p class="hp-kicker">Start here</p>
+        <h2 id="hp-dir-h">Everything <em>on DubaiPoints.</em></h2>
+      </div>
+    </div>
+    <ul class="hp-grid">
+      {DIRECTORY.map((d, i) => (
+        <li style={`--i:${i}`}>
+          <a href={d.href}>
+            <span class="count">{d.count}</span>
+            <h3>{d.title}</h3>
+            <p>{d.desc}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <PressStrip />
+
+  <!-- ── Night close: how we work + the Friday brief. Runs straight into
+       the footer, so the page ends where the hero began. ─────────── -->
+  <section class="hp-close" data-hp-anim aria-labelledby="hp-close-h">
+    <div class="hp-close-in">
+      <p class="hp-kicker">How we work</p>
+      <h2 id="hp-close-h">Every figure dated, sourced and <em>in dirhams.</em></h2>
+      <dl class="hp-stats">
+        <div><dt>cards checked against issuer documents</dt><dd><span class="sr-only">{cards.length}</span><span aria-hidden="true" data-count-to={cards.length}>{cards.length}</span></dd></div>
+        <div><dt>UAE banks covered</dt><dd><span class="sr-only">{allBanks.length}</span><span aria-hidden="true" data-count-to={allBanks.length}>{allBanks.length}</span></dd></div>
+        <div><dt>first, on every price we print</dt><dd class="is-word">AED</dd></div>
+        <div><dt>paid placements</dt><dd>0</dd></div>
+      </dl>
+      <p class="hp-close-links">
+        <a href="/team/">Who writes DubaiPoints</a>
+        <a href="/editorial-policy/">How we work</a>
+        <a href="/how-we-make-money/">How we make money</a>
+        <a href="/corrections/">Corrections</a>
+        <a href="/valuations/methodology/">How we value points</a>
+      </p>
+      <div class="hp-brief">
+        <div>
+          <p class="hp-kicker">Every Friday</p>
+          <h3>{newsletterLive ? "The Friday brief." : "The Friday brief is preparing for launch."}</h3>
+          <p>Salary-transfer changes, new card offers, worthwhile redemptions and deals — once a week, AED-first. We never sell email addresses.</p>
+        </div>
+        <div class="hp-brief-form">
+          <NewsletterSignup source="homepage" />
+        </div>
+      </div>
+    </div>
+  </section>
 
   <script>
     // Hero reel: scroll scrubs the video. The track is ~3 screens tall and
@@ -513,6 +729,8 @@ const dealRows = await Promise.all(
           const run = reel.offsetHeight - stage.offsetHeight;
           target = run > 0 ? Math.min(1, Math.max(0, -reel.getBoundingClientRect().top / run)) : 0;
           reel.classList.toggle("is-moving", target > 0.01);
+          // Once the title has faded, its links leave the tab order too.
+          reel.classList.toggle("is-past-title", target > 0.3);
           if (!running) { running = true; requestAnimationFrame(frame); }
         };
         const frame = () => {
@@ -531,345 +749,79 @@ const dealRows = await Promise.all(
       }
     }
   </script>
+  <script>
+    // Homepage motion below the hero (9 Oct 2026, Chairman: "make it look
+    // exciting some cool animations"). Each section stages its own entry
+    // when it scrolls in: kicker rule draws, heading sharpens from a blur,
+    // rows and tiles rise in turn, figures count up. Card faces tilt
+    // toward the pointer with a gold sheen. Transform, opacity and filter
+    // only; no library; scrolling is never touched. Without JS, or under
+    // reduced motion, every section simply renders in its final state.
+    // Sections already on screen when this runs are shown at once, so
+    // nothing flashes out and back in.
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-hp-anim]"));
 
-  <!-- ── S2. Tools band ─────────────────────────────────────────────── -->
-  <section class="hp-tools" data-reveal id="tools" aria-label="Tools">
-    <div class="hp-tools-head">
-      <div>
-        <span class="hp-band-eyebrow">Know what you need?</span>
-        <h2>Start with a tool.</h2>
-      </div>
-      <p class="hp-tools-sub">Rank, compare and calculate against verified card data — before you apply.</p>
-    </div>
-    <div class="dp-tool-strip is-boxed">
-      <a href="/cards/finder/" class="dp-tool">
-        <span class="icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2" y="5" width="20" height="14" rx="1"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-        </span>
-        <span class="title">Card finder</span>
-        <span class="go">Rank {cards.length} cards against your spending</span>
-        <span class="arrow" aria-hidden="true">↗</span>
-      </a>
-      <a href="/cards/compare/" class="dp-tool">
-        <span class="icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/></svg>
-        </span>
-        <span class="title">Compare cards</span>
-        <span class="go">Shortlist your next UAE card side by side</span>
-        <span class="arrow" aria-hidden="true">↗</span>
-      </a>
-      <a href="/calculator/" class="dp-tool">
-        <span class="icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="2" width="16" height="20" rx="1"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="12" x2="8" y2="12.01"/><line x1="12" y1="12" x2="12" y2="12.01"/><line x1="16" y1="12" x2="16" y2="12.01"/><line x1="8" y1="16" x2="8" y2="16.01"/><line x1="12" y1="16" x2="12" y2="16.01"/><line x1="16" y1="16" x2="16" y2="16.01"/></svg>
-        </span>
-        <span class="title">Spend-return calculator</span>
-        <span class="go">See which card pays back most on your monthly spend</span>
-        <span class="arrow" aria-hidden="true">↗</span>
-      </a>
-      <a href="/salary-transfer/calculator/" class="dp-tool">
-        <span class="icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-        </span>
-        <span class="title">Salary-transfer calculator</span>
-        <span class="go">Match your salary band to live offers</span>
-        <span class="arrow" aria-hidden="true">↗</span>
-      </a>
-    </div>
-  </section>
+    const countUp = (root: HTMLElement) => {
+      root.querySelectorAll<HTMLElement>("[data-count-to]").forEach((el) => {
+        const to = Number(el.dataset.countTo);
+        if (!Number.isFinite(to) || to <= 0) return;
+        const t0 = performance.now();
+        const dur = 1400;
+        const step = (now: number) => {
+          const k = Math.min(1, (now - t0) / dur);
+          el.textContent = String(Math.round(to * (1 - Math.pow(1 - k, 4))));
+          if (k < 1) requestAnimationFrame(step);
+        };
+        el.textContent = "0";
+        requestAnimationFrame(step);
+      });
+    };
 
-  <!-- ── S2b. Editor's picks — swipeable carousel (Phase 3, 4 Oct 2026) ─ -->
-  {picks.length > 0 && (
-    <section class="hp-picks" data-reveal aria-label="Editor's picks">
-      <div class="hp-picks-head">
-        <div>
-          <span class="hp-band-eyebrow">Editor's picks</span>
-          <h2>Cards we rate.</h2>
-        </div>
-        <div class="dp-carousel-nav">
-          <button type="button" class="dp-carousel-btn" data-carousel-prev aria-label="Previous cards" hidden>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 6 9 12 15 18"/></svg>
-          </button>
-          <button type="button" class="dp-carousel-btn" data-carousel-next aria-label="Next cards" hidden>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>
-          </button>
-        </div>
-      </div>
-      <ul class="dp-carousel" data-carousel>
-        {picks.map((c) => (
-          <li class="dp-carousel-item">
-            <a href={`/cards/${c.slug}/`} class="hp-pick">
-              <span class="hp-pick-tier">{c.tier}</span>
-              <span class="hp-pick-name">{c.name}</span>
-              <span class="hp-pick-bank">{c.bankName}</span>
-              <span class="hp-pick-facts">
-                <span><small>Annual fee</small><strong>{c.fee.amount}{c.fee.qual ? <em> {c.fee.qual}</em> : null}</strong></span>
-                {c.bonus ? <span><small>Welcome</small><strong>{c.bonus}</strong></span> : null}
-                {c.fx ? <span><small>FX fee</small><strong>{c.fx}</strong></span> : null}
-              </span>
-              <span class="hp-pick-foot">Verified {fmtShort(c.verified)} · Read the review →</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  )}
+    if (!reduce && "IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (!e.isIntersecting) return;
+            const el = e.target as HTMLElement;
+            el.classList.add("is-in");
+            el.classList.remove("is-pending");
+            countUp(el);
+            io.unobserve(el);
+          });
+        },
+        { rootMargin: "0px 0px -15% 0px", threshold: 0 },
+      );
+      sections.forEach((el) => {
+        if (el.getBoundingClientRect().top < window.innerHeight * 0.9) return;
+        el.classList.add("is-pending");
+        io.observe(el);
+      });
 
-  <!-- ── S3. Live desk — salary offers + deals, one module ──────────── -->
-  {(offerRows.length > 0 || dealRows.length > 0) && (
-    <section class="dp-live-desk" data-reveal aria-label="Live data desk">
-      <div class="head">
-        <div class="dp-featured-eyebrow">
-          <span>Live desk</span>
-          <span class="rule"></span>
-          <span class="meta">Verified against published terms</span>
-        </div>
-        <h2>What's live right now.</h2>
-      </div>
-      <div class="cols">
-        {offerRows.length > 0 && (
-          <div class="col" role="group" aria-label="Live salary-transfer offers">
-            <div class="col-head">
-              <h3>Salary-transfer offers</h3>
-              <a href="/salary-transfer/">Salary-transfer tracker →</a>
-            </div>
-            <ul class="rows">
-              {offerRows.map((r) => (
-                <li>
-                  <a href={`/salary-transfer/${r.bankSlug}/`} class="row">
-                    <span class="bank">{r.bankName}</span>
-                    <span class="detail">
-                      up to <strong>{r.upTo}</strong> · {r.bands} bands · from {r.from}
-                      {r.sharia ? " · Sharia-compliant" : ""}
-                    </span>
-                    <span class="chip">Verified {r.verified} · to {r.ends}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <p class="foot">Every band checked against the bank's published terms. Offers change without notice — verify before applying.</p>
-          </div>
-        )}
-        {dealRows.length > 0 && (
-          <div class="col" role="group" aria-label="Live deals">
-            <div class="col-head">
-              <h3>Deals desk</h3>
-              <a href="/deals/">All deals →</a>
-            </div>
-            <ul class="rows">
-              {dealRows.map((r) => (
-                <li>
-                  <a href={`/deals/${r.id}/`} class="row">
-                    <span class="bank">{r.issuer}</span>
-                    <span class="detail">{r.title}</span>
-                    <span class="chip is-ends">Ends {r.ends}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <p class="foot">Shown as recorded in the latest editorial sweep. Check the provider before acting; terms can change.</p>
-          </div>
-        )}
-      </div>
-    </section>
-  )}
-
-  <!-- ── S4. Latest analysis ────────────────────────────────────────── -->
-  <section class="dp-featured-band hp-fresh" data-reveal id="latest" aria-label="Latest analysis">
-    <div class="hp-fresh-head">
-      <div>
-        <span class="hp-band-eyebrow">Checked against primary sources</span>
-        <h2>Fresh from the desk.</h2>
-      </div>
-      <a href="/guides/" class="hp-fresh-all">View all guides →</a>
-    </div>
-    <a href="/search/" class="hp-fresh-search">
-      <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
-           stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-        <circle cx="11" cy="11" r="7" /><line x1="16.5" y1="16.5" x2="21" y2="21" />
-      </svg>
-      <span aria-hidden="true">Search cards, miles, banks…</span>
-      <span class="sr-only">Search</span>
-    </a>
-    <div class="hp-fresh-grid">
-      {[intel[1], intel[4], intel[5]].filter(Boolean).map((item) => (
-        <a href={item.href} class="dp-story-card med">
-          <StockImage
-            slug={item.imageSlug}
-            coverTitle={item.title}
-            coverCategory={item.coverCategory}
-            coverSize="med"
-          />
-          <div class="body">
-            <span class="meta"><span class="cat">{item.category}</span> {item.meta}</span>
-            <h3>{item.title}</h3>
-            <p>{item.excerpt}</p>
-            <span class="by">DubaiPoints Editorial</span>
-          </div>
-        </a>
-      ))}
-    </div>
-    <div class="hp-latest-foot">
-      <a href="/news/">News desk →</a>
-      <a href="/deals/">Deals desk →</a>
-    </div>
-  </section>
-
-  <!-- ── S5. Strategy panel — goal-ranked, no-JS radio tabs ─────────── -->
-  <section class="dp-strategy is-navy" data-reveal aria-label="Build your points strategy">
-    <div class="inner">
-      <div class="dp-featured-eyebrow">
-        <span>Build your strategy</span>
-        <span class="rule"></span>
-        <span class="meta">Ranked from verified card data</span>
-      </div>
-      <h2>What are you <em>optimising for?</em></h2>
-      <p class="dps-lede">
-        Pick a goal and the cards are ranked for it — straight from the
-        verified card database.
-      </p>
-      <input type="radio" name="dps-goal" id="dps-travel" class="dps-radio" checked />
-      <input type="radio" name="dps-goal" id="dps-cashback" class="dps-radio" />
-      <input type="radio" name="dps-goal" id="dps-welcome" class="dps-radio" />
-      <input type="radio" name="dps-goal" id="dps-first" class="dps-radio" />
-      <div class="dps-pills">
-        {goals.map((g) => (
-          <label for={`dps-${g.id}`}>{g.label}</label>
-        ))}
-      </div>
-      {goals.map((g) => (
-        <div class={`dps-panel is-${g.id}`}>
-          <ol class="dps-cards">
-            {g.cards.map((c, i) => (
-              <li>
-                <a href={`/cards/${c.slug}/`} class="has-peek">
-                  <span class="rank">{i + 1}</span>
-                  <span>
-                    <span class="name">{c.name}</span>
-                    <span class="bank">{c.bank}</span>
-                  </span>
-                  <span class="stat">{c.stat}{c.statSub && <small>{c.statSub}</small>}</span>
-                  {(() => { const pk = peekFor(c.slug); return pk && (
-                    <span class="dp-peek" aria-hidden="true">
-                      <span class="dp-peek-row"><span>Annual fee</span><strong>{pk.fee.amount}{pk.fee.qual ? ` ${pk.fee.qual}` : ""}</strong></span>
-                      {pk.bonus && <span class="dp-peek-row"><span>Welcome</span><strong>{pk.bonus}</strong></span>}
-                      {pk.fx && <span class="dp-peek-row"><span>FX fee</span><strong>{pk.fx}</strong></span>}
-                      <span class="dp-peek-more">Read the review →</span>
-                    </span>
-                  ); })()}
-                </a>
-              </li>
-            ))}
-          </ol>
-          <div class="dps-aside">
-            <a href={`/guides/${g.guide.slug}/`}>
-              <span class="eyebrow">Guide</span>
-              <span class="t">{g.guide.title}</span>
-              <span class="m">{g.guide.meta}</span>
-            </a>
-            <a href={g.tool.href}>
-              <span class="eyebrow">{g.tool.eyebrow}</span>
-              <span class="t">{g.tool.title}</span>
-              <span class="m">{g.tool.meta}</span>
-            </a>
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <!-- ── S6. Start here — directory ─────────────────────────────────── -->
-  <section class="hp-dir" data-reveal aria-label="Browse dubaipoints.ae">
-    <div class="dp-featured-eyebrow">
-      <span>Start here</span>
-      <span class="rule"></span>
-      <span class="meta">Everything on dubaipoints.ae</span>
-    </div>
-    <div class="dp-dir-grid">
-      <a href="/cards/" class="dp-dir-tile">
-        <span class="eyebrow">{cards.length} cards</span>
-        <span class="title">Credit-card reviews</span>
-        <span class="desc">Cashback, miles and Islamic cards compared on fees, earn rates and eligibility.</span>
-        <span class="meta">{liveWelcomeCount} with recorded welcome-bonus data</span>
-      </a>
-      <a href="/banks/" class="dp-dir-tile">
-        <span class="eyebrow">{allBanks.length} banks</span>
-        <span class="title">Bank guides</span>
-        <span class="desc">Every covered UAE issuer — fees, eligibility and card line-ups.</span>
-        <span class="meta">Browse issuers →</span>
-      </a>
-      <a href="/airlines/" class="dp-dir-tile">
-        <span class="eyebrow">{allPrograms.length} programmes</span>
-        <span class="title">Miles &amp; loyalty</span>
-        <span class="desc">Skywards, Etihad Guest, Qatar and the hotel programmes — tiers, transfer partners and sweet spots.</span>
-        {heroSweetSpot && <span class="meta">Sweet spot: {heroSweetSpot.title}</span>}
-      </a>
-      <a href="/salary-transfer/" class="dp-dir-tile">
-        <span class="eyebrow"><span class="hp-live-dot" aria-hidden="true"></span>Salary-transfer tracker</span>
-        <span class="title">Salary-transfer offers</span>
-        <span class="desc">Band-by-band cash and rate offers across UAE banks — sources watched weekly, every entry dated.</span>
-        <span class="meta">{offerRows.length} live offers</span>
-      </a>
-      <a href="/deals/" class="dp-dir-tile">
-        <span class="eyebrow">{dealRows.length > 0 ? `${dealRows.length} live` : "Deals desk"}</span>
-        <span class="title">Lifestyle deals</span>
-        <span class="desc">Time-bound UAE dining, retail and travel offers — dated, sourced, archived when they end.</span>
-        <span class="meta">All deals →</span>
-      </a>
-      <a href="/guides/" class="dp-dir-tile">
-        <span class="eyebrow">{allGuides.length} guides</span>
-        <span class="title">Guides</span>
-        <span class="desc">Expat starter series, eligibility, AECB credit, transfer ratios and the rest of the groundwork.</span>
-        <span class="meta">Browse guides →</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ── S7. Trust + press + newsletter ─────────────────────────────── -->
-  <section class="hp-trust" data-reveal aria-label="Why trust DubaiPoints">
-    <div class="dp-featured-eyebrow">
-      <span>Why trust us</span>
-      <span class="rule"></span>
-    </div>
-    <div class="dp-dir-grid">
-      <a href="/team/" class="dp-dir-tile">
-        <span class="eyebrow">Publication</span>
-        <span class="title">Who writes DubaiPoints</span>
-        <span class="desc">A UAE-resident, single-editor publication using the DubaiPoints Editorial byline. Reviews carry dated verification and supporting sources.</span>
-      </a>
-      <a href="/editorial-policy/" class="dp-dir-tile">
-        <span class="eyebrow">Method</span>
-        <span class="title">How we work</span>
-        <span class="desc">Card figures draw on issuer product pages, terms, Key Facts Statements and Schedules of Charges. Figures older than 90 days are flagged for refresh.</span>
-      </a>
-      <a href="/how-we-make-money/" class="dp-dir-tile">
-        <span class="eyebrow">Funding</span>
-        <span class="title">How we make money</span>
-        <span class="desc">No affiliate-driven recommendations. No paid placements. Independent UAE coverage, AED-first.</span>
-      </a>
-    </div>
-    <p class="hp-trust-footnote">
-      Also: <a href="/about/">about DubaiPoints</a> · <a href="/corrections/">corrections policy</a> · <a href="/valuations/methodology/">how we value miles + points</a>
-    </p>
-  </section>
-
-  <PressStrip />
-
-  <section class="hp-news is-navy" data-reveal aria-label="Newsletter">
-    <div class="inner">
-      <div class="hp-news-text">
-        <span class="hp-news-eyebrow">A little useful, every Friday</span>
-        <h2>{newsletterLive ? "The Friday brief." : "The Friday brief is preparing for launch."}</h2>
-        <p>Salary-transfer changes, new card offers, worthwhile miles redemptions and lifestyle deals — once a week, AED-first.</p>
-        <p class="micro">
-          We never sell email addresses or browsing data. <a href="/editorial-policy/">Editorial policy</a> · <a href="/rss.xml">RSS feeds</a>
-        </p>
-      </div>
-      <div class="hp-news-form">
-        <NewsletterSignup source="homepage" />
-      </div>
-    </div>
-  </section>
+      // Pointer tilt on the card faces: fine pointers only.
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((card) => {
+          const tile = card.querySelector<HTMLElement>(".hp-tile");
+          if (!tile) return;
+          card.addEventListener("pointermove", (ev) => {
+            const r = tile.getBoundingClientRect();
+            const x = (ev.clientX - r.left) / r.width - 0.5;
+            const y = (ev.clientY - r.top) / r.height - 0.5;
+            tile.style.setProperty("--rx", `${(-y * 10).toFixed(2)}deg`);
+            tile.style.setProperty("--ry", `${(x * 12).toFixed(2)}deg`);
+            tile.style.setProperty("--mx", `${((x + 0.5) * 100).toFixed(1)}%`);
+          });
+          card.addEventListener("pointerleave", () => {
+            tile.style.removeProperty("--rx");
+            tile.style.removeProperty("--ry");
+            tile.style.removeProperty("--mx");
+          });
+        });
+      }
+    }
+  </script>
 </BaseLayout>
+
 
 <style>
   /* ── S1 hero — page-unique ─────────────────────────────────────────── */
@@ -886,27 +838,16 @@ const dealRows = await Promise.all(
        navy the video ends on, so the page does not cut from a cinematic
        night sky to a flat beige band. Same in both themes. */
     background: var(--navy-pin); color: #fdfcf8;
-    padding: 0 0 104px;
+    padding: 0;
   }
   .hp-hero::before {
-    content: ""; position: absolute; inset: -20%; pointer-events: none;
+    /* Fixed offsets, not a percentage: the hero grows when the reel switches
+       to its tall scroll track after load, and a %-inset glow moved with it
+       (layout shift 0.21 on the homepage, 8 Oct 2026 audit). */
+    content: ""; position: absolute; inset: -160px; pointer-events: none;
     background:
       radial-gradient(45% 55% at 22% 18%, rgba(184, 132, 42, 0.14), transparent 62%),
       radial-gradient(40% 50% at 88% 88%, rgba(31, 58, 77, 0.10), transparent 60%);
-  }
-  .hp-hero-grid { position: relative; z-index: 1; }
-  .hp-hero-grid {
-    max-width: var(--container-listing);
-    margin: 48px auto 0;
-    padding: 0 32px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-    align-items: start;
-  }
-  /* Under the reel: headline left, lede and actions right. */
-  @media (min-width: 900px) {
-    .hp-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; margin-top: 56px; }
   }
   .hp-hero-kicker {
     display: inline-flex; align-items: center; gap: 8px;
@@ -962,45 +903,7 @@ const dealRows = await Promise.all(
   .hp-hero .hp-hero-lede { color: rgba(253, 252, 248, 0.78); font-size: clamp(18px, 1.5vw, 21px); }
   .hp-hero .hp-hero-cta.is-ghost { color: #fdfcf8; border-color: rgba(253, 252, 248, 0.3); }
   .hp-hero .hp-hero-cta.is-ghost:hover { color: var(--gold-lift); border-color: var(--gold-lift); }
-  .hp-hero .hp-hero-trust { color: rgba(253, 252, 248, 0.62); }
-  .hp-hero .hp-hero-trust > span + span { border-left-color: rgba(253, 252, 248, 0.18); }
-  .hp-hero .hp-hero-feature { border-top-color: rgba(253, 252, 248, 0.18); }
-  .hp-hero .hp-hero-feature .eyebrow { color: rgba(253, 252, 248, 0.6); }
-  .hp-hero .hp-hero-feature .t { color: #fdfcf8; }
-  .hp-hero .hp-hero-feature:hover .t { color: var(--gold-lift); }
-  .hp-hero .hp-hero-feature .m { color: var(--gold-lift); }
-  .hp-hero .hp-hero-cta:focus-visible,
-  .hp-hero .hp-hero-feature:focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 3px; }
-  .hp-hero-trust {
-    display: flex; flex-wrap: wrap; gap: 0;
-    margin: 30px 0 0;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 1.4px; text-transform: uppercase;
-    color: var(--muted);
-  }
-  .hp-hero-trust > span { padding-right: 14px; }
-  .hp-hero-trust > span + span {
-    border-left: 1px solid var(--line);
-    padding-left: 14px;
-  }
-  .hp-hero-feature {
-    display: grid; gap: 4px;
-    margin: 26px 0 0; padding: 16px 0 0;
-    border-top: 1px solid var(--line);
-    max-width: 46ch;
-    text-decoration: none;
-  }
-  .hp-hero-feature .eyebrow {
-    font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: var(--muted);
-  }
-  .hp-hero-feature .t {
-    font-family: var(--font-display); font-weight: 500;
-    font-size: 19px; line-height: 1.25; letter-spacing: -0.2px; color: var(--ink);
-    transition: color 0.15s;
-  }
-  .hp-hero-feature:hover .t { color: var(--green); }
-  .hp-hero-feature .m { font-size: 12px; font-weight: 600; color: var(--green); }
-
+  .hp-hero .hp-hero-cta:focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 3px; }
   /* ── Hero reel (5 Oct 2026) ───────────────────────────────────────
      Full-bleed video under the sticky site header. With JS (.is-scrub)
      the section becomes a 3-screen track and the stage sticks while
@@ -1045,6 +948,13 @@ const dealRows = await Promise.all(
     pointer-events: none;
   }
   .hp-reel-title .hp-hero-kicker { color: var(--gold-lift); margin-bottom: 20px; }
+  .hp-reel-title .hp-hero-lede {
+    margin: 22px auto 0; max-width: 42ch;
+    color: rgba(253, 252, 248, 0.86);
+    text-shadow: 0 2px 16px rgba(10, 16, 24, 0.55);
+  }
+  .hp-reel-title .hp-hero-ctas { justify-content: center; margin-top: 24px; pointer-events: auto; }
+  .hp-reel.is-past-title .hp-reel-title { visibility: hidden; }
   .hp-reel-title .hp-hero-kicker .dot { background: var(--gold-lift); }
   .hp-hero .hp-reel-title h1 {
     margin: 0;
@@ -1094,288 +1004,323 @@ const dealRows = await Promise.all(
   }
   @media (max-width: 899px) {
     .hp-reel { --hp-head: 92px; }
+    /* Shorter trip on phones, and the buttons replace the scroll hint. */
+    .hp-reel.is-scrub { height: calc(200svh - var(--hp-head)); }
+    .hp-reel.is-scrub .hp-reel-hint { display: none; }
+    .hp-hero .hp-reel-title h1 { font-size: clamp(44px, 12vw, 64px); }
+    .hp-reel-title .hp-hero-lede { font-size: 16px; line-height: 1.5; margin-top: 16px; }
+    .hp-reel-title .hp-hero-kicker { margin-bottom: 14px; }
+    .hp-reel-title .hp-hero-ctas { gap: 10px; margin-top: 20px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .hp-reel-hint svg { animation: none; }
   }
 
-  /* ── S2b Editor's picks carousel (Phase 3) ────────────────────────── */
-  .hp-picks { padding: 48px 32px 24px; overflow-x: clip; } /* the full-bleed track at ≤640px otherwise adds 2px of page scroll at 360 (render audit, 4 Oct 2026) */
-  .hp-picks-head,
-  .hp-picks .dp-carousel {
-    max-width: var(--container-listing);
-    margin-left: auto; margin-right: auto;
+  /* ── Below the hero: direction B, "night to day" (8 Oct 2026) ──────
+     The reel ends on night; the dusk band fades that night into the
+     paper page; every section below is type on paper divided by
+     hairlines (no boxes, no shadows, no thumbnails); the page closes on
+     night again and runs into the footer. One serif voice for every
+     heading, the italic second phrase in navy, gold only for small
+     labels. Section rhythm after the 21st.dev Hirael library. */
+  .hp-dusk {
+    background: linear-gradient(180deg, var(--navy-pin) 0%, var(--navy-pin) 38%, var(--navy) 62%, var(--bg) 100%);
+    padding: 8px 20px 160px;
   }
-  .hp-picks-head {
-    display: flex; flex-wrap: wrap;
-    align-items: flex-end; justify-content: space-between;
-    gap: 12px 32px; margin-bottom: 20px;
+  /* --navy inverts to a light tone in the dark theme; night fades
+     straight into the dark page there. */
+  :global([data-theme="dark"]) .hp-dusk {
+    background: linear-gradient(180deg, var(--navy-pin) 0%, var(--navy-pin) 40%, var(--bg) 100%);
   }
-  .hp-picks-head h2 {
+  .hp-proof {
+    max-width: var(--container-listing); margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px;
+    border-top: 1px solid rgba(253, 252, 248, 0.14);
+    padding-top: 22px;
+    font-size: 13.5px; color: rgba(253, 252, 248, 0.72);
+  }
+  .hp-proof b {
+    font-family: var(--font-display); font-weight: 500; font-size: 22px;
+    color: var(--gold-lift); margin-right: 4px; font-variant-numeric: lining-nums tabular-nums;
+  }
+  .hp-proof strong { color: #fdfcf8; font-weight: 600; }
+
+  /* Sections carry the gutter as margin, so their hairlines stop at the
+     text edge instead of running to the screen edge. */
+  .hp-sec, .hp-strategy { --hp-gut: 20px; margin-inline: var(--hp-gut); padding: 72px 0; }
+  .hp-sec + .hp-sec, .hp-strategy + .hp-sec { border-top: 1px solid var(--line); }
+  .hp-sec-tools { padding-top: 0; }
+  .hp-sec-head { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+  .hp-kicker {
+    display: flex; align-items: center; gap: 12px; margin: 0 0 14px;
+    font-size: 11.5px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold-ink);
+  }
+  .hp-kicker::before { content: ""; width: 28px; height: 1px; background: currentColor; flex: none; }
+  .hp-sec h2, .hp-strategy h2 {
     font-family: var(--font-display); font-weight: 500;
-    font-size: clamp(26px, 3vw, 34px); letter-spacing: -0.5px; line-height: 1.1;
-    color: var(--ink); margin: 0;
+    font-size: clamp(36px, 5.2vw, 64px); line-height: 1.02; letter-spacing: -0.02em;
+    color: var(--ink); margin: 0; text-wrap: balance;
   }
-  .hp-pick {
-    display: flex; flex-direction: column; gap: 8px;
-    height: 100%; padding: 20px 20px 18px;
-    background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
-    text-decoration: none; color: var(--ink);
-    /* Lift + shadow come from the shared rule in the global.css motion layer. */
+  .hp-sec h2 em, .hp-strategy h2 em { font-style: italic; font-weight: 400; color: var(--green); }
+  .hp-sec-sub { margin: 0; font-size: 16px; line-height: 1.55; color: var(--muted); max-width: 44ch; }
+  .hp-more {
+    align-self: flex-start;
+    font-size: 14px; font-weight: 600; color: var(--green); text-decoration: none;
+    border-bottom: 1px solid var(--gold); padding-bottom: 3px;
   }
-  .hp-pick:hover { border-color: var(--green); }
-  .hp-pick-tier {
-    font-size: 10px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase;
-    color: var(--gold-ink); /* --gold on paper is 3.2:1 at 10px; --gold-ink clears AA */
+  .hp-more:hover { color: var(--ink); }
+  .hp-sec ul, .hp-sec ol { list-style: none; margin: 0; padding: 0; }
+  .hp-sec a { color: inherit; text-decoration: none; }
+  .hp-sec a:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+
+  /* Tools: numbered rows. */
+  .hp-tools li { border-top: 1px solid var(--line); }
+  .hp-tools li:last-child { border-bottom: 1px solid var(--line); }
+  .hp-tools a { display: grid; grid-template-columns: 34px 1fr 20px; gap: 4px 14px; padding: 22px 0; align-items: baseline; }
+  .hp-tools .n { font-family: var(--font-display); font-style: italic; font-size: 18px; color: var(--gold-ink); }
+  .hp-tools h3 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 25px; line-height: 1.15; letter-spacing: -0.01em; color: var(--ink); }
+  .hp-tools p { grid-column: 2; margin: 0; font-size: 15px; line-height: 1.45; color: var(--muted); }
+  .hp-tools .ar { grid-row: 1; grid-column: 3; text-align: right; color: var(--green); }
+  .hp-tools a:hover h3 { color: var(--green); }
+
+  /* Cards we rate: a typographic card face, then the four facts. */
+  .hp-cards { display: grid; gap: 56px; }
+  .hp-card { display: block; }
+  .hp-tile {
+    aspect-ratio: 1.586; border-radius: 14px; padding: 20px 22px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    color: #fff; max-width: 420px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(217, 164, 65, 0.18), rgba(217, 164, 65, 0) 55%),
+      linear-gradient(150deg, #2a4b63, #1f3a4d 50%, #152b3b);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 28px 40px -28px rgba(19, 35, 47, 0.55);
+    transition: transform 0.2s var(--dp-ease-hover, ease);
   }
-  .hp-pick-name {
-    font-family: var(--font-display); font-weight: 500;
-    font-size: 21px; line-height: 1.2; letter-spacing: -0.2px;
+  .hp-tile.tone-1 {
+    background:
+      radial-gradient(120% 90% at 0% 100%, rgba(217, 164, 65, 0.16), rgba(217, 164, 65, 0) 55%),
+      linear-gradient(160deg, #18303f, #0f1f2c);
   }
-  .hp-pick:hover .hp-pick-name { color: var(--green); }
-  .hp-pick-bank { font-size: 12px; color: var(--muted); }
-  .hp-pick-facts {
-    display: grid; gap: 8px; margin-top: 8px; padding-top: 12px;
-    border-top: 1px solid var(--line-soft);
-    font-variant-numeric: tabular-nums;
-  }
-  .hp-pick-facts > span { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; }
-  .hp-pick-facts small { color: var(--muted); font-size: 12px; }
-  .hp-pick-facts strong {
-    font-weight: 700; text-align: right;
-    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  }
-  .hp-pick-facts em { font-style: normal; font-weight: 400; color: var(--muted); font-size: 11px; }
-  .hp-pick-foot { margin-top: auto; padding-top: 10px; font-size: 12px; font-weight: 600; color: var(--green); }
-  @media (max-width: 640px) {
-    .hp-picks { padding: 36px 20px 16px; }
-    /* Full-bleed track: the next card peeks past the 20px gutter on purpose. */
-    .hp-picks .dp-carousel { max-width: none; margin-inline: -20px; }
+  .hp-tile.tone-2 { background: linear-gradient(140deg, #d9a441, #b8842a 70%, #9c6f22); color: #13232f; }
+  .hp-card:hover .hp-tile { transform: translateY(-3px); }
+  .hp-tile .bank { font-size: 10.5px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-lift); }
+  .hp-tile .cname { font-family: var(--font-display); font-size: 27px; line-height: 1.05; letter-spacing: -0.01em; font-weight: 500; max-width: 12ch; }
+  .hp-tile .foot { display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
+  .hp-tile .chip { width: 34px; height: 26px; border-radius: 5px; border: 1px solid rgba(217, 164, 65, 0.55); background: linear-gradient(135deg, rgba(217, 164, 65, 0.28), rgba(217, 164, 65, 0.06)); }
+  .hp-tile.tone-2 .bank { color: #13232f; }
+  .hp-tile.tone-2 .foot { color: rgba(19, 35, 47, 0.7); }
+  .hp-tile.tone-2 .chip { border-color: rgba(19, 35, 47, 0.4); background: linear-gradient(135deg, rgba(19, 35, 47, 0.18), rgba(19, 35, 47, 0.04)); }
+  .hp-card-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 22px; }
+  .hp-card-meta h3 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.01em; color: var(--ink); }
+  .hp-card:hover .hp-card-meta h3 { color: var(--green); }
+  .hp-card-meta .tag { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; color: var(--gold-ink); }
+  .hp-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; margin: 16px 0 0; border-top: 1px solid var(--line); }
+  .hp-facts div { padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .hp-facts dt { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .hp-facts dd { margin: 3px 0 0; font-size: 17px; font-weight: 600; letter-spacing: -0.01em; color: var(--ink); font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+  .hp-facts dd.is-long { white-space: normal; font-size: 15px; line-height: 1.3; }
+  .hp-facts dd small { font-weight: 400; font-size: 13px; color: var(--muted); }
+  .hp-verified { display: block; margin-top: 14px; font-size: 12.5px; color: var(--muted); }
+
+  /* Live now: two hairline lists. */
+  .hp-live { display: grid; gap: 48px; }
+  .hp-live-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .hp-live-head h3 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 24px; color: var(--ink); }
+  .hp-rows li { border-top: 1px solid var(--line); }
+  .hp-rows li:last-child { border-bottom: 1px solid var(--line); }
+  .hp-rows a { display: grid; gap: 4px; padding: 16px 0; }
+  .hp-rows .who { font-weight: 600; font-size: 16px; color: var(--ink); }
+  .hp-rows a:hover .who { color: var(--green); }
+  .hp-rows .what { font-size: 15px; line-height: 1.45; color: var(--ink-soft); }
+  .hp-rows .what strong { color: var(--ink); }
+  .hp-rows .when { font-size: 12.5px; color: var(--muted); }
+
+  /* Latest: type-led. */
+  .hp-latest li { border-top: 1px solid var(--line); }
+  .hp-latest li:last-child { border-bottom: 1px solid var(--line); }
+  .hp-latest a { display: block; padding: 24px 0; }
+  .hp-latest .meta { display: flex; gap: 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .hp-latest .cat { color: var(--gold-ink); }
+  .hp-latest h3 { margin: 10px 0 0; font-family: var(--font-display); font-weight: 500; font-size: 23px; line-height: 1.2; letter-spacing: -0.01em; color: var(--ink); text-wrap: pretty; }
+  .hp-latest a:hover h3 { color: var(--green); }
+  .hp-latest p {
+    margin: 10px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted);
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
 
-  /* ── S2 tools band — sand surface ─────────────────────────────────── */
-  /* The tools band slides over the night bridge as a sheet. */
-  .hp-tools {
-    position: relative; z-index: 1;
-    margin-top: -48px;
-    border-radius: 28px 28px 0 0;
-    box-shadow: 0 -24px 48px -24px rgba(10, 16, 24, 0.45);
-    background: var(--shade-2);
-    padding: 56px 32px 56px;
+  /* Strategy: the shared panel, unboxed and on paper. */
+  .hp-strategy { border-bottom: 0; border-top: 1px solid var(--line); }
+  .hp-strategy :global(.inner) { max-width: none; }
+  .hp-strategy :global(.dps-aside a) { border: 0; border-top: 1px solid var(--line); border-radius: 0; padding: 16px 0 4px; background: none; }
+  .hp-strategy h2 { margin-bottom: 14px; }
+  .hp-strategy :global(.dps-lede) { color: var(--muted); margin-bottom: 24px; }
+
+  /* Everything on the site: hairline grid. */
+  .hp-grid li { border-top: 1px solid var(--line); }
+  .hp-grid a { display: block; padding: 24px 0 28px; }
+  .hp-grid .count { font-size: 11.5px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-ink); }
+  .hp-grid h3 { margin: 10px 0 0; font-family: var(--font-display); font-weight: 500; font-size: 24px; color: var(--ink); }
+  .hp-grid a:hover h3 { color: var(--green); }
+  .hp-grid p { margin: 8px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted); max-width: 38ch; }
+
+  /* Night close: runs into the footer (the footer's top margin is
+     dropped on this page only). */
+  :global(body:has(.hp-close) .dp-footer) { margin-top: 0; }
+  .hp-close { background: var(--navy-deep); color: #e9edf0; margin-top: 56px; padding: 88px 20px 72px; }
+  :global([data-theme="dark"]) .hp-close { background: #0a0e17; } /* same as the dark footer it runs into */
+  .hp-close-in { max-width: var(--container-listing); margin: 0 auto; }
+  .hp-close .hp-kicker { color: var(--gold-lift); }
+  .hp-close h2 {
+    margin: 0 0 48px; max-width: 20ch;
+    font-family: var(--font-display); font-weight: 400; font-style: italic;
+    font-size: clamp(30px, 4.4vw, 52px); line-height: 1.12; color: #fff;
   }
-  .hp-tools-head,
-  .hp-tools .dp-tool-strip {
-    max-width: var(--container-listing);
-    margin-left: auto; margin-right: auto;
-  }
-  .hp-tools-head {
-    display: flex; flex-wrap: wrap;
-    align-items: flex-end; justify-content: space-between;
-    gap: 12px 32px;
-    margin-bottom: 26px;
-  }
-  .hp-band-eyebrow {
-    display: inline-block;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
-    color: var(--green);
-    margin-bottom: 10px;
-  }
-  .hp-tools-head h2,
-  .hp-fresh-head h2 {
-    font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(28px, 3.4vw, 40px);
-    letter-spacing: -0.7px; line-height: 1.1;
-    color: var(--ink);
-    margin: 0;
-  }
-  .hp-tools-sub {
-    font-size: 14px; line-height: 1.55;
-    color: var(--ink-soft);
-    max-width: 34ch;
-    margin: 0;
-    text-align: right;
-  }
-  @media (max-width: 640px) {
-    .hp-tools-sub { text-align: left; }
+  .hp-close h2 em { color: var(--gold-lift); }
+  .hp-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 20px; margin: 0; }
+  .hp-stats div { display: flex; flex-direction: column-reverse; justify-content: flex-end; }
+  .hp-stats dd { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: clamp(52px, 7vw, 84px); line-height: 1; letter-spacing: -0.02em; color: #fff; font-variant-numeric: lining-nums tabular-nums; }
+  .hp-stats dd.is-word { font-style: italic; color: var(--gold-lift); }
+  .hp-stats dt { margin-top: 8px; font-size: 13px; line-height: 1.4; color: #93a5b3; }
+  .hp-close-links { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 56px 0 0; padding-top: 24px; border-top: 1px solid rgba(233, 237, 240, 0.12); font-size: 14px; }
+  .hp-close-links a { color: #e9edf0; text-decoration: none; border-bottom: 1px solid rgba(217, 164, 65, 0.5); padding-bottom: 2px; }
+  .hp-close-links a:hover { color: var(--gold-lift); }
+  .hp-brief { display: grid; gap: 24px; margin-top: 64px; padding-top: 40px; border-top: 1px solid rgba(233, 237, 240, 0.12); }
+  .hp-brief h3 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 3vw, 34px); line-height: 1.15; color: #fff; }
+  .hp-brief p { margin: 12px 0 0; font-size: 15px; line-height: 1.55; color: #b9c6d0; max-width: 46ch; }
+  .hp-brief .hp-kicker { margin-bottom: 12px; }
+  /* The sign-up renders a paper inset; ink inside it. */
+  .hp-brief-form :global(.dp-newsletter-form),
+  .hp-brief-form :global(.dp-newsletter-fallback) { color: var(--ink); margin: 0; }
+  .hp-brief-form :global(.dp-newsletter-form a),
+  .hp-brief-form :global(.dp-newsletter-fallback a) { color: var(--green); text-decoration: underline; text-underline-offset: 2px; }
+
+  @media (min-width: 900px) {
+    .hp-dusk { padding: 8px 48px 200px; }
+    .hp-proof { grid-template-columns: repeat(4, auto); justify-content: space-between; font-size: 15px; }
+    .hp-sec, .hp-strategy { --hp-gut: max(48px, calc((100% - var(--container-listing)) / 2 + 32px)); padding: 112px 0; }
+    .hp-sec-tools { padding-top: 0; }
+    .hp-sec-head { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 48px; margin-bottom: 52px; }
+    .hp-sec-head .hp-more { align-self: flex-end; }
+    .hp-tools { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .hp-tools li, .hp-tools li:last-child { border-bottom: 0; }
+    .hp-tools a { grid-template-columns: 1fr 20px; gap: 10px 0; padding: 28px 32px 40px 0; align-content: start; height: 100%; }
+    .hp-tools .n { grid-column: 1; grid-row: 1; margin-bottom: 24px; }
+    .hp-tools .ar { grid-column: 2; }
+    .hp-tools h3 { font-size: 28px; grid-column: 1 / 3; }
+    .hp-tools p { grid-column: 1 / 3; max-width: 26ch; }
+    .hp-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+    .hp-live { grid-template-columns: 1fr 1fr; gap: 64px; }
+    .hp-latest { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 0 48px; }
+    .hp-latest li, .hp-latest li:last-child { border-bottom: 0; }
+    .hp-latest li:first-child h3 { font-size: 32px; }
+    .hp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 48px; }
+    .hp-close { padding: 128px 48px 96px; }
+    .hp-stats { grid-template-columns: repeat(4, 1fr); }
+    .hp-brief { grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
   }
 
-  /* ── S3 live desk — boxed columns on paper ────────────────────────── */
-  .dp-live-desk { background: var(--paper); }
-  .dp-live-desk .col {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    padding: 22px 24px 18px;
-  }
-  .dp-live-desk .rows { border-top: 0; }
-
-  /* ── S4 fresh — heading, search, uniform 3-up ─────────────────────── */
-  .hp-fresh { padding-top: 44px; }
-  .hp-fresh-head,
-  .hp-fresh-search,
-  .hp-fresh-grid,
-  .hp-latest-foot {
-    max-width: var(--container-listing);
-    margin-left: auto; margin-right: auto;
-  }
-  .hp-fresh-head {
-    display: flex; flex-wrap: wrap;
-    align-items: flex-end; justify-content: space-between;
-    gap: 12px 32px;
-    margin-bottom: 20px;
-  }
-  .hp-fresh-all {
-    font-size: 13px; font-weight: 600;
-    color: var(--ink); text-decoration: none;
-    padding-bottom: 4px;
-  }
-  .hp-fresh-all:hover { color: var(--green); }
-  .hp-fresh-search {
-    display: flex; align-items: center; gap: 10px;
-    max-width: 560px;
-    margin-left: 0;
-    padding: 13px 16px;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    color: var(--muted);
-    font-size: 14px;
-    text-decoration: none;
-    margin-bottom: 28px;
-    transition: border-color 0.15s;
-  }
-  .hp-fresh-search:hover,
-  .hp-fresh-search:focus-visible { border-color: var(--green); color: var(--ink); }
-  .hp-fresh-search svg { color: var(--gold); flex-shrink: 0; }
+  /* ── Motion below the hero (9 Oct 2026, Chairman direction) ────────
+     .is-pending is set by the page script only on sections still below
+     the fold, and only when motion is allowed, so the default state is
+     the final state. */
   .sr-only {
-    position: absolute; width: 1px; height: 1px;
-    padding: 0; margin: -1px; overflow: hidden;
-    clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
   }
-  .hp-fresh-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
+  [data-hp-anim] { --ease: cubic-bezier(0.22, 1, 0.36, 1); }
+  [data-hp-anim] .hp-kicker::before { transform-origin: left; transition: transform 0.7s var(--ease); }
+  [data-hp-anim] h2 { transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), filter 0.9s var(--ease); }
+  [data-hp-anim] h2 em { display: inline-block; transition: opacity 0.9s var(--ease) 0.18s, transform 0.9s var(--ease) 0.18s, filter 0.9s var(--ease) 0.18s; }
+  [data-hp-anim] .hp-sec-sub,
+  [data-hp-anim] .hp-sec-head .hp-more,
+  [data-hp-anim] .dps-lede,
+  [data-hp-anim] .dps-pills { transition: opacity 0.8s var(--ease) 0.25s, transform 0.8s var(--ease) 0.25s; }
+  [data-hp-anim] :is(.hp-tools, .hp-cards, .hp-latest, .hp-grid) > li {
+    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+    transition-delay: calc(0.2s + var(--i, 0) * 0.09s);
   }
-  @media (min-width: 900px) {
-    .hp-fresh-grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  .hp-fresh-grid :global(.dp-story-card) { border-radius: 0; }
-  .hp-latest-foot {
-    margin-top: 24px;
-    display: flex; gap: 24px;
-    padding-bottom: 32px;
-  }
-  .hp-latest-foot a {
-    font-size: 13px; font-weight: 600;
-    color: var(--green); text-decoration: none;
-  }
-  .hp-latest-foot a:hover { text-decoration: underline; }
+  [data-hp-anim] .hp-rows li { transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+  [data-hp-anim] .hp-rows li:nth-child(2) { transition-delay: 0.08s; }
+  [data-hp-anim] .hp-rows li:nth-child(3) { transition-delay: 0.16s; }
+  [data-hp-anim] .hp-rows li:nth-child(4) { transition-delay: 0.24s; }
+  [data-hp-anim] .hp-stats > div,
+  [data-hp-anim] .hp-proof > span { transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+  [data-hp-anim] .hp-stats > div:nth-child(2), [data-hp-anim] .hp-proof > span:nth-child(2) { transition-delay: 0.1s; }
+  [data-hp-anim] .hp-stats > div:nth-child(3), [data-hp-anim] .hp-proof > span:nth-child(3) { transition-delay: 0.2s; }
+  [data-hp-anim] .hp-stats > div:nth-child(4), [data-hp-anim] .hp-proof > span:nth-child(4) { transition-delay: 0.3s; }
 
-  /* ── S6 / S7 shells — shared grid, page-level padding only ─────────── */
-  .hp-dir, .hp-trust {
-    max-width: none;
-    padding: 36px 32px 8px;
+  .is-pending .hp-kicker::before { transform: scaleX(0); }
+  .is-pending h2, .is-pending h2 em { opacity: 0; transform: translateY(22px); filter: blur(10px); }
+  .is-pending :is(.hp-sec-sub, .hp-sec-head .hp-more, .dps-lede, .dps-pills) { opacity: 0; transform: translateY(14px); }
+  .is-pending :is(.hp-tools, .hp-latest, .hp-grid) > li,
+  .is-pending .hp-rows li,
+  .is-pending .hp-stats > div,
+  .is-pending .hp-proof > span { opacity: 0; transform: translateY(26px); }
+  /* The three card faces deal in like a hand of cards. */
+  .is-pending .hp-cards > li { opacity: 0; transform: translateY(48px) rotate(calc(-5deg + var(--i, 0) * 5deg)) scale(0.96); }
+
+  /* Hairlines draw left to right as their row arrives. */
+  .hp-tools li, .hp-latest li, .hp-grid li, .hp-rows li { position: relative; }
+  [data-hp-anim] :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before {
+    content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 1px;
+    background: var(--gold); transform-origin: left; transform: scaleX(0); opacity: 0;
+    pointer-events: none;
   }
-  .hp-dir .dp-dir-grid, .hp-trust .dp-dir-grid,
-  .hp-dir .dp-featured-eyebrow, .hp-trust .dp-featured-eyebrow {
-    max-width: var(--container-listing);
-    margin-left: auto; margin-right: auto;
+  [data-hp-anim].is-in :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before {
+    animation: hp-rule 1.6s var(--ease) calc(0.15s + var(--i, 0) * 0.09s) 1 both;
   }
-  .hp-dir .dp-featured-eyebrow, .hp-trust .dp-featured-eyebrow {
-    margin-bottom: 24px;
+  @keyframes hp-rule {
+    0% { transform: scaleX(0); opacity: 1; }
+    60% { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(1); opacity: 0; }
   }
-  .hp-live-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    background: var(--green);
-    display: inline-block;
-    animation: hp-pulse 2s ease-in-out infinite;
+
+  /* Card faces: pointer tilt, gold sheen, a one-off sheen as they land. */
+  .hp-card { perspective: 900px; }
+  .hp-tile {
+    position: relative; overflow: hidden;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.35s var(--dp-ease-hover, ease), box-shadow 0.35s ease;
+    will-change: transform;
   }
-  @keyframes hp-pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.35; }
+  .hp-card:hover .hp-tile { transform: translateY(-6px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 40px 50px -30px rgba(19, 35, 47, 0.6); }
+  .hp-tile::after {
+    content: ""; position: absolute; inset: -40% -60%; pointer-events: none;
+    background: linear-gradient(105deg, transparent 40%, rgba(255, 236, 196, 0.22) 50%, transparent 60%);
+    transform: translateX(-60%); opacity: 0;
   }
+  .hp-card:hover .hp-tile::after {
+    opacity: 1; transform: translateX(calc(var(--mx, 50%) - 50%));
+    transition: transform 0.25s ease-out, opacity 0.2s;
+  }
+  [data-hp-anim].is-in .hp-tile::after { animation: hp-sheen 1.4s var(--ease) calc(0.6s + var(--i, 0) * 0.15s) 1 both; }
+  @keyframes hp-sheen {
+    0% { opacity: 0; transform: translateX(-60%); }
+    30% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(60%); }
+  }
+  .hp-tile .chip { position: relative; overflow: hidden; }
+
+  /* Small hover details. */
+  .hp-tools .ar, .hp-more { transition: transform 0.25s var(--ease), color 0.2s; }
+  .hp-tools a:hover .ar { transform: translate(3px, -3px); }
+  .hp-more { background: linear-gradient(var(--gold), var(--gold)) left bottom / 0 1px no-repeat; transition: background-size 0.35s var(--ease), color 0.2s; }
+  .hp-more:hover { background-size: 100% 2px; }
+
   @media (prefers-reduced-motion: reduce) {
-    .hp-live-dot { animation: none; }
-  }
-  .hp-trust-footnote {
-    max-width: var(--container-listing);
-    margin: 18px auto 28px;
-    font-size: 12px; color: var(--muted);
-  }
-  .hp-trust-footnote a { color: var(--green); }
-
-  /* ── S7 newsletter — navy closing band ─────────────────────────────── */
-  /* Closing newsletter band. Shipped 29 Aug as a full-bleed gold band (the
-     v0 design's "full stop"); on Chairman direction, 7 Sep 2026, it moves to
-     the brand navy the article newsletter rail already uses, so gold goes
-     back to its single job (chips, rules, the Verified badge).
-     The class was left named `is-gold` at the time "so nothing else needs to
-     change"; renamed to `is-navy` on 10 September because a class that names
-     the wrong colour is the same drift R1 removed from `--mint` that day. */
-  .hp-news.is-navy {
-    background: #1f3a4d;
-    padding: 56px 32px 52px;
-  }
-  .hp-news .inner {
-    max-width: var(--container-listing);
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px 64px;
-    align-items: center;
-  }
-  @media (min-width: 900px) {
-    .hp-news .inner { grid-template-columns: 1.1fr 1fr; }
-  }
-  /* Contrast on navy (#1f3a4d): white 12.6:1; the gold-ink eyebrow tint
-     #d9a85a 6.9:1; the 0.88 white tint on body/micro clears AA. */
-  .hp-news-eyebrow {
-    display: inline-block;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
-    color: #d9a85a;
-    margin-bottom: 12px;
-  }
-  .hp-news h2 {
-    font-family: var(--font-display); font-weight: 600;
-    font-size: clamp(28px, 3.6vw, 42px);
-    letter-spacing: -0.7px; line-height: 1.1;
-    color: #ffffff;
-    margin: 0 0 12px;
-  }
-  .hp-news p {
-    font-size: 15px; line-height: 1.6;
-    color: rgba(255, 255, 255, 0.88);
-    margin: 0 0 8px;
-    max-width: 46ch;
-  }
-  .hp-news .micro {
-    font-size: 12px; color: rgba(255, 255, 255, 0.88);
-    margin-top: 16px;
-  }
-  .hp-news .micro a { color: #ffffff; text-decoration: underline; text-underline-offset: 2px; }
-  /* NewsletterSignup renders a paper-background inset; restore ink inside
-     it (both the form and the email fallback). */
-  .hp-news :global(.dp-newsletter-form),
-  .hp-news :global(.dp-newsletter-fallback) {
-    color: var(--ink);
-    text-align: left;
-    margin: 12px 0;
-  }
-  .hp-news :global(.dp-newsletter-form a),
-  .hp-news :global(.dp-newsletter-fallback a) {
-    color: var(--green);
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    .hp-tile, .hp-tile::after, .hp-tools .ar, .hp-more,
+    :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before { transition: none !important; animation: none !important; }
+    .hp-card:hover .hp-tile { transform: none; }
   }
 
-  /* ── Responsive padding ────────────────────────────────────────────── */
-  @media (max-width: 768px) {
-    .hp-hero { padding: 0 0 72px; }
-    .hp-hero-grid { padding: 0 24px; }
-    .hp-tools { padding: 40px 24px 44px; margin-top: -32px; border-radius: 20px 20px 0 0; }
-    .hp-fresh { padding-top: 32px; }
-    .hp-dir, .hp-trust { padding: 28px 24px 8px; }
-    .hp-news.is-navy { padding: 44px 24px 40px; }
+  /* Issuer card art: the picture is the card, so no painted face behind it. */
+  .hp-tile.is-art {
+    padding: 0; background: none; box-shadow: none; border-radius: 14px;
+    display: block; aspect-ratio: auto;
   }
+  .hp-tile.is-art img {
+    display: block; width: 100%; height: auto; border-radius: 14px;
+  }
+  .hp-card:hover .hp-tile.is-art { box-shadow: none; }
 </style>

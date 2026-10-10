@@ -20,8 +20,8 @@
 }
 
 :root {
-  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --font-ui:      'Geist', system-ui, -apple-system, sans-serif;
+  --font-display: 'Newsreader Variable', 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-ui:      'Geist Variable', 'Geist', system-ui, -apple-system, sans-serif;
 
   /* Claude Design handoff palette — locked 2026-05-09 (supersedes TPG pivot).
      Source: Claude Design bundle JVW6dPIKTdYcvhrGrNtGfg, palette A "Editorial green".
@@ -637,6 +637,11 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   padding-block: 24px 48px;
 }
 .dp-article.is-wide { max-width: 1080px; }
+/* Side gutter on screens narrower than the column (7 Oct 2026 UX review:
+   the calculator's text touched both edges of a phone). */
+@media (max-width: 1119.98px) {
+  .dp-article { padding-inline: 16px; }
+}
 @media (min-width: 768px) {
   .dp-article { padding-block: 40px 72px; }
 }
@@ -745,7 +750,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 }
 .dp-take .label {
   font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--red);
+  text-transform: uppercase; color: var(--green);
   margin-bottom: 10px;
 }
 .dp-take p {
@@ -801,10 +806,11 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   .dp-article-section { margin-block: 36px; }
 }
 .dp-article-section > h3 {
-  font-family: var(--font-display); font-weight: 500;
-  font-size: 18px; letter-spacing: -0.2px; color: var(--ink);
-  margin-bottom: 10px;
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 22px; letter-spacing: -0.3px; color: var(--ink);
+  margin: 32px 0 10px;
 }
+.dp-article-section > h2 + h3 { margin-top: 16px; }
 
 /* Rate / earn-rate / spec table */
 .dp-data-table {
@@ -985,6 +991,21 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dp-prose table th[align="right"], .dp-prose table td[align="right"] { text-align: right; }
 .dp-prose table th[align="center"], .dp-prose table td[align="center"] { text-align: center; }
 @media (max-width: 719.98px) {
+  /* Wide tables scroll sideways on a phone: an edge shadow says so, and
+     the first column stays put so each row keeps its name. */
+  .dp-prose table {
+    background:
+      linear-gradient(to right, var(--bg) 30%, transparent) left / 40px 100% no-repeat local,
+      linear-gradient(to left, var(--bg) 30%, transparent) right / 40px 100% no-repeat local,
+      radial-gradient(farthest-side at 0 50%, rgba(15, 31, 46, 0.16), transparent) left / 14px 100% no-repeat scroll,
+      radial-gradient(farthest-side at 100% 50%, rgba(15, 31, 46, 0.16), transparent) right / 14px 100% no-repeat scroll;
+  }
+  .dp-prose tbody td:first-child,
+  .dp-prose thead th:first-child {
+    position: sticky; left: 0; z-index: 1;
+    background: var(--bg);
+    box-shadow: 1px 0 0 var(--line-soft);
+  }
   .dp-prose table { font-size: 14px; margin-bottom: 24px; }
   .dp-prose thead th { padding: 10px 12px; font-size: 10px; letter-spacing: 1.3px; }
   .dp-prose tbody td { padding: 10px 12px; }
@@ -2925,7 +2946,9 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
      first viewport. UX kill-list rule 2 (buried verdicts). */
   .dp-cr-hero .dp-cr-text { order: 0; }
   .dp-cr-hero .dp-cr-tile,
-  .dp-cr-hero .dp-cr-photo { order: 1; max-width: 100%; }
+  .dp-cr-hero .dp-cr-photo,
+  .dp-cr-hero .dp-cr-art { order: 1; max-width: 100%; }
+  .dp-cr-hero .dp-cr-art img { max-width: 300px; }
 }
 
 /* Card-review hero photograph — wraps a manifest-tracked Pexels image
@@ -2964,6 +2987,17 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
    its per-issuer tints: the mock read as a product image (2026-07-29
    documentation line) and the tints were third hues (2026-07-25, R1).
    Same three facts, on the house palette. */
+/* Issuer card art in the review hero (9 Oct 2026): the real card face
+   from the issuer's website, credited underneath. */
+.dp-cr-art { margin: 0; max-width: 340px; position: relative; z-index: 1; }
+.dp-cr-art img {
+  display: block; width: 100%; height: auto;
+  filter: drop-shadow(0 26px 30px rgba(0, 0, 0, 0.45));
+}
+.dp-cr-art figcaption {
+  margin-top: 12px; font-size: 11px; letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.6);
+}
 .dp-cr-tile {
   aspect-ratio: 1.586 / 1; width: 100%; max-width: 320px;
   border-radius: 12px; padding: 22px 24px;
@@ -3884,23 +3918,6 @@ html * {
   }
 }
 
-/* Cursor spotlight — a soft gold glow that follows the pointer across a
-   tile. Pointer devices only; --dp-mx/--dp-my are set by the module.
-   Drawn by a ::after moved with transform, so each pointermove is a
-   compositor update, not a background repaint (audit F5). */
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .dp-dir-tile, .dp-tool { position: relative; overflow: hidden; }
-  .dp-dir-tile::after, .dp-tool::after {
-    content: ""; position: absolute; top: 0; left: 0;
-    width: 220px; height: 220px; margin: -110px 0 0 -110px;
-    border-radius: 50%; pointer-events: none;
-    background: radial-gradient(circle, rgba(184, 132, 42, 0.12), transparent 70%);
-    transform: translate(var(--dp-mx, -300px), var(--dp-my, -300px));
-    opacity: 0; transition: opacity 0.15s;
-  }
-  .dp-dir-tile:hover::after, .dp-tool:hover::after { opacity: 1; }
-}
-
 /* Figures keep their width while a ticker counts up. */
 [data-count] { font-variant-numeric: tabular-nums; }
 
@@ -4017,41 +4034,9 @@ html * {
   100% { background-position: -120% 0; }
 }
 
-/* ── Scroll motion, site-wide (5 Oct 2026) ──────────────────────────────
-   Carries the homepage reel's language down every page, after the
-   Chairman found the scroll-video hero "not going well" with static
-   sections below it. From the 21st.dev catalogue, rebuilt in CSS (the
-   2026-07-25 rule): "Scroll media expansion" → pictures open from a
-   framed crop to full size as they scroll in, with a light parallax;
-   the reel's own title treatment → section headings resolve from a blur
-   as they arrive (headings moved to the GSAP module on 6 Oct 2026, which
-   splits them word by word). Pure CSS scroll-driven animations: no library, no JS,
-   compositor-only properties plus one filter. Browsers without
-   animation-timeline (Firefox today) simply show the static page, and
-   reduced motion turns all of it off. */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .hp-hero-lede {
-      animation: dp-focus-in linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 90%;
-    }
-    img[data-stock-slug],
-    svg.dp-cover {
-      animation: dp-media-open linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 55%;
-    }
-  }
-}
-@keyframes dp-focus-in {
-  from { opacity: 0.15; filter: blur(8px); transform: translateY(18px); }
-  to { opacity: 1; filter: blur(0); transform: none; }
-}
-@keyframes dp-media-open {
-  from { transform: scale(1.12) translateY(4%); clip-path: inset(7% 5% round 14px); }
-  to { transform: scale(1) translateY(0); clip-path: inset(0 round 0); }
-}
+/* ── Scroll motion, site-wide (5 Oct 2026) — removed 7 Oct 2026 ─────────
+   The scroll-driven picture "open" crop and lede blur that stood here were
+   removed by the UX review: pictures and text arrive still. */
 
 /* ── Page transitions (6 Oct 2026) ─────────────────────────────────────
    Cross-document view transitions: moving between pages fades the old
@@ -4067,32 +4052,9 @@ html * {
 @media (prefers-reduced-motion: reduce) {
   @view-transition { navigation: none; }
 }
-/* The homepage picks row while GSAP scrubs it: snapping would fight the
-   tween. */
-.dp-carousel.is-scrubbed { scroll-snap-type: none; }
-.hp-picks.is-pinned-stage {
-  min-height: calc(100svh - var(--dp-pin-head, 0px));
-  display: flex; flex-direction: column; justify-content: center;
-  box-sizing: border-box;
-}
-.hp-picks.is-pinned-stage > * { width: 100%; }
-
-/* Card-review tilt (6 Oct 2026): a soft sheen that follows the cursor
-   across the card; GSAP drives the rotation and the --gx/--gy point. */
-.dp-tilt { position: relative; will-change: transform; transform-style: preserve-3d; }
-.dp-tilt::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  border-radius: 14px;
-  background: radial-gradient(circle at var(--gx, 50%) var(--gy, 30%), rgba(255, 255, 255, 0.22), transparent 55%);
-  opacity: 0; transition: opacity 0.3s ease;
-  mix-blend-mode: soft-light;
-}
-.dp-tilt.dp-cr-photo::after { bottom: auto; aspect-ratio: 1.586 / 1; }
-.dp-cr-hero:hover .dp-tilt::after { opacity: 1; }
-
 /* Guides (6 Oct 2026): reading progress along the very top of the window,
-   and the "In this guide" row for the section on screen. GSAP scales the
-   bar; without it (or under reduced motion) the bar is never created. */
+   and the "In this guide" row for the section on screen. src/scripts/
+   reading.ts creates and scales the bar; without JS there is no bar. */
 .dp-read-progress {
   position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 200;
   background: var(--gold);
@@ -4101,33 +4063,17 @@ html * {
 }
 .dp-toc-card li { transition: color 0.25s ease; }
 .dp-toc-card li.is-current a { color: var(--green); font-weight: 600; }
-.dp-toc-card li.is-current .num { color: var(--gold); }
+.dp-toc-card li.is-current .num { color: var(--gold-ink); } /* --gold failed 4.5:1 on paper (render audit, 10 Oct 2026) */
 [data-theme="dark"] .dp-toc-card li.is-current a { color: var(--navy-lift); }
-
-/* Bank pages (6 Oct 2026): one gold glint across the salary-transfer
-   offer when it first scrolls into view. */
-.dp-gsap .dp-bank-callout { position: relative; overflow: hidden; }
-.dp-bank-callout.is-glint::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(105deg, transparent 35%, rgba(217, 164, 65, 0.28) 50%, transparent 65%);
-  transform: translateX(-100%);
-  animation: dp-glint 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
-}
-@keyframes dp-glint { to { transform: translateX(100%); } }
-@media (prefers-reduced-motion: reduce) {
-  .dp-bank-callout.is-glint::after { display: none; }
-}
 
 /* ════════════════════════════════════════════════════════════════════════
    Cinematic page stage (6 Oct 2026, Chairman: "that style we should see it
-   in all pages"). Every page head marked .dp-stage opens like the homepage
-   hero: a full-bleed night band over a licensed photograph (src/lib/
-   stage.ts picks the page's own, else Dubai at night), text set low on a
-   scrim. Inside the stage the colour tokens are re-pointed to their
+   in all pages"); narrowed 7 Oct 2026 by the UX review to pages that own
+   a licensed photograph (bank hubs, programmes, story articles). A
+   full-bleed night band over that photograph (src/lib/stage.ts), text set
+   low on a scrim; static, no scroll effects. Inside the stage the colour tokens are re-pointed to their
    on-dark values, so crumbs, figures and stat rows recolour without
-   per-page rules. GSAP (motion-gsap.ts) zooms and drifts the photo and
-   blurs the title away on scroll; without JS or under reduced motion it
-   is a still. `:root body` lifts specificity over Astro-scoped head rules.
+   per-page rules. `:root body` lifts specificity over Astro-scoped head rules.
    ════════════════════════════════════════════════════════════════════════ */
 :root body .dp-stage {
   --ink: #ffffff;
@@ -4167,7 +4113,6 @@ html * {
   z-index: -2;
   background: var(--dp-stage-img, url(/images/stock/hero-dubai-night.jpg)) center / cover no-repeat;
   transform: translate3d(0, var(--stage-y), 0) scale(var(--stage-s));
-  will-change: transform;
 }
 .dp-stage::after {
   content: "";
@@ -4194,10 +4139,129 @@ html * {
 :root body .dp-stage a:focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 3px; }
 /* A gold hairline where the night band meets the page. */
 :root body .dp-stage { box-shadow: inset 0 -1px 0 rgba(217, 164, 65, 0.55); }
-@media (max-width: 640px) {
+@media (max-width: 719.98px) {
+  /* 7 Oct 2026 UX review: the band cost a whole phone screen. Cap it so
+     the first content shows, and keep stats in one row. */
   :root body .dp-stage {
-    min-height: clamp(340px, 56svh, 520px);
-    padding-top: 72px;
-    padding-bottom: 36px;
+    min-height: 0;
+    max-height: none;
+    padding-top: 56px;
+    padding-bottom: 28px;
   }
+  :root body .dp-stage.dp-stage.dp-stage h1 { font-size: clamp(32px, 9vw, 40px); }
+  :root body .dp-stage .deck {
+    font-size: 17px; margin-top: 10px;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  :root body .dp-stage .dp-metric-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0; padding: 12px 0; margin-top: 16px;
+  }
+  :root body .dp-stage .dp-metric-strip .metric { padding: 2px 10px; border-right: 1px solid var(--line); }
+  :root body .dp-stage .dp-metric-strip .metric:first-child { padding-left: 0; }
+  :root body .dp-stage .dp-metric-strip .metric:last-child { border-right: 0; }
+  :root body .dp-stage .dp-metric-strip .metric .v { font-size: 20px; }
+  :root body .dp-stage .dp-metric-strip .metric .meta { display: none; }
 }
+
+/* ── Card review, direction B "night to day" (10 Oct 2026) ─────────────
+   Chairman: card reviews in the same style as the homepage. The head is
+   the night band (constant in both themes) with the issuer's card art on
+   the right at desktop, the title in serif with an italic gold tail, and
+   the four facts as hairline cells instead of white tiles. Below it the
+   body drops its boxes: at-a-glance, pros/cons and the sidebar read as
+   type divided by hairlines. Doubled class selectors outrank the
+   components' scoped (0,2,0) rules without !important. */
+.dp-cr-hero.dp-cr-hero {
+  background: linear-gradient(180deg, var(--navy-pin) 0%, var(--navy-pin) 62%, #1f3a4d 100%);
+  padding: clamp(40px, 6vw, 88px) max(22px, calc((100% - 1180px) / 2 + 32px)) clamp(40px, 6vw, 80px);
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 380px);
+  gap: clamp(28px, 5vw, 72px);
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-text { order: 0; }
+.dp-cr-hero.dp-cr-hero :is(.dp-cr-art, .dp-cr-photo, .dp-cr-tile) { order: 1; justify-self: end; }
+.dp-cr-hero.dp-cr-hero .dp-cr-art { max-width: 380px; width: 100%; }
+.dp-cr-hero.dp-cr-hero h1 {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(34px, 4.6vw, 60px); line-height: 1.04; letter-spacing: -0.02em;
+  text-wrap: balance; color: #fff;
+}
+.dp-cr-hero.dp-cr-hero h1 em { font-style: italic; font-weight: 400; color: var(--gold-lift); }
+.dp-cr-hero.dp-cr-hero .dp-cr-facts {
+  background: none; border: 0; border-radius: 0; gap: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; margin-top: 20px;
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-facts > div {
+  background: none; padding: 14px 16px 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dt { color: rgba(255, 255, 255, 0.62); }
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd {
+  color: #fff; font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(22px, 2.4vw, 28px); letter-spacing: -0.01em;
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd.is-date { font-family: var(--font-ui); font-size: 16px; font-weight: 600; }
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd small { color: rgba(255, 255, 255, 0.62); display: inline; margin-left: 2px; }
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd.is-unverified { color: rgba(255, 255, 255, 0.62); }
+@media (min-width: 1360px) {
+  .dp-cr-hero.dp-cr-hero .dp-cr-facts { grid-template-columns: repeat(4, max-content); column-gap: 36px; }
+}
+@media (max-width: 768px) {
+  .dp-cr-hero.dp-cr-hero { grid-template-columns: minmax(0, 1fr); }
+  .dp-cr-hero.dp-cr-hero :is(.dp-cr-art, .dp-cr-photo, .dp-cr-tile) { justify-self: start; }
+}
+
+/* Body: type and hairlines, no boxes. */
+.dp-cr-body .dp-at-a-glance.dp-at-a-glance {
+  border: 0; border-radius: 0; background: none;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+}
+.dp-cr-body .dp-at-a-glance.dp-at-a-glance .tile:first-child { padding-left: 0; }
+.dp-cr-body .dp-proscons-v2.dp-proscons-v2 {
+  border: 0; border-radius: 0; background: none; box-shadow: none;
+  border-top: 1px solid var(--line);
+}
+.dp-cr-body .dp-proscons-v2.dp-proscons-v2 .dp-proscons-v2-col { padding-left: 0; }
+.dp-cr-body .dp-proscons-v2.dp-proscons-v2 .dp-proscons-v2-col.is-cons { padding-left: 24px; }
+@media (max-width: 640px) {
+  .dp-cr-body .dp-proscons-v2.dp-proscons-v2 .dp-proscons-v2-col.is-cons { padding-left: 0; }
+}
+.dp-cr-aside .dp-spec-card.dp-spec-card {
+  background: none; border: 0; border-radius: 0; box-shadow: none;
+  border-top: 1px solid var(--line); padding: 18px 0 0;
+}
+.dp-cr-hero.dp-cr-hero .dp-cr-facts dd { white-space: nowrap; font-size: clamp(20px, 2vw, 26px); }
+@media (max-width: 640px) {
+  .dp-cr-body .dp-at-a-glance.dp-at-a-glance .tile:nth-child(odd) { padding-left: 0; }
+}
+
+/* ── Guides and news, direction B (10 Oct 2026) ────────────────────────
+   The photo stage keeps its picture but takes the homepage's lighter
+   serif (500, not 700), a shorter band, and a gold hairline; guides gain
+   a "Cards in this guide" strip of issuer card art under the byline. */
+:root body .dp-stage.dp-stage.dp-stage h1 {
+  font-weight: 500; letter-spacing: -0.02em;
+  font-size: clamp(34px, 5.2vw, 64px); line-height: 1.04; text-shadow: none;
+}
+:root body .dp-stage { min-height: clamp(340px, 52svh, 580px); }
+.dp-guide-cards {
+  max-width: 1180px; margin: 8px auto 0; padding: 0 20px 8px;
+}
+.dp-guide-cards-kicker {
+  display: flex; align-items: center; gap: 12px; margin: 0 0 12px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-ink);
+}
+.dp-guide-cards-kicker::before { content: ""; width: 28px; height: 1px; background: currentColor; }
+.dp-guide-cards ul {
+  list-style: none; margin: 0; padding: 0 0 6px;
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(150px, 1fr); gap: 16px;
+  overflow-x: auto; scroll-snap-type: x mandatory; border-bottom: 1px solid var(--line);
+}
+.dp-guide-cards li { scroll-snap-align: start; min-width: 0; }
+.dp-guide-cards a { display: grid; gap: 6px; padding-bottom: 14px; color: inherit; text-decoration: none; }
+.dp-guide-cards .dp-card-art { aspect-ratio: 1.586; padding: 6%; background: none; }
+.dp-guide-cards .n { font-family: var(--font-display); font-weight: 500; font-size: 16px; line-height: 1.2; color: var(--ink); }
+.dp-guide-cards a:hover .n { color: var(--green); }
+.dp-guide-cards .f { font-size: 12.5px; color: var(--muted); }
+@media (min-width: 900px) { .dp-guide-cards { padding-inline: 32px; } }

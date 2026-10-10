@@ -1,11 +1,11 @@
 // Shared motion helpers for the calculator islands (6 Oct 2026).
 //
-// The site-wide GSAP layer (src/scripts/motion-gsap.ts) works on static
-// HTML. These islands re-render on every keystroke, so their motion lives
+// These islands re-render on every keystroke, so their motion lives
 // inside Preact: a number that glides to its new value, and result rows
-// that slide to their new rank instead of jumping. No GSAP here: the Web
-// Animations API and requestAnimationFrame are enough, so the islands stay
-// small. Both helpers do nothing under prefers-reduced-motion.
+// that slide to their new rank instead of jumping. This is feedback on the
+// reader's own input, so it survived the 7 Oct 2026 UX review that removed
+// decorative motion elsewhere. The Web Animations API and
+// requestAnimationFrame are enough; no library. Both helpers do nothing under prefers-reduced-motion.
 import type { ComponentChildren } from "preact";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 

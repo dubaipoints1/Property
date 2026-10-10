@@ -31,7 +31,7 @@ import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema"
 import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import { cardsTracked, banksCovered } from "~/lib/trustFacts";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import StockImage from "~/components/StockImage.astro";
+import CardImage from "~/components/CardImage.astro";
 import { getEntry } from "astro:content";
 import {
   getActiveCards,
@@ -145,7 +145,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   schema={schema}
 >
   <!-- ── 1. Page header ─────────────────────────────────────────────── -->
-  <header class="cards-pagehead dp-stage">
+  <header class="cards-pagehead">
     <div class="cards-pagehead-inner">
       <div class="crumb">DubaiPoints / Cards</div>
       <h1>The best UAE credit cards.</h1>
@@ -182,12 +182,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
           const fee = annualFeeLabel(f.card);
           return (
           <article class="cards-top-card">
-            <StockImage
-              slug={`card-${f.card.slug}`}
-              coverTitle={f.card.name}
-              coverCategory="Review"
+            <CardImage
+              cardSlug={f.card.slug}
+              cardName={f.card.name}
+              bankName={f.bankName}
               coverSize="med"
               class="cards-top-card-image"
+              sizes="(max-width: 640px) 70vw, (max-width: 960px) 540px, 420px"
             />
             <div class="cards-top-card-body">
               <span class="cards-top-card-bank">{f.bankName}</span>
@@ -241,12 +242,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
           <li class="cards-row">
             <a href={`/cards/${f.card.slug}/`} class="cards-row-link">
               <div class="cards-row-art">
-                <StockImage
-                  slug={`card-${f.card.slug}`}
-                  coverTitle={f.card.name}
-                  coverCategory="Review"
+                <CardImage
+                  cardSlug={f.card.slug}
+                  cardName={f.card.name}
+                  bankName={f.bankName}
                   coverSize="thumb"
                   class="cards-row-art-image"
+                  sizes="(max-width: 640px) 84px, 140px"
                 />
               </div>
               <div class="cards-row-id">

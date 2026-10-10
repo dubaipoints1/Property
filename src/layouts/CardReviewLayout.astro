@@ -18,6 +18,8 @@
 import BaseLayout from "./BaseLayout.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
 import StockImage from "~/components/StockImage.astro";
+import CardImage from "~/components/CardImage.astro";
+import { getCardArt } from "~/lib/cardArt";
 import HeroImage from "~/components/cards/HeroImage.astro";
 import { hasStockEntry } from "~/lib/stockManifest";
 import { formatEarnRate, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
@@ -206,6 +208,9 @@ const relatedCards = getActiveCards()
 // fallback for every card that doesn't yet have a curated photograph.
 const stockSlug = slug ? `card-${slug}` : null;
 const hasPhoto = stockSlug ? hasStockEntry(stockSlug) : false;
+// Issuer card art (9 Oct 2026) outranks the stock photograph: the reader
+// is looking at a review of this card, so show this card.
+const cardArt = slug ? getCardArt(slug) : undefined;
 
 // JSON-LD: every card review emits a Product entity with a FinancialProduct
 // additionalType so search engines parse it as a credit card. The fee and
@@ -269,7 +274,20 @@ const schema = {
 
   <!-- Navy hero band: card photograph (when registered) or CSS mock fallback -->
   <header class="dp-cr-hero">
-    {hasPhoto && stockSlug ? (
+    {cardArt ? (
+      <figure class="dp-cr-art">
+        <img
+          src={`/${cardArt.file}`}
+          width={cardArt.width}
+          height={cardArt.height}
+          alt={`${cardName} card, as shown by ${bankName}`}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+        <figcaption>Card image: {bankName}</figcaption>
+      </figure>
+    ) : hasPhoto && stockSlug ? (
       <figure class="dp-cr-photo" data-bank={bankSlug ?? "default"}>
         <StockImage
           slug={stockSlug}
@@ -303,7 +321,15 @@ const schema = {
           <li>{bankSlug ? <a href={`/banks/${bankSlug}/`} class="crumb-link">{bankName}</a> : bankName}</li>
         </ol>
       </nav>
-      <h1>{heading ?? title}</h1>
+      {(() => {
+        // Direction B (10 Oct 2026): the card's name in roman, the
+        // "review (Month YYYY)" tail in italic gold, as on the homepage.
+        const h = heading ?? title;
+        const i = h.search(/\sreview\b/i);
+        return i > 0
+          ? <h1>{h.slice(0, i)} <em>{h.slice(i + 1)}</em></h1>
+          : <h1>{h}</h1>;
+      })()}
 
       {(score != null || verdictLabel) && (
         <div class="dp-verdict-pill">
@@ -497,10 +523,10 @@ const schema = {
       <div class="dp-article-related-grid">
         {relatedCards.map((c) => (
           <a href={`/cards/${c.slug}/`} class="dp-article-related-card">
-            <StockImage
-              slug={`card-${c.slug}`}
-              coverTitle={c.name}
-              coverCategory="Review"
+            <CardImage
+              cardSlug={c.slug}
+              cardName={c.name}
+              bankName={relatedBankName(c.bank)}
               coverSize="med"
             />
             <div class="body">

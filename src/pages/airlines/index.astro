@@ -14,6 +14,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
+import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
 
 const programmes = (await getCollection("programs")).sort((a, b) =>
@@ -61,7 +62,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   fullWidth
   schema={schema}
 >
-  <header class="intel-pagehead dp-stage">
+  <header class="intel-pagehead">
     <div class="intel-pagehead-inner">
       <div class="crumb">DubaiPoints / Airlines</div>
       <h1>Airlines &amp; loyalty.</h1>
@@ -105,6 +106,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
             coverCategory="Programme"
             coverSize="hero"
             class="intel-featured-image"
+            sizes={LISTING_SIZES.featured}
             loading="eager"
           />
           <div class="intel-featured-body">
@@ -132,6 +134,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
                       coverCategory="Programme"
                       coverSize="med"
                       class="intel-card-image"
+                      sizes={LISTING_SIZES.tile}
                     />
                     <div class="intel-card-body">
                       <span class="intel-card-cat">{p.data.region}</span>
