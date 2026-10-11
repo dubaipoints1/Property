@@ -8,6 +8,7 @@
 // carries the branch.
 
 import { getEntry, type CollectionEntry } from "astro:content";
+import { programmeHref } from "~/lib/programmes";
 
 export interface DealIssuer {
   /** Display name, e.g. "Emirates NBD" or "Etihad Guest". */
@@ -35,10 +36,9 @@ export async function resolveDealIssuer(
     const entry = await getEntry(program);
     return {
       name: entry?.data.name ?? program.id,
-      // Programme hubs live under /airlines/ — including the hotel
-      // programmes (honest-but-odd URL namespace flagged in the
-      // 2026-07-27 routing analysis; a redirect is queued, not shipped).
-      href: `/airlines/${program.id}/`,
+      // Airline programme hubs live under /airlines/, hotel programmes
+      // under /hotels/ (split 11 October 2026; see src/lib/programmes.ts).
+      href: programmeHref(program.id),
       kind: "program",
     };
   }
