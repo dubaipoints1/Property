@@ -803,7 +803,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Responsive WebP derivatives (640/1200px; 360px for card art) so new images ship fast.
+          npm run images:thumbs
           git add data/stock/manifest.json public/images/stock/
+          for d in public/images/stock/thumb public/images/stock/md public/images/ai/thumb public/images/ai/md public/images/cards/thumb; do [ -d "$d" ] && git add -A "$d"; done
           if git diff --staged --quiet; then
             echo "No new images to commit."
             exit 0
