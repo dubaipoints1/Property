@@ -4,10 +4,17 @@
 # HSTS; CSP is a separate item." The four content/referrer/frame/permissions
 # headers have no lock-in on a static site. HSTS is deliberately short
 # (7 days) with no preload and no includeSubDomains for the first rollout;
-# lengthen it once a cycle has passed without incident. No
-# Content-Security-Policy here, report-only or enforced, until the inline
-# script inventory (theme toggle, nav script, Pagefind UI) is known — that
-# is its own T3 item. `npm run audit:static` lints this file.
+# lengthen it once a cycle has passed without incident.
+#
+# Content-Security-Policy (enforced) is NOT written here: it is appended to
+# the `/*` block of dist/_headers at build time by
+# scripts/build/csp-hashes.mjs (postbuild), because its script-src carries a
+# sha256 hash of every executable inline <script> the build renders, and
+# three of those are Astro's own runtimes that change on any upgrade. Chairman
+# direction, 11 October 2026, in-session: "all and then merge it". Inventory:
+# .council/research/2026-09/csp-inline-script-inventory-2026-09-17.md.
+# Never add an inline on*= attribute in src/ — the policy disables it and the
+# build refuses it. `npm run audit:static` lints the built file.
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

@@ -6,7 +6,9 @@
 // emiratesnbd.com/en/brand-assets ships PNG only).
 //
 // Falls back to a styled text initial when the asset is missing or fails
-// to load (onerror).
+// to load. The swap is done by the delegated listener in BaseLayout.astro
+// (keyed on data-logo-fallback), not an inline onerror attribute: inline
+// handlers cannot be allowed by a Content-Security-Policy hash or nonce.
 //
 // Usage:
 //   <BankLogo slug="emirates-nbd" name="Emirates NBD" size="md" />
@@ -57,7 +59,7 @@ const initials = name
     height={dim}
     loading="lazy"
     decoding="async"
-    onerror={`this.style.display='none';this.nextElementSibling.style.display='inline-flex'`}
+    data-logo-fallback
   />
   <span class="dp-bank-logo-fallback" aria-hidden="true">{initials}</span>
 </span>
