@@ -2,7 +2,8 @@
 // Pages serves the built site but that no test looks at: public/_redirects
 // (does every source still map to a page? do rules shadow real pages?),
 // public/_headers (does it exist at all — it did not on 2026-09-06 — and
-// does it carry the recommended baseline?), and the generated sitemap
+// does it carry the recommended baseline? read from dist/_headers, which
+// carries the build-time CSP), and the generated sitemap
 // (does it agree with what dist/ actually contains?). Found during the
 // 2026-09-06 site UI/UX audit.
 //
@@ -92,6 +93,9 @@ export function lintHeaders(blocks) {
       if (b.path === "/*") present.add(h.name.toLowerCase());
     }
   }
+  // An enforced CSP (appended to dist/_headers by scripts/build/csp-hashes.mjs
+  // since 11 October 2026) satisfies the report-only recommendation.
+  if (present.has("content-security-policy")) present.add("content-security-policy-report-only");
   return {
     unknownHeaders: [...unknown].sort(),
     duplicatePaths: [...seen].filter(([, n]) => n > 1).map(([p]) => p).sort(),
@@ -160,7 +164,9 @@ if (isMain) {
   const read = (p) => (existsSync(p) ? readFileSync(p, "utf8") : null);
   const redirectsBody = read(path.join(root, "public/_redirects")) ?? "";
   const rules = parseRedirectRules(redirectsBody);
-  const headersBody = read(path.join(root, "public/_headers"));
+  // dist/_headers is what ships: it is public/_headers plus the CSP line
+  // that scripts/build/csp-hashes.mjs appends in postbuild.
+  const headersBody = read(path.join(distDir, "_headers")) ?? read(path.join(root, "public/_headers"));
   const blocks = headersBody ? parseHeadersFile(headersBody) : [];
   const sitemapFiles = existsSync(distDir) ? readdirSync(distDir).filter((f) => /^sitemap-\d+\.xml$/.test(f)) : [];
   const sitemapRoutes = sitemapFiles.flatMap((f) => extractSitemapLocs(readFileSync(path.join(distDir, f), "utf8")));

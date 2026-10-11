@@ -94,6 +94,33 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     })();
   </script>
   
+  <!-- Logo fallback (BankLogo / ProgrammeLogo). Replaces 3,400+ inline
+       onerror attributes, which no CSP hash or nonce can allow. `error`
+       does not bubble, so this listens in the capture phase; it sits in
+       <head>, before any <img>, and also sweeps on DOMContentLoaded for an
+       image that failed before it ran. Hashed into script-src at build by
+       scripts/build/csp-hashes.mjs. -->
+  <script is:inline>
+    (function () {
+      function swap(img) {
+        if (img.dataset.logoFailed) return;
+        img.dataset.logoFailed = '1';
+        img.style.display = 'none';
+        var fb = img.nextElementSibling;
+        if (fb) fb.style.display = 'inline-flex';
+      }
+      document.addEventListener('error', function (e) {
+        var t = e.target;
+        if (t && t.tagName === 'IMG' && t.hasAttribute('data-logo-fallback')) swap(t);
+      }, true);
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('img[data-logo-fallback]').forEach(function (img) {
+          if (img.complete && img.naturalWidth === 0) swap(img);
+        });
+      });
+    })();
+  </script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/logo-mark.svg" />

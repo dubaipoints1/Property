@@ -324,9 +324,17 @@ issuer host. `playwright` is pinned exactly (1.56.1) because its bundled
 Chromium build 1194 is the one pre-installed in the web session; `DP_CHROME_PATH`
 overrides. `public/_headers` **ships** since 15 September 2026 (Chairman
 ruling R7): the four static headers plus a 7-day HSTS with no preload and
-no subdomains. A Content-Security-Policy, report-only or enforced, is a
-separate T3 item; `audit:static` lists it as the one missing recommended
-header until it lands. The external sweep reports a host on which
+no subdomains. **An enforced Content-Security-Policy ships since 11 October
+2026** (Chairman direction in-session, "all and then merge it"): it is not in
+`public/_headers` but appended to `dist/_headers` in `postbuild` by
+`scripts/build/csp-hashes.mjs`, which hashes every executable inline
+`<script>` in `dist/` into `script-src` (no `'unsafe-inline'` for script),
+fails the build on any inline `on*=` attribute or a header over Cloudflare's
+2,000 characters, and is tested in `tests/build/csp-hashes.test.ts`. The
+logo `onerror` fallback is now a capture-phase listener in `BaseLayout.astro`
+keyed on `data-logo-fallback`. Never add an inline event handler, and add a
+new third-party origin to `THIRD_PARTY` in that script or it will be blocked.
+The paragraph below is the history of how it got there. The external sweep reports a host on which
 **every** link (two or more) timed out as `unverifiable`, not broken:
 emirates.com and etihad.com tarpit data-centre clients, and on 21
 September 2026 that was ten of the thirteen "broken" links in #364 while

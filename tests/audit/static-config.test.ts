@@ -63,3 +63,8 @@ test("report records headersPresent=false when the file is absent", () => {
   assert.equal(r.headers.present, false);
   assert.equal(r.headers.lint.missingRecommended.length, 6);
 });
+
+test("an enforced CSP satisfies the report-only recommendation", () => {
+  const blocks = parseHeadersFile(RECOMMENDED_HEADERS.replace("Content-Security-Policy-Report-Only:", "Content-Security-Policy:"));
+  assert.deepEqual(lintHeaders(blocks).missingRecommended, []);
+});
