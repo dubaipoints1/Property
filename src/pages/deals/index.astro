@@ -56,6 +56,11 @@ const tabs = [
   { label: "All live deals", active: true, href: "/deals/" },
   { label: "Salary-transfer tracker", href: "/salary-transfer/" },
 ];
+// DSF season panel (11 October 2026, Chairman direction "all", per
+// .council/briefs/2026-09-15-dsf-deals-cadence.md). Shown until the
+// 2026–27 festival is over; it states only what is confirmed and points to
+// the guide, and bank DSF campaigns land in the grid as ordinary deals.
+const showDsf = todayMs < Date.UTC(2027, 1, 1);
 const siteUrl = siteUrlFrom(Astro.site);
 const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank & card deals", description: "Current UAE deals, each dated, sourced and checked against its recorded expiry.", crumbs: [{ name: "Deals", path: "/deals/" }] });
 ---
@@ -193,6 +198,20 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
             })}
           </ol>
         </nav>
+      )}
+
+      {showDsf && (
+        <section class="deals-dsf" aria-labelledby="deals-dsf-heading">
+          <span class="eyebrow">Dubai Shopping Festival</span>
+          <h2 id="deals-dsf-heading" class="dp-rail-heading">DSF 2026–27 bank offers land here.</h2>
+          <p>
+            The 2026–27 dates are not yet officially announced; the last edition ran
+            5 December 2025 to 11 January 2026. Banks publish their DSF card campaigns
+            in the weeks before it opens, and each one is listed here with its terms
+            and end date once it is on the bank's own page.
+          </p>
+          <a href="/guides/dubai-shopping-festival-2026/">The DSF card-stacking guide →</a>
+        </section>
       )}
 
       <div class="intel-insider">
@@ -624,4 +643,24 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     .intel-search:not(:only-child):focus-within input[type="search"] { width: 100%; }
     .intel-search:only-child { width: 100%; min-width: 0; flex: 1 1 100%; }
   }
+
+  .deals-dsf {
+    margin: 0 0 24px;
+    padding: 20px 22px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    background: var(--paper);
+  }
+  .deals-dsf .eyebrow {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+  }
+  .deals-dsf h2 { margin: 0 0 8px; }
+  .deals-dsf p { margin: 0 0 12px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+  .deals-dsf a { font-size: 14px; font-weight: 600; color: var(--green); }
 </style>
