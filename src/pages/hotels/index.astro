@@ -1,0 +1,77 @@
+---
+// Hotel programmes directory — split out of /airlines/ on 11 October 2026
+// (Chairman direction in-session: "all and then merge it"; brief
+// .council/briefs/2026-10-11-hotels-section.md). Closes the 15 September
+// R5 ruling: Bonvoy, Hilton Honors and Accor ALL now sit under their own
+// section, with 301s from the old /airlines/<slug>/ URLs.
+//
+// Directory idiom per CLAUDE.md "Editorial conventions": dp-article is-wide
+// + dp-dir-grid of dp-dir-tile. Every tile figure comes from the programmes
+// collection or the valuations table — nothing typed here.
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
+import { getCollection } from "astro:content";
+import { isHotelProgramme } from "~/lib/programmes";
+import { dpValueSub } from "~/lib/valuations";
+
+const programmes = (await getCollection("programs", (p) => isHotelProgramme(p.id))).sort((a, b) =>
+  a.data.name.localeCompare(b.data.name),
+);
+
+const siteUrl = siteUrlFrom(Astro.site);
+const schema = collectionPageGraph({
+  siteUrl,
+  path: "/hotels/",
+  name: "Hotel loyalty programmes",
+  description: "Marriott Bonvoy, Hilton Honors and Accor ALL from the UAE: earning, redemptions, transfer partners and expiry policy.",
+  crumbs: [{ name: "Hotels", path: "/hotels/" }],
+});
+---
+
+<BaseLayout
+  title="Hotel loyalty programmes for UAE residents | DubaiPoints"
+  description="Marriott Bonvoy, Hilton Honors and Accor ALL from the UAE: how to earn, where the points go furthest, transfer partners and expiry policy."
+  fullWidth
+  schema={schema}
+>
+  <article class="dp-article is-wide">
+    <header class="dp-article-head">
+      <div class="crumb">DubaiPoints / Hotels</div>
+      <h1>Hotel programmes.</h1>
+      <p class="deck">
+        The hotel loyalty programmes UAE residents earn into, through stays
+        and through co-branded or transferable-points cards. Each page covers
+        earning, the redemptions worth making, transfer partners and how
+        points expire.
+      </p>
+    </header>
+
+    <div class="dp-dir-grid">
+      {programmes.map((p) => {
+        const value = dpValueSub(p.id);
+        return (
+          <a class="dp-dir-tile" href={`/hotels/${p.id}/`}>
+            <span class="eyebrow">{p.data.currencyName}</span>
+            <span class="title">{p.data.name}</span>
+            {p.data.sweetSpots[0] && <span class="desc">{p.data.sweetSpots[0].title}</span>}
+            <span class="meta">
+              {p.data.transferPartners.length} transfer partner{p.data.transferPartners.length === 1 ? "" : "s"}
+              {value && <> · {value}</>}
+            </span>
+          </a>
+        );
+      })}
+    </div>
+
+    <section class="dp-prose">
+      <p>
+        Airline programmes (Skywards, Etihad Guest, Qatar Privilege Club and
+        the rest) are on the <a href="/airlines/">airline programmes</a> page.
+        Hotel-loyalty news, such as promotions and programme changes, runs on
+        the <a href="/news/hotels/">hotel news desk</a>, and the
+        <a href="/valuations/">valuations table</a> sets out what we count
+        each point as worth.
+      </p>
+    </section>
+  </article>
+</BaseLayout>

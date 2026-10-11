@@ -39,9 +39,13 @@ import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 import { newsletterLive } from "~/lib/newsletter";
 import { getCardArt } from "~/lib/cardArt";
+import { isHotelProgramme } from "~/lib/programmes";
 
 const allGuides = await getCollection("guides");
 const allPrograms = await getCollection("programs");
+// Hotel programmes have their own /hotels/ section since 11 October 2026;
+// the "Miles & loyalty" tile counts what /airlines/ actually lists.
+const airlinePrograms = allPrograms.filter((p) => !isHotelProgramme(p.id));
 const allBanks = await getCollection("banks");
 const allNews = await getCollection("news");
 const cards = getActiveCards();
@@ -359,7 +363,7 @@ const dealRows = await Promise.all(
 const DIRECTORY = [
   { href: "/cards/", count: `${cards.length} cards`, title: "Credit-card reviews", desc: "Cashback, miles and Islamic cards compared on fees, earn rates and eligibility." },
   { href: "/banks/", count: `${allBanks.length} banks`, title: "Bank guides", desc: "Every covered UAE issuer — fees, eligibility and card line-ups." },
-  { href: "/airlines/", count: `${allPrograms.length} programmes`, title: "Miles & loyalty", desc: "Skywards, Etihad Guest, Qatar and the hotel programmes — tiers, partners and sweet spots." },
+  { href: "/airlines/", count: `${airlinePrograms.length} programmes`, title: "Miles & loyalty", desc: "Skywards, Etihad Guest, Qatar and the other airline programmes — tiers, partners and sweet spots." },
   { href: "/salary-transfer/", count: `${offerRows.length} live offers`, title: "Salary-transfer tracker", desc: "Band-by-band cash and rate offers across UAE banks, every entry dated." },
   { href: "/deals/", count: dealRows.length > 0 ? `${dealRows.length} live` : "Deals desk", title: "Lifestyle deals", desc: "Time-bound UAE dining, retail and travel offers — dated, sourced, archived when they end." },
   { href: "/guides/", count: `${allGuides.length} guides`, title: "Guides", desc: "The expat starter series, eligibility, AECB credit, transfer ratios and the groundwork." },

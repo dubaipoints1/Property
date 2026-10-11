@@ -1,0 +1,34 @@
+---
+// Hotel programme hubs — split out of /airlines/[slug]/ on 11 October 2026
+// (brief: .council/briefs/2026-10-11-hotels-section.md). Same layout as the
+// airline hubs, with section="hotels" for the canonical crumb and schema.
+import AirlineProgramLayout from "~/layouts/AirlineProgramLayout.astro";
+import { getCollection, render } from "astro:content";
+import { isHotelProgramme } from "~/lib/programmes";
+import { relatedCardsForProgramme } from "~/lib/programmeRelatedCards";
+
+export async function getStaticPaths() {
+  const programs = await getCollection("programs", (p) => isHotelProgramme(p.id));
+  return programs.map((p) => ({ params: { slug: p.id }, props: { program: p } }));
+}
+
+const { program } = Astro.props;
+const { Content } = await render(program);
+const relatedCards = await relatedCardsForProgramme(program.data.name, program.data.currencyName);
+---
+
+<AirlineProgramLayout
+  title={`${program.data.name} — UAE earn, redeem, transfer guide | DubaiPoints`}
+  description={`${program.data.name} from the UAE: elite tiers, earning routes, ${program.data.sweetSpots.length} sweet-spot redemptions and transfer partners. AED-first analysis.`}
+  slug={program.id}
+  programName={program.data.name}
+  currencyName={program.data.currencyName}
+  region={program.data.region}
+  expiryPolicy={program.data.expiryPolicy}
+  sweetSpots={program.data.sweetSpots}
+  transferPartners={program.data.transferPartners}
+  relatedCards={relatedCards}
+  section="hotels"
+>
+  <Content />
+</AirlineProgramLayout>

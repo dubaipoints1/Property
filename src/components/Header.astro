@@ -63,7 +63,7 @@ const cardsPanel: Group[] = [
   { title: "Co-branded cards", rows: [
     { label: "Emirates Skywards cards",   href: "/airlines/skywards/" },
     { label: "Etihad Guest cards",        href: "/airlines/etihad-guest/" },
-    { label: "Marriott Bonvoy cards",     href: "/airlines/marriott-bonvoy/" },
+    { label: "Marriott Bonvoy cards",     href: "/hotels/marriott-bonvoy/" },
   ]},
   { title: "Learn about UAE cards", rows: [
     { label: "Beginner's guide",          href: "/guides/expat-starter/" },
@@ -87,9 +87,10 @@ const pointsPanel: Group[] = [
     { label: "Qatar Privilege Club",   href: "/airlines/qatar-privilege-club/", sub: dpValueSub("qatar-privilege-club") },
   ]},
   { title: "Hotel programmes", rows: [
-    { label: "Marriott Bonvoy",      href: "/airlines/marriott-bonvoy/", sub: dpValueSub("marriott-bonvoy") },
-    { label: "Hilton Honors",        href: "/airlines/hilton-honors/", sub: dpValueSub("hilton-honors") },
-    { label: "Accor ALL",            href: "/airlines/accor-all/" },
+    { label: "Marriott Bonvoy",      href: "/hotels/marriott-bonvoy/", sub: dpValueSub("marriott-bonvoy") },
+    { label: "Hilton Honors",        href: "/hotels/hilton-honors/", sub: dpValueSub("hilton-honors") },
+    { label: "Accor ALL",            href: "/hotels/accor-all/" },
+    { label: "All hotel programmes", href: "/hotels/" },
   ]},
   { title: "Learn", rows: [
     { label: "Beginner's guide to UAE points", href: "/guides/expat-starter-points-101/" },
@@ -118,7 +119,7 @@ const travelPanel: Group[] = [
   ]},
   { title: "Hotels", rows: [
     { label: "Hotel news",        href: "/news/hotels/" },
-    { label: "Hotel programmes",  href: "/airlines/" },
+    { label: "Hotel programmes",  href: "/hotels/" },
   ]},
 ];
 
@@ -204,7 +205,7 @@ const publicationRows: SubRow[] = [
       <a href="/banks/" class={isActive("/banks/") ? "is-active" : ""}>Banks</a>
 
       <div class="dp-nav-mega-wrap">
-        <a href="/airlines/" class={isActive("/airlines/") ? "is-active" : ""}>
+        <a href="/airlines/" class={isActive("/airlines/") || isActive("/hotels/") ? "is-active" : ""}>
           Earn miles
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </a>
