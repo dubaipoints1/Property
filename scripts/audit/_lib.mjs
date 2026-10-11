@@ -184,6 +184,8 @@ export const TEMPLATE_RULES = [
   { template: "BankHubLayout", match: "^/banks/[^/]+/$" },
   { template: "Directory (programmes)", route: "/airlines/" },
   { template: "AirlineProgramLayout", match: "^/airlines/[^/]+/$" },
+  { template: "Directory (hotel programmes)", route: "/hotels/" },
+  { template: "AirlineProgramLayout", match: "^/hotels/[^/]+/$" },
   { template: "SalaryTransferHistoryLayout", match: "^/salary-transfer/history/" },
   { template: "SalaryTransferCalculatorLayout", match: "^/salary-transfer/calculator/$" },
   { template: "SalaryTransferTrackerLayout", route: "/salary-transfer/" },

@@ -16,10 +16,14 @@ import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema"
 import StockImage from "~/components/StockImage.astro";
 import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
+import { isHotelProgramme } from "~/lib/programmes";
 
-const programmes = (await getCollection("programs")).sort((a, b) =>
+// Hotel programmes moved to /hotels/ on 11 October 2026 (closing R5); this
+// directory lists airline programmes only and points across with one tile.
+const programmes = (await getCollection("programs", (p) => !isHotelProgramme(p.id))).sort((a, b) =>
   a.data.name.localeCompare(b.data.name),
 );
+const hotelCount = (await getCollection("programs", (p) => isHotelProgramme(p.id))).length;
 
 const guides = (await getCollection("guides")).sort(
   (a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime(),
@@ -29,13 +33,8 @@ const guides = (await getCollection("guides")).sort(
 // otherwise the first A–Z.
 const featured = programmes.find((p) => p.id === "skywards") ?? programmes[0];
 const others = programmes.filter((p) => p.id !== featured?.id);
-// R5 (Chairman ruling, 15 Sep 2026): hotel programmes keep their /airlines/
-// URLs until the hotel desk has briefs for them; the directory groups them
-// under their own heading so the page stops calling Bonvoy an airline.
-const HOTEL_PROGRAMMES = new Set(["marriott-bonvoy", "hilton-honors", "accor-all"]);
 const programmeGroups = [
-  { id: "airline-programmes", heading: "Airline programmes", items: others.filter((p) => !HOTEL_PROGRAMMES.has(p.id)) },
-  { id: "hotel-programmes", heading: "Hotel programmes", items: others.filter((p) => HOTEL_PROGRAMMES.has(p.id)) },
+  { id: "airline-programmes", heading: "Airline programmes", items: others },
 ].filter((g) => g.items.length > 0);
 
 // Trending rail — cross-section guides today (programmes collection is
@@ -53,12 +52,12 @@ const tabs = [
   { label: "Valuations method", href: "/valuations/" },
 ];
 const siteUrl = siteUrlFrom(Astro.site);
-const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airlines & loyalty programmes", description: "Skywards, Etihad Guest, Qatar Privilege Club and the hotel programmes UAE residents earn and redeem in.", crumbs: [{ name: "Airlines & loyalty", path: "/airlines/" }] });
+const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airlines & loyalty programmes", description: "Skywards, Etihad Guest, Qatar Privilege Club and the other airline programmes UAE residents earn and redeem in.", crumbs: [{ name: "Airlines & loyalty", path: "/airlines/" }] });
 ---
 
 <BaseLayout
   title="UAE airlines & loyalty programmes | DubaiPoints"
-  description="Skywards, Etihad Guest, Qatar Privilege Club, Saudia Alfursan and the hotel programmes UAE residents earn and redeem in. Tiers, sweet spots, transfer partners and expiry policy."
+  description="Skywards, Etihad Guest, Qatar Privilege Club and the other airline programmes UAE residents earn and redeem in. Tiers, sweet spots, transfer partners and expiry policy."
   fullWidth
   schema={schema}
 >
@@ -162,6 +161,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
             Until they land, the <a href={`/airlines/${featured?.id ?? "skywards"}/`}>flagship Skywards guide</a> covers the programme most UAE residents earn into by default, and the <a href="/guides/">guides desk</a> covers cross-programme strategy (transfers, sweet spots, redemption mechanics).
           </p>
         </section>
+      )}
+
+      {hotelCount > 0 && (
+        <a href="/hotels/" class="airlines-hotels-pointer">
+          <span class="airlines-roster-eyebrow">Hotel programmes</span>
+          <span class="airlines-hotels-pointer-title">Marriott Bonvoy, Hilton Honors and Accor ALL have their own section →</span>
+        </a>
       )}
     </div>
 
@@ -418,6 +424,22 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     font-family: var(--font-display); font-weight: 500; font-size: 22px;
     letter-spacing: -0.2px; margin: 0 0 14px;
   }
+  .airlines-hotels-pointer {
+    display: grid; gap: 6px;
+    padding: 20px 24px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+  .airlines-hotels-pointer:hover { border-color: var(--ink-soft); }
+  .airlines-hotels-pointer-title {
+    font-family: var(--font-display); font-weight: 500; font-size: 18px;
+    letter-spacing: -0.2px; line-height: 1.3; color: var(--ink);
+  }
+  .airlines-hotels-pointer:hover .airlines-hotels-pointer-title { color: var(--green); }
   .airlines-roster-eyebrow {
     font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;

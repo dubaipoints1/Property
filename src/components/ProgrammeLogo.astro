@@ -1,6 +1,7 @@
 ---
 // Loyalty programme logo — renders the SVG mark from /logos/airlines/[slug].svg.
-// Same fallback pattern as BankLogo.
+// Same fallback pattern as BankLogo (data-logo-fallback, swapped by the
+// delegated listener in BaseLayout.astro — no inline onerror, for the CSP).
 //
 // Usage:
 //   <ProgrammeLogo slug="skywards" name="Emirates Skywards" size="md" />
@@ -30,7 +31,7 @@ const initials = name
     height={dim}
     loading="lazy"
     decoding="async"
-    onerror={`this.style.display='none';this.nextElementSibling.style.display='inline-flex'`}
+    data-logo-fallback
   />
   <span class="dp-bank-logo-fallback" aria-hidden="true">{initials}</span>
 </span>

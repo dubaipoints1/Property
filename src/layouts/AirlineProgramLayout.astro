@@ -1,6 +1,6 @@
 ---
 // Airline programme layout — Phase H2 + F.16 (post-audit restructure).
-// Used by /airlines/[slug]/.
+// Used by /airlines/[slug]/ and /hotels/[slug]/ (the `section` prop).
 //
 // Restructure (F.16):
 //   - MDX body prose renders FIRST — the editorial content (Tier
@@ -36,6 +36,8 @@ interface Props {
   sweetSpots: { title: string; description: string }[];
   transferPartners: string[];
   relatedCards?: RelatedCard[];
+  /** Which programme directory this hub sits under (11 Oct 2026 hotels split). */
+  section?: "airlines" | "hotels";
 }
 
 const {
@@ -49,7 +51,11 @@ const {
   sweetSpots,
   transferPartners,
   relatedCards = [],
+  section = "airlines",
 } = Astro.props;
+
+const sectionPath = `/${section}/`;
+const sectionName = section === "hotels" ? "Hotels" : "Airlines";
 
 const heroSlug = slug ? `programme-${slug}` : null;
 const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
@@ -82,7 +88,7 @@ const schema = {
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
-        { "@type": "ListItem", position: 2, name: "Airlines", item: `${siteUrl}/airlines/` },
+        { "@type": "ListItem", position: 2, name: sectionName, item: `${siteUrl}${sectionPath}` },
         { "@type": "ListItem", position: 3, name: programName, item: canonicalUrl },
       ],
     },
@@ -92,7 +98,7 @@ const schema = {
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
   <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead is-narrow", { "dp-stage": stageOwnsHero }]}>
-    <div class="crumb">{region} · <a href="/airlines/" class="crumb-link">Loyalty programme</a></div>
+    <div class="crumb">{region} · <a href={sectionPath} class="crumb-link">{section === "hotels" ? "Hotel programme" : "Loyalty programme"}</a></div>
     <h1>{programName}</h1>
     <p class="deck">Loyalty currency: <strong>{currencyName}</strong>.</p>
 
