@@ -23,6 +23,9 @@ const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
   "guide-best-uae-cards-hotel-points-2026": "photo pending seed",
   "news-world-of-hyatt-new-hotels-double-points-25000-cap": "photo pending seed",
+  "deal-fab-noon-10pct-monthly": "photo pending seed",
+  "deal-adib-lulu-thursdays-20pct": "photo pending seed",
+  "deal-emirates-islamic-etihad-guest-welcome-oct-2026": "photo pending seed",
 };
 
 const manifest = JSON.parse(
