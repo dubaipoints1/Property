@@ -21,6 +21,10 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "news-etihad-abu-dhabi-red-sea-twice-weekly-from-25-october": "photo pending seed",
+  "news-flydubai-dubai-budapest-daily-from-25-october": "photo pending seed",
+  "news-mashreq-aura-credit-cards-launch-alshaya": "photo pending seed",
+  "news-dib-consumer-cashback-grocery-school-fee-caps-cut-10-october": "photo pending seed",
 };
 
 const manifest = JSON.parse(
