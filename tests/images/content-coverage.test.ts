@@ -26,6 +26,10 @@ const ALLOWED_MISSING: Record<string, string> = {
   "deal-fab-noon-10pct-monthly": "photo pending seed",
   "deal-adib-lulu-thursdays-20pct": "photo pending seed",
   "deal-emirates-islamic-etihad-guest-welcome-oct-2026": "photo pending seed",
+  "news-etihad-abu-dhabi-red-sea-twice-weekly-from-25-october": "photo pending seed",
+  "news-flydubai-dubai-budapest-daily-from-25-october": "photo pending seed",
+  "news-mashreq-aura-credit-cards-launch-alshaya": "photo pending seed",
+  "news-dib-consumer-cashback-grocery-school-fee-caps-cut-10-october": "photo pending seed",
 };
 
 const manifest = JSON.parse(
