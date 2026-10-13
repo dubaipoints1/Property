@@ -21,6 +21,8 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "guide-best-uae-cards-hotel-points-2026": "photo pending seed",
+  "news-world-of-hyatt-new-hotels-double-points-25000-cap": "photo pending seed",
 };
 
 const manifest = JSON.parse(
