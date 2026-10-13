@@ -21,15 +21,6 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
-  "guide-best-uae-cards-hotel-points-2026": "photo pending seed",
-  "news-world-of-hyatt-new-hotels-double-points-25000-cap": "photo pending seed",
-  "deal-fab-noon-10pct-monthly": "photo pending seed",
-  "deal-adib-lulu-thursdays-20pct": "photo pending seed",
-  "deal-emirates-islamic-etihad-guest-welcome-oct-2026": "photo pending seed",
-  "news-etihad-abu-dhabi-red-sea-twice-weekly-from-25-october": "photo pending seed",
-  "news-flydubai-dubai-budapest-daily-from-25-october": "photo pending seed",
-  "news-mashreq-aura-credit-cards-launch-alshaya": "photo pending seed",
-  "news-dib-consumer-cashback-grocery-school-fee-caps-cut-10-october": "photo pending seed",
 };
 
 const manifest = JSON.parse(
