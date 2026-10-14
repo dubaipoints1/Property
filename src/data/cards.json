@@ -1223,7 +1223,7 @@
       "interestRate": "editor-confirmed",
       "cashAdvanceFee": "editor-confirmed",
       "loyaltyProgram": "editor-confirmed",
-      "earnRates": "editor-confirmed",
+      "earnRates": "editor-corrected",
       "earnUnit": "editor-confirmed",
       "welcomeBonus": "editor-confirmed",
       "eligibility": "editor-confirmed",
@@ -1232,7 +1232,8 @@
       "kfsUrl": "editor-confirmed",
       "lastVerified": "scraped",
       "sources": "editor-confirmed",
-      "partnerBrands": "needs-review"
+      "partnerBrands": "needs-review",
+      "perks": "editor-corrected"
     },
     "_lastScraped": "2026-09-17",
     "_lastReviewed": "2026-05-26",
@@ -1269,7 +1270,7 @@
         "min_monthly_spend_to_qualify_aed": 3000,
         "per_category": {
           "groceries": {
-            "monthly_aed": 300
+            "monthly_aed": 200
           },
           "fuel": {
             "monthly_aed": 100
@@ -1289,7 +1290,7 @@
       "invitationOnly": false
     },
     "perks": [
-      "3% cashback (each category capped monthly) on: supermarkets and hypermarkets (AED 300 cap), automobile servicing (AED 300), school fees (AED 300), Etisalat and du bills (AED 100), fuel (AED 100), utility bills (AED 100), and Salik and Nol recharges (AED 25). Total cashback capped at AED 1,000 per billing cycle.",
+      "3% cashback (each category capped monthly) on: supermarkets and hypermarkets (AED 200 cap since 10 October 2026; was AED 300), automobile servicing (AED 300), school fees (AED 200 since 10 October 2026; was AED 300), Etisalat and du bills (AED 100), fuel (AED 100), utility bills (AED 100), and Salik and Nol recharges (AED 25). Total cashback capped at AED 1,000 per billing cycle.",
       "Cashback is earned only on those listed categories and only on UAE transactions; non-listed spend earns nothing. Since 1 December 2019, utility and government bills paid through DIB's own platforms earn no cashback.",
       "Effective 10 May 2025, a minimum AED 3,000 of retail purchases per statement cycle is required to earn cashback, and an annual fee of AED 200 + VAT (AED 210) applies, with a limited-time first-year-free offer.",
       "Complimentary roadside assistance up to twice a year (towing, battery boost, fuel, tyre change, lockout, off-road recovery) plus a free international driving licence.",
@@ -1309,7 +1310,7 @@
     "transferPartners": [],
     "applyUrl": "https://www.dib.ae/personal/cards/consumer-reward-card",
     "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/soc/cpr-soc-cards.pdf",
-    "lastVerified": "2026-10-02",
+    "lastVerified": "2026-10-13",
     "sources": [
       "https://www.dib.ae/personal/cards/consumer-reward-card",
       "https://www.dib.ae/docs/default-source/cpr/soc/cpr-wajaha-soc-eng.pdf"
