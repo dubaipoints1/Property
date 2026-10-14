@@ -109,13 +109,13 @@ export function findInlineHandlers(html) {
  * one is a policy change and belongs in review.
  *  - Cloudflare Web Analytics: the beacon script (BaseLayout.astro, only
  *    when PUBLIC_CF_BEACON_TOKEN is set in production) and its RUM POST.
- *  - Buttondown: the newsletter form posts there once the list is live
- *    (src/components/NewsletterSignup.astro).
+ *  No form posts off-site since the newsletter was removed (14 October
+ *  2026), so form-action is 'self' only.
  */
 export const THIRD_PARTY = {
   scriptSrc: ["https://static.cloudflareinsights.com"],
   connectSrc: ["https://cloudflareinsights.com"],
-  formAction: ["https://buttondown.com", "https://buttondown.email"],
+  formAction: [],
 };
 
 /** Assemble the policy value from a sorted, de-duplicated hash list. */

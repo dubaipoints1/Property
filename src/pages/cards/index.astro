@@ -11,7 +11,6 @@
 //      fee | earn rate | perks | Read review
 //   5. Editorial callout (dark band): "Not sure which card is right?"
 //      + 2 secondary CTAs into existing /guides/
-//   6. Newsletter strip (deferred — site-wide footer chrome carries it)
 //
 // Charter notes
 // ─────────────
@@ -658,8 +657,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     margin: 32px 0 48px;
   }
   /* In dark mode --ink is the light text colour, so the band inverted to a
-     light surface under light copy (1.1:1). Brand navy in dark, as on the
-     newsletter rail (2026-09-06 audit family F-003). */
+     light surface under light copy (1.1:1). Brand navy in dark
+     (2026-09-06 audit family F-003). */
   :global([data-theme="dark"]) .cards-callout { background: #1f3a4d; color: #ffffff; }
   :global([data-theme="dark"]) .cards-callout-text h2,
   :global([data-theme="dark"]) .cards-callout-cta,

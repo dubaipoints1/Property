@@ -171,6 +171,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
       )}
     </div>
 
+    {trending.length > 0 && (
     <aside class="intel-aside">
       {trending.length > 0 && (
         <nav class="intel-trending" aria-label="Trending content">
@@ -188,14 +189,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
           </ol>
         </nav>
       )}
-
-      <div class="intel-insider">
-        <span class="eyebrow">The brief</span>
-        <div class="dp-rail-heading">The Friday brief is preparing for launch.</div>
-        <p>Join the launch list for salary-transfer changes, new card offers and worthwhile miles redemptions.</p>
-        <a href="/newsletter/" class="cta">Join the launch list →</a>
-      </div>
     </aside>
+    )}
   </div>
 </BaseLayout>
 
@@ -507,46 +502,6 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     text-decoration: none;
   }
   .intel-trending a:hover { color: var(--green); }
-
-  :global([data-theme="dark"]) .intel-insider { background: #1f3a4d; }
-  :global([data-theme="dark"]) .intel-insider .cta { color: #1f3a4d; }
-  .intel-insider {
-    background: var(--green);
-    color: white;
-    border-radius: 16px;
-    padding: 22px;
-    display: grid; gap: 8px;
-  }
-  .intel-insider .eyebrow {
-    font-family: var(--font-ui);
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.75);
-  }
-  .intel-insider .dp-rail-heading {
-    font-family: var(--font-display);
-    font-weight: 500; font-size: 19px;
-    line-height: 1.2; letter-spacing: -0.4px;
-    color: white; margin: 0;
-    text-wrap: balance;
-  }
-  .intel-insider p {
-    font-family: var(--font-ui);
-    font-size: 13px; line-height: 1.5;
-    color: rgba(255, 255, 255, 0.88);
-    margin: 4px 0 6px;
-  }
-  .intel-insider .cta {
-    display: inline-flex; align-items: center;
-    height: 36px; padding: 0 16px;
-    background: white; color: var(--green);
-    border-radius: 999px;
-    font-family: var(--font-ui);
-    font-size: 12px; font-weight: 700; letter-spacing: 0.4px;
-    text-decoration: none; align-self: start;
-    transition: opacity 0.15s ease;
-  }
-  .intel-insider .cta:hover { opacity: 0.88; }
 
   @media (max-width: 1023px) {
     .intel-grid { grid-template-columns: 1fr; }

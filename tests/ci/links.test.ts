@@ -32,7 +32,7 @@ test("extractInternalHrefs keeps root-relative, drops external/mailto/fragment",
 });
 
 test("parseRedirectSources reads first column, skips comments", () => {
-  const body = "# comment\n/friday-brief /newsletter/ 301\n/friday-brief/ /newsletter/ 301\n\n";
+  const body = "# comment\n/friday-brief / 301\n/friday-brief/ / 301\n\n";
   const s = parseRedirectSources(body);
   assert.ok(s.has("/friday-brief"));
   assert.ok(s.has("/friday-brief/"));

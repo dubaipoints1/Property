@@ -195,7 +195,7 @@ export const TEMPLATE_RULES = [
   {
     template: "TrustPageLayout",
     match:
-      "^/(about|corrections|editorial-policy|editorial-policy/how-we-score|glossary|how-we-make-money|newsletter|partnership|press|team|tip|valuations/methodology)/$",
+      "^/(about|corrections|editorial-policy|editorial-policy/how-we-score|glossary|how-we-make-money|partnership|press|team|tip|valuations/methodology)/$",
   },
 ];
 
