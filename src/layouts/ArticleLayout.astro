@@ -10,7 +10,7 @@
 //   ↓
 //   2-col grid at ≥1024px:
 //     [body] hero placeholder + drop-cap prose (slot)
-//     [aside] sticky TOC + Trending Now + Insider Intel newsletter card +
+//     [aside] sticky TOC + Trending Now +
 //             optional consumer-provided <slot name="related">
 //   ↓
 //   Related Guides footer (D2) — auto-populated, 3 cards
@@ -297,13 +297,6 @@ const schema = {
           </ol>
         </nav>
       )}
-
-      <aside class="dp-aside-newsletter">
-        <span class="eyebrow">The brief</span>
-        <div class="dp-rail-heading">The Friday brief is preparing for launch.</div>
-        <p>Join the launch list for salary-transfer changes, new card offers and worthwhile miles redemptions.</p>
-        <a href="/newsletter/" class="cta">Join the launch list →</a>
-      </aside>
 
       <slot name="related" />
     </aside>

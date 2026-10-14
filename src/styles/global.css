@@ -57,7 +57,7 @@
      `--brand`. Every `var(--green)` reference across the site now
      resolves to navy. */
   --green:     #1f3a4d;          /* eyebrows, pull-quote mark, accents (navy after F.9) */
-  --green-band:#15293a;          /* newsletter band — slightly darker navy for depth */
+  --green-band:#15293a;          /* .dp-band-green — slightly darker navy for depth */
   /* Lightened brand navy. Was --mint #5fb88a, a third hue the 2026-07-25
      no-third-hue rule does not admit; on Chairman ruling R1 (10 Sep 2026,
      audit F-006) it resolves to the same #8fb3cc the dark palette has used
@@ -2599,56 +2599,6 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 }
 .dp-trending-card a:hover { color: var(--green); }
 
-/* Aside newsletter card — Phase D4 "Insider Intel" CTA in the article rail. */
-.dp-aside-newsletter {
-  background: var(--green);
-  color: white;
-  border-radius: 16px;
-  padding: 22px;
-  display: grid;
-  gap: 8px;
-}
-.dp-aside-newsletter .eyebrow {
-  font-family: var(--font-ui);
-  font-size: 10px; font-weight: 700;
-  letter-spacing: 2.5px; text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.75);
-}
-.dp-aside-newsletter .dp-rail-heading {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 19px;
-  line-height: 1.2;
-  letter-spacing: -0.4px;
-  color: white;
-  margin: 0;
-  text-wrap: balance;
-}
-.dp-aside-newsletter p {
-  font-family: var(--font-ui);
-  font-size: 13px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.88);
-  margin: 4px 0 6px;
-}
-.dp-aside-newsletter .cta {
-  display: inline-flex;
-  align-items: center;
-  height: 36px;
-  padding: 0 16px;
-  background: white;
-  color: var(--green);
-  border-radius: 999px;
-  font-family: var(--font-ui);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  text-decoration: none;
-  align-self: start;
-  transition: opacity 0.15s ease;
-}
-.dp-aside-newsletter .cta:hover { opacity: 0.88; }
-
 /* Related guides — Phase D2 footer-band, sits between article-body-grid
    and .dp-article-sources. 3-column grid on desktop, stacks on mobile. */
 .dp-article-related {
@@ -2767,7 +2717,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 /* ════════════════════════════════════════════════════════════════════════
    Trust page template (Phase D — Claude Design handoff).
    Used by TrustPageLayout for /editorial-policy/, /how-we-make-money/,
-   /about/, /team/, /newsletter/, /valuations/methodology/.
+   /about/, /team/, /valuations/methodology/.
    Pagehead-narrow + meta strip + single-column body. No drop-cap,
    no aside, no byline. Policy docs, not articles.
    ════════════════════════════════════════════════════════════════════════ */
@@ -3815,12 +3765,6 @@ html * {
   background: var(--paper);
   border-bottom-color: var(--line);
 }
-/* The article newsletter rail paints `var(--green)` behind white text; in
-   dark mode --green is the lightened navy (#8fb3cc), which left the rail
-   at 1.8–2.2:1 on 44 routes (2026-09-06 audit, F-003). Brand navy is the
-   surface here in both themes; the button keeps white with navy text. */
-[data-theme="dark"] .dp-aside-newsletter { background: #1f3a4d; }
-[data-theme="dark"] .dp-aside-newsletter .cta { color: #1f3a4d; }
 /* F-003 knock-on: same light-navy --green under white text on hover. */
 [data-theme="dark"] .dp-dir-pill.is-feature:hover { background: #1f3a4d; }
 [data-theme="dark"] .dp-footer {

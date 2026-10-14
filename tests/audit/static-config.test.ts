@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import {
@@ -16,7 +16,7 @@ import {
 
 function dist(): string {
   const d = mkdtempSync(path.join(tmpdir(), "dp-static-"));
-  for (const r of ["newsletter", "cards", "old-page"]) {
+  for (const r of ["guides", "cards", "old-page"]) {
     mkdirSync(path.join(d, r), { recursive: true });
     writeFileSync(path.join(d, r, "index.html"), "<html></html>");
   }
@@ -26,14 +26,28 @@ function dist(): string {
 }
 
 test("parseRedirectRules parses the real two-line _redirects shape", () => {
-  const rules = parseRedirectRules("# comment\n/friday-brief /newsletter/ 301\n/friday-brief/ /newsletter/ 301\n");
+  const rules = parseRedirectRules("# comment\n/friday-brief / 301\n/friday-brief/ / 301\n");
   assert.equal(rules.length, 2);
-  assert.deepEqual(rules[0], { line: 2, source: "/friday-brief", target: "/newsletter/", status: 301, splat: false });
+  assert.deepEqual(rules[0], { line: 2, source: "/friday-brief", target: "/", status: 301, splat: false });
+});
+
+// The newsletter was removed on Chairman direction, 14 October 2026: its
+// old URLs (and the older /friday-brief alias) must land on the homepage,
+// not on a page that no longer exists.
+test("public/_redirects sends every newsletter URL to the homepage", () => {
+  const rules = parseRedirectRules(readFileSync(path.join(process.cwd(), "public", "_redirects"), "utf8"));
+  for (const source of ["/newsletter", "/newsletter/", "/friday-brief", "/friday-brief/"]) {
+    const rule = rules.find((r) => r.source === source);
+    assert.ok(rule, `${source} has a redirect`);
+    assert.equal(rule.target, "/");
+    assert.equal(rule.status, 301);
+  }
+  assert.equal(rules.filter((r) => r.target.startsWith("/newsletter")).length, 0);
 });
 
 test("validateRedirects flags missing targets, shadowed pages, chains and loops", () => {
   const d = dist();
-  const rules = parseRedirectRules(["/a /gone/ 301", "/old-page /newsletter/ 301", "/b /c 301", "/c /newsletter/ 301", "/d /d 301", "/e /newsletter/ 999", "/ext https://example.com/ 301"].join("\n"));
+  const rules = parseRedirectRules(["/a /gone/ 301", "/old-page /guides/ 301", "/b /c 301", "/c /guides/ 301", "/d /d 301", "/e /guides/ 999", "/ext https://example.com/ 301"].join("\n"));
   const codes = validateRedirects(rules, d).map((p) => `${p.source}:${p.code}`).sort();
   assert.deepEqual(codes, ["/a:target-missing", "/b:chain", "/d:loop", "/e:bad-status", "/ext:target-external", "/old-page:shadows-page"]);
 });
@@ -54,8 +68,8 @@ test("RECOMMENDED_HEADERS is report-only CSP, never an enforcing one", () => {
 test("diffSitemap flags built routes missing from the sitemap and excludes 404/design-spike", () => {
   const locs = extractSitemapLocs(`<urlset><url><loc>https://dubaipoints.ae/</loc></url><url><loc>https://dubaipoints.ae/cards/</loc></url><url><loc>https://dubaipoints.ae/ghost/</loc></url></urlset>`);
   assert.deepEqual(locs, ["/", "/cards/", "/ghost/"]);
-  const diff = diffSitemap(["/", "/cards/", "/newsletter/", "/404.html", "/design-spike/"], locs);
-  assert.deepEqual(diff, { inSitemapNotBuilt: ["/ghost/"], builtNotInSitemap: ["/newsletter/"] });
+  const diff = diffSitemap(["/", "/cards/", "/guides/", "/404.html", "/design-spike/"], locs);
+  assert.deepEqual(diff, { inSitemapNotBuilt: ["/ghost/"], builtNotInSitemap: ["/guides/"] });
 });
 
 test("report records headersPresent=false when the file is absent", () => {

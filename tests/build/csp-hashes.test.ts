@@ -76,6 +76,13 @@ test("policy is enforced-shape, hash-only for inline script, no unsafe-inline sc
   }
 });
 
+test("form-action is 'self' only: no form posts off-site since the newsletter was removed", () => {
+  const p = buildPolicy([]);
+  const formAction = p.split("; ").find((d: string) => d.startsWith("form-action"));
+  assert.equal(formAction, "form-action 'self'");
+  assert.doesNotMatch(p, /buttondown/i);
+});
+
 test("injectHeader appends into the /* block and replaces an older CSP line", () => {
   const body = "# c\n/*\n  X-Frame-Options: DENY\n  Content-Security-Policy: old\n\n/_astro/*\n  Cache-Control: x\n";
   const out = injectHeader(body, "  Content-Security-Policy: new");

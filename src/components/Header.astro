@@ -7,7 +7,6 @@ import ThemeToggle from "~/components/ThemeToggle.astro";
 import { dpValueSub } from "~/lib/valuations";
 
 const currentPath = Astro.url.pathname;
-import { newsletterLive, newsletterNavLabel } from "~/lib/newsletter";
 import { getCollection } from "astro:content";
 
 // R9 (Chairman ruling, 15 Sep 2026): the deals slot stays, and the label
@@ -24,20 +23,13 @@ const isActive = (href: string) =>
 // Flat rows for the mobile overlay. Cards / Points + Miles / Travel are
 // expandable accordions and Banks is a standalone row, all rendered
 // inline in the overlay body — they do not belong in this list.
-// Chairman ruling R3, 10 September 2026 (audit F-012 / F-042 / F-043):
-// until the list accepts sign-ups the brief is a nav row like any other,
-// not the overlay's leading call to action. Setting the Buttondown
-// environment variable puts it back at the top with its CTA styling.
+// The newsletter was scrapped on Chairman direction, 14 October 2026
+// (.council/briefs/2026-10-14-newsletter-removed.md), so there is no
+// brief row or subscribe CTA here.
 const mobileTop = [
-  ...(newsletterLive
-    ? [{ href: "/newsletter/", label: newsletterNavLabel, subscribe: true }]
-    : []),
   { href: "/deals/",      label: dealsLabel },
   { href: "/guides/",     label: "Guides" },
   { href: "/news/",       label: "News" },
-  ...(newsletterLive
-    ? []
-    : [{ href: "/newsletter/", label: newsletterNavLabel }]),
 ];
 
 type SubRow = { label: string; href: string; sub?: string };
@@ -248,9 +240,6 @@ const publicationRows: SubRow[] = [
         <span class="dp-search-pill-text" aria-hidden="true">Search cards, guides…</span>
       </a>
       <ThemeToggle />
-      {newsletterLive && (
-        <a href="/newsletter/" class="dp-header-subscribe">{newsletterNavLabel}</a>
-      )}
     </div>
 
     <!-- Mobile search -->
@@ -316,7 +305,7 @@ const publicationRows: SubRow[] = [
 
   <nav class="dp-nav-overlay-body">
     {mobileTop.slice(0, 1).map((m) => (
-      <a class={`dp-nav-row${m.subscribe ? " is-subscribe" : ""}${isActive(m.href) ? " is-active" : ""}`} href={m.href}>
+      <a class={`dp-nav-row${isActive(m.href) ? " is-active" : ""}`} href={m.href}>
         <span>{m.label}</span>
       </a>
     ))}
@@ -745,36 +734,6 @@ const publicationRows: SubRow[] = [
     .dp-search-pill { padding: 0 14px; min-width: 190px; }
     .dp-search-pill-text { display: inline; }
   }
-  .dp-header-subscribe {
-    display: inline-flex;
-    align-items: center;
-    height: 36px;
-    padding: 0 16px;
-    margin-left: 4px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    background: var(--ink);
-    color: #fff;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: background 0.2s ease, transform 0.1s ease;
-  }
-  .dp-header-subscribe:hover { background: var(--green); }
-  .dp-header-subscribe:active { transform: scale(0.97); }
-  /* Dark theme: --ink and --green invert to light values, so the pill's
-     white text would sit on a light background. Scoped here (not in the
-     global dark block) so it outranks the base rule above. */
-  :global([data-theme="dark"]) .dp-header-subscribe {
-    background: #16202c;
-  }
-  :global([data-theme="dark"]) .dp-header-subscribe:hover {
-    background: var(--green);
-    color: #0f1419;
-  }
   .dp-tracker-strip-inner { padding-inline: 24px; }
 }
 
@@ -896,7 +855,6 @@ const publicationRows: SubRow[] = [
   transition: color 0.15s ease, padding-left 0.15s ease;
 }
 .dp-nav-row:hover { color: var(--green); }
-.dp-nav-row.is-subscribe { color: var(--green); }
 .dp-nav-row.is-active {
   color: var(--green);
   padding-left: 12px;
@@ -989,7 +947,6 @@ const publicationRows: SubRow[] = [
   .dp-nav-backdrop,
   .dp-megapanel,
   .dp-mega-caret,
-  .dp-icon-btn,
-  .dp-header-subscribe { transition: none; animation: none; }
+  .dp-icon-btn { transition: none; animation: none; }
 }
 </style>

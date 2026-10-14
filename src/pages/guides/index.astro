@@ -10,7 +10,7 @@
 //        b. Grid of guide cards (2-column at ≥640px, 1-column below)
 //      Sidebar:
 //        a. Trending Now — numbered list of top 5 guides by updatedAt
-//        b. Insider Intel newsletter card (green block)
+//        (the newsletter card was removed 14 Oct 2026)
 //
 // Dropped from prior layout (Chairman directive 2026-05-14):
 //   - .dp-featured-band 7-card mosaic (1 hero + 2 med + 4 small)
@@ -144,6 +144,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
       )}
     </div>
 
+    {trending.length > 0 && (
     <aside class="intel-aside">
       {trending.length > 0 && (
         <nav class="intel-trending" aria-label="Trending guides">
@@ -158,14 +159,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
           </ol>
         </nav>
       )}
-
-      <div class="intel-insider">
-        <span class="eyebrow">The brief</span>
-        <div class="dp-rail-heading">The Friday brief is preparing for launch.</div>
-        <p>Join the launch list for salary-transfer changes, new card offers and worthwhile miles redemptions.</p>
-        <a href="/newsletter/" class="cta">Join the launch list →</a>
-      </div>
     </aside>
+    )}
   </div>
 </BaseLayout>
 
@@ -480,57 +475,6 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     text-decoration: none;
   }
   .intel-trending a:hover { color: var(--green); }
-
-  :global([data-theme="dark"]) .intel-insider { background: #1f3a4d; }
-  :global([data-theme="dark"]) .intel-insider .cta { color: #1f3a4d; }
-  .intel-insider {
-    background: var(--green);
-    color: white;
-    border-radius: 16px;
-    padding: 22px;
-    display: grid;
-    gap: 8px;
-  }
-  .intel-insider .eyebrow {
-    font-family: var(--font-ui);
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.75);
-  }
-  .intel-insider .dp-rail-heading {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 19px;
-    line-height: 1.2;
-    letter-spacing: -0.4px;
-    color: white;
-    margin: 0;
-    text-wrap: balance;
-  }
-  .intel-insider p {
-    font-family: var(--font-ui);
-    font-size: 13px;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.88);
-    margin: 4px 0 6px;
-  }
-  .intel-insider .cta {
-    display: inline-flex;
-    align-items: center;
-    height: 36px;
-    padding: 0 16px;
-    background: white;
-    color: var(--green);
-    border-radius: 999px;
-    font-family: var(--font-ui);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    text-decoration: none;
-    align-self: start;
-    transition: opacity 0.15s ease;
-  }
-  .intel-insider .cta:hover { opacity: 0.88; }
 
   /* ── Responsive ─────────────────────────────────────────────────── */
   @media (max-width: 1023px) {

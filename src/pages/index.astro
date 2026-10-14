@@ -13,7 +13,7 @@
 //   Latest   newest news and guides, type only, no thumbnails
 //   Strategy goal-ranked cards (shared .dp-strategy, unboxed)
 //   Start    everything on the site, hairline grid
-//   Close    night band: how we work + the Friday brief, into the footer
+//   Close    night band: how we work + where to follow new offers, into the footer
 //
 // No boxes, no stock photos, gold only on small labels. Every figure is
 // computed from L2 / collections at build (§6). Earlier history (the
@@ -21,7 +21,6 @@
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import PressStrip from "~/components/PressStrip.astro";
-import NewsletterSignup from "~/components/NewsletterSignup.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
 import {
@@ -37,7 +36,6 @@ import { getStockEntry } from "~/lib/stockManifest";
 import { getLiveOffers } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
-import { newsletterLive } from "~/lib/newsletter";
 import { getCardArt } from "~/lib/cardArt";
 import { isHotelProgramme } from "~/lib/programmes";
 
@@ -655,7 +653,7 @@ const DIRECTORY = [
 
   <PressStrip />
 
-  <!-- ── Night close: how we work + the Friday brief. Runs straight into
+  <!-- ── Night close: how we work + where new offers land. Runs straight into
        the footer, so the page ends where the hero began. ─────────── -->
   <section class="hp-close" data-hp-anim aria-labelledby="hp-close-h">
     <div class="hp-close-in">
@@ -676,13 +674,15 @@ const DIRECTORY = [
       </p>
       <div class="hp-brief">
         <div>
-          <p class="hp-kicker">Every Friday</p>
-          <h3>{newsletterLive ? "The Friday brief." : "The Friday brief is preparing for launch."}</h3>
-          <p>Salary-transfer changes, new card offers, worthwhile redemptions and deals — once a week, AED-first. We never sell email addresses.</p>
+          <p class="hp-kicker">Keep up</p>
+          <h3>New offers land on the news desk first.</h3>
+          <p>Salary-transfer changes, card launches, programme shifts and live bank deals, each dated and sourced, AED-first.</p>
         </div>
-        <div class="hp-brief-form">
-          <NewsletterSignup source="homepage" />
-        </div>
+        <ul class="hp-follow">
+          <li><a href="/news/"><span>Latest news</span><span aria-hidden="true">→</span></a></li>
+          <li><a href="/deals/"><span>Live deals</span><span aria-hidden="true">→</span></a></li>
+          <li><a href="/rss.xml"><span>RSS feed</span><span aria-hidden="true">→</span></a></li>
+        </ul>
       </div>
     </div>
   </section>
@@ -1193,11 +1193,14 @@ const DIRECTORY = [
   .hp-brief h3 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 3vw, 34px); line-height: 1.15; color: #fff; }
   .hp-brief p { margin: 12px 0 0; font-size: 15px; line-height: 1.55; color: #b9c6d0; max-width: 46ch; }
   .hp-brief .hp-kicker { margin-bottom: 12px; }
-  /* The sign-up renders a paper inset; ink inside it. */
-  .hp-brief-form :global(.dp-newsletter-form),
-  .hp-brief-form :global(.dp-newsletter-fallback) { color: var(--ink); margin: 0; }
-  .hp-brief-form :global(.dp-newsletter-form a),
-  .hp-brief-form :global(.dp-newsletter-fallback a) { color: var(--green); text-decoration: underline; text-underline-offset: 2px; }
+  .hp-follow { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(233, 237, 240, 0.12); }
+  .hp-follow li { border-bottom: 1px solid rgba(233, 237, 240, 0.12); }
+  .hp-follow a { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; padding: 14px 0; color: #fff; text-decoration: none; font-family: var(--font-display); font-size: 22px; line-height: 1.2; }
+  .hp-follow a span:last-child { color: var(--gold-lift); transition: transform 0.2s ease; }
+  .hp-follow a:hover { color: var(--gold-lift); }
+  .hp-follow a:hover span:last-child { transform: translateX(4px); }
+  .hp-follow a:focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 4px; }
+  @media (prefers-reduced-motion: reduce) { .hp-follow a span:last-child { transition: none; } }
 
   @media (min-width: 900px) {
     .hp-dusk { padding: 8px 48px 200px; }
