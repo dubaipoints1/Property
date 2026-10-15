@@ -2508,7 +2508,7 @@
         "Security cheque"
       ]
     },
-    "lastVerified": "2026-10-10",
+    "lastVerified": "2026-10-15",
     "earnRates": {
       "partnerBrands": 7,
       "fuel": 4,
@@ -2547,18 +2547,19 @@
       "lulu"
     ],
     "interestRate": {
-      "monthly": 3.25
+      "monthly": 3.49
     },
     "applyUrl": "https://www.emiratesnbd.com/en/campaigns/credit-card-apply?campaign=lulu-247-platinum-credit-card",
     "perks": [
       "7% back as LuLu Points on all LuLu in-store and online (luluhypermarket.com) spends",
       "4% back as LuLu Points on fuel",
-      "1% back as LuLu Points on all other spends",
-      "Complimentary access to 25+ airport lounges across UAE, KSA, Jordan, Kuwait, Egypt, USA, UK, Thailand, Turkey, Singapore and more",
+      "0.7% back as LuLu Points on all other spends",
+      "Complimentary lounge access worldwide with Mastercard Travel Pass (1,000+ lounges in 300+ cities)",
       "3% discount on flight bookings and 7% off holiday packages via ENBD Travel Desk",
       "Golf privileges — 40% off green fees at 100+ courses globally",
-      "0% Balance Transfer with no processing fee",
-      "0% Easy Payment Plan (6–12 months) at participating merchants",
+      "0% interest on balance transfers with no processing fee",
+      "0% Easy Payment Plan (3, 6, 12 or 24 months) at participating merchants",
+      "Buy 1 get 1 free on movies (operator and monthly limit not stated on the product page)",
       "LuLu Points redeemable instantly at LuLu Hypermarkets, LuLu Express, and luluhypermarket.com",
       "Apple Pay, Samsung Pay, Google Pay"
     ],
@@ -2580,10 +2581,10 @@
       "name": "editor-confirmed",
       "bank": "editor-confirmed",
       "categories": "editor-confirmed",
-      "interestRate": "editor-confirmed",
+      "interestRate": "editor-corrected",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed",
-      "_features": "editor-confirmed",
+      "perks": "editor-corrected",
+      "_features": "editor-corrected",
       "earnRates._caps": "editor-confirmed",
       "partnerBrands": "editor-confirmed",
       "joiningFee": "editor-confirmed"
@@ -2612,12 +2613,12 @@
     "_features": [
       {
         "type": "lounge_access",
-        "network": "Visa Airport Companion",
+        "network": "Mastercard Travel Pass",
         "scope": "unlimited",
         "geo": [
           "global"
         ],
-        "notes": "25+ Middle East and global lounges"
+        "notes": "1,000+ lounges in 300+ cities per the ENBD product page (15 Oct 2026); visit allowance not stated there"
       },
       {
         "type": "travel_desk_discount",
@@ -3228,13 +3229,13 @@
     "fxFee": 1.99,
     "loyaltyProgram": "ENBD Plus Points",
     "earnRates": {
-      "everythingElse": 2,
-      "groceries": 0.4,
-      "insurance": 0.4,
-      "fuel": 0.2,
-      "utilities": 0.2
+      "everythingElse": 1,
+      "groceries": 1,
+      "insurance": 1,
+      "fuel": 1,
+      "utilities": 1
     },
-    "earnUnit": "% as ENBD Plus Points (subject to per-statement cap)",
+    "earnUnit": "% as ENBD Plus Points on transactions under AED 2,500 (2% at AED 2,500–4,999, 5% at AED 5,000 and above); capped at 5,000 points per statement and 60,000 a year",
     "eligibility": {
       "minSalary": 0,
       "salaryTransferRequired": true,
@@ -3245,7 +3246,7 @@
       "invitationOnly": true
     },
     "applyUrl": "https://www.emiratesnbd.com/en/cards/credit-cards/priority-banking-visa-infinite-credit-card",
-    "lastVerified": "2026-09-13",
+    "lastVerified": "2026-10-15",
     "sources": [
       "https://www.emiratesnbd.com/en/cards/credit-cards/priority-banking-visa-infinite-credit-card"
     ],
@@ -3268,9 +3269,9 @@
       "partnerBrands": "![Carrefour](https://www.emiratesnbd.com/-/media/enbd/images/brands/carrefour_logo.jpg?la=en&h=50&w=125&hash=23D40F03D8CA0E3F177B8859EC0F1124)"
     },
     "annualFeeWaiver": {
-      "year_one_waived": false,
+      "year_one_waived": true,
       "ongoing_threshold_aed": null,
-      "notes": "Issued to Emirates NBD Priority Banking AUM customers — gate is AUM-based, not salary."
+      "notes": "Product page: \"Enjoy the first year for free (Annual fees: AED 1,575)\". Issued to existing Emirates NBD Priority Banking customers only. Checked 15 October 2026."
     },
     "vatPolicy": "inclusive"
   },
