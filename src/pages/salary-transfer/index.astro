@@ -38,7 +38,6 @@ const checkedWithoutLiveOffer = [
   "al-hilal",
   "cbd",
   "citi",
-  "emirates-islamic",
   "liv",
   "wio",
 ];
@@ -132,19 +131,14 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
         {linkList(checkedWithoutLiveOffer).map((b) => (
           <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
         ))}
-        {" "}and found no current live banded cash offer — ADCB ran an
-        education-sector-only TouchPoints salary campaign (15 July – 30 September
-        2026) that didn't qualify for the cash table, and ADIB's salary programme
+        {" "}and found no current live banded cash offer — ADCB's current
+        BEYOND campaign (8 September – 31 December 2026) pays TouchPoints and is
+        open only to employees of companies ADCB has shortlisted, so it doesn't
+        qualify for the cash table (checked 15 October), and ADIB's salary programme
         remains a prize draw rather than a banded reward (re-checked 22 August).
         Liv and Wio run rate-based salary benefits — savings interest tied to the
         salary transfer, not banded cash. Al Hilal's up-to-AED-15,000 campaign
         ended 4 August 2026 (checked 22 August).
-        {" "}Emirates Islamic&rsquo;s June–September salary cashback ended on 30
-        September 2026 (moved to its{" "}
-        <a href="/salary-transfer/history/emirates-islamic/">offer history</a> on 1 October).
-        Its offer page now advertises a new cycle running 1 October 2026 to 31
-        March 2027; we will list it once we have read its campaign terms in full
-        (checked 13 October).
         {" "}
         {linkList(advertisedWithoutCurrentTerms).map((b) => (
           <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
