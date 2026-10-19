@@ -83,6 +83,8 @@ const bands = [
 
 const fmtFull = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+const fmtShort = (d: Date) =>
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
 // The honest freshness signal is the newest per-offer verification date —
 // not the build date, which manufactured a "Last refresh: today" stamp
@@ -109,10 +111,13 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
     <p>Each listed salary-transfer offer has been checked against a bank product page or campaign terms and dated per offer. Filter by salary band, reward type, or specific bank.</p>
 
     <div class="dp-tools-stats">
-      <span><span class="lbl">Banks with current offers:</span> <strong>{trackedBanks.size} of {coveredCount}</strong></span>
-      <span><span class="lbl">Live offers:</span> <strong>{offers.length}</strong></span>
+      {/* Phones get the short labels so the three stats fit one line
+          (19 Oct 2026 UX review); the long ones are display:none there,
+          so assistive tech reads exactly what is shown. */}
+      <span><span class="lbl st-long">Banks with current offers:</span><span class="lbl st-short">Banks</span> <strong>{trackedBanks.size} of {coveredCount}</strong></span>
+      <span><span class="lbl st-long">Live offers:</span><span class="lbl st-short">Offers</span> <strong>{offers.length}</strong></span>
       {newestVerification && (
-        <span><span class="lbl">Newest verification:</span> <strong>{fmtFull(newestVerification)}</strong></span>
+        <span><span class="lbl st-long">Newest verification:</span><span class="lbl st-short">Checked</span> <strong><span class="st-long">{fmtFull(newestVerification)}</span><span class="st-short">{fmtShort(newestVerification)}</span></strong></span>
       )}
     </div>
 
@@ -123,8 +128,8 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
         tap away. */}
     <details class="dp-coverage-note" id="coverage-note">
       <summary>
-        <strong>Coverage status.</strong> {trackedBanks.size} of {coveredCount} covered
-        banks have a live, source-backed offer — why the others are not listed
+        <strong class="st-long">Coverage status.</strong> <span class="st-long">{trackedBanks.size} of {coveredCount} covered
+        banks have a live, source-backed offer — why the others are not listed</span><span class="st-short">Why the other {coveredCount - trackedBanks.size} banks are not listed</span>
       </summary>
       <p>
         We checked
@@ -226,5 +231,25 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   .st-page > :global(.dp-pagehead) {
     max-width: none;
     padding-inline: max(20px, calc((100% - var(--container-listing)) / 2 + 32px));
+  }
+  .st-short { display: none; }
+  /* Phones (19 Oct 2026 UX review): the head used to push the band picker
+     — the page's main control — below the first screen. Tighter padding,
+     stats on one line, the coverage summary on one line. */
+  @media (max-width: 640px) {
+    .st-page > :global(.dp-pagehead) { padding-top: 24px; padding-bottom: 18px; }
+    .st-page :global(.dp-pagehead h1) { font-size: 32px; margin-bottom: 8px; }
+    .st-page :global(.dp-pagehead > p) { font-size: 13px; line-height: 1.5; }
+    .st-long { display: none; }
+    .st-short { display: inline; }
+    .st-page :global(.dp-tools-stats) {
+      margin-top: 12px; gap: 6px 14px; flex-wrap: nowrap;
+      font-size: 12px; white-space: nowrap;
+    }
+    .st-page :global(.dp-tools-stats .lbl) { margin-right: 3px; }
+    .st-page :global(.dp-coverage-note) { margin-top: 12px; padding: 8px 12px; font-size: 13px; }
+    .st-page :global(.dp-coverage-note:not([open]) summary) {
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
   }
 </style>

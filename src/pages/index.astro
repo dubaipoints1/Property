@@ -394,7 +394,7 @@ const DIRECTORY = [
         </video>
         <div class="hp-reel-scrim" aria-hidden="true"></div>
         <div class="hp-reel-title">
-          <span class="hp-hero-kicker"><span class="dot" aria-hidden="true"></span>Independent UAE points &amp; miles publication</span>
+          <span class="hp-hero-kicker"><span class="dot" aria-hidden="true"></span><span class="hp-kicker-long">Independent UAE points &amp; miles publication</span><span class="hp-kicker-short">Independent · UAE points &amp; miles</span></span>
           <h1>Fly further. <em>Pay less.</em></h1>
           <!-- 7 Oct 2026 UX review: the deck and the main action belong on
                the first screen, not after the reel. They fade with the
@@ -915,7 +915,7 @@ const DIRECTORY = [
      --p. Without it, one static screen. Colours are fixed light-on-dark
      in both themes: the stage is always night-navy behind a video. */
   .hp-reel {
-    --hp-head: 116px;
+    --hp-head: 92px; /* header + quick-link strip; desktop below. JS measures the real value */
     --p: 0;
     position: relative;
     height: calc(100svh - var(--hp-head));
@@ -1015,7 +1015,37 @@ const DIRECTORY = [
     .hp-reel-title .hp-hero-lede { font-size: 16px; line-height: 1.5; margin-top: 16px; }
     .hp-reel-title .hp-hero-kicker { margin-bottom: 14px; }
     .hp-reel-title .hp-hero-ctas { gap: 10px; margin-top: 20px; }
+    /* 19 Oct 2026 UX review: the long eyebrow wrapped to two lines at
+       390px (dot stranded left of the first line) and the gold read thin
+       on the photograph. Short copy on one line, and a darker scrim
+       behind the title block — the gold itself is unchanged. */
+    .hp-reel-title .hp-hero-kicker { white-space: nowrap; letter-spacing: 1.8px; position: relative; isolation: isolate; }
+    /* A soft local shade under the eyebrow line only — no box edge, no
+       pill on the photograph — so the small gold type clears 4.5:1 even
+       over the bright window frames of the reel. */
+    .hp-reel-title .hp-hero-kicker::before {
+      content: ""; position: absolute; z-index: -1; inset: -16px -36px;
+      background: radial-gradient(farthest-side, rgba(22, 32, 44, 0.92) 72%, rgba(22, 32, 44, 0) 100%);
+      pointer-events: none;
+    }
+    .hp-reel-title .hp-kicker-long { display: none; }
+    .hp-reel-title .hp-kicker-short { display: inline; }
+    .hp-reel-scrim {
+      background:
+        radial-gradient(ellipse 130% 50% at 50% 44%, rgba(22, 32, 44, 0.86), rgba(22, 32, 44, 0.55) 60%, transparent 100%),
+        linear-gradient(180deg,
+          rgba(22, 32, 44, 0.55) 0%, rgba(22, 32, 44, 0.25) 38%,
+          rgba(22, 32, 44, 0.25) 62%, rgba(22, 32, 44, 0.6) 100%);
+    }
   }
+  @media (min-width: 1024px) {
+    .hp-reel { --hp-head: 81px; } /* the quick-link strip is phone/tablet only */
+  }
+  @media (max-width: 380px) {
+    .hp-reel-title .hp-hero-kicker { letter-spacing: 0.8px; font-size: 10.5px; }
+  }
+  .hp-kicker-short { display: none; }
+  .hp-reel-title .hp-hero-kicker { text-shadow: 0 1px 10px rgba(10, 16, 24, 0.6); }
   @media (prefers-reduced-motion: reduce) {
     .hp-reel-hint svg { animation: none; }
   }

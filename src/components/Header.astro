@@ -15,68 +15,68 @@ import { getCollection } from "astro:content";
 const liveDealCount = (await getCollection("deals")).filter(
   (d) => !d.data.archived && d.data.expiresOn.getTime() >= Date.now(),
 ).length;
-const dealsLabel = `Deals · ${liveDealCount} live`;
+// 19 Oct 2026 UX review: the count renders as a small badge beside the
+// label rather than "Deals · 11 live" text. The accessible name still
+// reads "Deals 11 live" (the word "live" is screen-reader only).
 
 const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 
-// Flat rows for the mobile overlay. Cards / Points + Miles / Travel are
-// expandable accordions and Banks is a standalone row, all rendered
-// inline in the overlay body — they do not belong in this list.
-// The newsletter was scrapped on Chairman direction, 14 October 2026
-// (.council/briefs/2026-10-14-newsletter-removed.md), so there is no
-// brief row or subscribe CTA here.
-const mobileTop = [
-  { href: "/deals/",      label: dealsLabel },
-  { href: "/guides/",     label: "Guides" },
-  { href: "/news/",       label: "News" },
-];
+// ── One information architecture, desktop and mobile (19 Oct 2026) ──
+// Chairman direction 19 Oct 2026 ("can we do something to the menu
+// maybe?"). Before this pass the desktop bar read "Credit cards ▾ · Banks
+// · Earn miles ▾ · Guides · Deals · News" over a strip repeating Deals and
+// News, while the mobile drawer said "Cards / Banks / Points + Miles /
+// Travel" — two vocabularies for one site, and the salary-transfer tracker
+// (a flagship tool) was missing from the desktop bar. Both surfaces now
+// render the same six primary entries, in order:
+//   Cards ▾ · Salary tracker · Points & miles ▾ · Deals [n] · News · Guides
+// Banks lives inside Cards ("By bank") and in the footer. The old mobile
+// "Travel" accordion's four rows stay reachable: the programme directories
+// sit in Points & miles, the desk indexes are the News page's tabs. The
+// newsletter was scrapped on Chairman direction, 14 October 2026
+// (.council/briefs/2026-10-14-newsletter-removed.md), so there is no brief
+// row or subscribe CTA here.
 
 type SubRow = { label: string; href: string; sub?: string };
 type Group = { title: string; rows: SubRow[] };
 
 const cardsPanel: Group[] = [
+  { title: "Find a card", rows: [
+    { label: "Card finder",             href: "/cards/finder/", sub: "Match a card to your spend" },
+    { label: "Compare cards",           href: "/cards/compare/", sub: "Side-by-side specs" },
+    { label: "Best overall UAE cards",  href: "/cards/", sub: "Editor's pick" },
+    { label: "Card fee index",          href: "/cards/fees/", sub: "Annual and FX fees across the set" },
+  ]},
   { title: "By card type", rows: [
-    { label: "Best overall UAE cards", href: "/cards/", sub: "Editor's pick" },
     { label: "Best travel cards",       href: "/cards/miles/", sub: "Miles & lounge access" },
     { label: "Best cashback cards",     href: "/cards/cashback/", sub: "Capped & uncapped" },
     { label: "Best Islamic (Sharia) cards", href: "/cards/islamic/" },
     { label: "Cards by your salary",    href: "/cards/salary/", sub: "AED 5k to 30k+" },
-    { label: "Card finder",             href: "/cards/finder/", sub: "Match a card to your spend" },
+    { label: "Cards with lounge access", href: "/cards/perks/lounge-access/" },
   ]},
-  { title: "By bank issuer", rows: [
+  { title: "By bank", rows: [
     { label: "FAB cards",                 href: "/banks/fab/" },
     { label: "Emirates NBD cards",        href: "/banks/emirates-nbd/" },
     { label: "ADCB cards",                href: "/banks/adcb/" },
     { label: "RAKBANK cards",             href: "/banks/rakbank/" },
     { label: "Emirates Islamic cards",    href: "/banks/emirates-islamic/", sub: "Islamic" },
-    { label: "All issuers",               href: "/banks/" },
-  ]},
-  { title: "Co-branded cards", rows: [
-    { label: "Emirates Skywards cards",   href: "/airlines/skywards/" },
-    { label: "Etihad Guest cards",        href: "/airlines/etihad-guest/" },
-    { label: "Marriott Bonvoy cards",     href: "/hotels/marriott-bonvoy/" },
+    { label: "All banks",                 href: "/banks/" },
   ]},
   { title: "Learn about UAE cards", rows: [
     { label: "Beginner's guide",          href: "/guides/expat-starter/" },
     { label: "AECB credit score",         href: "/guides/aecb-credit-report-walkthrough/" },
-    { label: "Salary-transfer tracker",   href: "/salary-transfer/" },
-    { label: "Cards with lounge access",  href: "/cards/perks/lounge-access/" },
+    { label: "Spend-return calculator",   href: "/calculator/", sub: "Which card pays back most" },
     { label: "How we score cards",        href: "/editorial-policy/how-we-score/" },
   ]},
 ];
 
 const pointsPanel: Group[] = [
-  { title: "UAE bank programmes", rows: [
-    { label: "Emirates NBD Rewards", href: "/banks/emirates-nbd/" },
-    { label: "FAB Rewards",          href: "/banks/fab/" },
-    { label: "ADCB TouchPoints",     href: "/banks/adcb/" },
-    { label: "RAKBANK Rewards",      href: "/banks/rakbank/" },
-  ]},
   { title: "Airline programmes", rows: [
     { label: "Emirates Skywards",      href: "/airlines/skywards/", sub: dpValueSub("skywards") },
     { label: "Etihad Guest",           href: "/airlines/etihad-guest/", sub: dpValueSub("etihad-guest") },
     { label: "Qatar Privilege Club",   href: "/airlines/qatar-privilege-club/", sub: dpValueSub("qatar-privilege-club") },
+    { label: "All airline programmes", href: "/airlines/" },
   ]},
   { title: "Hotel programmes", rows: [
     { label: "Marriott Bonvoy",      href: "/hotels/marriott-bonvoy/", sub: dpValueSub("marriott-bonvoy") },
@@ -86,40 +86,23 @@ const pointsPanel: Group[] = [
     { label: "IHG One Rewards",      href: "/hotels/ihg-one-rewards/" },
     { label: "All hotel programmes", href: "/hotels/" },
   ]},
-  { title: "Learn", rows: [
-    { label: "Beginner's guide to UAE points", href: "/guides/expat-starter-points-101/" },
-    { label: "Points & miles valuations",       href: "/valuations/" },
-    { label: "Salary-transfer calculator",      href: "/salary-transfer/calculator/" },
+  { title: "UAE bank programmes", rows: [
+    { label: "Emirates NBD Rewards", href: "/banks/emirates-nbd/" },
+    { label: "FAB Rewards",          href: "/banks/fab/" },
+    { label: "ADCB TouchPoints",     href: "/banks/adcb/" },
+    { label: "RAKBANK Rewards",      href: "/banks/rakbank/" },
+  ]},
+  { title: "Values & ratios", rows: [
+    { label: "Points & miles valuations",       href: "/valuations/", sub: "What points are worth in AED" },
     { label: "Transfer-partner cheatsheet",     href: "/guides/uae-transfer-ratios-2026/" },
-  ]},
-];
-
-// Travel panel — honest-nav pass, 2026-07-27 council session
-// `travel-news-desks-strategy`. Every row now points at a route whose
-// content type actually exists: news rows go to the beat-filtered desk
-// indexes, programme rows to the programme directory. De-scoped until
-// their content types ship (return via new briefs, Chairman gate):
-// "Hotel reviews", "UAE staycations", and the whole "Routes &
-// destinations" group — those rows previously dumped readers into
-// /airlines/ or /deals/ and promised sections the site doesn't have.
-// 2026-09-06 audit (F-029): the panel carried seven rows for four pages —
-// two "All … stories" duplicates of the desk rows, a deals row whose
-// sub-label promised a travel filter that does not exist, and an apology
-// sub-label on the programme row. Four rows, four destinations.
-const travelPanel: Group[] = [
-  { title: "Airlines", rows: [
-    { label: "Airline news",        href: "/news/airlines/" },
-    { label: "Airline programmes",  href: "/airlines/" },
-  ]},
-  { title: "Hotels", rows: [
-    { label: "Hotel news",        href: "/news/hotels/" },
-    { label: "Hotel programmes",  href: "/hotels/" },
+    { label: "Beginner's guide to UAE points", href: "/guides/expat-starter-points-101/" },
+    { label: "Salary-transfer calculator",      href: "/salary-transfer/calculator/" },
   ]},
 ];
 
 const toolRows: SubRow[] = [
-  { label: "Salary-transfer tracker", href: "/salary-transfer/", sub: "Sources watched weekly" },
-  { label: "Points & miles valuations", href: "/valuations/", sub: "DP value" },
+  { label: "Salary-transfer tracker", href: "/salary-transfer/", sub: "Every live offer, checked against bank terms" },
+  { label: "Points & miles valuations", href: "/valuations/", sub: "What points are worth in AED" },
   { label: "Card compare", href: "/cards/compare/", sub: "Side-by-side specs" },
   { label: "Salary-transfer calculator", href: "/salary-transfer/calculator/" },
   // Chairman ruling R4, 10 September 2026 (audit F-021 / F-032): the two
@@ -175,8 +158,8 @@ const publicationRows: SubRow[] = [
     <!-- Desktop nav -->
     <nav class="dp-header-nav" aria-label="Primary">
       <div class="dp-nav-mega-wrap">
-        <a href="/cards/" class={isActive("/cards/") ? "is-active" : ""}>
-          Credit cards
+        <a href="/cards/" class={isActive("/cards/") || isActive("/banks/") ? "is-active" : ""}>
+          Cards
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </a>
         <div class="dp-megapanel" role="region" aria-label="Cards menu" data-nosnippet>
@@ -196,14 +179,14 @@ const publicationRows: SubRow[] = [
         </div>
       </div>
 
-      <a href="/banks/" class={isActive("/banks/") ? "is-active" : ""}>Banks</a>
+      <a href="/salary-transfer/" class={isActive("/salary-transfer/") ? "is-active" : ""}>Salary tracker</a>
 
       <div class="dp-nav-mega-wrap">
-        <a href="/airlines/" class={isActive("/airlines/") || isActive("/hotels/") ? "is-active" : ""}>
-          Earn miles
+        <a href="/airlines/" class={isActive("/airlines/") || isActive("/hotels/") || isActive("/valuations/") ? "is-active" : ""}>
+          Points &amp; miles
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </a>
-        <div class="dp-megapanel" role="region" aria-label="Earn miles menu" data-nosnippet>
+        <div class="dp-megapanel" role="region" aria-label="Points and miles menu" data-nosnippet>
           <div class="dp-megapanel-inner">
             {pointsPanel.map((g) => (
               <div class="dp-mega-grp">
@@ -220,9 +203,12 @@ const publicationRows: SubRow[] = [
         </div>
       </div>
 
-      <a href="/guides/" class={isActive("/guides/") ? "is-active" : ""}>Guides</a>
-      <a href="/deals/" class={isActive("/deals/") ? "is-active" : ""}>{dealsLabel}</a>
+      <a href="/deals/" class={isActive("/deals/") ? "is-active" : ""}>
+        Deals
+        {liveDealCount > 0 && <span class="dp-nav-count">{liveDealCount}<span class="sr-only"> live</span></span>}
+      </a>
       <a href="/news/" class={isActive("/news/") ? "is-active" : ""}>News</a>
+      <a href="/guides/" class={isActive("/guides/") ? "is-active" : ""}>Guides</a>
     </nav>
 
     <!-- Desktop actions -->
@@ -254,14 +240,17 @@ const publicationRows: SubRow[] = [
     </a>
   </div>
 
-  <!-- Quick-links strip -->
+  <!-- Quick-links strip — phones and tablets only (19 Oct 2026): on
+       desktop every one of these is already a primary nav entry. -->
   <nav class="dp-tracker-strip" aria-label="Quick links" data-nosnippet>
     <div class="dp-tracker-strip-inner">
-      <a href="/salary-transfer/" class="dp-quicklink">Salary offers</a>
+      <a href="/salary-transfer/" class="dp-quicklink">Salary tracker</a>
       <span class="dp-quicklink-sep" aria-hidden="true">·</span>
-      <a href="/deals/" class="dp-quicklink">Card deals</a>
+      <a href="/deals/" class="dp-quicklink">Deals</a>
       <span class="dp-quicklink-sep" aria-hidden="true">·</span>
-      <a href="/news/" class="dp-quicklink">Latest news</a>
+      <a href="/news/" class="dp-quicklink">News</a>
+      <span class="dp-quicklink-sep" aria-hidden="true">·</span>
+      <a href="/cards/finder/" class="dp-quicklink">Card finder</a>
     </div>
   </nav>
 </header>
@@ -299,25 +288,16 @@ const publicationRows: SubRow[] = [
     <ThemeToggle />
   </div>
 
-  <a href="/salary-transfer/" class="dp-nav-live-strip">
-    <span class="dp-nav-live-strip-dot"></span>
-    Salary-transfer tracker
-    <span class="dp-nav-live-strip-count">Open ›</span>
-  </a>
-
-  <nav class="dp-nav-overlay-body">
-    {mobileTop.slice(0, 1).map((m) => (
-      <a class={`dp-nav-row${isActive(m.href) ? " is-active" : ""}`} href={m.href}>
-        <span>{m.label}</span>
-      </a>
-    ))}
-
+  {/* Same six entries, same order and labels as the desktop bar
+      (19 Oct 2026). The "Salary-transfer tracker · Open ›" strip that sat
+      here is gone: the tracker is now a primary row. */}
+  <nav class="dp-nav-overlay-body" aria-label="Menu">
     <input type="checkbox" id="dp-nav-cards" class="dp-nav-expand" aria-hidden="true" tabindex="-1" />
-    <label for="dp-nav-cards" class="dp-nav-row dp-nav-expand-label">
+    <label for="dp-nav-cards" class="dp-nav-row dp-nav-expand-label" role="button" tabindex="0" aria-expanded="false" aria-controls="dp-nav-cards-panel">
       <span>Cards</span>
       <span class="dp-nav-expand-arrow" aria-hidden="true">▾</span>
     </label>
-    <div class="dp-nav-panel">
+    <div class="dp-nav-panel" id="dp-nav-cards-panel">
       {cardsPanel.map((g) => (
         <div class="dp-nav-grp">
           <div class="dp-nav-grp-t">{g.title}</div>
@@ -330,15 +310,14 @@ const publicationRows: SubRow[] = [
         </div>
       ))}
     </div>
-
-    <a class={`dp-nav-row${isActive("/banks/") ? " is-active" : ""}`} href="/banks/"><span>Banks</span></a>
+    <a class={`dp-nav-row${isActive("/salary-transfer/") ? " is-active" : ""}`} href="/salary-transfer/"><span>Salary tracker</span></a>
 
     <input type="checkbox" id="dp-nav-points" class="dp-nav-expand" aria-hidden="true" tabindex="-1" />
-    <label for="dp-nav-points" class="dp-nav-row dp-nav-expand-label">
-      <span>Points + Miles</span>
+    <label for="dp-nav-points" class="dp-nav-row dp-nav-expand-label" role="button" tabindex="0" aria-expanded="false" aria-controls="dp-nav-points-panel">
+      <span>Points &amp; miles</span>
       <span class="dp-nav-expand-arrow" aria-hidden="true">▾</span>
     </label>
-    <div class="dp-nav-panel">
+    <div class="dp-nav-panel" id="dp-nav-points-panel">
       {pointsPanel.map((g) => (
         <div class="dp-nav-grp">
           <div class="dp-nav-grp-t">{g.title}</div>
@@ -351,31 +330,9 @@ const publicationRows: SubRow[] = [
         </div>
       ))}
     </div>
-
-    <input type="checkbox" id="dp-nav-travel" class="dp-nav-expand" aria-hidden="true" tabindex="-1" />
-    <label for="dp-nav-travel" class="dp-nav-row dp-nav-expand-label">
-      <span>Travel</span>
-      <span class="dp-nav-expand-arrow" aria-hidden="true">▾</span>
-    </label>
-    <div class="dp-nav-panel">
-      {travelPanel.map((g) => (
-        <div class="dp-nav-grp">
-          <div class="dp-nav-grp-t">{g.title}</div>
-          {g.rows.map((r) => (
-            <a class={`dp-nav-sub${isActive(r.href) ? " is-active" : ""}`} href={r.href}>
-              <span class="lbl">{r.label}</span>
-              {r.sub && <span class="sub">{r.sub}</span>}
-            </a>
-          ))}
-        </div>
-      ))}
-    </div>
-
-    {mobileTop.slice(1).map((m) => (
-      <a class={`dp-nav-row${isActive(m.href) ? " is-active" : ""}`} href={m.href}>
-        <span>{m.label}</span>
-      </a>
-    ))}
+    <a class={`dp-nav-row${isActive("/deals/") ? " is-active" : ""}`} href="/deals/"><span>Deals</span>{liveDealCount > 0 && <span class="dp-nav-count">{liveDealCount}<span class="sr-only"> live</span></span>}</a>
+    <a class={`dp-nav-row${isActive("/news/") ? " is-active" : ""}`} href="/news/"><span>News</span></a>
+    <a class={`dp-nav-row${isActive("/guides/") ? " is-active" : ""}`} href="/guides/"><span>Guides</span></a>
 
     <div class="dp-nav-tools-block">
       <div class="dp-nav-grp-t">Tools</div>
@@ -426,6 +383,20 @@ const publicationRows: SubRow[] = [
       }
     });
     sync();
+    // Drawer accordions (Cards, Points & miles): same CSS-only pattern, so
+    // the same keyboard mirror and an honest aria-expanded (19 Oct 2026).
+    document.querySelectorAll(".dp-nav-expand-label[for]").forEach((l) => {
+      const box = document.getElementById(l.getAttribute("for"));
+      if (!box) return;
+      const syncAcc = () => l.setAttribute("aria-expanded", String(box.checked));
+      box.addEventListener("change", syncAcc);
+      l.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+          e.preventDefault(); box.checked = !box.checked; syncAcc();
+        }
+      });
+      syncAcc();
+    });
   })();
 </script>
 
@@ -545,32 +516,53 @@ const publicationRows: SubRow[] = [
   padding: 0 4px;
 }
 
-/* Only scroll strip when content actually overflows */
-@media (max-width: 767.98px) {
+/* One scrollable row below desktop (19 Oct 2026): centred when it fits,
+   scrolls sideways when it does not — never clipped. At 390px the old
+   space-between layout cut "Latest news" off at the edge. */
+@media (max-width: 1023.98px) {
   .dp-tracker-strip {
     overflow-x: auto;
+    overscroll-behavior-x: contain;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
   .dp-tracker-strip::-webkit-scrollbar { display: none; }
   .dp-tracker-strip-inner {
-    justify-content: flex-start;
     width: max-content;
+    min-width: 100%;
     max-width: none;
-  }
-}
-@media (max-width: 480px) {
-  .dp-tracker-strip-inner {
-    width: 100%;
-    min-width: 0;
-    justify-content: space-between;
-    gap: 8px;
-    padding-inline: 12px;
-    font-size: 11px;
-    letter-spacing: 0.45px;
+    box-sizing: border-box;
   }
   .dp-quicklink,
   .dp-quicklink-sep { flex: 0 0 auto; white-space: nowrap; }
+}
+@media (max-width: 480px) {
+  .dp-tracker-strip-inner {
+    gap: 10px;
+    padding-inline: 12px;
+    letter-spacing: 0.8px;
+  }
+}
+/* Desktop: every quick link is already a primary nav entry. */
+@media (min-width: 1024px) {
+  .dp-tracker-strip { display: none; }
+}
+
+/* Live-deal count badge, beside "Deals" on both menus. Navy, the
+   primary accent; it self-inverts in dark mode via the tokens. */
+.dp-nav-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px;
+  padding: 0 6px;
+  margin-left: 6px;
+  border-radius: 999px;
+  background: var(--green);
+  color: var(--paper);
+  font-family: var(--font-ui);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 /* ─── DESKTOP ≥1024px ──────────────────────────────────────────────
@@ -814,30 +806,6 @@ const publicationRows: SubRow[] = [
 }
 .dp-nav-overlay-head .dp-wordmark { justify-self: center; }
 
-.dp-nav-live-strip {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--navy);
-  color: #fff;
-  padding: 14px 20px;                   /* was 12px 20px */
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  text-decoration: none;
-  gap: 12px;
-}
-.dp-nav-live-strip-dot {
-  display: inline-block;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--navy-lift);
-  margin-right: 8px;
-  flex-shrink: 0;
-}
-.dp-nav-live-strip-count { opacity: 0.6; font-weight: 600; }
-
 .dp-nav-overlay-body { padding: 0 20px 32px; flex: 1; }
 
 /* Top-level row */
@@ -867,9 +835,10 @@ const publicationRows: SubRow[] = [
 .dp-nav-expand-label { cursor: pointer; }
 .dp-nav-expand-arrow {
   font-size: 14px;
-  color: var(--link);
+  color: var(--green); /* was --link (legacy blue), 19 Oct 2026 */
   transition: transform 0.2s ease;
 }
+.dp-nav-expand-label:focus-visible { outline: 2px solid var(--green); outline-offset: -2px; }
 .dp-nav-expand:checked + .dp-nav-expand-label {
   background: var(--shade-1);         /* was --cool, now warmer */
   margin-inline: -20px;

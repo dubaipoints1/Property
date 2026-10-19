@@ -49,7 +49,7 @@ const guides = (await getCollection("guides")).sort(
 );
 
 const fmt = (d: Date) =>
-  d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 const featured = posts[0];
 const others = posts.slice(1);
@@ -114,33 +114,37 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
             ),
           )}
         </div>
-        <a class="intel-feed" href={feedHref} title="Subscribe to this desk by RSS">
-          <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
-            <circle cx="6.2" cy="17.8" r="2.2"/>
-            <path d="M4 10.2v3.1c3.7 0 6.7 3 6.7 6.7h3.1c0-5.4-4.4-9.8-9.8-9.8z"/>
-            <path d="M4 4v3.1c7.1 0 12.9 5.8 12.9 12.9H20C20 11.2 12.8 4 4 4z"/>
-          </svg>
-          RSS
-        </a>
-        <form class="intel-search" action="/search/" method="get" role="search">
-          <label class="intel-search-label" for={searchInputId}>Search</label>
-          {/* Visible magnifier — sits inside the pill so taps on it
-              focus the input (F-UX-4 mobile collapse). At <480px the
-              pill becomes a 36×36 icon-only affordance until focused. */}
-          <label for={searchInputId} class="intel-search-icon" aria-hidden="true">
-            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="9" cy="9" r="6"/>
-              <line x1="13.5" y1="13.5" x2="17.5" y2="17.5" stroke-linecap="round"/>
+        {/* RSS sits with search on the right (19 Oct 2026 UX review); it
+            used to float mid-row between the tabs and the search pill. */}
+        <div class="intel-tools-end">
+          <a class="intel-feed" href={feedHref} title="Subscribe to this desk by RSS" aria-label="RSS feed for this desk">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+              <circle cx="6.2" cy="17.8" r="2.2"/>
+              <path d="M4 10.2v3.1c3.7 0 6.7 3 6.7 6.7h3.1c0-5.4-4.4-9.8-9.8-9.8z"/>
+              <path d="M4 4v3.1c7.1 0 12.9 5.8 12.9 12.9H20C20 11.2 12.8 4 4 4z"/>
             </svg>
-          </label>
-          <input
-            id={searchInputId}
-            type="search"
-            name="q"
-            placeholder="Search news…"
-            autocomplete="off"
-          />
-        </form>
+            <span class="intel-feed-text">RSS</span>
+          </a>
+          <form class="intel-search" action="/search/" method="get" role="search">
+            <label class="intel-search-label" for={searchInputId}>Search</label>
+            {/* Visible magnifier — sits inside the pill so taps on it
+                focus the input (F-UX-4 mobile collapse). At <480px the
+                pill becomes a 36×36 icon-only affordance until focused. */}
+            <label for={searchInputId} class="intel-search-icon" aria-hidden="true">
+              <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="9" cy="9" r="6"/>
+                <line x1="13.5" y1="13.5" x2="17.5" y2="17.5" stroke-linecap="round"/>
+              </svg>
+            </label>
+            <input
+              id={searchInputId}
+              type="search"
+              name="q"
+              placeholder="Search news…"
+              autocomplete="off"
+            />
+          </form>
+        </div>
       </div>
     </div>
   </header>
@@ -165,12 +169,12 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
                 loading="eager"
               />
               <div class="intel-featured-body">
-                <span class="intel-featured-eyebrow">{formatCategory(featured.data.category)}</span>
+                <span class="intel-featured-top">
+                  <span class="intel-featured-eyebrow">{formatCategory(featured.data.category)}</span>
+                  <time class="intel-date" datetime={featured.data.publishedAt.toISOString()}>{fmt(featured.data.publishedAt)}</time>
+                </span>
                 <h2>{featured.data.title}</h2>
                 <p>{featured.data.description}</p>
-                <span class="intel-featured-meta">
-                  Filed {fmt(featured.data.publishedAt)}
-                </span>
               </div>
             </a>
           )}
@@ -189,10 +193,12 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
                       sizes={LISTING_SIZES.tile}
                     />
                     <div class="intel-card-body">
-                      <span class="intel-card-cat">{formatCategory(p.data.category)}</span>
+                      <span class="intel-card-top">
+                        <span class="intel-card-cat">{formatCategory(p.data.category)}</span>
+                        <time class="intel-date" datetime={p.data.publishedAt.toISOString()}>{fmt(p.data.publishedAt)}</time>
+                      </span>
                       <h3>{p.data.title}</h3>
                       <p>{p.data.description}</p>
-                      <span class="intel-card-meta">Filed {fmt(p.data.publishedAt)}</span>
                     </div>
                   </a>
                 </li>
@@ -263,6 +269,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     justify-content: space-between;
   }
   .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .intel-tools-end { display: flex; align-items: center; gap: 10px; margin-left: auto; }
   .intel-tab {
     font-family: var(--font-ui);
     font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
@@ -383,12 +390,21 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     margin: 0;
     max-width: 64ch;
   }
-  .intel-featured-meta {
+  /* Category left, date right, on the first line of every card (19 Oct
+     2026 UX review): the "Filed …" stamp used to sit last, in 11px muted
+     type under the standfirst, where a returning reader scanning for
+     what is new could not see it. */
+  .intel-featured-top,
+  .intel-card-top {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+  }
+  .intel-date {
     font-family: var(--font-ui);
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 0.3px;
-    margin-top: 4px;
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
   .intel-card-grid {
@@ -443,11 +459,6 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   .intel-card-body p {
     font-size: 13px; line-height: 1.5;
     color: var(--ink-soft); margin: 0;
-  }
-  .intel-card-meta {
-    font-family: var(--font-ui);
-    font-size: 11px; color: var(--muted);
-    letter-spacing: 0.2px; margin-top: 2px;
   }
 
   /* Empty state — desk copy arrives through the `empty` slot, so the
@@ -575,10 +586,28 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
       flex-direction: row;
       flex-wrap: nowrap;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
-    .intel-tabs { flex: 1 1 auto; min-width: 0; gap: 4px; }
-    .intel-tab { padding: 6px 10px; font-size: 12px; }
+    /* 19 Oct 2026: one scrollable chip row — "Hotels" used to wrap
+       alone onto a second line beside RSS and search. */
+    .intel-tabs {
+      flex: 1 1 auto; min-width: 0; gap: 2px;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .intel-tabs::-webkit-scrollbar { display: none; }
+    .intel-tab { padding: 6px 8px; font-size: 12px; letter-spacing: 0; flex: 0 0 auto; white-space: nowrap; }
+    .intel-tools-end { flex: 0 0 auto; gap: 6px; }
+    /* Icon-only on phones (the link keeps its aria-label) so the four
+       desk chips fit beside it at 390px. */
+    .intel-feed { width: 36px; height: 36px; padding: 0; justify-content: center; box-sizing: border-box; }
+    .intel-feed-text { display: none; }
+    /* Focused search takes its own full row so the chips stay usable. */
+    .intel-tools:has(.intel-search:focus-within) { flex-wrap: wrap; }
+    .intel-tools-end:has(.intel-search:focus-within) { flex: 1 1 100%; }
     /* Tabs always sit alongside search on the news indexes now, so
        search collapses to a 36px icon button until focused. */
     .intel-search:not(:only-child) {
