@@ -2639,7 +2639,7 @@
     "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
     "earnUnit": "% back as LuLu Points",
     "eligibility": {
-      "minSalary": 8000,
+      "minSalary": 5000,
       "salaryTransferRequired": false,
       "residencyRequired": true,
       "employmentTypes": [
@@ -2657,11 +2657,12 @@
         "Security cheque"
       ]
     },
-    "lastVerified": "2026-10-02",
+    "lastVerified": "2026-10-19",
     "earnRates": {
       "groceries": 3.5,
       "fuel": 2,
-      "everythingElse": 0.5
+      "everythingElse": 0.35,
+      "utilities": 1
     },
     "annualFeeWaiver": {
       "year_one_waived": true,
@@ -2687,26 +2688,26 @@
       "co-brand"
     ],
     "interestRate": {
-      "monthly": 3.49
+      "monthly": 3.69
     },
     "applyUrl": "https://www.emiratesnbd.com/en/campaigns/credit-card-apply?campaign=lulu-247-titanium-credit-card",
     "perks": [
       "3.5% back as LuLu Points on LuLu in-store and online spends",
       "2% back as LuLu Points on fuel",
-      "0.5% back as LuLu Points on all other spends",
-      "Complimentary access to 10+ airport lounges across the Middle East",
-      "Golf privileges — 40% discount at 100+ courses globally",
-      "3% discount on flight bookings and 7% off holiday packages via ENBD Travel Desk",
-      "0% Easy Payment Plan (6–12 months) at participating merchants",
-      "LuLu Points redeemable at LuLu Hypermarkets, LuLu Express, and luluhypermarket.com",
+      "1% back as LuLu Points on utility bill payments",
+      "0.35% back as LuLu Points on all other spends",
+      "0% interest on balance transfers with no processing fee",
+      "0% Easy Payment Plan (3, 6, 12 or 24 months) at participating merchants",
+      "LuLu member benefits: priority checkout, early access to sales and promotions, free shipping on LuLu online",
+      "LuLu Points redeemable at over 70 LuLu stores",
       "Apple Pay, Samsung Pay, Google Pay"
     ],
     "_provenance": {
       "kfsUrl": "editor-confirmed",
       "earnUnit": "editor-confirmed",
-      "eligibility": "editor-confirmed",
+      "eligibility": "editor-corrected",
       "lastVerified": "scraped",
-      "earnRates": "editor-confirmed",
+      "earnRates": "editor-corrected",
       "annualFeeWaiver": "editor-confirmed",
       "loyaltyProgram": "editor-confirmed",
       "transferPartners": "editor-confirmed",
@@ -2717,10 +2718,10 @@
       "name": "editor-confirmed",
       "bank": "editor-confirmed",
       "categories": "editor-confirmed",
-      "interestRate": "editor-confirmed",
+      "interestRate": "editor-corrected",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed",
-      "_features": "editor-confirmed",
+      "perks": "editor-corrected",
+      "_features": "editor-corrected",
       "partnerBrands": "needs-review"
     },
     "_lastScraped": "2026-09-17",
@@ -2744,17 +2745,6 @@
       "partnerBrands": "![Carrefour](https://www.emiratesnbd.com/-/media/enbd/images/brands/carrefour_logo.jpg?la=en&h=50&w=125&hash=23D40F03D8CA0E3F177B8859EC0F1124)"
     },
     "_features": [
-      {
-        "type": "lounge_access",
-        "network": "Visa Airport Companion",
-        "scope": {
-          "visits_per_year": 12
-        },
-        "geo": [
-          "ME"
-        ],
-        "notes": "10+ Middle East lounges"
-      },
       {
         "type": "travel_desk_discount",
         "flights_pct": 3,
@@ -3628,7 +3618,7 @@
         "Security cheque"
       ]
     },
-    "lastVerified": "2026-10-02",
+    "lastVerified": "2026-10-19",
     "earnRates": {
       "travel": 2,
       "dining": 2,
@@ -3692,7 +3682,7 @@
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
       "perks": "editor-confirmed",
-      "_features": "editor-confirmed",
+      "_features": "editor-corrected",
       "partnerBrands": "needs-review",
       "joiningFee": "editor-corrected"
     },
@@ -3720,12 +3710,12 @@
     "_features": [
       {
         "type": "lounge_access",
-        "network": "DragonPass",
+        "network": "Visa Airport Companion",
         "scope": "unlimited",
         "geo": [
-          "UAE"
+          "global"
         ],
-        "notes": "DXB and AUH"
+        "notes": "Complimentary access to 1,000+ airport lounges worldwide via the Visa Airport Companion app (ENBD product page, 19 Oct 2026); the page states no visit allowance or guest policy"
       },
       {
         "type": "insurance_travel",
@@ -3775,7 +3765,7 @@
         "Security cheque"
       ]
     },
-    "lastVerified": "2026-10-02",
+    "lastVerified": "2026-10-19",
     "earnRates": {
       "travel": 1.5,
       "dining": 1.5,
@@ -3814,7 +3804,7 @@
     },
     "applyUrl": "https://www.emiratesnbd.com/en/campaigns/credit-card-apply?campaign=skywards-signature-credit-card",
     "perks": [
-      "Complimentary airport lounge access via DragonPass",
+      "Unlimited complimentary access to 1,000+ airport lounges in 300+ cities via the Visa Airport Companion App",
       "Complimentary travel insurance",
       "0% Easy Payment Plan at participating merchants",
       "Golf privileges",
@@ -3841,8 +3831,8 @@
       "categories": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "applyUrl": "editor-confirmed",
-      "perks": "editor-confirmed",
-      "_features": "editor-confirmed",
+      "perks": "editor-corrected",
+      "_features": "editor-corrected",
       "partnerBrands": "needs-review",
       "joiningFee": "editor-corrected"
     },
@@ -3870,14 +3860,12 @@
     "_features": [
       {
         "type": "lounge_access",
-        "network": "DragonPass",
-        "scope": {
-          "visits_per_year": 6
-        },
+        "network": "Visa Airport Companion",
+        "scope": "unlimited",
         "geo": [
-          "UAE"
+          "global"
         ],
-        "notes": "Limited DragonPass visits"
+        "notes": "Unlimited access to 1,000+ lounges in 300+ cities via the Visa Airport Companion App (ENBD product page, 19 Oct 2026); guest access not stated"
       },
       {
         "type": "insurance_travel"
@@ -5183,7 +5171,7 @@
       "partnerBrands": "needs-review",
       "kfsUrl": "editor-confirmed",
       "loyaltyProgram": "scraped",
-      "welcomeBonus": "scraped"
+      "welcomeBonus": "editor-confirmed-null"
     },
     "_lastScraped": "2026-09-17",
     "_lastReviewed": "2026-09-10",
@@ -5251,12 +5239,7 @@
     },
     "kfsUrl": "https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf",
     "loyaltyProgram": "Liv Rewards (cashback / Skywards Miles)",
-    "welcomeBonus": {
-      "amount": 10000,
-      "unit": "skywards_miles",
-      "spend_threshold_aed": null,
-      "qualify_window_days": null
-    }
+    "welcomeBonus": null
   },
   "liv-cashback-plus": {
     "_provenance": {
@@ -5279,7 +5262,7 @@
       "joiningFee": "editor-confirmed",
       "kfsUrl": "editor-confirmed",
       "loyaltyProgram": "scraped",
-      "welcomeBonus": "scraped"
+      "welcomeBonus": "editor-confirmed-null"
     },
     "_lastScraped": "2026-09-17",
     "_lastReviewed": "2026-09-10",
@@ -5351,12 +5334,7 @@
     },
     "kfsUrl": "https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf",
     "loyaltyProgram": "Liv Rewards (cashback / Skywards Miles)",
-    "welcomeBonus": {
-      "amount": 10000,
-      "unit": "skywards_miles",
-      "spend_threshold_aed": null,
-      "qualify_window_days": null
-    }
+    "welcomeBonus": null
   },
   "mashreq-cashback": {
     "_provenance": {

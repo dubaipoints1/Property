@@ -80,3 +80,57 @@ test("every programme slug in valuations is unique", () => {
   const slugs = programmeValuations.map((p) => p.slug).filter(Boolean);
   assert.equal(new Set(slugs).size, slugs.length);
 });
+
+// 19 Oct 2026 UX review (Chairman direction: "can we do something to the
+// menu maybe?"): desktop bar and mobile drawer carry ONE information
+// architecture — same six entries, same labels, same order. Before this the
+// two surfaces used different vocabularies ("Credit cards"/"Cards", "Earn
+// miles"/"Points + Miles", a mobile-only "Travel") and the salary-transfer
+// tracker was missing from the desktop bar.
+const PRIMARY = ["Cards", "Salary tracker", "Points &amp; miles", "Deals", "News", "Guides"];
+
+function primaryLabels(block: string): string[] {
+  // Top-level entries only: direct <a> children of the desktop nav and
+  // the mega-wrap trigger links, or .dp-nav-row rows in the drawer.
+  const labels: string[] = [];
+  const re = /<(?:a|label)[^>]*class=(?:\{`?)?["`]?(?:dp-nav-row[^"`]*|[^"`]*)["`]?[^>]*>\s*(?:<span>)?([A-Z][A-Za-z &;]+?)\s*(?:<\/span>|<span class="dp-mega-caret"|<span class="dp-nav-expand-arrow"|\{liveDealCount|<\/a>)/g;
+  for (const m of block.matchAll(re)) labels.push(m[1].trim());
+  return labels;
+}
+
+test("desktop primary nav: Cards · Salary tracker · Points & miles · Deals · News · Guides", () => {
+  const start = headerSrc.indexOf('<nav class="dp-header-nav"');
+  const end = headerSrc.indexOf("</nav>", start);
+  const block = headerSrc.slice(start, end)
+    // drop the mega panels' rows so only top-level triggers remain
+    .replace(/<div class="dp-megapanel"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/g, "");
+  assert.deepEqual(primaryLabels(block), PRIMARY);
+});
+
+test("mobile drawer carries the same six primary entries in the same order", () => {
+  const start = headerSrc.indexOf('<nav class="dp-nav-overlay-body"');
+  const end = headerSrc.indexOf('<div class="dp-nav-tools-block"', start);
+  const block = headerSrc.slice(start, end)
+    .replace(/<div class="dp-nav-panel"[\s\S]*?\n    <\/div>\n/g, "");
+  assert.deepEqual(primaryLabels(block), PRIMARY);
+});
+
+test("salary-transfer tracker is a primary entry on both surfaces", () => {
+  const desktop = headerSrc.slice(headerSrc.indexOf('<nav class="dp-header-nav"'));
+  assert.match(desktop.slice(0, desktop.indexOf("</nav>")), /href="\/salary-transfer\/"[^>]*>Salary tracker</);
+  const drawer = headerSrc.slice(headerSrc.indexOf('<nav class="dp-nav-overlay-body"'));
+  assert.match(drawer, /href="\/salary-transfer\/">\s*<span>Salary tracker<\/span>/);
+});
+
+test("deals count is a badge, not running text, and banks stay reachable", () => {
+  assert.doesNotMatch(headerSrc, /live`/, "the old `Deals · N live` label string is back");
+  assert.match(headerSrc, /class="dp-nav-count"/);
+  assert.match(headerSrc, /href: "\/banks\/"/, "Banks must stay reachable inside the Cards menu");
+  assert.match(footerSrc, /href: "\/banks\/"/, "Banks must stay reachable in the footer");
+});
+
+test("drawer carets use brand tokens, not the legacy link blue", () => {
+  const rule = headerSrc.match(/\.dp-nav-expand-arrow \{[^}]*\}/)?.[0] ?? "";
+  assert.match(rule, /color: var\(--green\)/);
+  assert.doesNotMatch(rule, /var\(--link\)/);
+});

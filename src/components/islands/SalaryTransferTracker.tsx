@@ -506,29 +506,22 @@ export default function SalaryTransferTracker({ offers }: Props) {
                       </span>
                     </div>
                   </div>
-                  <div class="dpst-card-kv">
-                    <div class="kv">
-                      <span class="k">Reward type</span>
-                      <span class="v">
-                        <span class={`dpst-badge ${badgeClass(reward.rewardType)}`}>
-                          <span class="ic" aria-hidden="true" />
-                          {badgeLabel(reward.rewardType)}
-                        </span>
-                      </span>
-                    </div>
-                    <div class="kv">
-                      <span class="k">Salary band</span>
-                      <span class="v">{bandCell(o)}</span>
-                    </div>
-                    <div class="kv">
-                      <span class="k">Validity</span>
-                      <span class="v">
-                        <span class={`dpst-chip-valid ${validClass(n)}`}>
-                          <span class="dot" aria-hidden="true" />
-                          {validText(n)}
-                        </span>
-                      </span>
-                    </div>
+                  {/* One chip line instead of three label rows (19 Oct
+                      2026 UX review): reward type · salary band · days
+                      left, keeping the urgency colours. */}
+                  <div class="dpst-card-chips">
+                    <span class={`dpst-badge ${badgeClass(reward.rewardType)}`}>
+                      <span class="ic" aria-hidden="true" />
+                      {badgeLabel(reward.rewardType)}
+                    </span>
+                    <span class="dpst-card-band">
+                      <span class="sr-only">Salary band: </span>
+                      {bandCell(o)}
+                    </span>
+                    <span class={`dpst-chip-valid ${validClass(n)}`}>
+                      <span class="dot" aria-hidden="true" />
+                      {validText(n)}
+                    </span>
                   </div>
                   <button
                     type="button"
