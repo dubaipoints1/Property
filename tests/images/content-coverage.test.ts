@@ -27,6 +27,12 @@ const ALLOWED_MISSING: Record<string, string> = {
     "photo seeding pending (weekly 2026-10-19)",
   "deal-emirates-islamic-switch-cashback-welcome-aed500":
     "photo seeding pending (weekly 2026-10-19)",
+  "news-air-arabia-sharjah-amman-city-airport-four-weekly-15-november":
+    "photo seeding pending (weekly 2026-10-19)",
+  "news-all-accor-triple-points-uae-hotels-book-by-25-october":
+    "photo seeding pending (weekly 2026-10-19)",
+  "news-marriott-bonvoy-upgrade-list-app-beta-not-yet-uae":
+    "photo seeding pending (weekly 2026-10-19)",
 };
 
 const manifest = JSON.parse(
