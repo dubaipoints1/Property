@@ -21,6 +21,8 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "programme-world-of-hyatt": "photo seeding pending (2026-10-19)",
+  "programme-ihg-one-rewards": "photo seeding pending (2026-10-19)",
 };
 
 const manifest = JSON.parse(
