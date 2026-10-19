@@ -23,6 +23,8 @@ const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
   "news-hilton-honors-more-points-to-play-uae-hotels-31-december":
     "photo seeding pending (2026-10-19)",
+  "programme-world-of-hyatt": "photo seeding pending (2026-10-19)",
+  "programme-ihg-one-rewards": "photo seeding pending (2026-10-19)",
 };
 
 const manifest = JSON.parse(
