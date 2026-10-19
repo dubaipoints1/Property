@@ -174,7 +174,7 @@ img { display: block; max-width: 100%; }
   --dpst-hover: rgba(31, 58, 77, 0.05);
   --dpst-far: #54677a;
   --dpst-soon: #8f5f18;
-  --dpst-urgent: #b4513a;
+  --dpst-urgent: #a8442f; /* was #b4513a: 4.2:1 on its own tinted chip (19 Oct 2026 render probe); same hue, now 4.9:1 */
 
   position: relative;
   width: 100%;
@@ -456,9 +456,16 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 .dpst-cards { display: none; }
 @media (max-width: 720px) {
   .dpst-controls { padding: 18px 20px 20px; }
-  .dpst-bands { grid-template-columns: repeat(3, 1fr); }
+  /* Band picker, phones (19 Oct 2026 UX review): a balanced 3 + 2 grid
+     on a six-column track, so "AED 50k+" is no longer orphaned on its own
+     row, and every band is visible without scrolling. The selected band
+     is a solid navy fill with a tick. */
+  .dpst-bands { grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 18px; }
+  .dpst-band { grid-column: span 2; padding: 10px 4px; background: var(--dpst-paper); }
+  .dpst-band:nth-of-type(n+4) { grid-column: span 3; }
   .dpst-band-slider { display: none; }
   .dpst-band[aria-pressed="true"] { background: var(--dpst-navy); }
+  .dpst-band[aria-pressed="true"]::before { content: "✓ " / ""; }
   .dpst-ctrl-row { flex-direction: column; align-items: stretch; }
   .dpst-meta { padding: 12px 20px; }
   .dpst-tablewrap { display: none; }
@@ -467,10 +474,18 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   .dpst-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px; }
   .dpst-card-val { text-align: right; }
   .dpst-card-val .dpst-value { font-size: 22px; }
-  .dpst-card-kv { padding: 0 16px 14px; }
-  .dpst-card-kv .kv { display: flex; justify-content: space-between; gap: 14px; padding: 8px 0; border-top: 1px solid var(--dpst-line-soft); font-size: 13px; }
-  .dpst-card-kv .kv .k { color: var(--dpst-navy-soft); }
-  .dpst-card-kv .kv .v { font-weight: 600; text-align: right; }
+  .dpst-card-head { padding-bottom: 10px; }
+  .dpst-card-chips {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+    padding: 0 16px 14px;
+  }
+  .dpst-card-band {
+    display: inline-flex; align-items: center;
+    font-size: 12px; font-weight: 600; white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    padding: 4px 10px; border-radius: 999px;
+    border: 1px solid var(--dpst-line); color: var(--dpst-navy);
+  }
   .dpst-card-acc {
     width: 100%; appearance: none; cursor: pointer; font-family: inherit;
     display: flex; align-items: center; justify-content: space-between;
@@ -486,8 +501,8 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   .dpst-card-detail-inner .dpst-fineblock { margin-bottom: 16px; }
   .dpst-card-detail-inner .dpst-verified { margin-top: 4px; }
 }
-@media (max-width: 480px) {
-  .dpst-bands { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 340px) {
+  .dpst-band { font-size: 12px; }
 }
 
 /* ── Salary-transfer calculator island (.dpsc) ──────────────────────────
@@ -3783,8 +3798,7 @@ html * {
 [data-theme="dark"] .dp-cr-hero,
 [data-theme="dark"] .dp-band-navy,
 [data-theme="dark"] .dp-band-green,
-[data-theme="dark"] .dp-feature-card,
-[data-theme="dark"] .dp-nav-live-strip {
+[data-theme="dark"] .dp-feature-card {
   background: var(--navy-pin);
 }
 /* The feat-arrow is white-circle + var(--navy) glyph; inverted --navy is
