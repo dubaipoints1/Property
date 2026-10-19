@@ -107,7 +107,7 @@ test("cardComparisonRows: Signature wins fee / joining-fee / min-salary rows", (
   assert.equal(byKey.minSalary.winner, "right");
 });
 
-test("cardComparisonRows: Infinite wins topEarn + lounge rows", () => {
+test("cardComparisonRows: Infinite wins topEarn; lounge rows tie", () => {
   const rows = cardComparisonRows(
     cards["emirates-nbd-skywards-infinite"],
     cards["emirates-nbd-skywards-signature"],
@@ -119,8 +119,10 @@ test("cardComparisonRows: Infinite wins topEarn + lounge rows", () => {
   // Signature top is 1.5× — left wins.
   assert.equal(byKey.topEarn.winner, "left");
 
-  // Infinite lounge is DragonPass unlimited; Signature is DragonPass 6/yr.
-  assert.equal(byKey.lounge.winner, "left");
+  // Both now Visa Airport Companion, unlimited (ENBD product pages,
+  // re-read 19 Oct 2026; the Signature was previously recorded as
+  // DragonPass 6/yr).
+  assert.equal(byKey.lounge.winner, "tie");
 });
 
 test("cardComparisonRows: welcome bonus row never highlights a winner", () => {
@@ -215,9 +217,9 @@ test("cardComparisonRows: snapshot of Skywards Infinite vs Signature display val
     },
     {
       key: "lounge",
-      left: "DragonPass — unlimited",
-      right: "DragonPass — 6 visits/yr",
-      winner: "left",
+      left: "Visa Airport Companion — unlimited",
+      right: "Visa Airport Companion — unlimited",
+      winner: "tie",
     },
   ]);
 });
