@@ -21,6 +21,12 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "deal-emirates-islamic-carrefour-weekend-aed50":
+    "photo seeding pending (weekly 2026-10-19)",
+  "deal-emirates-islamic-careem-dineout-weekend-aed40":
+    "photo seeding pending (weekly 2026-10-19)",
+  "deal-emirates-islamic-switch-cashback-welcome-aed500":
+    "photo seeding pending (weekly 2026-10-19)",
 };
 
 const manifest = JSON.parse(
