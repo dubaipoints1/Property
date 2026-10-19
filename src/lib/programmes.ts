@@ -7,7 +7,16 @@
 // new paths in public/_redirects. Brief:
 // .council/briefs/2026-10-11-hotels-section.md.
 
-export const HOTEL_PROGRAMME_IDS = ["marriott-bonvoy", "hilton-honors", "accor-all"] as const;
+//
+// World of Hyatt and IHG One Rewards joined on 19 October 2026 — they were
+// named across news and guides with no profile page to link to.
+export const HOTEL_PROGRAMME_IDS = [
+  "marriott-bonvoy",
+  "hilton-honors",
+  "accor-all",
+  "world-of-hyatt",
+  "ihg-one-rewards",
+] as const;
 
 export type ProgrammeSection = "airlines" | "hotels";
 

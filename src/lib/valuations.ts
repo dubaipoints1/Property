@@ -44,7 +44,7 @@ export const programmeValuations: ProgrammeValuation[] = [
   { slug: "qatar-privilege-club", name: "Qatar",           currencyName: "Avios",         mark: "QR",  floor: null, ceiling: null, dpValue: 3.0,  approx: true, delta90: "—", status: "Active" },
   { slug: null,                   name: "British Airways", currencyName: "Avios",         mark: "BA",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
   { slug: "marriott-bonvoy",      name: "Marriott",        currencyName: "Bonvoy",        mark: "MAR", floor: null, ceiling: null, dpValue: 2.5,  delta90: "—", status: "Active" },
-  { slug: null,                   name: "IHG",             currencyName: "One Rewards",   mark: "IHG", floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
+  { slug: "ihg-one-rewards",      name: "IHG",             currencyName: "One Rewards",   mark: "IHG", floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
   { slug: "hilton-honors",        name: "Hilton",          currencyName: "Honors",        mark: "HIL", floor: null, ceiling: null, dpValue: 1.5,  delta90: "—", status: "Active" },
   { slug: null,                   name: "flydubai",        currencyName: "OPEN",          mark: "FZ",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
   { slug: null,                   name: "Wizz Air",        currencyName: "Discount Club", mark: "W6",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
