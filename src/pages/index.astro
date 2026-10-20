@@ -952,6 +952,15 @@ const DIRECTORY = [
     pointer-events: none;
   }
   .hp-reel-title .hp-hero-kicker { color: var(--gold-lift); margin-bottom: 20px; }
+  /* 20 Oct 2026: the same soft local shade the phone layout got on the
+     19th, now at every width — on laptops the eyebrow sat over the
+     brightest video frames with nothing behind it. */
+  .hp-reel-title .hp-hero-kicker { position: relative; isolation: isolate; }
+  .hp-reel-title .hp-hero-kicker::before {
+    content: ""; position: absolute; z-index: -1; inset: -26px -90px;
+    background: radial-gradient(farthest-side, rgba(22, 32, 44, 0.72) 30%, rgba(22, 32, 44, 0.4) 65%, rgba(22, 32, 44, 0) 100%);
+    pointer-events: none;
+  }
   .hp-reel-title .hp-hero-lede {
     margin: 22px auto 0; max-width: 42ch;
     color: rgba(253, 252, 248, 0.86);
