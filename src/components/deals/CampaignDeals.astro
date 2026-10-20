@@ -1,0 +1,56 @@
+---
+// Live deals filed under one seasonal campaign (`campaign` on the deal).
+// Used inside a guide, so a bank offer is written once, on the deals desk,
+// and listed here automatically. With none live yet it says so plainly
+// rather than leaving an empty box.
+
+import { getLiveDeals } from "~/lib/deals";
+import { resolveDealIssuer } from "~/lib/dealIssuer";
+
+interface Props {
+  campaign: "dsf-2026-27" | "white-friday-2026" | "ramadan-2027";
+  /** Shown when no deal is filed under the campaign yet. */
+  empty: string;
+}
+
+const { campaign, empty } = Astro.props;
+const deals = await Promise.all(
+  (await getLiveDeals())
+    .filter((d) => d.data.campaign === campaign)
+    .map(async (d) => ({ d, issuer: (await resolveDealIssuer(d)).name })),
+);
+const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "long" });
+---
+
+<div class="dp-campaign">
+  {deals.length === 0 ? (
+    <p class="dp-campaign-empty">{empty}</p>
+  ) : (
+    <ul>
+      {deals.map(({ d, issuer }) => (
+        <li>
+          <a href={`/deals/${d.id}/`}>{d.data.title}</a>
+          <span>{issuer} · ends {fmt(d.data.expiresOn)}{d.data.promoCode && ` · code ${d.data.promoCode}`}</span>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+<style>
+  .dp-campaign {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    border-radius: 12px;
+    background: var(--paper);
+    padding: 6px 20px;
+    margin: 0 0 1.5em;
+  }
+  .dp-campaign ul { list-style: none; margin: 0; padding: 0; }
+  .dp-campaign li { display: grid; gap: 2px; padding: 12px 0; }
+  .dp-campaign li + li { border-top: 1px solid var(--line-soft); }
+  .dp-campaign a { font-weight: 600; color: var(--ink); }
+  .dp-campaign a:hover { color: var(--green); }
+  .dp-campaign span { font-size: 14px; color: var(--ink-soft); }
+  .dp-campaign-empty { margin: 12px 0; font-size: 15px; color: var(--ink-soft); }
+</style>

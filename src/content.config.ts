@@ -15,6 +15,11 @@ const DEAL_CATEGORY = z.enum([
   "other",
 ]);
 
+// Seasonal campaigns a deal can be filed under. A guide that covers the
+// season lists every live deal carrying its tag, so a bank offer filed
+// once appears in both places.
+export const DEAL_CAMPAIGN = z.enum(["dsf-2026-27", "white-friday-2026", "ramadan-2027"]);
+
 // What a deal is spent on, for the /deals/ filter row. Kept short on
 // purpose: a filter with one deal behind it is noise.
 export const DEAL_SECTOR = z.enum([
@@ -198,6 +203,8 @@ const deals = defineCollection({
         .regex(/^[A-Z0-9][A-Z0-9_-]{2,31}$/i, "A promo code is 3–32 letters, digits, - or _")
         .optional(),
       promoCodeSource: z.string().url().optional(),
+      /** Seasonal campaign the offer belongs to; campaign lists (e.g. the DSF guide) read this. */
+      campaign: DEAL_CAMPAIGN.optional(),
     })
     .superRefine((data, ctx) => {
       const hasBank = data.bank !== undefined;
