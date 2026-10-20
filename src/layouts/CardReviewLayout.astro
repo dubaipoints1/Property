@@ -17,6 +17,7 @@
 
 import BaseLayout from "./BaseLayout.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
+import BankOffers from "~/components/deals/BankOffers.astro";
 import StockImage from "~/components/StockImage.astro";
 import CardImage from "~/components/CardImage.astro";
 import { getCardArt } from "~/lib/cardArt";
@@ -430,6 +431,8 @@ const schema = {
       <div class="dp-prose">
         <slot />
       </div>
+
+      {bankSlug && <BankOffers bankSlug={bankSlug} bankName={bankName} />}
 
       <Disclaimer variant="card" />
     </article>
