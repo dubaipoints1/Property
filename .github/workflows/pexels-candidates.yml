@@ -1,0 +1,32 @@
+# Download Pexels candidates for an editor to view before picking. Commits
+# only candidates/ to a scratch branch (claude/pexels-candidates), never to
+# the pushing branch and never to main.
+name: pexels-candidates
+on:
+  push:
+    branches: ["claude/**"]
+    paths: ["scripts/images/candidates-*.json", ".github/workflows/pexels-candidates.yml"]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22.20.0" }
+      - name: Fetch candidates
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          Q=$(ls -t scripts/images/candidates-*.json | head -1)
+          node scripts/images/pexels-candidates.mjs "$Q"
+      - name: Push to scratch branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan pexels-candidates-tmp
+          git rm -rq --cached .
+          git add candidates/
+          git commit -qm "Pexels candidates"
+          git push -f origin HEAD:claude/pexels-candidates
