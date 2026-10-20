@@ -1,44 +1,244 @@
 {
   "discover": [
-    { "key": "noon", "commons": "noon logo", "site": "https://www.noon.com/uae-en/" },
-    { "key": "amazon", "commons": "Amazon logo filemime:image/svg+xml", "site": "https://www.amazon.ae/" },
-    { "key": "talabat", "commons": "talabat logo", "site": "https://www.talabat.com/uae" },
-    { "key": "careem", "commons": "Careem logo", "site": "https://www.careem.com/" },
-    { "key": "lulu", "commons": "LuLu Hypermarket logo", "site": "https://gcc.luluhypermarket.com/en-ae/" },
-    { "key": "carrefour", "commons": "Carrefour logo filemime:image/svg+xml", "site": "https://www.carrefouruae.com/" },
-    { "key": "binsina", "commons": "BinSina pharmacy logo", "site": "https://www.binsina.ae/" },
-    { "key": "zed", "commons": "Zed app logo", "site": "https://zed.ae/" },
-    { "key": "trip-com", "commons": "Trip.com logo", "site": "https://www.trip.com/" },
-    { "key": "zuvees", "commons": "Zuvees logo", "site": "https://www.zuvees.ae/" },
-    { "key": "right-bite", "commons": "Right Bite logo", "site": "https://www.right-bite.com/" },
-    { "key": "cinepolis", "commons": "Cinépolis logo filemime:image/svg+xml", "site": "https://uae.cinepolisgulf.com/" },
-    { "key": "igp", "commons": "IGP Indian Gifts Portal logo", "site": "https://www.igp.com/" },
-    { "key": "air-arabia", "commons": "Air Arabia logo", "site": "https://www.airarabia.com/en" },
-    { "key": "dr-nutrition", "commons": "Dr. Nutrition logo", "site": "https://www.drnutrition.com/" },
-    { "key": "makemytrip", "commons": "MakeMyTrip logo", "site": "https://www.makemytrip.ae/" },
-    { "key": "fnp", "commons": "Ferns N Petals logo", "site": "https://www.fnp.ae/" },
-    { "key": "nrtc", "commons": "NRTC Fresh logo", "site": "https://nrtcfresh.com/" },
-    { "key": "reel-cinemas", "commons": "Reel Cinemas logo", "site": "https://www.reelcinemas.com/" },
-    { "key": "styli", "commons": "Styli logo", "site": "https://stylishop.com/ae/en" },
-    { "key": "dubai-parks", "commons": "Dubai Parks and Resorts logo", "site": "https://www.dubaiparksandresorts.com/en" },
-    { "key": "zomato", "commons": "Zomato logo filemime:image/svg+xml", "site": "https://www.zomato.com/" },
-    { "key": "farfetch", "commons": "Farfetch logo", "site": "https://www.farfetch.com/" },
-    { "key": "mann-marzi", "site": "https://mannmarzi.com/" },
-    { "key": "dib", "commons": "Dubai Islamic Bank logo", "site": "https://www.dib.ae/" },
-    { "key": "adib", "commons": "Abu Dhabi Islamic Bank logo", "site": "https://www.adib.ae/en" },
-    { "key": "cbd", "commons": "Commercial Bank of Dubai logo", "site": "https://www.cbd.ae/" },
-    { "key": "emirates-islamic", "commons": "Emirates Islamic bank logo", "site": "https://www.emiratesislamic.ae/en" },
-    { "key": "rakbank", "commons": "RAKBANK logo", "site": "https://www.rakbank.ae/en/personal" },
-    { "key": "mashreq", "commons": "Mashreq bank logo", "site": "https://www.mashreq.com/en/uae/neo/" },
-    { "key": "liv", "commons": "Liv bank Emirates NBD logo", "site": "https://www.liv.me/" },
-    { "key": "wio", "commons": "Wio Bank logo", "site": "https://www.wio.io/" },
-    { "key": "al-hilal", "commons": "Al Hilal Bank logo", "site": "https://www.alhilalbank.ae/" },
-    { "key": "airrewards", "commons": "Air Arabia Airrewards logo", "site": "https://www.airarabia.com/en/airrewards" },
-    { "key": "saudia", "commons": "Saudia logo filemime:image/svg+xml", "site": "https://www.saudia.com/" },
-    { "key": "accor", "commons": "Accor ALL logo", "site": "https://all.accor.com/" },
-    { "key": "hilton", "commons": "Hilton Honors logo", "site": "https://www.hilton.com/en/hilton-honors/" },
-    { "key": "hyatt", "commons": "World of Hyatt logo", "site": "https://world.hyatt.com/" },
-    { "key": "ihg", "commons": "IHG One Rewards logo", "site": "https://www.ihg.com/onerewards/content/us/en/home" }
+    {
+      "key": "carrefour2",
+      "commons": "intitle:Carrefour intitle:logo"
+    },
+    {
+      "key": "binsina2",
+      "commons": "intitle:BinSina",
+      "site": "https://binsina.ae/en/"
+    },
+    {
+      "key": "zed2",
+      "commons": "intitle:Zed intitle:logo",
+      "site": "https://www.zed.ae/"
+    },
+    {
+      "key": "rightbite2",
+      "commons": "intitle:\"Right Bite\"",
+      "site": "https://rightbite.com/"
+    },
+    {
+      "key": "drnutrition2",
+      "commons": "intitle:\"Dr Nutrition\"",
+      "site": "https://drnutrition.com/en-ae/"
+    },
+    {
+      "key": "styli2",
+      "commons": "intitle:Styli",
+      "site": "https://stylishop.com/"
+    },
+    {
+      "key": "nrtc2",
+      "site": "https://nrtcfresh.com/"
+    },
+    {
+      "key": "igp2",
+      "commons": "intitle:IGP intitle:logo"
+    },
+    {
+      "key": "cbd2",
+      "commons": "intitle:\"Commercial Bank of Dubai\"",
+      "site": "https://www.cbd.ae/personal"
+    },
+    {
+      "key": "alhilal2",
+      "commons": "intitle:\"Al Hilal\" intitle:logo",
+      "site": "https://www.alhilalbank.ae/en/"
+    },
+    {
+      "key": "mashreq2",
+      "commons": "intitle:Mashreq",
+      "site": "https://www.mashreq.com/en/uae/personal/"
+    },
+    {
+      "key": "rakbank2",
+      "commons": "intitle:Rakbank",
+      "site": "https://www.rakbank.ae/"
+    },
+    {
+      "key": "dib2",
+      "commons": "intitle:\"Dubai Islamic Bank\""
+    },
+    {
+      "key": "emiratesislamic2",
+      "commons": "intitle:\"Emirates Islamic\""
+    },
+    {
+      "key": "wio2",
+      "commons": "intitle:Wio intitle:logo"
+    },
+    {
+      "key": "hilton2",
+      "commons": "intitle:Hilton intitle:logo filemime:image/svg+xml"
+    },
+    {
+      "key": "hyatt2",
+      "commons": "intitle:Hyatt intitle:logo"
+    },
+    {
+      "key": "ihg2",
+      "commons": "intitle:IHG"
+    },
+    {
+      "key": "lulu2",
+      "commons": "intitle:Lulu intitle:logo",
+      "site": "https://www.luluhypermarket.com/en-ae"
+    },
+    {
+      "key": "noon2",
+      "commons": "intitle:noon intitle:logo filemime:image/svg+xml"
+    },
+    {
+      "key": "zomato2",
+      "commons": "intitle:Zomato"
+    },
+    {
+      "key": "amazon-now",
+      "commons": "intitle:\"Amazon Now\""
+    },
+    {
+      "key": "duty-free",
+      "commons": "intitle:\"Dubai Duty Free\""
+    },
+    {
+      "key": "carrefour-site",
+      "site": "https://www.carrefouruae.com/mafuae/en/"
+    },
+    {
+      "key": "careem-site2",
+      "site": "https://www.careem.com/en-AE/"
+    }
   ],
-  "fetch": []
+  "fetch": [
+    {
+      "path": "public/logos/partners/noon.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/c/ca/Noon_Website_Logo.svg"
+    },
+    {
+      "path": "public/logos/partners/noon-alt.png",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Noon_Logo.png"
+    },
+    {
+      "path": "public/logos/partners/amazon.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+    },
+    {
+      "path": "public/logos/partners/talabat.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Talabat_logo.svg"
+    },
+    {
+      "path": "public/logos/partners/talabat-new.png",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/24/Talabat_New_Brand_Logo-Colour_%283%29.png"
+    },
+    {
+      "path": "public/logos/partners/careem.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Careem_Logo.svg"
+    },
+    {
+      "path": "public/logos/partners/careem-site.webp",
+      "url": "https://careem-public-web-media.media.careem.com/careem_logo_new_d94ce334cf_00d335976f.webp"
+    },
+    {
+      "path": "public/logos/partners/careem-plus.webp",
+      "url": "https://careem-public-web-media.media.careem.com/cplus_logo_93db37150b_f263ac2af7.webp"
+    },
+    {
+      "path": "public/logos/partners/lulu.png",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Lulu_Hypermarket_logo.png"
+    },
+    {
+      "path": "public/logos/partners/trip-com.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/Trip.com_logo.svg"
+    },
+    {
+      "path": "public/logos/partners/zuvees.png",
+      "url": "https://zuvees.com/cdn/shop/files/Zuvees-logo-new.png?v=1787050522"
+    },
+    {
+      "path": "public/logos/partners/cinepolis.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/5/53/Cin%C3%A9polis_logo.svg"
+    },
+    {
+      "path": "public/logos/partners/igp.png",
+      "url": "https://cdnnew.igp.com/assets/images/igp-logo-revamp.png"
+    },
+    {
+      "path": "public/logos/partners/air-arabia.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/84/Air_Arabia_logo_2018.svg"
+    },
+    {
+      "path": "public/logos/partners/makemytrip.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Makemytrip_logo.svg"
+    },
+    {
+      "path": "public/logos/partners/fnp.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Fnp_logo.svg"
+    },
+    {
+      "path": "public/logos/partners/fnp-site.png",
+      "url": "https://www.fnp.ae/pwa_logo.png"
+    },
+    {
+      "path": "public/logos/partners/reel-cinemas.png",
+      "url": "https://storage.googleapis.com/eeg-prod-reelcinema-sb/web/assets/images/logo/logo.png"
+    },
+    {
+      "path": "public/logos/partners/dubai-parks-and-resorts.svg",
+      "url": "https://www.dubaiparksandresorts.com/sites/default/files/2026-10/dubaiparks-logo.svg"
+    },
+    {
+      "path": "public/logos/partners/zomato.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Zomato_Logo.svg"
+    },
+    {
+      "path": "public/logos/partners/farfetch.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Farfetch_logo_2020.svg"
+    },
+    {
+      "path": "public/logos/banks/dib.png",
+      "url": "https://www.dib.ae/images/default-source/default-album/dib-logo.png?sfvrsn=14a4dd47_3"
+    },
+    {
+      "path": "public/logos/banks/adib.svg",
+      "url": "https://www.adib.ae/-/media/project/adib/adibsite/header/logo.svg"
+    },
+    {
+      "path": "public/logos/banks/emirates-islamic.png",
+      "url": "https://www.emiratesislamic.ae/-/media/ei/emirates-islamic-logo.png"
+    },
+    {
+      "path": "public/logos/banks/emirates-islamic-white.svg",
+      "url": "https://www.emiratesislamic.ae/-/media/ei/images/header/logo_white_ei_new.svg"
+    },
+    {
+      "path": "public/logos/banks/mashreq-commons.png",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/e/ef/Mashreq-new-logo.png"
+    },
+    {
+      "path": "public/logos/banks/liv.svg",
+      "url": "https://www.liv.me/-/media/liv/website/liv-rebranding/logo/liv-logo.svg"
+    },
+    {
+      "path": "public/logos/banks/wio.png",
+      "url": "https://www.wio.io/logo.png"
+    },
+    {
+      "path": "public/logos/airlines/saudia-alfursan.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Saudia_wordmark_logo.svg"
+    },
+    {
+      "path": "public/logos/airlines/accor-all.svg",
+      "url": "https://all.accor.com/a/content/dam/all/global-marketing/brand-identity/logos/all-accor/blue/vertical/Logo%20ALL%20ACCOR_BLUE_Vertical_RGB.svg"
+    },
+    {
+      "path": "public/logos/airlines/air-arabia-airrewards.svg",
+      "url": "https://www.airarabia.com/-/media/Project/Air-Arabia/Air-Arabia/AirRewards-Banner/AirRewards.svg"
+    },
+    {
+      "path": "public/logos/airlines/airrewards-digital.svg",
+      "url": "https://www.airarabia.com/-/media/Feature/AirArabia/Icons/White/AirRewards-Digital-Logo.svg"
+    }
+  ]
 }
