@@ -46,9 +46,13 @@ export const programmeValuations: ProgrammeValuation[] = [
   { slug: "marriott-bonvoy",      name: "Marriott",        currencyName: "Bonvoy",        mark: "MAR", floor: null, ceiling: null, dpValue: 2.5,  delta90: "—", status: "Active" },
   { slug: "ihg-one-rewards",      name: "IHG",             currencyName: "One Rewards",   mark: "IHG", floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
   { slug: "hilton-honors",        name: "Hilton",          currencyName: "Honors",        mark: "HIL", floor: null, ceiling: null, dpValue: 1.5,  delta90: "—", status: "Active" },
-  { slug: null,                   name: "flydubai",        currencyName: "OPEN",          mark: "FZ",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
+  // flydubai OPEN row replaced 20 October 2026: flydubai.com/en/open/ now
+  // redirects to its Emirates Skywards pages — flydubai earn is Skywards,
+  // which has its own row. Saudia AlFursan took the slot when its profile
+  // page landed (.council/research/2026-10/programmes-2026-10-20-*.md).
+  { slug: "saudia-alfursan",      name: "Saudia",          currencyName: "AlFursan",      mark: "SV",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
   { slug: null,                   name: "Wizz Air",        currencyName: "Discount Club", mark: "W6",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
-  { slug: null,                   name: "Air Arabia",      currencyName: "Airewards",     mark: "G9",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
+  { slug: "air-arabia-airrewards", name: "Air Arabia",     currencyName: "AirRewards",    mark: "G9",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
 ];
 
 /** Published DP-value baseline in fils for a programme slug, or null. */

@@ -1,0 +1,65 @@
+---
+// "Live offers from <bank>" box for a card review. Offers on the deals
+// desk are attributed to a bank, not to one card, so the box says that
+// plainly and sends the reader to the deal for the eligible-card list.
+// Renders nothing when the bank has no live deal.
+
+import { getLiveDeals, daysLeft } from "~/lib/deals";
+
+interface Props {
+  bankSlug: string;
+  bankName: string;
+}
+
+const { bankSlug, bankName } = Astro.props;
+const deals = (await getLiveDeals()).filter((d) => d.data.bank?.id === bankSlug).slice(0, 4);
+const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+---
+
+{deals.length > 0 && (
+  <section class="dp-bank-offers" aria-labelledby="dp-bank-offers-h">
+    <h2 id="dp-bank-offers-h">Live offers from {bankName}</h2>
+    <p class="dp-bank-offers-note">Bank-wide offers; each deal lists the cards that qualify.</p>
+    <ul>
+      {deals.map((d) => (
+        <li>
+          <a href={`/deals/${d.id}/`}>
+            <span class="t">{d.data.title}</span>
+            <span class="m">
+              {14 >= daysLeft(d) ? `Ends in ${daysLeft(d)} days` : `Ends ${fmt(d.data.expiresOn)}`}
+              {d.data.promoCode && <> · Code <strong>{d.data.promoCode}</strong></>}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a class="dp-bank-offers-all" href="/deals/">All live deals →</a>
+  </section>
+)}
+
+<style>
+  .dp-bank-offers {
+    margin: 32px 0 0;
+    padding: 20px 22px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    border-radius: 12px;
+    background: var(--paper);
+  }
+  .dp-bank-offers h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.2;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+  .dp-bank-offers-note { margin: 0 0 10px; font-size: 14px; color: var(--ink-soft); }
+  .dp-bank-offers ul { list-style: none; margin: 0; padding: 0; }
+  .dp-bank-offers li + li { border-top: 1px solid var(--line-soft); }
+  .dp-bank-offers li a { display: grid; gap: 2px; padding: 12px 0; text-decoration: none; color: inherit; }
+  .dp-bank-offers .t { font-weight: 600; color: var(--ink); line-height: 1.4; }
+  .dp-bank-offers li a:hover .t { color: var(--green); }
+  .dp-bank-offers .m { font-family: var(--font-ui); font-size: 12px; color: var(--gold-ink); }
+  .dp-bank-offers-all { display: inline-block; margin-top: 8px; font-weight: 600; color: var(--green); font-size: 14px; }
+</style>

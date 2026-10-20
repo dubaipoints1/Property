@@ -36,6 +36,7 @@ import { getStockEntry } from "~/lib/stockManifest";
 import { getLiveOffers } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
+import { getLiveDeals } from "~/lib/deals";
 import { getCardArt } from "~/lib/cardArt";
 import { isHotelProgramme } from "~/lib/programmes";
 
@@ -344,16 +345,15 @@ const offerRows = liveOffers.map((o) => {
 // is load-bearing: an expired deal sat on the homepage for a week in
 // August 2026 before this guard existed. Do not weaken it.
 const todayMs = Date.now();
-const liveDealsRaw = (await getCollection("deals"))
-  .filter((d) => !d.data.archived && d.data.expiresOn.getTime() >= todayMs)
-  .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime())
-  .slice(0, 4);
+const liveDealsAll = await getLiveDeals(todayMs);
+const liveDealsRaw = liveDealsAll.slice(0, 4);
 const dealRows = await Promise.all(
   liveDealsRaw.map(async (d) => ({
     id: d.id,
     title: d.data.title,
     issuer: (await resolveDealIssuer(d)).name,
     ends: fmtShort(d.data.expiresOn),
+    code: d.data.promoCode,
   })),
 );
 
@@ -363,7 +363,7 @@ const DIRECTORY = [
   { href: "/banks/", count: `${allBanks.length} banks`, title: "Bank guides", desc: "Every covered UAE issuer — fees, eligibility and card line-ups." },
   { href: "/airlines/", count: `${airlinePrograms.length} programmes`, title: "Miles & loyalty", desc: "Skywards, Etihad Guest, Qatar and the other airline programmes — tiers, partners and sweet spots." },
   { href: "/salary-transfer/", count: `${offerRows.length} live offers`, title: "Salary-transfer tracker", desc: "Band-by-band cash and rate offers across UAE banks, every entry dated." },
-  { href: "/deals/", count: dealRows.length > 0 ? `${dealRows.length} live` : "Deals desk", title: "Lifestyle deals", desc: "Time-bound UAE dining, retail and travel offers — dated, sourced, archived when they end." },
+  { href: "/deals/", count: liveDealsAll.length > 0 ? `${liveDealsAll.length} live` : "Deals desk", title: "Lifestyle deals", desc: "Time-bound UAE dining, retail and travel offers — dated, sourced, archived when they end." },
   { href: "/guides/", count: `${allGuides.length} guides`, title: "Guides", desc: "The expat starter series, eligibility, AECB credit, transfer ratios and the groundwork." },
 ];
 ---
@@ -546,7 +546,7 @@ const DIRECTORY = [
                   <a href={`/deals/${r.id}/`}>
                     <span class="who">{r.issuer}</span>
                     <span class="what">{r.title}</span>
-                    <span class="when">Ends {r.ends}</span>
+                    <span class="when">Ends {r.ends}{r.code && <> · Code <strong>{r.code}</strong></>}</span>
                   </a>
                 </li>
               ))}
@@ -952,6 +952,15 @@ const DIRECTORY = [
     pointer-events: none;
   }
   .hp-reel-title .hp-hero-kicker { color: var(--gold-lift); margin-bottom: 20px; }
+  /* 20 Oct 2026: the same soft local shade the phone layout got on the
+     19th, now at every width — on laptops the eyebrow sat over the
+     brightest video frames with nothing behind it. */
+  .hp-reel-title .hp-hero-kicker { position: relative; isolation: isolate; }
+  .hp-reel-title .hp-hero-kicker::before {
+    content: ""; position: absolute; z-index: -1; inset: -26px -90px;
+    background: radial-gradient(farthest-side, rgba(22, 32, 44, 0.72) 30%, rgba(22, 32, 44, 0.4) 65%, rgba(22, 32, 44, 0) 100%);
+    pointer-events: none;
+  }
   .hp-reel-title .hp-hero-lede {
     margin: 22px auto 0; max-width: 42ch;
     color: rgba(253, 252, 248, 0.86);

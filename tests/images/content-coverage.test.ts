@@ -21,6 +21,9 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  // Phase E.26 deals (20 October 2026): photos are seeded by
+  // .github/workflows/seed-images-e26.yml after push. Remove each line once
+  // the manifest carries it (the stale-entry test below will insist).
 };
 
 const manifest = JSON.parse(

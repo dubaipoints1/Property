@@ -14,6 +14,25 @@ const DEAL_CATEGORY = z.enum([
   "points-promo",
   "other",
 ]);
+
+// Seasonal campaigns a deal can be filed under. A guide that covers the
+// season lists every live deal carrying its tag, so a bank offer filed
+// once appears in both places.
+export const DEAL_CAMPAIGN = z.enum(["dsf-2026-27", "white-friday-2026", "ramadan-2027"]);
+
+// What a deal is spent on, for the /deals/ filter row. Kept short on
+// purpose: a filter with one deal behind it is noise.
+export const DEAL_SECTOR = z.enum([
+  "dining",
+  "groceries",
+  "online-shopping",
+  "travel",
+  "rides-delivery",
+  "health",
+  "entertainment",
+  "fuel-auto",
+  "banking",
+]);
 const REWARD_TYPE = z.enum(["cash", "voucher", "cashback_monthly", "points"]);
 const ADDITIONAL_PRODUCT = z.enum([
   "loan",
@@ -169,6 +188,23 @@ const deals = defineCollection({
        */
       archived: z.boolean().default(false),
       category: DEAL_CATEGORY,
+      /** What the reader spends on — the /deals/ filter. Optional; unset deals sit under "All". */
+      sector: DEAL_SECTOR.optional(),
+      /** Merchant named in the offer (e.g. "noon", "BinSina Pharmacy"), shown on the deal card. */
+      merchant: z.string().optional(),
+      /**
+       * A promo code the issuer or merchant publishes on its own page. Never
+       * invented, never taken from a forum or a code-aggregator site: if the
+       * offer page shows no code, the field stays unset. `promoCodeSource` is
+       * the page that prints it, and is required whenever a code is set.
+       */
+      promoCode: z
+        .string()
+        .regex(/^[A-Z0-9][A-Z0-9_-]{2,31}$/i, "A promo code is 3–32 letters, digits, - or _")
+        .optional(),
+      promoCodeSource: z.string().url().optional(),
+      /** Seasonal campaign the offer belongs to; campaign lists (e.g. the DSF guide) read this. */
+      campaign: DEAL_CAMPAIGN.optional(),
     })
     .superRefine((data, ctx) => {
       const hasBank = data.bank !== undefined;
@@ -178,6 +214,13 @@ const deals = defineCollection({
           code: "custom",
           message:
             "A deal needs an issuer: set either `bank` (card offers) or `program` (airline/hotel offers).",
+        });
+      }
+      if (data.promoCode !== undefined && data.promoCodeSource === undefined) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            "A `promoCode` needs `promoCodeSource`: the issuer or merchant page that publishes it.",
         });
       }
       if (hasBank && hasProgram) {

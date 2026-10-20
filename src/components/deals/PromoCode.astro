@@ -1,0 +1,99 @@
+---
+// Promo-code box for a deal page. Renders only for a code the issuer or
+// merchant prints on its own page (`promoCode` + `promoCodeSource`, both
+// enforced by the deals schema). The code is plain, selectable text, so it
+// works without JS; the Copy button is hidden until the script runs. No
+// inline handler: the CSP hashes inline scripts and refuses on* attributes.
+
+interface Props {
+  code: string;
+  source: string;
+  expires: Date;
+}
+
+const { code, source, expires } = Astro.props;
+const host = new URL(source).hostname.replace(/^www\./, "");
+const expiresStr = expires.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+---
+
+<aside class="dp-promo" aria-label="Promo code">
+  <span class="dp-promo-label">Promo code</span>
+  <div class="dp-promo-row">
+    <code class="dp-promo-code">{code}</code>
+    <button type="button" class="dp-promo-copy" data-copy-code={code} hidden>Copy code</button>
+    <span class="dp-promo-status" role="status" aria-live="polite"></span>
+  </div>
+  <p class="dp-promo-note">
+    Published by the issuer on <a href={source} rel="noopener">{host}</a>. Valid to {expiresStr}; the terms on that page decide who qualifies.
+  </p>
+</aside>
+
+<script>
+  for (const btn of document.querySelectorAll<HTMLButtonElement>("[data-copy-code]")) {
+    btn.hidden = false;
+    btn.addEventListener("click", async () => {
+      const code = btn.dataset.copyCode ?? "";
+      const status = btn.parentElement?.querySelector(".dp-promo-status");
+      try {
+        await navigator.clipboard.writeText(code);
+        if (status) status.textContent = "Copied";
+      } catch {
+        const el = btn.parentElement?.querySelector(".dp-promo-code");
+        if (el) window.getSelection()?.selectAllChildren(el);
+        if (status) status.textContent = "Selected: press copy";
+      }
+      window.setTimeout(() => { if (status) status.textContent = ""; }, 2500);
+    });
+  }
+</script>
+
+<style>
+  .dp-promo {
+    margin: 0 0 28px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    border-radius: 12px;
+    background: var(--paper);
+    display: grid;
+    gap: 10px;
+  }
+  .dp-promo-label {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-ink);
+  }
+  .dp-promo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+  .dp-promo-code {
+    font-family: var(--font-ui);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--ink);
+    padding: 6px 14px;
+    border: 1px dashed var(--ink-soft);
+    border-radius: 8px;
+    background: var(--bg);
+    user-select: all;
+  }
+  .dp-promo-copy {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 700;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 0;
+    background: var(--ink);
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .dp-promo-copy:hover { background: var(--green); }
+  .dp-promo-copy:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-promo-status { font-family: var(--font-ui); font-size: 13px; font-weight: 600; color: var(--green); }
+  .dp-promo-note { margin: 0; font-size: 14px; line-height: 1.5; color: var(--ink-soft); }
+  .dp-promo-note a { color: var(--green); }
+</style>
