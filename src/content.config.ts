@@ -203,6 +203,12 @@ const deals = defineCollection({
         .regex(/^[A-Z0-9][A-Z0-9_-]{2,31}$/i, "A promo code is 3–32 letters, digits, - or _")
         .optional(),
       promoCodeSource: z.string().url().optional(),
+      /**
+       * Merchant logo file under public/logos/partners/ (e.g. "noon.svg"),
+       * shown on the deal tile instead of a stock photo (2026-10-20 ruling).
+       * Every file is logged in public/logos/LICENSES.md.
+       */
+      logo: z.string().regex(/^[a-z0-9-]+\.(svg|png|webp)$/).optional(),
       /** Seasonal campaign the offer belongs to; campaign lists (e.g. the DSF guide) read this. */
       campaign: DEAL_CAMPAIGN.optional(),
     })

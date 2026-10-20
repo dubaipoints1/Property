@@ -1086,6 +1086,37 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-10-20 — Real brands in pictures: logos and liveries, not generic stand-ins
+
+On Chairman direction (20 October 2026), recorded verbatim as the basis of
+the ruling, after a session photo audit had replaced airline-livery and
+logo photographs with unbranded scenery: "No i want logos if possible
+actual images" and "I do want logo, or airline livery i do not want
+generic pictures."
+
+**The rule.** Where a page is about a named airline, hotel brand, bank or
+merchant, its picture shows that brand, in this order of preference:
+
+1. **The real thing, photographed** — an aircraft in the airline's own
+   livery, a property of the hotel brand — from licensed stock (Pexels) or
+   the company's own press library on the 2026-05-21 terms (visible
+   credit, source logged, takedown within 24 hours).
+2. **The company's own logo**, for deals and bank pages where no honest
+   photograph exists: the merchant's or bank's mark, unmodified, taken
+   from Wikimedia Commons or the company's own website, logged in
+   `public/logos/LICENSES.md` with source URL and date. This widens the
+   2026-05-29 and 2026-08-05 logo rules: a mark may now lead a deal tile,
+   and an issuer mark may be taken from the issuer's own website.
+3. A generic scene only when neither exists.
+
+**Unchanged.** No AI-generated logos, liveries, card art or brand
+imagery (2026-07-29 stands: an AI image never depicts a real brand). No
+alteration of a mark. No faces of identifiable people, no alcohol. A
+logo identifies whose offer it is; it never implies the brand endorses
+DubaiPoints.
+
+— Chairman, 20 October 2026.
+
 ### 2026-10-09 — Issuer card art may be shown, from the issuer's own website only
 
 On Chairman direction (9 October 2026), recorded verbatim as the basis of
