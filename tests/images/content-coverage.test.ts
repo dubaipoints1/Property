@@ -21,8 +21,6 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
-  "programme-air-arabia-airrewards": "photo seeding pending via seed-images-e27 (2026-10-20)",
-  "programme-saudia-alfursan": "photo seeding pending via seed-images-e27 (2026-10-20)",
   "guide-best-grocery-cards-uae-2026":
     "New 20 Oct 2026; photo pending seed-images-e28.yml (Pexels via Actions)",
   "guide-best-fuel-cards-uae-2026":
