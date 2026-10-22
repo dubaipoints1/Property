@@ -74,18 +74,21 @@ for (const [slug, src] of Object.entries(sources)) {
     const isSvg = /\.svg$/i.test(url.pathname);
     let img = sharp(buf, { failOn: "error", ...(isSvg ? { density: 1200 } : {}) });
     const meta = await img.metadata();
-    // Optional crop, as fractions of the original image: used only where
+    // Optional crop, as fractions of the image after its uniform border is
+    // trimmed (i.e. measured on an uncropped run's output): used only where
     // the issuer shows the flat card face inside a larger banner, to keep
     // the card and drop the rest. Trimming, never alteration.
     if (src.crop) {
+      const trimmed = await img.trim({ threshold: 8 }).toBuffer({ resolveWithObject: true });
+      const { width: tw, height: th } = trimmed.info;
       const { left, top, width, height } = src.crop;
       const box = {
-        left: Math.round(left * meta.width),
-        top: Math.round(top * meta.height),
-        width: Math.round(width * meta.width),
-        height: Math.round(height * meta.height),
+        left: Math.round(left * tw),
+        top: Math.round(top * th),
+        width: Math.round(width * tw),
+        height: Math.round(height * th),
       };
-      img = sharp(await img.extract(box).toBuffer());
+      img = sharp(await sharp(trimmed.data).extract(box).toBuffer());
     }
     const w = src.crop ? (await img.metadata()).width : meta.width;
     if (!w || w < 200) throw new Error(`too small (${w}px)`);

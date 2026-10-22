@@ -75,7 +75,7 @@
     "url": "https://www.cbd.ae/images/default-source/revamp/cards/cbd-one-card.png?Status=Master&sfvrsn=7f695c6b_1",
     "page": "https://www.cbd.ae/personal/cards/credit-cards/cbd-one",
     "alt": "CBD one card",
-    "note": "Node fetch failed on cbd.ae (9 and 20 Oct); the script now falls back to curl"
+    "note": "Clean card face from the product page. Node fetch failed on cbd.ae (9 Oct); fetched via the curl fallback on 22 Oct"
   },
   "citi-cashback": {
     "url": "https://www.citibank.ae/content/cgcpc/ae/prelogin/www-citibank-ae/en/credit-cards/cashback/citi-cashback-credit-card/_jcr_content/root/container/container_copy_2130810632/container_copy_copy/image.coreimg.png/1731033309281/citi-cashback-card-335x230-29122020.png",
@@ -329,7 +329,7 @@
     "url": "https://www.liv.me/-/media/liv/website/liv-rebranding/credit-card/calc/liv-platinum-cc-front-1.svg?la=en&hash=DF1D6D8761BF849EE0D1A1C76D5E57E9",
     "page": "https://www.liv.me/en/liv-credit-card",
     "alt": "RewardCalculators",
-    "note": "Liv Cashback is the Mastercard Platinum tier (per L3). This SVG is the Platinum card front used in the page's reward calculator. Also on page: .../home-page/liv-x-homepage/liv-platinum-new.png (250x584, portrait comparison image)"
+    "note": "Liv Cashback is the Mastercard Platinum product (per L3). This SVG is the Platinum card front used in the page reward calculator, rasterised at high density. Rejected on review 22 Oct: liv_credit_card_1161x1355 (cards among partner stickers), cc-banner-card-icon (card in a hand), liv-cashback.svg (app icon)"
   },
   "liv-cashback-plus": {
     "url": "https://www.liv.me/-/media/liv/website/liv-rebranding/home-page/liv-x-homepage/credit-card-world-new.png?la=en&h=584&w=250&hash=56718A1BD2613A9866B0F2F336D7F78F",
@@ -367,17 +367,5 @@
     "alt": "wio-ctf-credit-personal-feature-card-img",
     "note": "rejected on review 9 Oct 2026: a phone app screenshot, not a card face",
     "rejectedUrl": "https://images.ctfassets.net/l65m9bcr2nac/UU79OgsQwepE9cN8ObPhF/c96b09151b20eab3f211b6831c106ef8/cardImage.webp?fm=webp&q=80"
-  },
-  "zz-cbd-one-alt": {
-    "url": "https://www.cbd.ae/images/default-source/revamp/personal/cards/cbd-one.png?sfvrsn=80aa5b6b_1",
-    "page": "https://www.cbd.ae/personal/cards/credit-cards/cbd-one",
-    "alt": "TRIAL",
-    "note": "trial; removed after review"
-  },
-  "zz-liv-cashback-svg": {
-    "url": "https://www.liv.me/-/media/liv/website/liv-rebranding/credit-card/liv-cashback.svg?la=en&hash=20577B81301251E13CE24EFC4B06B5A6",
-    "page": "https://www.liv.me/en/liv-credit-card",
-    "alt": "TRIAL",
-    "note": "trial; removed after review"
   }
 }
