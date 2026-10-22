@@ -52,7 +52,10 @@ serif until a clean asset is sourced.
   `BankLogo.astro` and to the bank-mark extension in `DealVisual.astro`.
   **Still placeholders:** dib (its site ships the mark only in white, for a
   dark header) and al-hilal (site footer mark is white; header not
-  reachable). Sources in the 2026-10-20 section below.
+  reachable). Since 2026-10-22 both white marks sit beside the placeholder
+  as `banks/dib-white.png` and `banks/al-hilal-white.svg`, for rendering on
+  a navy plate only (the `-white` suffix is the signal). Sources in the
+  2026-10-20 section below.
 
 ## Replacement rule
 
