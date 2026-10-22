@@ -1,4 +1,5 @@
 ---
+import { bankMark } from "~/lib/logos";
 // Bank logo — renders the SVG mark from /logos/banks/[slug].svg by default,
 // or the PNG at /logos/banks/[slug].png when the slug is listed in
 // PNG_FORMAT_SLUGS (a per-slug override for issuers whose only freely-
@@ -27,20 +28,9 @@ const { slug, name, size = "md", decorative = false } = Astro.props;
 
 const dim = { sm: 18, md: 28, lg: 44 }[size];
 
-// Per-slug format override. Default is SVG; add a slug here when the only
-// freely-licensed/official brand asset for that issuer is PNG. Keep this
-// list short — SVG is preferred for crisp scaling.
-//
-// Source for each PNG-format slug must be logged in
-// public/logos/LICENSES.md per Charter §10.
-const PNG_FORMAT_SLUGS = new Set<string>([
-  "emirates-nbd", // emiratesnbd.com/en/brand-assets ships PNG only
-  // 2026-10-20 amendment: issuer's own site / Commons offer PNG only.
-  "rakbank",
-  "emirates-islamic",
-  "mashreq",
-]);
-const ext = PNG_FORMAT_SLUGS.has(slug) ? "png" : "svg";
+// File and plate come from src/lib/logos.ts (PNG-only and white-only
+// marks are listed there). Sources for each are in public/logos/LICENSES.md.
+const mark = bankMark(slug);
 
 // Initial fallback: first capital letter of each word, max 2.
 const initials = name
@@ -51,13 +41,13 @@ const initials = name
 ---
 
 <span
-  class={`dp-bank-logo dp-bank-logo--${size}`}
+  class:list={["dp-bank-logo", `dp-bank-logo--${size}`, { "is-plated": mark.plated }]}
   aria-label={decorative ? undefined : `${name} logo`}
   role={decorative ? undefined : "img"}
   aria-hidden={decorative ? "true" : undefined}
 >
   <img
-    src={`/logos/banks/${slug}.${ext}`}
+    src={mark.src}
     alt=""
     width={dim}
     height={dim}
@@ -69,6 +59,11 @@ const initials = name
 </span>
 
 <style>
+  .dp-bank-logo.is-plated {
+    background: #1f3a4d;
+    border-radius: 6px;
+    padding: 3px 6px;
+  }
   .dp-bank-logo {
     display: inline-flex;
     align-items: center;

@@ -7,6 +7,7 @@
 // so every grid keeps its proportions.
 
 import StockImage from "../StockImage.astro";
+import { bankMark, isWhiteLogo } from "../../lib/logos";
 
 interface Props {
   dealId: string;
@@ -22,12 +23,12 @@ interface Props {
 }
 
 const { dealId, title, logo, merchant, bankSlug, bankName, coverSize = "med", class: className, loading = "lazy", sizes } = Astro.props;
-// Same PNG list as BankLogo.astro.
-const bankExt = bankSlug && ["emirates-nbd", "rakbank", "emirates-islamic", "mashreq"].includes(bankSlug) ? "png" : "svg";
+const bank = bankSlug ? bankMark(bankSlug) : undefined;
+const platedLogo = logo ? isWhiteLogo(logo) : false;
 ---
 
 {logo ? (
-  <span class:list={["dp-deal-logo", className, `is-${coverSize}`]}>
+  <span class:list={["dp-deal-logo", className, `is-${coverSize}`, { "is-plated": platedLogo }]}>
     <span class="dp-deal-logo-inner">
     <img
       class="dp-deal-logo-mark"
@@ -37,10 +38,10 @@ const bankExt = bankSlug && ["emirates-nbd", "rakbank", "emirates-islamic", "mas
       decoding="async"
     />
     </span>
-    {bankSlug && (
-      <span class="dp-deal-logo-bank">
+    {bank && (
+      <span class:list={["dp-deal-logo-bank", { "is-plated": bank.plated }]}>
         <span class="dp-deal-logo-with">with</span>
-        <img src={`/logos/banks/${bankSlug}.${bankExt}`} alt={bankName ?? ""} loading={loading} decoding="async" />
+        <img src={bank.src} alt={bankName ?? ""} loading={loading} decoding="async" />
       </span>
     )}
   </span>
@@ -66,6 +67,10 @@ const bankExt = bankSlug && ["emirates-nbd", "rakbank", "emirates-islamic", "mas
     overflow: hidden;
   }
   .dp-deal-logo.is-hero { aspect-ratio: 16 / 9; }
+  /* White-only marks sit, unmodified, on the brand navy. */
+  .dp-deal-logo.is-plated { background: #1f3a4d; }
+  .dp-deal-logo-bank.is-plated { background: #1f3a4d; border-color: #1f3a4d; }
+  .dp-deal-logo-bank.is-plated .dp-deal-logo-with { color: #e8eef3; }
   /* Centred by an inner layer: listing pages give the outer span
      display: block through their own image class. */
   .dp-deal-logo-inner {
