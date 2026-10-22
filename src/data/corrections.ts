@@ -37,6 +37,30 @@ export interface Correction {
 
 export const corrections: readonly Correction[] = [
   {
+    date: new Date("2026-10-22"),
+    title: "ADCB talabat earn structure and ENBD Duo base rate",
+    cardsAffected: ["adcb-talabat", "emirates-nbd-duo"],
+    original:
+      'our <a href="/cards/adcb-talabat/">ADCB talabat</a> review said the card paid a flat <strong>1.25%</strong> back, and its card data recorded the earn as "1 talabat Pro per AED 1" on a Visa. Our <a href="/cards/emirates-nbd-duo/">ENBD Duo</a> review said spend below the AED 5,000 monthly threshold earned <strong>0.5%</strong> in the bonus categories.',
+    corrected:
+      'ADCB\'s product page (read 22 October 2026) gives <strong>35% back as talabat credit</strong> on the first 10 talabat orders each month (up to AED 35 an order, AED 350 a month, with AED 2,500 of monthly retail spend), 1.25% on other spend and 0.35% in ten listed categories; the card is a <strong>Mastercard</strong>, and talabat pro is a free delivery membership, not a points currency. Emirates NBD\'s page gives the Duo <strong>1.5%</strong> in the bonus categories below the threshold, and 0.5% on all other spend; our card data was right and the review had the two rates swapped. Both reviews, the talabat card data and our no-annual-fee guide were corrected on 22 October 2026.',
+  },
+  {
+    date: new Date("2026-10-19"),
+    title: "ENBD LuLu 247 Titanium, Skywards lounge networks and Liv welcome bonus",
+    cardsAffected: [
+      "emirates-nbd-lulu-247-titanium",
+      "emirates-nbd-skywards-signature",
+      "emirates-nbd-skywards-infinite",
+      "liv-cashback",
+      "liv-cashback-plus",
+    ],
+    original:
+      'we listed lounge access on the <a href="/cards/emirates-nbd-lulu-247-titanium/">LuLu 247 Titanium</a> with an AED 8,000 minimum salary and out-of-date earn rates; we gave the <a href="/cards/emirates-nbd-skywards-signature/">Skywards Signature</a> six DragonPass lounge visits a year and the <a href="/cards/emirates-nbd-skywards-infinite/">Skywards Infinite</a> DragonPass access; and we showed a 10,000 Skywards Miles welcome bonus on the <a href="/cards/liv-cashback/">Liv Cashback</a> cards.',
+    corrected:
+      'Emirates NBD\'s product pages (read 19 October 2026): the LuLu 247 Titanium\'s lounge access was discontinued from 1 May 2025, its minimum salary is AED 5,000 and it earns 3.5% at LuLu, 2% on fuel, 1% on utilities and 0.35% elsewhere; both Skywards cards use <strong>Visa Airport Companion</strong>, unlimited on the Signature. The Liv "10,000 Miles" figure was the monthly cap on converting to Skywards, not a welcome bonus, so the bonus is now shown as none. The reviews, card data and comparisons were corrected on 19–20 October 2026.',
+  },
+  {
     date: new Date("2026-10-01"),
     title: "FAB Elite and FAB World Elite earn rates",
     cardsAffected: ["fab-elite", "fab-world-elite"],
