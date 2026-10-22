@@ -1,28 +1,10 @@
 {
   "discover": [
-    { "key": "zed-appstore", "site": "https://apps.apple.com/ae/app/id1633787405", "grep": "https?://[a-z0-9.-]*zed[a-z0-9.-]*\\.[a-z]{2,}" },
-    { "key": "zed-g1", "site": "https://www.zedride.com/", "imgs": true },
-    { "key": "zed-g2", "site": "https://zed.taxi/", "imgs": true },
-    { "key": "zed-g3", "site": "https://www.getzed.ae/", "imgs": true },
-    { "key": "zed-g4", "site": "https://zedapp.ae/", "imgs": true },
-    { "key": "zed-g5", "site": "https://www.zedmobility.com/", "imgs": true },
-    { "key": "carrefour-group", "site": "https://www.carrefour.com/en", "grep": "logo" },
-    { "key": "carrefour-mafretail", "site": "https://www.mafretail.com/", "imgs": true },
-    { "key": "carrefour-c-png", "commons": "Carrefour logo filemime:image/png" },
-    { "key": "intercontinental-c2", "commons": "\"InterContinental Hotels & Resorts\" logo" },
-    { "key": "intercontinental-c3", "commons": "intitle:InterContinental filemime:image/png logo" }
+    { "key": "zed-gozed", "site": "https://gozed.ae/", "imgs": true, "inline": true, "grep": "logo" }
   ],
   "fetch": [
-    { "path": "public/logos/banks/al-hilal-white.svg", "url": "https://www.alhilalbank.ae/en/Images/ahb-billingual-logo-footer.svg" },
-    { "path": "public/logos/banks/al-hilal-i0.svg", "inlineFrom": "https://www.alhilalbank.ae/en/personal/", "index": 0 },
-    { "path": "public/logos/banks/al-hilal-i3.svg", "inlineFrom": "https://www.alhilalbank.ae/en/personal/", "index": 3 },
-    { "path": "public/logos/partners/nrtc-a.png", "url": "https://nrtcfresh.com/storage/app/public/company/2026-03-23-69c0edd628bac.png" },
-    { "path": "public/logos/partners/nrtc-b.png", "url": "https://nrtcfresh.com/storage/app/public/company/2026-03-23-69c0f217b4459.png" },
-    { "path": "public/logos/partners/mann-marzi.png", "url": "https://mannmarzi.ae/wp-content/uploads/2025/11/Untitled-design-2025-12-28T192311.503.png" },
-    { "path": "public/logos/partners/mann-marzi-b.png", "url": "https://mannmarzi.ae/wp-content/uploads/2026/01/mm.png" },
-    { "path": "public/logos/partners/ic-g1.svg", "url": "https://commons.wikimedia.org/wiki/Special:FilePath/InterContinental_logo.svg" },
-    { "path": "public/logos/partners/ic-g2.svg", "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Intercontinental_logo.svg" },
-    { "path": "public/logos/partners/ic-g3.svg", "url": "https://commons.wikimedia.org/wiki/Special:FilePath/InterContinental_Hotels_logo.svg" },
-    { "path": "public/logos/partners/ic-g4.svg", "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Logo_InterContinental.svg" }
+    { "path": "public/logos/partners/carrefour.svg", "url": "https://cdnprod.mafretailproxy.com/mafrp-web/assets/en/images/default/logo.svg" },
+    { "path": "public/logos/partners/intercontinental.svg", "url": "https://digital.ihg.com/is/content/ihg/ic-logo-updated" },
+    { "path": "public/logos/partners/intercontinental.png", "url": "https://digital.ihg.com/is/image/ihg/IC-Logo?fmt=png-alpha" }
   ]
 }
