@@ -54,7 +54,7 @@ async function commons(q) {
   if (!pages.length) console.log("  C (no Commons hits)");
 }
 
-async function site(url) {
+async function site(url, showInline = false) {
   const html = await get(url);
   const seen = new Set();
   const re = /(?:src|href|data-src|content|srcset)=["']([^"' ]+)/gi;
@@ -73,14 +73,41 @@ async function site(url) {
     if (seen.size > 25) break;
     console.log(`  S ${abs}`);
   }
-  const inline = (html.match(/<svg[^>]*>/gi) || []).length;
-  console.log(`  S (${seen.size} candidates; ${inline} inline <svg>; html ${html.length} bytes)`);
+  const inline = inlineSvgs(html);
+  console.log(`  S (${seen.size} candidates; ${inline.length} inline <svg>; html ${html.length} bytes)`);
+  if (showInline) {
+    inline.slice(0, 12).forEach((s, i) => {
+      const open = s.match(/^<svg[^>]*>/i)[0].replace(/\s+/g, " ");
+      const fills = [...new Set((s.match(/fill="#[0-9a-f]{3,6}"/gi) || []))].slice(0, 4).join(",");
+      console.log(`  I[${i}] ${s.length}b ${open.slice(0, 160)} ${fills}`);
+    });
+  }
+}
+
+// Inline <svg> elements in page order, each sliced verbatim from the HTML
+// (nested <svg> handled by depth counting). Used for header logos that a
+// site ships inline rather than as a file.
+function inlineSvgs(html) {
+  const out = [];
+  const re = /<\/?svg\b[^>]*>/gi;
+  let depth = 0;
+  let start = -1;
+  let m;
+  while ((m = re.exec(html))) {
+    if (m[0][1] !== "/") {
+      if (depth === 0) start = m.index;
+      if (!m[0].endsWith("/>")) depth++;
+    } else if (depth > 0 && --depth === 0) {
+      out.push(html.slice(start, m.index + m[0].length));
+    }
+  }
+  return out;
 }
 
 for (const d of cfg.discover ?? []) {
   console.log(`\n=== ${d.key}`);
   if (d.commons) await commons(d.commons).catch((e) => console.log(`  C error: ${e.message}`));
-  if (d.site) await site(d.site).catch((e) => console.log(`  S error: ${e.message}`));
+  if (d.site) await site(d.site, d.inline).catch((e) => console.log(`  S error: ${e.message}`));
 }
 
 function sniff(buf) {
@@ -97,13 +124,26 @@ for (const f of cfg.fetch ?? []) {
   try {
     if (!/^public\/logos\/(partners|banks|airlines)\/[a-z0-9-]+\.(svg|png|webp)$/.test(f.path))
       throw new Error(`bad path ${f.path}`);
-    const buf = await get(f.url, false);
+    let buf;
+    if (f.inlineFrom) {
+      // A header logo shipped inline in the page: the <svg> element is taken
+      // verbatim. Only an xmlns is added when the page omitted it (inline
+      // HTML does not need one; a standalone file does) — no path, colour
+      // or geometry is touched.
+      let svg = inlineSvgs(await get(f.inlineFrom))[f.index];
+      if (!svg) throw new Error(`no inline svg #${f.index}`);
+      if (!/xmlns=/.test(svg.match(/^<svg[^>]*>/i)[0]))
+        svg = svg.replace(/^<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+      buf = Buffer.from(svg, "utf8");
+    } else {
+      buf = await get(f.url, false);
+    }
     const kind = sniff(buf);
     const ext = f.path.split(".").pop();
     if (kind !== ext) throw new Error(`content is ${kind ?? "unknown"}, path wants ${ext}`);
     await mkdir(dirname(f.path), { recursive: true });
     await writeFile(f.path, buf);
-    console.log(`OK   ${f.path} (${buf.length} bytes) <- ${f.url}`);
+    console.log(`OK   ${f.path} (${buf.length} bytes) <- ${f.url ?? `${f.inlineFrom} inline #${f.index}`}`);
     ok++;
   } catch (e) {
     console.log(`FAIL ${f.path} <- ${f.url}: ${e.message}`);
