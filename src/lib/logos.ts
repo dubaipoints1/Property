@@ -8,7 +8,10 @@
 // 2026-10-20 amendment's no-alteration rule.
 
 const PNG = new Set<string>(["emirates-nbd", "rakbank", "emirates-islamic", "mashreq"]);
-const WHITE: Record<string, string> = {};
+const WHITE: Record<string, string> = {
+  dib: "dib-white.png",
+  "al-hilal": "al-hilal-white.svg",
+};
 
 export interface BankMark {
   src: string;

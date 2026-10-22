@@ -52,7 +52,10 @@ serif until a clean asset is sourced.
   `BankLogo.astro` and to the bank-mark extension in `DealVisual.astro`.
   **Still placeholders:** dib (its site ships the mark only in white, for a
   dark header) and al-hilal (site footer mark is white; header not
-  reachable). Sources in the 2026-10-20 section below.
+  reachable). Since 2026-10-22 both white marks sit beside the placeholder
+  as `banks/dib-white.png` and `banks/al-hilal-white.svg`, for rendering on
+  a navy plate only (the `-white` suffix is the signal). Sources in the
+  2026-10-20 section below.
 
 ## Replacement rule
 
@@ -129,12 +132,22 @@ from their uploader, so the credit is Wikimedia Commons. Every mark
 remains its owner's trademark, used nominatively to identify whose offer
 or product a page is about; it never implies endorsement of DubaiPoints.
 
-Not sourced (deal keeps its photo, no `logo`): BinSina (site refuses
-automated readers), Zed (no clean mark found), NRTC Fresh (only a white
-logo), Styli (site refuses automated readers), Carrefour (asset host
-unreachable from Actions; no main-mark file on Commons), Mann Marzi
-Restaurant, Choix at InterContinental Dubai Festival City, UAE airport
-duty-free (no single brand).
+Not sourced as of 2026-10-22 (deal keeps its photo, no `logo`): BinSina
+(binsina.ae answers 403 to GitHub runners and to Firecrawl, stealth proxy
+included; no Commons file), Zed (its site gozed.ae, found via the App Store
+listing, returns a WAF "Request Rejected" page; zed.ae is an unrelated
+domain marketplace; no Commons file), Styli (stylishop.com answers 403 to
+runners and Firecrawl; no Commons file), Carrefour (the header mark is at
+cdnprod.mafretailproxy.com/mafrp-web/assets/en/images/default/logo.svg,
+located via Firecrawl, but that CDN and majidalfuttaim.com time out from
+GitHub runners; Commons has no current main-mark file, only
+Carrefour-Mobile and old Champion/Promodès marks), UAE airport duty-free
+(no single brand). NRTC Fresh's `logo-white.png` was rejected: it is the
+e-commerce theme's placeholder ("6valley"), not NRTC's mark; the site's
+real header logo is used instead (colour, see below).
+
+White-only marks carry a `-white` suffix and are for a navy plate only;
+each was checked rasterised on `#1f3a4d`.
 
 | Slug | Source URL | Pulled | Notes |
 |---|---|---|---|
@@ -170,6 +183,11 @@ duty-free (no single brand).
 | airlines/hilton-honors (SVG) | https://commons.wikimedia.org/wiki/File:Hilton_Worldwide_logo.svg — asset: https://upload.wikimedia.org/wikipedia/commons/8/8a/Hilton_Worldwide_logo.svg | 2026-10-22 | Wikimedia Commons, public domain. Parent-brand mark (Hilton) for Hilton Honors. Basis: 2026-10-20 Chairman amendment. Used unmodified, nominatively; takedown within 24 hours. |
 | airlines/world-of-hyatt (SVG) | https://commons.wikimedia.org/wiki/File:Hyatt_Logo.svg — asset: https://upload.wikimedia.org/wikipedia/commons/9/91/Hyatt_Logo.svg | 2026-10-22 | Wikimedia Commons, public domain. Parent-brand mark (Hyatt) for World of Hyatt. Basis: 2026-10-20 Chairman amendment. Used unmodified, nominatively; takedown within 24 hours. |
 | airlines/ihg-one-rewards (SVG) | https://commons.wikimedia.org/wiki/File:IHG_Hotels_%26_Resorts_logo.svg — asset: https://upload.wikimedia.org/wikipedia/commons/9/93/IHG_Hotels_%26_Resorts_logo.svg | 2026-10-22 | Wikimedia Commons, public domain. Parent-brand mark (IHG Hotels & Resorts) for IHG One Rewards. Basis: 2026-10-20 Chairman amendment. Used unmodified, nominatively; takedown within 24 hours. |
+| banks/dib-white (PNG) | https://www.dib.ae/ — asset: https://www.dib.ae/images/default-source/default-album/dib-logo.png?sfvrsn=14a4dd47_3 | 2026-10-22 | Issuer's own website (header logo; white wordmark and Arabic, colour globe). For a navy plate only; the text placeholder banks/dib.svg stays for light grounds. Trademark of Dubai Islamic Bank. Basis: 2026-10-20 Chairman amendment. Used unmodified, nominatively; takedown within 24 hours. |
+| banks/al-hilal-white (SVG) | https://www.alhilalbank.ae/en/personal/ — asset: https://www.alhilalbank.ae/en/Images/ahb-billingual-logo-footer.svg | 2026-10-22 | Issuer's own website (footer logo; white bilingual wordmark, orange-pink square). No script, no external reference; the gradient square is an embedded data: PNG inside the file as served. For a navy plate only; placeholder banks/al-hilal.svg stays for light grounds. Trademark of Al Hilal Bank (ADCB Group). Basis: 2026-10-20 Chairman amendment. Used unmodified, nominatively; takedown within 24 hours. |
+| partners/nrtc (PNG) | https://nrtcfresh.com/ — asset: https://nrtcfresh.com/storage/app/public/company/2026-03-23-69c0edd628bac.png | 2026-10-22 | Company's own website (header logo, img alt "Logo"; colour, includes the site's own "Celebrating 53 / since 1973" lockup, not cropped). Light grounds only: the black "53" disappears on navy. Trademark of NRTC (NRTC Fresh). Basis: 2026-10-20 Chairman amendment. Used unmodified, nominatively; takedown within 24 hours. |
+| partners/mann-marzi (PNG) | https://mannmarzi.ae/ — asset: https://mannmarzi.ae/wp-content/uploads/2025/11/Untitled-design-2025-12-28T192311.503.png | 2026-10-22 | Restaurant's own website (the file its schema.org Organization names as `logo`; gold wordmark, reads on light and navy). Trademark of Mann Marzi Restaurant, Wafi City, Dubai. Basis: 2026-10-20 Chairman amendment. Used unmodified, nominatively; takedown within 24 hours. |
+| partners/intercontinental (SVG) | https://www.ihg.com/intercontinental/hotels/us/en/reservation — asset: https://digital.ihg.com/is/content/ihg/ic-logo-updated | 2026-10-22 | Brand owner's own website (IHG, the InterContinental Hotels & Resorts page; the asset its own page shows as "IC logo"). Current mark; paths only, no script or external reference, but 1.5 MB. Identifies Choix at InterContinental Dubai Festival City. Trademark of IHG Hotels & Resorts. Not on Commons (only IHG group marks). Basis: 2026-10-20 Chairman amendment. Used unmodified, nominatively; takedown within 24 hours. |
 
 ## Source log
 
@@ -194,3 +212,6 @@ duty-free (no single brand).
 | airlines/etihad-guest | https://commons.wikimedia.org/wiki/File:Etihad-airways-logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Etihad Airways, used nominatively — parent-airline mark for the Etihad Guest programme |
 | airlines/marriott-bonvoy | https://commons.wikimedia.org/wiki/File:Marriott_Logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Marriott International, used nominatively — parent-brand mark for the Marriott Bonvoy programme |
 | airlines/qatar-privilege-club | https://commons.wikimedia.org/wiki/File:Qatar_Airways_logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Qatar Airways, used nominatively — parent-airline mark for the Privilege Club programme |
+
+
+**2026-10-22 note:** `partners/intercontinental` is served as a 800px PNG rendered from IHG's 1.5 MB SVG (same source above), unmodified apart from rasterising and resizing, to keep the deal tile light.
