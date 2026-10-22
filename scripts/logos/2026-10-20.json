@@ -1,10 +1,10 @@
 {
   "discover": [
-    { "key": "zed-gozed", "site": "https://gozed.ae/", "imgs": true, "inline": true, "grep": "logo" }
+    { "key": "zed-gozed", "site": "https://gozed.ae/", "grep": "<[a-z]" },
+    { "key": "zed-gozed-www", "site": "https://www.gozed.ae/", "imgs": true, "inline": true, "grep": "logo" },
+    { "key": "zed-gozed-en", "site": "https://gozed.ae/en", "imgs": true, "inline": true, "grep": "logo" }
   ],
   "fetch": [
-    { "path": "public/logos/partners/carrefour.svg", "url": "https://cdnprod.mafretailproxy.com/mafrp-web/assets/en/images/default/logo.svg" },
-    { "path": "public/logos/partners/intercontinental.svg", "url": "https://digital.ihg.com/is/content/ihg/ic-logo-updated" },
-    { "path": "public/logos/partners/intercontinental.png", "url": "https://digital.ihg.com/is/image/ihg/IC-Logo?fmt=png-alpha" }
+    { "path": "public/logos/partners/intercontinental.webp", "url": "https://digital.ihg.com/is/image/ihg/IC-Logo?fmt=png-alpha" }
   ]
 }
