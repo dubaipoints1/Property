@@ -16,19 +16,34 @@
 // served. Every committed file is logged in public/logos/LICENSES.md.
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36 DubaiPointsLogoFetch/1.0 (+https://dubaipoints.ae)";
 const cfg = JSON.parse(await readFile("scripts/logos/2026-10-20.json", "utf8"));
 
 async function get(url, asText = true) {
-  const r = await fetch(url, {
-    headers: { "User-Agent": UA, Accept: "*/*" },
-    redirect: "follow",
-    signal: AbortSignal.timeout(30000),
-  });
-  if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
-  return asText ? r.text() : Buffer.from(await r.arrayBuffer());
+  let buf;
+  try {
+    const r = await fetch(url, {
+      headers: { "User-Agent": UA, Accept: "*/*" },
+      redirect: "follow",
+      signal: AbortSignal.timeout(30000),
+    });
+    if (!r.ok) throw new Error(`HTTP ${r.status} for ${url}`);
+    buf = Buffer.from(await r.arrayBuffer());
+  } catch (e) {
+    // Some hosts refuse undici's TLS/HTTP2 handshake but serve curl fine.
+    // Same URL, same bytes; --fail keeps an error page out of the repo.
+    try {
+      buf = execFileSync("curl", ["-sSL", "--fail", "--http1.1", "--max-time", "45", "-A", UA, url], {
+        maxBuffer: 20 * 1024 * 1024,
+      });
+    } catch (e2) {
+      throw new Error(`${e.message}; curl: ${String(e2.stderr || e2.message).trim().slice(0, 120)}`);
+    }
+  }
+  return asText ? buf.toString("utf8") : buf;
 }
 
 async function commons(q) {
