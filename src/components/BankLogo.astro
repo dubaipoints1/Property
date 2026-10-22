@@ -35,6 +35,10 @@ const dim = { sm: 18, md: 28, lg: 44 }[size];
 // public/logos/LICENSES.md per Charter §10.
 const PNG_FORMAT_SLUGS = new Set<string>([
   "emirates-nbd", // emiratesnbd.com/en/brand-assets ships PNG only
+  // 2026-10-20 amendment: issuer's own site / Commons offer PNG only.
+  "rakbank",
+  "emirates-islamic",
+  "mashreq",
 ]);
 const ext = PNG_FORMAT_SLUGS.has(slug) ? "png" : "svg";
 

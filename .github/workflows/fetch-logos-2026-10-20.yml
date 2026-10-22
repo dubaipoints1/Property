@@ -1,0 +1,77 @@
+# One-shot logo fetch for the 2026-10-20 Charter amendment ("Real brands
+# in pictures: logos and liveries, not generic stand-ins").
+#
+# Why this workflow exists — the same reason seed-logos.yml and
+# fetch-partner-logo.yml do: the Claude Code web sandbox cannot reach
+# Wikimedia Commons or company websites. GitHub runners can.
+#
+# What it does: runs scripts/logos/fetch-2026-10-20.mjs against
+# scripts/logos/2026-10-20.json. The `discover` list prints candidate
+# asset URLs (Commons search hits with licence, and logo-looking assets
+# on each company's own homepage) into the job log, for a person to pick
+# from. The `fetch` list downloads the chosen assets byte-for-byte into
+# public/logos/{partners,banks,airlines}/ and commits them to the pushing
+# branch. Nothing is recoloured or redrawn; every committed file is logged
+# in public/logos/LICENSES.md (by hand, in the follow-up commit).
+#
+# Sources, in order: Wikimedia Commons, then the company's own website.
+# Never a logo-aggregator site, never AI.
+#
+# Trigger: push to claude/** touching this file or its inputs — a
+# workflow_dispatch workflow can only be dispatched once it is on the
+# default branch, which this one-shot never needs to be.
+
+name: fetch-logos-2026-10-20
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/fetch-logos-2026-10-20.yml"
+      - "scripts/logos/2026-10-20.json"
+      - "scripts/logos/fetch-2026-10-20.mjs"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch-logos-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pushing branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.20.0"
+
+      - name: Discover + fetch
+        run: node scripts/logos/fetch-2026-10-20.mjs
+
+      - name: Commit and push
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/logos/
+          if git diff --staged --quiet; then
+            echo "No logo changes to commit."
+            exit 0
+          fi
+          git diff --staged --stat
+          git commit \
+            -m "feat(logos): fetch brand marks for the 2026-10-20 amendment" \
+            -m "Automated download via .github/workflows/fetch-logos-2026-10-20.yml from Wikimedia Commons or each company's own website, bytes unmodified. Sources logged in public/logos/LICENSES.md."
+          git push origin "HEAD:$BRANCH"

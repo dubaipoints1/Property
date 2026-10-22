@@ -50,7 +50,7 @@ const deck = isCurrentAtBuild
   publishedAt={deal.data.publishedAt}
   toc={toc}
   showHero
-  heroSlug={`deal-${deal.id}`}
+  heroSlug={deal.data.logo ? undefined : `deal-${deal.id}`}
   heroCategory="Deal"
   heroLabel={`Deal · ${issuer.name}`}
 >
