@@ -69,7 +69,7 @@ async function commons(q) {
   if (!pages.length) console.log("  C (no Commons hits)");
 }
 
-async function site(url, showInline = false) {
+async function site(url, showInline = false, opts = {}) {
   const html = await get(url);
   const seen = new Set();
   const re = /(?:src|href|data-src|content|srcset)=["']([^"' ]+)/gi;
@@ -90,6 +90,25 @@ async function site(url, showInline = false) {
   }
   const inline = inlineSvgs(html);
   console.log(`  S (${seen.size} candidates; ${inline.length} inline <svg>; html ${html.length} bytes)`);
+  if (opts.imgs) {
+    // Every <img> tag's src + alt, for sites whose logo file name does not
+    // say "logo" (Elementor uploads, CDN hashes). Read-only.
+    const imgs = html.match(/<img\b[^>]*>/gi) || [];
+    imgs.slice(0, 30).forEach((t) => {
+      const src = (t.match(/\s(?:data-src|src)=["']([^"']+)/i) || [])[1] ?? "?";
+      const alt = (t.match(/\salt=["']([^"']*)/i) || [])[1] ?? "";
+      let abs = src;
+      try { abs = new URL(src, url).toString(); } catch {}
+      console.log(`  IMG ${abs} alt="${alt.slice(0, 60)}"`);
+    });
+  }
+  if (opts.grep) {
+    const g = new RegExp(opts.grep, "gi");
+    let gm;
+    let n = 0;
+    while ((gm = g.exec(html)) && n++ < 8)
+      console.log(`  G ${html.slice(Math.max(0, gm.index - 120), gm.index + 200).replace(/\s+/g, " ")}`);
+  }
   if (showInline) {
     inline.forEach((s, i) => {
       if (i >= 12 && !/logo/i.test(s.slice(0, 400))) return;
@@ -123,7 +142,7 @@ function inlineSvgs(html) {
 for (const d of cfg.discover ?? []) {
   console.log(`\n=== ${d.key}`);
   if (d.commons) await commons(d.commons).catch((e) => console.log(`  C error: ${e.message}`));
-  if (d.site) await site(d.site, d.inline).catch((e) => console.log(`  S error: ${e.message}`));
+  if (d.site) await site(d.site, d.inline, d).catch((e) => console.log(`  S error: ${e.message}`));
 }
 
 function sniff(buf) {

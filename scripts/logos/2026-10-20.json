@@ -1,23 +1,27 @@
 {
   "discover": [
-    { "key": "dib", "site": "https://www.dib.ae/", "inline": true },
-    { "key": "dib-personal", "site": "https://www.dib.ae/personal", "inline": true },
-    { "key": "alhilal", "site": "https://www.alhilalbank.ae/en/", "inline": true },
-    { "key": "nrtc", "site": "https://nrtcfresh.com/", "inline": true },
-    { "key": "carrefour-c1", "commons": "intitle:Carrefour intitle:logo" },
-    { "key": "carrefour-c2", "commons": "Carrefour logo no tag" },
-    { "key": "carrefour-maf", "site": "https://www.majidalfuttaim.com/en/our-businesses/retail", "inline": true },
-    { "key": "carrefour-maf2", "site": "https://www.majidalfuttaim.com/en", "inline": true },
-    { "key": "carrefour-site", "site": "https://www.carrefouruae.com/mafuae/en/", "inline": true },
-    { "key": "binsina", "commons": "intitle:BinSina", "site": "https://binsina.ae/en/", "inline": true },
-    { "key": "binsina-aster", "site": "https://www.asterdmhealthcare.com/", "inline": true },
-    { "key": "styli", "commons": "intitle:Styli", "site": "https://stylishop.com/ae/en", "inline": true },
-    { "key": "zed", "site": "https://zed.ae/", "inline": true },
-    { "key": "zed-www", "site": "https://www.zed.ae/", "inline": true },
-    { "key": "mann-marzi", "site": "https://mannmarzi.ae/", "inline": true },
-    { "key": "mann-marzi2", "site": "https://www.mannmarzirestaurant.com/", "inline": true },
-    { "key": "intercontinental-c", "commons": "intitle:InterContinental intitle:logo" },
-    { "key": "intercontinental-c2", "commons": "InterContinental Hotels Resorts logo svg" }
+    { "key": "alhilal-root", "site": "https://www.alhilalbank.ae/", "imgs": true, "inline": true },
+    { "key": "alhilal-personal", "site": "https://www.alhilalbank.ae/en/personal/", "imgs": true, "inline": true },
+    { "key": "alhilal-bare", "site": "https://alhilalbank.ae/en/", "imgs": true },
+    { "key": "alhilal-c", "commons": "Al Hilal Bank" },
+    { "key": "nrtc", "site": "https://nrtcfresh.com/", "imgs": true },
+    { "key": "carrefour-group", "site": "https://www.carrefour.com/en", "imgs": true, "inline": true },
+    { "key": "carrefour-c", "commons": "intitle:Carrefour filemime:image/svg+xml" },
+    { "key": "binsina-www", "site": "https://www.binsina.ae/", "imgs": true },
+    { "key": "binsina-root", "site": "https://binsina.ae/", "imgs": true },
+    { "key": "binsina-c", "commons": "BinSina Pharmacy" },
+    { "key": "styli-root", "site": "https://stylishop.com/", "imgs": true },
+    { "key": "styli-sa", "site": "https://stylishop.com/sa/en", "imgs": true },
+    { "key": "zed", "site": "https://zed.ae/", "imgs": true, "grep": "logo" },
+    { "key": "mann-marzi", "site": "https://mannmarzi.ae/", "imgs": true, "grep": "custom-logo|site-logo|logo" },
+    { "key": "intercontinental-ihg", "site": "https://www.ihg.com/intercontinental/hotels/gb/en/reservation", "imgs": true, "grep": "intercontinental[^\"']*\\.svg" },
+    { "key": "intercontinental-c", "commons": "intitle:InterContinental filemime:image/svg+xml" }
   ],
-  "fetch": []
+  "fetch": [
+    { "path": "public/logos/banks/dib-white.png", "url": "https://www.dib.ae/images/default-source/default-album/dib-logo.png?sfvrsn=14a4dd47_3" },
+    { "path": "public/logos/partners/nrtc-white.png", "url": "https://nrtcfresh.com/resources/themes/theme_aster/public/assets/img/logo-white.png" },
+    { "path": "public/logos/partners/carrefour.svg", "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Carrefour_logo_no_tag.svg" },
+    { "path": "public/logos/partners/intercontinental.svg", "url": "https://commons.wikimedia.org/wiki/Special:FilePath/InterContinental_Hotels_%26_Resorts_logo.svg" },
+    { "path": "public/logos/partners/intercontinental-alt.svg", "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Intercontinental_Hotels_%26_Resorts_logo.svg" }
+  ]
 }
