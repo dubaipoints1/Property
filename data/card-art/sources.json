@@ -75,7 +75,7 @@
     "url": "https://www.cbd.ae/images/default-source/revamp/cards/cbd-one-card.png?Status=Master&sfvrsn=7f695c6b_1",
     "page": "https://www.cbd.ae/personal/cards/credit-cards/cbd-one",
     "alt": "CBD one card",
-    "note": null
+    "note": "Clean card face from the product page. Node fetch failed on cbd.ae (9 Oct); fetched via the curl fallback on 22 Oct"
   },
   "citi-cashback": {
     "url": "https://www.citibank.ae/content/cgcpc/ae/prelogin/www-citibank-ae/en/credit-cards/cashback/citi-cashback-credit-card/_jcr_content/root/container/container_copy_2130810632/container_copy_copy/image.coreimg.png/1731033309281/citi-cashback-card-335x230-29122020.png",
@@ -84,17 +84,29 @@
     "note": "355x230; filename dated 29-12-2020, so the art may predate any redesign"
   },
   "dib-consumer-cashback": {
-    "url": null,
+    "url": "https://www.dib.ae/images/default-source/spotlight/dib-visa.jpg?sfvrsn=ec021a05_3",
     "page": "https://www.dib.ae/personal/cards/consumer-reward-card",
-    "alt": null,
-    "note": "No card-face image on the page. og:image points at http://newdibuat.dib.ae/images/default-source/og/consumer-card.png (a UAT host, not used)"
+    "alt": "DIB Consumer Card",
+    "note": "Spotlight image on the product page: the Consumer Card face alone on a grey studio gradient; cropped to the card. The og:image on a UAT host is still not used.",
+    "crop": {
+      "left": 0.12,
+      "top": 0.08,
+      "width": 0.77,
+      "height": 0.66
+    }
   },
   "emirates-islamic-switch-cashback": {
-    "url": null,
+    "url": "https://www.emiratesislamic.ae/-/media/webx/ei/images/cards/credit-cards/banners/switch_cashback_2880x1000.jpg",
     "page": "https://www.emiratesislamic.ae/en/cards/credit-cards/switch-cashback-credit-card",
-    "alt": null,
-    "note": "rejected on review 9 Oct 2026: a lifestyle banner with a person, not a card face",
-    "rejectedUrl": "https://www.emiratesislamic.ae/-/media/ei/images/cards/switchcard_600x500_en.jpg?h=500&w=600&la=en&hash=13E934D6E1304C90516FDE9F444D71FA"
+    "alt": "Emirates Islamic Switch Cashback Visa Signature card",
+    "note": "The page hero banner shows the flat Switch card face beside a lifestyle photo; cropped to the card only (20 Oct 2026). The 9 Oct candidate (switchcard_600x500, a person) stays rejected.",
+    "rejectedUrl": "https://www.emiratesislamic.ae/-/media/ei/images/cards/switchcard_600x500_en.jpg?h=500&w=600&la=en&hash=13E934D6E1304C90516FDE9F444D71FA",
+    "crop": {
+      "left": 0.449,
+      "top": 0.745,
+      "width": 0.139,
+      "height": 0.255
+    }
   },
   "emirates-nbd-darna-select-visa": {
     "url": "https://www.emiratesnbd.com/-/media/enbd/images/card/credit-card/darna/aldar_darna_select_card_latt_image.png?la=en&h=556&w=880&hash=F35871501603812759513EDD6693CEFA",
@@ -317,7 +329,7 @@
     "url": "https://www.liv.me/-/media/liv/website/liv-rebranding/credit-card/calc/liv-platinum-cc-front-1.svg?la=en&hash=DF1D6D8761BF849EE0D1A1C76D5E57E9",
     "page": "https://www.liv.me/en/liv-credit-card",
     "alt": "RewardCalculators",
-    "note": "Liv Cashback is the Mastercard Platinum tier (per L3). This SVG is the Platinum card front used in the page's reward calculator. Also on page: .../home-page/liv-x-homepage/liv-platinum-new.png (250x584, portrait comparison image)"
+    "note": "Liv Cashback is the Mastercard Platinum product (per L3). This SVG is the Platinum card front used in the page reward calculator, rasterised at high density. Rejected on review 22 Oct: liv_credit_card_1161x1355 (cards among partner stickers), cc-banner-card-icon (card in a hand), liv-cashback.svg (app icon)"
   },
   "liv-cashback-plus": {
     "url": "https://www.liv.me/-/media/liv/website/liv-rebranding/home-page/liv-x-homepage/credit-card-world-new.png?la=en&h=584&w=250&hash=56718A1BD2613A9866B0F2F336D7F78F",
@@ -338,10 +350,16 @@
     "note": "Served via rakbank.ae's Next.js image proxy; origin asset is RAKBANK's Optimizely DAM: https://images2.cmp.optimizely.com/assets/World+Cashback.png/Zz1jZjlkYjgyYTgxMjIxMWYxOTg2MzJlOTU0Y2I5MzYzZA=="
   },
   "sc-platinum-x": {
-    "url": null,
+    "url": "https://av.sc.com/ae/content/images/ae-platinum-x-credit-card-the_good_life_privileges.jpg",
     "page": "https://www.sc.com/ae/credit-cards/platinum-x-cashback/",
-    "alt": null,
-    "note": "No clean card face. Only candidate is the 1600x490 hero banner https://av.sc.com/ae/content/images/ae-platinum-x-credit-card-1600x490px.jpg (alt 'Platinum X credit card'), a wide lifestyle banner, not used"
+    "alt": "Standard Chartered Platinum X Mastercard",
+    "note": "Benefits tile on the product page shows the flat card face over a beach photo; cropped to the card only (20 Oct 2026). The 1600x490 hero is a lifestyle banner and is not used.",
+    "crop": {
+      "left": 0.602,
+      "top": 0.493,
+      "width": 0.33,
+      "height": 0.382
+    }
   },
   "wio-credit": {
     "url": null,
