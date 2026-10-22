@@ -483,18 +483,18 @@
     "_provenance": {
       "bank": "scraped",
       "name": "scraped",
-      "network": "scraped",
+      "network": "editor-corrected",
       "categories": "scraped",
       "annualFee": "scraped",
       "fxFee": "editor-corrected",
-      "loyaltyProgram": "scraped",
-      "earnRates": "scraped",
-      "earnUnit": "scraped",
+      "loyaltyProgram": "editor-corrected",
+      "earnRates": "editor-corrected",
+      "earnUnit": "editor-corrected",
       "welcomeBonus": "editor-corrected",
       "eligibility": "scraped",
       "applyUrl": "scraped",
       "kfsUrl": "scraped",
-      "lastVerified": "scraped",
+      "lastVerified": "editor-corrected",
       "sources": "scraped",
       "partnerBrands": "needs-review"
     },
@@ -502,7 +502,7 @@
     "_lastReviewed": "2026-05-10",
     "bank": "adcb",
     "name": "ADCB Talabat Credit Card",
-    "network": "Visa",
+    "network": "Mastercard",
     "categories": [
       "co-brand",
       "dining"
@@ -512,16 +512,28 @@
       "currency": "AED"
     },
     "fxFee": 2.99,
-    "loyaltyProgram": "Talabat Pro",
+    "loyaltyProgram": "talabat credit",
     "earnRates": {
-      "everythingElse": 1
+      "partnerBrands": 35,
+      "everythingElse": 1.25,
+      "supermarkets": 0.35,
+      "autoDealers": 0.35,
+      "insurance": 0.35,
+      "fuel": 0.35,
+      "education": 0.35,
+      "government": 0.35,
+      "realEstate": 0.35,
+      "telecom": 0.35,
+      "charity": 0.35,
+      "transport": 0.35,
+      "europe": 0.35
     },
-    "earnUnit": "Talabat Pro per AED 1 spent",
+    "earnUnit": "% back as talabat credit (35% on talabat orders covers the first 10 orders a month, up to AED 35 an order and AED 350 a month, and needs AED 2,500 of monthly retail spend; otherwise talabat orders earn 1.25%)",
     "welcomeBonus": {
       "amount": 750,
       "unit": "aed_credit",
-      "spend_threshold_aed": null,
-      "qualify_window_days": null,
+      "spend_threshold_aed": 5000,
+      "qualify_window_days": 45,
       "headline": "AED 750 talabat credit welcome (new-to-bank applicants)",
       "notes": "Per the ADCB Talabat Credit Card product page — existing-customer welcome bonus is AED 200; verify at application."
     },
@@ -535,7 +547,7 @@
     },
     "applyUrl": "https://www.adcb.com/en/personal/cards/credit-cards/talabat-credit-card.aspx",
     "kfsUrl": "https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf",
-    "lastVerified": "2026-10-02",
+    "lastVerified": "2026-10-22",
     "sources": [
       "https://www.adcb.com/en/personal/cards/credit-cards/talabat-credit-card.aspx",
       "https://www.adcb.com/en/multimedia/sof/cb-sof-current-charges-fees.pdf"
