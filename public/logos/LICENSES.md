@@ -212,3 +212,6 @@ each was checked rasterised on `#1f3a4d`.
 | airlines/etihad-guest | https://commons.wikimedia.org/wiki/File:Etihad-airways-logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Etihad Airways, used nominatively — parent-airline mark for the Etihad Guest programme |
 | airlines/marriott-bonvoy | https://commons.wikimedia.org/wiki/File:Marriott_Logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Marriott International, used nominatively — parent-brand mark for the Marriott Bonvoy programme |
 | airlines/qatar-privilege-club | https://commons.wikimedia.org/wiki/File:Qatar_Airways_logo.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Qatar Airways, used nominatively — parent-airline mark for the Privilege Club programme |
+
+
+**2026-10-22 note:** `partners/intercontinental` is served as a 800px PNG rendered from IHG's 1.5 MB SVG (same source above), unmodified apart from rasterising and resizing, to keep the deal tile light.

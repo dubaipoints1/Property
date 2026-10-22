@@ -7,9 +7,7 @@
 // across hub pages (banks + airlines).
 
 import BaseLayout from "./BaseLayout.astro";
-import StockImage from "~/components/StockImage.astro";
-import { stagePhoto, stageStyle } from "~/lib/stage";
-import { hasStockEntry } from "~/lib/stockManifest";
+import { bankMark } from "~/lib/logos";
 
 interface Props {
   title: string;
@@ -45,11 +43,9 @@ const {
 const fmtVerified = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
-const heroSlug = slug ? `bank-${slug}` : null;
-const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
-// A licensed photo moves up into the cinematic stage; an AI illustration
-// stays in the body, where StockImage gives it its visible label.
-const stageOwnsHero = stagePhoto(heroSlug) != null;
+// The bank's own mark leads the page (2026-10-20 ruling: logos, not
+// generic skyline photographs). White-only marks sit on the brand navy.
+const mark = slug ? bankMark(slug) : null;
 
 // JSON-LD: bank hubs emit Organization (sub-type FinancialService) +
 // BreadcrumbList. Customer-service contact and the issuer website are
@@ -91,8 +87,13 @@ const schema = {
 ---
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
-  <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead is-narrow", { "dp-stage": stageOwnsHero }]}>
+  <header class="dp-pagehead is-narrow">
     <div class="crumb"><a href="/banks/" class="crumb-link">UAE bank</a></div>
+    {mark && (
+      <span class:list={["dp-hub-mark", { "is-plated": mark.plated }]}>
+        <img src={mark.src} alt={`${bankName} logo`} loading="eager" decoding="async" />
+      </span>
+    )}
     <h1>{bankName}</h1>
     {description && <p class="deck">{description}</p>}
 
@@ -122,17 +123,6 @@ const schema = {
   </header>
 
   <article class="dp-bank-body">
-    {hasHero && heroSlug && !stageOwnsHero && (
-      <StockImage
-        slug={heroSlug}
-        coverTitle={bankName}
-        coverCategory="Topic"
-        coverSize="hero"
-        class="dp-hub-hero"
-        loading="eager"
-      />
-    )}
-
     <section class="dp-bank-callout">
       <p class="label">Current salary transfer offer</p>
       <slot name="salary-transfer" />
@@ -173,6 +163,17 @@ const schema = {
 </BaseLayout>
 
 <style>
+  .dp-hub-mark {
+    display: inline-flex;
+    align-items: center;
+    margin: 4px 0 14px;
+    padding: 10px 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .dp-hub-mark.is-plated { background: #1f3a4d; border-color: #1f3a4d; }
+  .dp-hub-mark img { height: 40px; width: auto; max-width: 220px; object-fit: contain; }
   /* Single-column reading width. A Stage 2 sticky rail was trialled here
      but reverted: bank hubs carry too little content to fill two columns,
      so the rail left a large empty void on laptop. Reinstate the rail once

@@ -9,8 +9,7 @@
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
-import StockImage from "~/components/StockImage.astro";
-import { LISTING_SIZES } from "~/lib/stockDerivatives";
+import BankVisual from "~/components/BankVisual.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
 
@@ -87,13 +86,11 @@ const schema = collectionPageGraph({ siteUrl, path: "/banks/", name: "UAE banks 
     <div class="intel-main">
       {featured && (
         <a href={`/banks/${featured.id}/`} class="intel-featured">
-          <StockImage
-            slug={`bank-${featured.id}`}
-            coverTitle={featured.data.name}
-            coverCategory="Programme"
+          <BankVisual
+            slug={featured.id}
+            name={featured.data.name}
             coverSize="hero"
             class="intel-featured-image"
-            sizes={LISTING_SIZES.featured}
             loading="eager"
           />
           <div class="intel-featured-body">
@@ -114,13 +111,10 @@ const schema = collectionPageGraph({ siteUrl, path: "/banks/", name: "UAE banks 
             return (
               <li class="intel-card-item">
                 <a href={`/banks/${b.id}/`} class="intel-card">
-                  <StockImage
-                    slug={`bank-${b.id}`}
-                    coverTitle={b.data.name}
-                    coverCategory="Programme"
-                    coverSize="med"
+                  <BankVisual
+                    slug={b.id}
+                    name={b.data.name}
                     class="intel-card-image"
-                    sizes={LISTING_SIZES.tile}
                   />
                   <div class="intel-card-body">
                     <span class="intel-card-cat">UAE bank</span>
