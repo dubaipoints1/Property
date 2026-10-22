@@ -22,11 +22,13 @@ interface Props {
 }
 
 const { dealId, title, logo, merchant, bankSlug, bankName, coverSize = "med", class: className, loading = "lazy", sizes } = Astro.props;
-const bankExt = bankSlug === "emirates-nbd" ? "png" : "svg";
+// Same PNG list as BankLogo.astro.
+const bankExt = bankSlug && ["emirates-nbd", "rakbank", "emirates-islamic", "mashreq"].includes(bankSlug) ? "png" : "svg";
 ---
 
 {logo ? (
   <span class:list={["dp-deal-logo", className, `is-${coverSize}`]}>
+    <span class="dp-deal-logo-inner">
     <img
       class="dp-deal-logo-mark"
       src={`/logos/partners/${logo}`}
@@ -34,6 +36,7 @@ const bankExt = bankSlug === "emirates-nbd" ? "png" : "svg";
       loading={loading}
       decoding="async"
     />
+    </span>
     {bankSlug && (
       <span class="dp-deal-logo-bank">
         <span class="dp-deal-logo-with">with</span>
@@ -56,8 +59,6 @@ const bankExt = bankSlug === "emirates-nbd" ? "png" : "svg";
 <style>
   .dp-deal-logo {
     position: relative;
-    display: grid;
-    place-items: center;
     width: 100%;
     aspect-ratio: 3 / 2;
     background: #fff;
@@ -65,6 +66,14 @@ const bankExt = bankSlug === "emirates-nbd" ? "png" : "svg";
     overflow: hidden;
   }
   .dp-deal-logo.is-hero { aspect-ratio: 16 / 9; }
+  /* Centred by an inner layer: listing pages give the outer span
+     display: block through their own image class. */
+  .dp-deal-logo-inner {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
   .dp-deal-logo-mark {
     max-width: 56%;
     max-height: 42%;
