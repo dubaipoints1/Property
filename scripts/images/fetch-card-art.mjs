@@ -17,6 +17,7 @@
 // Usage: node scripts/images/fetch-card-art.mjs [--force]
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import sharp from "sharp";
 
 const SOURCES = "data/card-art/sources.json";
@@ -33,6 +34,26 @@ const manifest = existsSync(MANIFEST) ? JSON.parse(readFileSync(MANIFEST, "utf8"
 mkdirSync(OUT_DIR, { recursive: true });
 
 const today = new Date().toISOString().slice(0, 10);
+const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36";
+
+// Node's fetch first; curl when fetch fails at the network/TLS level (some
+// issuer hosts, e.g. cbd.ae, serve a chain Node will not complete).
+async function download(url, referer) {
+  try {
+    const res = await fetch(url, {
+      headers: { "user-agent": UA, accept: "image/avif,image/webp,image/png,image/jpeg,*/*;q=0.8", referer },
+      redirect: "follow",
+      signal: AbortSignal.timeout(45_000),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return Buffer.from(await res.arrayBuffer());
+  } catch (err) {
+    if (String(err.message).startsWith("HTTP ")) throw err;
+    return execFileSync("curl", ["-sfL", "--max-time", "45", "-A", UA, "-e", referer, url.href], {
+      maxBuffer: 50 * 1024 * 1024,
+    });
+  }
+}
 let ok = 0;
 let failed = 0;
 
@@ -45,22 +66,29 @@ for (const [slug, src] of Object.entries(sources)) {
   if (!force && manifest[slug]?.url === src.url && existsSync(file)) continue;
 
   try {
-    const res = await fetch(url, {
-      headers: {
-        "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36",
-        accept: "image/avif,image/webp,image/png,image/jpeg,*/*;q=0.8",
-        referer: src.page ?? url.origin,
-      },
-      redirect: "follow",
-      signal: AbortSignal.timeout(45_000),
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const buf = Buffer.from(await res.arrayBuffer());
+    const buf = await download(url, src.page ?? url.origin);
     // sharp refuses anything that is not an image (an HTML error page
-    // served with a 200 fails here rather than being committed).
-    const img = sharp(buf, { failOn: "error" });
+    // served with a 200 fails here rather than being committed). SVG card
+    // fronts are rasterised at a high density: their intrinsic size is
+    // often a few dozen px.
+    const isSvg = /\.svg$/i.test(url.pathname);
+    let img = sharp(buf, { failOn: "error", ...(isSvg ? { density: 1200 } : {}) });
     const meta = await img.metadata();
-    if (!meta.width || meta.width < 200) throw new Error(`too small (${meta.width}px)`);
+    // Optional crop, as fractions of the original image: used only where
+    // the issuer shows the flat card face inside a larger banner, to keep
+    // the card and drop the rest. Trimming, never alteration.
+    if (src.crop) {
+      const { left, top, width, height } = src.crop;
+      const box = {
+        left: Math.round(left * meta.width),
+        top: Math.round(top * meta.height),
+        width: Math.round(width * meta.width),
+        height: Math.round(height * meta.height),
+      };
+      img = sharp(await img.extract(box).toBuffer());
+    }
+    const w = src.crop ? (await img.metadata()).width : meta.width;
+    if (!w || w < 200) throw new Error(`too small (${w}px)`);
     const out = await img
       .trim({ threshold: 8 })
       .resize({ width: 900, withoutEnlargement: true })
