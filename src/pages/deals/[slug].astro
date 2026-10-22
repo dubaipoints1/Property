@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import ArticleLayout from "~/layouts/ArticleLayout.astro";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 import PromoCode from "~/components/deals/PromoCode.astro";
+import DealVisual from "~/components/deals/DealVisual.astro";
 
 export async function getStaticPaths() {
   const deals = await getCollection("deals");
@@ -53,6 +54,20 @@ const deck = isCurrentAtBuild
   heroCategory="Deal"
   heroLabel={`Deal · ${issuer.name}`}
 >
+  {deal.data.logo && (
+    <DealVisual
+      slot="hero"
+      dealId={deal.id}
+      title={deal.data.title}
+      logo={deal.data.logo}
+      merchant={deal.data.merchant}
+      bankSlug={deal.data.bank?.id}
+      bankName={issuer.name}
+      coverSize="hero"
+      class="article-hero-image"
+      loading="eager"
+    />
+  )}
   {isCurrentAtBuild && deal.data.promoCode && deal.data.promoCodeSource && (
     <PromoCode code={deal.data.promoCode} source={deal.data.promoCodeSource} expires={deal.data.expiresOn} />
   )}

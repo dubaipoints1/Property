@@ -1,0 +1,95 @@
+---
+// The picture for a deal: the merchant's own logo on a quiet panel when we
+// hold it (`logo` on the deal, file in public/logos/partners/), with the
+// issuing bank's mark in the corner; otherwise the deal's stock photo.
+// 20 Oct 2026, Chairman: "I do want logo, or airline livery i do not want
+// generic pictures." The panel takes the class of the image it replaces,
+// so every grid keeps its proportions.
+
+import StockImage from "../StockImage.astro";
+
+interface Props {
+  dealId: string;
+  title: string;
+  logo?: string;
+  merchant?: string;
+  bankSlug?: string;
+  bankName?: string;
+  coverSize?: "hero" | "med" | "sm" | "thumb";
+  class?: string;
+  loading?: "eager" | "lazy";
+  sizes?: string;
+}
+
+const { dealId, title, logo, merchant, bankSlug, bankName, coverSize = "med", class: className, loading = "lazy", sizes } = Astro.props;
+const bankExt = bankSlug === "emirates-nbd" ? "png" : "svg";
+---
+
+{logo ? (
+  <span class:list={["dp-deal-logo", className, `is-${coverSize}`]}>
+    <img
+      class="dp-deal-logo-mark"
+      src={`/logos/partners/${logo}`}
+      alt={`${merchant ?? "Merchant"} logo`}
+      loading={loading}
+      decoding="async"
+    />
+    {bankSlug && (
+      <span class="dp-deal-logo-bank">
+        <span class="dp-deal-logo-with">with</span>
+        <img src={`/logos/banks/${bankSlug}.${bankExt}`} alt={bankName ?? ""} loading={loading} decoding="async" />
+      </span>
+    )}
+  </span>
+) : (
+  <StockImage
+    slug={`deal-${dealId}`}
+    coverTitle={title}
+    coverCategory="Deal"
+    coverSize={coverSize}
+    class={className}
+    loading={loading}
+    sizes={sizes}
+  />
+)}
+
+<style>
+  .dp-deal-logo {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .dp-deal-logo.is-hero { aspect-ratio: 16 / 9; }
+  .dp-deal-logo-mark {
+    max-width: 56%;
+    max-height: 42%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+  .dp-deal-logo-bank {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #e3e1da;
+  }
+  .dp-deal-logo-with {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: #4a5560;
+  }
+  .dp-deal-logo-bank img { height: 16px; width: auto; max-width: 90px; }
+</style>

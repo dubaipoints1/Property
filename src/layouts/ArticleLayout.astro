@@ -247,7 +247,9 @@ const schema = {
 
   <div class="dp-article-body-grid">
     <article class="dp-article-body">
-      {showHero && !stageOwnsHero && (
+      {showHero && !stageOwnsHero && Astro.slots.has("hero") ? (
+        <slot name="hero" />
+      ) : showHero && !stageOwnsHero && (
         heroSlug ? (
           <StockImage
             slug={heroSlug}
