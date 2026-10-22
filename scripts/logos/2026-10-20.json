@@ -1,69 +1,8 @@
 {
   "discover": [
     {
-      "key": "carrefour-c",
-      "commons": "intitle:Carrefour filemime:image/svg+xml"
-    },
-    {
-      "key": "ihg-c",
-      "commons": "intitle:\"InterContinental Hotels Group\""
-    },
-    {
-      "key": "ihg-c2",
-      "commons": "IHG logo filemime:image/svg+xml"
-    },
-    {
-      "key": "hilton-c",
-      "commons": "intitle:Hilton intitle:Worldwide"
-    },
-    {
-      "key": "hilton-c2",
-      "commons": "intitle:\"Hilton Honors\""
-    },
-    {
-      "key": "hyatt-c",
-      "commons": "intitle:\"World of Hyatt\""
-    },
-    {
-      "key": "rakbank-c",
-      "commons": "RAK Bank National Bank of Ras Al Khaimah logo"
-    },
-    {
-      "key": "wio-c",
-      "commons": "Wio bank"
-    },
-    {
-      "key": "dib-c",
-      "commons": "DIB logo Dubai Islamic"
-    },
-    {
       "key": "mashreq",
-      "site": "https://www.mashreq.com/en/uae/personal/",
-      "inline": true
-    },
-    {
-      "key": "rakbank",
-      "site": "https://www.rakbank.ae/en/personal",
-      "inline": true
-    },
-    {
-      "key": "dib",
-      "site": "https://www.dib.ae/personal",
-      "inline": true
-    },
-    {
-      "key": "wio",
-      "site": "https://www.wio.io/",
-      "inline": true
-    },
-    {
-      "key": "right-bite",
-      "site": "https://www.right-bite.com/",
-      "inline": true
-    },
-    {
-      "key": "right-bite2",
-      "site": "https://rightbite.com/",
+      "site": "https://www.mashreq.com/en/uae/neo/",
       "inline": true
     },
     {
@@ -72,57 +11,57 @@
       "inline": true
     },
     {
-      "key": "carrefour",
-      "site": "https://www.carrefouruae.com/",
-      "inline": true
-    },
-    {
-      "key": "nrtc",
-      "site": "https://nrtcfresh.com/",
-      "inline": true
-    },
-    {
-      "key": "noon",
-      "site": "https://www.noon.com/",
-      "inline": true
-    },
-    {
-      "key": "mann-marzi",
-      "site": "https://www.mannmarzirestaurant.com/"
-    },
-    {
       "key": "mann-marzi2",
-      "site": "https://mannmarzi.ae/"
+      "site": "https://mannmarzi.ae/",
+      "inline": true
     }
   ],
   "fetch": [
     {
-      "path": "public/logos/partners/dubai-parks-and-resorts.svg",
-      "url": "https://www.dubaiparksandresorts.com/sites/default/files/2026-10/dubaiparks-logo_1.svg"
+      "path": "public/logos/partners/carrefour.svg",
+      "url": "https://cdnprod.mafretailproxy.com/mafrp-web/assets/en/images/default/logo.svg"
     },
     {
-      "path": "public/logos/partners/dpr-alt.svg",
-      "url": "https://www.dubaiparksandresorts.com/sites/default/files/2026-10/dubaipark_0.svg"
+      "path": "public/logos/partners/dr-nutrition.png",
+      "url": "https://drnutrition.com/images/logo_4.png"
     },
     {
-      "path": "public/logos/partners/careem-site.png",
-      "url": "https://careem-public-web-media.media.careem.com/careem_logo_new_d94ce334cf_00d335976f.webp"
+      "path": "public/logos/partners/right-bite.svg",
+      "inlineFrom": "https://rightbite.com/",
+      "index": 1
     },
     {
-      "path": "public/logos/partners/careem-plus.png",
-      "url": "https://careem-public-web-media.media.careem.com/cplus_logo_93db37150b_f263ac2af7.webp"
+      "path": "public/logos/banks/wio.svg",
+      "inlineFrom": "https://www.wio.io/",
+      "index": 1
     },
     {
-      "path": "public/logos/banks/emirates-islamic.svg",
-      "url": "https://www.emiratesislamic.ae/-/media/ei/images/header/logo_ei_new.svg"
+      "path": "public/logos/banks/cbd.svg",
+      "url": "https://www.cbd.ae/images/default-source/3-in-1-cut/cbd-logo.svg?Status=Master&sfvrsn=effb026b_1"
     },
     {
-      "path": "public/logos/banks/ei-alt.svg",
-      "url": "https://www.emiratesislamic.ae/-/media/ei/images/header/logo_ei.svg"
+      "path": "public/logos/banks/al-hilal.svg",
+      "url": "https://www.alhilalbank.ae/en/Images/ahb-billingual-logo-footer.svg"
     },
     {
-      "path": "public/logos/airlines/world-of-hyatt.svg",
-      "url": "https://upload.wikimedia.org/wikipedia/commons/9/91/Hyatt_Logo.svg"
+      "path": "public/logos/banks/rakbank.png",
+      "url": "https://www.rakbank.ae/globalassets/rakbank/header/brand-refresh-logos/rak-logo-conv.png"
+    },
+    {
+      "path": "public/logos/banks/rakbank-light.png",
+      "url": "https://www.rakbank.ae/globalassets/rakbank/header/brand-refresh-logos/rak-logo-light-conventional.png"
+    },
+    {
+      "path": "public/logos/airlines/hilton-honors.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Hilton_Worldwide_logo.svg"
+    },
+    {
+      "path": "public/logos/airlines/ihg-one-rewards.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/9/93/IHG_Hotels_%26_Resorts_logo.svg"
+    },
+    {
+      "path": "public/logos/airlines/ihg-2017.svg",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/74/InterContinental_Hotels_Group_logo_2017.svg"
     }
   ]
 }

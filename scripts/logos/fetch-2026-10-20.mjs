@@ -76,7 +76,8 @@ async function site(url, showInline = false) {
   const inline = inlineSvgs(html);
   console.log(`  S (${seen.size} candidates; ${inline.length} inline <svg>; html ${html.length} bytes)`);
   if (showInline) {
-    inline.slice(0, 12).forEach((s, i) => {
+    inline.forEach((s, i) => {
+      if (i >= 12 && !/logo/i.test(s.slice(0, 400))) return;
       const open = s.match(/^<svg[^>]*>/i)[0].replace(/\s+/g, " ");
       const fills = [...new Set((s.match(/fill="#[0-9a-f]{3,6}"/gi) || []))].slice(0, 4).join(",");
       console.log(`  I[${i}] ${s.length}b ${open.slice(0, 160)} ${fills}`);
