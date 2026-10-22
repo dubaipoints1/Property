@@ -16,7 +16,7 @@
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
-import StockImage from "~/components/StockImage.astro";
+import DealVisual from "~/components/deals/DealVisual.astro";
 import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
@@ -189,10 +189,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
 
           {featured && (
             <a href={`/deals/${featured.entry.id}/`} class="intel-featured" {...dealAttrs(featured)}>
-              <StockImage
-                slug={`deal-${featured.entry.id}`}
-                coverTitle={featured.entry.data.title}
-                coverCategory="Deal"
+              <DealVisual
+                dealId={featured.entry.id}
+                title={featured.entry.data.title}
+                logo={featured.entry.data.logo}
+                merchant={featured.entry.data.merchant}
+                bankSlug={featured.entry.data.bank?.id}
+                bankName={featured.bankName}
                 coverSize="hero"
                 class="intel-featured-image"
                 sizes={LISTING_SIZES.featured}
@@ -216,10 +219,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                 return (
                   <li class="intel-card-item" {...dealAttrs(d)}>
                     <a href={`/deals/${d.entry.id}/`} class="intel-card">
-                      <StockImage
-                        slug={`deal-${d.entry.id}`}
-                        coverTitle={d.entry.data.title}
-                        coverCategory="Deal"
+                      <DealVisual
+                        dealId={d.entry.id}
+                        title={d.entry.data.title}
+                        logo={d.entry.data.logo}
+                        merchant={d.entry.data.merchant}
+                        bankSlug={d.entry.data.bank?.id}
+                        bankName={d.bankName}
                         coverSize="med"
                         class="intel-card-image"
                         sizes={LISTING_SIZES.tile}
