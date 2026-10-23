@@ -1,0 +1,33 @@
+# Download logo candidates for an editor to view before choosing. Commits
+# only candidates/ to a scratch branch (claude/logo-candidates), never to the
+# pushing branch and never to main.
+name: logo-candidates
+on:
+  push:
+    branches: ["claude/**"]
+    paths: ["scripts/logos/candidates-*.txt", ".github/workflows/logo-candidates.yml"]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download candidates
+        run: |
+          mkdir -p candidates
+          F=$(ls -t scripts/logos/candidates-*.txt | head -1)
+          while read -r name url; do
+            [ -z "$name" ] && continue
+            curl -sSL --max-time 40 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" -o "candidates/$name" -w "$name %{http_code} %{size_download}\n" "$url" || echo "$name failed"
+          done < "$F"
+          ls -la candidates
+      - name: Push to scratch branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan logo-candidates-tmp
+          git rm -rq --cached .
+          git add candidates/
+          git commit -qm "Logo candidates"
+          git push -f origin HEAD:claude/logo-candidates
