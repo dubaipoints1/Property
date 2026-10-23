@@ -215,3 +215,15 @@ each was checked rasterised on `#1f3a4d`.
 
 
 **2026-10-22 note:** `partners/intercontinental` is served as a 800px PNG rendered from IHG's 1.5 MB SVG (same source above), unmodified apart from rasterising and resizing, to keep the deal tile light.
+
+
+## 2026-10-23 — four merchant marks from secondary sources
+
+On Chairman direction in-session, 23 October 2026: "Find the logos high quality online". The four companies' own websites refuse automated fetches (403 or time-out from both GitHub runners and Firecrawl, see the 2026-10-22 section), so each mark was taken from the most reliable public copy found, downloaded through `.github/workflows/logo-candidates.yml`, and viewed before use. Each is the company's own, unmodified mark (trimmed only). Basis: 2026-10-20 Chairman amendment. Used nominatively; takedown within 24 hours.
+
+| File | Source page — asset | Date | Notes |
+|---|---|---|---|
+| partners/carrefour.svg | https://en.wikipedia.org/wiki/File:Carrefour_Groupe.svg — https://upload.wikimedia.org/wikipedia/en/6/65/Carrefour_Groupe.svg | 2026-10-23 | Carrefour's symbol; tagged on Wikipedia as ineligible for copyright (simple shapes). No script or external reference. Trademark of Carrefour (franchised in the UAE by Majid Al Futtaim). |
+| partners/binsina.png | https://survey.brandingforum.org/brands/binsina-pharmacy/attachment/binsina-pharmarcy-logo/ — https://b3490422.assetcdn.net/2.0/3490422/wp-content/uploads/2016/10/BinSina-Pharmarcy-logo.jpg | 2026-10-23 | BinSina Pharmacy's bilingual mark, trimmed of white margin (517×116). Matches the mark on binsina.ae as seen in search results. Trademark of BinSina Pharmacy (Aster DM). |
+| partners/styli.png | https://cloud.google.com/customers/styli — https://lh3.googleusercontent.com/8_41gjykfEhGn6vKbZiZIWfYfoTQ0TIf0mMjfXFt1QMQEXNl0h7prdcNT6yQDn6lK-1rb02BSesO1kiVQ_oNyDvOAFxM-wfZq6UkfNlkwTrZInItEeA=s0 | 2026-10-23 | Styli's bilingual wordmark as shown on Google Cloud's customer page (198×120). Trademark of Styli (Retail Cart Trading). |
+| partners/zed.png | https://play.google.com/store/apps/details?id=com.zed.customer — https://play-lh.googleusercontent.com/uILUlNXOYnVMW34ESyd7HBzBWI_OxglVdTECso9HvCqRwSivBOhaDZGnodFwEA_IMIYbbfvCXgZrHbfICShh=s512 | 2026-10-23 | Zed's app mark (white "zed." on coral, 512×512) as published by Zed on Google Play. Trademark of Zed Mobility. |
