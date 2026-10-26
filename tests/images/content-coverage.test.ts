@@ -24,6 +24,14 @@ const ALLOWED_MISSING: Record<string, string> = {
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
+  // Phase E.36 deals (26 October 2026): merchants have no logo in
+  // public/logos/partners/ yet; photos are seeded by
+  // .github/workflows/seed-images-e36.yml after push.
+  "deal-fab-grandiose-10pct-instore-cashback": "seeded by seed-images-e36.yml",
+  "deal-fab-800carguru-7pct-cashback": "seeded by seed-images-e36.yml",
+  "deal-enbd-yas-island-parks-30pct": "seeded by seed-images-e36.yml",
+  "deal-enbd-republiks-gym-20pct": "seeded by seed-images-e36.yml",
+  "deal-enbd-urban-company-noon-5pct": "seeded by seed-images-e36.yml",
 };
 
 const manifest = JSON.parse(
