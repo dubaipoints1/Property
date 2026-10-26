@@ -24,12 +24,6 @@ const ALLOWED_MISSING: Record<string, string> = {
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
-  // Phase E.35 news posts (26 October 2026): seeded by
-  // .github/workflows/seed-images-e35.yml after push.
-  "news-emirates-skywards-mile-a-minute-dubai-book-by-5-november": "seeded by seed-images-e35.yml",
-  "news-qatar-airways-a321lr-business-suites-qsuite-next-gen-2027": "seeded by seed-images-e35.yml",
-  "news-hilton-honors-buy-points-120-percent-bonus-21-november": "seeded by seed-images-e35.yml",
-  "news-marriott-bonvoy-4500-bonus-points-register-by-13-november": "seeded by seed-images-e35.yml",
   // Phase E.36 deals (26 October 2026): merchants have no logo in
   // public/logos/partners/ yet; photos are seeded by
   // .github/workflows/seed-images-e36.yml after push.
