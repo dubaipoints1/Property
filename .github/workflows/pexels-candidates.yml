@@ -19,7 +19,7 @@ jobs:
         env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
         run: |
-          Q=$(ls -t scripts/images/candidates-*.json | head -1)
+          Q=$(ls scripts/images/candidates-*.json | sort | tail -1)
           node scripts/images/pexels-candidates.mjs "$Q"
       - name: Push to scratch branch
         run: |

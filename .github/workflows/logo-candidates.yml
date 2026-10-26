@@ -16,7 +16,7 @@ jobs:
       - name: Download candidates
         run: |
           mkdir -p candidates
-          F=$(ls -t scripts/logos/candidates-*.txt | head -1)
+          F=$(ls scripts/logos/candidates-*.txt | sort | tail -1)
           while read -r name url; do
             [ -z "$name" ] && continue
             curl -sSL --max-time 40 -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" -o "candidates/$name" -w "$name %{http_code} %{size_download}\n" "$url" || echo "$name failed"
