@@ -227,3 +227,15 @@ On Chairman direction in-session, 23 October 2026: "Find the logos high quality 
 | partners/binsina.png | https://survey.brandingforum.org/brands/binsina-pharmacy/attachment/binsina-pharmarcy-logo/ — https://b3490422.assetcdn.net/2.0/3490422/wp-content/uploads/2016/10/BinSina-Pharmarcy-logo.jpg | 2026-10-23 | BinSina Pharmacy's bilingual mark, trimmed of white margin (517×116). Matches the mark on binsina.ae as seen in search results. Trademark of BinSina Pharmacy (Aster DM). |
 | partners/styli.png | https://cloud.google.com/customers/styli — https://lh3.googleusercontent.com/8_41gjykfEhGn6vKbZiZIWfYfoTQ0TIf0mMjfXFt1QMQEXNl0h7prdcNT6yQDn6lK-1rb02BSesO1kiVQ_oNyDvOAFxM-wfZq6UkfNlkwTrZInItEeA=s0 | 2026-10-23 | Styli's bilingual wordmark as shown on Google Cloud's customer page (198×120). Trademark of Styli (Retail Cart Trading). |
 | partners/zed.png | https://play.google.com/store/apps/details?id=com.zed.customer — https://play-lh.googleusercontent.com/uILUlNXOYnVMW34ESyd7HBzBWI_OxglVdTECso9HvCqRwSivBOhaDZGnodFwEA_IMIYbbfvCXgZrHbfICShh=s512 | 2026-10-23 | Zed's app mark (white "zed." on coral, 512×512) as published by Zed on Google Play. Trademark of Zed Mobility. |
+
+
+## 2026-10-26 — four merchant marks from the merchants' own websites
+
+Weekly run, 26 October 2026, under the 2026-10-20 Chairman amendment (real brands in pictures) and the standing direction "Find the logos high quality online" (23 October 2026). Each file was downloaded from the company's own website through `.github/workflows/logo-candidates.yml`, viewed before use, and is the company's own mark, unmodified. Used nominatively beside the merchant's name on its deal; takedown within 24 hours. StudioRepublik's site did not load, so that deal keeps its stock photo.
+
+| File | Source page — asset | Date | Notes |
+|---|---|---|---|
+| partners/grandiose-white.png | https://www.grandiose.ae/ — https://www.grandiose.ae/media/wysiwyg/new260-x-75.png | 2026-10-26 | White mark on transparent (260×75), shown on the navy plate. Trademark of Grandiose Supermarket. |
+| partners/800carguru.png | https://800carguru.com/ — https://800carguru.com/logo.png | 2026-10-26 | The site's own logo (512×512): cartoon mascot, wordmark and number. Trademark of 800CarGuru. |
+| partners/yas-island.png | https://www.yasisland.com/en — https://static.myconnect.ae/-/media/yasconnect/project/yasisland/logo/logo2x.png | 2026-10-26 | Yas Island Abu Dhabi destination mark (370×142), as in the site header. Trademark of Miral. |
+| partners/urban-company.png | https://www.urbancompany.com/dubai — https://www.urbancompany.com/img/images/supply/partner-training/1628575858610-5b0ae4.png | 2026-10-26 | Urban Company wordmark (600×177), alt "Urban Company logo" on the site. Trademark of Urban Company. |
