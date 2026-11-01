@@ -239,3 +239,12 @@ Weekly run, 26 October 2026, under the 2026-10-20 Chairman amendment (real brand
 | partners/800carguru.png | https://800carguru.com/ — https://800carguru.com/logo.png | 2026-10-26 | The site's own logo (512×512): cartoon mascot, wordmark and number. Trademark of 800CarGuru. |
 | partners/yas-island.png | https://www.yasisland.com/en — https://static.myconnect.ae/-/media/yasconnect/project/yasisland/logo/logo2x.png | 2026-10-26 | Yas Island Abu Dhabi destination mark (370×142), as in the site header. Trademark of Miral. |
 | partners/urban-company.png | https://www.urbancompany.com/dubai — https://www.urbancompany.com/img/images/supply/partner-training/1628575858610-5b0ae4.png | 2026-10-26 | Urban Company wordmark (600×177), alt "Urban Company logo" on the site. Trademark of Urban Company. |
+
+
+## 2026-10-31 — dnata
+
+Weekly sweep, 31 October 2026, under the 2026-10-20 Chairman amendment. dnata Travel's own site draws its logo inline, so the mark was taken from Wikimedia Commons, downloaded through `.github/workflows/logo-candidates.yml` and viewed before use. Trimmed of white margin and resized only.
+
+| File | Source page — asset | Date | Notes |
+|---|---|---|---|
+| partners/dnata.png | https://commons.wikimedia.org/wiki/File:Dnata_2Colour.jpg | 2026-10-31 | dnata's two-colour wordmark, CC BY-SA 4.0 on Commons. Trademark of dnata (Emirates Group), used nominatively on the Citi × dnata Travel deal. |
