@@ -24,6 +24,8 @@ const ALLOWED_MISSING: Record<string, string> = {
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
+  "guide-pay-rent-credit-card-uae-2026":
+    "Phase E.43 (1 November 2026): seeded by seed-images-e43.yml after push.",
 };
 
 const manifest = JSON.parse(
