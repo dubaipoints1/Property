@@ -352,6 +352,23 @@ preload flip in `BaseLayout.astro`. A strict CSP therefore needs both
 handlers moved into hashed scripts and a build-time hash list first — it is
 a brief, not a header edit. See `scripts/audit/README.md`.
 
+## Stale-offer sweep (prose dates)
+
+Deals (`expiresOn`) and news (`staleAfter`) have calendar sweeps; prose on
+programme pages, bank hubs, guides, card reviews, page templates and
+`cards.json` free text has none. On 1 November 2026 five such sentences
+still described ended offers ("Until 31 October 2026 those transfers carry
+a bonus") while the news posts on the same offers had been closed on time.
+`scripts/ci/check-stale-offers.mjs` (`npm run check:stale-offers`) flags a
+past date after a running-offer word ("until", "to", "by", "ends", "valid
+until") unless the sentence already reads as past tense. It runs weekly in
+`.github/workflows/stale-offers.yml` and reports to one rolling
+`stale-offers` issue; it is deliberately not in `npm test`, because a date
+passing would turn unrelated PRs red. Clear a finding by rewriting the
+sentence, or record a correct one (a worked example, a historical record)
+in `scripts/ci/stale-offers.allow.json` with a reason. Run it before
+closing any offer sweep, not just after.
+
 ## Architecture — the three-layer card model
 
 The card system is the most non-obvious thing in the repo. Cards live

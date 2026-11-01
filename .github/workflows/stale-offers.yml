@@ -1,0 +1,69 @@
+# Weekly stale-offer sweep — the prose sibling of deal-expiry.yml and
+# news-expiry.yml. Deals and news carry a date field the calendar can read;
+# programme pages, bank hubs, guides, card reviews, page templates and
+# cards.json free text do not, and on 1 November 2026 five of them were
+# still describing offers that had ended (scripts/ci/check-stale-offers.mjs
+# has the history).
+#
+# Not in `npm test` on purpose: a passed date would turn unrelated PRs red.
+# This cron is what notices. Findings go to one rolling issue through
+# post-digest.sh, which falls back to an unlabelled issue and then a red
+# run, so a finding is never swallowed.
+#
+# Tuesday morning Gulf time, off-minute from deal-expiry (05:xx) and
+# news-expiry (05:37).
+
+name: Stale-offer sweep
+
+on:
+  schedule:
+    - cron: "47 5 * * 2"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Find past dates written as running offers
+        id: sweep
+        run: |
+          set +e
+          node scripts/ci/check-stale-offers.mjs 2> stale.txt
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+          cat stale.txt >&2
+
+      - name: Report to the editors
+        if: steps.sweep.outputs.exit != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "The weekly sweep found pages that still describe an offer as running after its date has passed:"
+            echo
+            echo '```'
+            cat stale.txt
+            echo '```'
+            echo
+            echo "For each: re-check the offer against its source. If it ended, rewrite the sentence in the past tense; if it was extended, update the date; if the sentence is not an offer (a worked example, a historical record), add it to \`scripts/ci/stale-offers.allow.json\` with a reason. Owner: the section editor for the page."
+          } > issue-body.md
+          # The label must exist for the rolling issue to be found next week;
+          # creating it is idempotent. Not on the alert path: post-digest.sh
+          # still falls back to an unlabelled issue if this fails.
+          gh label create stale-offers --color B8842A --description "Weekly stale-offer sweep" --force >/dev/null 2>&1 \
+            || echo "::warning::Could not create the stale-offers label; the issue will be opened unlabelled."
+          bash scripts/ci/post-digest.sh "stale-offers" "Stale-offer sweep: past dates still written as live ($(date -u +%Y-%m-%d))" issue-body.md

@@ -1,0 +1,10 @@
+{
+  "_comment": "Sentences the stale-offer sweep flags that are correct as written. Each entry needs a reason. Match is on file plus a substring of the sentence, so a rewrite of the sentence drops the exemption. See scripts/ci/check-stale-offers.mjs.",
+  "entries": [
+    {
+      "file": "src/content/programs/skywards.mdx",
+      "contains": "a validity period ending 15 January 2026",
+      "reason": "Emirates' own worked example of the Skywards Miles expiry rule, not an offer."
+    }
+  ]
+}
