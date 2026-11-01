@@ -40,7 +40,8 @@
     "audit:links:external": "node scripts/ci/check-external-links.mjs",
     "audit:links:fragments": "node scripts/ci/check-fragments.mjs dist",
     "audit:static": "node scripts/audit/check-headers-redirects.mjs",
-    "audit:all": "npm run audit:render && npm run audit:lighthouse && npm run audit:links:fragments && npm run audit:static"
+    "audit:all": "npm run audit:render && npm run audit:lighthouse && npm run audit:links:fragments && npm run audit:static",
+    "check:stale-offers": "node scripts/ci/check-stale-offers.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
