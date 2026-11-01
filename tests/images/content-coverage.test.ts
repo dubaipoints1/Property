@@ -24,12 +24,6 @@ const ALLOWED_MISSING: Record<string, string> = {
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
-  "news-emirates-skywards-double-miles-hotels-car-rental-accor-bonus-30-november":
-    "seeded by seed-images-e39.yml",
-  "news-emirates-a350-premium-economy-hanoi-ho-chi-minh-city-durban":
-    "seeded by seed-images-e39.yml",
-  "news-all-accor-double-points-uae-hotels-book-by-13-december":
-    "seeded by seed-images-e39.yml",
 };
 
 const manifest = JSON.parse(
