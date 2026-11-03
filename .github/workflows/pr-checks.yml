@@ -22,13 +22,14 @@ on:
     branches:
       - main
   # Also run on push to main so the green check shows on the merged
-  # commit history, and on push to claude/** branches so the `validate`
+  # commit history, and on push to claude/** and codex/** so the `validate`
   # check lands on each commit — this is what makes auto-opened PRs
   # (auto-pr.yml, via the default token) show the required check.
   push:
     branches:
       - main
       - "claude/**"
+      - "codex/**"
 
 # Cancel previous runs on the same PR if a new commit lands.
 concurrency:
@@ -51,6 +52,9 @@ jobs:
 
       - name: npm install
         run: npm install --no-audit --no-fund
+
+      - name: Research capture and API key guard
+        run: node scripts/ci/check-research-secrets.mjs
 
       - name: astro check
         run: npm run check
