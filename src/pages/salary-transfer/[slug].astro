@@ -1,4 +1,5 @@
 ---
+import NextStepLinks from "~/components/NextStepLinks.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import SalaryTransferTrackerLayout from "~/layouts/SalaryTransferTrackerLayout.astro";
@@ -36,12 +37,14 @@ let bandOffers: Awaited<ReturnType<typeof getLiveOffers>> = [];
 let bankOffers: Awaited<ReturnType<typeof getLiveOffers>> = [];
 let renderedNotes: { id: string; Content: any }[] = [];
 let bankStamp: string | null = null;
+let liveOfferCount = 0;
 
 if (props.kind === "band") {
   const all = await getLiveOffers();
   bandOffers = all.filter((o) => findBand(o.salaryBands, props.sample) !== null);
 } else {
   bankOffers = await getOffersForBank(props.bankId);
+  liveOfferCount = (await getLiveOffers()).length;
   // Title stamp from the newest verification date, never the build clock
   // (2026-09-06 audit, F-014: every bank page re-dated itself each deploy).
   bankStamp = bankOffers.length
@@ -159,6 +162,27 @@ const siteUrl = siteUrlFrom(Astro.site);
             </section>
           );
         })}
+
+        <NextStepLinks
+          heading={bankOffers.length ? `Is ${props.bankName} the best deal for your salary?` : "Where to look instead"}
+          items={[
+            {
+              href: "/salary-transfer/",
+              title: "Compare every live offer",
+              meta: `${liveOfferCount} salary-transfer offers, filtered by your salary band`,
+            },
+            {
+              href: "/salary-transfer/calculator/",
+              title: "Work out your reward",
+              meta: "What each bank pays at your exact salary, and when",
+            },
+            {
+              href: `/banks/${props.bankId}/`,
+              title: `${props.bankName} cards and accounts`,
+              meta: "Fees, earn rates and our reviews of this bank's cards",
+            },
+          ]}
+        />
 
         <Disclaimer variant="offer" />
       </article>
