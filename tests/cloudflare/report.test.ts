@@ -108,7 +108,7 @@ test('verifies exact Pages domain, encrypts only allowlisted production fields a
   assert.ok(api.calls.slice(1).every(call => new URL(call.url).pathname === '/client/v4/graphql'));
 });
 
-test('paginates fully before schema calls and fails closed on absent, ambiguous or incomplete project identity', async () => {
+test('paginates fully and fails closed on project identity while allowing only global schema discovery', async () => {
   const paginated = mockApi({ pages: page => ({ success: true, result: page === 1 ? [{ name: 'other', domains: ['other.example'] }] : [project], result_info: { page, total_pages: 2, total_count: 2 } }) });
   const report = decryptReport((await createEncryptedReport({ env, fetchImpl: paginated.fetchImpl, now })).envelope, privateKey);
   assert.equal(report.pages.status, 'domain_verified');
@@ -125,9 +125,11 @@ test('paginates fully before schema calls and fails closed on absent, ambiguous 
     assert.equal(result.status, 'unavailable');
     const diagnostic = decryptReport(result.envelope, privateKey);
     assert.equal(diagnostic.analytics.metrics, null);
-    assert.equal(diagnostic.analytics.reason, 'pages_domain_not_verified');
-    assert.ok(api.calls.every(call => call.options.method === 'GET'));
-    assert.ok(api.calls.length <= 10);
+    assert.equal(diagnostic.pages.status, 'unavailable');
+    assert.equal(diagnostic.analytics.identityStatus, 'not_verified');
+    assert.equal(diagnostic.analytics.status, 'requires_verified_query');
+    assert.ok(api.calls.filter(call => call.options.method === 'POST').every(call => /__schema|__type/.test(JSON.parse(call.options.body).query)));
+    assert.ok(api.calls.filter(call => call.options.method === 'GET').length <= 10);
   }
 });
 
@@ -171,8 +173,78 @@ test('absent RUM schema and GraphQL errors remain unavailable, never fabricated 
   const fetchImpl = (url, options) => options.method === 'GET' ? api.fetchImpl(url, options) : json({ errors: [{ message: `${rawMarker} ${token}` }] });
   const errorReport = decryptReport((await createEncryptedReport({ env, fetchImpl, now })).envelope, privateKey);
   assert.equal(errorReport.analytics.status, 'unavailable');
-  assert.equal(errorReport.analytics.reason, 'schema_introspection_unavailable');
+  assert.equal(errorReport.analytics.reason, 'api_reported_error');
+  assert.equal(errorReport.analytics.diagnostics.httpStatus, 200);
   assert.ok(!JSON.stringify(errorReport).includes(rawMarker));
+});
+
+test('HTTP diagnostic retains only status and bounded numeric Cloudflare codes, encrypted only', async () => {
+  for (const status of [401, 403, 500, 503]) {
+    const api = mockApi({ fail: () => json({
+      success: false,
+      errors: [
+        { code: 10000, message: `${rawMarker} ${token}`, source: { pointer: rawMarker } },
+        { code: '10001', message: rawMarker },
+        { code: -1 }, { code: 1.25 }, { code: 1000001 },
+        { extensions: { code: 1001, message: rawMarker } },
+      ],
+      private_payload: rawMarker,
+    }, { status }) });
+    const result = await createEncryptedReport({ env, fetchImpl: api.fetchImpl, now });
+    const report = decryptReport(result.envelope, privateKey);
+    assert.equal(result.status, 'unavailable');
+    assert.equal(report.pages.reason, 'http_error');
+    assert.deepEqual(report.pages.diagnostics, { httpStatus: status, transportError: null, cloudflareErrorCodes: [10000, 1001] });
+    assert.deepEqual(report.analytics.diagnostics, report.pages.diagnostics);
+    assert.equal(report.analytics.identityStatus, 'not_verified');
+    assert.equal(report.analytics.metrics, null);
+    assert.ok(!JSON.stringify(report).includes(rawMarker));
+    assert.ok(!JSON.stringify(report).includes(token));
+    assert.ok(!JSON.stringify(result).includes('httpStatus'));
+    assert.ok(!JSON.stringify(result).includes('cloudflareErrorCodes'));
+    assert.equal(api.calls.length, 2);
+  }
+});
+
+test('a failed Pages permission check does not prevent schema-only discovery or authorise account-data queries', async () => {
+  const api = mockApi();
+  const calls = [];
+  const fetchImpl = (url, options) => {
+    calls.push({ url, options });
+    return options.method === 'GET' ? json({ errors: [{ code: 10000, message: rawMarker }] }, { status: 403 }) : api.fetchImpl(url, options);
+  };
+  const result = await createEncryptedReport({ env, fetchImpl, now });
+  const report = decryptReport(result.envelope, privateKey);
+  assert.equal(result.status, 'unavailable');
+  assert.equal(report.pages.diagnostics.httpStatus, 403);
+  assert.equal(report.analytics.status, 'requires_verified_query');
+  assert.equal(report.analytics.identityStatus, 'not_verified');
+  assert.equal(report.analytics.schema.types.length, 3);
+  assert.equal(report.analytics.metrics, null);
+  assert.equal(calls.length, 3);
+  for (const call of calls.filter(call => call.options.method === 'POST')) {
+    const query = JSON.parse(call.options.body).query;
+    assert.match(query, /__schema|__type/);
+    assert.ok(!/viewer\s*\{|accounts\s*\(|zones\s*\(/.test(query));
+  }
+});
+
+test('transport diagnostics use fixed categories and omit all raw exceptions, hostnames and request data', async () => {
+  const cases = [
+    ['ENOTFOUND', 'dns'], ['EAI_AGAIN', 'dns'], ['ERR_TLS_CERT_ALTNAME_INVALID', 'tls'],
+    ['ETIMEDOUT', 'timeout'], ['UND_ERR_CONNECT_TIMEOUT', 'timeout'],
+    ['ECONNREFUSED', 'connection'], ['ECONNRESET', 'connection'], [rawMarker, 'request_failed'],
+  ];
+  for (const [code, category] of cases) {
+    const api = mockApi({ fail: () => { throw Object.assign(new Error(`${rawMarker} ${token}`), { cause: { code, hostname: rawMarker, request: token } }); } });
+    const report = decryptReport((await createEncryptedReport({ env, fetchImpl: api.fetchImpl, now })).envelope, privateKey);
+    assert.deepEqual(report.pages.diagnostics, { httpStatus: null, transportError: category, cloudflareErrorCodes: [] });
+    assert.ok(!JSON.stringify(report).includes(rawMarker));
+    assert.ok(!JSON.stringify(report).includes(token));
+  }
+  const aborted = mockApi({ fail: () => { throw Object.assign(new Error(rawMarker), { name: 'AbortError' }); } });
+  const timedOut = decryptReport((await createEncryptedReport({ env, fetchImpl: aborted.fetchImpl, now })).envelope, privateKey);
+  assert.equal(timedOut.pages.diagnostics.transportError, 'timeout');
 });
 
 test('writes encrypted envelope only with private permissions and refuses overwrite; CLI errors are generic', async () => {
