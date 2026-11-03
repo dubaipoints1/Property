@@ -56,3 +56,31 @@ null and the requested previous calendar month is explicitly unapplied.
 The live data query requires another technical/factual review once the
 schema is available. No working analytics connection is claimed yet.
 Internal-only commits use CF-Pages-Skip; no website deployment is needed.
+
+## Live probe and diagnostic correction
+
+PR #500 merged at 802cf0a6ba7040b233f0daefdf724846735d5b4b after
+push/PR Linux Node22.20 validation genuinely executed all560 tests with zero
+failures and both Council checks passed with executed steps. Main-only report
+run41690898203 returned an encrypted unavailable diagnostic. The Pages
+request failed; its original sanitised reason was api_request_unavailable,
+which does not establish an authentication, permission or network cause.
+No statistics were retrieved and no live access is claimed.
+
+The correction preserves bounded numeric HTTP/provider codes and fixed
+transport categories inside the encrypted report only. Global schema-only
+inspection may continue after Pages failure; it never queries account/zone
+statistics and does not turn missing identity into verified access. Overall
+diagnostic remains unavailable if Pages identity is not established.
+Sixteen targeted tests pass locally, including401/403/server statuses,
+transport classification, no raw response/token retention and the global-
+schema-only boundary. Independent correction review and real Linux CI are
+required again before the next live read. No new data access is requested.
+
+Correction review: security_release_review independently passed Technical
+Lead, Managing Editor and Travel Section Editor; security_experience_review
+independently passed Growth & Analytics, Standards, UX, SEO and Fact-Checker.
+Both reran all16 targeted tests successfully. Main-session Research verified
+the correction is protocol diagnostics only, not extra data access. A code
+or status is an observation, not proof of a particular root cause. The same
+owner-directed read-only Stage7 approval applies; Linux push CI remains due.

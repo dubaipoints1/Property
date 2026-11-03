@@ -12,10 +12,34 @@ const TYPE_KINDS = new Set(['SCALAR', 'OBJECT', 'INTERFACE', 'UNION', 'ENUM', 'I
 const TYPE_REF_QUERY = 'kind name ofType { kind name ofType { kind name ofType { kind name ofType { kind name } } } }';
 
 class SafeApiError extends Error {
-  constructor(code) {
+  constructor(code, diagnostics = {}) {
     super('Cloudflare read-only diagnostic is unavailable.');
     this.code = code;
+    this.diagnostics = {
+      httpStatus: Number.isInteger(diagnostics.httpStatus) && diagnostics.httpStatus >= 100 && diagnostics.httpStatus <= 599 ? diagnostics.httpStatus : null,
+      transportError: ['timeout', 'dns', 'tls', 'connection', 'request_failed'].includes(diagnostics.transportError) ? diagnostics.transportError : null,
+      cloudflareErrorCodes: Array.isArray(diagnostics.cloudflareErrorCodes) ? [...new Set(diagnostics.cloudflareErrorCodes.filter(code => Number.isSafeInteger(code) && code >= 0 && code <= 1_000_000))].slice(0, 10) : [],
+    };
   }
+}
+
+function providerErrorCodes(body) {
+  if (!Array.isArray(body?.errors)) return [];
+  return body.errors.flatMap(error => [error?.code, error?.extensions?.code]).filter(code => Number.isSafeInteger(code) && code >= 0 && code <= 1_000_000).slice(0, 10);
+}
+
+function transportCategory(error, controller) {
+  if (controller.signal.aborted || error?.name === 'AbortError' || error?.name === 'TimeoutError') return 'timeout';
+  const code = error?.cause?.code ?? error?.code;
+  if (['ETIMEDOUT', 'UND_ERR_CONNECT_TIMEOUT', 'UND_ERR_HEADERS_TIMEOUT', 'UND_ERR_BODY_TIMEOUT'].includes(code)) return 'timeout';
+  if (['ENOTFOUND', 'EAI_AGAIN'].includes(code)) return 'dns';
+  if (['CERT_HAS_EXPIRED', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE', 'DEPTH_ZERO_SELF_SIGNED_CERT', 'SELF_SIGNED_CERT_IN_CHAIN', 'ERR_TLS_CERT_ALTNAME_INVALID', 'CERT_SIGNATURE_FAILURE'].includes(code)) return 'tls';
+  if (['ECONNREFUSED', 'ECONNRESET', 'EHOSTUNREACH', 'ENETUNREACH', 'UND_ERR_SOCKET'].includes(code)) return 'connection';
+  return 'request_failed';
+}
+
+function errorDiagnostics(error) {
+  return error instanceof SafeApiError ? error.diagnostics : { httpStatus: null, transportError: 'request_failed', cloudflareErrorCodes: [] };
 }
 
 async function readJson(fetchImpl, url, token, body = null) {
@@ -23,6 +47,7 @@ async function readJson(fetchImpl, url, token, body = null) {
   if (target.origin !== API_ORIGIN || !target.pathname.startsWith('/client/v4/')) throw new SafeApiError('invalid_api_target');
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 15_000);
+  let httpStatus = null;
   try {
     const response = await fetchImpl(target.href, {
       method: body === null ? 'GET' : 'POST',
@@ -31,16 +56,17 @@ async function readJson(fetchImpl, url, token, body = null) {
       headers: { Authorization: `Bearer ${token}`, Accept: 'application/json', ...(body === null ? {} : { 'Content-Type': 'application/json' }) },
       ...(body === null ? {} : { body: JSON.stringify(body) }),
     });
-    if (response.redirected || (response.url && new URL(response.url).origin !== API_ORIGIN) || !response.ok) {
+    httpStatus = Number.isInteger(response.status) && response.status >= 100 && response.status <= 599 ? response.status : null;
+    if (response.redirected || (response.url && new URL(response.url).origin !== API_ORIGIN)) {
       await response.body?.cancel();
-      throw new SafeApiError('api_request_unavailable');
+      throw new SafeApiError('redirect_rejected', { httpStatus });
     }
     const declaredSize = response.headers.get('content-length');
     if (declaredSize && (!/^\d+$/.test(declaredSize) || Number(declaredSize) > MAX_RESPONSE_BYTES)) {
       await response.body?.cancel();
-      throw new SafeApiError('response_limit_exceeded');
+      throw new SafeApiError('response_limit_exceeded', { httpStatus });
     }
-    if (!response.body) throw new SafeApiError('api_response_unavailable');
+    if (!response.body) throw new SafeApiError('api_response_unavailable', { httpStatus });
     const reader = response.body.getReader();
     const chunks = [];
     let size = 0;
@@ -51,18 +77,27 @@ async function readJson(fetchImpl, url, token, body = null) {
         size += value.byteLength;
         if (size > MAX_RESPONSE_BYTES) {
           await reader.cancel();
-          throw new SafeApiError('response_limit_exceeded');
+          throw new SafeApiError('response_limit_exceeded', { httpStatus });
         }
         chunks.push(Buffer.from(value));
       }
     } finally {
       reader.releaseLock();
     }
-    return JSON.parse(Buffer.concat(chunks, size).toString('utf8'));
+    let parsed;
+    try {
+      parsed = JSON.parse(Buffer.concat(chunks, size).toString('utf8'));
+    } catch {
+      throw new SafeApiError(response.ok ? 'invalid_json_response' : 'http_error', { httpStatus });
+    }
+    const cloudflareErrorCodes = providerErrorCodes(parsed);
+    if (!response.ok) throw new SafeApiError('http_error', { httpStatus, cloudflareErrorCodes });
+    if (parsed?.success === false || (Array.isArray(parsed?.errors) && parsed.errors.length)) throw new SafeApiError('api_reported_error', { httpStatus, cloudflareErrorCodes });
+    return parsed;
   } catch (error) {
     if (error instanceof SafeApiError) throw error;
     // Never preserve the provider response, exception text, request or token.
-    throw new SafeApiError('api_request_unavailable');
+    throw new SafeApiError('api_request_unavailable', { httpStatus, transportError: transportCategory(error, controller) });
   } finally {
     clearTimeout(timer);
   }
@@ -187,8 +222,8 @@ async function inspectRumSchema(token, fetchImpl) {
       };
     });
     return { status: 'requires_verified_query', reason: 'metric_query_not_yet_verified', schema: { ...names, types } };
-  } catch {
-    return { status: 'requires_verified_query', reason: 'schema_detail_unavailable', schema: names };
+  } catch (error) {
+    return { status: 'requires_verified_query', reason: 'schema_detail_unavailable', diagnostics: errorDiagnostics(error), schema: names };
   }
 }
 
@@ -216,15 +251,17 @@ export async function createEncryptedReport({ env = process.env, fetchImpl = glo
       note: 'Requested previous full calendar month only; no metrics query has been executed and no monthly unique-visitor figure is asserted.',
     },
     pages: { status: 'unavailable' },
-    analytics: { status: 'unavailable', source: 'Cloudflare Web Analytics / RUM', metrics: null },
+    analytics: { status: 'unavailable', source: 'Cloudflare Web Analytics / RUM', metrics: null, identityStatus: 'not_verified' },
   };
   try {
     report.pages = await verifyPagesProject(accountId, token, fetchImpl);
   } catch (error) {
-    report.pages = { status: 'unavailable', reason: error instanceof SafeApiError ? error.code : 'pages_unavailable' };
-    report.analytics.reason = 'pages_domain_not_verified';
-    return { envelope: encryptReport(report, env.REPORT_PUBLIC_KEY), status: 'unavailable' };
+    report.pages = { status: 'unavailable', reason: error instanceof SafeApiError ? error.code : 'pages_unavailable', diagnostics: errorDiagnostics(error) };
   }
+  report.analytics.identityStatus = report.pages.status === 'domain_verified' ? 'pages_domain_verified' : 'not_verified';
+  // Global schema metadata does not read account/website statistics. It may
+  // be inspected even when Pages identity cannot be established. No viewer,
+  // account-data or zone-data query is issued by this diagnostic collector.
   try {
     report.analytics = {
       ...report.analytics,
@@ -234,8 +271,10 @@ export async function createEncryptedReport({ env = process.env, fetchImpl = glo
     };
   } catch (error) {
     report.analytics.reason = error instanceof SafeApiError ? error.code : 'schema_introspection_unavailable';
+    report.analytics.diagnostics = errorDiagnostics(error);
   }
-  return { envelope: encryptReport(report, env.REPORT_PUBLIC_KEY), status: report.analytics.status };
+  const status = report.pages.status === 'domain_verified' ? report.analytics.status : 'unavailable';
+  return { envelope: encryptReport(report, env.REPORT_PUBLIC_KEY), status };
 }
 
 export function writeEncryptedReport(path, envelope) {

@@ -32,6 +32,13 @@ the raw response. Only exact dubaipoints.ae identity and allowlisted deployment
 metadata may enter the report. GraphQL schema metadata may be included in
 the encrypted report to establish a supported query without guessing fields.
 
+If the Pages request fails, global GraphQL schema inspection may still run:
+it reads type metadata only, not account, zone or website statistics. The
+report keeps identity unverified and the overall result unavailable. Errors
+retain only a validated HTTP status, bounded numeric Cloudflare error codes
+and a fixed transport category, inside the encrypted report. Raw provider
+messages, response bodies, exceptions and token values are never retained.
+
 Do not claim a working analytics connection from secret existence, schema
 introspection alone or mocked tests. No browser-beacon enablement follows
 from an API read. Do not call visits or IP/device-based counts unique people.
