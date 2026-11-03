@@ -263,6 +263,25 @@ function botWallDetail(status, headers, body) {
 }
 
 /**
+ * Hosts whose 403 is a bot wall we cannot fingerprint from headers or body.
+ * Hyatt, Hilton and Iberia refused every link from GitHub's runners on the
+ * 19 and 26 October and 2 November 2026 audits, and each time the whole list
+ * was the same pages, live in a browser. A 403 from one of these is reported
+ * `unverifiable`; any other status (a 404, a 5xx) is still judged normally.
+ * Add a host only after the same refusal has repeated across audits.
+ */
+export const KNOWN_BOT_WALL_HOSTS = ["hyatt.com", "hilton.com", "iberia.com"];
+
+function isKnownBotWallHost(url) {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return KNOWN_BOT_WALL_HOSTS.some((h) => host === h || host.endsWith("." + h));
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Turn a fetch outcome into a state. Pure — feed it recorded responses.
  *
  * @param {{status?: number|null, originalUrl?: string, finalUrl?: string|null,
@@ -305,6 +324,9 @@ export function classifyResponse(r, { proxied = false } = {}) {
     const wall = botWallDetail(status, headers, body);
     if (wall) return { state: "unverifiable", detail: wall };
     if (status === 429) return { state: "unverifiable", detail: "rate-limited" };
+    if (status === 403 && isKnownBotWallHost(r.originalUrl ?? "")) {
+      return { state: "unverifiable", detail: "known bot-wall host" };
+    }
   }
 
   let landed = r.finalUrl || null;

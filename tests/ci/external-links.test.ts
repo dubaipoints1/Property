@@ -145,6 +145,23 @@ test("classifyResponse matrix — broken only when the target itself failed", ()
   assert.equal(c({ status: 403, headers: {} }).state, "client-error", "a plain 403 with no fingerprint is the target's answer");
   // Headers instance works too.
   assert.equal(c({ status: 403, headers: new Headers({ Server: "AkamaiGHost" }) }).detail, "akamai");
+  // Known bot-wall hosts: a bare 403 is unverifiable, but a 404 is still broken.
+  assert.deepEqual(
+    classifyResponse({ originalUrl: "https://world.hyatt.com/content/gp/en/program-overview.html", status: 403, headers: {} }),
+    { state: "unverifiable", detail: "known bot-wall host" },
+  );
+  assert.deepEqual(
+    classifyResponse({ originalUrl: "https://www.hilton.com/en/offers/", status: 403, headers: {} }).state,
+    "unverifiable",
+  );
+  assert.notEqual(
+    classifyResponse({ originalUrl: "https://world.hyatt.com/gone.html", status: 404, headers: {} }).state,
+    "unverifiable",
+  );
+  assert.notEqual(
+    classifyResponse({ originalUrl: "https://nothyatt.com/x", status: 403, headers: {} }).detail,
+    "known bot-wall host",
+  );
 
   // Sandbox egress: proxy 403 body, x-deny-reason header, or a CONNECT-failure error string.
   const egress = { state: "unverifiable", detail: "egress-blocked" };
