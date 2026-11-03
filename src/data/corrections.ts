@@ -37,6 +37,15 @@ export interface Correction {
 
 export const corrections: readonly Correction[] = [
   {
+    date: new Date("2026-11-03"),
+    title: "Wio Credit minimum salary",
+    cardsAffected: ["wio-credit"],
+    original:
+      'our <a href="/cards/wio-credit/">Wio Credit</a> review, the Wio bank page and our card-eligibility guide said Wio publishes <strong>no minimum salary</strong> for its credit card, and the review showed the salary bar as "Pending".',
+    corrected:
+      'Wio\'s Personal Credit key facts statement (effective August 2026, re-read 3 November 2026) requires a <strong>monthly salary of AED 7,000 or above</strong>, ages 21 to 65, UAE residency and employment, and at least 3 months in the job. The review, card data, bank page and guide were corrected on 3 November 2026.',
+  },
+  {
     date: new Date("2026-10-22"),
     title: "ADCB talabat earn structure and ENBD Duo base rate",
     cardsAffected: ["adcb-talabat", "emirates-nbd-duo"],
