@@ -1,0 +1,64 @@
+---
+// A short "next step" box: a heading and two or three links, each with a
+// one-line reason. Used where readers tend to read one page and leave (card
+// reviews, salary-transfer bank pages) to point at the page they most often
+// want next. Callers pass only links to pages that exist.
+
+interface Props {
+  heading: string;
+  items: Array<{ href: string; title: string; meta: string }>;
+}
+
+const { heading, items } = Astro.props;
+const id = `dp-next-${heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40)}`;
+---
+
+{items.length > 0 && (
+  <aside class="dp-next-steps" aria-labelledby={id}>
+    <h2 id={id}>{heading}</h2>
+    <ul>
+      {items.map((i) => (
+        <li>
+          <a href={i.href}>
+            <span class="t">{i.title}</span>
+            <span class="m">{i.meta}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}
+
+<style>
+  .dp-next-steps {
+    margin: 28px 0;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--green);
+    border-radius: 12px;
+    background: var(--paper);
+  }
+  .dp-next-steps h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.25;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .dp-next-steps ul { list-style: none; margin: 0; padding: 0; }
+  .dp-next-steps li + li { border-top: 1px solid var(--line-soft); }
+  .dp-next-steps a {
+    display: grid;
+    gap: 2px;
+    padding: 12px 0;
+    min-height: 44px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .dp-next-steps .t { font-weight: 600; color: var(--green); line-height: 1.35; }
+  .dp-next-steps .t::after { content: " →"; }
+  .dp-next-steps a:hover .t { text-decoration: underline; }
+  .dp-next-steps a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
+  .dp-next-steps .m { font-family: var(--font-ui); font-size: 14px; color: var(--ink-soft); }
+</style>

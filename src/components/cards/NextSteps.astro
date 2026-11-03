@@ -1,0 +1,63 @@
+---
+// "Next step" box for a card review. UAE readers arrive on one review and
+// leave after it (1.4 pages a visit, Cloudflare, October 2026), so this
+// offers the three moves a reader weighing this card most often makes:
+// compare it with its closest rivals, run the card finder for their own
+// salary and reward type, and see the issuer's live salary-transfer offer.
+// Every link goes to a page that exists; the salary link renders only when
+// the bank has a live, unarchived offer on the tracker.
+
+import { getCollection } from "astro:content";
+import { formatAED } from "~/lib/cardsDataFormat";
+import NextStepLinks from "~/components/NextStepLinks.astro";
+
+interface Props {
+  slug: string;
+  cardName: string;
+  bankSlug?: string;
+  bankName?: string;
+  earnUnit?: string;
+  minSalary?: number;
+  /** Slugs of the closest rivals, best first (the layout's related cards). */
+  rivals: Array<{ slug: string; name: string }>;
+}
+
+const { slug, cardName, bankSlug, bankName, earnUnit = "", minSalary = 0, rivals } = Astro.props;
+
+const compareWith = rivals.slice(0, 2);
+const compareHref = `/cards/compare/?cards=${[slug, ...compareWith.map((r) => r.slug)].join(",")}`;
+
+const prefer = /cashback/i.test(earnUnit) ? "cashback" : /mile|avios/i.test(earnUnit) ? "miles" : "points";
+const finderParams = new URLSearchParams({ prefer });
+if (minSalary > 0) finderParams.set("salary", String(minSalary));
+const finderHref = `/cards/finder/?${finderParams.toString()}`;
+
+const now = Date.now();
+const liveOffers = bankSlug
+  ? await getCollection(
+      "salaryTransferOffers",
+      (e) => !e.data.archived && e.data.bank.id === bankSlug && e.data.validUntil.getTime() >= now,
+    )
+  : [];
+const topReward = Math.max(0, ...liveOffers.flatMap((o) => o.data.salaryBands.map((b) => b.rewardAmount ?? 0)));
+
+const items = [
+  ...(compareWith.length > 0
+    ? [{ href: compareHref, title: "Compare it side by side", meta: `with ${compareWith.map((r) => r.name).join(" and ")}` }]
+    : []),
+  {
+    href: finderHref,
+    title: "Find your best card",
+    meta: `Ranked for your salary and spending${minSalary > 0 ? `, starting from ${formatAED(minSalary)} a month` : ""}`,
+  },
+  ...(liveOffers.length > 0 && bankName
+    ? [{
+        href: `/salary-transfer/${bankSlug}/`,
+        title: `${bankName} salary-transfer offer`,
+        meta: topReward > 0 ? `Up to ${formatAED(topReward)} for moving your salary` : "Live offer for moving your salary",
+      }]
+    : []),
+];
+---
+
+<NextStepLinks heading={`Not sure ${cardName} is the one?`} items={items} />

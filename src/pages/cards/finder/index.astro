@@ -344,6 +344,12 @@ const lastRefreshed = new Date(
         </p>
       </div>
 
+      <div class="dp-finder-next" id="finder-next">
+        <a id="finder-compare" href="/cards/compare/">Compare your top 3 side by side →</a>
+        <button type="button" id="finder-share" hidden>Copy link to these results</button>
+        <span id="finder-share-status" role="status" aria-live="polite"></span>
+      </div>
+
       <div class="dp-finder-grid" id="finder-grid">
         {initialOrder.map(({ card }) => (
           <div
@@ -518,6 +524,12 @@ const lastRefreshed = new Date(
       });
 
       count.textContent = String(visibleCount);
+      var compareLink = document.getElementById("finder-compare");
+      if (compareLink) {
+        var top3 = topSlugs.slice(0, 3);
+        compareLink.href = "/cards/compare/?cards=" + top3.join(",");
+        compareLink.hidden = top3.length < 2;
+      }
       if (hasSalary || p.prefer !== "none" || p.spend !== "general" || p.network !== "any" || p.fee !== "any") {
         mode.textContent = "ranked by best fit";
       } else {
@@ -558,10 +570,52 @@ const lastRefreshed = new Date(
 
     syncControls(readParams());
     apply();
+
+    // The form submits by GET, so the address bar already holds the
+    // reader's filters; this copies it so a result can be saved or sent.
+    var share = document.getElementById("finder-share");
+    var shareStatus = document.getElementById("finder-share-status");
+    if (share && navigator.clipboard) {
+      share.hidden = false;
+      share.addEventListener("click", function () {
+        navigator.clipboard.writeText(window.location.href).then(
+          function () { if (shareStatus) shareStatus.textContent = "Link copied"; },
+          function () { if (shareStatus) shareStatus.textContent = "Copy the address bar to save these results"; }
+        );
+        window.setTimeout(function () { if (shareStatus) shareStatus.textContent = ""; }, 2500);
+      });
+    }
   })();
 </script>
 
 <style>
+  .dp-finder-next {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+    margin: 0 0 20px;
+    font-family: var(--font-ui);
+    font-size: 15px;
+  }
+  .dp-finder-next a { font-weight: 600; color: var(--green); }
+  .dp-finder-next a[hidden] { display: none; }
+  .dp-finder-next button {
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .dp-finder-next button:hover { border-color: var(--green); color: var(--green); }
+  .dp-finder-next button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  #finder-share-status { font-size: 13px; color: var(--green); font-weight: 600; }
+
   .dp-finder {
     max-width: var(--container-listing);
     margin: 32px auto 56px;
