@@ -153,13 +153,12 @@ const lastRefreshed = new Date(
   description={`Tell us your AED salary, primary spend category, and what you're optimising for. We'll rank the ${allCards.length} UAE cards in our database against your profile.`}
   fullWidth
 >
-  <div class="dp-pagehead">
+  <div class="dp-pagehead dp-finder-head">
     <div class="crumb">DubaiPoints / Cards / Finder</div>
     <h1>Find your card</h1>
     <p>
-      Tell us what you spend on and we'll rank the {allCards.length} UAE
-      credit cards in our database against your profile. The URL is
-      shareable; send it to someone who's asked you which card to open.
+      Start with your salary and the rewards you want. Add spending and
+      other filters if you want a narrower shortlist.
     </p>
     {/* Stage 5.5 UX Fix #6: visual anchor above the fold. Matches the
         stats-strip pattern used on the compare page so the two tool
@@ -207,6 +206,20 @@ const lastRefreshed = new Date(
         </fieldset>
 
         <fieldset class="dp-finder-fs">
+          <legend>Reward preference</legend>
+          <select name="prefer" aria-label="Reward preference">
+            {PREFER_OPTIONS.map((opt) => <option value={opt.value} selected={preferInit === opt.value}>{opt.label}</option>)}
+          </select>
+        </fieldset>
+
+        <div class="dp-finder-actions">
+          <button type="submit">Rank cards</button>
+          <a href="/cards/finder/" class="reset">Reset filters</a>
+        </div>
+
+        <details class="dp-finder-more" id="finder-more">
+          <summary>More filters · spending, network and fees</summary>
+        <fieldset class="dp-finder-fs">
           <legend>Primary spend category</legend>
           <div class="dp-finder-radios">
             {SPEND_OPTIONS.map((opt) => (
@@ -216,23 +229,6 @@ const lastRefreshed = new Date(
                   name="spend"
                   value={opt.value}
                   checked={spendInit === opt.value}
-                />
-                <span>{opt.label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
-        <fieldset class="dp-finder-fs">
-          <legend>What you'd prefer to earn</legend>
-          <div class="dp-finder-radios">
-            {PREFER_OPTIONS.map((opt) => (
-              <label>
-                <input
-                  type="radio"
-                  name="prefer"
-                  value={opt.value}
-                  checked={preferInit === opt.value}
                 />
                 <span>{opt.label}</span>
               </label>
@@ -313,10 +309,8 @@ const lastRefreshed = new Date(
           </fieldset>
         </div>
 
-        <div class="dp-finder-actions">
-          <button type="submit">Rank cards</button>
-          <a href="/cards/finder/" class="reset">Reset filters</a>
-        </div>
+          <div class="dp-finder-actions"><button type="submit">Apply all filters</button></div>
+        </details>
       </form>
     </details>
 
@@ -562,7 +556,11 @@ const lastRefreshed = new Date(
       if (!form) return;
       var salary = form.querySelector('input[name="salary"]');
       if (salary) salary.value = isNaN(p.salary) || p.salary <= 0 ? "" : String(p.salary);
-      [["spend", p.spend], ["prefer", p.prefer], ["network", p.network], ["fee", p.fee]]
+      var prefer = form.querySelector('select[name="prefer"]');
+      if (prefer) prefer.value = p.prefer;
+      var more = document.getElementById("finder-more");
+      if (more && (p.spend !== "general" || p.network !== "any" || p.fee !== "any" || !p.includeInviteOnly || p.includeLegacy)) more.open = true;
+      [["spend", p.spend], ["network", p.network], ["fee", p.fee]]
         .forEach(function (pair) {
           var el = form.querySelector(
             'input[name="' + pair[0] + '"][value="' + pair[1] + '"]',
@@ -596,6 +594,27 @@ const lastRefreshed = new Date(
 </script>
 
 <style>
+  .dp-finder-more > summary {
+    cursor: pointer;
+    min-height: 44px;
+    color: var(--green);
+    font-weight: 600;
+    padding-block: 10px;
+  }
+  .dp-finder-more > :not(summary) { margin-block-start: 16px; }
+  .dp-finder-fs select {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 10px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  @media (max-width: 640px) {
+    .dp-finder-head { padding-block: 24px 18px; }
+    .dp-finder-head .dp-tools-stats { margin-block-start: 12px; }
+  }
   .dp-finder-next {
     display: flex;
     flex-wrap: wrap;

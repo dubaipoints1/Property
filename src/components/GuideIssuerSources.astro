@@ -1,0 +1,29 @@
+---
+import { getCardData } from "~/lib/cardsData";
+
+interface Props { slugs: string[] }
+const cards = Astro.props.slugs.flatMap((slug) => {
+  const card = getCardData(slug);
+  return card ? [card] : [];
+});
+---
+
+{cards.length > 0 && (
+  <details class="dp-guide-issuer-sources">
+    <summary>Check the issuer documents for these cards</summary>
+    <ul>
+      {cards.map((card) => (
+        <li>
+          <strong>{card.name}</strong>: <a href={card.sources[0]}>issuer source</a>
+          {card.kfsUrl && card.kfsUrl !== card.sources[0] && <> · <a href={card.kfsUrl}>key facts statement</a></>}
+          {" · Card record checked "}<time datetime={card.lastVerified.toISOString().slice(0, 10)}>{card.lastVerified.toLocaleDateString("en-GB", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" })}</time>
+        </li>
+      ))}
+    </ul>
+  </details>
+)}
+
+<style>
+  .dp-guide-issuer-sources { border-block: 1px solid var(--line); margin-block: 20px; }
+  summary { cursor: pointer; min-height: 44px; padding-block: 8px; font-weight: 600; }
+</style>
