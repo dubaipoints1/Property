@@ -9,11 +9,11 @@ import {
 
 <TrustPageLayout
   title="AED valuations methodology | DubaiPoints"
-  description="How DubaiPoints defines its indicative pre-sampling estimates and the formal sampling method planned for UAE rewards-currency valuations."
+  description="How DubaiPoints uses conservative points and miles baselines in UAE card comparisons, and how to value a specific redemption separately."
   eyebrow="Valuations methodology"
-  heading="How we define today's estimates and the formal sampling method to follow."
-  lastUpdated={new Date("2026-08-05")}
-  deck="What a DP value is, where each one comes from, and what this publication does not yet publish."
+  heading="What our points and miles values mean"
+  lastUpdated={new Date("2026-11-04")}
+  deck="The baseline is a comparison tool. What you get on a specific booking depends on the fare, fees and availability."
   facts={[
     { label: "Programmes tracked", value: String(programmesTracked()) },
     { label: "Baselines published", value: baselinesPublished() },
@@ -22,25 +22,31 @@ import {
   ]}
 >
   <section>
-    <h2>What the figure means</h2>
-    <p>The headline number on the <a href="/valuations/">AED valuations page</a> is the <strong>indicative best-case redemption value</strong> of one Mile or point in fils — i.e. one-hundredth of a UAE dirham. A figure of 2.4 means each Mile, redeemed at the strongest path we currently track, returns ~2.4 fils of cash-equivalent value.</p>
-    <p>"Best case" matters. We do not publish an average across redemption paths because the worst paths (low-rate partner gift cards, peak-season cash conversions, "Cash + Miles" hybrids) drag the average down to a number that is misleading at the earn stage. Most readers using DubaiPoints to choose a card want to know what the Miles <em>can</em> be worth on their best redemption — not what they will be worth if redeemed badly.</p>
+    <h2>DP value: the card-comparison baseline</h2>
+    <p>The <a href="/valuations/">DP value</a> is our <strong>conservative editorial baseline</strong> in fils per mile or point. We use it consistently when comparing card earn rates. It is not the issuer’s cash-out rate, a best-case redemption, a sampled median, or a guarantee.</p>
+    <p>A redemption can come out above or below the baseline. We show the cash fare avoided separately, with the costs and assumptions that go into the calculation.</p>
+  </section>
+
+  <section>
+    <h2>Value a particular booking</h2>
+    <p>For a flight, start with a cash ticket you would actually buy for the same flights, dates and cabin. Subtract all the cash due on the reward, including taxes and carrier charges. Divide that difference by the total miles charged to get AED per mile. Multiply the per-mile figure by 100 to express it in fils.</p>
+    <p>Check fare rules and baggage before calling two tickets equivalent. Our <a href="/news/cash-or-miles-uae-flight-break-even/">Cash or Miles worked examples</a> show how to use the calculation without mistaking an illustrative figure for a live fare.</p>
   </section>
 
   <section>
     <h2>What formal sampling will test</h2>
     <p>Once formal sampling begins, the method for each programme will be:</p>
     <ul>
-      <li><strong>Airline programmes (Skywards, Etihad Guest, Qatar Privilege Club, Saudia Alfursan):</strong> sample the best available Saver-tier business-class redemption out of DXB or AUH, ~30 days out, on a primary route the programme actively flies. Compare the Miles cost (excluding cash taxes and surcharges) against the cash price for the same flight, same day, same fare class.</li>
-      <li><strong>Hotel programmes (Marriott Bonvoy, IHG One, Hilton Honors):</strong> sample the best off-peak award rate at a UAE-located property against the prevailing cash rate for the same date and room category. Where applicable, adjust for the "5th-night-free" or equivalent benefit to reflect a likely real redemption.</li>
-      <li><strong>Bank-proprietary points (FAB Rewards, ADCB TouchPoints, ENBD Smiles, Mashreq Reward Points):</strong> sample the best-published statement-credit, gift-card, or 1:1 airline-transfer exit. Where the strongest exit is a transfer to an airline programme (FAB → Skywards, for example), use the airline programme's formally sampled value as the upstream figure.</li>
+      <li><strong>Airline programmes:</strong> compare bookable reward seats and matching cash fares from Dubai or Abu Dhabi. Record booking time, flight, cabin, passenger count, fare rules, miles charged and all cash due. Deduct reward cash charges before dividing by miles.</li>
+      <li><strong>Hotel programmes:</strong> compare the same property, dates, room and rate conditions. Count taxes and fees, and include any free-night benefit only if the example qualifies for it.</li>
+      <li><strong>Bank-proprietary points:</strong> compare published statement-credit, gift-card and transfer options. For transfers, use the verified conversion ratio and identify the airline valuation assumption separately.</li>
     </ul>
   </section>
 
   <section>
     <h2>Sampling cadence</h2>
-    <p>Formal quarterly sampling has not begun, and this page does not claim a start date for it. When it does begin, valuations will be sampled and republished on the first Friday of January, April, July and October; each sampled quarter's figures will be dated and prior quarters will stay accessible. Until then the DP values on the valuations table are the published per-programme baselines and nothing on this site presents them as a sampled range.</p>
-    <p>Until the first formal sample is completed, figures on the AED valuations page are flagged "Indicative — pre-sampling" and represent DubaiPoints' editorial estimates informed by published award charts and redemption reports from UAE residents. They are not represented as sampled medians.</p>
+    <p>Formal quarterly sampling has not begun. There is no confirmed start date or sampled range. Once it starts, the planned publication cadence is the first Friday of January, April, July and October, with each quarter dated and earlier figures kept accessible.</p>
+    <p>The table continues to show the published programme baselines. A single observed fare or a hypothetical worked example does not update them.</p>
   </section>
 
   <section>
@@ -55,8 +61,7 @@ import {
 
   <section>
     <h2>Caveats</h2>
-    <p>The published figure is a tool for comparing programmes at the earn stage — i.e. when you are choosing a credit card. It is <strong>not</strong> a guarantee of the value you will realise on any specific redemption. Award availability, booking window, route, fare class, taxes and surcharges, and programme rule changes all affect realised value.</p>
-    <p>If a redemption you are considering would clear the published value, take it. If it would not, weigh that against the alternative cash cost and decide accordingly. Do not redeem at a rate substantially below the published figure unless you have a clear reason — that is the most common avoidable mistake in points and miles.</p>
+    <p>The baseline is a starting point, not a booking rule. Take account of how much you would actually pay for the flight, how soon your miles expire and whether you need to conserve cash. Recheck both options before committing.</p>
   </section>
 
   <section class="related">

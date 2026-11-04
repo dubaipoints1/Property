@@ -6,7 +6,7 @@
 // + methodology footer).
 
 import { getCollection } from "astro:content";
-import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
+import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
@@ -14,6 +14,7 @@ import { getLiveOffers, getLapsedUnarchivedOffers } from "~/lib/offerAdapter";
 import { classifyCoverage, coverageGuardError } from "~/lib/salaryTransferCoverage";
 import { TRACKER_SALARY_BANDS as bands } from "~/lib/salaryTransferTrackerBands";
 import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
+import { getSalaryTransferTimeline, getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
 
 const offers = await getLiveOffers();
 const lapsedOffers = await getLapsedUnarchivedOffers();
@@ -63,7 +64,7 @@ if (guardError) throw new Error(guardError);
 if (lapsedOffers.length) {
   console.warn(
     `[salary-transfer] ${lapsedOffers.length} lapsed offer(s) awaiting archive: ` +
-      lapsedOffers.map((o) => `${o.bankSlug} (${o.name}, ended ${o.validUntil.slice(0, 10)})`).join("; "),
+      lapsedOffers.map((o) => `${o.bankSlug} (${o.name}, review date ${o.validUntil.slice(0, 10)})`).join("; "),
   );
 }
 // Linked variant for the coverage note: the eight "checked, no live offer"
@@ -148,7 +149,7 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
         campaign terms it links to are the April–June 2026 document — treat it as
         unverified until current terms are republished.
         {lapsedOffers.map((o) => (
-          <>{" "}{bankName.get(o.bankSlug) ?? o.bankSlug}&rsquo;s {o.name} ended {fmtFull(new Date(o.validUntil))}.</>
+          <>{" "}{bankName.get(o.bankSlug) ?? o.bankSlug}&rsquo;s {o.name} {getSalaryTransferTimeline(o)?.endDate === "published" ? "ended" : "is no longer listed following our review date of"} {fmtFull(new Date(o.validUntil))}.</>
         ))}
         {" "}Absence from the table is not evidence that no offer exists.
       </p>
@@ -156,7 +157,7 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   </div>
 
   <!-- Preact island handles filter UI + sortable table -->
-  <SalaryTransferTracker offers={offers} cardPaths={getTrackerCardPaths(offers)} client:load />
+  <SalaryTransferTracker offers={offers} cardPaths={getTrackerCardPaths(offers)} timelines={getSalaryTransferTimelines(offers)} client:load />
 
   <div class="dp-tools-actions">
     <span>See the <a href="/news/uae-salary-switch-scorecard/">Salary Switch Scorecard</a> for worked examples of qualifying steps, payout timing and costs.</span>

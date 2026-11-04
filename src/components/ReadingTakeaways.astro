@@ -1,0 +1,61 @@
+---
+interface Props {
+  items: { title: string; text: string; href: string; linkLabel: string }[];
+}
+const { items } = Astro.props;
+---
+
+<dl class="dp-reading-takeaways">
+  {items.map(({ title, text, href, linkLabel }) => (
+    <div>
+      <dt>{title}</dt>
+      <dd>{text}</dd>
+      <dd><a href={href}>{linkLabel} <span aria-hidden="true">→</span></a></dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .dp-reading-takeaways {
+    display: grid;
+    gap: 10px;
+    padding: 0;
+    margin: 0 0 24px;
+  }
+  @media (min-width: 680px) {
+    .dp-reading-takeaways { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  .dp-reading-takeaways > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px 8px;
+    border: 1px solid var(--line);
+    border-block-start: 3px solid var(--green);
+    border-radius: 10px;
+    background: var(--shade-1);
+  }
+  .dp-reading-takeaways dt {
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .dp-reading-takeaways dd {
+    margin: 0;
+    font-size: .9375rem;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .dp-reading-takeaways dd:last-child { margin-block-start: auto; }
+  .dp-reading-takeaways a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-block-size: 44px;
+    color: var(--green);
+  }
+  .dp-reading-takeaways a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+</style>

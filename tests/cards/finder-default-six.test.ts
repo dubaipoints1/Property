@@ -2,7 +2,8 @@ import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
-import { getActiveCards } from "../../src/lib/cardsData.ts";
+import { getActiveCards, getCardData } from "../../src/lib/cardsData.ts";
+import { finderEvidence } from "../../src/lib/finderEvidence.ts";
 
 /**
  * /cards/finder/ renders every card and lets an inline script hide all but
@@ -56,22 +57,32 @@ test("the page still derives its pre-rendered set the documented way", () => {
   assert.match(SOURCE, /\.slice\(0, 6\)/);
 });
 
-function renderFinder(search: string) {
-  const cards = getActiveCards().map((card) => ({
+function renderFinder(search: string, fixtures = getActiveCards()) {
+  const cards = fixtures.map((card) => ({
     slug: card.slug,
     network: card.network,
     annualFee: card.annualFee.amount,
     minSalary: card.eligibility.minSalary,
+    salaryTransferRequired: card.eligibility.salaryTransferRequired,
     invitationOnly: card.eligibility.invitationOnly === true,
     discontinued: card.discontinuedForNewApplicants !== undefined,
     loyaltyProgram: card.loyaltyProgram ?? "",
     earnRates: card.earnRates,
     hasLounge: card._features.some((f) => f.type === "lounge_access"),
     hasStatus: card._features.some((f) => f.type === "status_match"),
+    evidence: finderEvidence(card),
   }));
   const tiles = cards.map(({ slug }) => {
-    const note = { textContent: "", hidden: true };
-    return { slug, hidden: true, note, getAttribute: () => slug, querySelector: () => note };
+    const parts = {
+      "[data-finder-match]": { textContent: "", hidden: true },
+      "[data-finder-ranking]": { textContent: "" },
+      "[data-finder-filters]": { textContent: "" },
+      "[data-finder-checks]": { textContent: "", replaceChildren(...nodes: Array<{ textContent: string }>) {
+        this.textContent = nodes.map((node) => node.textContent).join(" ");
+      } },
+    };
+    return { slug, hidden: true, parts, note: parts["[data-finder-match]"], getAttribute: () => slug,
+      querySelector: (selector: keyof typeof parts) => parts[selector] };
   });
   const grid = {
     hidden: false,
@@ -87,8 +98,12 @@ function renderFinder(search: string) {
     "finder-options": {
       textContent: JSON.stringify({
         prefer: ["none", "cashback", "miles", "lounges"],
-        spendLabels: { general: "General / mixed" },
-        preferLabels: { cashback: "AED cashback", miles: "Airline miles" },
+        spend: ["general", "groceries", "online", "dining"],
+        spendLabels: { general: "General / mixed", groceries: "Groceries", online: "Online shopping", dining: "Dining" },
+        preferLabels: { cashback: "AED cashback", miles: "Airline miles", lounges: "Airport lounges" },
+        network: ["any", "Visa", "Mastercard"],
+        fee: ["any", "free", "under-500", "under-1000"],
+        feeLabels: { free: "Free only", "under-500": "Under AED 500", "under-1000": "Under AED 1,000" },
       }),
     },
     "finder-grid": grid,
@@ -100,7 +115,7 @@ function renderFinder(search: string) {
   const script = SOURCE.match(/<script is:inline>([\s\S]*?)<\/script>/)?.[1];
   assert.ok(script, "finder inline script");
   runInNewContext(script, {
-    document: { getElementById: (id: string) => elements[id] },
+    document: { getElementById: (id: string) => elements[id], createElement: () => ({ textContent: "" }) },
     window: { location: { search } },
     URLSearchParams,
     HTMLDetailsElement: class {},
@@ -127,4 +142,41 @@ test("old explicit opt-in links still include invitation-only cards", () => {
   const result = renderFinder("?include_invite_only=true");
   assert.equal(result.count.textContent, `Showing 6 of ${result.cards.length} cards that meet your filters`);
   assert.ok(result.tiles.some((tile) => tile.note.textContent.includes("Invitation only")));
+  const invitation = result.tiles.find((tile) => tile.note.textContent.includes("Invitation only"));
+  assert.match(invitation?.parts["[data-finder-checks]"].textContent ?? "", /The bank must invite you/);
+});
+
+test("the explanation uses the same selected-category rate and base fallback as ranking", () => {
+  const citi = getActiveCards().find((c) => c.slug === "citi-cashback")!;
+  const dib = getActiveCards().find((c) => c.slug === "dib-consumer-cashback")!;
+  const result = renderFinder("?salary=12000&spend=groceries&fee=under-500", [citi, dib]);
+  const tile = result.tiles.find((t) => t.slug === citi.slug)!;
+  assert.match(tile.parts["[data-finder-ranking]"].textContent, /Groceries: 2%/);
+  assert.match(tile.parts["[data-finder-filters]"].textContent, /Meets the listed salary minimum of AED\s\d[\d,]* a month/);
+  assert.match(tile.parts["[data-finder-filters]"].textContent, /Fee filter: Under AED 500/);
+  assert.match(tile.parts["[data-finder-checks]"].textContent, /AED\s315 incl\. VAT/);
+  assert.match(tile.parts["[data-finder-checks]"].textContent, /renewal waiver terms/);
+  assert.match(result.tiles[0].parts["[data-finder-checks]"].textContent, /Listed category cap: AED\s200 a month/);
+
+  const fallback = renderFinder("?spend=online&prefer=miles", [citi]).tiles[0];
+  assert.match(fallback.parts["[data-finder-ranking]"].textContent, /No separate rate listed for online shopping; general-spending rate used: 1%/);
+  assert.match(fallback.note.textContent, /Different reward or benefit/);
+  assert.equal(fallback.parts["[data-finder-filters]"].textContent, "No salary, network or fee filter applied.");
+});
+
+test("display evidence preserves rate denominators, pending data and published terms", () => {
+  const bonvoy = getCardData("emirates-nbd-marriott-bonvoy-world-elite")!;
+  assert.equal(finderEvidence(bonvoy).earnLabels.everythingElse, "3× per USD 1");
+  const adib = getCardData("adib-cashback-visa")!;
+  const adibEvidence = finderEvidence(adib);
+  assert.match(adibEvidence.feeNotes.join(" "), /AED\s103\.95 incl\. VAT/);
+  assert.match(adibEvidence.categoryCaps.groceries, /AED\s300 a month/);
+  assert.equal(adibEvidence.sourceUrl, adib.kfsUrl);
+
+  const pending = finderEvidence({ ...adib, _provenance: { earnRates: "needs-review", annualFee: "needs-review", eligibility: "needs-review" } });
+  assert.deepEqual(pending.earnLabels, {});
+  assert.deepEqual(pending.capNotes, []);
+  assert.deepEqual(pending.categoryCaps, {});
+  assert.match(pending.feeNotes[0], /confirmation pending/);
+  assert.equal(pending.salaryPending, true);
 });

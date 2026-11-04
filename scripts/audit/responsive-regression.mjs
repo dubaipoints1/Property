@@ -101,6 +101,44 @@ try {
   await page.getByText("Check the issuer documents for these cards", { exact: true }).click();
   assert.ok(await page.locator(".dp-guide-issuer-sources").getByRole("link", { name: "issuer source", exact: true }).first().isVisible());
 
+  for (const theme of ["light", "dark"]) {
+    await page.emulateMedia({ colorScheme: theme });
+    await page.setViewportSize({ width: 390, height: 880 });
+    await navigate(page, "/airlines/skywards/");
+    const skyTakeaways = page.locator(".dp-reading-takeaways");
+    assert.equal(await skyTakeaways.locator("dt").count(), 3);
+    assert.ok(await skyTakeaways.evaluate((el) => el.getBoundingClientRect().top < innerHeight));
+    const jumpMenu = page.getByRole("navigation", { name: "Jump to section" });
+    await jumpMenu.locator("summary").press("Space");
+    await jumpMenu.getByRole("link", { name: "Expiry mechanics", exact: true }).press("Enter");
+    assert.equal(new URL(page.url()).hash, "#mile-expiry-mechanics");
+    await page.waitForFunction(() => {
+      const heading = document.getElementById("mile-expiry-mechanics");
+      const r = heading.getBoundingClientRect();
+      return heading.contains(document.elementFromPoint(r.left + 12, r.top + r.height / 2));
+    });
+    await skyTakeaways.getByRole("link", { name: "Read the expiry rules" }).press("Enter");
+    assert.equal(new URL(page.url()).hash, "#mile-expiry-mechanics");
+    const summary = page.locator("#programme-expiry summary");
+    await summary.press("Space");
+    assert.equal(await page.locator("#programme-expiry").getAttribute("open"), "");
+    assert.ok(await page.locator("#programme-expiry p").isVisible());
+  }
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.setViewportSize({ width: 1440, height: 880 });
+  for (const route of ["/airlines/skywards/", "/airlines/etihad-guest/", "/hotels/marriott-bonvoy/"]) {
+    await navigate(page, route);
+    const reference = page.getByRole("complementary", { name: "Programme quick reference" });
+    assert.ok(await reference.isVisible());
+    assert.equal(await reference.getByText(/Skywards Miles are valid/).count(), 0);
+    for (const link of await reference.getByRole("link").all()) {
+      const href = await link.getAttribute("href");
+      if (href.startsWith("#")) assert.equal(await page.locator(href).count(), 1);
+      else assert.ok(href.startsWith("/airlines/") || href.startsWith("/hotels/"));
+    }
+    assert.ok(await page.locator(".dp-prog-prose").evaluate((el) => getComputedStyle(el).fontSize !== "13px"));
+  }
+
   for (const [slug, fee] of [["citi-cashback", "315"], ["adib-cashback-visa", "103.95"]]) {
     await navigate(page, "/cards/" + slug + "/");
     const glance = await page.locator(".dp-at-a-glance").innerText();
@@ -135,6 +173,10 @@ try {
   await hsbc.waitFor({ state: "visible" });
   const dib = page.locator(".dpst-card").filter({ has: page.getByRole("link", { name: "Dubai Islamic Bank", exact: true }) });
   await dib.getByRole("button", { name: /Fine print/ }).click();
+  const dibTimeline = dib.locator("[data-payday-timeline]");
+  assert.equal(await dibTimeline.locator("ol li").count(), 4);
+  assert.match(await dibTimeline.innerText(), /do not give a fixed end date/);
+  assert.equal(await dibTimeline.getByRole("link", { name: /offer history/i }).getAttribute("href"), "/salary-transfer/history/dib/");
   const art = dib.locator(".dpst-card-example img");
   await art.waitFor({ state: "visible" });
   await art.evaluate((image) => image.decode());
@@ -166,6 +208,11 @@ try {
   const compareHref = await page.locator("#finder-compare").getAttribute("href");
   const comparePicks = new URL(compareHref, server.baseUrl).searchParams.get("cards").split(",");
   assert.deepEqual(comparePicks, tileOrder.slice(0, 3));
+  const whyMatch = tiles.first().locator(".dp-finder-match summary");
+  await whyMatch.press("Enter");
+  assert.ok(await tiles.first().locator("[data-finder-ranking]").isVisible());
+  assert.match(await page.locator("#finder-mode").innerText(), /not.*approval decision/i);
+  await whyMatch.press("Enter");
   await tiles.nth(0).getByRole("link").last().focus();
   await page.keyboard.press("Tab");
   assert.equal(await tiles.nth(1).getByRole("link").first().evaluate((link) => document.activeElement === link), true);
@@ -209,10 +256,13 @@ try {
   assert.equal(await page.locator('link[rel="preload"][as="font"], .article-hero-image').count(), 0);
   assert.ok(await page.getByRole("heading", { level: 1, name: /UAE Card Change Log/ }).isVisible());
   assert.ok(await page.getByRole("link", { name: "Citi Cash Back review", exact: true }).isVisible());
+  await navigate(page, "/news/cash-or-miles-uae-flight-break-even/");
+  assert.match(await page.locator("main").innerText(), /hypothetical/i);
+  assert.equal(await page.locator('link[rel="preload"][as="font"], .article-hero-image').count(), 0);
   await navigate(page, "/");
   assert.equal(await page.locator("body.dp-system-typography").count(), 0);
   assert.equal(await page.locator('link[rel="preload"][as="font"]').count(), 2);
-  console.log("Interactions: menus, guide, card fees, article sources, tracker, calculator, Finder, comparison, Deals, Change Log");
+  console.log("Interactions: menus, guide, programme quick reference, card fees, article sources, tracker, calculator, Finder, comparison, Deals and news");
 } finally {
   await browser?.close();
   server.close();

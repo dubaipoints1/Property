@@ -18,6 +18,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
+import { finderEvidence } from "~/lib/finderEvidence";
 import SpecCard from "~/components/cards/SpecCard.astro";
 
 const allCards = getActiveCards();
@@ -28,7 +29,7 @@ const allCards = getActiveCards();
 const cardsWithBanks = await Promise.all(
   allCards.map(async (card) => {
     const bank = await getEntry("banks", card.bank);
-    return { card, bankName: bank?.data.name ?? card.bank };
+    return { card, bankName: bank?.data.name ?? card.bank, evidence: finderEvidence(card) };
   }),
 );
 
@@ -46,7 +47,7 @@ const includeInviteOnlyInit = params.get("include_invite_only") === "true";
 const includeLegacyInit = params.get("include_legacy") ?? "false";
 
 // Serialise card data for the client-side ranker.
-const cardIndex = cardsWithBanks.map(({ card }) => ({
+const cardIndex = cardsWithBanks.map(({ card, evidence }) => ({
   slug: card.slug,
   bank: card.bank,
   network: card.network,
@@ -59,6 +60,7 @@ const cardIndex = cardsWithBanks.map(({ card }) => ({
   earnRates: card.earnRates,
   hasLounge: card._features.some((f) => f.type === "lounge_access"),
   hasStatus: card._features.some((f) => f.type === "status_match"),
+  evidence,
 }));
 
 const SPEND_OPTIONS: Array<{ value: string; label: string }> = [
@@ -300,7 +302,7 @@ const lastRefreshed = new Date(
         </p>
         <p class="count" id="finder-mode">
           Ordered by published earn rate for general spending, then lower annual fee.
-          Rates use different units; this is not a comparison of value in AED.
+          Rates use different units; this is not a comparison of value in AED or an approval decision.
         </p>
       </div>
 
@@ -325,14 +327,39 @@ const lastRefreshed = new Date(
       </div>
 
       <div class="dp-finder-grid" id="finder-grid">
-        {initialOrder.map(({ card }) => (
+        {initialOrder.map(({ card, evidence }) => (
           <div
             class="dp-finder-tile"
             data-slug={card.slug}
             hidden={!defaultRank.has(card.slug)}
           >
-            <p class="dp-finder-match" data-finder-match hidden></p>
-            <SpecCard card={card} variant="full" />
+            <SpecCard card={card} variant="full">
+              <div slot="match-explanation" class="dp-finder-match">
+                <p class="dp-finder-match-preference" data-finder-match hidden></p>
+                <details>
+                  <summary>Why this card matched<span class="dp-finder-match-sr">: {card.name}</span></summary>
+                  <dl>
+                    <div>
+                      <dt>Ranking</dt>
+                      <dd data-finder-ranking>General spending: {evidence.earnLabels.everythingElse ?? "rate needs confirmation"}.</dd>
+                    </div>
+                    <div>
+                      <dt>Filters</dt>
+                      <dd data-finder-filters>No salary, network or fee filter applied.</dd>
+                    </div>
+                    <div>
+                      <dt>Check before applying</dt>
+                      <dd>
+                        <ul data-finder-checks>
+                          {[...evidence.feeNotes, ...evidence.capNotes, evidence.categoryCaps.everythingElse, card.eligibility.salaryTransferRequired ? "Salary transfer required." : ""].filter(Boolean).map((check) => <li>{check}</li>)}
+                        </ul>
+                      </dd>
+                    </div>
+                  </dl>
+                  {evidence.sourceUrl && <a href={evidence.sourceUrl}>Check issuer terms <span aria-hidden="true">↗</span></a>}
+                </details>
+              </div>
+            </SpecCard>
           </div>
         ))}
       </div>
@@ -348,7 +375,7 @@ const lastRefreshed = new Date(
   </section>
 </BaseLayout>
 
-<script is:inline type="application/json" id="finder-card-index" set:html={JSON.stringify(cardIndex)}></script>
+<script is:inline type="application/json" id="finder-card-index" set:html={JSON.stringify(cardIndex).replace(/</g, "\\u003c")}></script>
 <script
   is:inline
   type="application/json"
@@ -360,6 +387,7 @@ const lastRefreshed = new Date(
     preferLabels: Object.fromEntries(PREFER_OPTIONS.map((o) => [o.value, o.label])),
     network: NETWORK_OPTIONS.map((o) => o.value),
     fee: FEE_OPTIONS.map((o) => o.value),
+    feeLabels: Object.fromEntries(FEE_OPTIONS.map((o) => [o.value, o.label])),
   })}
 ></script>
 
@@ -443,10 +471,11 @@ const lastRefreshed = new Date(
       return true;
     }
 
-    function spendRate(rates, key) {
-      if (key === "general") return rates.everythingElse || 0;
-      var v = rates[key];
-      return typeof v === "number" ? v : rates.everythingElse || 0;
+    function spendBasis(rates, key) {
+      if (key !== "general" && typeof rates[key] === "number") {
+        return { key: key, value: rates[key] };
+      }
+      return { key: "everythingElse", value: rates.everythingElse || 0 };
     }
 
     function matchesPreference(card, prefer) {
@@ -472,11 +501,14 @@ const lastRefreshed = new Date(
         return true;
       })
         .map(function (c) {
+          var basis = spendBasis(c.earnRates, p.spend);
           return {
             slug: c.slug,
             preferred: matchesPreference(c, p.prefer),
             invitationOnly: c.invitationOnly,
-            score: spendRate(c.earnRates, p.spend),
+            card: c,
+            basis: basis,
+            score: basis.value,
             annualFee: c.annualFee,
           };
         })
@@ -496,6 +528,7 @@ const lastRefreshed = new Date(
         tile.hidden = true;
       });
       var preferenceLabel = OPTIONS.preferLabels[p.prefer];
+      var spendLabel = p.spend === "general" ? "general spending" : OPTIONS.spendLabels[p.spend].toLowerCase();
       var visibleTiles = top.map(function (r) {
         var tile = bySlug.get(r.slug);
         var note = tile.querySelector("[data-finder-match]");
@@ -506,6 +539,45 @@ const lastRefreshed = new Date(
         }
         note.textContent = labels.join(" · ");
         note.hidden = labels.length === 0;
+
+        var card = r.card;
+        var evidence = card.evidence;
+        var rate = evidence.earnLabels[r.basis.key] || "rate needs confirmation";
+        var ranking = p.spend === "general" ? "General spending: " + rate + "."
+          : r.basis.key === "everythingElse"
+            ? "No separate rate listed for " + spendLabel + "; general-spending rate used: " + rate + "."
+            : OPTIONS.spendLabels[p.spend] + ": " + rate + ".";
+        tile.querySelector("[data-finder-ranking]").textContent = ranking;
+
+        var applied = [];
+        if (hasSalary) {
+          if (card.invitationOnly || evidence.salaryPending) {
+            applied.push("Confirm salary and eligibility with the bank.");
+          } else if (evidence.salaryLabel) {
+            applied.push("Meets the listed salary minimum of " + evidence.salaryLabel + " a month.");
+          } else {
+            applied.push("No positive salary minimum is listed.");
+          }
+        }
+        if (p.network !== "any") applied.push("Network: " + p.network + ".");
+        if (p.fee !== "any") {
+          applied.push("Fee filter: " + OPTIONS.feeLabels[p.fee] + (evidence.feeExcludesVat ? " (before VAT)." : "."));
+        }
+        tile.querySelector("[data-finder-filters]").textContent = applied.length ? applied.join(" ") : "No salary, network or fee filter applied.";
+
+        var checks = evidence.feeNotes.concat(evidence.capNotes);
+        var categoryCap = evidence.categoryCaps[p.spend === "general" ? "everythingElse" : p.spend];
+        if (categoryCap) checks.push(categoryCap);
+        if (card.salaryTransferRequired) checks.push("Salary transfer required.");
+        if (card.invitationOnly) checks.push("The bank must invite you.");
+        if (card.discontinued) checks.push("Closed to new applicants.");
+        if (r.preferred && p.prefer === "lounges") checks.push("Check visit limits and qualifying spend in the issuer terms.");
+        if (r.preferred && p.prefer === "status") checks.push("Check the status period and renewal conditions.");
+        tile.querySelector("[data-finder-checks]").replaceChildren(...checks.map(function (check) {
+          var item = document.createElement("li");
+          item.textContent = check;
+          return item;
+        }));
         tile.hidden = false;
         return tile;
       });
@@ -522,9 +594,10 @@ const lastRefreshed = new Date(
         compareLink.textContent = "Compare your top " + top3.length + " side by side →";
         compareLink.hidden = top3.length < 2;
       }
-      var spendLabel = p.spend === "general" ? "general spending" : OPTIONS.spendLabels[p.spend].toLowerCase();
       mode.textContent = (p.prefer !== "none" ? preferenceLabel + " matches first. " : "")
-        + "Ordered by published earn rate for " + spendLabel + ", then lower annual fee. Rates use different units; this is not a comparison of value in AED.";
+        + "Ordered by published earn rate for " + spendLabel
+        + (p.spend === "general" ? "" : " (general rate where no separate rate is listed)")
+        + ", then lower annual fee. Rates use different units; this is not a comparison of value in AED or an approval decision.";
       mode.hidden = visibleTiles.length === 0;
 
       if (visibleTiles.length === 0) {
@@ -805,9 +878,51 @@ const lastRefreshed = new Date(
     display: none;
   }
   .dp-finder-match {
-    margin: 0 0 6px;
-    font: 600 13px/1.45 var(--font-ui);
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
     color: var(--ink-soft);
+    font: 400 14px/1.5 var(--font-ui);
+  }
+  .dp-finder-match-preference {
+    margin: 8px 0 0;
+    font-weight: 600;
+  }
+  .dp-finder-match summary {
+    min-height: 44px;
+    padding-block: 11px;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .dp-finder-match summary:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+  .dp-finder-match dl { margin: 0 0 4px; }
+  .dp-finder-match dl div + div { margin-top: 8px; }
+  .dp-finder-match dt { font-weight: 700; color: var(--ink); }
+  .dp-finder-match dd { margin: 0; }
+  .dp-finder-match ul { margin: 2px 0 0; padding-inline-start: 1.15em; list-style: disc; }
+  .dp-finder-match li + li { margin-top: 2px; }
+  .dp-finder-match a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    gap: 4px;
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .dp-finder-match-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
   .dp-finder-empty {
     padding: 32px 24px;

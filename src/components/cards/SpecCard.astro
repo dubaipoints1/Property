@@ -166,6 +166,8 @@ if (variant === "full") {
     )}
   </div>
 
+  <slot name="match-explanation" />
+
   {variant === "full" && tagline && (
     <p class="tagline">{tagline}</p>
   )}

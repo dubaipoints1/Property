@@ -1,0 +1,97 @@
+.dp-payday-timeline {
+  container: payday-timeline / inline-size;
+  min-inline-size: 0;
+  margin-block: 0 1.25rem;
+  padding: clamp(.75rem, 2.5vw, 1.125rem);
+  border: 1px solid var(--line);
+  border-radius: .75rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  text-align: start;
+}
+
+.dp-payday-timeline :is(h2, h3) {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.dp-payday-window {
+  margin: .45rem 0 0;
+  max-inline-size: 68ch;
+  color: var(--ink-soft);
+  font-size: .875rem;
+  line-height: 1.5;
+}
+
+.dp-payday-window time { color: var(--ink); font-weight: 650; }
+
+.dp-payday-steps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin: .65rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dp-payday-steps li {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr);
+  align-items: start;
+  gap: .65rem;
+  padding-block: .65rem;
+  border-block-start: 1px solid var(--line);
+}
+
+.dp-payday-step-number {
+  display: grid;
+  place-items: center;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border-radius: 50%;
+  background: var(--shade-1);
+  color: var(--green);
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.dp-payday-steps strong { display: block; font-size: .9375rem; }
+.dp-payday-steps p {
+  margin: .125rem 0 0;
+  color: var(--ink-soft);
+  font-size: .875rem;
+  line-height: 1.5;
+}
+
+.dp-payday-links {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1rem;
+  margin: .25rem 0 0;
+  font-size: .875rem;
+  font-weight: 650;
+}
+
+.dp-payday-links a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  color: var(--green);
+  text-decoration: underline;
+  text-underline-offset: .15em;
+}
+
+.dp-payday-links a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+@container payday-timeline (min-width: 30rem) {
+  .dp-payday-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1rem; }
+}
+
+@container payday-timeline (min-width: 50rem) {
+  .dp-payday-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}

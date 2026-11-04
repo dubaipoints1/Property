@@ -43,6 +43,8 @@
 .dpst-responsive .dpst-row.is-open + .dpst-detail-row .dpst-detail,
 .dpst-responsive .dpst-card.is-open .dpst-card-detail { max-block-size: none; }
 .dpst-responsive .dpst-detail-inner > * { min-inline-size: 0; overflow-wrap: anywhere; }
+.dpst-responsive .dpst-detail-inner > .dp-payday-timeline { grid-column: 1 / -1; margin-block-end: 0; }
+.dpst-responsive .dpst-card-detail-inner > .dp-payday-timeline { margin-block-start: 8px; }
 .dpst-responsive .dpst-card-salary {
   display: flex;
   flex-wrap: wrap;

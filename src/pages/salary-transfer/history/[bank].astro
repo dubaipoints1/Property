@@ -3,6 +3,7 @@ import SalaryTransferHistoryLayout from "~/layouts/SalaryTransferHistoryLayout.a
 import { getCollection } from "astro:content";
 import { getOffersForBank, getHistoryForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
+import { getSalaryTransferTimeline } from "~/lib/salaryTransferTimeline";
 
 export async function getStaticPaths() {
   const banks = await getCollection("banks");
@@ -24,6 +25,7 @@ const entries = [
   ...live.map((o) => ({
     validFrom: new Date(o.validFrom),
     validUntil: new Date(o.validUntil),
+    publishedEnd: getSalaryTransferTimeline(o)?.endDate === "published",
     headline: o.name,
     bands: o.salaryBands.map((b) => ({
       range: bandToString(b),
@@ -46,7 +48,7 @@ const entries = [
 
 <SalaryTransferHistoryLayout
   title={`${bankName} salary transfer offer history | DubaiPoints`}
-  description={`Every salary transfer offer ${bankName} has run, in chronological order. Useful for spotting cycles and predicting future promotions.`}
+  description={`Compare the ${bankName} salary transfer offers DubaiPoints has tracked, with reward bands and campaign dates where published.`}
   bankName={bankName}
   entries={entries}
 />

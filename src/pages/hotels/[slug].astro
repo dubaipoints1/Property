@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { program } = Astro.props;
-const { Content } = await render(program);
+const { Content, headings } = await render(program);
 const relatedCards = await relatedCardsForProgramme(program.data.name, program.data.currencyName);
 ---
 
@@ -25,6 +25,7 @@ const relatedCards = await relatedCardsForProgramme(program.data.name, program.d
   currencyName={program.data.currencyName}
   region={program.data.region}
   expiryPolicy={program.data.expiryPolicy}
+  expirySection={headings.find((h) => h.depth === 2 && h.slug.includes("expiry"))?.slug}
   sweetSpots={program.data.sweetSpots}
   transferPartners={program.data.transferPartners}
   relatedCards={relatedCards}
