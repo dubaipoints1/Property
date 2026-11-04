@@ -1,5 +1,6 @@
 ---
 import NextStepLinks from "~/components/NextStepLinks.astro";
+import BankLogo from "~/components/BankLogo.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import SalaryTransferTrackerLayout from "~/layouts/SalaryTransferTrackerLayout.astro";
@@ -7,19 +8,18 @@ import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.ts
 import Disclaimer from "~/components/Disclaimer.astro";
 import { getCollection, render } from "astro:content";
 import { getLiveOffers, getOffersForBank } from "~/lib/offerAdapter";
-import { findBand, formatAED } from "~/lib/salaryTransfer";
+import { formatAED } from "~/lib/salaryTransfer";
+import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
+import {
+  salaryBandsOverlap,
+  TRACKER_SALARY_BANDS,
+  type TrackerSalaryBand,
+} from "~/lib/salaryTransferTrackerBands";
 
 export async function getStaticPaths() {
-  const bands = [
-    { slug: "aed-5000-to-8000", sample: 6000, label: "AED 5,000 – 8,000" },
-    { slug: "aed-8000-to-15000", sample: 10000, label: "AED 8,000 – 15,000" },
-    { slug: "aed-15000-to-30000", sample: 20000, label: "AED 15,000 – 30,000" },
-    { slug: "aed-30000-to-50000", sample: 40000, label: "AED 30,000 – 50,000" },
-    { slug: "aed-50000-plus", sample: 60000, label: "AED 50,000+" },
-  ];
-  const bandPaths = bands.map((b) => ({
+  const bandPaths = TRACKER_SALARY_BANDS.map((b) => ({
     params: { slug: b.slug },
-    props: { kind: "band" as const, sample: b.sample, label: b.label },
+    props: { kind: "band" as const, band: b },
   }));
   const banks = await getCollection("banks");
   const bankPaths = banks.map((bank) => ({
@@ -30,7 +30,7 @@ export async function getStaticPaths() {
 }
 
 const props = Astro.props as
-  | { kind: "band"; sample: number; label: string }
+  | { kind: "band"; band: TrackerSalaryBand }
   | { kind: "bank"; bankId: string; bankName: string };
 
 let bandOffers: Awaited<ReturnType<typeof getLiveOffers>> = [];
@@ -40,8 +40,9 @@ let bankStamp: string | null = null;
 let liveOfferCount = 0;
 
 if (props.kind === "band") {
+  const { band } = props;
   const all = await getLiveOffers();
-  bandOffers = all.filter((o) => findBand(o.salaryBands, props.sample) !== null);
+  bandOffers = all.filter((o) => o.salaryBands.some((tier) => salaryBandsOverlap(tier, band)));
 } else {
   bankOffers = await getOffersForBank(props.bankId);
   liveOfferCount = (await getLiveOffers()).length;
@@ -68,12 +69,21 @@ const siteUrl = siteUrlFrom(Astro.site);
 {
   props.kind === "band" && (
     <SalaryTransferTrackerLayout
-      title={`Salary transfer offers (${props.label}) | DubaiPoints`}
-      description={`Live UAE salary transfer offers available to earners in the ${props.label} band.`}
+      title={`Salary transfer offers (${props.band.label}) | DubaiPoints`}
+      description={`Live UAE salary transfer offers with eligible salaries within the ${props.band.label} band.`}
+      bandLabel={props.band.label}
       liveCount={bandOffers.length}
     >
       <div slot="tracker">
-        <SalaryTransferTracker offers={bandOffers} client:load />
+        <SalaryTransferTracker offers={bandOffers} scope={props.band} cardPaths={getTrackerCardPaths(bandOffers)} client:load />
+      </div>
+      <div slot="bands" class="dp-dir-grid">
+        {TRACKER_SALARY_BANDS.map((b) => (
+          <a class="dp-dir-tile" href={`/salary-transfer/${b.slug}/`} aria-current={b.slug === Astro.params.slug ? "page" : undefined}>
+            <span class="eyebrow">Salary band</span>
+            <span class="title">{b.label}</span>
+          </a>
+        ))}
       </div>
       <Disclaimer slot="footer" variant="offer" />
     </SalaryTransferTrackerLayout>
@@ -91,7 +101,10 @@ const siteUrl = siteUrlFrom(Astro.site);
       <article class="dp-article is-wide">
         <header class="dp-article-head">
           <p class="dp-article-eyebrow">Salary transfer</p>
-          <h1 class="dp-article-title">{props.bankName}</h1>
+          <div class="dp-st-bank-title">
+            <BankLogo slug={props.bankId} name={props.bankName} size="md" decorative />
+            <h1 class="dp-article-title">{props.bankName}</h1>
+          </div>
           <p class="dp-article-meta">
             <a href={`/salary-transfer/history/${props.bankId}/`}>
               View {props.bankName} offer history →
@@ -115,6 +128,7 @@ const siteUrl = siteUrlFrom(Astro.site);
                 </span>
               </header>
 
+              <div class="dp-st-offer-table" role="region" aria-label="Salary and reward tiers" tabindex="0">
               <table class="dp-data-table">
                 <thead>
                   <tr>
@@ -138,6 +152,7 @@ const siteUrl = siteUrlFrom(Astro.site);
                   ))}
                 </tbody>
               </table>
+              </div>
 
               <section class="dp-article-section">
                 <h3>Requirements</h3>
@@ -191,6 +206,19 @@ const siteUrl = siteUrlFrom(Astro.site);
 }
 
 <style>
+  .dp-st-bank-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+  }
+  .dp-st-offer-table {
+    overflow-x: auto;
+  }
+  .dp-st-offer-table:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 3px;
+  }
   .dp-offer-card {
     border: 1px solid var(--line);
     border-radius: 8px;

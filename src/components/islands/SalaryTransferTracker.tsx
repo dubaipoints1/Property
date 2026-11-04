@@ -1,11 +1,20 @@
+import { Fragment } from "preact";
 import { useMemo, useState } from "preact/hooks";
 import {
+  type SalaryBand,
   type SalaryTransferOffer,
   type RewardType,
   daysUntil,
-  findBand,
 } from "../../lib/salaryTransfer";
+import {
+  type TrackerSalaryBand,
+  selectTrackerReward,
+  TRACKER_SALARY_BANDS as BANDS,
+} from "../../lib/salaryTransferTrackerBands";
+import { bankMark } from "../../lib/logos";
+import type { TrackerCardPath } from "../../lib/salaryTransferTrackerImages";
 import { isStale } from "../../lib/verification";
+import "./salaryTransferTracker.css";
 
 // Salary-Transfer Tracker island. Markup + styling ported from the Claude
 // Design artifact "Salary-Transfer Tracker (standalone)" (imported 27 June
@@ -24,17 +33,11 @@ import { isStale } from "../../lib/verification";
 
 interface Props {
   offers: SalaryTransferOffer[];
+  scope?: TrackerSalaryBand;
+  cardPaths: Record<string, TrackerCardPath>;
 }
 
 type SortKey = "value" | "expiry";
-
-const BANDS: { label: string; min: number; max: number | null }[] = [
-  { label: "AED 5k–8k", min: 5000, max: 7999 },
-  { label: "AED 8k–15k", min: 8000, max: 14999 },
-  { label: "AED 15k–30k", min: 15000, max: 29999 },
-  { label: "AED 30k–50k", min: 30000, max: 49999 },
-  { label: "AED 50k+", min: 50000, max: null },
-];
 
 const fmt = (n: number) => n.toLocaleString("en-AE");
 const fmtDate = (iso: string) =>
@@ -78,15 +81,47 @@ function logoTag(name: string): string {
     .slice(0, 4);
 }
 
-function bandCell(o: SalaryTransferOffer): string {
-  const min = Math.min(...o.salaryBands.map((b) => b.minSalary));
-  const noUpper = o.salaryBands.some((b) => b.maxSalary === null);
-  if (noUpper) return `AED ${fmt(min)}+`;
-  const max = Math.max(...o.salaryBands.map((b) => b.maxSalary as number));
-  return `AED ${fmt(min)} – ${fmt(max)}`;
+function rewardRange(tier: SalaryBand): string {
+  const min = fmt(tier.minSalary);
+  if (tier.maxSalary === null) return `AED ${min}+`;
+  return `AED ${min}–${fmt(tier.maxSalary)}`;
 }
 
-export default function SalaryTransferTracker({ offers }: Props) {
+function SalaryForReward({ offer, reward }: { offer: SalaryTransferOffer; reward: SalaryBand }) {
+  const min = Math.min(...offer.salaryBands.map((b) => b.minSalary));
+  return (
+    <span class="dpst-salary">
+      <span>{rewardRange(reward)}</span>
+      {min < reward.minSalary && <small>Offer starts at AED {fmt(min)}</small>}
+    </span>
+  );
+}
+
+function BankIdentity({ offer }: { offer: SalaryTransferOffer }) {
+  // Salary offers identify banks and may have multiple product paths. A
+  // logo never suggests that a particular credit card is part of an offer.
+  const mark = bankMark(offer.bankSlug);
+  return (
+    <div class="dpst-bank">
+      <span class={`dpst-issuer-mark${mark.plated ? " is-plated" : ""}`} aria-hidden="true">
+        <img src={mark.src} alt="" width="48" height="28" loading="lazy" decoding="async" data-logo-fallback />
+        <span class="dpst-issuer-fallback">{logoTag(offer.bankName)}</span>
+      </span>
+      <span class="dpst-bank-copy">
+        <a
+          href={`/salary-transfer/${offer.bankSlug}/`}
+          class="dpst-bank-name"
+          onClick={(event) => event.stopPropagation()}
+        >
+          {offer.bankName}
+        </a>
+        <span class="dpst-bank-tier">{offer.name}</span>
+      </span>
+    </div>
+  );
+}
+
+export default function SalaryTransferTracker({ offers, scope, cardPaths }: Props) {
   // band: index into BANDS, or null = all bands (kept for our thin live
   // data, where defaulting to one band could hide offers).
   const [band, setBand] = useState<number | null>(null);
@@ -95,40 +130,29 @@ export default function SalaryTransferTracker({ offers }: Props) {
   const [sharia, setSharia] = useState(false);
   const [sort, setSort] = useState<SortKey>("value");
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
+  const activeBand = scope ?? (band === null ? null : BANDS[band]);
 
   const appliedLabel =
-    (band !== null ? `Band: ${BANDS[band].label}` : "All bands") +
+    (activeBand ? `Band: ${activeBand.label}` : "All bands") +
     (() => {
       const n = [cash, noCard, sharia].filter(Boolean).length;
       return n ? ` · ${n} filter${n > 1 ? "s" : ""}` : "";
     })();
 
   const rows = useMemo(() => {
-    const sample = band !== null ? BANDS[band].min : null;
     return offers
-      .filter((o) => {
-        if (cash && !o.salaryBands.some((b) => b.rewardType === "cash"))
-          return false;
-        if (noCard && o.creditCardRequired) return false;
-        if (sharia && !o.sharia) return false;
-        if (sample !== null && !findBand(o.salaryBands, sample)) return false;
-        return true;
-      })
-      .map((o) => {
-        const matched = sample !== null ? findBand(o.salaryBands, sample) : null;
-        const reward = matched
-          ? matched
-          : o.salaryBands.reduce((best, b) =>
-              b.rewardAmount > best.rewardAmount ? b : best,
-            );
-        return { offer: o, reward };
+      .flatMap((offer) => {
+        if ((noCard && offer.creditCardRequired && !cardPaths[offer.id]?.financeAlternative) ||
+          (sharia && !offer.sharia)) return [];
+        const reward = selectTrackerReward(offer.salaryBands, activeBand, cash);
+        return reward ? [{ offer, reward }] : [];
       })
       .sort((a, b) =>
         sort === "value"
           ? b.reward.rewardAmount - a.reward.rewardAmount
           : daysUntil(a.offer.validUntil) - daysUntil(b.offer.validUntil),
       );
-  }, [offers, band, cash, noCard, sharia, sort]);
+  }, [offers, activeBand, cash, noCard, sharia, sort, cardPaths]);
 
   const toggleOpen = (id: string) =>
     setOpen((prev) => {
@@ -146,7 +170,10 @@ export default function SalaryTransferTracker({ offers }: Props) {
   const banksTracked = new Set(offers.map((o) => o.bankSlug)).size;
 
   // Per-offer detail (fine print + verification). Real fields only.
-  const Detail = ({ o }: { o: SalaryTransferOffer }) => (
+  const Detail = ({ o }: { o: SalaryTransferOffer }) => {
+    const path = cardPaths[o.id];
+    const cardExample = path?.example;
+    return (
     <>
       <div class="dpst-fineblock">
         <div class="dpst-finehead">Commitment</div>
@@ -165,10 +192,14 @@ export default function SalaryTransferTracker({ offers }: Props) {
       <div class="dpst-fineblock">
         <div class="dpst-finehead">Eligibility</div>
         <div class="dpst-fineitem">
-          <span class="k">Credit card required</span>
-          <span class={`v ${o.creditCardRequired ? "warn" : "ok"}`}>
-            {o.creditCardRequired ? "Yes" : "No"}
-          </span>
+          {path?.financeAlternative ? (
+            <><span class="k">Bundle requirement</span><span class="v warn">Eligible card or finance</span></>
+          ) : (
+            <>
+              <span class="k">Credit card required</span>
+              <span class={`v ${o.creditCardRequired ? "warn" : "ok"}`}>{o.creditCardRequired ? "Yes" : "No"}</span>
+            </>
+          )}
         </div>
         <div class="dpst-fineitem">
           <span class="k">Sharia-compliant</span>
@@ -180,6 +211,16 @@ export default function SalaryTransferTracker({ offers }: Props) {
               <li key={r}>{r}</li>
             ))}
           </ul>
+        )}
+        {cardExample && (
+          <figure class="dpst-card-example">
+            <img src={cardExample.src} alt="" width={cardExample.width} height={cardExample.height} loading="lazy" decoding="async" />
+            <figcaption>
+              <a href={`/cards/${cardExample.slug}/`}>{cardExample.name}</a>
+              <span>One eligible card option. Qualifying finance is an alternative.</span>
+              <small>Card image: {cardExample.issuer}</small>
+            </figcaption>
+          </figure>
         )}
       </div>
       <div class="dpst-verified">
@@ -216,12 +257,14 @@ export default function SalaryTransferTracker({ offers }: Props) {
         </a>
       </div>
     </>
-  );
+    );
+  };
 
   return (
-    <section class="dpst" aria-label="UAE salary-transfer offer tracker">
+    <section class="dpst dpst-responsive" aria-label="UAE salary-transfer offer tracker">
       {/* CONTROLS */}
       <div class="dpst-controls">
+        {!scope && <>
         <span class="dpst-ctrl-label" id="dpst-band-label">
           Your monthly salary band
         </span>
@@ -242,13 +285,15 @@ export default function SalaryTransferTracker({ offers }: Props) {
               key={b.label}
               type="button"
               class="dpst-band"
+              title={b.label}
               aria-pressed={band === i}
               onClick={() => setBand(band === i ? null : i)}
             >
-              {b.label}
+              {b.shortLabel}
             </button>
           ))}
         </div>
+        </>}
 
         <div class="dpst-ctrl-row">
           <div>
@@ -274,7 +319,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
                 <span class="tick" aria-hidden="true">
                   ✓
                 </span>
-                No card required
+                No credit card required
               </button>
               <button
                 type="button"
@@ -298,6 +343,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
                 Clear all
               </button>
             </div>
+            {noCard && <p class="dpst-filter-note">Some offers still require another product, such as qualifying finance.</p>}
           </div>
           <div>
             <span class="dpst-ctrl-label">Sort by</span>
@@ -327,13 +373,16 @@ export default function SalaryTransferTracker({ offers }: Props) {
       </div>
 
       {/* RESULT COUNT */}
-      <div class="dpst-meta">
+      <div class="dpst-meta" role="status">
         <span class="dpst-count">
           <b>{rows.length}</b> offer{rows.length === 1 ? "" : "s"} match your
           filters
         </span>
         <span class="applied">{appliedLabel}</span>
       </div>
+      <p class="dpst-salary-note">
+        Rewards shown are the highest within the selected range. Check the salary beside each reward; lower salaries may qualify for a different amount.
+      </p>
 
       {offers.length === 0 ? (
         <div class="dpst-empty">
@@ -387,7 +436,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
                       ↓
                     </span>
                   </th>
-                  <th scope="col">Salary band</th>
+                  <th scope="col">Salary for reward</th>
                   <th
                     scope="col"
                     class={`sortable${sort === "expiry" ? " sorted" : ""}`}
@@ -409,26 +458,13 @@ export default function SalaryTransferTracker({ offers }: Props) {
                   const isOpen = open.has(o.id);
                   const n = daysUntil(o.validUntil);
                   return (
-                    <>
+                    <Fragment key={o.id}>
                       <tr
-                        key={o.id}
                         class={`dpst-row${isOpen ? " is-open" : ""}`}
                         onClick={() => toggleOpen(o.id)}
                       >
                         <td class="col-bank">
-                          <div class="dpst-bank">
-                            <span class="dpst-logo">{logoTag(o.bankName)}</span>
-                            <span>
-                              <a
-                                href={`/salary-transfer/${o.bankSlug}/`}
-                                class="dpst-bank-name"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                {o.bankName}
-                              </a>
-                              <span class="dpst-bank-tier">{o.name}</span>
-                            </span>
-                          </div>
+                          <BankIdentity offer={o} />
                         </td>
                         <td>
                           <span class={`dpst-badge ${badgeClass(reward.rewardType)}`}>
@@ -442,7 +478,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
                             {fmt(reward.rewardAmount)}
                           </span>
                         </td>
-                        <td class="dpst-band-cell">{bandCell(o)}</td>
+                        <td class="dpst-band-cell"><SalaryForReward offer={o} reward={reward} /></td>
                         <td>
                           <span class={`dpst-chip-valid ${validClass(n)}`}>
                             <span class="dot" aria-hidden="true" />
@@ -455,12 +491,17 @@ export default function SalaryTransferTracker({ offers }: Props) {
                             class="dpst-expand"
                             aria-label={`Toggle fine print for ${o.bankName}`}
                             aria-expanded={isOpen}
+                            aria-controls={`dpst-desktop-${o.id}`}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              toggleOpen(o.id);
+                            }}
                           >
                             ▾
                           </button>
                         </td>
                       </tr>
-                      <tr class="dpst-detail-row">
+                      <tr class="dpst-detail-row" id={`dpst-desktop-${o.id}`} hidden={!isOpen}>
                         <td colSpan={6}>
                           <div class="dpst-detail">
                             <div class="dpst-detail-inner">
@@ -469,7 +510,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
                           </div>
                         </td>
                       </tr>
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
@@ -487,18 +528,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
                   class={`dpst-card${isOpen ? " is-open" : ""}`}
                 >
                   <div class="dpst-card-head">
-                    <div class="dpst-bank">
-                      <span class="dpst-logo">{logoTag(o.bankName)}</span>
-                      <span>
-                        <a
-                          href={`/salary-transfer/${o.bankSlug}/`}
-                          class="dpst-bank-name"
-                        >
-                          {o.bankName}
-                        </a>
-                        <span class="dpst-bank-tier">{o.name}</span>
-                      </span>
-                    </div>
+                    <BankIdentity offer={o} />
                     <div class="dpst-card-val">
                       <span class="dpst-value">
                         <span class="cur">AED</span>
@@ -514,19 +544,20 @@ export default function SalaryTransferTracker({ offers }: Props) {
                       <span class="ic" aria-hidden="true" />
                       {badgeLabel(reward.rewardType)}
                     </span>
-                    <span class="dpst-card-band">
-                      <span class="sr-only">Salary band: </span>
-                      {bandCell(o)}
-                    </span>
                     <span class={`dpst-chip-valid ${validClass(n)}`}>
                       <span class="dot" aria-hidden="true" />
                       {validText(n)}
                     </span>
                   </div>
+                  <p class="dpst-card-salary">
+                    <span>Salary for reward</span>
+                    <SalaryForReward offer={o} reward={reward} />
+                  </p>
                   <button
                     type="button"
                     class="dpst-card-acc"
                     aria-expanded={isOpen}
+                    aria-controls={`dpst-mobile-${o.id}`}
                     onClick={() => toggleOpen(o.id)}
                   >
                     Fine print &amp; verification{" "}
@@ -534,7 +565,7 @@ export default function SalaryTransferTracker({ offers }: Props) {
                       ▾
                     </span>
                   </button>
-                  <div class="dpst-card-detail">
+                  <div class="dpst-card-detail" id={`dpst-mobile-${o.id}`} hidden={!isOpen}>
                     <div class="dpst-card-detail-inner">
                       <Detail o={o} />
                     </div>

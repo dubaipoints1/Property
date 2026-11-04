@@ -430,7 +430,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     gap: 40px;
     align-items: start;
   }
-  .intel-main { display: grid; gap: 28px; }
+  .intel-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
 
   .intel-featured {
     display: grid; grid-template-rows: auto 1fr;
@@ -671,7 +671,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   .intel-trending a:hover { color: var(--green); }
 
   @media (max-width: 1023px) {
-    .intel-grid { grid-template-columns: 1fr; }
+    .intel-grid { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 640px) {
     .intel-pagehead { padding: 32px 20px 24px; }
@@ -801,8 +801,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     justify-self: start;
   }
   @media (max-width: 640px) {
-    .deals-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: 0 -20px; padding: 0 20px; }
-    .deals-chips::-webkit-scrollbar { display: none; }
-    .deals-chip { flex: 0 0 auto; }
+    .deals-chip { padding-inline: 12px; }
+    .deals-issuer { flex-wrap: wrap; }
+    .deals-issuer select { max-width: 100%; }
   }
 </style>

@@ -1,7 +1,7 @@
 ---
 // Header — Claude Design (polished pass, July 2026)
 // Improvements: better mobile scroll lock, larger tap targets,
-// smoother mega-panel hover, consistent focus states.
+// explicit desktop disclosures, consistent focus states.
 
 import ThemeToggle from "~/components/ThemeToggle.astro";
 import { dpValueSub } from "~/lib/valuations";
@@ -159,11 +159,11 @@ const publicationRows: SubRow[] = [
 
     <!-- Desktop nav -->
     <nav class="dp-header-nav" aria-label="Primary">
-      <div class="dp-nav-mega-wrap">
-        <a href="/cards/" class={isActive("/cards/") || isActive("/banks/") ? "is-active" : ""}>
+      <details class="dp-nav-mega-wrap">
+        <summary class={isActive("/cards/") || isActive("/banks/") ? "is-active" : ""}>
           Cards
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
-        </a>
+        </summary>
         <div class="dp-megapanel" role="region" aria-label="Cards menu" data-nosnippet>
           <div class="dp-megapanel-inner">
             {cardsPanel.map((g) => (
@@ -179,15 +179,15 @@ const publicationRows: SubRow[] = [
             ))}
           </div>
         </div>
-      </div>
+      </details>
 
       <a href="/salary-transfer/" class={isActive("/salary-transfer/") ? "is-active" : ""}>Salary tracker</a>
 
-      <div class="dp-nav-mega-wrap">
-        <a href="/airlines/" class={isActive("/airlines/") || isActive("/hotels/") || isActive("/valuations/") ? "is-active" : ""}>
+      <details class="dp-nav-mega-wrap">
+        <summary class={isActive("/airlines/") || isActive("/hotels/") || isActive("/valuations/") ? "is-active" : ""}>
           Points &amp; miles
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
-        </a>
+        </summary>
         <div class="dp-megapanel" role="region" aria-label="Points and miles menu" data-nosnippet>
           <div class="dp-megapanel-inner">
             {pointsPanel.map((g) => (
@@ -203,7 +203,7 @@ const publicationRows: SubRow[] = [
             ))}
           </div>
         </div>
-      </div>
+      </details>
 
       <a href="/deals/" class={isActive("/deals/") ? "is-active" : ""}>
         Deals
@@ -363,26 +363,66 @@ const publicationRows: SubRow[] = [
 </aside>
 
 <script is:inline>
+  (() => {
+    const disclosures = [...document.querySelectorAll(".dp-header-nav details.dp-nav-mega-wrap")];
+    for (const menu of disclosures) {
+      menu.addEventListener("toggle", () => {
+        if (menu.open) for (const other of disclosures) if (other !== menu) other.open = false;
+      });
+      menu.addEventListener("focusout", (event) => {
+        if (event.relatedTarget instanceof Node && !menu.contains(event.relatedTarget)) menu.open = false;
+      });
+    }
+    document.addEventListener("click", (event) => {
+      for (const menu of disclosures) if (menu.open && !menu.contains(event.target)) menu.open = false;
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") return;
+      const open = disclosures.find((menu) => menu.open && menu.getClientRects().length);
+      if (!open) return;
+      open.open = false;
+      open.querySelector("summary")?.focus();
+    });
+    window.matchMedia("(min-width: 1024px)").addEventListener("change", () => {
+      for (const menu of disclosures) menu.open = false;
+    });
+  })();
+
   // The menu is CSS-only (a <label> for a hidden checkbox), so Enter, Space
   // and Escape did nothing on any route (2026-09-06 audit, F-007). Labels
   // do not activate on keydown; this mirrors the click for keyboard users
   // and keeps aria-expanded honest on both toggles.
   (() => {
     const toggle = document.getElementById("dp-nav-toggle");
-    if (!toggle) return;
+    const drawer = document.getElementById("dp-nav-overlay");
+    if (!toggle || !drawer) return;
     const labels = Array.from(document.querySelectorAll('label[for="dp-nav-toggle"][role="button"]'));
-    const sync = () => labels.forEach((l) => l.setAttribute("aria-expanded", String(toggle.checked)));
-    const set = (on) => { toggle.checked = on; sync(); };
-    toggle.addEventListener("change", sync);
+    const opener = labels.find((label) => !drawer.contains(label));
+    const closer = labels.find((label) => drawer.contains(label));
+    const sync = (moveFocus = false) => {
+      labels.forEach((l) => l.setAttribute("aria-expanded", String(toggle.checked)));
+      drawer.inert = !toggle.checked;
+      if (moveFocus) (toggle.checked ? closer : opener)?.focus();
+    };
+    const set = (on) => { toggle.checked = on; sync(true); };
+    toggle.addEventListener("change", () => sync(true));
     labels.forEach((l) => l.addEventListener("keydown", (e) => {
       if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); set(!toggle.checked); }
     }));
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && toggle.checked) {
-        set(false);
-        const opener = labels.find((l) => l.classList.contains("dp-mobile-only"));
-        if (opener) opener.focus();
-      }
+      if (!toggle.checked) return;
+      if (e.key === "Escape") { set(false); return; }
+      if (e.key !== "Tab") return;
+      const items = [...drawer.querySelectorAll('a[href], button, [tabindex="0"]')]
+        .filter((item) => item.getClientRects().length && getComputedStyle(item).visibility !== "hidden");
+      const first = items[0];
+      const last = items.at(-1);
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+    });
+    window.matchMedia("(min-width: 1024px)").addEventListener("change", () => {
+      toggle.checked = false;
+      sync();
     });
     sync();
     // Drawer accordions (Cards, Points & miles): same CSS-only pattern, so
@@ -591,7 +631,7 @@ const publicationRows: SubRow[] = [
     font-weight: 600;
     letter-spacing: 0.3px;
   }
-  .dp-header-nav a {
+  .dp-header-nav :is(a, summary) {
     color: var(--ink);
     padding: 0;
     text-decoration: none;
@@ -603,8 +643,8 @@ const publicationRows: SubRow[] = [
     display: inline-flex;
     align-items: center;
   }
-  .dp-header-nav a:hover { color: var(--green); }
-  .dp-header-nav a.is-active {
+  .dp-header-nav :is(a, summary):hover { color: var(--green); }
+  .dp-header-nav :is(a, summary).is-active {
     color: var(--green);
     border-bottom-color: var(--green);
   }
@@ -614,53 +654,44 @@ const publicationRows: SubRow[] = [
     display: flex;
     align-items: stretch;
   }
-  .dp-nav-mega-wrap > a {
+  .dp-nav-mega-wrap > summary {
     display: inline-flex;
     align-items: center;
     gap: 4px;
     padding: 0;
+    cursor: pointer;
+    list-style: none;
   }
+  .dp-nav-mega-wrap > summary::-webkit-details-marker { display: none; }
   .dp-mega-caret {
     font-size: 10px;
     color: var(--muted);
     transition: transform 0.2s ease, color 0.2s ease;
   }
-  .dp-nav-mega-wrap:hover .dp-mega-caret,
-  .dp-nav-mega-wrap:focus-within .dp-mega-caret {
+  .dp-nav-mega-wrap[open] .dp-mega-caret {
     transform: rotate(180deg);
     color: var(--green);
   }
 
   .dp-megapanel {
-    position: fixed;
-    top: 80px;
+    position: absolute;
+    top: 100%;
     left: 0; right: 0;
+    max-height: calc(100dvh - var(--dp-sticky-header-height));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     background: var(--paper);
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
     box-shadow: 0 12px 32px rgba(15, 31, 46, 0.10);
     z-index: 48;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-6px);        /* was -4px — more dramatic entrance */
-    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
-    pointer-events: none;              /* prevent accidental hover triggers */
-  }
-  .dp-nav-mega-wrap:hover .dp-megapanel,
-  .dp-nav-mega-wrap:focus-within .dp-megapanel,
-  .dp-megapanel:hover {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    transition-delay: 0.05s;          /* slight delay prevents flicker */
-    pointer-events: auto;
   }
   .dp-megapanel-inner {
     max-width: var(--container-listing);
     margin: 0 auto;
     padding: 32px 32px 36px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 32px;
   }
   .dp-mega-grp { display: flex; flex-direction: column; }
@@ -763,9 +794,10 @@ const publicationRows: SubRow[] = [
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   transform: translateX(-100%);
+  visibility: hidden;
   /* The one declaration of the slide (global.css no longer overrides it).
      Exit is shorter than enter, below. */
-  transition: transform 0.28s var(--dp-ease);
+  transition: transform 0.28s var(--dp-ease), visibility 0s linear 0.28s;
   display: flex;
   flex-direction: column;
 }
@@ -776,6 +808,8 @@ const publicationRows: SubRow[] = [
 }
 .dp-nav-toggle:checked ~ .dp-nav-overlay {
   transform: translateX(0);
+  visibility: visible;
+  transition: transform 0.28s var(--dp-ease);
 }
 .dp-nav-toggle:not(:checked) ~ .dp-nav-overlay { transition-duration: 0.2s; }
 

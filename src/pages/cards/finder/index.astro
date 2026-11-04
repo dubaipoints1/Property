@@ -181,12 +181,9 @@ const lastRefreshed = new Date(
   </div>
 
   <section class="dp-finder">
-    {/* Stage 5.5 UX Fix #7: wrap the form in a <details> so that on
-        narrow viewports the 5-fieldset form can collapse, letting the
-        results breathe. The default-open state keeps desktop behaviour
-        intact. CSS forces details[open] all the time at >=720px so
-        the disclosure-affordance only appears on mobile. */}
-    <details class="dp-finder-formwrap" open>
+    {/* Compact layouts can collapse the filters; a sidebar always shows
+        them, including when the window is resized from a collapsed view. */}
+    <details class="dp-finder-formwrap" id="finder-filters" open>
       <summary class="dp-finder-formwrap-summary">
         <span class="dp-finder-formwrap-title">Filter cards</span>
         <span class="dp-finder-formwrap-hint">Salary, spend, preference</span>
@@ -391,6 +388,16 @@ const lastRefreshed = new Date(
   // ── Client-side ranker — runs on page load and re-reads on form submit.
   // Mirrors the server-side score formula documented at the top of the file.
   (function () {
+    var filters = document.getElementById("finder-filters");
+    if (filters instanceof HTMLDetailsElement) {
+      var compactFilters = window.matchMedia("(max-width: 820px)");
+      var openSidebar = function () {
+        if (!compactFilters.matches) filters.open = true;
+      };
+      compactFilters.addEventListener("change", openSidebar);
+      openSidebar();
+    }
+
     var idxEl = document.getElementById("finder-card-index");
     if (!idxEl) return;
     var CARDS = JSON.parse(idxEl.textContent || "[]");
@@ -627,17 +634,9 @@ const lastRefreshed = new Date(
   }
 
   /* ── Form wrapper (mobile <details> collapse) ─────────────────── */
-  /* Stage 5.5 UX Fix #7: the <details> wrapper only renders its
-     summary affordance below 720px. On desktop the form behaves
-     identically to before — sticky sidebar, always open. */
-  .dp-finder-formwrap {
-    /* Reset default details styling on desktop. */
-  }
+  .dp-finder-formwrap { min-width: 0; }
   .dp-finder-formwrap-summary {
     display: none;
-  }
-  .dp-finder-formwrap > .dp-finder-form {
-    /* On desktop the form fills the wrapper without any wrapper chrome. */
   }
 
   /* ── Form ─────────────────────────────────────────────────────── */
@@ -655,7 +654,7 @@ const lastRefreshed = new Date(
   /* Stage 5.5 UX Fix #8: combined network + fee fieldsets share a row. */
   .dp-finder-fs-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
   }
   .dp-finder-fs {
@@ -664,6 +663,7 @@ const lastRefreshed = new Date(
     margin: 0;
     display: grid;
     gap: 8px;
+    min-inline-size: 0;
   }
   .dp-finder-fs legend {
     font-size: 10px;
@@ -786,7 +786,7 @@ const lastRefreshed = new Date(
   .dp-finder-grid {
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   }
   .dp-finder-tile {
     display: block;
@@ -834,9 +834,9 @@ const lastRefreshed = new Date(
     text-underline-offset: 2px;
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 820px) {
     .dp-finder {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: 24px;
       padding-inline: 20px;
     }
@@ -846,7 +846,7 @@ const lastRefreshed = new Date(
       gap: 16px;
     }
     .dp-finder-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
     /* Stage 5.5 UX Fix #7: surface the <details> disclosure on mobile.
        The form starts open (per <details open>) so first-load readers
@@ -856,6 +856,7 @@ const lastRefreshed = new Date(
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 12px;
       padding: 14px 18px;
       background: var(--paper);

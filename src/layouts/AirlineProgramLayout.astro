@@ -97,7 +97,7 @@ const schema = {
 ---
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
-  <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead is-narrow", { "dp-stage": stageOwnsHero }]}>
+  <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead is-narrow dp-prog-head", { "dp-stage": stageOwnsHero }]}>
     <div class="crumb">{region} · <a href={sectionPath} class="crumb-link">{section === "hotels" ? "Hotel programme" : "Loyalty programme"}</a></div>
     <h1>{programName}</h1>
     <p class="deck">Loyalty currency: <strong>{currencyName}</strong>.</p>
@@ -201,30 +201,54 @@ const schema = {
 </BaseLayout>
 
 <style>
-  /* Stage 2 (2026-05-25 amendment): laptop-aware width. Single column on
-     mobile; at >=1024px a 1fr + 300px grid reclaims the right margin with
-     a sticky reference rail (transfer partners + expiry). Editorial prose
-     stays in the main column and leads on every viewport. */
+  /* The plain header, full-bleed stage text and body all use the same
+     inset. The wide stage keeps its full-bleed photograph. */
+  .dp-prog-head,
+  .dp-prog-grid {
+    --programme-frame: 760px;
+    --programme-gutter: clamp(16px, 3vw, 32px);
+    --programme-rail: 0px;
+    --programme-rail-gap: 0px;
+  }
+  .dp-prog-head:not(.dp-stage) {
+    max-width: var(--programme-frame);
+    padding-inline: var(--programme-gutter) calc(var(--programme-gutter) + var(--programme-rail) + var(--programme-rail-gap));
+  }
+  :global(:root body) .dp-prog-head.dp-stage.is-narrow {
+    --programme-stage-inset: max(var(--programme-gutter), calc((100% - var(--programme-frame)) / 2 + var(--programme-gutter)));
+    padding-inline: var(--programme-stage-inset) calc(var(--programme-stage-inset) + var(--programme-rail) + var(--programme-rail-gap));
+  }
   .dp-prog-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 40px;
-    max-width: var(--container-listing);
+    max-width: var(--programme-frame);
     margin: 0 auto;
-    padding: 40px 32px 80px;
+    padding: 40px var(--programme-gutter) 80px;
   }
   @media (min-width: 1024px) {
-    /* The heading and metrics occupy the same main column as the hero and
-       prose. The right padding reserves the 300px reference rail plus its
-       64px gutter, eliminating the unrelated centred 760px header shell. */
-    .dp-pagehead.is-narrow {
-      max-width: var(--container-listing);
-      padding: 56px calc(32px + 300px + 64px) 32px 32px;
+    .dp-prog-head,
+    .dp-prog-grid {
+      --programme-frame: var(--container-listing);
+      --programme-rail: 300px;
+      --programme-rail-gap: clamp(40px, 5vw, 64px);
     }
-    .dp-prog-grid { grid-template-columns: minmax(0, 1fr) 300px; gap: 64px; }
+    .dp-prog-grid {
+      grid-template-columns: minmax(0, 1fr) var(--programme-rail);
+      gap: var(--programme-rail-gap);
+    }
+  }
+  @media (max-width: 719.98px) {
+    /* A programme has four facts, unlike the generic three-fact stage. */
+    :global(:root body) .dp-prog-head.dp-stage .dp-metric-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 12px;
+    }
+    :global(:root body) .dp-prog-head.dp-stage .dp-metric-strip .metric:nth-child(odd) { padding-left: 0; }
+    :global(:root body) .dp-prog-head.dp-stage .dp-metric-strip .metric:nth-child(even) { border-right: 0; }
   }
   @media (max-width: 640px) {
-    .dp-prog-grid { padding: 28px 20px 56px; gap: 28px; }
+    .dp-prog-grid { padding-block: 28px 56px; gap: 28px; }
   }
   .dp-prog-body { width: 100%; min-width: 0; }
 
