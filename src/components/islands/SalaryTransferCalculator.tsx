@@ -8,6 +8,7 @@ import {
   rankOffers,
 } from "../../lib/salaryTransfer";
 import { Tween, useFlip } from "./motion";
+import "./salaryTransferCalculator.css";
 
 interface Props {
   offers: SalaryTransferOffer[];
@@ -87,11 +88,14 @@ export default function SalaryTransferCalculator({ offers }: Props) {
                 Number((e.target as HTMLInputElement).value) || 0,
               )
             }
-            class="dpsc-input"
+            class="dpsc-input dp-ui-field"
           />
           <p class="dpsc-hint">Salary thresholds vary by offer. Enter your exact monthly salary.</p>
         </div>
 
+        <details class="dpsc-options">
+          <summary>Product choices and filters</summary>
+          <div class="dpsc-options-content">
         <div class="dpsc-checks">
           <label class="dpsc-check">
             <input
@@ -138,9 +142,12 @@ export default function SalaryTransferCalculator({ offers }: Props) {
             </label>
           ))}
         </fieldset>
+          </div>
+        </details>
       </form>
 
       <div class="dpsc-results">
+        <p class="sr-only" role="status">{top ? `Highest matching estimate: ${top.offer.bankName}, ${formatAED(top.cashEquivalentAED)} cash-equivalent.` : "No estimate matches without a warning. Review the results and offer conditions."}</p>
         {top && (
           <div class="dpsc-best">
             <p class="dpsc-best-eyebrow">Highest matching estimate</p>
@@ -158,7 +165,7 @@ export default function SalaryTransferCalculator({ offers }: Props) {
               {top.matchedBand!.maxSalary === null
                 ? "no upper limit"
                 : formatAED(top.matchedBand!.maxSalary)}
-              .
+              . {willStay12Months ? "Assumes you will stay at least 12 months." : "Does not assume you will stay 12 months."}
             </p>
           </div>
         )}

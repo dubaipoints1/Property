@@ -161,12 +161,9 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
   const activeBand = scope ?? (band === null ? null : BANDS[band]);
 
-  const appliedLabel =
-    (activeBand ? `Band: ${activeBand.label}` : "All bands") +
-    (() => {
-      const n = [cash, noCard, sharia].filter(Boolean).length;
-      return n ? ` · ${n} filter${n > 1 ? "s" : ""}` : "";
-    })();
+  const activeFilterCount = [cash, noCard, sharia].filter(Boolean).length;
+  const filterCountLabel = activeFilterCount ? `${activeFilterCount} filter${activeFilterCount > 1 ? "s" : ""}` : "";
+  const appliedLabel = (activeBand ? `Band: ${activeBand.label}` : "All bands") + (filterCountLabel ? ` · ${filterCountLabel}` : "");
 
   const rows = useMemo(() => {
     const expiry = (offer: SalaryTransferOffer) => timelines[offer.id]?.endDate === "published"
@@ -341,13 +338,18 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
         </div>
         </>}
 
+        <details class="dpst-options">
+          <summary>
+            <span>Filters and sort</span>
+            <span class="dpst-options-state">{filterCountLabel ? `${filterCountLabel} active` : (sort === "value" ? "By reward value" : "Ending soonest")}</span>
+          </summary>
         <div class="dpst-ctrl-row">
           <div>
             <span class="dpst-ctrl-label">Filters</span>
             <div class="dpst-chips" role="group" aria-label="Offer filters">
               <button
                 type="button"
-                class="dpst-chip"
+                class="dpst-chip dp-ui-filter"
                 aria-pressed={cash}
                 onClick={() => setCash(!cash)}
               >
@@ -358,7 +360,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
               </button>
               <button
                 type="button"
-                class="dpst-chip"
+                class="dpst-chip dp-ui-filter"
                 aria-pressed={noCard}
                 onClick={() => setNoCard(!noCard)}
               >
@@ -369,7 +371,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
               </button>
               <button
                 type="button"
-                class="dpst-chip"
+                class="dpst-chip dp-ui-filter"
                 aria-pressed={sharia}
                 onClick={() => setSharia(!sharia)}
               >
@@ -380,7 +382,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
               </button>
               <button
                 type="button"
-                class="dpst-chip is-reset"
+                class="dp-ui-action dp-ui-quiet"
                 onClick={() => {
                   clearFilters();
                   setBand(null);
@@ -393,10 +395,10 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
           </div>
           <div>
             <span class="dpst-ctrl-label">Sort by</span>
-            <div class="dpst-sort">
+            <div class="dpst-sort" role="group" aria-label="Sort offers">
               <button
                 type="button"
-                class="dpst-sort-btn"
+                class="dpst-sort-btn dp-ui-filter"
                 aria-pressed={sort === "value"}
                 onClick={() => setSort("value")}
               >
@@ -407,7 +409,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
               </button>
               <button
                 type="button"
-                class="dpst-sort-btn"
+                class="dpst-sort-btn dp-ui-filter"
                 aria-pressed={sort === "expiry"}
                 onClick={() => setSort("expiry")}
               >
@@ -416,6 +418,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
             </div>
           </div>
         </div>
+        </details>
       </div>
 
       {/* RESULT COUNT */}
@@ -475,24 +478,20 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                     scope="col"
                     class={`sortable${sort === "value" ? " sorted" : ""}`}
                     aria-sort={sort === "value" ? "descending" : "none"}
-                    onClick={() => setSort("value")}
                   >
-                    Headline value{" "}
-                    <span class="sort-ind" aria-hidden="true">
-                      ↓
-                    </span>
+                    <button type="button" class="dpst-column-sort" onClick={() => setSort("value")}>
+                      Headline value <span class="sort-ind" aria-hidden="true">↓</span>
+                    </button>
                   </th>
                   <th scope="col">Salary for reward</th>
                   <th
                     scope="col"
                     class={`sortable${sort === "expiry" ? " sorted" : ""}`}
                     aria-sort={sort === "expiry" ? "ascending" : "none"}
-                    onClick={() => setSort("expiry")}
                   >
-                    Validity{" "}
-                    <span class="sort-ind" aria-hidden="true">
-                      ↕
-                    </span>
+                    <button type="button" class="dpst-column-sort" onClick={() => setSort("expiry")}>
+                      Validity <span class="sort-ind" aria-hidden="true">↕</span>
+                    </button>
                   </th>
                   <th scope="col">
                     <span class="sr-only">Expand</span>

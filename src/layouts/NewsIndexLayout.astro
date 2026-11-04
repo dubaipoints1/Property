@@ -2,25 +2,15 @@
 // NewsIndexLayout — shared shell for /news/ and the per-desk indexes
 // (/news/banking/, /news/airlines/, /news/hotels/).
 //
-// Lifted from src/pages/news/index.astro (Phase F.4) per the 2026-07-27
-// council session `travel-news-desks-strategy`: the beat routes need the
-// identical composition (pagehead + tabs + search, featured post, card
-// grid, trending rail, Insider Intel) and duplicating ~400 lines of
-// scoped CSS three more times was the alternative. /guides/index.astro
-// still carries its own copy — if that drifts too, the next refactor
-// lifts both into an ArticleIndexLayout.
-//
-// The desk tabs are honest facet filters: each links to a real filtered
-// route (unlike the pre-F.4 tabs that pivoted the reader off-section,
-// which is why tabs were removed then). Active tab reflects the current
-// desk. Empty state comes through the `empty` slot so each desk writes
-// its own honest copy (house precedent: SalaryTransferHistoryLayout's
-// .dp-hist-empty, 10 June 2026 fresh-eyes audit).
+// Editorial Utility: a chronological briefing plus one recent photo
+// feature when the desk owns a suitable manifest-tracked photograph.
 
 import type { CollectionEntry } from "astro:content";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import NewsListingVisual from "~/components/NewsListingVisual.astro";
+import NewsStoryRow from "~/components/NewsStoryRow.astro";
+import { stagePhoto } from "~/lib/stage";
 import { getCollection } from "astro:content";
 
 interface Props {
@@ -50,13 +40,30 @@ const guides = (await getCollection("guides")).sort(
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
-const featured = posts[0];
-const others = posts.slice(1);
-
-// Cross-section trending — when the desk has no posts, point readers at
-// the freshest guides instead of an empty rail.
-const trending = posts.length > 0 ? posts.slice(0, 5) : guides.slice(0, 5);
-const trendingLinkBase = posts.length > 0 ? "/news" : "/guides";
+// Never pull an old story forward just because it has a photograph. If
+// the newest story already has one, the feature is also the newest item.
+const featured = posts.slice(0, 6).find((post) =>
+  !post.data.textLed && (post.data.beat === "airline" || post.data.beat === "hotel") && stagePhoto(`news-${post.id}`),
+);
+const featureIsLatest = featured?.id === posts[0]?.id;
+const remaining = posts.filter((post) => post.id !== featured?.id);
+// Keep a useful current edition visible. Native closed details keeps the
+// rest of the archive and its links accessible without initially fetching
+// dozens of lazy images on a compact mobile feed.
+const editionSize = 8;
+const latest = remaining.slice(0, featured ? 2 : editionSize);
+// Give two desks a place in the briefing when stories share the newest
+// date. This never moves an older item ahead of a newer one.
+const first = latest[0];
+if (activeDesk === "all" && featured && first && latest[1]?.data.beat === first.data.beat) {
+  const sameDayFromAnotherDesk = remaining.find((post) =>
+    post.data.beat !== first.data.beat && post.data.publishedAt.getTime() === first.data.publishedAt.getTime(),
+  );
+  if (sameDayFromAnotherDesk) latest[1] = sameDayFromAnotherDesk;
+}
+const afterLatest = remaining.filter((post) => !latest.some((item) => item.id === post.id));
+const more = featured ? afterLatest.slice(0, editionSize - 3) : [];
+const archive = afterLatest.slice(more.length);
 
 // Desk tabs — every href is a real filtered route (no fictional facets).
 const tabs: Array<{ label: string; href: string; key: Props["activeDesk"] }> = [
@@ -104,19 +111,11 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
       <p>{deck}</p>
 
       <div class="intel-tools">
-        <div class="intel-tabs" role="tablist">
-          {tabs.map((t) =>
-            t.key === activeDesk ? (
-              <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
-            ) : (
-              <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
-            ),
-          )}
-        </div>
-        {/* RSS sits with search on the right (19 Oct 2026 UX review); it
-            used to float mid-row between the tabs and the search pill. */}
+        <nav class="intel-tabs" aria-label="News desks">
+          {tabs.map((t) => <a href={t.href} class="dp-ui-filter" aria-current={t.key === activeDesk ? "page" : undefined}>{t.label}</a>)}
+        </nav>
         <div class="intel-tools-end">
-          <a class="intel-feed" href={feedHref} title="Subscribe to this desk by RSS" aria-label="RSS feed for this desk">
+          <a class="intel-feed dp-ui-action dp-ui-secondary" href={feedHref} aria-label="RSS feed for this desk">
             <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
               <circle cx="6.2" cy="17.8" r="2.2"/>
               <path d="M4 10.2v3.1c3.7 0 6.7 3 6.7 6.7h3.1c0-5.4-4.4-9.8-9.8-9.8z"/>
@@ -124,24 +123,22 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
             </svg>
             <span class="intel-feed-text">RSS</span>
           </a>
-          <form class="intel-search" action="/search/" method="get" role="search">
-            <label class="intel-search-label" for={searchInputId}>Search</label>
-            {/* Visible magnifier — sits inside the pill so taps on it
-                focus the input (F-UX-4 mobile collapse). At <480px the
-                pill becomes a 36×36 icon-only affordance until focused. */}
-            <label for={searchInputId} class="intel-search-icon" aria-hidden="true">
-              <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+          <form class="intel-search" action="/search/" method="get" role="search" aria-label="Site search from the news desk">
+            <label class="intel-search-label" for={searchInputId}>Search DubaiPoints</label>
+            <input
+              id={searchInputId}
+              class="dp-ui-field"
+              type="search"
+              name="q"
+              placeholder="Search DubaiPoints"
+              autocomplete="off"
+            />
+            <button class="dp-ui-action dp-ui-secondary intel-search-submit" type="submit" aria-label="Search">
+              <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                 <circle cx="9" cy="9" r="6"/>
                 <line x1="13.5" y1="13.5" x2="17.5" y2="17.5" stroke-linecap="round"/>
               </svg>
-            </label>
-            <input
-              id={searchInputId}
-              type="search"
-              name="q"
-              placeholder="Search news…"
-              autocomplete="off"
-            />
+            </button>
           </form>
         </div>
       </div>
@@ -149,19 +146,19 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   </header>
 
   <div class="intel-grid">
-    <div class="intel-main">
+    <div class:list={["intel-main", { "has-feature": Boolean(featured), "feature-is-latest": featureIsLatest }]}>
       {posts.length === 0 ? (
         <section class="news-empty">
           <slot name="empty" />
         </section>
       ) : (
         <>
-          {featured && (
-            <a href={`/news/${featured.id}/`} class="intel-featured">
+          {featureIsLatest && featured && (
+            <a href={`/news/${featured.id}/`} class="intel-featured" data-news-feature>
               <NewsListingVisual id={featured.id} featured />
               <div class="intel-featured-body">
                 <span class="intel-featured-top">
-                  <span class="intel-featured-eyebrow">{formatCategory(featured.data.category)}</span>
+                  <span class="intel-featured-eyebrow">Latest reporting · {formatCategory(featured.data.category)}</span>
                   <time class="intel-date" datetime={featured.data.publishedAt.toISOString()}>{fmt(featured.data.publishedAt)}</time>
                 </span>
                 <h2>{featured.data.title}</h2>
@@ -170,448 +167,216 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
             </a>
           )}
 
-          {others.length > 0 && (
-            <ul class="intel-card-grid">
-              {others.map((p) => (
-                <li class="intel-card-item">
-                  <a href={`/news/${p.id}/`} class="intel-card">
-                    <NewsListingVisual id={p.id} />
-                    <div class="intel-card-body">
-                      <span class="intel-card-top">
-                        <span class="intel-card-cat">{formatCategory(p.data.category)}</span>
-                        <time class="intel-date" datetime={p.data.publishedAt.toISOString()}>{fmt(p.data.publishedAt)}</time>
-                      </span>
-                      <h3>{p.data.title}</h3>
-                      <p>{p.data.description}</p>
-                    </div>
-                  </a>
-                </li>
-              ))}
-            </ul>
+          {latest.length > 0 && (
+            <section class="dp-news-latest" aria-labelledby="news-latest-heading" data-news-latest>
+              <h2 class="dp-news-section-heading" id="news-latest-heading">{featureIsLatest ? "More recent reporting" : "Latest reporting"}</h2>
+              <ol>{latest.map((post) => <NewsStoryRow post={post} />)}</ol>
+            </section>
+          )}
+
+          {!featureIsLatest && featured && (
+            <a href={`/news/${featured.id}/`} class="intel-featured" data-news-feature>
+              <NewsListingVisual id={featured.id} featured />
+              <div class="intel-featured-body">
+                <span class="intel-featured-top">
+                  <span class="intel-featured-eyebrow">Photo feature · {formatCategory(featured.data.category)}</span>
+                  <time class="intel-date" datetime={featured.data.publishedAt.toISOString()}>{fmt(featured.data.publishedAt)}</time>
+                </span>
+                <h2>{featured.data.title}</h2>
+                <p>{featured.data.description}</p>
+              </div>
+            </a>
+          )}
+
+          {more.length > 0 && (
+            <section class="dp-news-more" aria-labelledby="news-more-heading">
+              <h2 class="dp-news-section-heading" id="news-more-heading">More recent stories</h2>
+              <ol>{more.map((post) => <NewsStoryRow post={post} />)}</ol>
+            </section>
+          )}
+          {archive.length > 0 && (
+            <details class="dp-news-archive" data-news-archive>
+              <summary class="dp-ui-action dp-ui-secondary">Older news <span>({archive.length})</span></summary>
+              <ol>{archive.map((post) => <NewsStoryRow post={post} />)}</ol>
+            </details>
           )}
         </>
       )}
     </div>
 
-    {trending.length > 0 && (
+    {posts.length === 0 && guides.length > 0 && (
     <aside class="intel-aside">
-      {trending.length > 0 && (
-        <nav class="intel-trending" aria-label="Trending stories">
-          <div class="dp-rail-heading">{posts.length > 0 ? "Trending now" : "From the guides desk"}</div>
+        <nav class="intel-trending" aria-label="From the guides desk">
+          <div class="dp-rail-heading">From the guides desk</div>
           <ol>
-            {trending.map((item, i) => (
+            {guides.slice(0, 5).map((item) => (
               <li>
-                <span class="num">{String(i + 1).padStart(2, "0")}</span>
-                <a href={`${trendingLinkBase}/${item.id}/`}>{item.data.title}</a>
+                <a href={`/guides/${item.id}/`}>{item.data.title}</a>
               </li>
             ))}
           </ol>
         </nav>
-      )}
     </aside>
     )}
   </div>
 </BaseLayout>
 
 <style>
-  /* Shared with /guides/index.astro (Phase F.3). Lifted from
-     src/pages/news/index.astro so the four news indexes share one
-     stylesheet. If /guides/ drifts, a future refactor lifts both into
-     a shared ArticleIndexLayout component. */
   .intel-pagehead {
-    background: var(--paper);
-    padding: 48px 32px 32px;
+    padding: clamp(24px, 4vw, 44px) clamp(16px, 3vw, 32px) clamp(16px, 3vw, 28px);
     border-bottom: 1px solid var(--line);
+    background: var(--paper);
   }
-  .intel-pagehead-inner { max-width: var(--container-listing); margin: 0 auto; }
+  .intel-pagehead-inner { max-width: var(--container-listing); margin-inline: auto; }
   .intel-pagehead .crumb {
-    font-family: var(--font-ui);
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
+    margin-block-end: 10px;
     color: var(--green);
-    margin-bottom: 16px;
+    font: 700 .6875rem/1.4 var(--font-ui);
+    letter-spacing: .14em;
+    text-transform: uppercase;
   }
   .intel-pagehead h1 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(38px, 5.6vw, 58px);
-    letter-spacing: -1.6px;
-    line-height: 1.04;
-    color: var(--green);
-    margin: 0 0 14px;
+    margin: 0 0 8px;
+    color: var(--ink);
+    font: 550 clamp(2rem, 5vw, 3.5rem)/1.06 var(--font-display);
+    letter-spacing: -.035em;
   }
   .intel-pagehead p {
-    max-width: 62ch;
-    font-size: 15px; line-height: 1.6;
+    max-width: 65ch;
+    margin: 0 0 clamp(14px, 2.5vw, 24px);
     color: var(--ink-soft);
-    margin: 0 0 28px;
+    font-size: .9375rem;
+    line-height: 1.5;
   }
-  .intel-tools {
-    display: flex; flex-wrap: wrap;
-    gap: 16px 24px;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
-  .intel-tools-end { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-  .intel-tab {
-    font-family: var(--font-ui);
-    font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
-    color: var(--ink-soft);
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: transparent;
-    border: 1px solid transparent;
-    text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease;
-    cursor: pointer;
-  }
-  .intel-tab:hover { background: var(--shade-1); color: var(--ink); }
-  .intel-tab.is-active { background: var(--ink); color: var(--paper); cursor: default; }
-  .intel-feed {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-family: var(--font-ui);
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--muted);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 6px 12px;
-    text-decoration: none;
-    transition: color 0.15s ease, border-color 0.15s ease;
-  }
-  .intel-feed:hover { color: var(--gold); border-color: rgba(184, 132, 42, 0.45); }
-
-  .intel-search {
-    display: flex; align-items: center;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0 14px;
-    height: 36px;
-    min-width: 220px;
-    transition: border-color 0.15s ease;
-  }
-  .intel-search:focus-within { border-color: var(--ink-soft); }
+  .intel-tools,
+  .intel-tabs,
+  .intel-tools-end { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .intel-tools { justify-content: space-between; gap: 10px 18px; }
+  .intel-search { display: flex; gap: 6px; min-width: 0; }
   .intel-search-label {
-    position: absolute; width: 1px; height: 1px;
-    overflow: hidden; clip: rect(0,0,0,0);
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
-  .intel-search input[type="search"] {
-    border: 0; background: transparent; outline: none;
-    font-family: var(--font-ui);
-    font-size: 16px;
-    color: var(--ink);
-    width: 100%;
-  }
-  .intel-search input[type="search"]::placeholder { color: var(--muted); }
-  .intel-search input[type="search"]:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
-  .intel-search-icon {
-    display: none;
-    align-items: center; justify-content: center;
-    color: var(--ink-soft);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
+  .intel-search input { width: min(26vw, 260px); }
+  .intel-search-submit { min-inline-size: var(--dp-ui-control); }
 
   .intel-grid {
     max-width: var(--container-listing);
-    margin: 32px auto 56px;
-    padding: 0 32px;
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    gap: 40px;
-    align-items: start;
+    margin: clamp(18px, 3vw, 36px) auto var(--dp-ui-section);
+    padding-inline: clamp(16px, 3vw, 32px);
   }
-  .intel-main { display: grid; gap: 28px; }
-
-  /* Featured + grid cards — same shape as /guides/ for visual rhyme. */
-  .intel-featured {
-    display: grid; grid-template-rows: auto 1fr;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    overflow: hidden;
-    text-decoration: none; color: inherit;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  }
-  .intel-featured:hover {
-    transform: translateY(-2px);
-    border-color: var(--ink-soft);
-    box-shadow: 0 20px 40px -20px rgba(15, 31, 46, 0.22);
-  }
-  .intel-featured :global(.intel-featured-image) {
-    width: 100%; aspect-ratio: 16 / 9;
-    object-fit: cover; display: block;
+  .intel-main { min-width: 0; display: grid; gap: var(--dp-ui-gap); }
+  .dp-news-latest,
+  .dp-news-more { min-width: 0; }
+  .dp-news-latest ol, .dp-news-more ol { list-style: none; margin: 0; padding: 0; }
+  .dp-news-section-heading {
+    margin: 0;
+    padding-bottom: 9px;
     border-bottom: 1px solid var(--line);
-  }
-  .intel-featured-body { padding: 24px 28px 28px; display: grid; gap: 10px; }
-  .intel-featured-eyebrow {
-    font-family: var(--font-ui);
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--green);
+    font: 700 .875rem/1.35 var(--font-ui);
+    letter-spacing: .09em;
+    text-transform: uppercase;
   }
-  .intel-featured-body h2 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(24px, 3.4vw, 34px);
-    letter-spacing: -0.9px;
-    line-height: 1.12;
-    color: var(--ink);
-    margin: 0;
-    text-wrap: balance;
-  }
-  .intel-featured:hover h2 { color: var(--green); }
-  .intel-featured-body p {
-    font-size: 15px;
-    line-height: 1.55;
-    color: var(--ink-soft);
-    margin: 0;
-    max-width: 64ch;
-  }
-  /* Category left, date right, on the first line of every card (19 Oct
-     2026 UX review): the "Filed …" stamp used to sit last, in 11px muted
-     type under the standfirst, where a returning reader scanning for
-     what is new could not see it. */
-  .intel-featured-top,
-  .intel-card-top {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 12px; flex-wrap: wrap;
-  }
-  .intel-date {
-    font-family: var(--font-ui);
-    font-size: 12px; font-weight: 600;
-    color: var(--ink-soft);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-
-  .intel-card-grid {
-    list-style: none; padding: 0; margin: 0;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
-  }
-  .intel-card-item { display: block; }
-  .intel-card {
-    display: grid; grid-template-rows: auto 1fr;
-    background: var(--paper);
+  .intel-featured {
+    display: block;
+    align-self: start;
+    overflow: hidden;
     border: 1px solid var(--line);
     border-radius: 14px;
-    overflow: hidden;
-    text-decoration: none; color: inherit;
-    height: 100%;
-    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-  }
-  .intel-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--ink-soft);
-    box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
-  }
-  .intel-card :global(.intel-card-image) {
-    width: 100%; aspect-ratio: 3 / 2;
-    object-fit: cover; display: block;
-    border-bottom: 1px solid var(--line);
-  }
-  .intel-card:not(:has(> :nth-child(2))),
-  .intel-featured:not(:has(> :nth-child(2))) { grid-template-rows: 1fr; }
-  .intel-card-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
-  .intel-card-cat {
-    font-family: var(--font-ui);
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--green);
-  }
-  .intel-card h3 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 18px;
-    letter-spacing: -0.3px;
-    line-height: 1.25;
-    color: var(--ink);
-    margin: 0;
-    text-wrap: balance;
-  }
-  .intel-card:hover h3 { color: var(--green); }
-  .intel-card-body p {
-    font-size: 13px; line-height: 1.5;
-    color: var(--ink-soft); margin: 0;
-  }
-
-  /* Empty state — desk copy arrives through the `empty` slot, so the
-     inner-element rules use :global() bounded by the wrapper (Astro
-     scoped styles don't reach slotted content). House precedent:
-     SalaryTransferHistoryLayout .dp-hist-empty. */
-  .news-empty {
+    color: inherit;
     background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    padding: 40px 36px 36px;
-    display: grid;
-    gap: 14px;
-  }
-  .news-empty :global(.news-empty-eyebrow) {
-    font-family: var(--font-ui);
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
-    color: var(--green);
-  }
-  .news-empty :global(h2) {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(26px, 3.4vw, 36px);
-    letter-spacing: -0.9px;
-    line-height: 1.12;
-    color: var(--ink);
-    margin: 0;
-    text-wrap: balance;
-  }
-  .news-empty :global(p) {
-    font-size: 15px; line-height: 1.6;
-    color: var(--ink-soft);
-    margin: 0;
-    max-width: 60ch;
-  }
-  .news-empty :global(p a) {
-    color: var(--green);
-    border-bottom: 1px solid currentColor;
     text-decoration: none;
   }
-  .news-empty :global(.news-empty-ctas) {
-    display: flex; flex-wrap: wrap; gap: 10px;
-    margin-top: 8px;
+  .intel-featured:hover { border-color: var(--green); }
+  .intel-featured:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+  .intel-featured :global(.intel-featured-image) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    border-bottom: 1px solid var(--line);
   }
+  .intel-featured-body { display: grid; gap: 7px; padding: clamp(14px, 2.4vw, 24px); }
+  .intel-featured-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    color: var(--ink-soft);
+    font: 650 .75rem/1.35 var(--font-ui);
+  }
+  .intel-featured-eyebrow { color: var(--green); }
+  .intel-featured h2 {
+    margin: 0;
+    color: var(--ink);
+    font: 550 clamp(1.375rem, 3vw, 2.125rem)/1.12 var(--font-display);
+    letter-spacing: -.025em;
+    text-wrap: pretty;
+  }
+  .intel-featured:hover h2 { color: var(--green); text-decoration: underline; text-underline-offset: .15em; }
+  .intel-featured p { margin: 0; color: var(--ink-soft); font-size: .9375rem; line-height: 1.5; }
+  .dp-news-archive ol { list-style: none; margin: 10px 0 0; padding: 0; }
+  .dp-news-archive > summary { display: list-item; width: fit-content; list-style-position: inside; padding-inline: 12px; align-content: center; }
+  .dp-news-archive > summary span { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  @media (min-width: 820px) {
+    .intel-main.has-feature { grid-template-columns: minmax(0, 1fr) minmax(0, 1.28fr); align-items: start; }
+    .intel-main.feature-is-latest { grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr); }
+    .dp-news-more, .dp-news-archive { grid-column: 1 / -1; }
+  }
+  @media (max-width: 640px) {
+    .intel-tabs { gap: 6px; }
+    .intel-tabs .dp-ui-filter { font-size: .8125rem; padding-inline: .7em; }
+    .intel-tools-end { width: 100%; flex-wrap: nowrap; }
+    .intel-search { flex: 1; }
+    .intel-search input { flex: 1; width: 0; }
+    .intel-featured p {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+    }
+  }
+
+  /* Empty desks supply their own copy through the named slot. */
+  .news-empty,
+  .intel-aside {
+    padding: clamp(16px, 3vw, 30px);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+  }
+  .news-empty { display: grid; gap: 12px; }
+  .news-empty :global(.news-empty-eyebrow) { color: var(--green); font: 700 .75rem/1.35 var(--font-ui); }
+  .news-empty :global(h2) { margin: 0; font: 550 clamp(1.5rem, 3vw, 2.25rem)/1.15 var(--font-display); }
+  .news-empty :global(p) { max-width: 62ch; margin: 0; color: var(--ink-soft); }
+  .news-empty :global(.news-empty-ctas) { display: flex; flex-wrap: wrap; gap: 8px; }
   .news-empty :global(.news-empty-cta) {
     display: inline-flex;
     align-items: center;
-    height: 40px;
-    padding: 0 18px;
-    background: var(--ink);
+    min-block-size: var(--dp-ui-control);
+    padding-inline: 12px;
+    border: 1px solid var(--green);
+    border-radius: var(--dp-ui-radius);
+    background: var(--green);
     color: var(--paper);
-    border-radius: 999px;
-    font-family: var(--font-ui);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
+    font-weight: 650;
     text-decoration: none;
-    transition: background 0.15s ease;
   }
-  .news-empty :global(.news-empty-cta:hover) { background: var(--green); }
-  .news-empty :global(.news-empty-cta.is-ghost) {
-    background: transparent;
-    color: var(--ink);
-    border: 1px solid var(--line);
-  }
-  .news-empty :global(.news-empty-cta.is-ghost:hover) {
-    border-color: var(--ink-soft);
-    background: var(--shade-1);
-  }
-
-  /* Sidebar — Trending + Insider Intel (same shape as /guides/) */
-  .intel-aside { display: flex; flex-direction: column; gap: 20px; }
-  @media (min-width: 1024px) {
-    .intel-aside { position: sticky; top: 32px; align-self: flex-start; }
-  }
-  .intel-trending {
-    background: var(--bg);
-    border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 22px;
-  }
-  .intel-trending .dp-rail-heading {
-    font-family: var(--font-ui);
-    font-size: 11px; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--green);
-    margin: 0 0 14px; font-weight: 700;
-  }
-  .intel-trending ol { list-style: none; padding: 0; margin: 0; }
-  .intel-trending li {
-    padding: 10px 0;
-    border-bottom: 1px solid var(--line-soft);
-    font-size: 13px; color: var(--ink-soft);
-    display: flex; gap: 12px;
-    line-height: 1.35;
-  }
-  .intel-trending li:last-child { border-bottom: 0; }
-  .intel-trending .num {
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    font-size: 11px; min-width: 20px;
-    flex-shrink: 0; font-weight: 700;
-    letter-spacing: 1px;
-  }
+  .news-empty :global(.news-empty-cta.is-ghost) { background: var(--paper); color: var(--green); }
+  .news-empty :global(.news-empty-cta:hover) { text-decoration: underline; }
+  .intel-aside { margin-top: var(--dp-ui-gap); }
+  .intel-trending ol { list-style: none; padding: 0; margin: 10px 0 0; }
   .intel-trending a {
-    color: var(--ink);
-    font-family: var(--font-display);
-    font-weight: 500; letter-spacing: -0.2px;
-    text-decoration: none;
-  }
-  .intel-trending a:hover { color: var(--green); }
-
-  @media (max-width: 1023px) {
-    .intel-grid { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 640px) {
-    .intel-pagehead { padding: 32px 20px 24px; }
-    .intel-grid { padding: 0 20px; margin-top: 24px; gap: 28px; }
-    .intel-card-grid { grid-template-columns: 1fr; }
-    .news-empty { padding: 28px 22px; }
-    /* F-UX-4: collapse the tab/search stack so the first content
-       card surfaces sooner. Tabs and icon-only search share a row;
-       search expands to a full-width pill only when focused. */
-    .intel-tools {
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 6px;
-    }
-    /* 19 Oct 2026: one scrollable chip row — "Hotels" used to wrap
-       alone onto a second line beside RSS and search. */
-    .intel-tabs {
-      flex: 1 1 auto; min-width: 0; gap: 2px;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      overscroll-behavior-x: contain;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    .intel-tabs::-webkit-scrollbar { display: none; }
-    .intel-tab { padding: 6px 8px; font-size: 12px; letter-spacing: 0; flex: 0 0 auto; white-space: nowrap; }
-    .intel-tools-end { flex: 0 0 auto; gap: 6px; }
-    /* Icon-only on phones (the link keeps its aria-label) so the four
-       desk chips fit beside it at 390px. */
-    .intel-feed { width: 36px; height: 36px; padding: 0; justify-content: center; box-sizing: border-box; }
-    .intel-feed-text { display: none; }
-    /* Focused search takes its own full row so the chips stay usable. */
-    .intel-tools:has(.intel-search:focus-within) { flex-wrap: wrap; }
-    .intel-tools-end:has(.intel-search:focus-within) { flex: 1 1 100%; }
-    /* Tabs always sit alongside search on the news indexes now, so
-       search collapses to a 36px icon button until focused. */
-    .intel-search:not(:only-child) {
-      min-width: 36px;
-      width: 36px;
-      flex: 0 0 36px;
-      height: 36px;
-      padding: 0;
-      justify-content: center;
-      transition: width 0.18s ease, flex-basis 0.18s ease, padding 0.18s ease;
-    }
-    .intel-search:not(:only-child) .intel-search-icon {
-      display: inline-flex; width: 36px; height: 36px;
-    }
-    .intel-search:not(:only-child) input[type="search"] {
-      width: 0;
-      padding: 0;
-      transition: width 0.18s ease, padding 0.18s ease;
-    }
-    .intel-search:not(:only-child):focus-within {
-      width: 100%;
-      flex: 1 1 100%;
-      padding: 0 14px;
-    }
-    .intel-search:not(:only-child):focus-within .intel-search-icon { display: none; }
-    .intel-search:not(:only-child):focus-within input[type="search"] { width: 100%; }
-    .intel-search:only-child { width: 100%; min-width: 0; flex: 1 1 100%; }
+    display: flex;
+    align-items: center;
+    min-block-size: var(--dp-ui-control);
+    color: var(--green);
   }
 </style>

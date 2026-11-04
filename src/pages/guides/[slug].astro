@@ -12,8 +12,7 @@ export async function getStaticPaths() {
 const { guide } = Astro.props;
 const { Content, headings } = await render(guide);
 
-// Cards the guide discusses, in the author's order, for the strip under
-// the byline (10 Oct 2026). Figures are L2 reads at build.
+// Cards the guide discusses, in the author's order. Figures are L2 reads at build.
 const active = getActiveCards();
 const banks = await getCollection("banks");
 const guideCards = guide.data.relatedCards
@@ -48,8 +47,6 @@ const toc = headings
   cards={guideCards}
   showHero
   heroSlug={`guide-${guide.id}`}
-  heroCategory="Guide"
-  heroLabel="Guide hero · illustration"
 >
   <Content />
 </ArticleLayout>

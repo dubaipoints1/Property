@@ -38,7 +38,48 @@
 .dpst-responsive .dpst-salary-note { color: var(--dpst-navy-soft); font-size: 12px; }
 .dpst-responsive .dpst-reward-note { display: block; max-inline-size: 15ch; margin-block-start: 3px; }
 .dpst-responsive .dpst-filter-note { margin: 8px 0 0; }
-.dpst-responsive .dpst-salary-note { padding: 0 20px 12px; margin: 0; }
+.dpst-responsive .dpst-salary-note { padding: 8px 20px 0; margin: 0; }
+.dpst-responsive :is(.dpst-band, .dpst-chip, .dpst-sort-btn, .dpst-column-sort) {
+  min-block-size: var(--dp-ui-control, 44px);
+}
+.dpst-responsive .dpst-band[aria-pressed="true"]::before { content: "✓ " / ""; }
+.dpst-responsive .dpst-options {
+  border: 1px solid var(--dpst-line);
+  border-radius: var(--dp-ui-radius, 8px);
+}
+.dpst-responsive .dpst-options > summary {
+  display: flex;
+  align-items: center;
+  gap: 4px 12px;
+  flex-wrap: wrap;
+  padding: 6px 12px;
+  min-block-size: var(--dp-ui-control, 44px);
+  color: var(--dpst-navy);
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  list-style: none;
+}
+.dpst-responsive .dpst-options > summary::-webkit-details-marker { display: none; }
+.dpst-responsive .dpst-options > summary::after { content: "▾" / ""; }
+.dpst-responsive .dpst-options[open] > summary::after { transform: rotate(180deg); }
+.dpst-responsive .dpst-options > summary:focus-visible { outline: 2px solid var(--dpst-accent); outline-offset: 2px; }
+.dpst-responsive .dpst-options-state { margin-inline-start: auto; color: var(--dpst-navy-soft); font-size: 12px; font-weight: 500; }
+.dpst-responsive .dpst-ctrl-row { padding: 12px; border-block-start: 1px solid var(--dpst-line); }
+.dpst-responsive .dpst-sort { flex-wrap: wrap; }
+.dpst-responsive .dpst-column-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: start;
+}
+.dpst-responsive .dpst-column-sort:focus-visible { outline: 2px solid var(--dpst-accent); outline-offset: 2px; }
 .dpst-responsive .dpst-expand { min-inline-size: 44px; min-block-size: 44px; }
 .dpst-responsive .dpst-row.is-open + .dpst-detail-row .dpst-detail,
 .dpst-responsive .dpst-card.is-open .dpst-card-detail { max-block-size: none; }
@@ -131,6 +172,14 @@
   .dpst-responsive .dpst-card-detail { background: var(--dpst-paper); }
   .dpst-responsive .dpst-card-detail-inner { padding: 4px 16px 18px; }
   .dpst-responsive .dpst-card-detail-inner .dpst-fineblock { margin-bottom: 16px; }
+}
+
+@container salary-tracker (width < 640px) {
+  .dpst-responsive .dpst-controls { padding: 12px 14px; }
+  .dpst-responsive .dpst-bands { margin-block-end: 10px; }
+  .dpst-responsive .dpst-meta { padding: 8px 14px; flex-wrap: wrap; gap: 2px 12px; }
+  .dpst-responsive .dpst-salary-note { padding-inline: 14px; }
+  .dpst-responsive .dpst-cards { padding-block-start: 8px; }
 }
 
 @container salary-tracker (width < 345px) {

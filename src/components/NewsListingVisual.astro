@@ -4,8 +4,8 @@ import { getCardArt } from "~/lib/cardArt";
 import { LISTING_SIZES, stockSrcset } from "~/lib/stockDerivatives";
 import { getStockEntry } from "~/lib/stockManifest";
 
-interface Props { id: string; featured?: boolean; }
-const { id, featured = false } = Astro.props;
+interface Props { id: string; featured?: boolean; compact?: boolean; }
+const { id, featured = false, compact = false } = Astro.props;
 const slug = `news-${id}`;
 const photo = getStockEntry(slug);
 // Listing treatment only. These stories deliberately have no article hero.
@@ -19,10 +19,12 @@ const kind = diagram ? "cash-or-miles" : quote ? "cash-or-miles-quote" : card ? 
 ---
 
 {photo ? (
-  <StockImage slug={slug} class={featured ? "intel-featured-image" : "intel-card-image"}
-    sizes={featured ? LISTING_SIZES.featured : LISTING_SIZES.tile} loading={featured ? "eager" : "lazy"} />
+  <span class:list={["dp-news-photo", { "is-compact": compact }]}>
+    <StockImage slug={slug} class={featured ? "intel-featured-image" : "intel-card-image"}
+      sizes={featured ? LISTING_SIZES.featured : compact ? "128px" : LISTING_SIZES.tile} loading={featured ? "eager" : "lazy"} />
+  </span>
 ) : kind && (
-  <span class="dp-news-preview" data-news-preview={kind} aria-hidden="true">
+  <span class:list={["dp-news-preview", { "is-compact": compact }]} data-news-preview={kind} aria-hidden="true">
     {diagram && (
       <svg viewBox="0 0 180 76" width="180" height="76" fill="none" focusable="false">
         <g stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
@@ -57,6 +59,29 @@ const kind = diagram ? "cash-or-miles" : quote ? "cash-or-miles-quote" : card ? 
 )}
 
 <style>
+  .dp-news-photo { display: block; }
+  .dp-news-photo.is-compact,
+  .dp-news-preview.is-compact {
+    display: grid;
+    flex: 0 0 auto;
+    inline-size: clamp(68px, 12vw, 128px);
+    block-size: auto;
+    aspect-ratio: 1.5;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--dp-ui-radius, 8px);
+  }
+  .dp-news-photo.is-compact :global(img) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 1.5;
+    object-fit: cover;
+  }
+  .dp-news-photo.is-compact :global(.dp-ai-label) {
+    font-size: 10px;
+    padding: 14px 4px 3px;
+  }
   .dp-news-preview {
     display: grid;
     place-items: center;
@@ -71,4 +96,6 @@ const kind = diagram ? "cash-or-miles" : quote ? "cash-or-miles-quote" : card ? 
   .dp-news-preview svg { max-inline-size: 100%; block-size: 76px; }
   .dp-news-preview img { display: block; max-inline-size: 100%; inline-size: 144px; block-size: 80px; object-fit: contain; }
   [data-news-preview="salary-scorecard"] img { object-fit: cover; border-radius: 8px; }
+  .dp-news-preview.is-compact { padding: 4px; }
+  .dp-news-preview.is-compact :is(svg, img) { display: block; width: 100%; height: auto; max-block-size: 64px; }
 </style>

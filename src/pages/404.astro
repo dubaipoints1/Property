@@ -9,8 +9,9 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 >
   <header class="dp-pagehead is-narrow">
     <div class="crumb">404 · Page not found</div>
-    <h1>This page has moved or never existed.</h1>
-    <p class="deck">If you followed a link to get here, it points somewhere this site does not recognise. Try one of these instead.</p>
+    <h1>We couldn’t find that page.</h1>
+    <p class="deck">It may have moved. Search for what you wanted or browse a section below.</p>
+    <a href="/search/" class="dp-ui-action dp-ui-primary dp-404-search">Search DubaiPoints</a>
   </header>
 
   <div class="dp-404-body">
@@ -35,43 +36,43 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
         <div class="t">Deals</div>
         <div class="d">Time-bound UAE deals — only when they're actually worth your time.</div>
       </a>
-      <a class="dp-404-tile" href="/search/">
-        <div class="t">Search</div>
-        <div class="d">If you remember a phrase from the page, search will probably find it.</div>
+      <a class="dp-404-tile" href="/news/">
+        <div class="t">News</div>
+        <div class="d">The latest updates on UAE credit cards, airlines and hotel programmes.</div>
       </a>
     </div>
 
     <p class="dp-404-tip">
       Spotted a broken link?
       <a href="mailto:info@dubaipoints.ae?subject=Broken+link">Email us</a>
-      and we'll fix it.
+      with the address you followed.
     </p>
   </div>
 </BaseLayout>
 
 <style>
+  .dp-404-search { margin-top: 16px; }
   .dp-404-body {
     max-width: 1080px;
     margin: 0 auto;
-    padding: 40px 32px 80px;
+    padding: var(--dp-ui-gap) clamp(16px, 4vw, 32px) 24px;
   }
   .dp-404-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: var(--dp-ui-gap);
   }
   .dp-404-tile {
     display: block;
-    padding: 24px 22px;
+    padding: 18px;
     background: var(--paper);
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: var(--dp-ui-radius);
     text-decoration: none;
-    transition: border-color 0.15s ease, transform 0.15s ease;
   }
   .dp-404-tile:hover {
     border-color: var(--green);
-    transform: translateY(-2px);
+    background: var(--shade-1);
   }
   .dp-404-tile .t {
     font-family: var(--font-display);
@@ -82,7 +83,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     margin-bottom: 8px;
   }
   .dp-404-tile .d {
-    font-size: 13px;
+    font-size: 0.875rem;
     color: var(--ink-soft);
     line-height: 1.55;
   }

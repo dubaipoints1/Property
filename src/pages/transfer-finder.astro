@@ -21,7 +21,7 @@ const schema = breadcrumbGraph(siteUrlFrom(Astro.site), [
     <header class="dp-transfer-head">
       <nav class="dp-transfer-crumb" aria-label="Breadcrumb"><a href="/">DubaiPoints</a> / <a href="/airlines/">Points &amp; miles</a> / Transfer Finder</nav>
       <h1>UAE Transfer Finder</h1>
-      <p>See which bank or hotel points you can move to Emirates Skywards, Etihad Guest or Qatar Privilege Club, and what you get for the points you give up.</p>
+      <p>Compare transfer rates from UAE bank and hotel points to Skywards, Etihad Guest and Qatar Privilege Club.</p>
     </header>
 
     <div class="dp-transfer-warning">
@@ -31,18 +31,18 @@ const schema = breadcrumbGraph(siteUrlFrom(Astro.site), [
     <fieldset class="dp-transfer-filters" data-transfer-filters disabled>
       <legend class="sr-only">Filter transfer routes</legend>
       <label for="transfer-from">Points you have
-        <select id="transfer-from" data-transfer-origin>
-          <option value="">All rewards currencies</option>
+        <select class="dp-ui-field" id="transfer-from" data-transfer-origin>
+          <option value="">All currencies</option>
           {Object.entries(transferOrigins).map(([id, value]) => <option value={id}>{value.label}</option>)}
         </select>
       </label>
       <label for="transfer-to">Miles you want
-        <select id="transfer-to" data-transfer-destination>
-          <option value="">All airline programmes</option>
+        <select class="dp-ui-field" id="transfer-to" data-transfer-destination>
+          <option value="">All programmes</option>
           {Object.entries(transferDestinations).map(([id, value]) => <option value={id}>{value.label}</option>)}
         </select>
       </label>
-      <button type="button" data-transfer-reset>Reset filters</button>
+      <button type="button" class="dp-ui-action dp-ui-quiet" data-transfer-reset hidden>Reset filters</button>
     </fieldset>
     <noscript>
       <style is:inline>.dp-transfer-filters{display:none!important}</style>
@@ -129,6 +129,7 @@ const schema = breadcrumbGraph(siteUrlFrom(Astro.site), [
       }
       count.textContent = `${matches} ${matches === 1 ? "route" : "routes"} shown`;
       empty.hidden = matches > 0;
+      reset.hidden = !origin.value && !destination.value;
       if (updateUrl) {
         const current = new URL(window.location.href);
         for (const [key, value] of [["from", origin.value], ["to", destination.value]]) {
@@ -140,7 +141,7 @@ const schema = breadcrumbGraph(siteUrlFrom(Astro.site), [
     };
     origin.addEventListener("change", () => draw(true));
     destination.addEventListener("change", () => draw(true));
-    reset.addEventListener("click", () => { origin.value = ""; destination.value = ""; draw(true); });
+    reset.addEventListener("click", () => { origin.value = ""; destination.value = ""; draw(true); origin.focus(); });
     draw(false);
     filters.disabled = false;
 
@@ -167,10 +168,8 @@ const schema = breadcrumbGraph(siteUrlFrom(Astro.site), [
   .dp-transfer-warning p { margin: 0; max-width: 80ch; font-size: .92rem; line-height: 1.55; }
   .dp-transfer-filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 12px; margin: 0; min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); align-items: end; }
   .dp-transfer-filters label { min-width: 0; font: 600 .82rem/1.4 var(--font-ui); }
-  .dp-transfer-filters select, .dp-transfer-filters button { min-height: 44px; border: 1px solid var(--ink-soft); border-radius: 8px; padding: 7px 10px; background: var(--paper); color: var(--ink); font: 600 .88rem/1.4 var(--font-ui); }
   .dp-transfer-filters select { display: block; margin-top: 5px; width: 100%; }
-  .dp-transfer-filters button { cursor: pointer; color: var(--green); }
-  .dp-transfer-filters :is(button, select):focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  .dp-transfer-filters:not(:has(button:not([hidden]))) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dp-transfer-results { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; justify-content: space-between; margin-top: 25px; }
   .dp-transfer-results h2, .dp-transfer-next h2 { font: 600 1.55rem/1.15 var(--font-display); margin: 0; color: var(--ink); }
   .dp-transfer-results p { margin: 0; font-size: .83rem; color: var(--ink-soft); }
@@ -193,5 +192,11 @@ const schema = breadcrumbGraph(siteUrlFrom(Astro.site), [
   .dp-transfer-next { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 18px; }
   .dp-transfer-next p { margin: 6px 0; max-width: 70ch; line-height: 1.55; color: var(--ink-soft); }
   .dp-transfer-next-links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
-  @media (max-width: 620px) { .dp-transfer-filters { grid-template-columns: minmax(0, 1fr); } .dp-transfer-filters button { justify-self: start; } }
+  @media (max-width: 620px) {
+    .dp-transfer-head { padding-block: 20px 14px; }
+    .dp-transfer-warning { padding: 8px 12px; margin-block-end: 12px; }
+    .dp-transfer-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 12px; }
+    .dp-transfer-filters button { grid-column: 1 / -1; justify-self: start; }
+    .dp-transfer-results { margin-block-start: 16px; }
+  }
 </style>

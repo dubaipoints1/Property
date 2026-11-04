@@ -716,7 +716,7 @@ export default function RewardsCalculator({ cards }: Props) {
               <button
                 key={p.id}
                 type="button"
-                class={`dp-calc-preset${activePreset === p.id ? " is-active" : ""}`}
+                class="dp-ui-filter"
                 aria-pressed={activePreset === p.id}
                 title={p.note}
                 onClick={() => setSpend({ ...p.spend })}
@@ -731,6 +731,8 @@ export default function RewardsCalculator({ cards }: Props) {
           </p>
         </fieldset>
 
+        <details class="dp-calc-category-details">
+          <summary>Adjust spending by category</summary>
         <ul class="dp-calc-sliders">
           {(Object.keys(CATEGORY_LABELS) as (keyof SpendProfile)[]).map(
             (key) => {
@@ -764,7 +766,7 @@ export default function RewardsCalculator({ cards }: Props) {
                           Number((e.target as HTMLInputElement).value),
                         )
                       }
-                      class="dp-calc-num"
+                      class="dp-calc-num dp-ui-field"
                       aria-label={`${CATEGORY_LABELS[key]} exact AED value`}
                     />
                   </div>
@@ -773,6 +775,7 @@ export default function RewardsCalculator({ cards }: Props) {
             },
           )}
         </ul>
+        </details>
 
         <label class="dp-calc-toggle">
           <input
@@ -799,7 +802,7 @@ export default function RewardsCalculator({ cards }: Props) {
           </p>
           <input
             type="search"
-            class="dp-calc-num dp-calc-wallet-filter"
+            class="dp-calc-num dp-ui-field dp-calc-wallet-filter"
             placeholder="Filter by card or bank"
             value={walletFilter}
             onInput={(e) => setWalletFilter((e.target as HTMLInputElement).value)}
@@ -823,7 +826,7 @@ export default function RewardsCalculator({ cards }: Props) {
           {walletActive && (
             <button
               type="button"
-              class="dp-calc-wallet-clear"
+              class="dp-ui-action dp-ui-quiet dp-calc-wallet-clear"
               onClick={() => setHeld([])}
             >
               Clear wallet
@@ -1005,7 +1008,7 @@ export default function RewardsCalculator({ cards }: Props) {
         {ranked.length > 3 && (
           <button
             type="button"
-            class="dp-calc-toggle-all"
+            class="dp-calc-toggle-all dp-ui-action dp-ui-secondary"
             onClick={() => setShowAll((v) => !v)}
             aria-expanded={showAll}
           >
@@ -1019,20 +1022,21 @@ export default function RewardsCalculator({ cards }: Props) {
       <style>{`
         .dp-calc {
           display: grid;
-          gap: 32px;
-          grid-template-columns: 1fr;
+          gap: var(--dp-ui-gap, 20px);
+          grid-template-columns: minmax(0, 1fr);
         }
         @media (min-width: 880px) {
-          .dp-calc { grid-template-columns: 360px 1fr; }
+          .dp-calc { grid-template-columns: minmax(0, 360px) minmax(0, 1fr); }
         }
         .dp-calc-form {
           border: 1px solid var(--line);
           background: var(--paper);
           padding: 20px 22px;
-          border-radius: 4px;
+          border-radius: var(--dp-ui-radius, 8px);
+          align-self: start;
         }
         .dp-calc-form-head {
-          display: flex; justify-content: space-between; align-items: baseline;
+          display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 12px;
           margin-bottom: 14px;
         }
         .dp-calc-form-head h2 {
@@ -1057,20 +1061,16 @@ export default function RewardsCalculator({ cards }: Props) {
           display: flex; gap: 10px; align-items: center;
         }
         .dp-calc-slider-controls input[type="range"] {
-          flex: 1; accent-color: var(--green);
+          flex: 1; min-inline-size: 0; min-block-size: var(--dp-ui-control, 44px); accent-color: var(--green);
         }
         .dp-calc-num {
           width: 88px;
-          font-family: var(--font-ui);
           font-feature-settings: 'tnum';
-          font-size: 13px; padding: 4px 6px;
-          border: 1px solid var(--line); border-radius: 3px;
-          background: var(--bg); color: var(--ink);
         }
         .dp-calc-toggle {
           display: flex; gap: 8px; align-items: center;
-          margin-top: 18px; padding-top: 14px;
-          border-top: 1px solid var(--line);
+          margin-top: 6px;
+          min-block-size: var(--dp-ui-control, 44px);
           font-size: 13px; color: var(--ink-soft);
         }
         .dp-calc-toggle input { accent-color: var(--green); }
@@ -1084,40 +1084,27 @@ export default function RewardsCalculator({ cards }: Props) {
           padding: 0; margin-bottom: 8px;
         }
         .dp-calc-preset-row { display: flex; flex-wrap: wrap; gap: 6px; }
-        .dp-calc-preset {
-          background: transparent;
-          border: 1px solid var(--line);
-          color: var(--ink);
-          padding: 5px 10px;
-          font-family: var(--font-ui);
-          font-size: 12px; font-weight: 600;
-          border-radius: 2px;
-          cursor: pointer;
-          min-height: 32px;
-        }
-        .dp-calc-preset:hover { border-color: var(--ink); }
-        .dp-calc-preset.is-active {
-          background: var(--green); border-color: var(--green);
-          color: var(--paper);
-        }
+        .dp-calc-preset-row .dp-ui-filter { font-size: 12px; }
         .dp-calc-preset-note {
           font-size: 11px; color: var(--muted); margin: 8px 0 0;
           line-height: 1.5;
         }
 
-        .dp-calc-wallet {
-          margin-top: 14px; padding-top: 14px;
+        .dp-calc-wallet, .dp-calc-category-details {
           border-top: 1px solid var(--line);
           font-size: 13px; color: var(--ink-soft);
         }
-        .dp-calc-wallet summary {
+        .dp-calc-wallet summary, .dp-calc-category-details summary {
           cursor: pointer; font-weight: 600; color: var(--ink);
-          display: flex; gap: 10px; align-items: baseline;
-          min-height: 32px;
+          min-height: var(--dp-ui-control, 44px);
+          align-content: center;
         }
+        .dp-calc summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+        .dp-calc-category-details[open] .dp-calc-sliders { margin-block: 6px 10px; }
         .dp-calc-wallet-count {
           font-size: 11px; font-weight: 700; color: var(--green);
           letter-spacing: 0.4px; text-transform: uppercase;
+          margin-inline-start: 8px;
         }
         .dp-calc-wallet-help { margin: 8px 0 10px; line-height: 1.5; }
         .dp-calc-wallet-filter { width: 100%; margin-bottom: 8px; }
@@ -1132,7 +1119,7 @@ export default function RewardsCalculator({ cards }: Props) {
           display: grid; grid-template-columns: auto 1fr auto;
           gap: 8px; align-items: center;
           padding: 7px 10px; cursor: pointer;
-          min-height: 36px;
+          min-height: var(--dp-ui-control, 44px);
         }
         .dp-calc-wallet-list input { accent-color: var(--green); }
         .dp-calc-wallet-list .name { color: var(--ink); font-size: 13px; }
@@ -1140,14 +1127,11 @@ export default function RewardsCalculator({ cards }: Props) {
           font-size: 10px; color: var(--muted);
           letter-spacing: 0.5px; text-transform: uppercase;
         }
-        .dp-calc-wallet-clear {
-          margin-top: 8px; background: transparent;
-          border: 1px solid var(--line); color: var(--ink-soft);
-          padding: 5px 10px; font-size: 11px; font-weight: 600;
-          letter-spacing: 0.4px; text-transform: uppercase;
-          border-radius: 2px; cursor: pointer;
+        .dp-calc-wallet-clear { margin-top: 8px; }
+        @media (max-width: 640px) {
+          .dp-calc-form { padding: 12px 14px; }
+          .dp-calc-presets { margin-block-end: 8px; }
         }
-        .dp-calc-wallet-clear:hover { border-color: var(--ink); color: var(--ink); }
 
         .dp-calc-routing {
           border: 1px solid var(--line);

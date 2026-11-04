@@ -13,12 +13,13 @@
 //     slots dropped — they were never filled by the [slug] consumer.
 
 import BaseLayout from "./BaseLayout.astro";
+import UtilityPageHead from "~/components/UtilityPageHead.astro";
 import ImageCredit from "~/components/ImageCredit.astro";
 import StockImage from "~/components/StockImage.astro";
-import { stagePhoto, stageStyle } from "~/lib/stage";
-import { hasStockEntry } from "~/lib/stockManifest";
+import { getStockEntry } from "~/lib/stockManifest";
 import { getEntry } from "astro:content";
 import { programmeHref, programmeImage } from "~/lib/programmes";
+import { transferDestinations, transferOrigins } from "~/lib/transferFinder";
 
 interface RelatedCard {
   slug: string;
@@ -77,11 +78,21 @@ const partnerLabels = await Promise.all(transferPartners.map(async (p) => {
 }));
 
 const hero = slug ? programmeImage(slug) : undefined;
-const heroSlug = hero?.slug;
-const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
-// A licensed photo moves up into the cinematic stage; an AI illustration
-// stays in the body, where StockImage gives it its visible label.
-const stageOwnsHero = stagePhoto(heroSlug) != null;
+const heroEntry = hero ? getStockEntry(hero.slug) : undefined;
+const hasPhotoCredit = heroEntry?.source === "pexels" || heroEntry?.source === "unsplash";
+const transferTo = slug && Object.hasOwn(transferDestinations, slug);
+const transferFrom = slug && Object.hasOwn(transferOrigins, slug);
+const transferHref = transferTo ? `/transfer-finder/?to=${slug}` : transferFrom ? `/transfer-finder/?from=${slug}` : null;
+const primaryAction = section === "airlines"
+  ? { href: "/calculator/cash-or-miles/", label: "Compare cash and miles" }
+  : sweetSpots.length > 0
+    ? { href: "#programme-redemptions", label: "See redemption examples" }
+    : { href: "/valuations/", label: "Compare points values" };
+const secondaryAction = transferHref
+  ? { href: transferHref, label: "Find transfer routes" }
+  : relatedCards.length > 0
+    ? { href: "#programme-cards", label: "See UAE earning cards" }
+    : { href: `#${expirySection ?? "programme-expiry"}`, label: "Check expiry rules" };
 
 // JSON-LD: programmes emit a Product entity (the loyalty programme itself)
 // + BreadcrumbList. Region and currency name carry through. PR-D
@@ -117,50 +128,54 @@ const schema = {
 ---
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
-  <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead is-narrow dp-prog-head", { "dp-stage": stageOwnsHero }]}>
-    <div class="crumb">{region} · <a href={sectionPath} class="crumb-link">{section === "hotels" ? "Hotel programme" : "Loyalty programme"}</a></div>
+  <UtilityPageHead variant="programme" class="dp-prog-head">
+    <p class="dp-utility-kicker">{region} · <a href={sectionPath}>{section === "hotels" ? "Hotel programmes" : "Airline programmes"}</a></p>
     <h1>{programName}</h1>
-    <p class="deck">Loyalty currency: <strong>{currencyName}</strong></p>
-
-    <div class="dp-metric-strip">
-      <div class="metric">
-        <span class="v">{sweetSpots.length}<span class="sub">documented</span></span>
-        <span class="l">Sweet spots</span>
-      </div>
-      <div class="metric">
-        <span class="v">{transferPartners.length}<span class="sub">programmes</span></span>
-        <span class="l">Transfer partners</span>
-      </div>
-      <div class="metric">
-        <span class="v">{relatedCards.length}<span class="sub">UAE cards</span></span>
-        <span class="l">Earn into this</span>
-      </div>
-      <div class="metric">
-        <span class="v">{region}</span>
-        <span class="l">Region</span>
-      </div>
+    <p class="dp-utility-deck">How to earn and spend <strong>{currencyName}</strong> from the UAE, with transfer routes, redemption examples and expiry rules.</p>
+    <div class="dp-utility-actions">
+      <a class="dp-ui-action dp-ui-primary" href={primaryAction.href}>{primaryAction.label}</a>
+      <a class="dp-ui-action dp-ui-secondary" href={secondaryAction.href}>{secondaryAction.label}</a>
     </div>
-    {section === "hotels" && stageOwnsHero && heroSlug && (
-      <div class="dp-prog-photo-credit">
-        {hero?.caption && <span>{hero.caption} · </span>}
-        <ImageCredit slug={heroSlug} />
-      </div>
+
+    {hero && heroEntry && (
+      <figure slot="media" class="dp-prog-figure">
+        <StockImage
+          slug={hero.slug}
+          class="dp-prog-image"
+          sizes="(max-width: 719px) calc(100vw - 32px), 336px"
+          loading="eager"
+        />
+        {(hero.caption || hasPhotoCredit) && (
+          <figcaption class="dp-prog-photo-credit">
+            {hero.caption && <span>{hero.caption}{hasPhotoCredit ? " ·" : ""}</span>}{" "}
+            {hasPhotoCredit && <ImageCredit slug={hero.slug} />}
+          </figcaption>
+        )}
+      </figure>
     )}
-  </header>
+
+    <dl slot="facts" class="dp-metric-strip dp-prog-facts">
+      <div class="metric">
+        <dt class="l">Sweet spots</dt>
+        <dd class="v">{sweetSpots.length}<span class="sub">documented</span></dd>
+      </div>
+      <div class="metric">
+        <dt class="l">Transfer partners</dt>
+        <dd class="v">{transferPartners.length}<span class="sub">programmes</span></dd>
+      </div>
+      <div class="metric">
+        <dt class="l">UAE earning cards</dt>
+        <dd class="v">{relatedCards.length}</dd>
+      </div>
+      <div class="metric">
+        <dt class="l">Region</dt>
+        <dd class="v">{region}</dd>
+      </div>
+    </dl>
+  </UtilityPageHead>
 
   <div class="dp-prog-grid">
     <article class="dp-prog-body">
-      {hasHero && heroSlug && !stageOwnsHero && (
-        <StockImage
-          slug={heroSlug}
-          coverTitle={programName}
-          coverCategory="Programme"
-          coverSize="hero"
-          class="dp-hub-hero"
-          loading="eager"
-        />
-      )}
-
       <!-- Editorial prose first — this is what the reader came for. -->
       <div class="dp-prose dp-prog-prose">
         <slot />
@@ -233,34 +248,37 @@ const schema = {
 </BaseLayout>
 
 <style>
-  /* The plain header, full-bleed stage text and body all use the same
-     inset. The wide stage keeps its full-bleed photograph. */
-  .dp-prog-head,
   .dp-prog-grid {
     --programme-frame: 760px;
     --programme-gutter: clamp(16px, 3vw, 32px);
-    --programme-rail: 0px;
-    --programme-rail-gap: 0px;
   }
-  .dp-prog-head:not(.dp-stage) {
-    max-width: var(--programme-frame);
-    padding-inline: var(--programme-gutter) calc(var(--programme-gutter) + var(--programme-rail) + var(--programme-rail-gap));
+  .dp-prog-figure { margin: 0; max-inline-size: 100%; }
+  .dp-prog-figure :global(.dp-prog-image) {
+    display: block;
+    inline-size: 100%;
+    block-size: clamp(104px, 30vw, 186px);
+    object-fit: cover;
+    border-radius: var(--dp-ui-radius, 12px);
   }
-  :global(:root body) .dp-prog-head.dp-stage.is-narrow {
-    --programme-stage-inset: max(var(--programme-gutter), calc((100% - var(--programme-frame)) / 2 + var(--programme-gutter)));
-    padding-inline: var(--programme-stage-inset) calc(var(--programme-stage-inset) + var(--programme-rail) + var(--programme-rail-gap));
-    padding-block: clamp(36px, 5vw, 62px) clamp(24px, 3vw, 38px);
-    min-height: 0;
-  }
-  .dp-prog-head .deck { font-size: clamp(1rem, 1.7vw, 1.25rem); }
-  .dp-prog-head .dp-metric-strip { margin-block-start: clamp(16px, 2vw, 24px); }
+  .dp-prog-figure :global(.dp-ai-figure) { border-radius: var(--dp-ui-radius, 12px); overflow: hidden; }
   .dp-prog-photo-credit {
-    margin-block-start: 12px;
+    margin-block-start: 6px;
     color: var(--ink-soft);
     font-size: 12px;
     line-height: 1.4;
   }
   .dp-prog-photo-credit :global(.dp-image-credit) { display: inline; margin: 0; }
+  .dp-prog-facts.dp-metric-strip {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    margin: 0;
+    padding-block: 8px 0;
+    border-block-end: 0;
+  }
+  .dp-prog-facts.dp-metric-strip .metric { min-inline-size: 0; padding: 5px 12px; }
+  .dp-prog-facts.dp-metric-strip .metric:first-child { padding-inline-start: 0; }
+  .dp-prog-facts.dp-metric-strip .l { margin: 0 0 4px; letter-spacing: .05em; color: var(--ink-soft); }
+  .dp-prog-facts.dp-metric-strip .v { margin: 0; font-size: clamp(1.125rem, 2vw, 1.45rem); }
   .dp-prog-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -270,7 +288,6 @@ const schema = {
     padding: 28px var(--programme-gutter) 72px;
   }
   @media (min-width: 1024px) {
-    .dp-prog-head,
     .dp-prog-grid {
       --programme-frame: var(--container-listing);
       --programme-rail: 250px;
@@ -282,13 +299,12 @@ const schema = {
     }
   }
   @media (max-width: 719.98px) {
-    /* A programme has four facts, unlike the generic three-fact stage. */
-    :global(:root body) .dp-prog-head.dp-stage .dp-metric-strip {
+    .dp-prog-facts.dp-metric-strip {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: 12px;
     }
-    :global(:root body) .dp-prog-head.dp-stage .dp-metric-strip .metric:nth-child(odd) { padding-left: 0; }
-    :global(:root body) .dp-prog-head.dp-stage .dp-metric-strip .metric:nth-child(even) { border-right: 0; }
+    .dp-prog-facts.dp-metric-strip .metric { border-block-end: 0; }
+    .dp-prog-facts.dp-metric-strip .metric:nth-child(odd) { padding-inline-start: 0; }
+    .dp-prog-facts.dp-metric-strip .metric:nth-child(even) { border-inline-end: 0; }
   }
   @media (max-width: 640px) {
     .dp-prog-grid { padding-block: 28px 56px; gap: 28px; }

@@ -14,33 +14,36 @@ const Heading = embedded ? "h3" : "h2";
         <div class="dp-cm-fields">
           <div>
             <label for="dp-cm-cashFare">Cash fare <span>(AED)</span></label>
-            <input id="dp-cm-cashFare" type="text" inputmode="decimal" maxlength="18" required aria-describedby="dp-cm-cashFare-help dp-cm-cashFare-error" data-cm-input="cashFare" />
+            <input class="dp-ui-field" id="dp-cm-cashFare" type="text" inputmode="decimal" maxlength="18" required aria-describedby="dp-cm-cashFare-help dp-cm-cashFare-error" data-cm-input="cashFare" />
             <small id="dp-cm-cashFare-help">Total to book the paid ticket.</small>
             <p id="dp-cm-cashFare-error" class="dp-cm-error" hidden></p>
           </div>
           <div>
             <label for="dp-cm-miles">Miles required</label>
-            <input id="dp-cm-miles" type="text" inputmode="numeric" maxlength="18" required aria-describedby="dp-cm-miles-help dp-cm-miles-error" data-cm-input="miles" />
+            <input class="dp-ui-field" id="dp-cm-miles" type="text" inputmode="numeric" maxlength="18" required aria-describedby="dp-cm-miles-help dp-cm-miles-error" data-cm-input="miles" />
             <small id="dp-cm-miles-help">Total miles charged for the award.</small>
             <p id="dp-cm-miles-error" class="dp-cm-error" hidden></p>
           </div>
-          <div>
+          <div class="dp-cm-award">
             <label for="dp-cm-awardFees">Cash due on the award <span>(AED)</span></label>
-            <input id="dp-cm-awardFees" type="text" inputmode="decimal" maxlength="18" required aria-describedby="dp-cm-awardFees-help dp-cm-awardFees-error" data-cm-input="awardFees" />
+            <input class="dp-ui-field" id="dp-cm-awardFees" type="text" inputmode="decimal" maxlength="18" required aria-describedby="dp-cm-awardFees-help dp-cm-awardFees-error" data-cm-input="awardFees" />
             <small id="dp-cm-awardFees-help">Include all taxes, fees and cash co-pay. Enter 0 if none.</small>
             <p id="dp-cm-awardFees-error" class="dp-cm-error" hidden></p>
           </div>
-          <div>
+        </div>
+        <details class="dp-cm-target">
+          <summary>Add a target value</summary>
+          <div class="dp-cm-target-field">
             <label for="dp-cm-target">Your target value <span>(fils per mile)</span></label>
-            <input id="dp-cm-target" type="text" inputmode="decimal" maxlength="18" aria-describedby="dp-cm-target-help dp-cm-target-error" data-cm-input="target" />
+            <input class="dp-ui-field" id="dp-cm-target" type="text" inputmode="decimal" maxlength="18" aria-describedby="dp-cm-target-help dp-cm-target-error" data-cm-input="target" />
             <small id="dp-cm-target-help">Optional. Add a target to see your break-even fare.</small>
             <p id="dp-cm-target-error" class="dp-cm-error" hidden></p>
           </div>
-        </div>
+        </details>
         <div class="dp-cm-actions">
-          <button type="submit" class="dp-cm-primary">Compare fares</button>
-          <button type="button" class="dp-cm-secondary" data-cm-example>Try a hypothetical example</button>
-          <button type="reset" class="dp-cm-secondary">Clear</button>
+          <button type="submit" class="dp-ui-action dp-ui-primary">Compare fares</button>
+          <button type="button" class="dp-ui-action dp-ui-secondary" data-cm-example>Try a hypothetical example</button>
+          <button type="reset" class="dp-ui-action dp-ui-quiet">Clear</button>
         </div>
       </fieldset>
     </form>
@@ -68,6 +71,7 @@ const Heading = embedded ? "h3" : "h2";
   const root = document.querySelector<HTMLElement>("[data-cash-or-miles]");
   const form = root?.querySelector("form");
   const fieldset = form?.querySelector("fieldset");
+  const targetDisclosure = form?.querySelector<HTMLDetailsElement>(".dp-cm-target");
   const example = root?.querySelector<HTMLButtonElement>("[data-cm-example]");
   const resultPanel = root?.querySelector<HTMLElement>(".dp-cm-results");
   const verdict = root?.querySelector<HTMLElement>("[data-cm-verdict]");
@@ -106,6 +110,7 @@ const Heading = embedded ? "h3" : "h2";
         for (const key of fields) {
           const error = calculation.errors[key];
           if (!error) continue;
+          if (key === "target" && targetDisclosure) targetDisclosure.open = true;
           inputs[key].setAttribute("aria-invalid", "true");
           errors[key].textContent = error;
           errors[key].hidden = false;
@@ -154,11 +159,13 @@ const Heading = embedded ? "h3" : "h2";
     });
     example.addEventListener("click", () => {
       for (const key of fields) inputs[key].value = sample[key];
+      if (targetDisclosure) targetDisclosure.open = true;
       sampleActive = true;
       calculate();
     });
     form.addEventListener("reset", () => {
       sampleActive = false;
+      if (targetDisclosure) targetDisclosure.open = false;
       for (const key of fields) clearError(key);
       metrics.hidden = true;
       rounding.hidden = true;
@@ -192,37 +199,28 @@ const Heading = embedded ? "h3" : "h2";
   p { margin: .6rem 0 0; line-height: 1.45; }
   fieldset { padding: 0; margin: 1rem 0 0; min-width: 0; border: 0; }
   .dp-cm-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .dp-cm-award { grid-column: 1 / -1; }
+  .dp-cm-target { margin-block-start: 8px; }
+  .dp-cm-target > summary {
+    min-block-size: var(--dp-ui-control, 44px);
+    align-content: center;
+    color: var(--green);
+    font-size: .875rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .dp-cm-target > summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-cm-target-field { max-inline-size: 300px; }
   label { display: block; margin-bottom: .3rem; font-size: .875rem; font-weight: 700; }
   label span, small, .dp-cm-privacy, .dp-cm-rounding { color: var(--ink-soft); }
   small { display: block; margin-top: .3rem; font-size: .8125rem; line-height: 1.4; }
   input {
     display: block;
-    box-sizing: border-box;
     width: 100%;
-    min-height: 44px;
-    padding: .5rem .65rem;
-    border: 1px solid var(--ink-soft);
-    border-radius: 7px;
-    background: var(--paper);
-    color: var(--ink);
-    font: inherit;
   }
-  input:focus-visible, button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
   input[aria-invalid="true"] { border-width: 2px; }
   .dp-cm-error { margin-top: .35rem; font-size: .8125rem; font-weight: 700; }
   .dp-cm-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
-  button {
-    min-height: 44px;
-    padding: .5rem .85rem;
-    border: 1px solid var(--ink);
-    border-radius: 7px;
-    font: 650 .875rem/1.2 var(--font-ui);
-    cursor: pointer;
-  }
-  button:disabled { cursor: default; }
-  .dp-cm-primary { background: var(--ink); color: var(--paper); }
-  .dp-cm-secondary { background: var(--paper); color: var(--ink); }
-  .dp-cm-secondary:hover { background: var(--shade-1); }
   .dp-cm-privacy, .dp-cm-rounding, .dp-cm-hypothetical { font-size: .8125rem; }
   .dp-cm-hypothetical { font-weight: 700; }
   dl { margin: .9rem 0 0; }
@@ -230,5 +228,9 @@ const Heading = embedded ? "h3" : "h2";
   dt { color: var(--ink-soft); font-size: .875rem; }
   dd { margin: 0; color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
   @media (max-width: 800px) { .dp-cash-miles { grid-template-columns: 1fr; } }
-  @media (max-width: 480px) { .dp-cm-fields { grid-template-columns: 1fr; } }
+  @media (max-width: 480px) {
+    .dp-cash-miles { margin-block: 14px 28px; }
+    .dp-cm-fields { gap: 10px; }
+    .dp-cm-actions { margin-block-start: .5rem; }
+  }
 </style>

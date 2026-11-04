@@ -18,9 +18,9 @@
 //   - .dp-feed numbered list
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
+import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
-import { LISTING_SIZES } from "~/lib/stockDerivatives";
+import { stagePhoto } from "~/lib/stage";
 import { getCollection } from "astro:content";
 
 const guides = (await getCollection("guides")).sort(
@@ -34,15 +34,15 @@ const fmt = (d: Date) =>
 // otherwise the freshest by updatedAt.
 const featured = guides.find((g) => g.id === "expat-starter") ?? guides[0];
 const others = guides.filter((g) => g.id !== featured?.id);
+// A compact thumbnail cannot reliably fit the required AI disclosure.
+// Show only manifest-tracked photographs here; full illustrations stay
+// with their visible disclosure on the article itself.
+const guidePhoto = (id: string) => stagePhoto(`guide-${id}`);
 
-// Sidebar Trending — top 5 most-recently-updated, excluding the featured.
-const trending = others.slice(0, 5);
+const recentlyUpdated = others.slice(0, 5);
 
-// Informal category tabs — pulled from the publication's existing taxonomy
-// (.council/04_content_taxonomy.md). Each tab pre-pops a search query so the
-// filter is clickable rather than fictional.
+// Routes to the existing topic hubs and cornerstone guides, not filters.
 const tabs = [
-  { label: "All", active: true, href: "/guides/" },
   { label: "Salary transfer", href: "/salary-transfer/" },
   { label: "Account opening", href: "/banks/" },
   { label: "Eligibility", href: "/guides/uae-credit-card-eligibility-2026/" },
@@ -62,32 +62,29 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
   <header class="intel-pagehead">
     <div class="intel-pagehead-inner">
       <div class="crumb">DubaiPoints / Guides</div>
-      <h1>All guides.</h1>
-      <p>The latest strategies, reviews, sweet spots and banking moves — with dated source links and issuer denominations retained where they matter.</p>
+      <h1>UAE points and banking guides</h1>
+      <p>Practical guides to choosing a card, switching salary accounts and using points, with dated source links.</p>
 
       <div class="intel-tools">
-        <div class="intel-tabs" role="tablist">
-          {tabs.map((t) => (
-            t.active
-              ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
-              : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
-          ))}
-        </div>
-        <form class="intel-search" action="/search/" method="get" role="search">
-          <label class="intel-search-label" for="intel-search-input">Search</label>
-          <label for="intel-search-input" class="intel-search-icon" aria-hidden="true">
-            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+        <nav class="intel-tabs" aria-label="Explore guide topics">
+          {tabs.map((t) => <a href={t.href} class="dp-ui-action dp-ui-secondary">{t.label}</a>)}
+        </nav>
+        <form class="intel-search" action="/search/" method="get" role="search" aria-label="Site search from guides">
+          <label class="intel-search-label" for="intel-search-input">Search DubaiPoints</label>
+          <input
+            id="intel-search-input"
+            class="dp-ui-field"
+            type="search"
+            name="q"
+            placeholder="Search DubaiPoints"
+            autocomplete="off"
+          />
+          <button class="dp-ui-action dp-ui-secondary" type="submit" aria-label="Search">
+            <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <circle cx="9" cy="9" r="6"/>
               <line x1="13.5" y1="13.5" x2="17.5" y2="17.5" stroke-linecap="round"/>
             </svg>
-          </label>
-          <input
-            id="intel-search-input"
-            type="search"
-            name="q"
-            placeholder="Search articles…"
-            autocomplete="off"
-          />
+          </button>
         </form>
       </div>
     </div>
@@ -97,24 +94,20 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
   <div class="intel-grid">
     <div class="intel-main">
       {featured && (
-        <a href={`/guides/${featured.id}/`} class="intel-featured">
-          <StockImage
-            slug={`guide-${featured.id}`}
-            coverTitle={featured.data.title}
-            coverCategory="Guide"
-            coverSize="hero"
-            class="intel-featured-image"
-            sizes={LISTING_SIZES.featured}
-            loading="eager"
-          />
+        <a href={`/guides/${featured.id}/`} class:list={["intel-featured", { "has-art": guidePhoto(featured.id) }]} aria-labelledby="featured-guide-heading" data-guide-feature>
           <div class="intel-featured-body">
-            <span class="intel-featured-eyebrow">Featured guide</span>
-            <h2>{featured.data.title}</h2>
+            <span class="intel-featured-eyebrow">{featured.id === "expat-starter" ? "Start here" : "Featured guide"}</span>
+            <h2 id="featured-guide-heading">{featured.data.title}</h2>
             <p>{featured.data.description}</p>
-            <span class="intel-featured-meta">
+            <time class="intel-featured-meta" datetime={featured.data.updatedAt.toISOString().slice(0, 10)}>
               Updated {fmt(featured.data.updatedAt)}
-            </span>
+            </time>
           </div>
+          {guidePhoto(featured.id) && (
+            <span class="dp-guide-feature-art" data-guide-feature-art>
+              <StockImage slug={`guide-${featured.id}`} class="intel-featured-image" sizes="(max-width: 640px) calc(100vw - 56px), 340px" loading="eager" />
+            </span>
+          )}
         </a>
       )}
 
@@ -122,21 +115,17 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
         <ul class="intel-card-grid">
           {others.map((g) => (
             <li class="intel-card-item">
-              <a href={`/guides/${g.id}/`} class="intel-card">
-                <StockImage
-                  slug={`guide-${g.id}`}
-                  coverTitle={g.data.title}
-                  coverCategory="Guide"
-                  coverSize="med"
-                  class="intel-card-image"
-                  sizes={LISTING_SIZES.tile}
-                />
+              <a href={`/guides/${g.id}/`} class:list={["intel-card", { "has-art": guidePhoto(g.id) }]} aria-labelledby={`guide-${g.id}`}>
                 <div class="intel-card-body">
-                  <span class="intel-card-cat">Guide</span>
-                  <h3>{g.data.title}</h3>
+                  <h2 id={`guide-${g.id}`}>{g.data.title}</h2>
                   <p>{g.data.description}</p>
-                  <span class="intel-card-meta">Updated {fmt(g.data.updatedAt)}</span>
+                  <time class="intel-card-meta" datetime={g.data.updatedAt.toISOString().slice(0, 10)}>Updated {fmt(g.data.updatedAt)}</time>
                 </div>
+                {guidePhoto(g.id) && (
+                  <span class="dp-guide-card-art">
+                    <StockImage slug={`guide-${g.id}`} class="intel-card-image" sizes="120px" />
+                  </span>
+                )}
               </a>
             </li>
           ))}
@@ -144,378 +133,176 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
       )}
     </div>
 
-    {trending.length > 0 && (
+    {recentlyUpdated.length > 0 && (
     <aside class="intel-aside">
-      {trending.length > 0 && (
-        <nav class="intel-trending" aria-label="Trending guides">
-          <div class="dp-rail-heading">Trending now</div>
+        <nav class="intel-trending" aria-label="Recently updated guides">
+          <div class="dp-rail-heading">Recently updated</div>
           <ol>
-            {trending.map((g, i) => (
+            {recentlyUpdated.map((g) => (
               <li>
-                <span class="num">{String(i + 1).padStart(2, "0")}</span>
                 <a href={`/guides/${g.id}/`}>{g.data.title}</a>
               </li>
             ))}
           </ol>
         </nav>
-      )}
     </aside>
     )}
   </div>
 </BaseLayout>
 
 <style>
-  /* ── Page header ─────────────────────────────────────────────────── */
   .intel-pagehead {
-    background: var(--paper);
-    padding: 48px 32px 32px;
+    padding: clamp(24px, 4vw, 44px) clamp(16px, 3vw, 32px) clamp(16px, 3vw, 28px);
     border-bottom: 1px solid var(--line);
+    background: var(--paper);
   }
-  .intel-pagehead-inner {
-    max-width: var(--container-listing);
-    margin: 0 auto;
-  }
+  .intel-pagehead-inner { max-width: var(--container-listing); margin-inline: auto; }
   .intel-pagehead .crumb {
-    font-family: var(--font-ui);
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
+    margin-block-end: 10px;
     color: var(--green);
-    margin-bottom: 16px;
+    font: 700 .6875rem/1.4 var(--font-ui);
+    letter-spacing: .14em;
+    text-transform: uppercase;
   }
   .intel-pagehead h1 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(38px, 5.6vw, 58px);
-    letter-spacing: -1.6px;
-    line-height: 1.04;
-    color: var(--green);
-    margin: 0 0 14px;
+    margin: 0 0 8px;
+    color: var(--ink);
+    font: 550 clamp(2rem, 5vw, 3.5rem)/1.06 var(--font-display);
+    letter-spacing: -.035em;
+    text-wrap: balance;
   }
   .intel-pagehead p {
-    max-width: 62ch;
-    font-size: 15px; line-height: 1.6;
+    max-width: 65ch;
+    margin: 0 0 clamp(14px, 2.5vw, 24px);
     color: var(--ink-soft);
-    margin: 0 0 28px;
+    font-size: .9375rem;
+    line-height: 1.5;
   }
-  .intel-tools {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px 24px;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .intel-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-  .intel-tab {
-    font-family: var(--font-ui);
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    color: var(--ink-soft);
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: transparent;
-    border: 1px solid transparent;
-    text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-    cursor: pointer;
-  }
-  .intel-tab:hover {
-    background: var(--shade-1);
-    color: var(--ink);
-  }
-  .intel-tab.is-active {
-    background: var(--ink);
-    color: var(--paper);
-    cursor: default;
-  }
-  .intel-search {
-    display: flex;
-    align-items: center;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0 14px;
-    height: 36px;
-    min-width: 220px;
-    transition: border-color 0.15s ease;
-  }
-  .intel-search:focus-within { border-color: var(--ink-soft); }
+  .intel-tools, .intel-tabs, .intel-search { display: flex; align-items: center; gap: 8px; }
+  .intel-tools, .intel-tabs { flex-wrap: wrap; }
+  .intel-tools { justify-content: space-between; gap: 10px 18px; }
+  .intel-search { min-width: 0; }
   .intel-search-label {
     position: absolute;
-    width: 1px; height: 1px;
+    width: 1px;
+    height: 1px;
     overflow: hidden;
-    clip: rect(0,0,0,0);
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
-  .intel-search input[type="search"] {
-    border: 0;
-    background: transparent;
-    outline: none;
-    font-family: var(--font-ui);
-    font-size: 16px;
-    color: var(--ink);
-    width: 100%;
-  }
-  .intel-search input[type="search"]::placeholder { color: var(--muted); }
-  .intel-search input[type="search"]:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
-  .intel-search-icon {
-    display: none;
-    align-items: center; justify-content: center;
-    color: var(--ink-soft);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
+  .intel-search input { width: min(26vw, 260px); }
+  .intel-search button { min-inline-size: var(--dp-ui-control); }
 
-  /* ── 2-column grid ──────────────────────────────────────────────── */
   .intel-grid {
-    max-width: var(--container-listing);
-    margin: 32px auto 56px;
-    padding: 0 32px;
     display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    gap: 40px;
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
+    gap: var(--dp-ui-gap);
+    max-width: var(--container-listing);
+    margin: clamp(18px, 3vw, 36px) auto var(--dp-ui-section);
+    padding-inline: clamp(16px, 3vw, 32px);
   }
-  .intel-main { display: grid; gap: 28px; }
-
-  /* ── Featured guide ─────────────────────────────────────────────── */
-  .intel-featured {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    overflow: hidden;
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  }
-  .intel-featured:hover {
-    transform: translateY(-2px);
-    border-color: var(--ink-soft);
-    box-shadow: 0 20px 40px -20px rgba(15, 31, 46, 0.22);
-  }
-  .intel-featured :global(.intel-featured-image) {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    display: block;
-    border-bottom: 1px solid var(--line);
-  }
-  .intel-featured :global(svg.dp-cover) {
-    width: 100%;
-    display: block;
-    border-bottom: 1px solid var(--line);
-  }
-  .intel-featured-body {
-    padding: 24px 28px 28px;
-    display: grid;
-    gap: 10px;
-  }
-  .intel-featured-eyebrow {
-    font-family: var(--font-ui);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: var(--green);
-  }
-  .intel-featured-body h2 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: clamp(24px, 3.4vw, 34px);
-    letter-spacing: -0.9px;
-    line-height: 1.12;
-    color: var(--ink);
-    margin: 0;
-    text-wrap: balance;
-  }
-  .intel-featured:hover h2 { color: var(--green); }
-  .intel-featured-body p {
-    font-size: 15px;
-    line-height: 1.55;
-    color: var(--ink-soft);
-    margin: 0;
-    max-width: 64ch;
-  }
-  .intel-featured-meta {
-    font-family: var(--font-ui);
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 0.3px;
-    margin-top: 4px;
-  }
-
-  /* ── Card grid ──────────────────────────────────────────────────── */
+  .intel-main { min-width: 0; display: grid; gap: var(--dp-ui-gap); }
   .intel-card-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
     list-style: none;
-    padding: 0;
     margin: 0;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 20px;
+    padding: 0;
   }
-  .intel-card-item { display: block; }
-  .intel-card {
+  .intel-featured, .intel-card {
     display: grid;
-    grid-template-rows: auto 1fr;
-    background: var(--paper);
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(10px, 2vw, 20px);
+    height: 100%;
+    padding: clamp(12px, 2vw, 20px);
     border: 1px solid var(--line);
     border-radius: 14px;
-    overflow: hidden;
-    text-decoration: none;
+    background: var(--paper);
     color: inherit;
-    height: 100%;
-    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    text-decoration: none;
   }
-  .intel-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--ink-soft);
-    box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
-  }
-  .intel-card :global(.intel-card-image) {
-    width: 100%;
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
+  .intel-featured { align-items: center; }
+  .intel-card.has-art { grid-template-columns: minmax(0, 1fr) clamp(70px, 14vw, 120px); }
+  .intel-featured:hover, .intel-card:hover { border-color: var(--green); }
+  .intel-featured:focus-visible, .intel-card:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+  .dp-guide-feature-art, .dp-guide-card-art {
     display: block;
-    border-bottom: 1px solid var(--line);
-  }
-  .intel-card :global(svg.dp-cover) {
-    width: 100%;
-    display: block;
-    border-bottom: 1px solid var(--line);
-  }
-  .intel-card-body {
-    padding: 18px 20px 20px;
-    display: grid;
-    gap: 8px;
-  }
-  .intel-card-cat {
-    font-family: var(--font-ui);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--green);
-  }
-  .intel-card h3 {
-    font-family: var(--font-display);
-    font-weight: 500;
-    font-size: 18px;
-    letter-spacing: -0.3px;
-    line-height: 1.25;
-    color: var(--ink);
-    margin: 0;
-    text-wrap: balance;
-  }
-  .intel-card:hover h3 { color: var(--green); }
-  .intel-card-body p {
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--ink-soft);
-    margin: 0;
-  }
-  .intel-card-meta {
-    font-family: var(--font-ui);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.2px;
-    margin-top: 2px;
-  }
-
-  /* ── Sidebar ────────────────────────────────────────────────────── */
-  .intel-aside {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  @media (min-width: 1024px) {
-    .intel-aside { position: sticky; top: 32px; align-self: flex-start; }
-  }
-  .intel-trending {
-    background: var(--bg);
+    min-width: 0;
     border: 1px solid var(--line);
-    border-radius: 16px;
-    padding: 22px;
+    border-radius: var(--dp-ui-radius);
+    overflow: hidden;
+  }
+  .dp-guide-feature-art :global(.intel-featured-image), .dp-guide-card-art :global(.intel-card-image) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1.6;
+    object-fit: cover;
+  }
+  .dp-guide-card-art :global(.dp-ai-label) { font-size: 10px; padding: 14px 4px 3px; }
+  .intel-featured-body, .intel-card-body { display: grid; min-width: 0; gap: 6px; }
+  .intel-featured-eyebrow {
+    color: var(--green);
+    font: 700 .75rem/1.35 var(--font-ui);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .intel-featured h2, .intel-card h2 {
+    margin: 0;
+    color: var(--ink);
+    font: 550 clamp(1.125rem, 2vw, 1.375rem)/1.16 var(--font-display);
+    letter-spacing: -.02em;
+    text-wrap: pretty;
+  }
+  .intel-featured h2 { font-size: clamp(1.375rem, 3vw, 2.125rem); }
+  .intel-featured:hover h2, .intel-card:hover h2 { color: var(--green); text-decoration: underline; text-underline-offset: .14em; }
+  .intel-featured p, .intel-card p { margin: 0; color: var(--ink-soft); font-size: .875rem; line-height: 1.48; }
+  .intel-featured p { font-size: .9375rem; }
+  .intel-featured-meta, .intel-card-meta { color: var(--ink-soft); font: 600 .75rem/1.35 var(--font-ui); }
+
+  .intel-trending {
+    padding: clamp(14px, 2vw, 22px);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
   }
   .intel-trending .dp-rail-heading {
-    font-family: var(--font-ui);
-    font-size: 11px; letter-spacing: 2.5px;
-    text-transform: uppercase; color: var(--green);
-    margin: 0 0 14px; font-weight: 700;
+    margin: 0 0 7px;
+    color: var(--green);
+    font: 700 .875rem/1.35 var(--font-ui);
+    letter-spacing: .09em;
+    text-transform: uppercase;
   }
-  .intel-trending ol {
-    list-style: none; padding: 0; margin: 0;
-  }
-  .intel-trending li {
-    padding: 10px 0;
-    border-bottom: 1px solid var(--line-soft);
-    font-size: 13px; color: var(--ink-soft);
-    display: flex; gap: 12px;
-    line-height: 1.35;
-  }
-  .intel-trending li:last-child { border-bottom: 0; }
-  .intel-trending .num {
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    font-size: 11px;
-    min-width: 20px;
-    flex-shrink: 0;
-    font-weight: 700;
-    letter-spacing: 1px;
-  }
+  .intel-trending ol { list-style: none; margin: 0; padding: 0; }
+  .intel-trending li + li { border-top: 1px solid var(--line); }
   .intel-trending a {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--dp-ui-control);
+    padding-block: 7px;
     color: var(--ink);
-    font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.2px;
+    font: 550 1rem/1.2 var(--font-display);
     text-decoration: none;
   }
-  .intel-trending a:hover { color: var(--green); }
+  .intel-trending a:hover { color: var(--green); text-decoration: underline; }
 
-  /* ── Responsive ─────────────────────────────────────────────────── */
-  @media (max-width: 1023px) {
-    .intel-grid { grid-template-columns: 1fr; }
+  @media (min-width: 620px) {
+    .intel-featured.has-art { grid-template-columns: minmax(0, 1fr) minmax(0, 42%); }
+  }
+  @media (min-width: 800px) {
+    .intel-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1060px) {
+    .intel-grid { grid-template-columns: minmax(0, 2.75fr) minmax(0, 1fr); }
+    .intel-aside { position: sticky; top: calc(var(--dp-sticky-header-height) + 16px); }
   }
   @media (max-width: 640px) {
-    .intel-pagehead { padding: 32px 20px 24px; }
-    .intel-grid { padding: 0 20px; margin-top: 24px; gap: 28px; }
-    .intel-card-grid { grid-template-columns: 1fr; }
-    /* F-UX-4: tabs + icon-only search share one row at <640px.
-       Search expands to a full-width pill when focused. Matches the
-       collapse pattern used by /banks/, /airlines/, /news/. */
-    .intel-tools {
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 8px;
-    }
-    .intel-tabs { flex: 1 1 auto; min-width: 0; gap: 4px; }
-    .intel-tab { padding: 6px 10px; font-size: 12px; }
-    .intel-search:not(:only-child) {
-      min-width: 36px;
-      width: 36px;
-      flex: 0 0 36px;
-      height: 36px;
-      padding: 0;
-      justify-content: center;
-      transition: width 0.18s ease, flex-basis 0.18s ease, padding 0.18s ease;
-    }
-    .intel-search:not(:only-child) .intel-search-icon {
-      display: inline-flex; width: 36px; height: 36px;
-    }
-    .intel-search:not(:only-child) input[type="search"] {
-      width: 0; padding: 0;
-      transition: width 0.18s ease, padding 0.18s ease;
-    }
-    .intel-search:not(:only-child):focus-within {
-      width: 100%; flex: 1 1 100%; padding: 0 14px;
-    }
-    .intel-search:not(:only-child):focus-within .intel-search-icon { display: none; }
-    .intel-search:not(:only-child):focus-within input[type="search"] { width: 100%; }
-    .intel-search:only-child { width: 100%; min-width: 0; flex: 1 1 100%; }
+    .intel-tabs { gap: 6px; }
+    .intel-tabs .dp-ui-action { font-size: .8125rem; padding-inline: .7em; }
+    .intel-search { flex: 1 1 100%; }
+    .intel-search input { flex: 1; width: 0; }
   }
 </style>

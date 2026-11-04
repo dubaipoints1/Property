@@ -7,15 +7,13 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
   description="Search every UAE credit card review, salary-transfer offer, points-and-miles guide, and lifestyle deal on DubaiPoints."
   fullWidth
 >
-  <header class="dp-pagehead is-narrow">
-    <div class="crumb">Search</div>
-    <h1>What are you looking for?</h1>
-    <p class="deck">Every card review, salary-transfer offer, guide, deal and news note currently included on DubaiPoints — searchable.</p>
+  <header class="dp-pagehead is-narrow dp-utility-head">
+    <h1>Search DubaiPoints</h1>
+    <p class="deck">Find a card, an offer, a loyalty programme or a guide.</p>
   </header>
 
   <div class="dp-search-body">
-    <div id="search" class="dp-search-results" data-pagefind-ignore></div>
-
+    <p class="dp-search-tip" id="search-tip">Use quotation marks to search for an exact phrase, such as <code>"salary transfer"</code>.</p>
     <noscript>
       <p class="dp-search-fallback">
         Search requires JavaScript. The full site map is on the
@@ -26,12 +24,8 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
         <a href="/banks/">Banks</a>.
       </p>
     </noscript>
+    <div id="search" class="dp-search-results" data-pagefind-ignore></div>
 
-    <p class="dp-search-tip">
-      <strong>Tips.</strong>
-      Search matches title, body and metadata. Use quotes to match a phrase
-      (e.g. <code>"salary transfer"</code>).
-    </p>
   </div>
 </BaseLayout>
 
@@ -44,7 +38,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
       element: "#search",
       showImages: false,
       resetStyles: false,
-      autofocus: true,
+      autofocus: window.matchMedia("(min-width: 1024px) and (pointer: fine)").matches,
       showSubResults: true,
     });
     // Directory search forms submit here with ?q= (2026-09-06 audit, F-015).
@@ -52,7 +46,10 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     if (q && typeof ui.triggerSearch === "function") ui.triggerSearch(q);
     // Pagefind labels its input by title only (axe label-title-only).
     const input = document.querySelector(".pagefind-ui__search-input");
-    if (input && !input.getAttribute("aria-label")) input.setAttribute("aria-label", "Search DubaiPoints");
+    if (input) {
+      input.setAttribute("aria-label", "Search DubaiPoints");
+      input.setAttribute("aria-describedby", "search-tip");
+    }
   });
 </script>
 
@@ -61,13 +58,14 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
      below do not jump when they arrive (layout shift 0.47 on a phone,
      8 Oct 2026 audit). */
   .dp-search-results { min-height: 70vh; }
+  .dp-utility-head { max-width: 760px; padding-bottom: 16px; }
   .dp-search-body {
     max-width: 760px;
     margin: 0 auto;
-    padding: 32px 32px 80px;
+    padding: 16px 32px 32px;
   }
   @media (max-width: 640px) {
-    .dp-search-body { padding: 24px 16px 56px; }
+    .dp-search-body { padding: 16px 20px 32px; }
   }
   #search { margin-bottom: 24px; }
   /* The remaining shift was inside the list, not below it (10 Oct 2026
@@ -91,8 +89,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     --pagefind-ui-border: var(--line);
     --pagefind-ui-tag: var(--shade-1);
     --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 10px;
-    --pagefind-ui-image-border-radius: 8px;
+    --pagefind-ui-border-radius: var(--dp-ui-radius);
     --pagefind-ui-image-box-ratio: 3 / 2;
     --pagefind-ui-font: var(--font-ui);
   }
@@ -100,17 +97,22 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     font-family: var(--font-ui);
     font-size: 16px !important;
   }
-  .dp-search-fallback,
-  .dp-search-tip {
-    font-size: 13px;
+  :global(.pagefind-ui__search-input:focus-visible),
+  :global(.pagefind-ui__search-clear:focus-visible) {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+  .dp-search-fallback {
+    padding: 16px;
+    background: var(--shade-1);
+    border-radius: var(--dp-ui-radius);
+  }
+  .dp-search-fallback, .dp-search-tip {
+    font-size: 0.875rem;
     color: var(--ink-soft);
     line-height: 1.6;
-    margin-top: 24px;
-    padding: 16px 20px;
-    background: var(--shade-1);
-    border-radius: 10px;
+    margin: 0 0 12px;
   }
-  .dp-search-tip strong { color: var(--ink); font-weight: 700; }
   .dp-search-tip code {
     background: var(--paper);
     padding: 1px 6px;
@@ -119,8 +121,7 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
     color: var(--ink);
     border: 1px solid var(--line);
   }
-  .dp-search-fallback a,
-  .dp-search-tip a {
+  .dp-search-fallback a {
     color: var(--green);
     font-weight: 600;
     text-decoration: underline;

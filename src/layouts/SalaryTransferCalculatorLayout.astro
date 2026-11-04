@@ -18,9 +18,9 @@ const skywardsBaseline = publishedAEDPerUnit("Emirates Skywards");
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
-  <header class="dp-pagehead is-narrow">
+  <header class="dp-pagehead is-narrow dp-salary-calc-head">
     <div class="crumb">Tools / <a href="/salary-transfer/" class="crumb-link">Salary transfer</a></div>
-    <h1>What's your salary transfer actually worth?</h1>
+    <h1>Salary-transfer calculator</h1>
     <p class="deck">
       Compare estimated rewards by monthly salary and the products you are
       willing to take. Check issuer conditions before relying on an estimate.
@@ -75,5 +75,12 @@ const skywardsBaseline = publishedAEDPerUnit("Emirates Skywards");
     max-width: var(--container-listing);
     margin: 0 auto;
     padding: 0 32px 64px;
+  }
+  @media (max-width: 640px) {
+    .dp-salary-calc-head.dp-pagehead { padding: 22px 20px 14px; }
+    .dp-salary-calc-head h1 { font-size: clamp(1.9rem, 8vw, 2.5rem); }
+    .dp-salary-calc-head .dp-tools-stats { gap: 4px 12px; margin-block-start: 10px; }
+    .dp-calc-shell { padding: 16px 20px 24px; }
+    .dp-calc-disclaimer { padding-inline: 20px; }
   }
 </style>

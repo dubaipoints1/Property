@@ -1,10 +1,13 @@
 ---
 import BankHubLayout from "~/layouts/BankHubLayout.astro";
+import CardImage from "~/components/CardImage.astro";
 import { getCollection, getEntry, render } from "astro:content";
 import { getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
+import { getSalaryTransferTimeline } from "~/lib/salaryTransferTimeline";
 import { getCardsByBank } from "~/lib/cardsData";
-import { topEarnEntry, formatEarnRate } from "~/lib/cardsDataFormat";
+import { getCardArt } from "~/lib/cardArt";
+import { annualFeeLabel, topEarnEntry, formatEarnRate } from "~/lib/cardsDataFormat";
 
 export async function getStaticPaths() {
   const banks = await getCollection("banks");
@@ -35,7 +38,7 @@ const latestVerified = allCards.length === 0
 // without opening every review.
 const cardTiles = allCards.map((c) => {
   const top = topEarnEntry(c.earnRates as Record<string, unknown>);
-  const feeLabel = c.annualFee.amount === 0 ? "Free" : formatAED(c.annualFee.amount);
+  const feeLabel = annualFeeLabel(c);
   // Provenance-gated salary label — needs-review renders "Pending" so
   // the bank hub doesn't surface an unverified AED figure as confirmed.
   const salaryLabel =
@@ -50,6 +53,7 @@ const cardTiles = allCards.map((c) => {
     slug: c.slug,
     name: c.name,
     network: c.network,
+    hasArt: getCardArt(c.slug) != null,
     feeLabel,
     salaryLabel,
     topDisplay: top ? formatEarnRate(top.value, c.earnUnit, c.categories) : null,
@@ -83,8 +87,9 @@ const cardTiles = allCards.map((c) => {
               <strong>
                 {formatAED(Math.max(...o.salaryBands.map((b) => b.rewardAmount)))}
               </strong>{" "}
-              · {o.tenureMonths} months · ends{" "}
-              {new Date(o.validUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+              · {o.tenureMonths} months · {getSalaryTransferTimeline(o)?.endDate === "published" ? (
+                <>ends <time datetime={o.validUntil.slice(0, 10)}>{new Date(o.validUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time></>
+              ) : "check deadline with the bank"}
             </p>
             <p class="dp-bank-salary-cta">
               <a href={`/salary-transfer/${bank.id}/`}>Full offer details →</a>
@@ -112,12 +117,17 @@ const cardTiles = allCards.map((c) => {
       ) : (
         cardTiles.map((t) => (
           <a href={`/cards/${t.slug}/`} class="dp-bank-card-tile">
-            <span class="dp-bank-card-network">{t.network}</span>
-            <span class="dp-bank-card-name">{t.name}</span>
+            <span class="dp-bank-card-ident">
+              <span>
+                <span class="dp-bank-card-network">{t.network}</span>
+                <span class="dp-bank-card-name">{t.name}</span>
+              </span>
+              {t.hasArt && <CardImage cardSlug={t.slug} cardName={t.name} bankName={bank.data.name} coverSize="thumb" class="dp-bank-card-art" sizes="84px" />}
+            </span>
             <dl class="dp-bank-card-facts">
               <div class="fact">
                 <dt>Annual fee</dt>
-                <dd>{t.feeLabel}</dd>
+                <dd>{t.feeLabel.amount}{t.feeLabel.qual && <span class="cat">({t.feeLabel.qual})</span>}</dd>
               </div>
               <div class="fact">
                 <dt>Min salary</dt>
@@ -190,7 +200,7 @@ const cardTiles = allCards.map((c) => {
     flex-direction: column;
     padding: 16px 18px 14px;
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: var(--dp-ui-radius, 12px);
     background: var(--paper);
     text-decoration: none;
     transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
@@ -200,6 +210,8 @@ const cardTiles = allCards.map((c) => {
     box-shadow: 0 6px 20px -12px rgba(31, 58, 77, 0.4);
     transform: translateY(-1px);
   }
+  .dp-bank-card-ident { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .dp-bank-card-ident :global(.dp-bank-card-art) { flex: 0 1 84px; min-inline-size: 48px; border-radius: 6px; }
   .dp-bank-card-network {
     align-self: flex-start;
     font-size: 9.5px;
@@ -213,6 +225,7 @@ const cardTiles = allCards.map((c) => {
     line-height: 1.2;
   }
   .dp-bank-card-name {
+    display: block;
     margin: 11px 0 0;
     font-family: var(--font-display);
     font-weight: 500;

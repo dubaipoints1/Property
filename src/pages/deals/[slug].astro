@@ -53,8 +53,6 @@ const deck = isCurrentAtBuild
   publishedAt={deal.data.publishedAt}
   toc={toc}
   showHero
-  heroCategory="Deal"
-  heroLabel={`Deal · ${issuer.name}`}
 >
   <Fragment slot="before-hero">
     <section class="dp-deal-terms" aria-labelledby="deal-terms-heading" data-deal-terms>
@@ -63,8 +61,8 @@ const deck = isCurrentAtBuild
         <PromoCode code={deal.data.promoCode} source={promoSource === offerSource ? undefined : promoSource} />
       )}
       {offerSource && (
-        <a class="dp-deal-source" href={offerSource} rel="noopener" data-deal-source>
-          {isCurrentAtBuild ? "Check" : "View"} {issuer.name}’s published source →
+        <a class="dp-deal-source dp-ui-action dp-ui-secondary" href={offerSource} rel="noopener" data-deal-source>
+          View {issuer.name}’s source <span aria-hidden="true">↗</span>
         </a>
       )}
       <dl>
@@ -107,16 +105,12 @@ const deck = isCurrentAtBuild
   .dp-deal-terms dd { margin: 0; color: var(--ink-soft); }
   .dp-deal-terms dt, .dp-deal-terms dd { font-size: 14px; line-height: 1.4; }
   .dp-deal-source {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    margin: -3px 0 4px;
-    color: var(--green);
-    text-underline-offset: 3px;
-    font-size: 14px;
-    font-weight: 650;
+    margin-block: 4px 12px;
+    max-width: 100%;
+    white-space: normal;
+    text-align: start;
   }
-  .dp-deal-source:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-deal-artwork { width: min(100%, 440px); }
   .dp-deal-artwork :global(svg.dp-cover) {
     display: block; width: 100%; height: auto;
     border: 1px solid var(--line); border-radius: 14px; margin-bottom: 24px;

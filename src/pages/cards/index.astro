@@ -166,6 +166,10 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
         <span class="sep">·</span>
         <a href="/cards/fees/">fee index</a>
       </p>
+      <nav class="cards-pagehead-actions" aria-label="Credit card tools">
+        <a href="/cards/finder/" class="dp-ui-action dp-ui-primary">Find cards by salary</a>
+        <a href="/cards/compare/" class="dp-ui-action dp-ui-secondary">Compare cards side by side</a>
+      </nav>
     </div>
   </header>
 
@@ -219,13 +223,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     <div class="cards-compare-head">
       <h2>Compare all cards.</h2>
       <div class="cards-compare-tools">
-        <div class="cards-compare-pills">
+        <nav class="cards-compare-pills" aria-label="Browse card categories">
           {filters.map((f) => (
             f.active
-              ? <span class="dp-filter-pill is-active">{f.label}</span>
-              : <a href={f.href} class="dp-filter-pill">{f.label}</a>
+              ? <a href={f.href} class="dp-ui-filter" aria-current="page">{f.label}</a>
+              : <a href={f.href} class="dp-ui-filter">{f.label}</a>
           ))}
-        </div>
+        </nav>
         <span class="cards-compare-sort">Sorted by <strong>welcome bonus</strong></span>
       </div>
     </div>
@@ -319,6 +323,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
 
 <style>
   /* ── Page header ─────────────────────────────────────────────────── */
+  .cards-pagehead-actions { display: flex; flex-wrap: wrap; gap: var(--dp-ui-gap, 8px); margin-block-start: 16px; }
   .cards-pagehead {
     background: var(--paper);
     padding: 48px 32px 32px;

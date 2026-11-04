@@ -39,7 +39,7 @@ export default function PointsToAEDConverter({ programmes }: Props) {
       <div class="dp-p2a-fields">
         <label>
           <span>Programme</span>
-          <select class="dp-calc-num" value={slug} onChange={(e) => setSlug((e.target as HTMLSelectElement).value)}>
+          <select class="dp-ui-field" value={slug} onChange={(e) => setSlug((e.target as HTMLSelectElement).value)}>
             {programmes.map((p) => (
               <option key={p.slug} value={p.slug} disabled={p.dpValue == null}>
                 {p.name}{p.dpValue == null ? " — no published baseline" : ""}
@@ -49,7 +49,7 @@ export default function PointsToAEDConverter({ programmes }: Props) {
         </label>
         <label>
           <span>Balance ({programme?.currencyName ?? "units"})</span>
-          <input class="dp-calc-num" type="number" min={0} step={1000} value={balance} onInput={(e) => setBalance(Math.max(0, Number((e.target as HTMLInputElement).value) || 0))} />
+          <input class="dp-ui-field" type="number" min={0} step={1000} value={balance} onInput={(e) => setBalance(Math.max(0, Number((e.target as HTMLInputElement).value) || 0))} />
         </label>
       </div>
       <p class="dp-p2a-out" aria-live="polite">
@@ -67,11 +67,10 @@ export default function PointsToAEDConverter({ programmes }: Props) {
         A specific redemption can beat it or fall short of it.
       </p>
       <style>{`
-        .dp-p2a { margin: 0 32px 20px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 4px; background: var(--paper); }
-        .dp-p2a-fields { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        @media (min-width: 640px) { .dp-p2a-fields { grid-template-columns: 1fr 1fr; } }
-        .dp-p2a label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 600; color: var(--ink); }
-        .dp-p2a .dp-calc-num { width: 100%; }
+        .dp-p2a { margin: 0 32px 20px; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--dp-ui-radius, 8px); background: var(--paper); }
+        .dp-p2a-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 195px), 1fr)); gap: 12px; align-items: end; }
+        .dp-p2a label { display: flex; flex-direction: column; gap: 4px; min-inline-size: 0; font-size: 12px; font-weight: 600; color: var(--ink); }
+        .dp-p2a .dp-ui-field { width: 100%; }
         .dp-p2a-out { margin: 12px 0 0; font-size: 15px; color: var(--ink-soft); font-feature-settings: 'tnum'; }
         .dp-p2a-out strong { font-family: var(--font-display); font-size: 22px; color: var(--ink); }
         .dp-p2a-note { margin: 6px 0 0; font-size: 11px; color: var(--muted); line-height: 1.5; }
