@@ -6,6 +6,7 @@
 
 import BaseLayout from "./BaseLayout.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
+import { publishedAEDPerUnit } from "~/lib/valuations";
 
 interface Props {
   title: string;
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const { title, description } = Astro.props;
+const skywardsBaseline = publishedAEDPerUnit("Emirates Skywards");
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
@@ -20,16 +22,13 @@ const { title, description } = Astro.props;
     <div class="crumb">Tools / <a href="/salary-transfer/" class="crumb-link">Salary transfer</a></div>
     <h1>What's your salary transfer actually worth?</h1>
     <p class="deck">
-      Enter monthly salary, expected card spend and constraints. Every live
-      UAE offer scored in cash-equivalent AED — vouchers discounted 20% for
-      resale and utility loss; points and miles at AED 0.04 per Skywards
-      baseline.
+      Compare estimated rewards by monthly salary and the products you are
+      willing to take. Check issuer conditions before relying on an estimate.
     </p>
     <div class="dp-tools-stats">
-      <div><strong>Inputs</strong> <span class="lbl">salary · spend · tenure</span></div>
+      <div><strong>Inputs</strong> <span class="lbl">salary · products · tenure</span></div>
       <div><strong>Currency</strong> <span class="lbl">AED-equivalent</span></div>
       <div><strong>Voucher discount</strong> <span class="lbl">20%</span></div>
-      <div><strong>Refresh</strong> <span class="lbl">daily</span></div>
     </div>
   </header>
 
@@ -40,15 +39,15 @@ const { title, description } = Astro.props;
   <section class="dp-tools-methodology">
     <div class="col">
       <div class="lbl">How the score works</div>
-      <p><strong>Cash bonus</strong> — face value, no discount. <strong>Voucher</strong> — face value × 0.80 (resale + utility loss). <strong>Monthly cashback</strong> — per-month value × tenure months. <strong>Points / miles</strong> — face value × AED 0.04 per Skywards baseline.</p>
+      <p><strong>Cash bonus</strong> — face value. <strong>Voucher</strong> — face value × 0.80 (resale and utility loss). <strong>Monthly cashback</strong> — per-month value × tenure months. Unidentified points currencies are not priced.{skywardsBaseline != null && <> For reference, the <a href="/valuations/">published Skywards baseline</a> is AED {skywardsBaseline.toFixed(2)} per mile, not a rate for other points.</>}</p>
     </div>
     <div class="col">
-      <div class="lbl">Disqualifications surface above</div>
-      <p>Required products you didn't accept (insurance, savings deposit). Salary outside the offer's bands. Hard filters — Sharia compliance, cash-only preference. Anything that makes the offer unavailable to you.</p>
+      <div class="lbl">What matches your inputs</div>
+      <p>Salary, product choices and filters are checked. A matching estimate is not a bank approval; check the offer's full conditions.</p>
     </div>
     <div class="col">
-      <div class="lbl">Warnings keep the offer in the list</div>
-      <p>Clawback risk if tenure is shorter than the offer's minimum. Salary at the edge of a band — confirm with the bank. A tax or fee that the bank doesn't always disclose up-front.</p>
+      <div class="lbl">What needs confirmation</div>
+      <p>Where a product, qualifying transaction or spending condition cannot be checked, the offer is not ranked. Optional rewards with unverified conditions are excluded from the estimate.</p>
     </div>
   </section>
 

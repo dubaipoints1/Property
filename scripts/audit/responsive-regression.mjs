@@ -94,6 +94,8 @@ try {
   const tableRegion = page.getByRole("region", { name: "Data table", exact: true }).first();
   assert.equal(await tableRegion.getAttribute("tabindex"), "0");
   assert.ok(await tableRegion.getByRole("table").isVisible());
+  await page.getByText("Check the issuer documents for these cards", { exact: true }).click();
+  assert.ok(await page.locator(".dp-guide-issuer-sources").getByRole("link", { name: "issuer source", exact: true }).first().isVisible());
 
   await page.setViewportSize({ width: 768, height: 880 });
   await navigate(page, "/salary-transfer/");
@@ -117,9 +119,28 @@ try {
   await art.evaluate((image) => image.decode());
 
   await page.setViewportSize({ width: 390, height: 880 });
-  await navigate(page, "/cards/finder/");
+  await navigate(page, "/salary-transfer/calculator/");
+  await page.locator("astro-island[ssr]:has(.dpsc)").waitFor({ state: "detached" });
+  const eiCalc = page.locator('[data-flip="emirates-islamic-2026-oct-2027-mar"]');
+  const dibCalc = page.locator('[data-flip="dib-xtra-2026"]');
+  assert.match(await eiCalc.innerText(), /1,000 cash-equivalent/);
+  assert.doesNotMatch(await eiCalc.innerText(), /AED 1,500|AED 500/);
+  assert.match(await dibCalc.innerText(), /Does not match your inputs/i);
+  await page.getByRole("checkbox", { name: "Auto finance", exact: true }).check();
+  assert.match(await dibCalc.innerText(), /Requires confirmation/i);
+  assert.doesNotMatch(await dibCalc.innerText(), /cash-equivalent/);
+
+  await navigate(page, "/cards/finder/?salary=20000&prefer=miles&spend=travel");
+  const reward = page.getByRole("combobox", { name: "Reward preference" });
+  assert.equal(await reward.inputValue(), "miles");
+  assert.equal(await page.locator("#finder-more").getAttribute("open"), "");
+  assert.ok(await reward.evaluate((el) => el.getBoundingClientRect().bottom <= window.innerHeight));
+  await page.getByRole("combobox", { name: "Invitation-only cards" }).selectOption("false");
+  await page.getByRole("button", { name: "Apply all filters" }).click();
+  await page.waitForURL((url) => url.searchParams.get("include_invite_only") === "false");
+  assert.equal(await page.getByRole("combobox", { name: "Invitation-only cards" }).inputValue(), "false");
   const filters = page.locator("#finder-filters");
-  await filters.locator("summary").click();
+  await filters.locator(":scope > summary").click();
   assert.equal(await filters.getAttribute("open"), null);
   await page.setViewportSize({ width: 1024, height: 880 });
   await page.waitForFunction(() => document.getElementById("finder-filters").open);
@@ -129,7 +150,7 @@ try {
   await page.getByText("Pick cards to compare", { exact: true }).click();
   assert.ok(await page.getByRole("button", { name: "Update comparison" }).isVisible());
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), 0);
-  console.log("Interactions: menus, article reading column, tracker filters and artwork, Finder, comparison");
+  console.log("Interactions: menus, article sources, tracker, calculator, Finder, comparison");
 } finally {
   await browser?.close();
   server.close();

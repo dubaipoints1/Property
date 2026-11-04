@@ -1,7 +1,11 @@
+import { accountOnlyTrackerTiers } from "./salaryTransferTrackerBands";
+import { getSalaryOfferRules, hasSalaryOfferRule } from "./salaryTransferRules";
+
 export type RewardType = "cash" | "voucher" | "cashback_monthly" | "points";
 
 export type AdditionalProduct =
   | "loan"
+  | "auto_finance"
   | "insurance"
   | "savings"
   | "mortgage"
@@ -38,14 +42,14 @@ export interface SalaryTransferOffer {
 
 export interface CalculatorInput {
   monthlySalary: number;
-  monthlyCardSpend: number;
+  monthlyCardSpend?: number;
   willStay12Months: boolean;
   willingProducts: AdditionalProduct[];
   shariaOnly: boolean;
   cashOnly: boolean;
 }
 
-export type OfferStatus = "eligible" | "warning" | "disqualified";
+export type OfferStatus = "eligible" | "warning" | "conditional" | "disqualified";
 
 export interface ScoredOffer {
   offer: SalaryTransferOffer;
@@ -57,7 +61,6 @@ export interface ScoredOffer {
   reasons: string[];
 }
 
-const POINT_TO_AED = 0.04;
 const VOUCHER_DISCOUNT = 0.2;
 
 export function findBand(
@@ -91,10 +94,9 @@ export function bandToCashEquivalentAED(
       return { rawRewardAED: total, cashEquivalentAED: total };
     }
     case "points":
-      return {
-        rawRewardAED: raw,
-        cashEquivalentAED: raw * POINT_TO_AED,
-      };
+      // The offer schema does not identify the points currency. Never
+      // assume generic points are Skywards Miles or present them as AED.
+      return { rawRewardAED: 0, cashEquivalentAED: 0 };
   }
 }
 
@@ -104,6 +106,11 @@ export function scoreOffer(
 ): ScoredOffer {
   const reasons: string[] = [];
   let status: OfferStatus = "eligible";
+  let confirmationNeeded = false;
+  const requireConfirmation = (reason: string) => {
+    confirmationNeeded = true;
+    reasons.push(reason);
+  };
 
   const band = findBand(offer.salaryBands, input.monthlySalary);
 
@@ -150,29 +157,69 @@ export function scoreOffer(
     );
   }
 
-  if (offer.creditCardRequired && input.monthlyCardSpend === 0) {
-    if (status !== "disqualified") status = "warning";
-    reasons.push(
-      "Offer requires a credit card; you indicated AED 0 monthly spend.",
-    );
+  const rule = getSalaryOfferRules(offer);
+  if (!rule && hasSalaryOfferRule(offer.id)) {
+    requireConfirmation("The campaign source has changed. Verify the current conditions with the bank.");
   }
+  const willing = input.willingProducts;
+  if (rule?.financeAlternative) {
+    if (willing.includes("credit_card") || willing.includes("loan") || willing.includes("auto_finance")) {
+      requireConfirmation("Confirm an eligible covered card or qualifying personal or auto finance with DIB. Willingness alone does not qualify.");
+    } else if (willing.includes("mortgage")) {
+      requireConfirmation("DIB includes home finance in its facility definition. Confirm with the bank whether your specific facility qualifies for the salary bonus.");
+    } else {
+      status = "disqualified";
+      reasons.push("This offer requires an eligible covered card or qualifying personal or auto finance. None is selected.");
+    }
+  } else if (offer.creditCardRequired) {
+    if (!willing.includes("credit_card")) {
+      status = "disqualified";
+      reasons.push("A qualifying credit card is required and was not selected.");
+    } else {
+      requireConfirmation("Confirm the required card, application and spending conditions with the bank.");
+    }
+  }
+  if (rule?.needsConfirmation) requireConfirmation(rule.needsConfirmation);
+  if (rule?.confirmHighestTier && band.maxSalary === null) requireConfirmation(rule.confirmHighestTier);
+  if (band.rewardType === "points") requireConfirmation("Points currency is not identified; no AED value is estimated.");
 
+  let pricedBand = band;
+  if (rule?.accountRewardComponent) {
+    const account = accountOnlyTrackerTiers([band], rule.accountRewardComponent)[0];
+    if (account) {
+      pricedBand = account;
+      reasons.push("Salary-account reward only. The optional Covered Card reward is not included because qualifying spend within the bank’s deadline is not verified.");
+    } else {
+      requireConfirmation("The account-only reward cannot be separated from the card reward.");
+    }
+  } else if (band.components?.some((component) => component.requires)) {
+    const base = band.components.filter((component) => !component.requires);
+    const total = base.reduce((sum, component) => sum + component.amount, 0);
+    if (band.rewardType === "cash" && total > 0 && total <= band.rewardAmount) {
+      pricedBand = { ...band, rewardAmount: total, components: base };
+      reasons.push("Conditional extras are not included. Check the bank’s terms for those rewards.");
+    } else {
+      requireConfirmation("The reward includes conditions this calculator cannot verify.");
+    }
+  }
   const { rawRewardAED, cashEquivalentAED } = bandToCashEquivalentAED(
-    band,
+    pricedBand,
     offer.tenureMonths,
   );
+  if (confirmationNeeded && status !== "disqualified") status = "conditional";
+  const priced = status !== "disqualified" && !confirmationNeeded;
 
   const breakdown =
-    band.components && band.components.length > 0
-      ? band.components.map((c) => ({
+    !priced ? [] : pricedBand.components && pricedBand.components.length > 0
+      ? pricedBand.components.map((c) => ({
           label: c.label,
           amount: c.amount,
           requires: c.requires,
         }))
       : [
           {
-            label: rewardTypeLabel(band.rewardType),
-            amount: band.rewardAmount,
+            label: rewardTypeLabel(pricedBand.rewardType),
+            amount: pricedBand.rewardAmount,
           },
         ];
 
@@ -180,8 +227,8 @@ export function scoreOffer(
     offer,
     status,
     matchedBand: band,
-    rawRewardAED,
-    cashEquivalentAED: status === "disqualified" ? 0 : cashEquivalentAED,
+    rawRewardAED: priced ? rawRewardAED : 0,
+    cashEquivalentAED: priced ? cashEquivalentAED : 0,
     breakdown,
     reasons,
   };
@@ -194,9 +241,8 @@ export function rankOffers(
   return offers
     .map((o) => scoreOffer(o, input))
     .sort((a, b) => {
-      const aDQ = a.status === "disqualified" ? 1 : 0;
-      const bDQ = b.status === "disqualified" ? 1 : 0;
-      if (aDQ !== bDQ) return aDQ - bDQ;
+      const order: Record<OfferStatus, number> = { eligible: 0, warning: 1, conditional: 2, disqualified: 3 };
+      if (order[a.status] !== order[b.status]) return order[a.status] - order[b.status];
       return b.cashEquivalentAED - a.cashEquivalentAED;
     });
 }
