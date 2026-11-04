@@ -21,15 +21,18 @@ import {
   cardComparisonRows,
   shortCardLabel,
 } from "~/lib/cardsData";
+import CompareCardArt from "./CompareCardArt.astro";
 
 interface Props {
   /** Exactly two card slugs. Left-to-right on desktop, both columns
    * on mobile (no stacking). The reference card (the page this
    * comparison appears on) is conventionally the first slug. */
   cards: string[];
+  /** Show issuer artwork on the standalone comparison, not in reviews. */
+  showArt?: boolean;
 }
 
-const { cards } = Astro.props;
+const { cards, showArt = false } = Astro.props;
 
 if (!Array.isArray(cards) || cards.length !== 2) {
   throw new Error(
@@ -52,6 +55,7 @@ if (!left || !right) {
 
 const leftLabel = shortCardLabel(left);
 const rightLabel = shortCardLabel(right);
+const heads = [{ slug: leftSlug, label: leftLabel }, { slug: rightSlug, label: rightLabel }];
 const rows = cardComparisonRows(left, right);
 
 // Phase 2a.2.3 (2026-05-20) — per-row VAT tag for the Annual fee +
@@ -82,18 +86,17 @@ function vatTagFor(
   <thead>
     <tr>
       <th class="row-label" scope="col" aria-hidden="true"></th>
-      <th class="card-head" scope="col">
-        {leftLabel.acronym && (
-          <span class="bank-eyebrow">{leftLabel.acronym}</span>
-        )}
-        <a class="card-name" href={`/cards/${leftSlug}/`}>{leftLabel.shortName}</a>
-      </th>
-      <th class="card-head" scope="col">
-        {rightLabel.acronym && (
-          <span class="bank-eyebrow">{rightLabel.acronym}</span>
-        )}
-        <a class="card-name" href={`/cards/${rightSlug}/`}>{rightLabel.shortName}</a>
-      </th>
+      {heads.map(({ slug, label }) => (
+        <th class="card-head" scope="col">
+          <div class:list={["dp-comparison-heading", { "has-compact-art": showArt }]}>
+            <div>
+              {label.acronym && <span class="bank-eyebrow">{label.acronym}</span>}
+              <a class="card-name" href={`/cards/${slug}/`}>{label.shortName}</a>
+            </div>
+            {showArt && <CompareCardArt slug={slug} />}
+          </div>
+        </th>
+      ))}
     </tr>
   </thead>
   <tbody>
@@ -161,6 +164,12 @@ function vatTagFor(
   }
   .dp-card-comparison thead .card-head {
     width: 34%;
+  }
+  .dp-comparison-heading.has-compact-art {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    gap: 6px 10px;
   }
   .dp-card-comparison .bank-eyebrow {
     display: block;

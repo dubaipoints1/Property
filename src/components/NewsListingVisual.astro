@@ -1,0 +1,61 @@
+---
+import StockImage from "~/components/StockImage.astro";
+import { getCardArt } from "~/lib/cardArt";
+import { LISTING_SIZES, stockSrcset } from "~/lib/stockDerivatives";
+import { getStockEntry } from "~/lib/stockManifest";
+
+interface Props { id: string; featured?: boolean; }
+const { id, featured = false } = Astro.props;
+const slug = `news-${id}`;
+const photo = getStockEntry(slug);
+// Listing treatment only. These stories deliberately have no article hero.
+const diagram = id === "cash-or-miles-uae-flight-break-even";
+const card = id === "uae-card-change-log-citi-cash-back-application-route"
+  ? getCardArt("citi-cashback") : undefined;
+const desk = id === "uae-salary-switch-scorecard"
+  ? getStockEntry("guide-salary-transfer-mechanics-2026") : undefined;
+const kind = diagram ? "cash-or-miles" : card ? "issuer-card" : desk ? "salary-scorecard" : undefined;
+---
+
+{photo ? (
+  <StockImage slug={slug} class={featured ? "intel-featured-image" : "intel-card-image"}
+    sizes={featured ? LISTING_SIZES.featured : LISTING_SIZES.tile} loading={featured ? "eager" : "lazy"} />
+) : kind && (
+  <span class="dp-news-preview" data-news-preview={kind} aria-hidden="true">
+    {diagram && (
+      <svg viewBox="0 0 180 76" width="180" height="76" fill="none" focusable="false">
+        <g stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 38h148" stroke-dasharray="2 5" opacity=".45" />
+          <rect x="12" y="22" width="48" height="32" rx="6" fill="var(--paper)" />
+          <path d="M18 31h36m-35 15h11" />
+          <circle cx="90" cy="38" r="14" fill="var(--paper)" />
+          <path d="M85 35h10m-10 6h10" />
+          <path d="M127 22h41v10a6 6 0 0 0 0 12v10h-41V44a6 6 0 0 0 0-12V22Z" fill="var(--paper)" />
+          <path d="m138 41 16-8-6 9v4l-3-4-7-1Z" />
+        </g>
+      </svg>
+    )}
+    {card && <img src={`/${card.file}`} alt="" width={card.width} height={card.height}
+      loading={featured ? "eager" : "lazy"} decoding="async" />}
+    {desk && <img src={`/${desk.file}`} srcset={stockSrcset(desk)} sizes="144px" alt=""
+      width={desk.width} height={desk.height} loading={featured ? "eager" : "lazy"} decoding="async"
+      data-stock-slug={desk.slug} data-stock-source={desk.source} />}
+  </span>
+)}
+
+<style>
+  .dp-news-preview {
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    padding: 10px;
+    block-size: 104px;
+    box-sizing: border-box;
+    background: var(--shade-1);
+    border-bottom: 1px solid var(--line);
+    color: var(--green);
+  }
+  .dp-news-preview svg { max-inline-size: 100%; block-size: 76px; }
+  .dp-news-preview img { display: block; max-inline-size: 100%; inline-size: 144px; block-size: 80px; object-fit: contain; }
+  [data-news-preview="salary-scorecard"] img { object-fit: cover; border-radius: 8px; }
+</style>

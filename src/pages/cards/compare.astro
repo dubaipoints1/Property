@@ -22,6 +22,7 @@ import {
   compareByWelcomeValue,
 } from "~/lib/cardsDataFormat";
 import { cardMatchups, matchupSlug } from "~/data/cardMatchups";
+import CompareCardArt from "~/components/cards/CompareCardArt.astro";
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EligibilityChips from "~/components/cards/EligibilityChips.astro";
@@ -230,15 +231,17 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
             hidden={!defaultSet.has(card.slug)}
           >
             <header class="dp-compare-col-head">
-              <span class="bank">{bankName}</span>
-              <h2>
-                <a href={`/cards/${card.slug}/`}>{card.name}</a>
-              </h2>
-              <span class="network">{card.network}</span>
+              <div class="dp-compare-identity">
+                <span class="bank">{bankName}</span>
+                <h2>
+                  <a href={`/cards/${card.slug}/`}>{card.name}</a>
+                </h2>
+                <span class="network">{card.network}</span>
+              </div>
+              <CompareCardArt slug={card.slug} deferred />
             </header>
 
             <div class="dp-compare-col-section">
-              <div class="dp-compare-row-label">Annual fee</div>
               <FeeBlock card={card.slug} />
             </div>
 
@@ -342,6 +345,15 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       });
       // Keep the URL, visible comparison and keyboard order in sync.
       grid.prepend.apply(grid, show.map(function (slug) { return known[slug]; }));
+      // An img inside a template is inert: the browser cannot fetch every
+      // card, or the default cards on a visit with an explicit selection.
+      show.forEach(function (slug) {
+        var template = known[slug].querySelector("[data-compare-art-template]");
+        if (!template) return;
+        var img = template.content.querySelector("img").cloneNode(true);
+        img.addEventListener("error", function () { img.remove(); }, { once: true });
+        template.replaceWith(img);
+      });
       if (!isDefault && matchups) grid.after(matchups);
 
       countEl.textContent = String(show.length);
@@ -582,10 +594,17 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     overflow-wrap: anywhere;
   }
   .dp-compare-col-head {
-    display: grid;
-    gap: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--line-soft);
+  }
+  .dp-compare-identity {
+    display: grid;
+    min-width: 0;
+    gap: 4px;
   }
   .dp-compare-col-head .bank {
     font-size: 10px;
@@ -616,6 +635,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     letter-spacing: 0.3px;
     margin-top: 4px;
   }
+  .dp-compare-col-section :global(.dp-fee-block) { margin: 0; }
   .dp-compare-col-section .dp-compare-row-label {
     margin: 0 0 8px;
     font-size: 10px;

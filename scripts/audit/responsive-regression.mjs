@@ -223,11 +223,49 @@ try {
   await page.waitForFunction(() => document.getElementById("finder-filters").open);
 
   await page.setViewportSize({ width: 320, height: 880 });
+  const compareArtRequests = [];
+  const collectCompareArt = (request) => {
+    const asset = new URL(request.url()).pathname;
+    if (request.resourceType() === "image" && asset.startsWith("/images/cards/")) {
+      compareArtRequests.push(asset);
+    }
+  };
+  page.on("request", collectCompareArt);
   await navigate(page, "/cards/compare/?cards=cbd-one,wio-credit,sc-platinum-x");
+  const activeComparison = page.locator("#dp-compare-grid > .dp-compare-col:not([hidden])");
+  assert.deepEqual(await activeComparison.evaluateAll((columns) => columns.map((col) => col.dataset.slug)),
+    ["cbd-one", "wio-credit", "sc-platinum-x"]);
+  const selectedArt = page.locator("#dp-compare-grid img[data-compare-card-art]");
+  assert.deepEqual(await selectedArt.evaluateAll((images) => images.map((img) => img.dataset.compareCardArt)),
+    ["cbd-one", "sc-platinum-x"], "Only selected cards with approved art render images");
+  assert.match(await activeComparison.nth(1).getByRole("heading").innerText(), /Wio/i);
+  const firstFee = activeComparison.first().locator(".dp-fee-block");
+  assert.equal(await activeComparison.first().getByText("Annual fee", { exact: true }).count(), 1);
+  for (const feePart of await firstFee.locator(".amt, .lbl").all()) {
+    assert.ok(await feePart.evaluate((el) => el.getBoundingClientRect().bottom < innerHeight));
+  }
+  for (const art of await selectedArt.all()) {
+    await art.scrollIntoViewIfNeeded();
+    await art.evaluate((img) => img.decode());
+    assert.equal(await art.getAttribute("alt"), "");
+    assert.ok((await art.boundingBox()).width <= 56);
+  }
+  page.off("request", collectCompareArt);
+  assert.deepEqual([...new Set(compareArtRequests.map((asset) => path.basename(asset)))].sort(),
+    ["cbd-one.webp", "sc-platinum-x.webp"], "The picker does not fetch other cards' art");
   assert.equal(await page.evaluate(() => Boolean(document.querySelector("#dp-compare-grid").compareDocumentPosition(document.querySelector("#dp-compare-matchups")) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
   await page.getByText("Pick cards to compare", { exact: true }).click();
   assert.ok(await page.getByRole("button", { name: "Update comparison" }).isVisible());
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), 0);
+  await navigate(page, "/cards/compare/fab-cashback-vs-citi-cashback/");
+  const pairArt = page.locator(".dp-card-comparison img[data-compare-card-art]");
+  assert.deepEqual(await pairArt.evaluateAll((images) => images.map((img) => img.dataset.compareCardArt)),
+    ["fab-cashback", "citi-cashback"]);
+  for (const art of await pairArt.all()) {
+    await art.scrollIntoViewIfNeeded();
+    await art.evaluate((img) => img.decode());
+    assert.ok((await art.boundingBox()).width <= 56);
+  }
 
   await page.setViewportSize({ width: 390, height: 880 });
   await navigate(page, "/deals/");
@@ -259,6 +297,52 @@ try {
   await navigate(page, "/news/cash-or-miles-uae-flight-break-even/");
   assert.match(await page.locator("main").innerText(), /hypothetical/i);
   assert.equal(await page.locator('link[rel="preload"][as="font"], .article-hero-image').count(), 0);
+  await navigate(page, "/news/uae-salary-switch-scorecard/");
+  assert.equal(await page.locator('link[rel="preload"][as="font"], .article-hero-image, main [data-news-preview]').count(), 0);
+
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 880 });
+    for (const [route, expected] of [
+      ["/news/", ["cash-or-miles", "issuer-card", "salary-scorecard"]],
+      ["/news/banking/", ["issuer-card", "salary-scorecard"]],
+      ["/news/airlines/", ["cash-or-miles"]],
+      ["/news/hotels/", []],
+    ]) {
+      await navigate(page, route);
+      assert.equal(await page.locator("main .intel-main svg.dp-cover").count(), 0, route);
+      const previews = page.locator("main [data-news-preview]");
+      const actual = await previews.evaluateAll((nodes) => nodes.map((node) => node.dataset.newsPreview));
+      assert.deepEqual(actual.sort(), expected.sort(), route);
+      for (const visual of await previews.all()) {
+        assert.equal(await visual.getAttribute("aria-hidden"), "true");
+        assert.ok((await visual.boundingBox()).height <= 110, route);
+        for (const img of await visual.locator("img").all()) {
+          await img.scrollIntoViewIfNeeded();
+          await img.evaluate((element) => element.decode());
+        }
+      }
+    }
+  }
+  await navigate(page, "/guides/paint-protection-film-dubai/");
+  const stageCredit = page.locator("main [data-stage-photo-credit]");
+  assert.equal(await stageCredit.count(), 1);
+  assert.ok(await stageCredit.isVisible());
+  assert.equal(await stageCredit.innerText(), "Image: Modcare");
+  for (const width of [390, 1440]) {
+    await page.setViewportSize({ width, height: 880 });
+    await navigate(page, "/hotels/");
+    const hotelPhotos = page.locator("main .dp-dir-tile img[data-stock-slug]");
+    assert.equal(await hotelPhotos.count(), 5);
+    for (const photo of await hotelPhotos.all()) {
+      await photo.scrollIntoViewIfNeeded();
+      await photo.evaluate((element) => element.decode());
+    }
+    await navigate(page, "/hotels/accor-all/");
+    const accorCredit = page.locator("main .dp-prog-photo-credit");
+    assert.ok(await accorCredit.getByText("Novotel Barcelona City ·", { exact: true }).isVisible());
+    assert.ok(await accorCredit.getByRole("link", { name: "Ghassan Hani", exact: true }).isVisible());
+    assert.match(await page.locator("main .dp-stage").getAttribute("style"), /news-all-accor-triple-points/);
+  }
   await navigate(page, "/");
   assert.equal(await page.locator("body.dp-system-typography").count(), 0);
   assert.equal(await page.locator('link[rel="preload"][as="font"]').count(), 2);
