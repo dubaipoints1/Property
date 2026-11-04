@@ -1,0 +1,234 @@
+---
+interface Props { embedded?: boolean; }
+const { embedded = false } = Astro.props;
+const Heading = embedded ? "h3" : "h2";
+---
+
+<section class="dp-cash-miles" aria-labelledby="dp-cash-miles-title" data-cash-or-miles>
+  <div class="dp-cm-inputs">
+    <Heading id="dp-cash-miles-title">Enter your two quotes</Heading>
+    <p>Use the total for the same itinerary and number of passengers. All cash amounts are in AED.</p>
+    <form novalidate autocomplete="off">
+      <fieldset disabled>
+        <legend class="sr-only">Flight quote details</legend>
+        <div class="dp-cm-fields">
+          <div>
+            <label for="dp-cm-cashFare">Cash fare <span>(AED)</span></label>
+            <input id="dp-cm-cashFare" type="text" inputmode="decimal" maxlength="18" required aria-describedby="dp-cm-cashFare-help dp-cm-cashFare-error" data-cm-input="cashFare" />
+            <small id="dp-cm-cashFare-help">Total to book the paid ticket.</small>
+            <p id="dp-cm-cashFare-error" class="dp-cm-error" hidden></p>
+          </div>
+          <div>
+            <label for="dp-cm-miles">Miles required</label>
+            <input id="dp-cm-miles" type="text" inputmode="numeric" maxlength="18" required aria-describedby="dp-cm-miles-help dp-cm-miles-error" data-cm-input="miles" />
+            <small id="dp-cm-miles-help">Total miles charged for the award.</small>
+            <p id="dp-cm-miles-error" class="dp-cm-error" hidden></p>
+          </div>
+          <div>
+            <label for="dp-cm-awardFees">Cash due on the award <span>(AED)</span></label>
+            <input id="dp-cm-awardFees" type="text" inputmode="decimal" maxlength="18" required aria-describedby="dp-cm-awardFees-help dp-cm-awardFees-error" data-cm-input="awardFees" />
+            <small id="dp-cm-awardFees-help">Include all taxes, fees and cash co-pay. Enter 0 if none.</small>
+            <p id="dp-cm-awardFees-error" class="dp-cm-error" hidden></p>
+          </div>
+          <div>
+            <label for="dp-cm-target">Your target value <span>(fils per mile)</span></label>
+            <input id="dp-cm-target" type="text" inputmode="decimal" maxlength="18" aria-describedby="dp-cm-target-help dp-cm-target-error" data-cm-input="target" />
+            <small id="dp-cm-target-help">Optional. Add a target to see your break-even fare.</small>
+            <p id="dp-cm-target-error" class="dp-cm-error" hidden></p>
+          </div>
+        </div>
+        <div class="dp-cm-actions">
+          <button type="submit" class="dp-cm-primary">Compare fares</button>
+          <button type="button" class="dp-cm-secondary" data-cm-example>Try a hypothetical example</button>
+          <button type="reset" class="dp-cm-secondary">Clear</button>
+        </div>
+      </fieldset>
+    </form>
+    <p class="dp-cm-privacy">Your entries stay in this browser tab; they are not sent or saved.</p>
+    <noscript><p>The calculator needs JavaScript. You can still use the <a href="/calculator/cash-or-miles/#methodology">formula</a> or read the <a href="/news/cash-or-miles-uae-flight-break-even/">worked examples</a>.</p></noscript>
+  </div>
+  <div class="dp-cm-results" aria-labelledby="dp-cm-results-title">
+    <Heading id="dp-cm-results-title">Your comparison</Heading>
+    <div role="status" aria-atomic="true">
+      <p data-cm-verdict>Add your quotes to see what your miles would save.</p>
+      <dl data-cm-metrics hidden>
+        <div><dt data-cm-saving-label>Cash saved</dt><dd data-cm-saving></dd></div>
+        <div><dt>Value per mile</dt><dd data-cm-value></dd></div>
+        <div><dt>Break-even cash fare</dt><dd data-cm-break-even></dd></div>
+      </dl>
+    </div>
+    <p class="dp-cm-hypothetical" data-cm-hypothetical hidden>Hypothetical figures, not a quote or a seat check.</p>
+    <p class="dp-cm-rounding" data-cm-rounding hidden>Value per mile is rounded for display. The comparison uses the unrounded value.</p>
+  </div>
+</section>
+
+<script>
+  import { calculateCashOrMiles, type CashOrMilesInput } from "~/lib/cashOrMiles";
+
+  const root = document.querySelector<HTMLElement>("[data-cash-or-miles]");
+  const form = root?.querySelector("form");
+  const fieldset = form?.querySelector("fieldset");
+  const example = root?.querySelector<HTMLButtonElement>("[data-cm-example]");
+  const resultPanel = root?.querySelector<HTMLElement>(".dp-cm-results");
+  const verdict = root?.querySelector<HTMLElement>("[data-cm-verdict]");
+  const metrics = root?.querySelector<HTMLElement>("[data-cm-metrics]");
+  const savingLabel = root?.querySelector<HTMLElement>("[data-cm-saving-label]");
+  const saving = root?.querySelector<HTMLElement>("[data-cm-saving]");
+  const value = root?.querySelector<HTMLElement>("[data-cm-value]");
+  const breakEven = root?.querySelector<HTMLElement>("[data-cm-break-even]");
+  const hypothetical = root?.querySelector<HTMLElement>("[data-cm-hypothetical]");
+  const rounding = root?.querySelector<HTMLElement>("[data-cm-rounding]");
+
+  if (form && fieldset && example && verdict && metrics && savingLabel && saving && value && breakEven && hypothetical && rounding) {
+    const fields = ["cashFare", "miles", "awardFees", "target"] as const;
+    const inputs = Object.fromEntries(fields.map((key) => [key, form.querySelector<HTMLInputElement>(`[data-cm-input="${key}"]`)!])) as Record<keyof CashOrMilesInput, HTMLInputElement>;
+    const errors = Object.fromEntries(fields.map((key) => [key, form.querySelector<HTMLElement>(`#dp-cm-${key}-error`)!])) as Record<keyof CashOrMilesInput, HTMLElement>;
+    const aed = new Intl.NumberFormat("en-GB", { style: "currency", currency: "AED", currencyDisplay: "code", maximumFractionDigits: 2 });
+    const fils = new Intl.NumberFormat("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const prompt = "Add your quotes to see what your miles would save.";
+    const sample: CashOrMilesInput = { cashFare: "5,200", miles: "105,000", awardFees: "2,400", target: "2" };
+    let sampleActive = false;
+
+    const clearError = (key: keyof CashOrMilesInput) => {
+      inputs[key].removeAttribute("aria-invalid");
+      errors[key].hidden = true;
+      errors[key].textContent = "";
+    };
+
+    const calculate = () => {
+      const raw = Object.fromEntries(fields.map((key) => [key, inputs[key].value])) as CashOrMilesInput;
+      const calculation = calculateCashOrMiles(raw);
+      for (const key of fields) clearError(key);
+      if (!calculation.ok) {
+        metrics.hidden = true;
+        rounding.hidden = true;
+        verdict.textContent = "Check the highlighted fields, then compare again.";
+        for (const key of fields) {
+          const error = calculation.errors[key];
+          if (!error) continue;
+          inputs[key].setAttribute("aria-invalid", "true");
+          errors[key].textContent = error;
+          errors[key].hidden = false;
+        }
+        const firstError = fields.find((key) => calculation.errors[key]);
+        if (firstError) inputs[firstError].focus();
+        return;
+      }
+
+      const result = calculation.result;
+      const messages = {
+        "above-target": "The award beats your target value.",
+        "below-target": "The award saves cash, but falls below your target. At that target, the paid fare comes out ahead.",
+        "at-target": "The fares are equal at your target value. Check the restrictions before choosing.",
+        "no-target": "The award saves cash. Add your target to see how the two fares compare at that value.",
+        "no-saving": "The award needs as much cash as the paid fare, before counting any miles.",
+        "negative-saving": "The award costs more cash than the paid fare, before counting any miles.",
+      };
+      savingLabel.textContent = result.cashSavedFils < 0 ? "Extra cash due on the award" : "Cash saved with the award";
+      saving.textContent = aed.format(Math.abs(result.cashSavedFils) / 100);
+      value.textContent = Math.abs(result.filsPerMile) < 0.005 && result.filsPerMile !== 0
+        ? "Approximately 0 fils" : `${fils.format(result.filsPerMile)} fils`;
+      breakEven.textContent = result.breakEvenFareFils === null ? "Set a target" : aed.format(result.breakEvenFareFils / 100);
+      metrics.hidden = false;
+      rounding.hidden = false;
+      hypothetical.hidden = !sampleActive;
+      verdict.textContent = messages[result.verdict];
+      if (window.matchMedia("(max-width: 720px)").matches) resultPanel?.scrollIntoView({ block: "nearest", behavior: "instant" });
+    };
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      calculate();
+    });
+    for (const key of fields) inputs[key].addEventListener("input", () => {
+      clearError(key);
+      // Keep the example warning until all sample inputs have been cleared,
+      // even if the reader experiments with just one of the example values.
+      if (fields.every((field) => inputs[field].value.trim() === "")) sampleActive = false;
+      if (!metrics.hidden) {
+        metrics.hidden = true;
+        rounding.hidden = true;
+        verdict.textContent = "Quotes changed. Compare again to update the result.";
+      }
+      hypothetical.hidden = !sampleActive;
+    });
+    example.addEventListener("click", () => {
+      for (const key of fields) inputs[key].value = sample[key];
+      sampleActive = true;
+      calculate();
+    });
+    form.addEventListener("reset", () => {
+      sampleActive = false;
+      for (const key of fields) clearError(key);
+      metrics.hidden = true;
+      rounding.hidden = true;
+      hypothetical.hidden = true;
+      verdict.textContent = prompt;
+    });
+    fieldset.disabled = false;
+  }
+</script>
+
+<style>
+  .dp-cash-miles {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: clamp(18px, 3vw, 28px);
+    align-items: start;
+    margin-block: 24px 40px;
+    color: var(--ink);
+    font-family: var(--font-ui);
+  }
+  .dp-cash-miles [hidden] { display: none; }
+  .dp-cm-inputs, .dp-cm-results {
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: clamp(15px, 3vw, 28px);
+    background: var(--paper);
+  }
+  .dp-cm-results { background: var(--shade-1); scroll-margin-top: 110px; }
+  :is(h2, h3) { margin: 0; font: 500 clamp(1.35rem, 2.5vw, 1.9rem)/1.15 var(--font-display); }
+  p { margin: .6rem 0 0; line-height: 1.45; }
+  fieldset { padding: 0; margin: 1rem 0 0; min-width: 0; border: 0; }
+  .dp-cm-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  label { display: block; margin-bottom: .3rem; font-size: .875rem; font-weight: 700; }
+  label span, small, .dp-cm-privacy, .dp-cm-rounding { color: var(--ink-soft); }
+  small { display: block; margin-top: .3rem; font-size: .8125rem; line-height: 1.4; }
+  input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    padding: .5rem .65rem;
+    border: 1px solid var(--ink-soft);
+    border-radius: 7px;
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+  }
+  input:focus-visible, button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  input[aria-invalid="true"] { border-width: 2px; }
+  .dp-cm-error { margin-top: .35rem; font-size: .8125rem; font-weight: 700; }
+  .dp-cm-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+  button {
+    min-height: 44px;
+    padding: .5rem .85rem;
+    border: 1px solid var(--ink);
+    border-radius: 7px;
+    font: 650 .875rem/1.2 var(--font-ui);
+    cursor: pointer;
+  }
+  button:disabled { cursor: default; }
+  .dp-cm-primary { background: var(--ink); color: var(--paper); }
+  .dp-cm-secondary { background: var(--paper); color: var(--ink); }
+  .dp-cm-secondary:hover { background: var(--shade-1); }
+  .dp-cm-privacy, .dp-cm-rounding, .dp-cm-hypothetical { font-size: .8125rem; }
+  .dp-cm-hypothetical { font-weight: 700; }
+  dl { margin: .9rem 0 0; }
+  dl div { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .25rem .7rem; padding: .6rem 0; border-top: 1px solid var(--line); }
+  dt { color: var(--ink-soft); font-size: .875rem; }
+  dd { margin: 0; color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+  @media (max-width: 800px) { .dp-cash-miles { grid-template-columns: 1fr; } }
+  @media (max-width: 480px) { .dp-cm-fields { grid-template-columns: 1fr; } }
+</style>

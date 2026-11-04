@@ -16,9 +16,13 @@ sources:
   - https://www.etihad.com/en-ae/flights/flights-from-abu-dhabi-to-muscat
 ---
 
+import TravelEvidence from "~/components/TravelEvidence.astro";
+
 A reward ticket can cost fewer dirhams and still be a poor use of miles. Compare the cash fare you would actually pay with the **total cash due on the reward**, then ask how much those miles saved you.
 
 **Worked examples, not live fares.** We checked the airline rules on 4 November 2026 but could not verify matched, all-in cash and reward quotes for the same flights. Every fare, mileage requirement and fee below is hypothetical. Neither example confirms seat availability.
+
+To compare your own quotes, use the [Cash or Miles calculator](/calculator/cash-or-miles/). For an observed fare instead of an illustration, see the [Etihad Abu Dhabi–Muscat comparison](/news/cash-or-miles-etihad-abu-dhabi-muscat/).
 
 ## The break-even test
 
@@ -28,7 +32,12 @@ A reward ticket can cost fewer dirhams and still be a poor use of miles. Compare
 
 ## Dubai to London Heathrow: miles above the baseline
 
-**Illustration: one adult, Business return.** On the [Emirates route](https://www.emirates.com/ae/english/destinations/dxb/lhr/flights-from-dubai-to-london-heathrow/), suppose a comparable cash ticket is **AED 5,200**, and an available reward would cost **105,000 Skywards Miles plus AED 2,400** in cash.
+<TravelEvidence basis="hypothetical" rows={[
+  { label: "Itinerary", value: "Dubai to London Heathrow · return" },
+  { label: "Cabin and party", value: "Business · one adult" },
+  { label: "Illustrative cash fare", value: "AED 5,200" },
+  { label: "Illustrative reward", value: "105,000 Skywards Miles + AED 2,400" },
+]} source={{ href: "https://www.emirates.com/ae/english/destinations/dxb/lhr/flights-from-dubai-to-london-heathrow/", label: "Emirates route page" }} limitation="No travel date or seat availability was verified for these figures." />
 
 - **Cash saved:** AED 2,800. That works out to **2.67 fils per mile**.
 - **Break-even cash fare:** AED 2,400 + AED 2,100 for the miles = **AED 4,500**.
@@ -38,7 +47,12 @@ An Emirates Classic Reward is not the same as applying Cash+Miles to a paid tick
 
 ## Abu Dhabi to Muscat: cash below break-even
 
-**Illustration: one adult, Economy one-way.** On the [Etihad route](https://www.etihad.com/en-ae/flights/flights-from-abu-dhabi-to-muscat), suppose a comparable cash ticket is **AED 380**, and an available reward would cost **15,000 Etihad Guest Miles plus AED 180** in cash.
+<TravelEvidence basis="hypothetical" rows={[
+  { label: "Itinerary", value: "Abu Dhabi to Muscat · one-way" },
+  { label: "Cabin and party", value: "Economy · one adult" },
+  { label: "Illustrative cash fare", value: "AED 380" },
+  { label: "Illustrative reward", value: "15,000 Etihad Guest Miles + AED 180" },
+]} source={{ href: "https://www.etihad.com/en-ae/flights/flights-from-abu-dhabi-to-muscat", label: "Etihad route page" }} limitation="No travel date or seat availability was verified for these figures." />
 
 - **Cash saved:** AED 200. That works out to **1.33 fils per mile**.
 - **Break-even cash fare:** AED 180 + AED 300 for the miles = **AED 480**.

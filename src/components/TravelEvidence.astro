@@ -1,0 +1,50 @@
+---
+interface Props {
+  basis: "priced-not-booked" | "issuer-announcement" | "hypothetical";
+  rows: ReadonlyArray<{ label: string; value: string }>;
+  checked?: { iso: string; display: string };
+  source: { href: string; label: string };
+  limitation: string;
+}
+const { basis, rows, checked, source, limitation } = Astro.props;
+const title = {
+  "priced-not-booked": "Priced, not booked",
+  "issuer-announcement": "Airline announcement, not a fare check",
+  hypothetical: "Worked example, not a quote",
+}[basis];
+---
+
+<figure class="dp-travel-evidence" data-travel-evidence={basis}>
+  <figcaption>
+    <strong>{title}</strong>
+    {checked && <span>Checked <time datetime={checked.iso}>{checked.display}</time></span>}
+  </figcaption>
+  <dl>
+    {rows.map(({ label, value }) => <div><dt>{label}</dt><dd>{value}</dd></div>)}
+  </dl>
+  <p>{limitation} <a href={source.href}>{source.label}</a></p>
+</figure>
+
+<style>
+  .dp-travel-evidence {
+    box-sizing: border-box; margin: 1.5rem 0; padding: clamp(14px, 3vw, 22px);
+    border: 1px solid var(--line); border-radius: 12px; background: var(--shade-1);
+    font-family: var(--font-ui); color: var(--ink); min-width: 0;
+  }
+  .dp-travel-evidence figcaption {
+    display: flex; align-items: baseline; justify-content: space-between; gap: .4rem 1rem; flex-wrap: wrap;
+    margin: 0 0 .75rem; color: var(--ink); font-size: 1rem; line-height: 1.35; text-align: start;
+  }
+  .dp-travel-evidence figcaption span { color: var(--ink-soft); font-size: .85rem; }
+  .dp-travel-evidence dl {
+    margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+    gap: .75rem 1.15rem; padding: .85rem 0; border-block: 1px solid var(--line);
+  }
+  .dp-travel-evidence dt { color: var(--ink-soft); font-size: .8rem; }
+  .dp-travel-evidence dd {
+    margin: .15rem 0 0; font-size: .98rem; line-height: 1.35; font-weight: 650;
+    font-variant-numeric: tabular-nums; overflow-wrap: anywhere;
+  }
+  .dp-travel-evidence p { color: var(--ink-soft); font-size: .88rem; line-height: 1.5; margin: .75rem 0 0; }
+  .dp-travel-evidence a { color: var(--green); text-decoration: underline; text-underline-offset: .15em; }
+</style>

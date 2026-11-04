@@ -11,6 +11,8 @@ sources:
   - https://news.flydubai.com/flydubai-reconnects-skopje-north-macedonia-with-dubai-and-beyond
 ---
 
+import TravelEvidence from "~/components/TravelEvidence.astro";
+
 **flydubai** is resuming flights between **Dubai and Skopje**, the capital of
 North Macedonia, from **1 April 2027**. The airline announced the route in its
 [release of 2 November](https://news.flydubai.com/flydubai-reconnects-skopje-north-macedonia-with-dubai-and-beyond).
@@ -34,13 +36,12 @@ Thursday-to-Monday trip from the UAE fits a long weekend.
 
 ## Fares
 
-flydubai gives these return fares from Dubai:
-
-- **Economy Class Lite:** from **AED 2,800**
-- **Business Class:** from **AED 12,500**
-
-These are launch "from" fares, published five months before the first
-flight. Check the price for your own dates before you compare.
+<TravelEvidence basis="issuer-announcement" checked={{ iso: "2026-11-03", display: "3 November 2026" }} rows={[
+  { label: "Itinerary", value: "Dubai (DXB) to Skopje (SKP) · return" },
+  { label: "Economy Lite from", value: "AED 2,800" },
+  { label: "Business Class from", value: "AED 12,500" },
+  { label: "Award fare", value: "Not priced" },
+]} source={{ href: "https://news.flydubai.com/flydubai-reconnects-skopje-north-macedonia-with-dubai-and-beyond", label: "flydubai’s route announcement" }} limitation="The airline published starting fares. These are not quotes for particular dates." />
 
 ## On board
 

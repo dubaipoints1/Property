@@ -10,11 +10,12 @@ const slug = `news-${id}`;
 const photo = getStockEntry(slug);
 // Listing treatment only. These stories deliberately have no article hero.
 const diagram = id === "cash-or-miles-uae-flight-break-even";
+const quote = id === "cash-or-miles-etihad-abu-dhabi-muscat";
 const card = id === "uae-card-change-log-citi-cash-back-application-route"
   ? getCardArt("citi-cashback") : undefined;
 const desk = id === "uae-salary-switch-scorecard"
   ? getStockEntry("guide-salary-transfer-mechanics-2026") : undefined;
-const kind = diagram ? "cash-or-miles" : card ? "issuer-card" : desk ? "salary-scorecard" : undefined;
+const kind = diagram ? "cash-or-miles" : quote ? "cash-or-miles-quote" : card ? "issuer-card" : desk ? "salary-scorecard" : undefined;
 ---
 
 {photo ? (
@@ -32,6 +33,18 @@ const kind = diagram ? "cash-or-miles" : card ? "issuer-card" : desk ? "salary-s
           <path d="M85 35h10m-10 6h10" />
           <path d="M127 22h41v10a6 6 0 0 0 0 12v10h-41V44a6 6 0 0 0 0-12V22Z" fill="var(--paper)" />
           <path d="m138 41 16-8-6 9v4l-3-4-7-1Z" />
+        </g>
+      </svg>
+    )}
+    {quote && (
+      <svg viewBox="0 0 180 76" width="180" height="76" fill="none" focusable="false">
+        <g stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="21" cy="52" r="4" fill="var(--paper)" />
+          <circle cx="159" cy="52" r="4" fill="var(--paper)" />
+          <path d="M26 52c35-45 93-45 128 0" stroke-dasharray="2 5" opacity=".6" />
+          <circle cx="90" cy="31" r="17" fill="var(--paper)" />
+          <path d="m82 32 17-7-7 9v5l-4-5-6-2Z" />
+          <path d="M51 60h78" opacity=".3" />
         </g>
       </svg>
     )}

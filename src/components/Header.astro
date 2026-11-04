@@ -96,7 +96,8 @@ const pointsPanel: Group[] = [
   ]},
   { title: "Values & ratios", rows: [
     { label: "Points & miles valuations",       href: "/valuations/", sub: "What points are worth in AED" },
-    { label: "Transfer-partner cheatsheet",     href: "/guides/uae-transfer-ratios-2026/" },
+    { label: "UAE Transfer Finder",             href: "/transfer-finder/", sub: "Bank points to airline miles" },
+    { label: "Cash or Miles calculator",       href: "/calculator/cash-or-miles/", sub: "Compare two flight quotes" },
     { label: "Beginner's guide to UAE points", href: "/guides/expat-starter-points-101/" },
     { label: "Salary-transfer calculator",      href: "/salary-transfer/calculator/" },
   ]},
@@ -184,7 +185,7 @@ const publicationRows: SubRow[] = [
       <a href="/salary-transfer/" class={isActive("/salary-transfer/") ? "is-active" : ""}>Salary tracker</a>
 
       <details class="dp-nav-mega-wrap">
-        <summary class={isActive("/airlines/") || isActive("/hotels/") || isActive("/valuations/") ? "is-active" : ""}>
+        <summary class={isActive("/airlines/") || isActive("/hotels/") || isActive("/valuations/") || isActive("/transfer-finder/") || isActive("/calculator/cash-or-miles/") ? "is-active" : ""}>
           Points &amp; miles
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </summary>
