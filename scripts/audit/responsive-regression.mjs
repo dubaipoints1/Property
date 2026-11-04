@@ -135,6 +135,10 @@ try {
   assert.equal(await reward.inputValue(), "miles");
   assert.equal(await page.locator("#finder-more").getAttribute("open"), "");
   assert.ok(await reward.evaluate((el) => el.getBoundingClientRect().bottom <= window.innerHeight));
+  await page.getByRole("combobox", { name: "Invitation-only cards" }).selectOption("false");
+  await page.getByRole("button", { name: "Apply all filters" }).click();
+  await page.waitForURL((url) => url.searchParams.get("include_invite_only") === "false");
+  assert.equal(await page.getByRole("combobox", { name: "Invitation-only cards" }).inputValue(), "false");
   const filters = page.locator("#finder-filters");
   await filters.locator(":scope > summary").click();
   assert.equal(await filters.getAttribute("open"), null);

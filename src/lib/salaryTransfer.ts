@@ -165,6 +165,8 @@ export function scoreOffer(
   if (rule?.financeAlternative) {
     if (willing.includes("credit_card") || willing.includes("loan") || willing.includes("auto_finance")) {
       requireConfirmation("Confirm an eligible covered card or qualifying personal or auto finance with DIB. Willingness alone does not qualify.");
+    } else if (willing.includes("mortgage")) {
+      requireConfirmation("DIB includes home finance in its facility definition. Confirm with the bank whether your specific facility qualifies for the salary bonus.");
     } else {
       status = "disqualified";
       reasons.push("This offer requires an eligible covered card or qualifying personal or auto finance. None is selected.");

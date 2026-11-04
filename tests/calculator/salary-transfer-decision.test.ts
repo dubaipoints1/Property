@@ -14,7 +14,7 @@ const offer: SalaryTransferOffer = {
 test("DIB requires card, personal finance or auto finance and remains unranked until confirmed", () => {
   const dib = { ...offer, id: "dib-xtra-2026", bankSlug: "dib", creditCardRequired: true, sourceUrl: "https://www.dib.ae/docs/default-source/pdf/dib-xtra-tc.pdf" };
   assert.equal(scoreOffer(dib, input).status, "disqualified");
-  for (const product of ["credit_card", "loan", "auto_finance"] as const) {
+  for (const product of ["credit_card", "loan", "auto_finance", "mortgage"] as const) {
     const result = scoreOffer(dib, { ...input, willingProducts: [product] });
     assert.equal(result.status, "conditional");
     assert.equal(result.cashEquivalentAED, 0);

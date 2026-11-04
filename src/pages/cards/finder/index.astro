@@ -196,12 +196,12 @@ const lastRefreshed = new Date(
             inputmode="numeric"
             placeholder="e.g. 15,000"
             min="0"
-            step="500"
+            step="1"
             value={salaryInit}
           />
           <p class="hint">
-            Leave blank to include every card. We use this to filter out
-            cards you wouldn't qualify for.
+            Leave blank to skip the salary filter. Published minimums
+            are not a guarantee of approval.
           </p>
         </fieldset>
 
@@ -284,15 +284,10 @@ const lastRefreshed = new Date(
         <div class="dp-finder-fs-row">
           <fieldset class="dp-finder-fs">
             <legend>Invitation-only cards</legend>
-            <label class="dp-finder-checkbox">
-              <input
-                type="checkbox"
-                name="include_invite_only"
-                value="true"
-                checked={includeInviteOnlyInit !== "false"}
-              />
-              <span>Include invitation-only</span>
-            </label>
+            <select name="include_invite_only" aria-label="Invitation-only cards">
+              <option value="true" selected={includeInviteOnlyInit !== "false"}>Include</option>
+              <option value="false" selected={includeInviteOnlyInit === "false"}>Exclude</option>
+            </select>
           </fieldset>
 
           <fieldset class="dp-finder-fs">
@@ -567,8 +562,8 @@ const lastRefreshed = new Date(
           );
           if (el) el.checked = true;
         });
-      var invite = form.querySelector('input[name="include_invite_only"]');
-      if (invite) invite.checked = p.includeInviteOnly;
+      var invite = form.querySelector('select[name="include_invite_only"]');
+      if (invite) invite.value = String(p.includeInviteOnly);
       var legacy = form.querySelector('input[name="include_legacy"]');
       if (legacy) legacy.checked = p.includeLegacy;
     }
