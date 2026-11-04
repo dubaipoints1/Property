@@ -37,6 +37,15 @@ export interface Correction {
 
 export const corrections: readonly Correction[] = [
   {
+    date: new Date("2026-11-04"),
+    title: "VAT treatment on Citi and ADIB cashback card fees",
+    cardsAffected: ["citi-cashback", "adib-cashback-visa"],
+    original:
+      'our <a href="/cards/citi-cashback/">Citi Cash Back</a> and <a href="/cards/adib-cashback-visa/">ADIB Cashback Visa</a> fee displays added a “+ 5% VAT” label to amounts that already included VAT.',
+    corrected:
+      'the amounts are <strong>AED 315 including VAT</strong> for Citi when the annual fee applies, and <strong>AED 103.95 including VAT</strong> for ADIB. We corrected the labels, not the stored amounts, after checking the <a href="https://www.citibank.ae/credit-cards/cashback/citi-cashback-credit-card">Citi product page</a> and the <a href="https://www.adib.ae/en/personal/cards/cashback-visa-card/adib-cashback-visa-covered-card">ADIB product page</a> and its linked fee schedule on 4 November 2026. Citi’s first-year and ongoing spend waivers are separate conditions.',
+  },
+  {
     date: new Date("2026-11-03"),
     title: "Wio Credit minimum salary",
     cardsAffected: ["wio-credit"],

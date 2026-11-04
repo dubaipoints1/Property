@@ -203,6 +203,11 @@ const deals = defineCollection({
         .regex(/^[A-Z0-9][A-Z0-9_-]{2,31}$/i, "A promo code is 3–32 letters, digits, - or _")
         .optional(),
       promoCodeSource: z.string().url().optional(),
+      /** Previously verified issuer evidence for offers with no published code. */
+      offerSource: z.url().optional(),
+      /** Source-backed editorial prose; optional if the headline already carries the terms. */
+      eligibilityNote: z.string().min(1).optional(),
+      restrictionNote: z.string().min(1).optional(),
       /**
        * Merchant logo file under public/logos/partners/ (e.g. "noon.svg"),
        * shown on the deal tile instead of a stock photo (2026-10-20 ruling).
@@ -332,6 +337,9 @@ const news = defineCollection({
     description: z.string(),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
+    // For compact source-led reports whose documents and comparison, not a
+    // decorative hero, are the evidence.
+    textLed: z.boolean().default(false),
     // The date after which the story's claims stop being safe to serve
     // as-is (a promotion window closing, a registration deadline). Set by
     // the editor from the story's own prose — never extracted (§6). Past

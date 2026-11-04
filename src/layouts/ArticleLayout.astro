@@ -41,6 +41,7 @@ interface Props {
   toc?: { id: string; label: string }[];
   sources?: string[];
   showHero?: boolean;
+  systemTypography?: boolean;
   /** Cards the piece discusses (10 Oct 2026, direction B): rendered as a
    *  "Cards in this guide" strip under the byline, issuer card art first.
    *  Order is the author's; the strip makes no ranking claim. */
@@ -74,6 +75,7 @@ const {
   toc = [],
   sources = [],
   showHero = false,
+  systemTypography = false,
   heroLabel = "Hero illustration · 2:1",
   heroSlug,
   heroCategory = "Guide",
@@ -160,7 +162,7 @@ const schema = {
 };
 ---
 
-<BaseLayout title={title} description={description} fullWidth schema={schema}>
+<BaseLayout title={title} description={description} fullWidth schema={schema} systemTypography={systemTypography}>
   <article class="dp-reading-shell">
     <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead dp-reading-head", { "dp-stage": stageOwnsHero }]}>
       <div class="dp-reading-column">
@@ -231,6 +233,7 @@ const schema = {
     )}
 
     <div class="dp-article-body dp-reading-column">
+      <slot name="before-hero" />
       {showHero && !stageOwnsHero && Astro.slots.has("hero") ? (
         <slot name="hero" />
       ) : showHero && !stageOwnsHero && (

@@ -15,6 +15,8 @@ interface Props {
   title: string;
   description?: string;
   fullWidth?: boolean;
+  /** Optional lighter font stack for deliberately text-led reports. */
+  systemTypography?: boolean;
   /** Override the default OG image for a specific page (absolute or root path). */
   ogImage?: string;
   /** og:type — "website" (default) or "article" for editorial pages. */
@@ -29,6 +31,7 @@ const {
   title,
   description = "UAE points and miles — credit card analysis, loyalty programs, and deals.",
   fullWidth = false,
+  systemTypography = false,
   ogImage,
   ogType = "website",
   schema,
@@ -157,8 +160,12 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
     <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Self-hosted fonts: preload the two Latin faces used above the fold. -->
-    <link rel="preload" href={newsreaderLatin} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
+    {!systemTypography && (
+      <>
+        <link rel="preload" href={newsreaderLatin} as="font" type="font/woff2" crossorigin />
+        <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
+      </>
+    )}
     {schema && <SchemaJsonLd schema={schema} />}
     <SchemaJsonLd schema={defaultGraph} />
 
@@ -173,7 +180,7 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
       )
     }
   </head>
-  <body class="dp-body">
+  <body class:list={["dp-body", { "dp-system-typography": systemTypography }]}>
     <Header />
     <main class={fullWidth ? "dp-main is-full" : "dp-main"}>
       <slot />

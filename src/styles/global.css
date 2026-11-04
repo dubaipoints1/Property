@@ -128,6 +128,13 @@
   /* Sticky header including its mobile quick-links strip and borders. */
   --dp-sticky-header-height: 92px;
 }
+
+/* Source-led news can use the same serif/UI hierarchy without downloading
+   display fonts. The normal site and homepage still use the brand faces. */
+.dp-system-typography {
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-ui: system-ui, -apple-system, sans-serif;
+}
 @media (min-width: 1024px) {
   :root { --dp-sticky-header-height: 81px; }
 }
