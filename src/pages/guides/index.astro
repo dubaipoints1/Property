@@ -20,7 +20,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
-import { getStockEntry } from "~/lib/stockManifest";
+import { stagePhoto } from "~/lib/stage";
 import { getCollection } from "astro:content";
 
 const guides = (await getCollection("guides")).sort(
@@ -34,6 +34,10 @@ const fmt = (d: Date) =>
 // otherwise the freshest by updatedAt.
 const featured = guides.find((g) => g.id === "expat-starter") ?? guides[0];
 const others = guides.filter((g) => g.id !== featured?.id);
+// A compact thumbnail cannot reliably fit the required AI disclosure.
+// Show only manifest-tracked photographs here; full illustrations stay
+// with their visible disclosure on the article itself.
+const guidePhoto = (id: string) => stagePhoto(`guide-${id}`);
 
 const recentlyUpdated = others.slice(0, 5);
 
@@ -90,7 +94,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
   <div class="intel-grid">
     <div class="intel-main">
       {featured && (
-        <a href={`/guides/${featured.id}/`} class:list={["intel-featured", { "has-art": getStockEntry(`guide-${featured.id}`) }]} aria-labelledby="featured-guide-heading" data-guide-feature>
+        <a href={`/guides/${featured.id}/`} class:list={["intel-featured", { "has-art": guidePhoto(featured.id) }]} aria-labelledby="featured-guide-heading" data-guide-feature>
           <div class="intel-featured-body">
             <span class="intel-featured-eyebrow">{featured.id === "expat-starter" ? "Start here" : "Featured guide"}</span>
             <h2 id="featured-guide-heading">{featured.data.title}</h2>
@@ -99,7 +103,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
               Updated {fmt(featured.data.updatedAt)}
             </time>
           </div>
-          {getStockEntry(`guide-${featured.id}`) && (
+          {guidePhoto(featured.id) && (
             <span class="dp-guide-feature-art" data-guide-feature-art>
               <StockImage slug={`guide-${featured.id}`} class="intel-featured-image" sizes="(max-width: 640px) calc(100vw - 56px), 340px" loading="eager" />
             </span>
@@ -111,13 +115,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
         <ul class="intel-card-grid">
           {others.map((g) => (
             <li class="intel-card-item">
-              <a href={`/guides/${g.id}/`} class:list={["intel-card", { "has-art": getStockEntry(`guide-${g.id}`) }]} aria-labelledby={`guide-${g.id}`}>
+              <a href={`/guides/${g.id}/`} class:list={["intel-card", { "has-art": guidePhoto(g.id) }]} aria-labelledby={`guide-${g.id}`}>
                 <div class="intel-card-body">
                   <h2 id={`guide-${g.id}`}>{g.data.title}</h2>
                   <p>{g.data.description}</p>
                   <time class="intel-card-meta" datetime={g.data.updatedAt.toISOString().slice(0, 10)}>Updated {fmt(g.data.updatedAt)}</time>
                 </div>
-                {getStockEntry(`guide-${g.id}`) && (
+                {guidePhoto(g.id) && (
                   <span class="dp-guide-card-art">
                     <StockImage slug={`guide-${g.id}`} class="intel-card-image" sizes="120px" />
                   </span>

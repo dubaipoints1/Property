@@ -108,6 +108,7 @@ try {
   await navigate(page, "/guides/uae-transfer-ratios-2026/");
   const guideIntro = page.locator(".dp-article-body .dp-prose p").first();
   assert.ok(await guideIntro.evaluate((el) => el.getBoundingClientRect().top < 844));
+  assert.match(await page.locator("[data-reading-media] .dp-ai-label").innerText(), /not a photograph/i);
 
   await page.setViewportSize({ width: 1440, height: 880 });
   const rail = await page.evaluate(() => ({
@@ -115,6 +116,9 @@ try {
     prose: document.querySelector(".dp-article-body .dp-prose").getBoundingClientRect().left,
   }));
   assert.ok(Math.abs(rail.heading - rail.prose) < 2, JSON.stringify(rail));
+  await navigate(page, "/guides/");
+  assert.equal(await page.locator('main img[data-stock-slug="guide-uae-transfer-ratios-2026"]').count(), 0);
+  assert.equal(await page.locator("main").getByText("Trending now", { exact: true }).count(), 0);
 
   await page.setViewportSize({ width: 721, height: 880 });
   await navigate(page, "/guides/best-lounge-access-cards-uae-2026/");
