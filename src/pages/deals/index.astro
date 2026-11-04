@@ -15,7 +15,7 @@
 //     news desk + RSS feed.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
+import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
 import DealVisual from "~/components/deals/DealVisual.astro";
 import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
@@ -39,11 +39,8 @@ const dealsWithBank = await Promise.all(
   }),
 );
 
-// Filter row (20 October 2026, Chairman direction "Ok do it all" on the
-// deals plan). Only sectors and issuers with at least one live deal get a
-// chip: a filter with nothing behind it is noise. The filter is a
-// progressive enhancement — without JS every deal shows and the controls
-// stay hidden.
+// Offer only categories and issuers with at least one live entry.
+// Without JS every deal shows and the interactive filters stay hidden.
 const sectorChips = (Object.keys(SECTOR_LABELS) as (keyof typeof SECTOR_LABELS)[])
   .map((s) => ({ id: s, label: SECTOR_LABELS[s], n: liveDeals.filter((d) => d.data.sector === s).length }))
   .filter((s) => s.n > 0);
@@ -52,7 +49,6 @@ const issuerOptions = [...new Map(dealsWithBank.map((d) => [d.issuerId, d.bankNa
 const codeCount = liveDeals.filter((d) => d.data.promoCode).length;
 const endingSoon = dealsWithBank.filter((d) => d.days <= ENDING_SOON_DAYS);
 const dealAttrs = (d: (typeof dealsWithBank)[number]) => ({
-  "data-deal": "",
   "data-sector": d.entry.data.sector ?? "",
   "data-issuer": d.issuerId,
   "data-code": d.entry.data.promoCode ? "1" : "0",
@@ -75,13 +71,6 @@ const fmt = (d: Date) =>
 const formatCategory = (c: string) =>
   c.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
-// Sibling pivots — kept honest. "Welcome bonus" and "Fee waiver" used
-// to both point at /cards/ which is misleading (two tabs, same
-// destination, neither filtered). Replaced with one real cross-link.
-const tabs = [
-  { label: "All live deals", active: true, href: "/deals/" },
-  { label: "Salary-transfer tracker", href: "/salary-transfer/" },
-];
 // DSF season panel (11 October 2026, Chairman direction "all", per
 // .council/briefs/2026-09-15-dsf-deals-cadence.md). Shown until the
 // 2026–27 festival is over; it states only what is confirmed and points to
@@ -101,33 +90,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     <div class="intel-pagehead-inner">
       <div class="crumb">DubaiPoints / Deals</div>
       <h1>Current deals.</h1>
-      <p>Welcome bonuses, salary-transfer top-ups, spend promos and fee waivers — every offer dated and sourced, with expired entries archived during editorial sweeps.</p>
-
-      <div class="intel-tools">
-        <div class="intel-tabs" role="tablist">
-          {tabs.map((t) => (
-            t.active
-              ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
-              : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
-          ))}
-        </div>
-        <form class="intel-search" action="/search/" method="get" role="search">
-          <label class="intel-search-label" for="deals-search-input">Search</label>
-          <label for="deals-search-input" class="intel-search-icon" aria-hidden="true">
-            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="9" cy="9" r="6"/>
-              <line x1="13.5" y1="13.5" x2="17.5" y2="17.5" stroke-linecap="round"/>
-            </svg>
-          </label>
-          <input
-            id="deals-search-input"
-            type="search"
-            name="q"
-            placeholder="Search deals…"
-            autocomplete="off"
-          />
-        </form>
-      </div>
+      <p>UAE bank and card offers, with recorded expiry dates and links to the terms.</p>
     </div>
   </header>
 
@@ -151,44 +114,34 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
         </section>
       ) : (
         <>
-          {endingSoon.length > 0 && (
-            <section class="deals-soon" aria-labelledby="deals-soon-h">
-              <h2 id="deals-soon-h" class="deals-soon-h">Ending soon</h2>
-              <ul>
-                {endingSoon.map((d) => (
-                  <li>
-                    <a href={`/deals/${d.entry.id}/`}>
-                      <span class="deals-soon-who">{d.entry.data.merchant ? `${d.entry.data.merchant} · ${d.bankName}` : d.entry.data.title}</span>
-                      <span class="deals-soon-when">{countdownText(d.days)}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
           <div class="deals-filters" data-deal-filters hidden>
-            <div class="deals-chips" role="group" aria-label="Filter by what you spend on">
-              <button type="button" class="deals-chip" data-filter-sector="" aria-pressed="true">All <span>{dealsWithBank.length}</span></button>
-              {sectorChips.map((s) => (
-                <button type="button" class="deals-chip" data-filter-sector={s.id} aria-pressed="false">{s.label} <span>{s.n}</span></button>
-              ))}
-              {codeCount > 0 && (
-                <button type="button" class="deals-chip is-code" data-filter-code aria-pressed="false">Has a code <span>{codeCount}</span></button>
-              )}
-            </div>
-            <label class="deals-issuer">
-              <span>Bank or programme</span>
-              <select data-filter-issuer>
-                <option value="">All</option>
-                {issuerOptions.map(([id, name]) => <option value={id}>{name}</option>)}
+            <label class="deals-sector">
+              <span>Deal category</span>
+              <select data-filter-sector>
+                <option value="">All categories</option>
+                {sectorChips.map((s) => <option value={s.id}>{s.label} ({s.n})</option>)}
               </select>
             </label>
-            <p class="deals-count" role="status" aria-live="polite" data-deal-count></p>
+            <details class="deals-advanced">
+              <summary>More filters <span data-extra-filters hidden></span></summary>
+              <div class="deals-advanced-controls">
+                <label class="deals-issuer">
+                  <span>Bank or programme</span>
+                  <select data-filter-issuer>
+                    <option value="">All issuers</option>
+                    {issuerOptions.map(([id, name]) => <option value={id}>{name}</option>)}
+                  </select>
+                </label>
+                {codeCount > 0 && (
+                  <label class="deals-code-filter"><input type="checkbox" data-filter-code /> Has a promo code</label>
+                )}
+              </div>
+            </details>
+            <p class="deals-count" role="status" data-deal-count>{dealsWithBank.length} live deals</p>
           </div>
 
           {featured && (
-            <a href={`/deals/${featured.entry.id}/`} class="intel-featured" {...dealAttrs(featured)}>
+            <a href={`/deals/${featured.entry.id}/`} class="intel-featured" data-deal {...dealAttrs(featured)}>
               <DealVisual
                 dealId={featured.entry.id}
                 title={featured.entry.data.title}
@@ -217,7 +170,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
             <ul class="intel-card-grid">
               {others.map((d) => {
                 return (
-                  <li class="intel-card-item" {...dealAttrs(d)}>
+                  <li class="intel-card-item" data-deal {...dealAttrs(d)}>
                     <a href={`/deals/${d.entry.id}/`} class="intel-card">
                       <DealVisual
                         dealId={d.entry.id}
@@ -234,7 +187,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                         <span class="intel-card-cat">
                           {d.entry.data.sector ? SECTOR_LABELS[d.entry.data.sector] : formatCategory(d.entry.data.category)} · {d.bankName}
                         </span>
-                        <h3>{d.entry.data.title}</h3>
+                        <h2>{d.entry.data.title}</h2>
                         <p>Last checked {fmt(d.entry.data.lastVerified)}.</p>
                         <span class="deals-card-foot">
                           <span class:list={["intel-card-meta deals-countdown", { "is-soon": 7 >= d.days }]}>
@@ -249,16 +202,40 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
               })}
             </ul>
           )}
-          <p class="deals-none" data-deal-none hidden>No live deal matches those filters. <button type="button" data-filter-reset>Show all deals</button></p>
+          <p class="deals-none" data-deal-none hidden>No live deals match these filters. <button type="button" data-filter-reset>Clear filters</button></p>
         </>
       )}
     </div>
 
-    {(trending.length > 0 || showDsf) && (
     <aside class="intel-aside">
+      {endingSoon.length > 0 && (
+        <section class="deals-soon" aria-labelledby="deals-soon-h" data-deal-soon>
+          <h2 id="deals-soon-h" class="deals-soon-h">Ending soon</h2>
+          <ul>
+            {endingSoon.map((d) => (
+              <li {...dealAttrs(d)} data-deal-soon-item>
+                <a href={`/deals/${d.entry.id}/`}>
+                  <span class="deals-soon-who">{d.entry.data.merchant ? `${d.entry.data.merchant} · ${d.bankName}` : d.entry.data.title}</span>
+                  <span class="deals-soon-when">{countdownText(d.days)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      <section class="deals-related" aria-label="More ways to find offers">
+        <form class="intel-search" action="/search/" method="get" role="search" aria-label="Sitewide search">
+          <label for="deals-search-input">Search the site</label>
+          <div class="intel-search-row">
+            <input id="deals-search-input" type="search" name="q" autocomplete="off" />
+            <button type="submit">Search</button>
+          </div>
+        </form>
+        <a href="/salary-transfer/">Browse the salary-transfer tracker →</a>
+      </section>
       {trending.length > 0 && (
         <nav class="intel-trending" aria-label="More content">
-          <div class="dp-rail-heading">{dealsWithBank.length >= 6 ? "Other live deals" : "From the guides desk"}</div>
+          <div class="dp-rail-heading">{dealsWithBank.length >= 6 ? "More live deals · all categories" : "From the guides desk"}</div>
           <ol>
             {trending.map((item, i) => {
               const title = "entry" in item ? item.entry.data.title : item.data.title;
@@ -288,50 +265,63 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
         </section>
       )}
     </aside>
-    )}
   </div>
 </BaseLayout>
 
 <script>
-  // Deals filter: sector chips, "has a code" and issuer select, combined
+  // Deals filter: category, "has a code" and issuer, combined
   // with AND. Progressive enhancement only — the controls start hidden and
   // every deal is in the HTML, so no JS means the full list.
   const root = document.querySelector<HTMLElement>("[data-deal-filters]");
   if (root) {
     root.hidden = false;
     const items = [...document.querySelectorAll<HTMLElement>("[data-deal]")];
-    const sectorBtns = [...root.querySelectorAll<HTMLButtonElement>("[data-filter-sector]")];
-    const codeBtn = root.querySelector<HTMLButtonElement>("[data-filter-code]");
+    const soon = document.querySelector<HTMLElement>("[data-deal-soon]");
+    const soonItems = [...(soon?.querySelectorAll<HTMLElement>("[data-deal-soon-item]") ?? [])];
+    const sectorSel = root.querySelector<HTMLSelectElement>("[data-filter-sector]");
+    const codeInput = root.querySelector<HTMLInputElement>("[data-filter-code]");
     const issuerSel = root.querySelector<HTMLSelectElement>("[data-filter-issuer]");
     const count = root.querySelector<HTMLElement>("[data-deal-count]");
     const none = document.querySelector<HTMLElement>("[data-deal-none]");
-    let sector = "";
-    let codeOnly = false;
+    const active = root.querySelector<HTMLElement>("[data-extra-filters]");
 
     const apply = () => {
       const issuer = issuerSel?.value ?? "";
+      const sector = sectorSel?.value ?? "";
+      const codeOnly = codeInput?.checked ?? false;
+      const matches = (el: HTMLElement) =>
+        (!sector || el.dataset.sector === sector) &&
+        (!codeOnly || el.dataset.code === "1") &&
+        (!issuer || el.dataset.issuer === issuer);
       let shown = 0;
       for (const el of items) {
-        const ok =
-          (!sector || el.dataset.sector === sector) &&
-          (!codeOnly || el.dataset.code === "1") &&
-          (!issuer || el.dataset.issuer === issuer);
-        el.hidden = !ok;
-        if (ok) shown++;
+        el.hidden = !matches(el);
+        if (!el.hidden) shown++;
       }
-      for (const b of sectorBtns) b.setAttribute("aria-pressed", String((b.dataset.filterSector ?? "") === sector));
-      codeBtn?.setAttribute("aria-pressed", String(codeOnly));
+      for (const el of soonItems) el.hidden = !matches(el);
+      if (soon) soon.hidden = soonItems.every((el) => el.hidden);
+      if (active) {
+        const n = Number(Boolean(issuer)) + Number(codeOnly);
+        active.hidden = n === 0;
+        active.textContent = n > 0 ? `(${n} active)` : "";
+      }
       const filtered = sector !== "" || codeOnly || issuer !== "";
-      if (count) count.textContent = filtered ? `${shown} of ${items.length} deals` : "";
+      if (count) count.textContent = filtered ? `${shown} of ${items.length} live deals` : `${items.length} live deals`;
       if (none) none.hidden = shown > 0;
     };
 
-    for (const b of sectorBtns) b.addEventListener("click", () => { sector = b.dataset.filterSector ?? ""; apply(); });
-    codeBtn?.addEventListener("click", () => { codeOnly = !codeOnly; apply(); });
+    sectorSel?.addEventListener("change", apply);
+    codeInput?.addEventListener("change", apply);
     issuerSel?.addEventListener("change", apply);
     document.querySelector("[data-filter-reset]")?.addEventListener("click", () => {
-      sector = ""; codeOnly = false; if (issuerSel) issuerSel.value = ""; apply();
+      if (sectorSel) sectorSel.value = "";
+      if (codeInput) codeInput.checked = false;
+      if (issuerSel) issuerSel.value = "";
+      apply();
+      sectorSel?.focus();
     });
+    apply();
+    window.addEventListener("pageshow", apply);
   }
 </script>
 
@@ -365,61 +355,31 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     max-width: 62ch;
     font-size: 15px; line-height: 1.6;
     color: var(--ink-soft);
-    margin: 0 0 28px;
+    margin: 0;
   }
-  .intel-tools {
-    display: flex; flex-wrap: wrap;
-    gap: 16px 24px;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
-  .intel-tab {
-    font-family: var(--font-ui);
-    font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
-    color: var(--ink-soft);
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: transparent;
-    border: 1px solid transparent;
-    text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease;
-    cursor: pointer;
-  }
-  .intel-tab:hover { background: var(--shade-1); color: var(--ink); }
-  .intel-tab.is-active { background: var(--ink); color: var(--paper); cursor: default; }
-
-  .intel-search {
-    display: flex; align-items: center;
-    background: var(--paper);
+  .deals-related {
+    display: grid;
+    gap: 12px;
+    padding: 16px;
     border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0 14px;
-    height: 36px;
-    min-width: 220px;
-    transition: border-color 0.15s ease;
+    border-radius: 14px;
   }
-  .intel-search:focus-within { border-color: var(--ink-soft); }
-  .intel-search-label {
-    position: absolute; width: 1px; height: 1px;
-    overflow: hidden; clip: rect(0,0,0,0);
-  }
-  .intel-search input[type="search"] {
-    border: 0; background: transparent; outline: none;
-    font-family: var(--font-ui);
-    font-size: 16px;
+  .deals-related > a { color: var(--green); font-size: 14px; }
+  .intel-search { display: grid; gap: 6px; color: var(--ink); font-family: var(--font-ui); font-size: 13px; font-weight: 600; }
+  .intel-search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .intel-search input[type="search"], .intel-search button {
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--paper);
     color: var(--ink);
-    width: 100%;
+    font: inherit;
   }
-  .intel-search input[type="search"]::placeholder { color: var(--muted); }
-  .intel-search input[type="search"]:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
-  .intel-search-icon {
-    display: none;
-    align-items: center; justify-content: center;
-    color: var(--ink-soft);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
+  .intel-search input[type="search"] { font-size: 16px; }
+  .intel-search button { cursor: pointer; }
+  .intel-search :is(input, button):focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
   .intel-grid {
     max-width: var(--container-listing);
@@ -526,7 +486,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     letter-spacing: 2px; text-transform: uppercase;
     color: var(--green);
   }
-  .intel-card h3 {
+  .intel-card h2 {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: 18px;
@@ -536,7 +496,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     margin: 0;
     text-wrap: balance;
   }
-  .intel-card:hover h3 { color: var(--green); }
+  .intel-card:hover h2 { color: var(--green); }
   .intel-card-body p {
     font-size: 13px; line-height: 1.5;
     color: var(--ink-soft); margin: 0;
@@ -674,42 +634,38 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     .intel-grid { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 640px) {
-    .intel-pagehead { padding: 32px 20px 24px; }
-    .intel-grid { padding: 0 20px; margin-top: 24px; gap: 28px; }
-    .intel-card-grid { grid-template-columns: 1fr; }
+    .intel-pagehead { padding: 22px 16px 16px; }
+    .intel-pagehead .crumb { margin-bottom: 8px; }
+    .intel-pagehead h1 { margin-bottom: 8px; }
+    .intel-pagehead p { font-size: 14px; }
+    .intel-grid { padding: 0 16px; margin-top: 14px; gap: 28px; }
+    .intel-main, .intel-card-grid { gap: 10px; }
+    .intel-card-grid { grid-template-columns: minmax(0, 1fr); }
+    .intel-featured, .intel-card {
+      grid-template: auto / clamp(58px, 21vw, 88px) minmax(0, 1fr);
+      gap: 10px;
+      align-items: start;
+      padding: 12px;
+      border-radius: 12px;
+    }
+    .intel-featured :global(.intel-featured-image),
+    .intel-card :global(.intel-card-image),
+    .intel-featured :global(svg.dp-cover),
+    .intel-card :global(svg.dp-cover) {
+      aspect-ratio: 1;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    /* The issuer appears in the adjacent text, not over the thumbnail. */
+    .intel-main :global(.dp-deal-logo-bank) { display: none; }
+    .intel-featured-body, .intel-card-body { min-width: 0; padding: 0; gap: 5px; }
+    .intel-featured-body h2, .intel-card h2 { font-size: 18px; line-height: 1.2; text-wrap: pretty; }
+    .intel-featured-body p, .intel-card-body p { font-size: 12px; line-height: 1.4; }
+    .intel-featured-eyebrow, .intel-card-cat { font-size: 10px; letter-spacing: 1px; }
+    .intel-featured-meta { display: none; }
     .news-empty { padding: 28px 22px; }
-    /* F-UX-4: tabs + icon-only search share one row at <640px.
-       Matches the collapse pattern used by /banks/, /airlines/, /news/. */
-    .intel-tools {
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 8px;
-    }
-    .intel-tabs { flex: 1 1 auto; min-width: 0; gap: 4px; }
-    .intel-tab { padding: 6px 10px; font-size: 12px; }
-    .intel-search:not(:only-child) {
-      min-width: 36px;
-      width: 36px;
-      flex: 0 0 36px;
-      height: 36px;
-      padding: 0;
-      justify-content: center;
-      transition: width 0.18s ease, flex-basis 0.18s ease, padding 0.18s ease;
-    }
-    .intel-search:not(:only-child) .intel-search-icon {
-      display: inline-flex; width: 36px; height: 36px;
-    }
-    .intel-search:not(:only-child) input[type="search"] {
-      width: 0; padding: 0;
-      transition: width 0.18s ease, padding 0.18s ease;
-    }
-    .intel-search:not(:only-child):focus-within {
-      width: 100%; flex: 1 1 100%; padding: 0 14px;
-    }
-    .intel-search:not(:only-child):focus-within .intel-search-icon { display: none; }
-    .intel-search:not(:only-child):focus-within input[type="search"] { width: 100%; }
-    .intel-search:only-child { width: 100%; min-width: 0; flex: 1 1 100%; }
   }
 
   .deals-dsf {
@@ -747,7 +703,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     margin: 0 0 8px;
   }
   .deals-soon ul { list-style: none; margin: 0; padding: 0; display: grid; }
-  .deals-soon li + li { border-top: 1px solid var(--line-soft); }
+  .deals-soon li:not([hidden]) ~ li:not([hidden]) { border-top: 1px solid var(--line-soft); }
   .deals-soon a {
     display: flex; justify-content: space-between; gap: 12px;
     padding: 10px 0; text-decoration: none; color: var(--ink);
@@ -757,37 +713,55 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   .deals-soon-who { font-weight: 600; }
   .deals-soon-when { color: var(--gold-ink); font-weight: 700; font-size: 13px; white-space: nowrap; }
 
-  .deals-filters { display: grid; gap: 12px; }
-  .deals-filters[hidden] { display: none; }
-  .deals-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-  .deals-chip {
-    font-family: var(--font-ui);
-    font-size: 13px; font-weight: 600;
-    min-height: 40px; padding: 0 14px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    color: var(--ink);
-    cursor: pointer;
+  .deals-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    gap: 8px 16px;
   }
-  .deals-chip span { color: var(--ink-soft); font-weight: 500; margin-left: 2px; }
-  .deals-chip:hover { border-color: var(--ink-soft); }
-  .deals-chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-  .deals-chip[aria-pressed="true"] span { color: var(--paper); }
-  .deals-chip.is-code { border-style: dashed; border-color: var(--gold); }
-  .deals-chip:focus-visible, .deals-issuer select:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
-  .deals-issuer { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-ui); font-size: 13px; color: var(--ink-soft); }
-  .deals-issuer select {
+  .deals-filters[hidden] { display: none; }
+  .deals-sector, .deals-issuer {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+    max-width: 100%;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .deals-filters select {
     font-family: var(--font-ui); font-size: 16px;
-    min-height: 40px; padding: 0 10px;
+    min-width: 0; max-width: 100%; min-height: 44px; padding: 0 10px;
     border: 1px solid var(--line); border-radius: 10px;
     background: var(--paper); color: var(--ink);
   }
+  .deals-advanced { margin-top: 22px; min-width: 0; max-width: 100%; }
+  .deals-advanced summary {
+    cursor: pointer;
+    min-height: 44px;
+    padding: 11px 10px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 20px;
+  }
+  .deals-advanced-controls { display: grid; gap: 8px; margin-top: 8px; }
+  .deals-code-filter { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; font-size: 13px; color: var(--ink); }
+  .deals-filters :is(select, input, summary):focus-visible, .deals-none button:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+
   .deals-count:empty { display: none; }
-  .deals-count { margin: 0; font-family: var(--font-ui); font-size: 13px; color: var(--ink-soft); min-height: 1em; }
+  .deals-count { flex-basis: 100%; margin: 0; font-family: var(--font-ui); font-size: 13px; color: var(--ink-soft); min-height: 1em; }
   .deals-none { margin: 0; font-size: 15px; color: var(--ink-soft); }
   .deals-none[hidden] { display: none; }
-  .deals-none button { font: inherit; color: var(--green); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 0; }
+  .deals-none button { font: inherit; color: var(--green); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 0 4px; min-height: 44px; }
   .intel-card-item[hidden], .intel-featured[hidden] { display: none; }
   .deals-card-foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 2px; }
   .deals-code {
@@ -799,10 +773,5 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     font-size: 11px; font-weight: 700; letter-spacing: 1px;
     color: var(--gold-ink);
     justify-self: start;
-  }
-  @media (max-width: 640px) {
-    .deals-chip { padding-inline: 12px; }
-    .deals-issuer { flex-wrap: wrap; }
-    .deals-issuer select { max-width: 100%; }
   }
 </style>

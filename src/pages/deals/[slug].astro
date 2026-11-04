@@ -2,6 +2,7 @@
 import { getCollection, render } from "astro:content";
 import ArticleLayout from "~/layouts/ArticleLayout.astro";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
+import { isLive } from "~/lib/deals";
 import PromoCode from "~/components/deals/PromoCode.astro";
 import DealVisual from "~/components/deals/DealVisual.astro";
 
@@ -34,7 +35,9 @@ const verifiedStr = deal.data.lastVerified.toLocaleDateString("en-GB", {
   month: "long",
   year: "numeric",
 });
-const isCurrentAtBuild = !deal.data.archived && deal.data.expiresOn.getTime() >= Date.now();
+const isCurrentAtBuild = isLive(deal);
+const offerSource = deal.data.offerSource ?? deal.data.promoCodeSource;
+const promoSource = deal.data.promoCodeSource;
 const deck = isCurrentAtBuild
   ? `Last checked ${verifiedStr}; recorded to expire ${expiresStr}. Verify provider terms before acting.`
   : `Recorded expiry ${expiresStr}. Kept for archival reference.`;
@@ -50,13 +53,30 @@ const deck = isCurrentAtBuild
   publishedAt={deal.data.publishedAt}
   toc={toc}
   showHero
-  heroSlug={deal.data.logo ? undefined : `deal-${deal.id}`}
   heroCategory="Deal"
   heroLabel={`Deal · ${issuer.name}`}
 >
-  {deal.data.logo && (
+  <Fragment slot="before-hero">
+    <section class="dp-deal-terms" aria-labelledby="deal-terms-heading" data-deal-terms>
+      <h2 id="deal-terms-heading">{isCurrentAtBuild ? "Offer at a glance" : "Archived offer"}</h2>
+      {isCurrentAtBuild && deal.data.promoCode && promoSource && (
+        <PromoCode code={deal.data.promoCode} source={promoSource === offerSource ? undefined : promoSource} />
+      )}
+      {offerSource && (
+        <a class="dp-deal-source" href={offerSource} rel="noopener" data-deal-source>
+          {isCurrentAtBuild ? "Check" : "View"} {issuer.name}’s published source →
+        </a>
+      )}
+      <dl>
+        <div><dt>Issuer</dt><dd>{issuer.name}</dd></div>
+        {deal.data.eligibilityNote && <div><dt>Who qualifies</dt><dd>{deal.data.eligibilityNote}</dd></div>}
+        {deal.data.restrictionNote && <div><dt>Main limits</dt><dd>{deal.data.restrictionNote}</dd></div>}
+        <div><dt>Recorded expiry</dt><dd><time datetime={deal.data.expiresOn.toISOString().slice(0, 10)}>{expiresStr}</time></dd></div>
+      </dl>
+    </section>
+  </Fragment>
+  <div class="dp-deal-artwork" slot="hero" data-deal-artwork>
     <DealVisual
-      slot="hero"
       dealId={deal.id}
       title={deal.data.title}
       logo={deal.data.logo}
@@ -65,11 +85,44 @@ const deck = isCurrentAtBuild
       bankName={issuer.name}
       coverSize="hero"
       class="article-hero-image"
-      loading="eager"
+      sizes="(max-width: 720px) calc(100vw - 32px), 680px"
+      loading="lazy"
     />
-  )}
-  {isCurrentAtBuild && deal.data.promoCode && deal.data.promoCodeSource && (
-    <PromoCode code={deal.data.promoCode} source={deal.data.promoCodeSource} expires={deal.data.expiresOn} />
-  )}
+  </div>
   <Content />
 </ArticleLayout>
+
+<style>
+  .dp-deal-terms {
+    margin: 0 0 16px;
+    padding: 16px 18px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .dp-deal-terms h2 { margin: 0 0 10px; color: var(--green); font: 700 16px/1.3 var(--font-ui); }
+  .dp-deal-terms dl { margin: 0; display: grid; gap: 6px; }
+  .dp-deal-terms dl > div { display: grid; grid-template-columns: minmax(0, 120px) minmax(0, 1fr); gap: 8px; }
+  .dp-deal-terms dt { font-weight: 700; }
+  .dp-deal-terms dd { margin: 0; color: var(--ink-soft); }
+  .dp-deal-terms dt, .dp-deal-terms dd { font-size: 14px; line-height: 1.4; }
+  .dp-deal-source {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin: -3px 0 4px;
+    color: var(--green);
+    text-underline-offset: 3px;
+    font-size: 14px;
+    font-weight: 650;
+  }
+  .dp-deal-source:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-deal-artwork :global(svg.dp-cover) {
+    display: block; width: 100%; height: auto;
+    border: 1px solid var(--line); border-radius: 14px; margin-bottom: 24px;
+  }
+  @media (max-width: 420px) {
+    .dp-deal-terms { padding: 12px; }
+    .dp-deal-terms dl > div { grid-template-columns: minmax(0, 91px) minmax(0, 1fr); }
+  }
+</style>

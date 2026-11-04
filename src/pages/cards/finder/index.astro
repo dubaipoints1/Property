@@ -8,21 +8,10 @@
 // on page load. All cards render at build time with data-*
 // attributes; the script reorders + hides DOM nodes.
 //
-// Score formula (deterministic, mirrored in the inline script):
-//   1. Filter cards where eligibility.minSalary > userSalary (if salary set).
-//   2. Filter by network (if set + not "any").
-//   3. Filter by fee bucket (if set + not "any").
-//   4. Filter by salary-transfer flag if the user set salary explicitly.
-//   5. Score each remaining card:
-//        - +earnRate for the chosen spend category (or everythingElse).
-//        - +preference bonus:
-//            cashback → +earnRate again if loyaltyProgram is AED-cashback.
-//            miles    → +2 if loyaltyProgram is a miles programme.
-//            points   → +2 if loyaltyProgram is a points programme.
-//            lounges  → +2 if _features has lounge_access.
-//            status   → +2 if _features has status_match.
-//            none     → no preference bonus.
-//   6. Sort by score desc; ties broken by lower annualFee.
+// Filter on published minimum salary, network, fee and availability.
+// Rank reward/benefit matches first, then published spend-category rate
+// (or general rate if no category rate is listed), then lower annual fee.
+// This is a shortlist heuristic, not a common AED valuation or approval.
 //
 // Top 6 cards displayed as SpecCard variant="full".
 
@@ -51,12 +40,9 @@ const spendInit = params.get("spend") ?? "general";
 const preferInit = params.get("prefer") ?? "none";
 const networkInit = params.get("network") ?? "any";
 const feeInit = params.get("fee") ?? "any";
-// Phase 2a.0 (2026-05-20): two new toggles introduced when the schema
-// gained `eligibility.invitationOnly` and `discontinuedForNewApplicants`.
-// Both default to "true" (include) so a first-time visitor sees the
-// same set of cards they did under the Phase 1 finder. The script
-// reads these on every form submit.
-const includeInviteOnlyInit = params.get("include_invite_only") ?? "true";
+// Keep explicit true/false values on existing shared links; a bare URL
+// starts with cards that do not require an invitation.
+const includeInviteOnlyInit = params.get("include_invite_only") === "true";
 const includeLegacyInit = params.get("include_legacy") ?? "false";
 
 // Serialise card data for the client-side ranker.
@@ -86,7 +72,7 @@ const SPEND_OPTIONS: Array<{ value: string; label: string }> = [
 const PREFER_OPTIONS: Array<{ value: string; label: string }> = [
   { value: "cashback", label: "AED cashback" },
   { value: "miles", label: "Airline miles" },
-  { value: "points", label: "Bank points" },
+  { value: "points", label: "Other points and credits" },
   { value: "lounges", label: "Airport lounges" },
   { value: "status", label: "Hotel / airline status" },
   { value: "none", label: "No preference" },
@@ -104,10 +90,6 @@ const FEE_OPTIONS: Array<{ value: string; label: string }> = [
   { value: "under-1000", label: "Under AED 1,000" },
 ];
 
-// Initial render order — by min salary ascending (mirrors getActiveCards()).
-// The inline script reorders on page-load based on URL params.
-const initialOrder = cardsWithBanks;
-
 // The grid used to paint all 58 tiles and then have the inline script hide
 // all but six about 160 ms later, collapsing the page by tens of rows:
 // CLS 0.248 at 1280px (2026-09-06 audit, F-027). It measures 0 at 390px,
@@ -116,14 +98,16 @@ const initialOrder = cardsWithBanks;
 //
 // So the six the script will choose on a bare /cards/finder/ are marked
 // here and the rest start hidden. With no query string the default filter
-// keeps every card still open to new applicants and the default score
+// keeps publicly available cards open to new applicants and the default score
 // reduces to the "everything else" earn rate — spend "general" reads that
 // rate and prefer "none" adds no bonus — with annual fee as the
 // tie-break, exactly as score() and apply() do in the inline script
 // below. Change one, change the other; the assertion in
 // tests/cards/finder-default-six.test.ts fails if they drift.
-const defaultTopSlugs = cardsWithBanks
-  .filter(({ card }) => card.discontinuedForNewApplicants === undefined)
+const defaultCandidates = cardsWithBanks.filter(
+  ({ card }) => card.discontinuedForNewApplicants === undefined && card.eligibility.invitationOnly !== true,
+);
+const defaultTopSlugs = defaultCandidates
   .map(({ card }) => ({
     slug: card.slug,
     score: card.earnRates.everythingElse ?? 0,
@@ -133,11 +117,13 @@ const defaultTopSlugs = cardsWithBanks
   .slice(0, 6)
   .map((c) => c.slug);
 
-// The rank matters as much as the set. Tiles stay in min-salary DOM order,
-// so without a server-rendered `order` the six correct tiles still had to
-// be shuffled into rank by the script — six tiles moving between grid
-// cells, and CLS 0.239 of the original 0.248.
+// Put the default shortlist into rank in the HTML itself. CSS-only order
+// makes focus and screen-reader order disagree with the displayed ranking.
 const defaultRank = new Map(defaultTopSlugs.map((slug, i) => [slug, i]));
+const initialOrder = [...cardsWithBanks].sort(
+  (a, b) => (defaultRank.get(a.card.slug) ?? Infinity) - (defaultRank.get(b.card.slug) ?? Infinity),
+);
+const defaultCompareSlugs = defaultTopSlugs.slice(0, 3);
 
 // "Last refreshed" stamp computed from the newest L2 lastVerified so the
 // stats strip can never go stale (10 June 2026 staleness sweep — the
@@ -193,6 +179,7 @@ const lastRefreshed = new Date(
           <input
             type="number"
             name="salary"
+            aria-label="Your monthly salary (AED)"
             inputmode="numeric"
             placeholder="e.g. 15,000"
             min="0"
@@ -276,17 +263,13 @@ const lastRefreshed = new Date(
           </fieldset>
         </div>
 
-        {/* Phase 2a.0 (2026-05-20): two include/exclude toggles for
-            invitation-only and discontinued cards. Default state mirrors
-            the Phase 1 result-set — invitation-only included, legacy
-            cards excluded. Lives in a .dp-finder-fs-row so the two
-            checkboxes share a single visual row beneath network/fee. */}
+        {/* Optional availability filters share one row. */}
         <div class="dp-finder-fs-row">
           <fieldset class="dp-finder-fs">
             <legend>Invitation-only cards</legend>
             <select name="include_invite_only" aria-label="Invitation-only cards">
-              <option value="true" selected={includeInviteOnlyInit !== "false"}>Include</option>
-              <option value="false" selected={includeInviteOnlyInit === "false"}>Exclude</option>
+              <option value="false" selected={!includeInviteOnlyInit}>Exclude</option>
+              <option value="true" selected={includeInviteOnlyInit}>Include</option>
             </select>
           </fieldset>
 
@@ -312,18 +295,19 @@ const lastRefreshed = new Date(
     <div class="dp-finder-results" id="finder-results">
       <div class="dp-finder-results-head">
         <h2>Matching cards</h2>
-        <p class="count">
-          <strong id="finder-count">{defaultTopSlugs.length}</strong> of
-          {cardsWithBanks.length} cards match —
-          <span id="finder-mode">ranked by best fit (no filters set)</span>
+        <p class="count" id="finder-count">
+          Showing {defaultTopSlugs.length} of {defaultCandidates.length} cards that meet your filters
+        </p>
+        <p class="count" id="finder-mode">
+          Ordered by published earn rate for general spending, then lower annual fee.
+          Rates use different units; this is not a comparison of value in AED.
         </p>
       </div>
 
       <div class="dp-finder-empty" id="finder-empty" hidden>
         <p>
-          No cards match your filters. Try raising the salary cap,
-          switching network or fee to "Any", or picking a more general
-          spend category.
+          No cards match these filters. Check your salary entry or try
+          setting the network or annual fee to "Any".
         </p>
         <p>
           <a href="/cards/finder/" class="reset">Reset filters →</a>
@@ -331,7 +315,11 @@ const lastRefreshed = new Date(
       </div>
 
       <div class="dp-finder-next" id="finder-next">
-        <a id="finder-compare" href="/cards/compare/">Compare your top 3 side by side →</a>
+        <a
+          id="finder-compare"
+          href={`/cards/compare/?cards=${defaultCompareSlugs.join(",")}`}
+          hidden={defaultCompareSlugs.length < 2}
+        >Compare your top {defaultCompareSlugs.length} side by side →</a>
         <button type="button" id="finder-share" hidden>Copy link to these results</button>
         <span id="finder-share-status" role="status" aria-live="polite"></span>
       </div>
@@ -342,8 +330,8 @@ const lastRefreshed = new Date(
             class="dp-finder-tile"
             data-slug={card.slug}
             hidden={!defaultRank.has(card.slug)}
-            style={defaultRank.has(card.slug) ? `order: ${defaultRank.get(card.slug)};` : undefined}
           >
+            <p class="dp-finder-match" data-finder-match hidden></p>
             <SpecCard card={card} variant="full" />
           </div>
         ))}
@@ -367,7 +355,9 @@ const lastRefreshed = new Date(
   id="finder-options"
   set:html={JSON.stringify({
     spend: SPEND_OPTIONS.map((o) => o.value),
+    spendLabels: Object.fromEntries(SPEND_OPTIONS.map((o) => [o.value, o.label])),
     prefer: PREFER_OPTIONS.map((o) => o.value),
+    preferLabels: Object.fromEntries(PREFER_OPTIONS.map((o) => [o.value, o.label])),
     network: NETWORK_OPTIONS.map((o) => o.value),
     fee: FEE_OPTIONS.map((o) => o.value),
   })}
@@ -418,11 +408,7 @@ const lastRefreshed = new Date(
         prefer: oneOf("prefer", p.get("prefer") || "none", "none"),
         network: oneOf("network", p.get("network") || "any", "any"),
         fee: oneOf("fee", p.get("fee") || "any", "any"),
-        // Phase 2a.0: default "include invitation-only" = true so a
-        // first-time visitor sees the Phase 1 set; "include legacy" =
-        // false so discontinued cards are filtered out of the top 6
-        // unless the reader explicitly opts in.
-        includeInviteOnly: (p.get("include_invite_only") || "true") !== "false",
+        includeInviteOnly: p.get("include_invite_only") === "true",
         includeLegacy: (p.get("include_legacy") || "false") === "true",
       };
     }
@@ -463,15 +449,11 @@ const lastRefreshed = new Date(
       return typeof v === "number" ? v : rates.everythingElse || 0;
     }
 
-    function score(card, p) {
-      var s = spendRate(card.earnRates, p.spend);
-      var tag = loyaltyTag(card.loyaltyProgram);
-      if (p.prefer === "cashback" && tag === "cashback") s += s;
-      else if (p.prefer === "miles" && tag === "miles") s += 2;
-      else if (p.prefer === "points" && tag === "points") s += 2;
-      else if (p.prefer === "lounges" && card.hasLounge) s += 2;
-      else if (p.prefer === "status" && card.hasStatus) s += 2;
-      return s;
+    function matchesPreference(card, prefer) {
+      if (prefer === "none") return false;
+      if (prefer === "lounges") return card.hasLounge;
+      if (prefer === "status") return card.hasStatus;
+      return loyaltyTag(card.loyaltyProgram) === prefer;
     }
 
     function apply() {
@@ -482,7 +464,7 @@ const lastRefreshed = new Date(
         if (hasSalary && c.minSalary > p.salary) return false;
         if (p.network !== "any" && c.network !== p.network) return false;
         if (!feeMatches(c.annualFee, p.fee)) return false;
-        // Phase 2a.0: invitation-only filter — opt-out toggle.
+        // Invitation-only products enter the shortlist only on opt-in.
         if (!p.includeInviteOnly && c.invitationOnly) return false;
         // Phase 2a.0: discontinued cards filtered out by default; reader
         // opts in via the "Include legacy cards" checkbox.
@@ -490,49 +472,62 @@ const lastRefreshed = new Date(
         return true;
       })
         .map(function (c) {
-          return { slug: c.slug, score: score(c, p), annualFee: c.annualFee };
+          return {
+            slug: c.slug,
+            preferred: matchesPreference(c, p.prefer),
+            invitationOnly: c.invitationOnly,
+            score: spendRate(c.earnRates, p.spend),
+            annualFee: c.annualFee,
+          };
         })
         .sort(function (a, b) {
+          if (b.preferred !== a.preferred) return Number(b.preferred) - Number(a.preferred);
           if (b.score !== a.score) return b.score - a.score;
           return a.annualFee - b.annualFee;
         });
 
-      var topSlugs = ranked.slice(0, 6).map(function (r) {
+      var top = ranked.slice(0, 6);
+      var topSlugs = top.map(function (r) {
         return r.slug;
       });
-      var orderMap = {};
-      topSlugs.forEach(function (slug, i) {
-        orderMap[slug] = i;
+      var bySlug = new Map();
+      grid.querySelectorAll(".dp-finder-tile[data-slug]").forEach(function (tile) {
+        bySlug.set(tile.getAttribute("data-slug"), tile);
+        tile.hidden = true;
       });
-
-      var tiles = grid.querySelectorAll("[data-slug]");
-      var visibleCount = 0;
-      tiles.forEach(function (tile) {
-        var slug = tile.getAttribute("data-slug");
-        if (orderMap.hasOwnProperty(slug)) {
-          tile.style.order = String(orderMap[slug]);
-          tile.hidden = false;
-          visibleCount++;
-        } else {
-          tile.style.order = "999";
-          tile.hidden = true;
+      var preferenceLabel = OPTIONS.preferLabels[p.prefer];
+      var visibleTiles = top.map(function (r) {
+        var tile = bySlug.get(r.slug);
+        var note = tile.querySelector("[data-finder-match]");
+        var labels = [];
+        if (r.invitationOnly) labels.push("Invitation only");
+        if (p.prefer !== "none") {
+          labels.push(r.preferred ? "Matches your preference: " + preferenceLabel : "Different reward or benefit");
         }
+        note.textContent = labels.join(" · ");
+        note.hidden = labels.length === 0;
+        tile.hidden = false;
+        return tile;
       });
+      // Move the actual elements in ranked order, not merely the grid cells.
+      grid.prepend.apply(grid, visibleTiles);
 
-      count.textContent = String(visibleCount);
+      count.textContent = ranked.length === 0
+        ? "No cards meet your filters"
+        : "Showing " + visibleTiles.length + " of " + ranked.length + (ranked.length === 1 ? " card that meets" : " cards that meet") + " your filters";
       var compareLink = document.getElementById("finder-compare");
       if (compareLink) {
         var top3 = topSlugs.slice(0, 3);
         compareLink.href = "/cards/compare/?cards=" + top3.join(",");
+        compareLink.textContent = "Compare your top " + top3.length + " side by side →";
         compareLink.hidden = top3.length < 2;
       }
-      if (hasSalary || p.prefer !== "none" || p.spend !== "general" || p.network !== "any" || p.fee !== "any") {
-        mode.textContent = "ranked by best fit";
-      } else {
-        mode.textContent = "ranked by best fit (no filters set)";
-      }
+      var spendLabel = p.spend === "general" ? "general spending" : OPTIONS.spendLabels[p.spend].toLowerCase();
+      mode.textContent = (p.prefer !== "none" ? preferenceLabel + " matches first. " : "")
+        + "Ordered by published earn rate for " + spendLabel + ", then lower annual fee. Rates use different units; this is not a comparison of value in AED.";
+      mode.hidden = visibleTiles.length === 0;
 
-      if (visibleCount === 0) {
+      if (visibleTiles.length === 0) {
         empty.hidden = false;
         grid.hidden = true;
       } else {
@@ -554,7 +549,7 @@ const lastRefreshed = new Date(
       var prefer = form.querySelector('select[name="prefer"]');
       if (prefer) prefer.value = p.prefer;
       var more = document.getElementById("finder-more");
-      if (more && (p.spend !== "general" || p.network !== "any" || p.fee !== "any" || !p.includeInviteOnly || p.includeLegacy)) more.open = true;
+      if (more && (p.spend !== "general" || p.network !== "any" || p.fee !== "any" || p.includeInviteOnly || p.includeLegacy)) more.open = true;
       [["spend", p.spend], ["network", p.network], ["fee", p.fee]]
         .forEach(function (pair) {
           var el = form.querySelector(
@@ -808,6 +803,11 @@ const lastRefreshed = new Date(
   }
   .dp-finder-tile[hidden] {
     display: none;
+  }
+  .dp-finder-match {
+    margin: 0 0 6px;
+    font: 600 13px/1.45 var(--font-ui);
+    color: var(--ink-soft);
   }
   .dp-finder-empty {
     padding: 32px 24px;

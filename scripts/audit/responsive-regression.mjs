@@ -81,6 +81,10 @@ try {
   assert.equal(await menu.getAttribute("aria-expanded"), "false");
   assert.equal(await close.isVisible(), false);
   assert.equal(await menu.evaluate((element) => document.activeElement === element), true);
+  const guideProse = page.locator(".dp-article-body .dp-prose");
+  assert.match(await guideProse.innerText(), /starting point, not approval/);
+  assert.doesNotMatch(await guideProse.innerText(), /usually mechanical|30–50 points/);
+  assert.equal(await guideProse.getByRole("link", { name: /Shortlist cards by salary/ }).getAttribute("href"), "/cards/finder/");
 
   await page.setViewportSize({ width: 1440, height: 880 });
   const rail = await page.evaluate(() => ({
@@ -96,6 +100,23 @@ try {
   assert.ok(await tableRegion.getByRole("table").isVisible());
   await page.getByText("Check the issuer documents for these cards", { exact: true }).click();
   assert.ok(await page.locator(".dp-guide-issuer-sources").getByRole("link", { name: "issuer source", exact: true }).first().isVisible());
+
+  for (const [slug, fee] of [["citi-cashback", "315"], ["adib-cashback-visa", "103.95"]]) {
+    await navigate(page, "/cards/" + slug + "/");
+    const glance = await page.locator(".dp-at-a-glance").innerText();
+    const feeBlock = await page.locator(".dp-fee-block").first().innerText();
+    for (const text of [glance, feeBlock]) {
+      assert.ok(text.includes(fee), slug + " includes its verified gross fee");
+      assert.match(text, /incl\. VAT/i);
+    }
+    assert.doesNotMatch(glance, /\+ 5% VAT/i);
+    assert.equal(await page.locator(".dp-fee-block .vat").first().innerText(), "incl. VAT");
+    if (slug === "citi-cashback") {
+      assert.equal(await page.getByRole("link", { name: /Check the current Citi Cash Back terms/ }).getAttribute("href"),
+        "https://www.citibank.ae/credit-cards/cashback/citi-cashback-credit-card");
+      assert.match(await page.locator("main").innerText(), /not through a partner/);
+    }
+  }
 
   await page.setViewportSize({ width: 768, height: 880 });
   await navigate(page, "/salary-transfer/");
@@ -139,6 +160,15 @@ try {
   await page.getByRole("button", { name: "Apply all filters" }).click();
   await page.waitForURL((url) => url.searchParams.get("include_invite_only") === "false");
   assert.equal(await page.getByRole("combobox", { name: "Invitation-only cards" }).inputValue(), "false");
+  assert.match(await page.locator("#finder-count").innerText(), /^Showing \d+ of \d+ cards? that meets? your filters$/);
+  const tiles = page.locator("#finder-grid > .dp-finder-tile:not([hidden])");
+  const tileOrder = await tiles.evaluateAll((items) => items.map((item) => item.dataset.slug));
+  const compareHref = await page.locator("#finder-compare").getAttribute("href");
+  const comparePicks = new URL(compareHref, server.baseUrl).searchParams.get("cards").split(",");
+  assert.deepEqual(comparePicks, tileOrder.slice(0, 3));
+  await tiles.nth(0).getByRole("link").last().focus();
+  await page.keyboard.press("Tab");
+  assert.equal(await tiles.nth(1).getByRole("link").first().evaluate((link) => document.activeElement === link), true);
   const filters = page.locator("#finder-filters");
   await filters.locator(":scope > summary").click();
   assert.equal(await filters.getAttribute("open"), null);
@@ -147,10 +177,34 @@ try {
 
   await page.setViewportSize({ width: 320, height: 880 });
   await navigate(page, "/cards/compare/?cards=cbd-one,wio-credit,sc-platinum-x");
+  assert.equal(await page.evaluate(() => Boolean(document.querySelector("#dp-compare-grid").compareDocumentPosition(document.querySelector("#dp-compare-matchups")) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
   await page.getByText("Pick cards to compare", { exact: true }).click();
   assert.ok(await page.getByRole("button", { name: "Update comparison" }).isVisible());
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), 0);
-  console.log("Interactions: menus, article sources, tracker, calculator, Finder, comparison");
+
+  await page.setViewportSize({ width: 390, height: 880 });
+  await navigate(page, "/deals/");
+  const dealTitles = page.locator("[data-deal]:not([data-deal-soon-item]):not([hidden]) h2");
+  if (await dealTitles.count()) {
+    assert.ok(await dealTitles.first().evaluate((el) => el.getBoundingClientRect().top < innerHeight));
+    const travel = page.locator("[data-filter-sector]");
+    if (await travel.locator('option[value="travel"]').count()) {
+      await travel.selectOption("travel");
+      const matchingSectors = await page.locator("[data-deal]:not([hidden])").evaluateAll((els) =>
+        els.map((el) => el.dataset.sector));
+      assert.ok(matchingSectors.length > 0);
+      assert.ok(matchingSectors.every((sector) => sector === "travel"));
+    }
+  }
+  assert.equal(await page.getByRole("searchbox", { name: "Search the site" }).count(), 1);
+  await navigate(page, "/deals/dib-air-arabia-20pct-ultimate/");
+  assert.equal(await page.locator("[data-deal-source]").getAttribute("href"),
+    "https://www.dib.ae/offers/offer-detail/air-arabia");
+  assert.equal(await page.evaluate(() => Boolean(document.querySelector("[data-deal-terms]").compareDocumentPosition(document.querySelector("[data-deal-artwork]")) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
+  if (await page.locator("[data-copy-code]").count()) {
+    assert.equal(await page.evaluate(() => Boolean(document.querySelector("[data-copy-code]").compareDocumentPosition(document.querySelector("[data-deal-artwork]")) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
+  }
+  console.log("Interactions: menus, guide, card fees, article sources, tracker, calculator, Finder, comparison, Deals");
 } finally {
   await browser?.close();
   server.close();

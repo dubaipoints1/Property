@@ -4,9 +4,8 @@
 // page falls back to the static top-3-by-welcome-bonus default that
 // shipped in Phase C (and preserves that as the no-params view).
 //
-// The picker is a <details> + GET form — no client-side JS required.
-// The URL the form posts to is the comparison itself, which makes
-// the comparison shareable.
+// The picker submits a GET form. The static page's script displays the
+// requested cards in URL order, so the comparison is shareable.
 //
 // All side-by-side surfaces use the new src/components/cards/* set
 // (FeeBlock, EarnRateTable, EligibilityChips, WelcomeBonusCallout,
@@ -59,6 +58,9 @@ const cardsRaw = await Promise.all(
     const bank = await getEntry("banks", card.bank);
     return { card, bankName: bank?.data.name ?? card.bank };
   }),
+);
+const initialColumns = [...cardsRaw].sort(
+  (a, b) => (defaultRank.get(a.card.slug) ?? Infinity) - (defaultRank.get(b.card.slug) ?? Infinity),
 );
 
 // ── Picker data — all cards grouped by bank for the <details> form ──
@@ -132,7 +134,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   </div>
 
   <!-- ── Written matchups ─────────────────────────────────────────── -->
-  <section class="dp-compare-matchups" aria-labelledby="dp-matchups-head">
+  <section class="dp-compare-matchups" id="dp-compare-matchups" aria-labelledby="dp-matchups-head">
     <h2 id="dp-matchups-head">Head to head, with a verdict</h2>
     <p>
       Pairs a shortlist tends to come down to. Each has its own page, its own
@@ -188,7 +190,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
           <button type="submit">Update comparison</button>
           <a href="/cards/compare/" class="reset">Reset to defaults</a>
           <span class="caveat">
-            We'll keep the first {MAX_CARDS} you tick.
+            Select up to {MAX_CARDS} cards.
           </span>
         </div>
       </form>
@@ -212,7 +214,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
 
   {(
     <section class="dp-compare-grid" id="dp-compare-grid" aria-label="Card comparison">
-      {cardsRaw.map(({ card, bankName }) => {
+      {initialColumns.map(({ card, bankName }) => {
         const wbDisplay = card.welcomeBonus
           ? welcomeBonusDisplay(card.welcomeBonus)
           : "";
@@ -226,7 +228,6 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
             data-bank={card.bank}
             data-slug={card.slug}
             hidden={!defaultSet.has(card.slug)}
-            style={defaultRank.has(card.slug) ? `order: ${defaultRank.get(card.slug)};` : undefined}
           >
             <header class="dp-compare-col-head">
               <span class="bank">{bankName}</span>
@@ -238,12 +239,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
 
             <div class="dp-compare-col-section">
               <div class="dp-compare-row-label">Annual fee</div>
-              <FeeBlock
-                annualFee={card.annualFee}
-                fxFee={card.fxFee}
-                waiver={card.annualFeeWaiver}
-                joiningFee={card.joiningFee}
-              />
+              <FeeBlock card={card.slug} />
             </div>
 
             <div class="dp-compare-col-section">
@@ -307,13 +303,14 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   // "Update comparison" button returned the same three cards every time.
   (function () {
     var grid = document.getElementById("dp-compare-grid");
+    var matchups = document.getElementById("dp-compare-matchups");
     var empty = document.getElementById("dp-compare-empty");
     var countEl = document.getElementById("dp-compare-count");
     var modeEl = document.getElementById("dp-compare-mode");
     if (!grid || !empty || !countEl || !modeEl) return;
 
     var cols = Array.prototype.slice.call(grid.querySelectorAll("[data-slug]"));
-    var known = {};
+    var known = Object.create(null);
     cols.forEach(function (el) {
       known[el.getAttribute("data-slug")] = el;
     });
@@ -341,10 +338,11 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       var show = isDefault ? defaultSlugs : chosen;
 
       cols.forEach(function (el) {
-        var i = show.indexOf(el.getAttribute("data-slug"));
-        el.hidden = i < 0;
-        el.style.order = i < 0 ? "999" : String(i);
+        el.hidden = show.indexOf(el.getAttribute("data-slug")) < 0;
       });
+      // Keep the URL, visible comparison and keyboard order in sync.
+      grid.prepend.apply(grid, show.map(function (slug) { return known[slug]; }));
+      if (!isDefault && matchups) grid.after(matchups);
 
       countEl.textContent = String(show.length);
       modeEl.textContent = isDefault ? "top welcome-bonus cards" : "selected";
@@ -371,6 +369,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     margin: 0 auto 40px;
     padding: 0 32px;
   }
+  #dp-compare-grid + .dp-compare-matchups { margin-block-start: 40px; }
   .dp-compare-matchups h2 {
     font-family: var(--font-display);
     font-size: 24px;

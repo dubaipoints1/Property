@@ -231,6 +231,7 @@ const schema = {
     )}
 
     <div class="dp-article-body dp-reading-column">
+      <slot name="before-hero" />
       {showHero && !stageOwnsHero && Astro.slots.has("hero") ? (
         <slot name="hero" />
       ) : showHero && !stageOwnsHero && (
