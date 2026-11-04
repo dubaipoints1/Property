@@ -47,7 +47,11 @@ const featured = posts.slice(0, 6).find((post) =>
 );
 const featureIsLatest = featured?.id === posts[0]?.id;
 const remaining = posts.filter((post) => post.id !== featured?.id);
-const latest = featured ? remaining.slice(0, 2) : remaining;
+// Keep a useful current edition visible. Native closed details keeps the
+// rest of the archive and its links accessible without initially fetching
+// dozens of lazy images on a compact mobile feed.
+const editionSize = 8;
+const latest = remaining.slice(0, featured ? 2 : editionSize);
 // Give two desks a place in the briefing when stories share the newest
 // date. This never moves an older item ahead of a newer one.
 const first = latest[0];
@@ -57,7 +61,9 @@ if (activeDesk === "all" && featured && first && latest[1]?.data.beat === first.
   );
   if (sameDayFromAnotherDesk) latest[1] = sameDayFromAnotherDesk;
 }
-const more = featured ? remaining.filter((post) => !latest.some((item) => item.id === post.id)) : [];
+const afterLatest = remaining.filter((post) => !latest.some((item) => item.id === post.id));
+const more = featured ? afterLatest.slice(0, editionSize - 3) : [];
+const archive = afterLatest.slice(more.length);
 
 // Desk tabs — every href is a real filtered route (no fictional facets).
 const tabs: Array<{ label: string; href: string; key: Props["activeDesk"] }> = [
@@ -184,9 +190,15 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
 
           {more.length > 0 && (
             <section class="dp-news-more" aria-labelledby="news-more-heading">
-              <h2 class="dp-news-section-heading" id="news-more-heading">{featureIsLatest ? "News archive" : "More reporting"}</h2>
+              <h2 class="dp-news-section-heading" id="news-more-heading">More recent stories</h2>
               <ol>{more.map((post) => <NewsStoryRow post={post} />)}</ol>
             </section>
+          )}
+          {archive.length > 0 && (
+            <details class="dp-news-archive" data-news-archive>
+              <summary class="dp-ui-action dp-ui-secondary">Older news <span>({archive.length})</span></summary>
+              <ol>{archive.map((post) => <NewsStoryRow post={post} />)}</ol>
+            </details>
           )}
         </>
       )}
@@ -310,10 +322,13 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   }
   .intel-featured:hover h2 { color: var(--green); text-decoration: underline; text-underline-offset: .15em; }
   .intel-featured p { margin: 0; color: var(--ink-soft); font-size: .9375rem; line-height: 1.5; }
+  .dp-news-archive ol { list-style: none; margin: 10px 0 0; padding: 0; }
+  .dp-news-archive > summary { display: list-item; width: fit-content; list-style-position: inside; padding-inline: 12px; align-content: center; }
+  .dp-news-archive > summary span { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
   @media (min-width: 820px) {
     .intel-main.has-feature { grid-template-columns: minmax(0, 1fr) minmax(0, 1.28fr); align-items: start; }
     .intel-main.feature-is-latest { grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr); }
-    .dp-news-more { grid-column: 1 / -1; }
+    .dp-news-more, .dp-news-archive { grid-column: 1 / -1; }
   }
   @media (max-width: 640px) {
     .intel-tabs { gap: 6px; }

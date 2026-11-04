@@ -395,6 +395,13 @@ try {
       }
     }
   }
+  await navigate(page, "/news/");
+  const newsArchive = page.locator("[data-news-archive]");
+  assert.equal(await newsArchive.getAttribute("open"), null);
+  const archiveStory = newsArchive.getByRole("link").first();
+  assert.equal(await archiveStory.isVisible(), false);
+  await newsArchive.locator("summary").press("Space");
+  assert.ok(await archiveStory.isVisible());
   await navigate(page, "/guides/paint-protection-film-dubai/");
   const stageCredit = page.locator("main [data-reading-media] .dp-ai-label");
   assert.equal(await stageCredit.count(), 1);
