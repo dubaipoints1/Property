@@ -403,7 +403,14 @@ const schema = {
         into the page source of all 55 reviews (2 July 2026 leak audit).
       */}
 
-      <!-- Editorial prose (MDX slot) -->
+      {/*
+        Phase 2a.2.0 (2026-05-20): the "Our take" callout and the
+        pros/cons block were migrated to MDX-invoked components. Do not
+        add a duplicate callout or pros/cons list to this layout. Editorial
+        Utility promotes only the identical published short verdict into
+        the summary when available; MDX still owns the body and jump links.
+        See .council/briefs/2026-05-20-phase-2a-2-0-pros-cons-verdict-amendment.md.
+      */}
       <div class:list={["dp-prose", { "dp-card-verdict-in-summary": shortVerdict }]}>
         <slot />
       </div>
