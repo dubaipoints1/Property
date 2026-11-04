@@ -7,6 +7,7 @@ import {
   daysUntil,
 } from "../../lib/salaryTransfer";
 import {
+  accountOnlyTrackerTiers,
   type TrackerSalaryBand,
   selectTrackerReward,
   TRACKER_SALARY_BANDS as BANDS,
@@ -97,6 +98,18 @@ function SalaryForReward({ offer, reward }: { offer: SalaryTransferOffer; reward
   );
 }
 
+function RewardValue({ reward, note }: { reward: SalaryBand; note?: string }) {
+  return (
+    <>
+      <span class="dpst-value">
+        <span class="cur">AED</span>
+        {fmt(reward.rewardAmount)}
+      </span>
+      {note && <small class="dpst-reward-note">{note}</small>}
+    </>
+  );
+}
+
 function BankIdentity({ offer }: { offer: SalaryTransferOffer }) {
   // Salary offers identify banks and may have multiple product paths. A
   // logo never suggests that a particular credit card is part of an offer.
@@ -142,10 +155,29 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
   const rows = useMemo(() => {
     return offers
       .flatMap((offer) => {
-        if ((noCard && offer.creditCardRequired && !cardPaths[offer.id]?.financeAlternative) ||
+        const path = cardPaths[offer.id];
+        if ((noCard && offer.creditCardRequired && !path?.financeAlternative) ||
           (sharia && !offer.sharia)) return [];
-        const reward = selectTrackerReward(offer.salaryBands, activeBand, cash);
-        return reward ? [{ offer, reward }] : [];
+        const accountLabel = path?.accountRewardComponent;
+        const reward = selectTrackerReward(
+          noCard && accountLabel ? accountOnlyTrackerTiers(offer.salaryBands, accountLabel) : offer.salaryBands,
+          activeBand,
+          cash,
+        );
+        if (!reward) return [];
+        const accountAmount = accountLabel
+          ? accountOnlyTrackerTiers([reward], accountLabel)[0]?.rewardAmount
+          : undefined;
+        const rewardNote = accountLabel
+          ? noCard
+            ? "Account reward only"
+            : accountAmount !== undefined && accountAmount < reward.rewardAmount
+              ? "Includes optional card reward"
+              : undefined
+          : noCard && path?.financeAlternative
+            ? "Qualifying finance required without a card"
+            : undefined;
+        return [{ offer, reward, rewardNote }];
       })
       .sort((a, b) =>
         sort === "value"
@@ -454,7 +486,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
                 </tr>
               </thead>
               <tbody>
-                {rows.map(({ offer: o, reward }) => {
+                {rows.map(({ offer: o, reward, rewardNote }) => {
                   const isOpen = open.has(o.id);
                   const n = daysUntil(o.validUntil);
                   return (
@@ -473,10 +505,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
                           </span>
                         </td>
                         <td>
-                          <span class="dpst-value">
-                            <span class="cur">AED</span>
-                            {fmt(reward.rewardAmount)}
-                          </span>
+                          <RewardValue reward={reward} note={rewardNote} />
                         </td>
                         <td class="dpst-band-cell"><SalaryForReward offer={o} reward={reward} /></td>
                         <td>
@@ -519,7 +548,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
 
           {/* CARDS (mobile) */}
           <div class="dpst-cards">
-            {rows.map(({ offer: o, reward }) => {
+            {rows.map(({ offer: o, reward, rewardNote }) => {
               const isOpen = open.has(o.id);
               const n = daysUntil(o.validUntil);
               return (
@@ -530,10 +559,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
                   <div class="dpst-card-head">
                     <BankIdentity offer={o} />
                     <div class="dpst-card-val">
-                      <span class="dpst-value">
-                        <span class="cur">AED</span>
-                        {fmt(reward.rewardAmount)}
-                      </span>
+                      <RewardValue reward={reward} note={rewardNote} />
                     </div>
                   </div>
                   {/* One chip line instead of three label rows (19 Oct

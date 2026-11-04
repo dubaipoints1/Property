@@ -29,6 +29,24 @@ export function salaryBandsOverlap(
     range.min <= (tier.maxSalary ?? Infinity);
 }
 
+export function accountOnlyTrackerTiers(
+  tiers: readonly SalaryBand[],
+  accountComponentLabel: string,
+): SalaryBand[] {
+  return tiers.flatMap((tier) => {
+    if (tier.rewardType !== "cash") return [];
+    const matches = tier.components?.filter((component) =>
+      component.label === accountComponentLabel && !component.requires
+    );
+    // Select only the explicit, already verified account amount. If the
+    // source's component model changes, never fall back to the full bonus.
+    if (matches?.length !== 1) return [];
+    const account = matches[0];
+    if (!Number.isFinite(account.amount) || account.amount <= 0 || account.amount > tier.rewardAmount) return [];
+    return [{ ...tier, rewardAmount: account.amount, components: [account] }];
+  });
+}
+
 export function selectTrackerReward(
   tiers: readonly SalaryBand[],
   range: SalaryRange | null,

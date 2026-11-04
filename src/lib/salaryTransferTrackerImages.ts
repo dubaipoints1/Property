@@ -11,7 +11,8 @@ export interface TrackerCardExample {
 }
 
 export interface TrackerCardPath {
-  financeAlternative: boolean;
+  financeAlternative?: true;
+  accountRewardComponent?: string;
   example?: TrackerCardExample;
 }
 
@@ -26,6 +27,13 @@ export function getTrackerCardPaths(
 ): Record<string, TrackerCardPath> {
   const paths: Record<string, TrackerCardPath> = {};
   for (const offer of offers) {
+    if (offer.id === "emirates-islamic-2026-oct-2027-mar" && offer.bankSlug === "emirates-islamic" &&
+      offer.sourceUrl === "https://www.emiratesislamic.ae/en/terms-and-conditions/salary-transfer-offer-terms-and-conditions-oct-2026") {
+      // The issuer separates the CASA reward from the optional Covered
+      // Card reward. The verified amounts already live in the offer tiers.
+      paths[offer.id] = { accountRewardComponent: "CASA salary cashback (non-UAE nationals)" };
+      continue;
+    }
     if (offer.id !== "dib-xtra-2026" || offer.bankSlug !== "dib" ||
       offer.sourceUrl !== "https://www.dib.ae/docs/default-source/pdf/dib-xtra-tc.pdf") continue;
 
@@ -35,7 +43,7 @@ export function getTrackerCardPaths(
     if (art?.page === "https://www.dib.ae/personal/cards/consumer-reward-card") {
       path.example = {
         slug,
-        name: "DIB Consumer Reward Covered Card",
+        name: "DIB Consumer Cashback Reward Covered Card",
         issuer: "Dubai Islamic Bank",
         src: `/${art.file}`,
         width: art.width,

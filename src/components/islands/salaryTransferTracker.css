@@ -33,8 +33,10 @@
 .dpst-responsive .dpst-bank-copy { min-inline-size: 0; overflow-wrap: anywhere; }
 .dpst-responsive .dpst-salary { display: grid; gap: 3px; }
 .dpst-responsive .dpst-salary small,
+.dpst-responsive .dpst-reward-note,
 .dpst-responsive .dpst-filter-note,
 .dpst-responsive .dpst-salary-note { color: var(--dpst-navy-soft); font-size: 12px; }
+.dpst-responsive .dpst-reward-note { display: block; max-inline-size: 15ch; margin-block-start: 3px; }
 .dpst-responsive .dpst-filter-note { margin: 8px 0 0; }
 .dpst-responsive .dpst-salary-note { padding: 0 20px 12px; margin: 0; }
 .dpst-responsive .dpst-expand { min-inline-size: 44px; min-block-size: 44px; }

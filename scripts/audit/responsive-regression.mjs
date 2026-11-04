@@ -102,6 +102,12 @@ try {
   await hsbc.waitFor({ state: "visible" });
   assert.match(await hsbc.locator("xpath=ancestor::div[contains(@class,'dpst-card ') or @class='dpst-card']").innerText(), /12,500/,
     "The AED 8k–15k band includes the HSBC offer starting part-way through that band");
+  const ei = page.locator(".dpst-card").filter({
+    has: page.getByRole("link", { name: "Emirates Islamic", exact: true }),
+  });
+  assert.match(await ei.locator(".dpst-card-val").innerText(), /800\s+Includes optional card reward/);
+  await page.getByRole("button", { name: "No credit card required" }).click();
+  assert.match(await ei.locator(".dpst-card-val").innerText(), /400\s+Account reward only/);
   await navigate(page, "/salary-transfer/aed-8000-to-15000/");
   await hsbc.waitFor({ state: "visible" });
   const dib = page.locator(".dpst-card").filter({ has: page.getByRole("link", { name: "Dubai Islamic Bank", exact: true }) });
