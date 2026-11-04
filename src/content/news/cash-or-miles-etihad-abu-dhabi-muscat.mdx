@@ -1,0 +1,62 @@
+---
+title: "Cash or Miles? Abu Dhabi to Muscat on Etihad"
+description: "Same Economy flight and checked bag, two ways to pay. We priced both and checked where the fare rules differ."
+publishedAt: 2026-11-04
+category: news
+beat: airline
+textLed: true
+relatedPrograms:
+  - etihad-guest
+sources:
+  - https://www.etihad.com/en-ae/etihadguest/spend-miles/fly-with-miles
+  - https://www.etihad.com/en-ae/legal/terms-and-conditions
+---
+
+import TravelEvidence from "~/components/TravelEvidence.astro";
+import { etihadMuscatFare as quote } from "~/lib/etihadFareEvidence";
+import { calculateCashOrMiles } from "~/lib/cashOrMiles";
+import { dpValueFils } from "~/lib/valuations";
+
+export const money = (aed) => "AED " + aed.toLocaleString("en-GB", { maximumFractionDigits: 2 });
+export const date = (iso) => new Intl.DateTimeFormat("en-GB", { dateStyle: "long", timeZone: "UTC" }).format(new Date(iso));
+export const target = dpValueFils("etihad-guest");
+export const comparison = calculateCashOrMiles({ cashFare: String(quote.cashAed), miles: String(quote.miles), awardFees: String(quote.awardFeesAed), target: target === null ? "" : String(target) });
+
+<TravelEvidence
+  basis="priced-not-booked"
+  checked={{ iso: quote.checkedOn, display: date(quote.checkedOn) }}
+  rows={[
+    { label: "Itinerary", value: `Abu Dhabi (AUH) to Muscat (MCT) · ${quote.flight}` },
+    { label: "Travel date", value: date(quote.travelDate) + " · one-way" },
+    { label: "Cabin and party", value: "Economy Value · one adult" },
+    { label: "Checked bag on both", value: `${quote.checkedBagKg} kg` },
+    { label: "Cash fare including taxes", value: money(quote.cashAed) },
+    { label: "Reward shown", value: `${quote.miles.toLocaleString("en-GB")} Etihad Guest Miles + ${money(quote.awardFeesAed)}` },
+  ]}
+  source={{ href: quote.source, label: "Price a flight on Etihad’s website" }}
+  limitation="Same flight, cabin, passenger count and checked-bag allowance; change rules differ. Public booking-screen snapshot, not a first-hand trip review or a live quote."
+/>
+
+## What the miles saved
+
+The reward saved {comparison.ok && <strong>{money(comparison.result.cashSavedFils / 100)} in cash</strong>} before counting the value of the miles.
+Convert that saving to fils and divide by the miles used. That yields
+{comparison.ok && <> <strong>{comparison.result.filsPerMile.toFixed(2)} fils per mile</strong></>} for this comparison, before any rewards you would earn on the paid ticket.
+
+{comparison.ok && comparison.result.breakEvenFareFils !== null && <p>At our <a href="/valuations/methodology/">editorial baseline</a> of {target} fils per Etihad Guest Mile, the cash fare would have to fall to <strong>{money(comparison.result.breakEvenFareFils / 100)}</strong> to tie the reward, assuming the reward price stays the same. This is not an Etihad exchange rate or a general valuation of the programme.</p>}
+
+## Which fare should you compare?
+
+The cheapest cash option did not include a checked bag, so we used the cash
+Value fare instead. If you would actually travel with cabin baggage only,
+price the cheaper fare in the [Cash or Miles calculator](/calculator/cash-or-miles/)
+before using miles. And if you might change the flight, read both sets of
+rules first: the reward had a higher change fee and did not allow changes
+close to departure.
+
+## Before you move bank points
+
+Check availability and the full payment amount again. If you are short of
+miles, use the [UAE Transfer Finder](/transfer-finder/?to=etihad-guest) to check
+your exact rewards currency and the issuer’s current transfer conditions.
+Nothing was booked or held for this comparison.

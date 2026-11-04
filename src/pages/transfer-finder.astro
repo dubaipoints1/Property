@@ -1,0 +1,197 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
+import { transferRoutes, transferOrigins, transferDestinations, transferOffer } from "~/lib/transferFinder";
+import { isUaeOfferWindow } from "~/lib/uaeOfferWindow";
+
+const number = new Intl.NumberFormat("en-AE");
+const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const dateLabel = (iso: string) => date.format(new Date(iso));
+const showOffer = isUaeOfferWindow(transferOffer.announced, transferOffer.ends, Date.now());
+const schema = breadcrumbGraph(siteUrlFrom(Astro.site), [
+  { name: "Airline programmes", path: "/airlines/" },
+  { name: "UAE Transfer Finder", path: "/transfer-finder/" },
+]);
+---
+
+<BaseLayout title="UAE Transfer Finder: bank and hotel points to airline miles | DubaiPoints"
+  description="Compare issuer-published UAE bank and hotel reward transfers to Emirates Skywards, Etihad Guest and Qatar Privilege Club. Find ratios, minimums, timing and official sources."
+  fullWidth schema={schema}>
+  <div class="dp-transfer" data-transfer-finder>
+    <header class="dp-transfer-head">
+      <nav class="dp-transfer-crumb" aria-label="Breadcrumb"><a href="/">DubaiPoints</a> / <a href="/airlines/">Points &amp; miles</a> / Transfer Finder</nav>
+      <h1>UAE Transfer Finder</h1>
+      <p>See which bank or hotel points you can move to Emirates Skywards, Etihad Guest or Qatar Privilege Club, and what you get for the points you give up.</p>
+    </header>
+
+    <div class="dp-transfer-warning">
+      <p><strong>Check the seat first.</strong> Match the exact currency on your statement, then check award availability, cash fees and the issuer’s final terms before moving any points. A transfer may be irreversible.</p>
+    </div>
+
+    <fieldset class="dp-transfer-filters" data-transfer-filters disabled>
+      <legend class="sr-only">Filter transfer routes</legend>
+      <label for="transfer-from">Points you have
+        <select id="transfer-from" data-transfer-origin>
+          <option value="">All rewards currencies</option>
+          {Object.entries(transferOrigins).map(([id, value]) => <option value={id}>{value.label}</option>)}
+        </select>
+      </label>
+      <label for="transfer-to">Miles you want
+        <select id="transfer-to" data-transfer-destination>
+          <option value="">All airline programmes</option>
+          {Object.entries(transferDestinations).map(([id, value]) => <option value={id}>{value.label}</option>)}
+        </select>
+      </label>
+      <button type="button" data-transfer-reset>Reset filters</button>
+    </fieldset>
+    <noscript>
+      <style is:inline>.dp-transfer-filters{display:none!important}</style>
+      <p class="dp-transfer-note">Filters need JavaScript. You can still browse all routes and official sources below.</p>
+    </noscript>
+    <section aria-labelledby="transfer-routes-title">
+      <div class="dp-transfer-results">
+        <h2 id="transfer-routes-title">Transfer routes</h2>
+        <p role="status" aria-atomic="true" data-transfer-count>{transferRoutes.length} routes shown</p>
+      </div>
+      <p class="dp-transfer-note">Selected routes, not a list of every partner. “Not confirmed” means we have not verified a public figure for that route. It does not mean the fee is zero, the minimum is absent or the transfer is instant.</p>
+      <p class="dp-transfer-empty" data-transfer-empty hidden>No listed route matches these filters. Try a different currency or airline programme.</p>
+      <ul class="dp-transfer-grid" role="list">
+        {transferRoutes.map((route) => (
+          <li class="dp-transfer-route" data-transfer-route data-from={route.from} data-to={route.to} id={route.id}>
+            <h3>{route.origin.label}</h3>
+            <p class="dp-transfer-target">To <a href={route.destination.href}>{route.destination.label}</a></p>
+            {route.ratio
+              ? <p class="dp-transfer-ratio"><strong>{number.format(route.ratio.input)}</strong> {route.ratio.input === 1 ? route.origin.unit.replace(/Points$/i, "Point") : route.origin.unit} → <strong>{number.format(route.ratio.output)}</strong> {route.ratio.output === 1 ? route.destination.unit.replace(/Miles$/, "Mile") : route.destination.unit}</p>
+              : <p class="dp-transfer-ratio"><strong>Rate not confirmed</strong></p>}
+            <p class="dp-transfer-eligibility">{route.origin.appliesTo}</p>
+            <dl>
+              <div><dt>Minimum points</dt><dd>{route.minimum ? number.format(route.minimum) : "Not confirmed"}</dd></div>
+              <div><dt>Timing</dt><dd>{route.timing === "instant" ? "Issuer says instant" : route.timing ? ("hours" in route.timing ? `Within ${route.timing.hours} hours` : `Within ${route.timing.workingDays} working days`) : "Not confirmed"}</dd></div>
+              <div><dt>Transfer fee</dt><dd>Not confirmed</dd></div>
+              <div><dt>Where to transfer</dt><dd>{route.channel}</dd></div>
+            </dl>
+            {route.blockBonus && <p class="dp-transfer-note">{number.format(route.blockBonus.extraMiles)} extra Skywards Miles per {number.format(route.blockBonus.inputPoints)} Bonvoy Points transferred under the published standing terms.</p>}
+            {route.caveat && <p class="dp-transfer-note">{route.caveat}</p>}
+            {showOffer && route.from === transferOffer.from && route.to === transferOffer.to && (
+              <div class="dp-transfer-offer" data-transfer-offer data-announced={transferOffer.announced} data-ends={transferOffer.ends} hidden>
+                <p><strong>{transferOffer.rate}% bonus Skywards Miles</strong> · ends <time datetime={transferOffer.ends}>{dateLabel(transferOffer.ends)}</time></p>
+                <p>{transferOffer.caveat}</p>
+                <p><a href={transferOffer.source.url}>Emirates announcement</a> · <a href={transferOffer.terms.url}>Offer terms</a> · Checked <time datetime={transferOffer.source.checked}>{dateLabel(transferOffer.source.checked)}</time></p>
+              </div>
+            )}
+            <div class="dp-transfer-sources">
+              {route.sources.map((source) => (
+                <a href={source.url}>{source.issuer}: {source.label}</a>
+              ))}
+              <span>Checked <time datetime={route.checked}>{dateLabel(route.checked)}</time></span>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section class="dp-transfer-next" aria-labelledby="transfer-next">
+      <h2 id="transfer-next">Check what the booking is worth</h2>
+      <p>Compare the same cabin and flights in AED. Include taxes and fees on the award, and the value of the rewards you give up.</p>
+      <div class="dp-transfer-next-links">
+        <a href="/calculator/cash-or-miles/">Use the Cash or Miles calculator →</a>
+        <a href="/guides/uae-transfer-ratios-2026/">Read the guide to bank-point transfers →</a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { isUaeOfferWindow } from "~/lib/uaeOfferWindow";
+
+  const root = document.querySelector<HTMLElement>("[data-transfer-finder]");
+  const filters = root?.querySelector<HTMLFieldSetElement>("[data-transfer-filters]");
+  const origin = root?.querySelector<HTMLSelectElement>("[data-transfer-origin]");
+  const destination = root?.querySelector<HTMLSelectElement>("[data-transfer-destination]");
+  const reset = root?.querySelector<HTMLButtonElement>("[data-transfer-reset]");
+  const count = root?.querySelector<HTMLElement>("[data-transfer-count]");
+  const empty = root?.querySelector<HTMLElement>("[data-transfer-empty]");
+  if (root && filters && origin && destination && reset && count && empty) {
+    const rows = Array.from(root.querySelectorAll<HTMLElement>("[data-transfer-route]"));
+    const url = new URL(window.location.href);
+    const selectKnown = (select: HTMLSelectElement, value: string | null) => {
+      select.value = value && Array.from(select.options).some((option) => option.value === value) ? value : "";
+    };
+    selectKnown(origin, url.searchParams.get("from"));
+    selectKnown(destination, url.searchParams.get("to"));
+
+    const draw = (updateUrl: boolean) => {
+      let matches = 0;
+      for (const row of rows) {
+        row.hidden = Boolean((origin.value && row.dataset.from !== origin.value)
+          || (destination.value && row.dataset.to !== destination.value));
+        if (!row.hidden) matches++;
+      }
+      count.textContent = `${matches} ${matches === 1 ? "route" : "routes"} shown`;
+      empty.hidden = matches > 0;
+      if (updateUrl) {
+        const current = new URL(window.location.href);
+        for (const [key, value] of [["from", origin.value], ["to", destination.value]]) {
+          if (value) current.searchParams.set(key, value);
+          else current.searchParams.delete(key);
+        }
+        window.history.replaceState(window.history.state, "", current);
+      }
+    };
+    origin.addEventListener("change", () => draw(true));
+    destination.addEventListener("change", () => draw(true));
+    reset.addEventListener("click", () => { origin.value = ""; destination.value = ""; draw(true); });
+    draw(false);
+    filters.disabled = false;
+
+    const updateOffers = () => {
+      for (const offer of root.querySelectorAll<HTMLElement>("[data-transfer-offer]")) {
+        const { announced, ends } = offer.dataset;
+        offer.hidden = !(announced && ends && isUaeOfferWindow(announced, ends, Date.now()));
+      }
+    };
+    updateOffers();
+    document.addEventListener("visibilitychange", updateOffers);
+  }
+</script>
+
+<style>
+  .dp-transfer { max-width: 1130px; padding: 0 clamp(16px, 4vw, 38px) 64px; margin: 0 auto; }
+  .dp-transfer [hidden] { display: none; }
+  .dp-transfer-head { padding: clamp(24px, 4vw, 44px) 0 20px; }
+  .dp-transfer-crumb { font: 600 .77rem/1.5 var(--font-ui); color: var(--ink-soft); }
+  .dp-transfer-head h1 { font: 600 clamp(2.1rem, 5vw, 3.7rem)/1.04 var(--font-display); color: var(--ink); margin: 10px 0 8px; }
+  .dp-transfer-head p { max-width: 62ch; font-size: 1.05rem; line-height: 1.55; color: var(--ink-soft); margin: 0; }
+  .dp-transfer a { text-decoration: underline; text-underline-offset: .18em; }
+  .dp-transfer-warning { background: var(--shade-1); border-left: 3px solid var(--green); padding: 12px 16px; margin: 0 0 20px; }
+  .dp-transfer-warning p { margin: 0; max-width: 80ch; font-size: .92rem; line-height: 1.55; }
+  .dp-transfer-filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 12px; margin: 0; min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); align-items: end; }
+  .dp-transfer-filters label { min-width: 0; font: 600 .82rem/1.4 var(--font-ui); }
+  .dp-transfer-filters select, .dp-transfer-filters button { min-height: 44px; border: 1px solid var(--ink-soft); border-radius: 8px; padding: 7px 10px; background: var(--paper); color: var(--ink); font: 600 .88rem/1.4 var(--font-ui); }
+  .dp-transfer-filters select { display: block; margin-top: 5px; width: 100%; }
+  .dp-transfer-filters button { cursor: pointer; color: var(--green); }
+  .dp-transfer-filters :is(button, select):focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  .dp-transfer-results { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; justify-content: space-between; margin-top: 25px; }
+  .dp-transfer-results h2, .dp-transfer-next h2 { font: 600 1.55rem/1.15 var(--font-display); margin: 0; color: var(--ink); }
+  .dp-transfer-results p { margin: 0; font-size: .83rem; color: var(--ink-soft); }
+  .dp-transfer-note { color: var(--ink-soft); font-size: .84rem; line-height: 1.55; margin: 7px 0 11px; }
+  .dp-transfer-empty { border: 1px dashed var(--line); border-radius: 8px; padding: 16px; margin: 12px 0; }
+  .dp-transfer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr)); align-items: stretch; gap: 14px; list-style: none; padding: 0; margin: 0; }
+  .dp-transfer-route { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: var(--paper); }
+  .dp-transfer-route h3 { font: 600 1.25rem/1.2 var(--font-display); color: var(--ink); margin: 0 0 4px; }
+  .dp-transfer-target { font-size: .86rem; margin: 0; color: var(--ink-soft); }
+  .dp-transfer-ratio { font-size: .98rem; line-height: 1.5; margin: 12px 0 4px; color: var(--green); font-variant-numeric: tabular-nums; }
+  .dp-transfer-eligibility { margin: 0 0 12px; font-size: .84rem; color: var(--ink-soft); line-height: 1.5; }
+  .dp-transfer-route dl { margin: 0 0 8px; border-top: 1px solid var(--line); }
+  .dp-transfer-route dl div { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 7px; border-bottom: 1px solid var(--line); padding: 6px 0; font-size: .79rem; line-height: 1.45; }
+  .dp-transfer-route dt { font-weight: 600; }
+  .dp-transfer-route dd { margin: 0; color: var(--ink-soft); }
+  .dp-transfer-offer { padding: 9px 11px; background: var(--shade-1); border-left: 3px solid var(--green); margin: 4px 0 8px; }
+  .dp-transfer-offer p { font-size: .8rem; line-height: 1.45; margin: 4px 0; }
+  .dp-transfer-sources { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding-top: 3px; margin-top: auto; font-size: .77rem; line-height: 1.5; color: var(--ink-soft); }
+  .dp-transfer-sources a { display: inline-flex; align-items: center; min-height: 44px; }
+  .dp-transfer-next { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 18px; }
+  .dp-transfer-next p { margin: 6px 0; max-width: 70ch; line-height: 1.55; color: var(--ink-soft); }
+  .dp-transfer-next-links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+  @media (max-width: 620px) { .dp-transfer-filters { grid-template-columns: minmax(0, 1fr); } .dp-transfer-filters button { justify-self: start; } }
+</style>

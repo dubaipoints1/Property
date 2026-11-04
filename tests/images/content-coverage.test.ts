@@ -28,6 +28,8 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Deliberately text-led: three dated, issuer-sourced examples need no decorative hero; the news listing retains its existing fallback cover.",
   "news-cash-or-miles-uae-flight-break-even":
     "Deliberately text-led: the worked comparisons are the visual focus and no image should imply that the hypothetical flights were priced or booked.",
+  "news-cash-or-miles-etihad-abu-dhabi-muscat":
+    "Deliberately text-led: the dated, parsed pricing evidence is the focus; the listing uses an original route pictogram, not a photo implying first-hand travel.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).

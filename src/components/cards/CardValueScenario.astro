@@ -1,0 +1,151 @@
+---
+import {
+  DEFAULT_CARD_VALUE_MONTHLY_SPEND,
+  MAX_CARD_VALUE_MONTHLY_SPEND,
+} from "~/lib/cardValue";
+import { formatAED } from "~/lib/cardsDataFormat";
+
+interface Props { id: string; compact?: boolean; }
+const { id, compact = false } = Astro.props;
+---
+<section class:list={["dp-card-value-scenario", { "is-compact": compact }]} aria-labelledby={`${id}-heading`} data-card-value-scenario>
+  <h2 id={`${id}-heading`} class:list={[{ "sr-only": compact }]}>Year one vs ongoing value</h2>
+  {!compact && <p>
+    Spend rewards minus card fees on <strong><span data-card-value-amount>{formatAED(DEFAULT_CARD_VALUE_MONTHLY_SPEND)}</span> a month</strong>
+    of eligible everyday UAE purchases.
+  </p>}
+  <details>
+    <summary>{compact ? <span>Adjust spend <span aria-hidden="true">·</span> <span data-card-value-amount>{formatAED(DEFAULT_CARD_VALUE_MONTHLY_SPEND)}</span>/month</span> : "Adjust spend and see assumptions"}</summary>
+    {compact && <p>Compare spend rewards minus card fees on eligible everyday UAE purchases.</p>}
+    <p>
+      Uses each card’s general rate, not boosted or reduced-rate categories, and assumes you pay the balance in full.
+      Welcome offers, perks, paid add-ons, rebates and foreign-currency charges aren’t included. Issuer exclusions and credit limits still apply.
+      Targeted or promotional fee waivers are not modelled unless stated on the estimate.
+    </p>
+  <fieldset data-card-value-controls hidden>
+    <legend class="sr-only">Adjust the comparison example</legend>
+    <label for={`${id}-spend`}>Monthly spend (AED)</label>
+    <div class="dp-card-value-controls-row">
+      <input id={`${id}-spend`} type="number" inputmode="numeric" autocomplete="off" min="0"
+        max={MAX_CARD_VALUE_MONTHLY_SPEND} step="1" required
+        value={DEFAULT_CARD_VALUE_MONTHLY_SPEND} data-card-value-spend
+        aria-describedby={`${id}-status`} />
+      <button type="button" data-card-value-apply>Update estimates</button>
+    </div>
+    <p role="status" id={`${id}-status`} data-card-value-status></p>
+  </fieldset>
+  <p class="dp-card-value-custom"><a href="/calculator/">Model groceries, dining and other categories in the spend-return calculator →</a></p>
+  </details>
+</section>
+
+<script>
+  import { calculateCardValue, formatCardValue, type CardValueTerms } from "~/lib/cardValue";
+  import { formatAED } from "~/lib/cardsDataFormat";
+
+  for (const scenario of document.querySelectorAll<HTMLElement>("[data-card-value-scenario]")) {
+    const controls = scenario.querySelector<HTMLFieldSetElement>("[data-card-value-controls]");
+    const input = scenario.querySelector<HTMLInputElement>("[data-card-value-spend]");
+    const button = scenario.querySelector<HTMLButtonElement>("[data-card-value-apply]");
+    const status = scenario.querySelector<HTMLElement>("[data-card-value-status]");
+    const amount = scenario.querySelector<HTMLElement>("[data-card-value-amount]");
+    const scope = scenario.closest("main");
+    if (!controls || !input || !button || !status || !amount || !scope) continue;
+    const rows = Array.from(scope.querySelectorAll<HTMLElement>("[data-card-value]"), (row) => ({
+      terms: JSON.parse(row.dataset.cardValue ?? "{}") as CardValueTerms,
+      first: row.querySelector<HTMLElement>("[data-card-value-first]"),
+      later: row.querySelector<HTMLElement>("[data-card-value-later]"),
+      rewards: row.querySelector<HTMLElement>("[data-card-value-rewards]"),
+      reason: row.querySelector<HTMLElement>("[data-card-value-reward-issue]"),
+      cap: row.querySelector<HTMLElement>("[data-card-value-cap-binding]"),
+    }));
+    if (!rows.length) continue;
+    const update = () => {
+      if (!input.reportValidity()) return;
+      const spend = input.valueAsNumber;
+      if (!Number.isSafeInteger(spend)) return;
+      for (const row of rows) {
+        const result = calculateCardValue(row.terms, spend);
+        if (row.first) row.first.textContent = formatCardValue(result.first);
+        if (row.later) row.later.textContent = formatCardValue(result.later);
+        if (row.rewards) row.rewards.textContent = formatCardValue(result.rewards);
+        if (row.reason) {
+          row.reason.textContent = result.rewardIssue;
+          row.reason.hidden = !result.rewardIssue;
+        }
+        if (row.cap) row.cap.hidden = !result.capBinds;
+      }
+      amount.textContent = formatAED(spend);
+      status.textContent = `Estimates updated for ${formatAED(spend)} a month. Amount stays on this page.`;
+    };
+    button.addEventListener("click", update);
+    input.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      update();
+    });
+    controls.hidden = false;
+  }
+</script>
+
+<style>
+  .dp-card-value-scenario {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-ui);
+  }
+  .dp-card-value-scenario h2 {
+    font: 600 19px/1.25 var(--font-display);
+    margin: 0 0 7px;
+  }
+  .dp-card-value-scenario.is-compact { padding: 0 12px; }
+  .dp-card-value-scenario.is-compact details[open] { padding-block-end: 12px; }
+  .dp-card-value-scenario.is-compact details > p + p { margin-block-start: 6px; }
+  .dp-card-value-scenario p {
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 72ch;
+    margin: 0;
+  }
+  .dp-card-value-scenario summary {
+    min-height: 44px;
+    align-content: center;
+    color: var(--green);
+    font-size: 13px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .dp-card-value-scenario fieldset {
+    border: 0;
+    padding: 0;
+    margin: 12px 0 0;
+    min-width: 0;
+  }
+  .dp-card-value-scenario label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .dp-card-value-controls-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .dp-card-value-controls-row input,
+  .dp-card-value-controls-row button {
+    box-sizing: border-box;
+    min-height: 44px;
+    max-width: 100%;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    font: 600 14px/1.3 var(--font-ui);
+  }
+  .dp-card-value-controls-row input { width: 132px; background: var(--bg); color: var(--ink); }
+  .dp-card-value-controls-row button { background: var(--green); color: var(--paper); border-color: var(--green); cursor: pointer; }
+  .dp-card-value-controls-row :focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  .dp-card-value-scenario [role="status"]:not(:empty) { margin-top: 8px; }
+  .dp-card-value-scenario .dp-card-value-custom { margin-top: 10px; }
+  .dp-card-value-custom a { color: var(--green); text-decoration: underline; text-underline-offset: 2px; }
+</style>

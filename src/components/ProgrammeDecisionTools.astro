@@ -1,0 +1,21 @@
+---
+import CashOrMilesCalculator from "./CashOrMilesCalculator.astro";
+interface Props { programme: "skywards" | "etihad-guest"; }
+const { programme } = Astro.props;
+---
+
+<div class="dp-programme-tools">
+  <details>
+    <summary>Compare a cash and miles fare</summary>
+    <CashOrMilesCalculator embedded />
+  </details>
+  <p><a href={`/transfer-finder/?to=${programme}`}>Find UAE points that transfer in</a> · <a href="/calculator/cash-or-miles/">Open the full calculator</a></p>
+</div>
+
+<style>
+  .dp-programme-tools { margin-block: 1.25rem; }
+  .dp-programme-tools details { border: 1px solid var(--line); border-radius: 12px; background: var(--paper); padding-inline: clamp(12px, 2vw, 18px); }
+  .dp-programme-tools summary { padding-block: .7rem; color: var(--green); font: 650 1rem/1.4 var(--font-ui); cursor: pointer; }
+  .dp-programme-tools summary:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; border-radius: 3px; }
+  .dp-programme-tools p { margin-block: .6rem 0; font: 500 .9rem/1.5 var(--font-ui); }
+</style>

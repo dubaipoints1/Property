@@ -23,6 +23,8 @@ import {
 } from "~/lib/cardsDataFormat";
 import { cardMatchups, matchupSlug } from "~/data/cardMatchups";
 import CompareCardArt from "~/components/cards/CompareCardArt.astro";
+import CardValueLines from "~/components/cards/CardValueLines.astro";
+import CardValueScenario from "~/components/cards/CardValueScenario.astro";
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EligibilityChips from "~/components/cards/EligibilityChips.astro";
@@ -213,6 +215,10 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     </p>
   </div>
 
+  <div class="dp-compare-value-context">
+    <CardValueScenario id="compare-card-value" compact />
+  </div>
+
   {(
     <section class="dp-compare-grid" id="dp-compare-grid" aria-label="Card comparison">
       {initialColumns.map(({ card, bankName }) => {
@@ -244,6 +250,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
             <div class="dp-compare-col-section">
               <FeeBlock card={card.slug} />
             </div>
+
+            <CardValueLines card={card} slug={card.slug} />
 
             <div class="dp-compare-col-section">
               <div class="dp-compare-row-label">Top category</div>
@@ -573,6 +581,13 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
 
   /* ── Comparison grid ──────────────────────────────────────────── */
+  .dp-compare-value-context {
+    max-width: var(--container-listing);
+    margin: 10px auto 0;
+    padding: 0 32px;
+  }
+  .dp-compare-value-context + .dp-compare-grid { margin-block-start: 12px; }
+  @media (max-width: 720px) { .dp-compare-value-context { padding-inline: 20px; } }
   .dp-compare-grid {
     max-width: var(--container-listing);
     margin: 24px auto 0;

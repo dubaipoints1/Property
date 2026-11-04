@@ -1,0 +1,48 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import CashOrMilesCalculator from "~/components/CashOrMilesCalculator.astro";
+import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
+
+const schema = breadcrumbGraph(siteUrlFrom(Astro.site), [
+  { name: "Home", path: "/" },
+  { name: "Airline programmes", path: "/airlines/" },
+  { name: "Cash or Miles?", path: "/calculator/cash-or-miles/" },
+]);
+---
+
+<BaseLayout
+  title="Cash or Miles? UAE flight calculator | DubaiPoints"
+  description="Compare a cash fare with an award ticket in AED. Calculate the fils per mile you would get and the fare at which using miles reaches your target."
+  fullWidth schema={schema}
+>
+  <article class="dp-article is-wide">
+    <header class="dp-article-head">
+      <p class="dp-article-eyebrow is-green">Points &amp; miles · Calculator</p>
+      <h1 class="dp-article-title">Cash or Miles?</h1>
+      <p class="dp-article-lede">Put two flight quotes side by side. See how much cash the award saves, what you get per mile, and when the award reaches your target value.</p>
+      <p class="dp-article-meta"><a href="#methodology">How it works</a><span class="sep">·</span><a href="/news/cash-or-miles-etihad-abu-dhabi-muscat/">Priced Abu Dhabi–Muscat example</a></p>
+    </header>
+
+    <CashOrMilesCalculator />
+
+    <section id="methodology" class="dp-article-section">
+      <h2>Compare like for like</h2>
+      <ol>
+        <li>Use the same flight, dates, cabin and passengers. Compare baggage and change or cancellation rules before treating the two fares as equivalent.</li>
+        <li>Enter the <strong>cash fare you would actually pay</strong>, and the miles and total cash due on the award. Include taxes, fees and surcharges. Use booking-screen totals rather than an indicative mileage calculator or a “from” fare.</li>
+        <li>Set your own target if you have one. The <a href="/valuations/methodology/">DubaiPoints valuation method</a> explains the editorial comparison baselines and their limits; they are not airline exchange rates or booking quotes.</li>
+      </ol>
+      <h3>The arithmetic</h3>
+      <p><strong>Cash saved</strong> is the cash fare minus the cash due on the award. <strong>Fils per mile</strong> divides that saving in fils by the miles required (100 fils make AED 1). The <strong>break-even cash fare</strong> adds the cash due on the award to what the miles are worth at your target, rounded up to the nearest fils.</p>
+      <p>This tool does not check availability, account balances or transfer timing, or value the miles you might earn on a paid fare. Check the live price, restrictions and the seat itself before transferring points or booking.</p>
+      <p>See a <a href="/news/cash-or-miles-etihad-abu-dhabi-muscat/">priced Etihad example, not a booking</a>, or practise with the <a href="/news/cash-or-miles-uae-flight-break-even/">hypothetical Emirates and Etihad examples</a>.</p>
+      <h3>Check your programme</h3>
+      <ul>
+        <li><a href="/airlines/skywards/">Emirates Skywards guide</a></li>
+        <li><a href="/airlines/etihad-guest/">Etihad Guest guide</a></li>
+        <li><a href="/transfer-finder/">UAE Transfer Finder</a> — find which bank or hotel points can top up your miles</li>
+        <li><a href="/valuations/">Published points and miles baselines</a></li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>

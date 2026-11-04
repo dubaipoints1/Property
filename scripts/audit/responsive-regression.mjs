@@ -73,9 +73,11 @@ try {
 
   await page.setViewportSize({ width: 390, height: 880 });
   const menu = page.getByRole("button", { name: "Open menu" });
+  await menu.waitFor({ state: "visible" });
   await menu.press("Enter");
   const close = page.getByRole("button", { name: "Close menu" });
   await close.waitFor({ state: "visible" });
+  await page.waitForFunction(() => document.activeElement?.getAttribute("aria-label") === "Close menu");
   assert.equal(await close.evaluate((element) => document.activeElement === element), true);
   await page.keyboard.press("Escape");
   assert.equal(await menu.getAttribute("aria-expanded"), "false");
@@ -297,15 +299,25 @@ try {
   await navigate(page, "/news/cash-or-miles-uae-flight-break-even/");
   assert.match(await page.locator("main").innerText(), /hypothetical/i);
   assert.equal(await page.locator('link[rel="preload"][as="font"], .article-hero-image').count(), 0);
+  assert.equal(await page.locator('[data-travel-evidence="hypothetical"]').count(), 2);
+  await navigate(page, "/news/cash-or-miles-etihad-abu-dhabi-muscat/");
+  const fareEvidence = page.locator('[data-travel-evidence="priced-not-booked"]');
+  assert.match(await fareEvidence.innerText(), /EY 696/);
+  assert.match(await fareEvidence.innerText(), /AED 615/);
+  assert.match(await fareEvidence.innerText(), /10,000 Etihad Guest Miles \+ AED 135/);
+  assert.match(await page.locator("main").innerText(), /4\.80 fils per mile/);
+  assert.equal(await page.locator('link[rel="preload"][as="font"], .article-hero-image').count(), 0);
+  await navigate(page, "/news/flydubai-dubai-skopje-three-weekly-from-1-april-2027/");
+  assert.match(await page.locator('[data-travel-evidence="issuer-announcement"]').innerText(), /Award fare\s+Not priced/);
   await navigate(page, "/news/uae-salary-switch-scorecard/");
   assert.equal(await page.locator('link[rel="preload"][as="font"], .article-hero-image, main [data-news-preview]').count(), 0);
 
   for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: 880 });
     for (const [route, expected] of [
-      ["/news/", ["cash-or-miles", "issuer-card", "salary-scorecard"]],
+      ["/news/", ["cash-or-miles", "cash-or-miles-quote", "issuer-card", "salary-scorecard"]],
       ["/news/banking/", ["issuer-card", "salary-scorecard"]],
-      ["/news/airlines/", ["cash-or-miles"]],
+      ["/news/airlines/", ["cash-or-miles", "cash-or-miles-quote"]],
       ["/news/hotels/", []],
     ]) {
       await navigate(page, route);
@@ -343,10 +355,81 @@ try {
     assert.ok(await accorCredit.getByRole("link", { name: "Ghassan Hani", exact: true }).isVisible());
     assert.match(await page.locator("main .dp-stage").getAttribute("style"), /news-all-accor-triple-points/);
   }
+  await page.setViewportSize({ width: 390, height: 880 });
+  await navigate(page, "/calculator/cash-or-miles/");
+  const calc = page.locator("[data-cash-or-miles]");
+  await calc.getByRole("button", { name: "Compare fares", exact: true }).press("Enter");
+  const cashFare = calc.locator("#dp-cm-cashFare");
+  assert.equal(await cashFare.getAttribute("aria-invalid"), "true");
+  assert.equal(await cashFare.evaluate((el) => document.activeElement === el), true);
+  await cashFare.fill("615");
+  await calc.locator("#dp-cm-miles").fill("10000");
+  await calc.locator("#dp-cm-awardFees").fill("135");
+  await calc.locator("#dp-cm-target").fill("2");
+  await calc.getByRole("button", { name: "Compare fares", exact: true }).press("Enter");
+  assert.match(await calc.locator("[data-cm-saving]").innerText(), /AED\s*480/);
+  assert.match(await calc.locator("[data-cm-value]").innerText(), /4\.80 fils/);
+  assert.match(await calc.locator("[data-cm-break-even]").innerText(), /AED\s*335/);
+  assert.equal(new URL(page.url()).search, "");
+  await calc.getByRole("button", { name: "Clear", exact: true }).press("Enter");
+  assert.equal(await cashFare.inputValue(), "");
+
+  for (const [route, id] of [["/airlines/skywards/", "skywards"], ["/airlines/etihad-guest/", "etihad-guest"]]) {
+    await navigate(page, route);
+    const tools = page.locator(".dp-programme-tools");
+    assert.equal(await tools.getByRole("link", { name: "Find UAE points that transfer in" }).getAttribute("href"), `/transfer-finder/?to=${id}`);
+    await tools.locator("summary").press("Space");
+    await tools.getByRole("button", { name: "Try a hypothetical example" }).press("Enter");
+    assert.match(await tools.locator("[data-cm-value]").innerText(), /2\.67 fils/);
+  }
+  await navigate(page, "/transfer-finder/?to=etihad-guest");
+  const filterTo = page.locator("[data-transfer-destination]");
+  const filterFrom = page.locator("[data-transfer-origin]");
+  assert.equal(await filterTo.inputValue(), "etihad-guest");
+  const transferTiles = page.locator("[data-transfer-route]:not([hidden])");
+  assert.ok(await transferTiles.count() > 1);
+  assert.ok((await transferTiles.evaluateAll((items) => items.map((item) => item.dataset.to))).every((to) => to === "etihad-guest"));
+  await filterFrom.selectOption("fab-rewards");
+  assert.equal(await transferTiles.count(), 1);
+  assert.match(await transferTiles.first().innerText(), /FAB Rewards/);
+  assert.equal(new URL(page.url()).searchParams.get("from"), "fab-rewards");
+  await page.getByRole("button", { name: "Reset filters", exact: true }).press("Enter");
+  assert.equal(new URL(page.url()).search, "");
+  assert.equal(await transferTiles.count(), 16);
+  const noScript = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 880 } });
+  try {
+    await noScript.route("**/*", (request) => request.request().url().startsWith(server.baseUrl + "/")
+      ? request.continue() : request.abort());
+    const plain = await noScript.newPage();
+    await plain.goto(server.baseUrl + "/transfer-finder/?to=etihad-guest");
+    assert.equal(await plain.locator("[data-transfer-route]:not([hidden])").count(), 16);
+    assert.equal(await plain.locator("[data-transfer-offer]:not([hidden])").count(), 0);
+  } finally {
+    await noScript.close();
+  }
+  await page.clock.setFixedTime(new Date("2026-12-01T04:00:00+04:00"));
+  await navigate(page, "/transfer-finder/?to=skywards");
+  assert.equal(await page.locator("[data-transfer-offer]:not([hidden])").count(), 0);
+  await page.clock.setFixedTime(new Date());
+
+  await navigate(page, "/cards/compare/?cards=citi-cashback,wio-credit");
+  const citiValue = page.locator(".dp-compare-col[data-slug='citi-cashback']");
+  assert.match(await citiValue.locator("[data-card-value-first]").innerText(), /AED\s+936/);
+  assert.match(await citiValue.locator("[data-card-value-later]").innerText(), /AED\s+621/);
+  await page.locator("[data-card-value-scenario] summary").press("Space");
+  await page.getByLabel("Monthly spend (AED)", { exact: true }).fill("10000");
+  await page.getByRole("button", { name: "Update estimates", exact: true }).press("Enter");
+  assert.match(await citiValue.locator("[data-card-value-first]").innerText(), /AED\s+1,200/);
+  assert.match(await citiValue.locator("[data-card-value-later]").innerText(), /AED\s+885/);
+  assert.equal(new URL(page.url()).searchParams.size, 1);
+  const wioValue = page.locator(".dp-compare-col[data-slug='wio-credit']");
+  assert.equal(await wioValue.locator("[data-card-value-first]").innerText(), "Not estimated");
+  assert.match(await wioValue.locator("[data-card-value-reward-issue]").innerText(), /plan/i);
+
   await navigate(page, "/");
   assert.equal(await page.locator("body.dp-system-typography").count(), 0);
   assert.equal(await page.locator('link[rel="preload"][as="font"]').count(), 2);
-  console.log("Interactions: menus, guide, programme quick reference, card fees, article sources, tracker, calculator, Finder, comparison, Deals and news");
+  console.log("Interactions: menus, guide, programme quick reference, card fees and net value, article sources and fare evidence, tracker, calculators, Finder, comparison, Deals and news");
 } finally {
   await browser?.close();
   server.close();

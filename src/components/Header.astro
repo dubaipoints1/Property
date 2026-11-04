@@ -96,7 +96,8 @@ const pointsPanel: Group[] = [
   ]},
   { title: "Values & ratios", rows: [
     { label: "Points & miles valuations",       href: "/valuations/", sub: "What points are worth in AED" },
-    { label: "Transfer-partner cheatsheet",     href: "/guides/uae-transfer-ratios-2026/" },
+    { label: "UAE Transfer Finder",             href: "/transfer-finder/", sub: "Bank points to airline miles" },
+    { label: "Cash or Miles calculator",       href: "/calculator/cash-or-miles/", sub: "Compare two flight quotes" },
     { label: "Beginner's guide to UAE points", href: "/guides/expat-starter-points-101/" },
     { label: "Salary-transfer calculator",      href: "/salary-transfer/calculator/" },
   ]},
@@ -184,7 +185,7 @@ const publicationRows: SubRow[] = [
       <a href="/salary-transfer/" class={isActive("/salary-transfer/") ? "is-active" : ""}>Salary tracker</a>
 
       <details class="dp-nav-mega-wrap">
-        <summary class={isActive("/airlines/") || isActive("/hotels/") || isActive("/valuations/") ? "is-active" : ""}>
+        <summary class={isActive("/airlines/") || isActive("/hotels/") || isActive("/valuations/") || isActive("/transfer-finder/") || isActive("/calculator/cash-or-miles/") ? "is-active" : ""}>
           Points &amp; miles
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </summary>
@@ -402,7 +403,16 @@ const publicationRows: SubRow[] = [
     const sync = (moveFocus = false) => {
       labels.forEach((l) => l.setAttribute("aria-expanded", String(toggle.checked)));
       drawer.inert = !toggle.checked;
-      if (moveFocus) (toggle.checked ? closer : opener)?.focus();
+      if (moveFocus) {
+        const opened = toggle.checked;
+        const target = opened ? closer : opener;
+        const focus = () => {
+          if (toggle.checked === opened && document.activeElement !== target) target?.focus({ preventScroll: true });
+        };
+        focus();
+        // A breakpoint change can make the CSS drawer visible a frame later.
+        if (target && document.activeElement !== target) requestAnimationFrame(focus);
+      }
     };
     const set = (on) => { toggle.checked = on; sync(true); };
     toggle.addEventListener("change", () => sync(true));
@@ -420,7 +430,10 @@ const publicationRows: SubRow[] = [
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
     });
-    window.matchMedia("(min-width: 1024px)").addEventListener("change", () => {
+    window.matchMedia("(min-width: 1024px)").addEventListener("change", (event) => {
+      // A pending desktop-to-mobile event must not close a drawer the reader
+      // just opened at the newly available mobile breakpoint.
+      if (!event.matches) return;
       toggle.checked = false;
       sync();
     });

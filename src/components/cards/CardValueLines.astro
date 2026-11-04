@@ -1,0 +1,87 @@
+---
+import type { CardData } from "~/lib/cardsData";
+import { formatAED } from "~/lib/cardsDataFormat";
+import {
+  calculateCardValue,
+  cardValueTerms,
+  DEFAULT_CARD_VALUE_MONTHLY_SPEND,
+  formatCardValue,
+} from "~/lib/cardValue";
+
+interface Props { card: CardData; slug: string; }
+const { card, slug } = Astro.props;
+const terms = cardValueTerms(card, slug);
+const { first, later, rewards, rewardIssue, capBinds } = calculateCardValue(terms, DEFAULT_CARD_VALUE_MONTHLY_SPEND);
+const listedFee = (fee: number | null) => fee == null ? "Confirm with issuer" : formatAED(fee);
+---
+<div class="dp-card-value-lines" data-card-value={JSON.stringify(terms)}>
+  <p class="dp-card-value-label">Estimated spend value</p>
+  <dl class="dp-card-value-pair">
+    <div>
+      <dt>First year</dt>
+      <dd data-card-value-first>{formatCardValue(first)}</dd>
+      {terms.assumesYearOneWaiver && <small>If listed annual-fee waiver applies</small>}
+    </div>
+    <div>
+      <dt>Each year after</dt>
+      <dd data-card-value-later>{formatCardValue(later)}</dd>
+      {terms.hasConditionalRenewalWaiver && <small>Before any renewal waiver</small>}
+    </div>
+  </dl>
+  <p class="dp-card-value-issue" data-card-value-reward-issue hidden={!rewardIssue}>{rewardIssue}</p>
+  <details>
+    <summary>What’s included <span class="sr-only">for {card.name}</span></summary>
+    <dl class="dp-card-value-breakdown">
+      <div><dt>Annual spend rewards</dt><dd data-card-value-rewards>{formatCardValue(rewards)}</dd></div>
+      <div><dt>First-year fee modelled</dt><dd>{listedFee(terms.firstFee)}</dd></div>
+      <div><dt>Standard renewal fee</dt><dd>{listedFee(terms.laterFee)}</dd></div>
+      {terms.minimum != null && (
+        <div><dt>Monthly qualifying spend</dt><dd>{formatAED(terms.minimum)}</dd></div>
+      )}
+      {terms.cap != null && (
+        <div><dt>Monthly reward cap used</dt><dd>{formatAED(terms.cap)}</dd></div>
+      )}
+    </dl>
+    <p data-card-value-cap-binding hidden={!capBinds}>The published cap limits this example.</p>
+    {terms.firstFeeIssue && <p>{terms.firstFeeIssue}</p>}
+    {terms.laterFeeIssue && <p>{terms.laterFeeIssue}</p>}
+    {terms.annualWaiver && <p><strong>Waiver terms:</strong> {terms.annualWaiver}</p>}
+    {terms.pointsBaseline && <p>Points use our <a href="/valuations/methodology/">published AED comparison baseline</a>, not a cash payout.</p>}
+    {terms.hasWelcomeOffer && <p>The listed welcome offer is separate. Check its application route, spend conditions and timing in the card review.</p>}
+    <p><a href={card.kfsUrl ?? card.sources[0]}>Check issuer terms ↗</a></p>
+  </details>
+</div>
+
+<style>
+  .dp-card-value-lines {
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 13px/1.45 var(--font-ui);
+    overflow-wrap: anywhere;
+  }
+  .dp-card-value-lines .dp-card-value-label {
+    color: var(--green);
+    font-weight: 700;
+    margin: 0 0 5px;
+  }
+  .dp-card-value-lines dl { margin: 0; }
+  .dp-card-value-pair {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dp-card-value-lines dt, .dp-card-value-lines small { color: var(--ink-soft); font-size: 12px; }
+  .dp-card-value-lines dd { margin: 0; font-size: 14px; font-weight: 650; }
+  .dp-card-value-lines .dp-card-value-issue { color: var(--ink-soft); margin: 5px 0 0; }
+  .dp-card-value-lines details { margin-top: 3px; }
+  .dp-card-value-lines summary { color: var(--green); cursor: pointer; font-weight: 600; min-height: 44px; align-content: center; }
+  .dp-card-value-lines summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-card-value-breakdown div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 8px; }
+  .dp-card-value-breakdown dd { font-size: inherit; }
+  .dp-card-value-lines details p { margin: 7px 0 0; color: var(--ink-soft); }
+  .dp-card-value-lines details a { color: var(--green); text-decoration: underline; text-underline-offset: 2px; }
+</style>

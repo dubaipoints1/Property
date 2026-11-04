@@ -20,6 +20,8 @@ import { getEntry } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
 import { finderEvidence } from "~/lib/finderEvidence";
 import SpecCard from "~/components/cards/SpecCard.astro";
+import CardValueLines from "~/components/cards/CardValueLines.astro";
+import CardValueScenario from "~/components/cards/CardValueScenario.astro";
 
 const allCards = getActiveCards();
 
@@ -302,7 +304,7 @@ const lastRefreshed = new Date(
         </p>
         <p class="count" id="finder-mode">
           Ordered by published earn rate for general spending, then lower annual fee.
-          Rates use different units; this is not a comparison of value in AED or an approval decision.
+          Rates use different units. The order is not based on the AED examples and is not an approval decision.
         </p>
       </div>
 
@@ -326,6 +328,10 @@ const lastRefreshed = new Date(
         <span id="finder-share-status" role="status" aria-live="polite"></span>
       </div>
 
+      <div class="dp-finder-value-context">
+        <CardValueScenario id="finder-card-value" />
+      </div>
+
       <div class="dp-finder-grid" id="finder-grid">
         {initialOrder.map(({ card, evidence }) => (
           <div
@@ -334,7 +340,8 @@ const lastRefreshed = new Date(
             hidden={!defaultRank.has(card.slug)}
           >
             <SpecCard card={card} variant="full">
-              <div slot="match-explanation" class="dp-finder-match">
+              <Fragment slot="match-explanation">
+              <div class="dp-finder-match">
                 <p class="dp-finder-match-preference" data-finder-match hidden></p>
                 <details>
                   <summary>Why this card matched<span class="dp-finder-match-sr">: {card.name}</span></summary>
@@ -359,6 +366,8 @@ const lastRefreshed = new Date(
                   {evidence.sourceUrl && <a href={evidence.sourceUrl}>Check issuer terms <span aria-hidden="true">↗</span></a>}
                 </details>
               </div>
+              <CardValueLines card={card} slug={card.slug} />
+              </Fragment>
             </SpecCard>
           </div>
         ))}
@@ -597,7 +606,7 @@ const lastRefreshed = new Date(
       mode.textContent = (p.prefer !== "none" ? preferenceLabel + " matches first. " : "")
         + "Ordered by published earn rate for " + spendLabel
         + (p.spend === "general" ? "" : " (general rate where no separate rate is listed)")
-        + ", then lower annual fee. Rates use different units; this is not a comparison of value in AED or an approval decision.";
+        + ", then lower annual fee. Rates use different units. The order is not based on the AED examples and is not an approval decision.";
       mode.hidden = visibleTiles.length === 0;
 
       if (visibleTiles.length === 0) {
@@ -846,6 +855,7 @@ const lastRefreshed = new Date(
   }
 
   /* ── Results ──────────────────────────────────────────────────── */
+  .dp-finder-value-context { margin-bottom: 16px; }
   .dp-finder-results-head {
     margin-bottom: 16px;
   }
