@@ -380,21 +380,20 @@ const DIRECTORY = [
   <header class="dp-pagehead is-hero hp-hero">
     <section class="hp-reel" data-reel aria-label="The points journey">
       <div class="hp-reel-stage" data-reel-stage>
+        {REEL.poster && <img class="hp-reel-media" src={`/${REEL.poster.file}`} alt="" width="1280" height="960" fetchpriority="high" data-reel-poster />}
         <video
-          class="hp-reel-video"
+          class="hp-reel-media hp-reel-video"
           muted
           playsinline
-          preload="auto"
-          poster={REEL.poster ? `/${REEL.poster.file}` : undefined}
+          preload="none"
           width="1280"
           height="960"
           aria-hidden="true"
           data-reel-video
-        >
-          <source src={REEL.srcSmall} type="video/mp4" media="(max-width: 899px)" />
-          <source src={REEL.srcLarge} type="video/mp4" media="(min-width: 1600px)" />
-          <source src={REEL.src} type="video/mp4" />
-        </video>
+          data-src-small={REEL.srcSmall}
+          data-src-large={REEL.srcLarge}
+          data-src={REEL.src}
+        ></video>
         <div class="hp-reel-scrim" aria-hidden="true"></div>
         <div class="hp-reel-title">
           <span class="hp-hero-kicker"><span class="dot" aria-hidden="true"></span><span class="hp-kicker-long">Independent UAE points &amp; miles publication</span><span class="hp-kicker-short">Independent · UAE points &amp; miles</span></span>
@@ -709,50 +708,78 @@ const DIRECTORY = [
 
       if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
         reel.classList.add("is-scrub");
-        let duration = video.duration || 0;
+        let started = false;
+        let failed = false;
+        let hasFrame = false;
         let target = 0;
         let current = 0;
         let lastSeek = -1;
-        let seeking = false;
-        let pending: number | null = null;
         let running = false;
 
-        video.addEventListener("loadedmetadata", () => { duration = video.duration || 0; });
-        // iOS Safari buffers nothing for a video that is only ever seeked;
-        // a silent play-then-pause starts the download.
-        video.play().then(() => video.pause()).catch(() => {});
-
-        const seek = (t: number) => {
-          if (seeking) { pending = t; return; }
-          seeking = true;
-          video.currentTime = t;
+        const showFrame = () => {
+          hasFrame = true;
+          reel.classList.add("has-reel-frame");
         };
-        video.addEventListener("seeked", () => {
-          seeking = false;
-          if (pending !== null) { const t = pending; pending = null; seek(t); }
-        });
+        const frame = () => {
+          running = false;
+          if (failed || video.readyState < video.HAVE_CURRENT_DATA || !Number.isFinite(video.duration) || !video.duration) return;
 
-        const read = () => {
-          const run = reel.offsetHeight - stage.offsetHeight;
-          target = run > 0 ? Math.min(1, Math.max(0, -reel.getBoundingClientRect().top / run)) : 0;
+          // Until the first requested frame is ready, keep the original
+          // poster and links visible, even during a fast first swipe.
+          if (!hasFrame) {
+            if (video.seeking) return;
+            current = target;
+          } else {
+            current += (target - current) * 0.18;
+          }
+          if (Math.abs(target - current) < 0.0005) current = target;
+          if (!video.seeking && Math.abs(current - lastSeek) > 0.0005) {
+            const time = current * video.duration * 0.999;
+            lastSeek = current;
+            if (Math.abs(video.currentTime - time) > 0.001) video.currentTime = time;
+          }
+          if (!hasFrame && video.seeking) return;
+          if (!hasFrame) showFrame();
           reel.classList.toggle("is-moving", target > 0.01);
           // Once the title has faded, its links leave the tab order too.
           reel.classList.toggle("is-past-title", target > 0.3);
+          reel.style.setProperty("--p", current.toFixed(4));
+          if (current !== target) scheduleFrame();
+        };
+        const scheduleFrame = () => {
           if (!running) { running = true; requestAnimationFrame(frame); }
         };
-        const frame = () => {
-          current += (target - current) * 0.18;
-          if (Math.abs(target - current) < 0.0005) current = target;
-          if (duration && Math.abs(current - lastSeek) > 0.0005) {
-            seek(current * duration * 0.999);
-            lastSeek = current;
-          }
-          reel.style.setProperty("--p", current.toFixed(4));
-          if (current !== target) requestAnimationFrame(frame);
-          else running = false;
+
+        video.addEventListener("loadeddata", scheduleFrame, { once: true });
+        video.addEventListener("seeked", () => {
+          if (failed) return;
+          if (!hasFrame) showFrame();
+          scheduleFrame();
+        });
+        video.addEventListener("error", () => {
+          failed = true;
+          reel.classList.remove("has-reel-frame", "is-moving", "is-past-title");
+          reel.style.removeProperty("--p");
+        });
+
+        const start = () => {
+          const src = window.matchMedia("(max-width: 899px)").matches ? video.dataset.srcSmall
+            : window.matchMedia("(min-width: 1600px)").matches ? video.dataset.srcLarge : video.dataset.src;
+          if (!src) return;
+          started = true;
+          video.preload = "auto";
+          video.src = src;
+          // Keep Safari's muted play/pause buffer kick, but only after scroll.
+          video.play().then(() => video.pause()).catch(() => {});
+        };
+        const read = () => {
+          const run = reel.offsetHeight - stage.offsetHeight;
+          target = run > 0 ? Math.min(1, Math.max(0, -reel.getBoundingClientRect().top / run)) : 0;
+          // A direct jump past the reel (e.g. via a hero link) needn't fetch it.
+          if (!started && window.scrollY > 0 && target < 1) start();
+          if (started && !failed) scheduleFrame();
         };
         window.addEventListener("scroll", read, { passive: true });
-        read();
       }
     }
   </script>
@@ -933,12 +960,14 @@ const DIRECTORY = [
     background: var(--navy-pin);
   }
   .hp-reel.is-scrub .hp-reel-stage { position: sticky; top: var(--hp-head); }
-  .hp-reel-video {
+  .hp-reel-media {
     position: absolute; inset: 0;
     width: 100%; height: 100%; object-fit: cover;
     transform: scale(calc(1 + var(--p) * 0.06));
     will-change: transform;
   }
+  .hp-reel-video { visibility: hidden; }
+  .hp-reel.has-reel-frame .hp-reel-video { visibility: visible; }
   .hp-reel-scrim {
     position: absolute; inset: 0; pointer-events: none;
     background: linear-gradient(180deg,
@@ -971,6 +1000,9 @@ const DIRECTORY = [
   }
   .hp-reel-title .hp-hero-ctas { justify-content: center; margin-top: 24px; pointer-events: auto; }
   .hp-reel.is-past-title .hp-reel-title { visibility: hidden; }
+  /* A late video frame must not hide the reader's current keyboard focus. */
+  .hp-reel .hp-reel-title:has(:focus-visible) { visibility: visible; opacity: 1; transform: none; filter: none; }
+  .hp-reel-title:has(:focus-visible) + .hp-reel-tagline { opacity: 0; }
   .hp-reel-title .hp-hero-kicker .dot { background: var(--gold-lift); }
   .hp-hero .hp-reel-title h1 {
     margin: 0;
