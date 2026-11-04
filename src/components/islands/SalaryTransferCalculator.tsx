@@ -165,7 +165,9 @@ export default function SalaryTransferCalculator({ offers }: Props) {
 
         {!top && (
           <div class="dpsc-empty">
-            No estimate can be ranked for these inputs. Check the offer conditions below.
+            {results.some((r) => r.status === "warning")
+              ? "No estimate matches without a warning. Review the results and offer conditions below."
+              : "No matching estimate for these inputs. Check the offer conditions below."}
           </div>
         )}
 
