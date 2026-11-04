@@ -16,6 +16,8 @@ import BaseLayout from "./BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { stagePhoto, stageStyle } from "~/lib/stage";
 import { hasStockEntry } from "~/lib/stockManifest";
+import { getEntry } from "astro:content";
+import { programmeHref } from "~/lib/programmes";
 
 interface RelatedCard {
   slug: string;
@@ -33,6 +35,7 @@ interface Props {
   currencyName: string;
   region: string;
   expiryPolicy: string;
+  expirySection?: string;
   sweetSpots: { title: string; description: string }[];
   transferPartners: string[];
   relatedCards?: RelatedCard[];
@@ -48,6 +51,7 @@ const {
   currencyName,
   region,
   expiryPolicy,
+  expirySection,
   sweetSpots,
   transferPartners,
   relatedCards = [],
@@ -56,6 +60,20 @@ const {
 
 const sectionPath = `/${section}/`;
 const sectionName = section === "hotels" ? "Hotels" : "Airlines";
+const unlistedPartnerNames: Record<string, string> = {
+  "british-airways-executive-club": "The British Airways Club",
+  "aer-lingus-aerclub": "Aer Lingus AerClub",
+  "iberia-plus": "Iberia Club",
+  "finnair-plus": "Finnair Plus",
+};
+const partnerLabels = await Promise.all(transferPartners.map(async (p) => {
+  const id = p === "emirates-skywards" ? "skywards" : p;
+  const entry = await getEntry("programs", id);
+  return {
+    label: entry?.data.name ?? unlistedPartnerNames[p] ?? p.replaceAll("-", " "),
+    href: entry ? programmeHref(id) : null,
+  };
+}));
 
 const heroSlug = slug ? `programme-${slug}` : null;
 const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
@@ -100,7 +118,7 @@ const schema = {
   <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead is-narrow dp-prog-head", { "dp-stage": stageOwnsHero }]}>
     <div class="crumb">{region} · <a href={sectionPath} class="crumb-link">{section === "hotels" ? "Hotel programme" : "Loyalty programme"}</a></div>
     <h1>{programName}</h1>
-    <p class="deck">Loyalty currency: <strong>{currencyName}</strong>.</p>
+    <p class="deck">Loyalty currency: <strong>{currencyName}</strong></p>
 
     <div class="dp-metric-strip">
       <div class="metric">
@@ -142,7 +160,7 @@ const schema = {
 
       <!-- Redemption sweet spots: unbounded length, stays in main column. -->
       {sweetSpots.length > 0 && (
-        <section class="dp-prog-reference">
+        <section class="dp-prog-reference" id="programme-redemptions">
           <h2>Programme reference</h2>
           <div class="dp-prog-ref-block">
             <h3>Redemption sweet spots</h3>
@@ -158,10 +176,15 @@ const schema = {
         </section>
       )}
 
+      <details class="dp-prog-expiry" id="programme-expiry">
+        <summary>Expiry policy</summary>
+        <p>{expiryPolicy}</p>
+      </details>
+
       {/* Related cards: auto-populated from the card database by loyaltyProgram.
          JSX comment — HTML comments ship to the browser (2 July leak audit). */}
       {relatedCards.length > 0 && (
-        <section class="dp-prog-related">
+        <section class="dp-prog-related" id="programme-cards">
           <h2>UAE cards that earn into {currencyName}</h2>
           <ul class="dp-prog-related-list">
             {relatedCards.map((c) => (
@@ -178,24 +201,25 @@ const schema = {
       )}
     </article>
 
-    <!-- Sticky reference rail (Stage 2): compact programme facts. Source-
-         after the article so prose leads on mobile; pinned right on laptop+. -->
-    <aside class="dp-prog-aside">
+    <aside class="dp-prog-aside" aria-label="Programme quick reference">
+      <section class="dp-prog-railcard">
+        <h2>Quick reference</h2>
+        <ul class="dp-prog-rail-links">
+          {sweetSpots.length > 0 && <li><a href="#programme-redemptions">Redemption examples</a></li>}
+          {relatedCards.length > 0 && <li><a href="#programme-cards">UAE earning cards</a></li>}
+          <li><a href={`#${expirySection ?? "programme-expiry"}`}>Expiry rules</a></li>
+        </ul>
+      </section>
       {transferPartners.length > 0 && (
         <section class="dp-prog-railcard">
-          <h3>Transfer partners</h3>
+          <h2>Transfer partners</h2>
           <ul class="dp-tag-list">
-            {transferPartners.map((p) => <li>{p}</li>)}
+            {partnerLabels.map(({ label, href }) => (
+              <li>{href ? <a href={href}>{label}</a> : <span>{label}</span>}</li>
+            ))}
           </ul>
         </section>
       )}
-
-      <section class="dp-prog-railcard">
-        <div class="dp-expiry-block">
-          <p class="label">Expiry policy</p>
-          <p class="body">{expiryPolicy}</p>
-        </div>
-      </section>
     </aside>
   </div>
 </BaseLayout>
@@ -217,21 +241,25 @@ const schema = {
   :global(:root body) .dp-prog-head.dp-stage.is-narrow {
     --programme-stage-inset: max(var(--programme-gutter), calc((100% - var(--programme-frame)) / 2 + var(--programme-gutter)));
     padding-inline: var(--programme-stage-inset) calc(var(--programme-stage-inset) + var(--programme-rail) + var(--programme-rail-gap));
+    padding-block: clamp(36px, 5vw, 62px) clamp(24px, 3vw, 38px);
+    min-height: 0;
   }
+  .dp-prog-head .deck { font-size: clamp(1rem, 1.7vw, 1.25rem); }
+  .dp-prog-head .dp-metric-strip { margin-block-start: clamp(16px, 2vw, 24px); }
   .dp-prog-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 40px;
     max-width: var(--programme-frame);
     margin: 0 auto;
-    padding: 40px var(--programme-gutter) 80px;
+    padding: 28px var(--programme-gutter) 72px;
   }
   @media (min-width: 1024px) {
     .dp-prog-head,
     .dp-prog-grid {
       --programme-frame: var(--container-listing);
-      --programme-rail: 300px;
-      --programme-rail-gap: clamp(40px, 5vw, 64px);
+      --programme-rail: 250px;
+      --programme-rail-gap: clamp(36px, 5vw, 64px);
     }
     .dp-prog-grid {
       grid-template-columns: minmax(0, 1fr) var(--programme-rail);
@@ -252,28 +280,35 @@ const schema = {
   }
   .dp-prog-body { width: 100%; min-width: 0; }
 
-  .dp-prog-aside { display: flex; flex-direction: column; gap: 20px; }
+  .dp-prog-aside { display: flex; flex-direction: column; gap: 12px; }
   @media (min-width: 1024px) {
-    .dp-prog-aside { position: sticky; top: 32px; align-self: flex-start; }
+    .dp-prog-aside { position: sticky; top: calc(var(--dp-sticky-header-height, 81px) + 16px); align-self: flex-start; }
   }
-  .dp-prog-railcard h3 {
+  .dp-prog-railcard {
+    background: var(--shade-1);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .dp-prog-railcard h2 {
     font-family: var(--font-ui);
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2.5px; text-transform: uppercase;
+    font-size: .875rem; font-weight: 700;
     color: var(--green);
-    margin: 0 0 12px;
+    margin: 0 0 6px;
   }
+  .dp-prog-rail-links { list-style: none; margin: 0; padding: 0; }
+  .dp-prog-rail-links li + li { border-top: 1px solid var(--line); }
+  .dp-prog-rail-links a, .dp-tag-list :is(a, span) {
+    display: flex; align-items: center; min-block-size: 44px;
+    color: var(--ink); font-size: .9375rem; line-height: 1.35;
+  }
+  .dp-prog-aside a, .dp-prog-expiry summary { text-underline-offset: .18em; }
+  .dp-prog-aside a { text-decoration: underline; }
+  .dp-prog-aside a:focus-visible, .dp-prog-expiry summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 
   .dp-prog-prose { margin-bottom: 48px; }
-  .dp-prog-prose > p:first-of-type::first-letter {
-    font-family: inherit;
-    font-weight: inherit;
-    font-size: inherit;
-    line-height: inherit;
-    float: none;
-    padding: 0;
-    color: inherit;
-  }
+  .dp-prog-body :is(section, details)[id] { scroll-margin-top: calc(var(--dp-sticky-header-height, 81px) + 16px); }
+  .dp-prog-prose :global(:is(h2, h3)[id]) { scroll-margin-top: calc(var(--dp-sticky-header-height, 81px) + 16px); }
 
   /* Programme reference: light grey band with structured data */
   .dp-prog-reference {
@@ -308,8 +343,9 @@ const schema = {
 
   .dp-sweet-list {
     list-style: none; padding: 0; margin: 0;
-    display: flex; flex-direction: column; gap: 10px;
+    display: grid; gap: 10px;
   }
+  @media (min-width: 650px) { .dp-sweet-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .dp-sweet-list li {
     background: var(--paper);
     border: 1px solid var(--line);
@@ -319,49 +355,31 @@ const schema = {
   }
   .dp-sweet-list .title {
     font-family: var(--font-display); font-weight: 500;
-    font-size: 15px; letter-spacing: -0.2px;
+    font-size: 1.0625rem; letter-spacing: -0.2px;
     color: var(--ink); margin: 0 0 4px;
   }
   .dp-sweet-list .desc {
-    font-size: 13px; line-height: 1.5;
+    font-size: .9375rem; line-height: 1.55;
     color: var(--ink-soft); margin: 0;
   }
 
   .dp-tag-list {
     list-style: none; padding: 0; margin: 0;
-    display: flex; flex-wrap: wrap; gap: 6px;
+    display: grid;
   }
-  .dp-tag-list li {
-    font-family: var(--font-ui);
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.3px;
-    padding: 6px 12px;
-    background: var(--paper);
+  .dp-tag-list li + li { border-top: 1px solid var(--line); }
+  .dp-prog-expiry {
+    background: var(--shade-1);
     border: 1px solid var(--line);
-    border-radius: 999px;
-    color: var(--ink-soft);
+    border-radius: 12px;
+    margin: 0 0 32px;
+    padding-inline: 16px;
   }
-
-  .dp-expiry-block {
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--gold);
-    border-radius: 8px;
-    padding: 14px 16px;
+  .dp-prog-expiry summary {
+    min-block-size: 44px; padding-block: 10px; cursor: pointer;
+    font-weight: 600; color: var(--green);
   }
-  .dp-expiry-block .label {
-    font-family: var(--font-ui);
-    font-size: 10px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--gold-ink, var(--gold));
-    margin: 0 0 6px;
-  }
-  .dp-expiry-block .body {
-    font-size: 13px;
-    line-height: 1.55;
-    color: var(--ink-soft);
-    margin: 0;
-  }
+  .dp-prog-expiry p { max-width: 64ch; margin: 0 0 16px; font-size: 1rem; line-height: 1.6; }
 
   /* Related cards — actual card tiles, not empty slot */
   .dp-prog-related h2 {

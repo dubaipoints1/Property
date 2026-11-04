@@ -14,7 +14,9 @@ import {
 } from "../../lib/salaryTransferTrackerBands";
 import { bankMark } from "../../lib/logos";
 import type { TrackerCardPath } from "../../lib/salaryTransferTrackerImages";
+import type { SalaryTransferTimeline as Timeline } from "../../lib/salaryTransferTimeline";
 import { isStale } from "../../lib/verification";
+import SalaryTransferTimeline from "../SalaryTransferTimeline";
 import "./salaryTransferTracker.css";
 
 // Salary-Transfer Tracker island. Markup + styling ported from the Claude
@@ -28,14 +30,15 @@ import "./salaryTransferTracker.css";
 // island is the single rendering path. Data is the real getLiveOffers()
 // feed (SalaryTransferOffer[]); the design's `tier` / `fallBelowFee` /
 // `newCustomerOnly` sample fields are NOT stored structurally, so the
-// detail renders only fields we hold (holding period, clawback prose,
-// card-required, Sharia, requirements, verified date + source) — nothing
-// invented (Charter §6). Scoped --dpst-* tokens live in global.css.
+// details use the source-backed terms (clawback, card requirement,
+// Sharia, verified date + source). Timeline summaries are prepared at
+// build time and gated against the exact campaign terms.
 
 interface Props {
   offers: SalaryTransferOffer[];
   scope?: TrackerSalaryBand;
   cardPaths: Record<string, TrackerCardPath>;
+  timelines: Record<string, Timeline>;
 }
 
 type SortKey = "value" | "expiry";
@@ -50,6 +53,19 @@ const fmtDate = (iso: string) =>
 const validClass = (n: number) => (n <= 14 ? "urgent" : n <= 45 ? "soon" : "far");
 const validText = (n: number) =>
   n <= 0 ? "Ended" : n === 1 ? "Ends tomorrow" : `Ends in ${n} days`;
+
+function CampaignValidity({ offer, timeline }: { offer: SalaryTransferOffer; timeline?: Timeline }) {
+  if (timeline?.endDate !== "published") {
+    return <span class="dpst-chip-valid far">{timeline ? "No fixed end published" : "Check bank deadline"}</span>;
+  }
+  const days = daysUntil(offer.validUntil);
+  return (
+    <span class={`dpst-chip-valid ${validClass(days)}`}>
+      <span class="dot" aria-hidden="true" />
+      {validText(days)}
+    </span>
+  );
+}
 
 // Reward-type → badge class + label. cashback_monthly shares the teal
 // "cashback" treatment; points gets its own scoped variant.
@@ -134,7 +150,7 @@ function BankIdentity({ offer }: { offer: SalaryTransferOffer }) {
   );
 }
 
-export default function SalaryTransferTracker({ offers, scope, cardPaths }: Props) {
+export default function SalaryTransferTracker({ offers, scope, cardPaths, timelines }: Props) {
   // band: index into BANDS, or null = all bands (kept for our thin live
   // data, where defaulting to one band could hide offers).
   const [band, setBand] = useState<number | null>(null);
@@ -153,6 +169,9 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
     })();
 
   const rows = useMemo(() => {
+    const expiry = (offer: SalaryTransferOffer) => timelines[offer.id]?.endDate === "published"
+      ? daysUntil(offer.validUntil)
+      : Infinity;
     return offers
       .flatMap((offer) => {
         const path = cardPaths[offer.id];
@@ -179,12 +198,13 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
             : undefined;
         return [{ offer, reward, rewardNote }];
       })
-      .sort((a, b) =>
-        sort === "value"
-          ? b.reward.rewardAmount - a.reward.rewardAmount
-          : daysUntil(a.offer.validUntil) - daysUntil(b.offer.validUntil),
-      );
-  }, [offers, activeBand, cash, noCard, sharia, sort, cardPaths]);
+      .sort((a, b) => {
+        if (sort === "value") return b.reward.rewardAmount - a.reward.rewardAmount;
+        const aExpiry = expiry(a.offer);
+        const bExpiry = expiry(b.offer);
+        return aExpiry === bExpiry ? 0 : aExpiry - bExpiry;
+      });
+  }, [offers, activeBand, cash, noCard, sharia, sort, cardPaths, timelines]);
 
   const toggleOpen = (id: string) =>
     setOpen((prev) => {
@@ -207,12 +227,9 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
     const cardExample = path?.example;
     return (
     <>
+      <SalaryTransferTimeline offer={o} timeline={timelines[o.id]} heading="h2" />
       <div class="dpst-fineblock">
         <div class="dpst-finehead">Commitment</div>
-        <div class="dpst-fineitem">
-          <span class="k">Holding period</span>
-          <span class="v">{o.tenureMonths} months</span>
-        </div>
         <div class="dpst-fineitem">
           <span class="k">Reward type</span>
           <span class="v">
@@ -284,9 +301,6 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
             </>
           )}
         </div>
-        <a href={o.sourceUrl} target="_blank" rel="noopener">
-          View source document →
-        </a>
       </div>
     </>
     );
@@ -488,7 +502,6 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
               <tbody>
                 {rows.map(({ offer: o, reward, rewardNote }) => {
                   const isOpen = open.has(o.id);
-                  const n = daysUntil(o.validUntil);
                   return (
                     <Fragment key={o.id}>
                       <tr
@@ -509,16 +522,13 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
                         </td>
                         <td class="dpst-band-cell"><SalaryForReward offer={o} reward={reward} /></td>
                         <td>
-                          <span class={`dpst-chip-valid ${validClass(n)}`}>
-                            <span class="dot" aria-hidden="true" />
-                            {validText(n)}
-                          </span>
+                          <CampaignValidity offer={o} timeline={timelines[o.id]} />
                         </td>
                         <td>
                           <button
                             type="button"
                             class="dpst-expand"
-                            aria-label={`Toggle fine print for ${o.bankName}`}
+                            aria-label={`Payday to payout and fine print for ${o.bankName}`}
                             aria-expanded={isOpen}
                             aria-controls={`dpst-desktop-${o.id}`}
                             onClick={(event) => {
@@ -550,7 +560,6 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
           <div class="dpst-cards">
             {rows.map(({ offer: o, reward, rewardNote }) => {
               const isOpen = open.has(o.id);
-              const n = daysUntil(o.validUntil);
               return (
                 <div
                   key={o.id}
@@ -570,10 +579,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
                       <span class="ic" aria-hidden="true" />
                       {badgeLabel(reward.rewardType)}
                     </span>
-                    <span class={`dpst-chip-valid ${validClass(n)}`}>
-                      <span class="dot" aria-hidden="true" />
-                      {validText(n)}
-                    </span>
+                    <CampaignValidity offer={o} timeline={timelines[o.id]} />
                   </div>
                   <p class="dpst-card-salary">
                     <span>Salary for reward</span>
@@ -582,11 +588,12 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths }: Prop
                   <button
                     type="button"
                     class="dpst-card-acc"
+                    aria-label={`Fine print & timeline for ${o.bankName}`}
                     aria-expanded={isOpen}
                     aria-controls={`dpst-mobile-${o.id}`}
                     onClick={() => toggleOpen(o.id)}
                   >
-                    Fine print &amp; verification{" "}
+                    Fine print &amp; timeline{" "}
                     <span class="chev" aria-hidden="true">
                       ▾
                     </span>

@@ -2,8 +2,7 @@
 // Valuations — Phase C tools template (Claude Design handoff).
 // Reference: dubaipoints/project/templates/tools.jsx::Valuations.
 // DP values mirror the published programme-page baselines; rows with
-// no published baseline are "Pending" until the DP-value methodology
-// lands.
+// no published baseline are "Pending" and remain unpriced.
 //
 // Chairman ruling R10, 10 September 2026 (audit F-018): the Floor,
 // Ceiling, Distribution and 90-day-delta columns are cut. Every one of
@@ -42,13 +41,13 @@ const fmt = (d: Date) =>
 
 <BaseLayout
   title="UAE points & miles valuations | DubaiPoints"
-  description="What each UAE-relevant loyalty currency is worth in fils per point. DP value is the conservative cost-basis rate we use in every card review, published on each programme's own page."
+  description="The conservative points and miles baselines DubaiPoints uses in UAE card comparisons, in fils per mile or point."
   fullWidth
 >
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Valuations</div>
     <h1>Points &amp; miles valuations</h1>
-    <p>What each UAE-relevant loyalty currency is actually worth, in fils per point. <strong>DP value</strong> is the deliberately conservative cost-basis rate we use in our own card reviews, published on each programme's page. Programmes with no published baseline are marked Pending and carry no figure.</p>
+    <p><strong>DP value</strong> is the conservative editorial baseline we use in card comparisons, in fils per mile or point. It is not a cash-out rate or a forecast for a specific booking. Programmes without a published baseline are marked Pending.</p>
 
     <div class="dp-tools-stats">
       <span><span class="lbl">Programmes tracked:</span> <strong>{programmes.length}</strong></span>
@@ -102,20 +101,20 @@ const fmt = (d: Date) =>
   <section class="dp-tools-methodology">
     <div class="col">
       <div class="lbl">DP value</div>
-      <p>The baseline published in each programme's overview page and used for every earn-rate calculation in card reviews — a deliberately conservative cost-basis figure.</p>
+      <p>A conservative editorial baseline for comparing card earn rates. A specific redemption can be worth more or less.</p>
     </div>
     <div class="col">
       <div class="lbl">Status</div>
       <p><strong>Active</strong> means a baseline is published on the programme's own page and in use in card reviews. <strong>Pending</strong> means no baseline is published yet, so the row carries no figure.</p>
     </div>
     <div class="col">
-      <div class="lbl">What this table does not show</div>
-      <p>Floor and ceiling ranges — the worst case and the sweet spot around each baseline — are not published. They need per-programme award sampling that has not been done, so no date is claimed for them here.</p>
+      <div class="lbl">Value a booking</div>
+      <p>No sampled floor or ceiling is published. Use the <a href="/news/cash-or-miles-uae-flight-break-even/">Cash or Miles worked examples</a> to compare an actual fare with an award’s miles and fees.</p>
     </div>
   </section>
 
   <div class="dp-tools-actions">
-    <span><a href="/valuations/methodology/">Methodology (draft)</a> · UAE-relevant programmes, editor-curated</span>
+    <span><a href="/valuations/methodology/">Methodology</a> · UAE-relevant programmes, editor-curated</span>
     <span><a href="/airlines/">Programme guides →</a></span>
   </div>
 </BaseLayout>

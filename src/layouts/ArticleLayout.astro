@@ -331,12 +331,19 @@ const schema = {
     overflow-wrap: anywhere;
   }
   .dp-reading-shell .dp-reading-head.dp-stage {
-    padding: clamp(40px, 7vw, 96px) 0 clamp(28px, 4vw, 56px);
+    min-height: 0;
+    padding: clamp(28px, 4.8vw, 62px) 0 clamp(26px, 3.5vw, 44px);
     background: var(--paper);
+  }
+  :global(:root body) .dp-reading-head.dp-stage.dp-stage.dp-stage h1 {
+    font-size: clamp(1.875rem, 4.2vw, 3.25rem);
   }
   .dp-reading-shell .dp-reading-head.dp-stage .deck {
     display: block;
     overflow: visible;
+    font-size: clamp(1rem, 1.6vw, 1.1875rem);
+    line-height: 1.45;
+    margin-block-start: 12px;
   }
   @media (max-width: 719.98px) {
     .dp-reading-shell .dp-reading-head.dp-stage { min-height: 0; }
@@ -354,7 +361,10 @@ const schema = {
   }
   .dp-reading-shell .dp-reading-toc {
     margin-bottom: 24px;
-    padding: 0 16px;
+    padding: 0 clamp(14px, 2vw, 22px);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--shade-1);
   }
   .dp-reading-toc summary {
     cursor: pointer;
@@ -366,7 +376,10 @@ const schema = {
   .dp-reading-toc li { padding: 0; }
   .dp-reading-toc a {
     display: block;
-    padding-block: 10px;
+    min-block-size: 44px;
+    padding-block: 11px;
+    text-decoration: underline;
+    text-underline-offset: .18em;
   }
   .dp-reading-shell .dp-article-body :global(:is(h2, h3, h4)[id]) {
     scroll-margin-top: var(--dp-reading-anchor-offset);

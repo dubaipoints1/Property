@@ -1,13 +1,13 @@
 ---
-// JumpToSection — sticky in-page nav. Anchors to H2 ids in the article
+// JumpToSection — in-page nav. Anchors to H2 ids in the article
 // body. Pure HTML (<details>/<summary>) so no JS hydration; the native
 // disclosure on tap is enough for the mobile-first reader who scrolls
 // fast and needs to bail to a specific section.
 //
 // Phase 2a.2.5 (2026-05-21). Modelled on Upgraded Points' / OMAAT's
-// "Jump to section" pattern. On scroll past the hero, the chip sticks
-// to the top of the viewport. Tap to expand the section list; tap an
-// item to scroll-jump.
+// "Jump to section" pattern. Tap to expand the section list; tap an
+// item to scroll-jump. The expanded list stays in the flow so it cannot
+// cover the selected heading or the site's sticky header.
 //
 // Editor authors the section list in MDX — Astro's MDX rehype slugifier
 // turns each `## H2` into an id (lower-case, hyphens). The `id` prop
@@ -47,9 +47,6 @@ const { sections } = Astro.props;
 
 <style>
   .dp-jump-to-section {
-    position: sticky;
-    top: 0;
-    z-index: 5;
     margin: 0 0 24px;
     background: var(--paper);
     border-bottom: 1px solid var(--line);
@@ -65,6 +62,7 @@ const { sections } = Astro.props;
     cursor: pointer;
     list-style: none;
     padding: 8px 14px;
+    min-block-size: 44px;
     border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--paper);
@@ -99,7 +97,8 @@ const { sections } = Astro.props;
   .dp-jump-to-section li { margin: 0; }
   .dp-jump-to-section a {
     display: block;
-    padding: 8px 12px;
+    min-block-size: 44px;
+    padding: 12px;
     border-radius: 4px;
     font-family: var(--font-ui);
     font-size: 14px;
@@ -111,11 +110,13 @@ const { sections } = Astro.props;
     background: rgba(45, 106, 82, 0.06);
     color: var(--green);
   }
+  .dp-jump-to-section :is(summary, a):focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
   @media (max-width: 719.98px) {
     .dp-jump-to-section { padding: 8px 0; margin: 0 0 18px; }
     .dp-jump-to-section summary { font-size: 12px; padding: 7px 12px; }
   }
-  /* When the user clicks a section link, account for the sticky chip's
-     height so the H2 doesn't sit underneath it. */
-  :global(.dp-prose h2[id]) { scroll-margin-top: 64px; }
+  :global(.dp-prose h2[id]) { scroll-margin-top: calc(var(--dp-sticky-header-height, 92px) + 16px); }
 </style>

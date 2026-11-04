@@ -2,14 +2,16 @@
 import NextStepLinks from "~/components/NextStepLinks.astro";
 import BankLogo from "~/components/BankLogo.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
+import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import SalaryTransferTrackerLayout from "~/layouts/SalaryTransferTrackerLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
+import SalaryTransferTimeline from "~/components/SalaryTransferTimeline.tsx";
 import Disclaimer from "~/components/Disclaimer.astro";
 import { getCollection, render } from "astro:content";
 import { getLiveOffers, getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
+import { getSalaryTransferTimeline, getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
 import {
   salaryBandsOverlap,
   TRACKER_SALARY_BANDS,
@@ -75,7 +77,7 @@ const siteUrl = siteUrlFrom(Astro.site);
       liveCount={bandOffers.length}
     >
       <div slot="tracker">
-        <SalaryTransferTracker offers={bandOffers} scope={props.band} cardPaths={getTrackerCardPaths(bandOffers)} client:load />
+        <SalaryTransferTracker offers={bandOffers} scope={props.band} cardPaths={getTrackerCardPaths(bandOffers)} timelines={getSalaryTransferTimelines(bandOffers)} client:load />
       </div>
       <div slot="bands" class="dp-dir-grid">
         {TRACKER_SALARY_BANDS.map((b) => (
@@ -128,6 +130,8 @@ const siteUrl = siteUrlFrom(Astro.site);
                 </span>
               </header>
 
+              <SalaryTransferTimeline offer={o} timeline={getSalaryTransferTimeline(o)} showHistory={false} />
+
               <div class="dp-st-offer-table" role="region" aria-label="Salary and reward tiers" tabindex="0">
               <table class="dp-data-table">
                 <thead>
@@ -135,7 +139,6 @@ const siteUrl = siteUrlFrom(Astro.site);
                     <th>Salary band</th>
                     <th>Reward</th>
                     <th>Type</th>
-                    <th>Pays out</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -147,7 +150,6 @@ const siteUrl = siteUrlFrom(Astro.site);
                       </td>
                       <td class="num">{formatAED(b.rewardAmount)}</td>
                       <td>{b.rewardType.replace("_", " ")}</td>
-                      <td>+{b.monthsToPayout} months</td>
                     </tr>
                   ))}
                 </tbody>
@@ -171,9 +173,6 @@ const siteUrl = siteUrlFrom(Astro.site);
                 </section>
               )}
 
-              <p class="dp-offer-source">
-                <a href={o.sourceUrl} target="_blank" rel="noopener">Source →</a>
-              </p>
             </section>
           );
         })}
@@ -189,7 +188,7 @@ const siteUrl = siteUrlFrom(Astro.site);
             {
               href: "/salary-transfer/calculator/",
               title: "Work out your reward",
-              meta: "What each bank pays at your exact salary, and when",
+              meta: "Source-backed estimates for your salary and product choices",
             },
             {
               href: `/banks/${props.bankId}/`,
@@ -256,10 +255,4 @@ const siteUrl = siteUrlFrom(Astro.site);
     padding-top: 14px;
     border-top: 1px solid var(--line);
   }
-  .dp-offer-source {
-    margin-top: 14px;
-    font-size: 12px; color: var(--muted);
-  }
-  .dp-offer-source a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line); }
-  .dp-offer-source a:hover { color: var(--green); }
 </style>

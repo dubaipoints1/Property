@@ -6,11 +6,12 @@
 // + scoped timeline rendering on .dp-* tokens.
 
 import BaseLayout from "./BaseLayout.astro";
-import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
+import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 
 interface TimelineEntry {
   validFrom: Date;
   validUntil: Date;
+  publishedEnd?: boolean;
   headline: string;
   bands: { range: string; reward: string }[];
   archived: boolean;
@@ -37,8 +38,8 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
     <h1>{bankName}</h1>
     <p class="deck">
       {entries.length > 0
-        ? `Every salary transfer offer we've tracked from ${bankName}, oldest at the bottom. We never delete offers — archives are useful for spotting cycles and predicting future promotions.`
-        : `The ${bankName} offer archive. We never delete offers — archives are useful for spotting cycles and predicting future promotions.`}
+        ? `Salary transfer offers we’ve tracked from ${bankName}, newest first. Compare past terms with the current offer, if one is listed.`
+        : `The ${bankName} salary-transfer offer archive.`}
     </p>
   </header>
 
@@ -64,7 +65,9 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
             <header>
               <h2>{e.headline}</h2>
               <span class="when">
-                {fmt(e.validFrom)} – {fmt(e.validUntil)}
+                {e.publishedEnd === false
+                  ? `From ${fmt(e.validFrom)} · Confirm end date with the bank`
+                  : `${fmt(e.validFrom)} – ${fmt(e.validUntil)}`}
                 {!e.archived && <span class="live-tag"> · live</span>}
               </span>
             </header>

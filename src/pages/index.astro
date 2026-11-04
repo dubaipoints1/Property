@@ -34,6 +34,7 @@ import {
 } from "~/lib/cardsDataFormat";
 import { getStockEntry } from "~/lib/stockManifest";
 import { getLiveOffers } from "~/lib/offerAdapter";
+import { getSalaryTransferTimeline } from "~/lib/salaryTransferTimeline";
 import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 import { getLiveDeals } from "~/lib/deals";
@@ -335,7 +336,9 @@ const offerRows = liveOffers.map((o) => {
     bands: o.salaryBands.length,
     sharia: o.sharia,
     verified: fmtVerified(o.lastVerified),
-    ends: fmtShort(new Date(o.validUntil)),
+    deadline: getSalaryTransferTimeline(o)?.endDate === "published"
+      ? `ends ${fmtShort(new Date(o.validUntil))}`
+      : "check deadline with bank",
   };
 });
 
@@ -527,7 +530,7 @@ const DIRECTORY = [
                   <a href={`/salary-transfer/${r.bankSlug}/`}>
                     <span class="who">{r.bankName}</span>
                     <span class="what">Up to <strong>{r.upTo}</strong> · {r.from}{r.sharia ? " · Sharia-compliant" : ""}</span>
-                    <span class="when">Verified {r.verified} · ends {r.ends}</span>
+                    <span class="when">Verified {r.verified} · {r.deadline}</span>
                   </a>
                 </li>
               ))}

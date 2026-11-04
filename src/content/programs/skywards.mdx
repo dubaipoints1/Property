@@ -12,16 +12,24 @@ sweetSpots:
   - title: Short-haul GCC redemptions
     description: "For DXB → BAH/DOH/RUH, compare the live reward and fees with the equivalent cash fare. Check a return itinerary if you want to look for Saver availability."
   - title: Economy-to-business-class upgrades on a regional sector
-    description: "Cash Economy ticket DXB → DEL/BOM/MAA upgraded to Business runs 30,000–50,000 miles each way at saver rates. The clearest break-even use of a 100,000-mile welcome bonus from a UAE Skywards co-brand."
-  - title: Emirates First on the A380 with Skywards Plus
+    description: "For DXB → DEL/BOM/MAA, compare an upgrade-eligible Economy fare plus the quoted miles and charges with the Business fare. Check availability before you buy."
+  - title: Emirates First on the A380
     description: "For DXB → JFK in First, check Emirates for the live miles price, taxes and eligibility. Compare the total cost with the cash fare you would otherwise buy."
-expiryPolicy: "Skywards Miles are valid for three years from the date of the flight or partner transaction that earned them, and expire on the last day of the member's birthday month that follows the end of that three-year period (Programme Rules, clause 9). Activity does not reset the clock. Only Platinum suspends expiry: Platinum members' Miles do not expire while the tier is held (clause 6.10.1); Silver and Gold do not change the expiry date. Emirates has announced that Miles earned from 1 June 2027 will drop the birthday-month rounding. Rules read 9 October 2026."
+expiryPolicy: "Under Emirates’ Programme Rules, Skywards Miles are valid for three years from the flight or partner transaction, then expire at the end of the next birthday month. Activity does not reset the clock. Miles do not expire while Platinum status is held. A change has been reported for miles earned from 1 June 2027; check Emirates’ rules and the expiry shown in your account."
 ---
 
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import ReadingTakeaways from "~/components/ReadingTakeaways.astro";
+
+## Skywards in 60 seconds
+
+<ReadingTakeaways items={[
+  { title: "Earn", text: "Credit eligible Emirates or flydubai flights, or use a UAE card that earns Skywards Miles directly.", href: "#how-to-earn-skywards-miles", linkLabel: "See earning routes" },
+  { title: "Spend", text: "We use 2 fils per mile for card comparisons. The value of a flight depends on the cash fare and fees.", href: "#what-a-skywards-mile-is-worth", linkLabel: "Compare the value" },
+  { title: "Check expiry", text: "New earning does not reset the expiry clock. Rules differ by earning date and status.", href: "#mile-expiry-mechanics", linkLabel: "Read the expiry rules" },
+]} />
 
 <JumpToSection sections={[
-  { id: "skywards-in-60-seconds", label: "In 60 seconds" },
   { id: "how-to-earn-skywards-miles", label: "How to earn" },
   { id: "what-a-skywards-mile-is-worth", label: "What a mile is worth" },
   { id: "best-sweet-spot-redemptions", label: "Sweet spots" },
@@ -33,105 +41,43 @@ import JumpToSection from "~/components/cards/JumpToSection.astro";
   { id: "bottom-line", label: "Bottom line" },
 ]} />
 
-Emirates Skywards is the loyalty programme of Emirates and flydubai, headquartered
-in Dubai. It is the dominant frequent-flyer programme for UAE residents and the
-primary transfer partner for most UAE-issued co-branded travel cards. For
-DXB-based travellers it is the default points currency — your earning, your
-upgrades, your aspirational redemptions all run through Skywards before any
-other programme.
-
-## Skywards in 60 seconds
-
-- **Where it lives:** Skywards is direct loyalty for Emirates and flydubai, with
-  partner earn on Etihad-rival Saudia Alfursan blocked but partner earn on
-  Japan Airlines, Qantas, and several other oneworld and SkyTeam carriers
-  available through specific co-branded routes.
-- **What a mile is worth:** dubaipoints values a Skywards Mile at **2 fils per
-  mile** (approximately AED 0.02) — see the value-math section below for how
-  we get there.
-- **Best UAE earning cards:** the [Emirates NBD Skywards Infinite](/cards/emirates-nbd-skywards-infinite/)
-  at 2 miles per USD on Emirates / flydubai / duty free / food delivery, or
-  the [Skywards Signature](/cards/emirates-nbd-skywards-signature/) at 1.5
-  miles per USD with a lower salary bar.
-- **Sweet-spot redemption:** an economy-to-business-class upgrade on a regional Emirates sector
-  (DXB → MAA, BOM, DEL, BLR) at 30,000–50,000 miles each way — the clearest
-  break-even use of a 100,000-mile welcome bonus.
-- **Where it falls short:** Skywards has repriced its partner award chart
-  twice in five years; surcharges on Emirates redemptions are heavy; and the
-  programme's earning rate on partner airlines is materially lower than on
-  Emirates metal.
-
 ## How to earn Skywards Miles
 
 There are three main routes for UAE residents:
 
 ### From UAE-issued co-branded credit cards
 
-The Emirates NBD Skywards range is the canonical earn engine. The
+The Emirates NBD Skywards range is one direct-earning option. The
 [Skywards Infinite](/cards/emirates-nbd-skywards-infinite/) earns
 **2 miles per USD 1** (roughly 0.54 miles per AED) on Emirates, flydubai,
-duty free, and online food-delivery / ride-hailing apps; the
+duty free, and eligible UAE food-delivery and car-booking apps; the
 [Skywards Signature](/cards/emirates-nbd-skywards-signature/) earns
 **1.5 miles per USD 1** on the same partner categories. Both post miles
 directly into your Skywards account with no transfer step or ratio loss.
 
-Welcome bonuses on these cards range from 40,000 Skywards Miles (Signature)
-to 100,000 Skywards Miles (Infinite) — the latter is enough to fund an economy-to-business-class
-regional upgrade with room to spare on first-year earn.
+Check each card’s current welcome offer and price an eligible upgrade before counting on the bonus.
 
 ### From flying Emirates and flydubai
 
-Skywards uses a **revenue-based earning model**: miles earned are a function
-of the cash fare paid and your Skywards tier, not the distance flown. A Blue
-member on a discounted Economy fare earns very little; a Platinum on a
-flexible Business fare earns several miles per AED of base fare.
-
-flydubai earnings run on the same Skywards account at flydubai's published
-earn rate — useful for the GCC short-haul leg of a longer Emirates itinerary.
+[Emirates says](https://www.emirates.com/english/skywards/earn-miles/) earnings vary by route, fare type and cabin. Your tier can add bonus Skywards Miles. Use the [Miles Calculator](https://www.emirates.com/ae/english/skywards/miles-calculator/) to check a specific flight on Emirates or flydubai.
 
 ### From transfer partners
 
-Marriott Bonvoy and Accor ALL both transfer into Skywards, but at unfavourable
-ratios (3:1 Bonvoy → Skywards is standard). Bonvoy → Skywards is rarely the
-best use of Bonvoy points; treat the transfer route as a top-up mechanism,
-not a primary earn channel.
+Marriott Bonvoy and Accor ALL can top up a Skywards balance. Check the [transfer ratios](#transfer-partners) and confirm the award is available before moving points.
 
 ## What a Skywards Mile is worth
 
-DubaiPoints values a Skywards Mile at **2 fils (AED 0.02) per mile** as our
-baseline. This is the figure we use across every UAE Skywards co-brand
-review to estimate welcome-bonus value, break-even spend, and per-redemption
-return. Here is the detail behind the number:
+**For comparing cards:** DubaiPoints uses a **2 fils (AED 0.02) per mile** editorial baseline. It is not a live redemption quote.
 
-| Redemption type | Approximate value per mile |
+| Redemption type | What to compare |
 |---|---|
-| Economy-to-business-class Emirates upgrade on a regional sector | **2.5–3.5 fils** (best use case) |
+| Economy-to-Business upgrade | Eligible Economy fare, upgrade miles and cash charges versus the Business fare |
 | Long-haul Business on Emirates | Check the live award and equivalent cash fare |
-| First on the A380 (aspirational) | Check the live award and equivalent cash fare |
-| Saver-rate Economy on Emirates / flydubai | **0.8–1.2 fils** (weakest use) |
-| Marriott Bonvoy hotel night via Skywards Plus | rarely positive vs direct Bonvoy redemption |
-| Cash-back / pay-with-miles inside Emirates' booking flow | **~1 fil** (effectively the floor) |
+| First on the A380 | Check aircraft, eligibility, availability and the full cash charge |
+| Economy on Emirates or flydubai | Compare the award with a cash fare you would actually pay |
+| [Cash+Miles](https://www.emirates.com/english/skywards/cash-plus-miles/) | Use the cash saving and miles displayed at checkout; there is no fixed conversion rate |
 
-**Why 2 fils as the baseline?** It is DubaiPoints’ published editorial
-benchmark for comparing earnings and welcome bonuses. The value of a
-specific redemption depends on the fare, fees and miles quoted.
-
-**Methodology note.** The figures above are the conservative *cost-basis*
-valuation we use across every UAE Skywards co-brand review for welcome-
-bonus math and break-even checks — they treat a Mile as worth what it
-costs to earn and what its weakest reliable redemption floor delivers
-(pay-with-Miles, Cash + Miles). Against the *cash fare you would
-otherwise pay* on a Business reward — the methodology used in our
-[Skywards business-class redemptions guide](/guides/skywards-business-class-redemptions-2026/) —
-the value depends on the quote and the cash fare you would buy.
-The methods answer different questions; reach for the cost basis
-when you are valuing a welcome bonus before applying for a card, reach
-for the cash-fare basis when you are deciding whether to burn miles on
-a specific trip.
-
-The lesson: **the value of a Skywards Mile is not fixed** — it is set by
-where you redeem. A mile redeemed for an Economy ticket at saver rate is
-worth half what the same mile redeemed for a regional upgrade is worth.
+**For booking a flight:** take the cash fare you would otherwise pay, subtract the cash charges on the reward, then divide by the miles required. Try the [Cash or Miles worksheet](/news/cash-or-miles-uae-flight-break-even/) or read the [valuation methodology](/valuations/methodology/).
 
 ## Best sweet-spot redemptions
 
@@ -140,15 +86,9 @@ below the prose. Two of them are worth additional context:
 
 ### Economy-to-business-class regional upgrade — the canonical break-even
 
-Buy a cash Economy ticket DXB → DEL, BOM, or MAA for AED 1,500–2,500. Use
-30,000–50,000 Skywards Miles to upgrade the ticket to Business. The same
-Business ticket cash would have cost AED 4,500–6,500. Net value of the
-miles depends on the fare difference and any upgrade charges. At the
-published 2 fils cost-basis baseline, 30,000–50,000 miles represents
-AED 600–1,000; that is separate from the cash fare avoided.
+For a regional trip from Dubai, compare the price of a paid Business ticket with an upgrade-eligible Economy fare plus the miles and any cash charges. Confirm upgrade eligibility and availability with Emirates before buying the Economy ticket.
 
-This is the **clearest path to break even on a Skywards Infinite welcome
-bonus** within the first three months of carded ownership.
+For illustration, at our 2-fils baseline, 30,000–50,000 miles represent AED 600–1,000 for card comparisons. That arithmetic does not tell you the mileage price or how much cash an upgrade will save.
 
 ### DXB → LHR in Business
 
@@ -160,43 +100,25 @@ your cash-fare comparison, not our published cost basis.
 
 ## Tier structure (Blue / Silver / Gold / Platinum)
 
-Skywards runs four tiers driven by Tier Miles or Tier Flights earned each
-membership year. The thresholds and headline benefits:
+Tier Miles count towards status; Skywards Miles pay for rewards. Check [Emirates’ tier rules](https://www.emirates.com/english/skywards/membership-tiers/) for qualification and [lounge terms](https://www.emirates.com/english/experience/our-lounges/partners/terms-and-conditions/) for access and guests.
 
-- **Blue** — entry tier. No tier perks beyond miles-earning.
-- **Silver** — 25,000 Tier Miles or 25 qualifying flights / year. Priority
-  check-in and extra baggage allowance. **This
-  is the tier the Skywards Infinite welcome window grants automatically**
-  for the first year.
-- **Gold** — 50,000 Tier Miles or 50 qualifying flights / year. Lounge access
-  (own + 1 guest) at Emirates lounges worldwide, priority boarding, more
-  generous baggage.
-- **Platinum** — 150,000 Tier Miles **and** at least one Business or First
-  class qualifying flight / year (there is no flight-count route to
-  Platinum). Lounge access with 2 guests, complimentary chauffeur,
-  dedicated check-in, high-priority waitlist clearance. Platinum is also
-  the only tier that stops Skywards Miles expiring (see below).
+| Tier | Qualification |
+|---|---|
+| Blue | Entry tier |
+| Silver | 25,000 Tier Miles or 25 qualifying flights |
+| Gold | 50,000 Tier Miles or 50 qualifying flights |
+| Platinum | 150,000 Tier Miles and at least one qualifying Business or First Class flight |
 
-**Practical note:** Skywards tier is hard to maintain on UAE-issued cards
-alone — tier miles come only from flown Emirates / flydubai segments, not
-from card spend. The Infinite's year-one Silver upgrade is a free trial of
-the tier benefit set, not a route to keeping it.
+Emirates says Tier Miles are earned mainly on Emirates, flydubai and eligible Emirates-marketed codeshares. [Emirates NBD’s Skywards Infinite](https://www.emiratesnbd.com/en/cards/credit-cards/skywards-infinite-credit-card/) lists Silver status while the card remains active; check the bank’s current conditions before relying on it.
 
 ## Transfer partners
 
-Two transfer routes worth knowing:
+Two [hotel transfer routes published by Emirates](https://www.emirates.com/au/english/skywards/partners/?partner=hotels):
 
-- **Marriott Bonvoy → Skywards** at 3:1. A 60,000-Bonvoy transfer becomes
-  20,000 Skywards Miles. Usually a poor use of Bonvoy points (which are
-  more valuable redeemed inside the Bonvoy hotel chart). The exception is
-  topping up an account to clear a Business saver-rate redemption threshold.
-- **Accor ALL → Skywards** at 4,000:2,000 (2:1). Even worse than the
-  Bonvoy route. Reserved for the rare case where Accor points have no
-  better use.
+- **Marriott Bonvoy → Skywards:** published base ratio of 3:1. Compare the flight you can actually book with using your points for a Marriott stay.
+- **Accor ALL → Skywards:** 4,000 ALL Reward points convert to 2,000 Skywards Miles. Compare the flight saving with using the points directly at Accor.
 
-Skywards does **not** accept transfers from American Express Membership
-Rewards (US/Europe) or Chase Ultimate Rewards. This is a major gap in the
-programme's incoming-transfer ecosystem.
+For UAE bank programmes, check the [transfer ratios guide](/guides/uae-transfer-ratios-2026/) and the issuer’s current terms before moving points.
 
 ## Mile expiry mechanics
 
@@ -206,9 +128,7 @@ Skywards Miles are **valid for three years from the date of the flight or
 partner transaction that earned them**, and then expire on the **last day
 of your birthday month** that follows the end of that three-year period.
 Emirates' own worked example: a validity period ending 15 January 2026,
-for a member born on 14 January, expires on **31 January 2027**. Depending
-on where your birthday falls, the rounding adds anything from days to
-almost a year.
+for a member born on 14 January, expires on **31 January 2027**.
 
 **Only Platinum stops the clock.** Under clause 6.10.1, Miles held by
 Platinum members do not expire for as long as Platinum status is retained;
@@ -222,59 +142,23 @@ not reset the expiry on older miles, unlike some competitor programmes
 within 90 days can be extended by 12 months through its paid Extend Miles
 product (clause 10), at whatever price Emirates is charging at the time.
 
-**A change is coming.** Emirates has announced that Miles earned **from
-1 June 2027** will be valid for three years rounded only to the end of the
-earning month, without the birthday-month bonus. The Programme Rules had
-not been amended when we read them on 9 October 2026; our
-[news report](/news/skywards-miles-expiry-birthday-month-rule-ends-2027/)
-has the detail. Nothing changes for Miles earned before that date.
+**A change has been reported for miles earned from 1 June 2027.** Our [news report](/news/skywards-miles-expiry-birthday-month-rule-ends-2027/) covers the move to expiry at the end of the earning month three years later. Check Emirates’ rules and the expiry shown in your account before planning a redemption.
 
 ## Watch out for
 
-- **Devaluation cadence.** Skywards has repriced the partner award chart
-  twice in five years (2022 and 2025). Saver-rate availability on premium
-  cabins continues to tighten. Plan to redeem inside a 12-month window of
-  earning, not bank miles long-term.
-- **Carrier-imposed surcharges on long-haul Business and First.** These
-  can run AED 1,500–3,500 on top of the mileage cost ex-DXB. Run the cash-
-  equivalent math net of surcharges, not gross.
+- **Terms and availability can change.** Look up the trip before transferring points. An indicative mileage price does not reserve a seat.
+- **Taxes and carrier charges can change the answer.** Compare the full cash charge on the award with the cash fare, not just the miles shown.
 - **Reward pricing depends on the itinerary.** Compare the actual mileage
   and cash charges. In Emirates Business, one-way Classic Rewards are Flex
   Plus only; check return itineraries separately for Saver availability.
-- **flydubai earn is weaker than Emirates earn.** Same Skywards account
-  but lower mile accrual rates per AED of cash fare. Factor this in if
-  most of your GCC flying is on flydubai metal.
-- **Skywards Plus (cash + miles) erodes value.** The default Emirates
-  booking flow pushes you toward partial-cash partial-miles bookings that
-  redeem miles at ~1 fil each — the floor of our value table. Always
-  toggle to a pure-miles award before deciding the redemption isn't worth
-  it.
+- **Cash+Miles and Classic Rewards are different.** Compare each available quote on its own terms; do not assume the same value per mile.
 
 ## Is Skywards worth chasing?
 
-For UAE residents flying Emirates more than twice a year out of DXB:
-**yes, unambiguously.** Skywards is the only direct loyalty currency
-accumulating without transfer ratio loss on UAE-issued Visa cards, and
-the redemption sweet spots include regional upgrades and long-haul Business.
-Value against the cash alternative depends on the quote and fees.
-
-For UAE residents who fly Emirates once a year or less: **probably not
-worth chasing as a primary points currency.** The earning rate on
-non-Emirates spend is weak, the mile-expiry clock is unforgiving at every
-tier below Platinum, and a cashback card like the [FAB Cashback](/cards/fab-cashback/) or
-a transferable-points card with broader redemption flexibility likely
-pays back more on the same monthly spend.
-
-For UAE residents flying Etihad more than Emirates: look at the
-[Etihad Guest](/airlines/etihad-guest/) programme instead — same logic,
-different network.
+- **You fly Emirates or flydubai regularly:** compare the [UAE earning cards](#programme-cards) if you have a realistic use for the miles before they expire.
+- **You rarely fly either airline:** compare a [cashback card](/cards/fab-cashback/) or transferable points before paying a co-brand fee.
+- **You mainly fly Etihad:** compare [Etihad Guest](/airlines/etihad-guest/) for the routes you actually book.
 
 ## Bottom line
 
-Skywards is the default points currency for UAE-based travel writers and
-the right starting point for most expats based in Dubai. **Apply** for a
-direct-earn Skywards co-brand (Infinite if salary clears AED 30,000/month
-and you'll spend AED 100,000+ a year; Signature at the lower salary bar)
-if Emirates is your primary carrier. **Skip Skywards as your primary
-currency** if you fly Emirates rarely — a cashback or transferable-points
-card will pay back more on the same spend.
+Price one flight you would actually book before choosing a Skywards card. The miles are only useful if the dates, cash charges and expiry work for you.
