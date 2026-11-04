@@ -132,7 +132,11 @@ test("renderScoresTableMd lists rows and adds a Budget section only when there a
   assert.match(clean, /\| \/cards\/x\/ \| desktop \| 99 \|/);
   assert.match(clean, /\| \/cards\/x\/ \| mobile \| 95 \|/);
   assert.match(clean, /pessimistic/);
+  assert.match(clean, /initial-transfer proxy/);
   assert.doesNotMatch(clean, /## Budget/);
+  const custom = renderScoresTableMd(rows, { ok: true, breaches: [] }, { server: "external (http://127.0.0.1:4328)" });
+  assert.match(custom, /Compression and caching depend on the supplied server/);
+  assert.doesNotMatch(custom, /pessimistic|has no compression/);
 
   const breached = renderScoresTableMd(rows, evaluateBudget([{ route: "/cards/x/", preset: "mobile", performance: 80, aboveFoldKb: 10 }]));
   assert.match(breached, /## Budget/);

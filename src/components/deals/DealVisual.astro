@@ -8,6 +8,7 @@
 
 import StockImage from "../StockImage.astro";
 import { bankMark, isWhiteLogo } from "../../lib/logos";
+import { compactLogoSrcset } from "../../lib/stockDerivatives";
 
 interface Props {
   dealId: string;
@@ -25,6 +26,8 @@ interface Props {
 const { dealId, title, logo, merchant, bankSlug, bankName, coverSize = "med", class: className, loading = "lazy", sizes } = Astro.props;
 const bank = bankSlug ? bankMark(bankSlug) : undefined;
 const platedLogo = logo ? isWhiteLogo(logo) : false;
+const logoSrcset = import.meta.env.PROD && coverSize !== "hero" && logo ? compactLogoSrcset(`/logos/partners/${logo}`) : undefined;
+const bankSrcset = import.meta.env.PROD && coverSize !== "hero" && bank ? compactLogoSrcset(bank.src) : undefined;
 ---
 
 {logo ? (
@@ -33,6 +36,8 @@ const platedLogo = logo ? isWhiteLogo(logo) : false;
     <img
       class="dp-deal-logo-mark"
       src={`/logos/partners/${logo}`}
+      srcset={logoSrcset}
+      sizes={logoSrcset ? (coverSize === "sm" ? "(max-width: 640px) 54px, 74px" : "(max-width: 640px) 54px, 129px") : undefined}
       alt={`${merchant ?? "Merchant"} logo`}
       loading={loading}
       decoding="async"
@@ -41,7 +46,7 @@ const platedLogo = logo ? isWhiteLogo(logo) : false;
     {bank && (
       <span class:list={["dp-deal-logo-bank", { "is-plated": bank.plated }]}>
         <span class="dp-deal-logo-with">with</span>
-        <img src={bank.src} alt={bankName ?? ""} loading={loading} decoding="async" />
+        <img src={bank.src} srcset={bankSrcset} sizes={bankSrcset ? "90px" : undefined} alt={bankName ?? ""} loading={loading} decoding="async" />
       </span>
     )}
   </span>
@@ -54,6 +59,7 @@ const platedLogo = logo ? isWhiteLogo(logo) : false;
     class={className}
     loading={loading}
     sizes={sizes}
+    delivery={coverSize === "hero" ? "feature" : "compact"}
   />
 )}
 

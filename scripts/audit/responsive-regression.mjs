@@ -36,8 +36,13 @@ try {
         await page.setViewportSize({ width: widths[0], height: 880 });
         try {
           await navigate(page, route);
-          const images = await page.locator("img[src]").evaluateAll((nodes) => [...new Set(nodes
-            .map((node) => new URL(node.src))
+          const images = await page.locator("img[src], img[srcset], picture source[srcset]").evaluateAll((nodes) => [...new Set(nodes
+            .flatMap((node) => [
+              node.localName === "img" ? node.getAttribute("src") : null,
+              ...(node.getAttribute("srcset")?.match(/\/(?:images\/(?:stock|ai)|logos\/(?:partners|banks))\/compact\/[\w-]+\.(?:webp|png)/g) ?? []),
+            ])
+            .filter(Boolean)
+            .map((url) => new URL(url, location.href))
             .filter((url) => url.origin === location.origin)
             .map((url) => decodeURIComponent(url.pathname.slice(1))))]);
           for (const image of images) {
@@ -60,7 +65,7 @@ try {
     }
   }));
   assert.deepEqual(failures.sort((a, b) => a.route.localeCompare(b.route)), [], "Page-level horizontal overflow, failed load or missing local image");
-  console.log(`Reflow: ${routes.length} built routes × ${widths.length} widths; no page-level overflow or missing local image src`);
+  console.log(`Reflow: ${routes.length} built routes × ${widths.length} widths; no page-level overflow or missing local image src/delivery variant`);
 
   const page = await context.newPage();
   await page.setViewportSize({ width: 1280, height: 880 });
@@ -475,6 +480,13 @@ try {
     await plain.goto(server.baseUrl + "/transfer-finder/?to=etihad-guest");
     assert.equal(await plain.locator("[data-transfer-route]:not([hidden])").count(), 16);
     assert.equal(await plain.locator("[data-transfer-offer]:not([hidden])").count(), 0);
+    await plain.setViewportSize({ width: 1280, height: 880 });
+    await navigate(plain, "/cards/finder/");
+    const fallbackFilters = plain.locator("#finder-filters > summary");
+    assert.ok(await fallbackFilters.isVisible());
+    assert.equal(await plain.locator("#finder-grid > .dp-finder-tile:not([hidden])").count(), 6);
+    await fallbackFilters.press("Space");
+    assert.ok(await plain.locator("#finder-form").isVisible());
   } finally {
     await noScript.close();
   }
@@ -512,6 +524,41 @@ try {
   const recover = page.locator("main").getByRole("link", { name: "Search DubaiPoints", exact: true });
   assert.equal(await recover.getAttribute("href"), "/search/");
   assert.ok((await recover.boundingBox()).height >= 44);
+  const dense = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, reducedMotion: "reduce" });
+  try {
+    await dense.route("**/*", (route) => route.request().url().startsWith(server.baseUrl + "/")
+      ? route.continue() : route.abort());
+    const phone = await dense.newPage();
+    const decoded = async (image) => {
+      await image.scrollIntoViewIfNeeded();
+      return image.evaluate(async (el) => { await el.decode(); return { src: el.currentSrc, width: el.getBoundingClientRect().width }; });
+    };
+    await navigate(phone, "/news/");
+    const lead = await decoded(phone.locator("[data-news-feature] img[data-stock-slug]"));
+    assert.match(lead.src, /\/images\/stock\/compact\/.+-(800|960)\.webp$/);
+    assert.ok(lead.width >= 320);
+    const archived = phone.locator("[data-news-archive] img[data-stock-slug]").first();
+    const archivedSlug = await archived.getAttribute("data-stock-slug");
+    assert.ok(archivedSlug);
+    assert.equal(await phone.evaluate((slug) => performance.getEntriesByType("resource").some((entry) => entry.name.includes(slug)), archivedSlug), false);
+    await phone.locator("[data-news-archive] > summary").press("Space");
+    const thumbnail = await decoded(archived);
+    assert.match(thumbnail.src, /\/images\/stock\/compact\/.+-240\.webp$/);
+    assert.ok(thumbnail.width <= 128);
+    await navigate(phone, "/airlines/skywards/");
+    assert.match((await decoded(phone.locator(".dp-prog-figure img"))).src, /programme-skywards-(800|960)\.webp$/);
+    assert.ok(await phone.getByRole("link", { name: "Andrew Cutajar" }).isVisible());
+    await navigate(phone, "/deals/");
+    const logo = phone.locator('main img.dp-deal-logo-mark[src$="/mann-marzi.png"]').first();
+    assert.match((await decoded(logo)).src, /\/logos\/partners\/compact\/mann-marzi-(192|360)\.png$/);
+    assert.ok(await logo.getAttribute("alt"));
+    await navigate(phone, "/cards/finder/");
+    assert.equal(await phone.locator("#finder-grid > .dp-finder-tile:not([hidden])").count(), 6);
+    assert.equal(await phone.evaluate(() => performance.getEntriesByType("resource")
+      .some((entry) => /newsreader[^/]*italic[^/]*\.woff2$/.test(entry.name))), false);
+  } finally {
+    await dense.close();
+  }
   console.log("Interactions: menus, guide, programme quick reference, card fees and net value, article sources and fare evidence, tracker, calculators, Finder, comparison, Deals and news");
 } finally {
   await browser?.close();

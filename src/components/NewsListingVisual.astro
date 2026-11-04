@@ -16,12 +16,16 @@ const card = id === "uae-card-change-log-citi-cash-back-application-route"
 const desk = id === "uae-salary-switch-scorecard"
   ? getStockEntry("guide-salary-transfer-mechanics-2026") : undefined;
 const kind = diagram ? "cash-or-miles" : quote ? "cash-or-miles-quote" : card ? "issuer-card" : desk ? "salary-scorecard" : undefined;
+const photoSizes = featured
+  ? "(max-width: 640px) calc(100vw - 32px), (max-width: 819px) calc(100vw - 48px), (max-width: 1600px) min(calc(56vw - 36px), 630px), 800px"
+  : compact ? "clamp(68px, 12vw, 128px)" : LISTING_SIZES.tile;
 ---
 
 {photo ? (
   <span class:list={["dp-news-photo", { "is-compact": compact }]}>
     <StockImage slug={slug} class={featured ? "intel-featured-image" : "intel-card-image"}
-      sizes={featured ? LISTING_SIZES.featured : compact ? "128px" : LISTING_SIZES.tile} loading={featured ? "eager" : "lazy"} />
+      delivery={featured ? "feature" : compact ? "compact" : undefined}
+      sizes={photoSizes} loading={featured ? "eager" : "lazy"} />
   </span>
 ) : kind && (
   <span class:list={["dp-news-preview", { "is-compact": compact }]} data-news-preview={kind} aria-hidden="true">
@@ -52,7 +56,7 @@ const kind = diagram ? "cash-or-miles" : quote ? "cash-or-miles-quote" : card ? 
     )}
     {card && <img src={`/${card.file}`} alt="" width={card.width} height={card.height}
       loading={featured ? "eager" : "lazy"} decoding="async" />}
-    {desk && <img src={`/${desk.file}`} srcset={stockSrcset(desk)} sizes="144px" alt=""
+    {desk && <img src={`/${desk.file}`} srcset={stockSrcset(desk, import.meta.env.PROD ? "compact" : undefined)} sizes={compact ? "clamp(68px, 12vw, 128px)" : "144px"} alt=""
       width={desk.width} height={desk.height} loading={featured ? "eager" : "lazy"} decoding="async"
       data-stock-slug={desk.slug} data-stock-source={desk.source} />}
   </span>

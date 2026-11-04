@@ -280,7 +280,9 @@ export async function main(argv, log = (s) => console.error(s)) {
     routesTotal: routes.length,
     budget: opts.budget,
     server: opts.base ? `external (${opts.base})` : "http-server (uncompressed)",
-    note: "Local http-server serves uncompressed bytes with no CDN cache; byte/LCP figures are pessimistic relative to Cloudflare Pages.",
+    note: opts.base
+      ? "The supplied server controls compression and caching; use matched server settings for comparisons."
+      : "The default local server serves uncompressed bytes with no CDN cache.",
     durationMs: Date.now() - started,
   };
   writeFileSync(path.join(outDir, "lighthouse.scores.json"), `${stableStringify({ schemaVersion: 1, meta, rows: sortedRows, budget })}\n`);
