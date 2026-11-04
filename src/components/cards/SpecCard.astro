@@ -139,22 +139,6 @@ if (variant === "full") {
     <span class="network">{card.network}</span>
   </header>
 
-  {/* Stage 5.5 UX Fix #4: on `is-full`, the loudest reader signal (the
-      AED annual fee in 28px Fraunces) comes immediately under the head.
-      The card name follows. Reader meets the price before the bank
-      acronym dominates their attention. Compact + row variants keep
-      the title-first reading order they were designed for. */}
-  {variant === "full" && (
-    <div class="hero-fee">
-      <FeeBlock
-        annualFee={card.annualFee}
-        fxFee={card.fxFee}
-        waiver={card.annualFeeWaiver}
-        joiningFee={card.joiningFee}
-      />
-    </div>
-  )}
-
   <div class="title">
     <h3>
       <a href={`/cards/${card.slug}/`}>{card.name}</a>
@@ -165,6 +149,17 @@ if (variant === "full") {
       </span>
     )}
   </div>
+
+  {variant === "full" && (
+    <div class="hero-fee">
+      <FeeBlock
+        annualFee={card.annualFee}
+        fxFee={card.fxFee}
+        waiver={card.annualFeeWaiver}
+        joiningFee={card.joiningFee}
+      />
+    </div>
+  )}
 
   <slot name="match-explanation" />
 
@@ -336,13 +331,13 @@ if (variant === "full") {
     color: var(--green);
   }
 
-  /* Hero fee block — sits between the head eyebrow row and the title
-     on `is-full`. Pulled out of the old two-column .grid; the earn
-     table now lives as its own section below the welcome callout. */
+  /* Group the prominent price with the named product, rather than a loose
+     number between the issuer and the card it belongs to. */
   .hero-fee {
-    padding: 8px 0 16px 0;
+    padding-block-end: 12px;
     border-bottom: 1px solid var(--line-soft);
   }
+  .hero-fee > :global(.dp-fee-block) { margin: 0; }
 
   /* Stage 5.5 UX Fix #5: one-line editorial tagline in Fraunces italic.
      Sits between the card name and the welcome callout, giving every
@@ -446,6 +441,7 @@ if (variant === "full") {
     }
     .dp-spec-card.is-full {
       padding: 16px;
+      gap: 10px;
     }
     .grid {
       grid-template-columns: 1fr;

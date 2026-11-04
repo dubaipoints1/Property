@@ -68,7 +68,7 @@ const fmt = (d: Date) =>
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
-  <header class="dp-pagehead is-narrow">
+  <header class="dp-pagehead is-narrow dp-trust-head">
     <div class="crumb">{eyebrow}</div>
     <h1>{heading}</h1>
     {deck && <p class="deck">{deck}</p>}
@@ -76,9 +76,9 @@ const fmt = (d: Date) =>
 
   <div class="dp-trust-meta">
     <span class="k">Last updated</span>
-    <span class="v">{fmt(lastUpdated)}</span>
+    <time class="v" datetime={lastUpdated.toISOString().slice(0, 10)}>{fmt(lastUpdated)}</time>
     <span class="dot" aria-hidden="true">·</span>
-    <a href="/editorial-policy/">Editorial standards</a>
+    {Astro.url.pathname !== "/editorial-policy/" && <a href="/editorial-policy/">Editorial standards</a>}
   </div>
 
   {facts && facts.length > 0 && (
@@ -98,3 +98,10 @@ const fmt = (d: Date) =>
     </div>
   </article>
 </BaseLayout>
+
+<style>
+  .dp-trust-head { padding-block-start: var(--dp-ui-section); }
+  .dp-trust-meta { flex-wrap: wrap; }
+  .dp-trust-meta .dot:last-child { display: none; }
+  .dp-trust-body { padding-block: var(--dp-ui-gap) var(--dp-ui-section); }
+</style>

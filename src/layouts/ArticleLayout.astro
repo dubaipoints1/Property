@@ -1,14 +1,11 @@
 ---
-// Article layout — Phase B2 + Phase D2/D4 (May 2026 image-forward redesign).
-// Reference: dubaipoints/project/templates/article.jsx::Article.
-// Used by /guides/<slug>/, /news/<slug>/, /deals/<slug>/.
-//
-// Keep the photograph stage full-bleed, but align its text, the byline,
-// the body image and the prose on the same reading column.
+// Editorial Utility reading layout for guides, news and deals. The answer,
+// article navigation and evidence lead; photographs and card references
+// support the story without gating access to it.
 
 import BaseLayout from "./BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
-import { stagePhoto, stageStyle } from "~/lib/stage";
+import { getStockEntry } from "~/lib/stockManifest";
 import CardImage from "~/components/CardImage.astro";
 import { getCollection } from "astro:content";
 
@@ -43,20 +40,13 @@ interface Props {
   showHero?: boolean;
   systemTypography?: boolean;
   /** Cards the piece discusses (10 Oct 2026, direction B): rendered as a
-   *  "Cards in this guide" strip under the byline, issuer card art first.
+   *  "Cards in this guide" strip after the article, issuer card art first.
    *  Order is the author's; the strip makes no ranking claim. */
   cards?: Array<{ slug: string; name: string; bank: string; fee: string }>;
-  heroLabel?: string;
-  /**
-   * Stock-image slug for the article hero. Resolves via the manifest
-   * loader (data/stock/manifest.json) — falls back to Cover.astro SVG
-   * when no entry exists yet. Per Phase F.6 (May 2026 image-forward
-   * redesign), every article gets a real hero once the editor runs
-   * `npm run fetch:stock --slug <heroSlug>`.
-   */
+  /** Manifest-tracked story image. Missing images don't generate a cover. */
   heroSlug?: string;
-  /** Cover.astro category for the fallback SVG. Defaults to "Guide". */
-  heroCategory?: "Guide" | "Review" | "Deal" | "News" | "Programme" | "Topic";
+  /** Editorial opt-in for a selected travel feature; otherwise images follow evidence. */
+  photoLead?: boolean;
 }
 
 const {
@@ -76,9 +66,8 @@ const {
   sources = [],
   showHero = false,
   systemTypography = false,
-  heroLabel = "Hero illustration · 2:1",
   heroSlug,
-  heroCategory = "Guide",
+  photoLead = false,
 } = Astro.props;
 
 const fmt = (d?: Date) =>
@@ -90,10 +79,8 @@ const fmt = (d?: Date) =>
       })
     : null;
 
-// Cinematic stage: a licensed hero photo becomes the stage backdrop and
-// leaves the body; AI or missing heroes keep the body figure.
-const stageHero = showHero ? stagePhoto(heroSlug) : undefined;
-const stageOwnsHero = stageHero != null;
+const supportingImage = showHero && heroSlug ? getStockEntry(heroSlug) : undefined;
+const earlyPhoto = photoLead && supportingImage?.source !== "ai-generated" && supportingImage;
 
 const showUpdated =
   updatedAt && publishedAt && updatedAt.getTime() !== publishedAt.getTime();
@@ -165,7 +152,7 @@ const schema = {
 
 <BaseLayout title={title} description={description} fullWidth schema={schema} systemTypography={systemTypography}>
   <article class="dp-reading-shell">
-    <header style={stageOwnsHero ? stageStyle(heroSlug) : undefined} class:list={["dp-pagehead dp-reading-head", { "dp-stage": stageOwnsHero }]}>
+    <header class="dp-pagehead dp-reading-head">
       <div class="dp-reading-column">
         {crumb && (
           <div class="crumb">
@@ -195,9 +182,6 @@ const schema = {
         )}
         <h1>{heading ?? title}</h1>
         {(deck || description) && <p class="deck">{deck ?? description}</p>}
-        {stageHero?.source === "editorial" && (
-          <p class="dp-stage-photo-credit" data-stage-photo-credit>Image: {stageHero.photographer}</p>
-        )}
       </div>
     </header>
 
@@ -219,42 +203,8 @@ const schema = {
       </div>
     </div>
 
-    {cards.length > 0 && (
-      <section class="dp-guide-cards dp-reading-column" aria-labelledby="dp-guide-cards-h">
-        <p class="dp-guide-cards-kicker" id="dp-guide-cards-h">Cards in this guide</p>
-        <ul>
-          {cards.map((c) => (
-            <li>
-              <a href={`/cards/${c.slug}/`}>
-                <CardImage cardSlug={c.slug} cardName={c.name} bankName={c.bank} coverSize="thumb" sizes="(max-width: 640px) 45vw, 300px" />
-                <span class="n">{c.name}</span>
-                <span class="f">{c.fee}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    )}
-
     <div class="dp-article-body dp-reading-column">
       <slot name="before-hero" />
-      {showHero && !stageOwnsHero && Astro.slots.has("hero") ? (
-        <slot name="hero" />
-      ) : showHero && !stageOwnsHero && (
-        heroSlug ? (
-          <StockImage
-            slug={heroSlug}
-            coverTitle={title}
-            coverCategory={heroCategory}
-            coverSize="hero"
-            class="article-hero-image"
-            loading="eager"
-            sizes="(max-width: 720px) calc(100vw - 32px), 680px"
-          />
-        ) : (
-          <div class="hero-img">{heroLabel}</div>
-        )
-      )}
       {toc.length >= 2 && (
         <nav class="dp-toc-card dp-reading-toc" aria-label="Article contents">
           <details>
@@ -268,6 +218,13 @@ const schema = {
         </nav>
       )}
 
+      {showHero && Astro.slots.has("hero") && <slot name="hero" />}
+      {earlyPhoto && (
+        <div class="dp-reading-media dp-reading-photo-lead" data-reading-media data-reading-photo-lead>
+          <StockImage slug={earlyPhoto.slug} class="article-hero-image" loading="eager"
+            sizes="(max-width: 720px) calc(100vw - 32px), 680px" />
+        </div>
+      )}
       <div class="dp-prose">
         <slot />
       </div>
@@ -287,6 +244,30 @@ const schema = {
       </footer>
     )}
 
+    {supportingImage && !earlyPhoto && !Astro.slots.has("hero") && (
+      <div class="dp-reading-media dp-reading-column" data-reading-media>
+        <StockImage slug={supportingImage.slug} class="article-hero-image"
+          sizes="(max-width: 720px) calc(100vw - 32px), 680px" />
+      </div>
+    )}
+
+    {cards.length > 0 && (
+      <section class="dp-guide-cards dp-reading-column" aria-labelledby="dp-guide-cards-h">
+        <h2 class="dp-guide-cards-kicker" id="dp-guide-cards-h">Cards in this guide</h2>
+        <ul>
+          {cards.map((c) => (
+            <li>
+              <a href={`/cards/${c.slug}/`}>
+                <CardImage cardSlug={c.slug} cardName={c.name} bankName={c.bank} coverSize="thumb" sizes="(max-width: 640px) 45vw, 300px" />
+                <span class="n">{c.name}</span>
+                <span class="f">{c.fee}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
     {Astro.slots.has("related") && (
       <aside class="dp-reading-column" aria-label="Related reading"><slot name="related" /></aside>
     )}
@@ -299,7 +280,7 @@ const schema = {
         <div class="dp-article-related-grid">
           {latestGuides.map((g) => (
             <a href={`/guides/${g.id}/`} class="dp-article-related-card">
-              <StockImage slug={`guide-${g.id}`} coverTitle={g.data.title} coverCategory="Guide" coverSize="med" sizes="(max-width: 900px) calc(100vw - 40px), 380px" />
+              {getStockEntry(`guide-${g.id}`) && <StockImage slug={`guide-${g.id}`} sizes="(max-width: 900px) calc(100vw - 40px), 380px" />}
               <div class="body">
                 <span class="cat">Guide · {fmtShort(g.data.updatedAt)}</span>
                 <h3>{g.data.title}</h3>
@@ -326,62 +307,43 @@ const schema = {
     margin-inline: auto;
   }
   .dp-reading-shell .dp-reading-head {
-    padding: clamp(28px, 5vw, 56px) 0 clamp(22px, 4vw, 32px);
-    background: linear-gradient(to bottom, var(--shade-1), var(--paper));
+    padding: clamp(22px, 3.5vw, 44px) 0 clamp(16px, 2.5vw, 28px);
+    background: var(--paper);
   }
   .dp-reading-head h1 {
     font-size: clamp(32px, 4.5vw, 48px);
     letter-spacing: -0.025em;
     overflow-wrap: anywhere;
   }
-  .dp-reading-shell .dp-reading-head.dp-stage {
-    min-height: 0;
-    padding: clamp(28px, 4.8vw, 62px) 0 clamp(26px, 3.5vw, 44px);
-    background: var(--paper);
-  }
-  :global(:root body) .dp-reading-head.dp-stage.dp-stage.dp-stage h1 {
-    font-size: clamp(1.875rem, 4.2vw, 3.25rem);
-  }
-  .dp-reading-shell .dp-reading-head.dp-stage .deck {
+  .dp-reading-shell .dp-reading-head .deck {
     display: block;
     overflow: visible;
     font-size: clamp(1rem, 1.6vw, 1.1875rem);
     line-height: 1.45;
     margin-block-start: 12px;
   }
-  .dp-stage-photo-credit {
-    display: table;
-    margin: 12px 0 0;
-    padding: 4px 9px;
-    border-radius: 4px;
-    background: var(--paper);
-    color: var(--ink);
-    font: 600 .75rem/1.4 var(--font-ui);
-  }
-  @media (max-width: 719.98px) {
-    .dp-reading-shell .dp-reading-head.dp-stage { min-height: 0; }
-  }
   .dp-reading-shell .dp-byline-strip {
     padding: 12px 0;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
   .dp-reading-shell .dp-guide-cards {
-    padding: 0 0 12px;
-    margin-bottom: 20px;
+    padding: 18px 0 12px;
+    margin-block: 24px;
+    border-top: 1px solid var(--line);
   }
   .dp-reading-shell .dp-article-body {
     overflow-wrap: anywhere;
   }
   .dp-reading-shell .dp-reading-toc {
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     padding: 0 clamp(14px, 2vw, 22px);
     border: 1px solid var(--line);
-    border-radius: 12px;
+    border-radius: var(--dp-ui-radius, 12px);
     background: var(--shade-1);
   }
   .dp-reading-toc summary {
     cursor: pointer;
-    min-block-size: 44px;
+    min-block-size: var(--dp-ui-control, 44px);
     padding-block: 12px;
     color: var(--green);
     font-weight: 600;
@@ -389,7 +351,7 @@ const schema = {
   .dp-reading-toc li { padding: 0; }
   .dp-reading-toc a {
     display: block;
-    min-block-size: 44px;
+    min-block-size: var(--dp-ui-control, 44px);
     padding-block: 11px;
     text-decoration: underline;
     text-underline-offset: .18em;
@@ -401,5 +363,25 @@ const schema = {
     margin-block: 32px;
     padding: 16px clamp(16px, 3vw, 24px);
     overflow-wrap: anywhere;
+  }
+  .dp-reading-media {
+    margin-block: clamp(20px, 4vw, 36px);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .dp-reading-media :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-block-size: 440px;
+    object-fit: cover;
+  }
+  .dp-reading-photo-lead { margin-block: 0 var(--dp-ui-gap, 20px); }
+  .dp-reading-photo-lead :global(.article-hero-image) {
+    aspect-ratio: 2.4 / 1;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
   }
 </style>

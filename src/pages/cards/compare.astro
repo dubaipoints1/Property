@@ -106,13 +106,11 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   description="Pick up to four UAE credit cards and compare them side by side across eligibility, earn rates, welcome bonuses, and verified-on date."
   fullWidth
 >
-  <div class="dp-pagehead">
+  <div class="dp-pagehead dp-compare-picker-head">
     <div class="crumb">DubaiPoints / Cards / Compare</div>
     <h1>Compare cards</h1>
     <p>
-      Side-by-side spec comparison. Pick up to four cards to compare; with no
-      selection we default to the three highest welcome-bonus cards we cover.
-      The URL is shareable.
+      Compare fees, rewards and eligibility for up to four cards. Share your selection using the page link.
     </p>
 
     <div class="dp-tools-stats">
@@ -136,33 +134,13 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     </div>
   </div>
 
-  <!-- ── Written matchups ─────────────────────────────────────────── -->
-  <section class="dp-compare-matchups" id="dp-compare-matchups" aria-labelledby="dp-matchups-head">
-    <h2 id="dp-matchups-head">Head to head, with a verdict</h2>
-    <p>
-      Pairs a shortlist tends to come down to. Each has its own page, its own
-      spec table and our call on which one to take.
-    </p>
-    <ul>
-      {cardMatchups.map((m) => (
-        <li>
-          <a href={`/cards/compare/${matchupSlug(m)}/`}>
-            {allCards.find((c) => c.slug === m.left)?.name} vs{" "}
-            {allCards.find((c) => c.slug === m.right)?.name}
-          </a>
-          <span class="deck">{m.deck}</span>
-        </li>
-      ))}
-    </ul>
-  </section>
-
   <!-- ── Picker ───────────────────────────────────────────────────── -->
   <section class="dp-compare-picker">
     <details>
       <summary>
         <span class="dp-compare-picker-title">Pick cards to compare</span>
         <span class="dp-compare-picker-hint">
-          Up to {MAX_CARDS} cards · grouped by bank
+          Up to {MAX_CARDS} cards
         </span>
       </summary>
       <form method="get" action="/cards/compare/" class="dp-compare-picker-form">
@@ -190,8 +168,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
           ))}
         </fieldset>
         <div class="dp-compare-picker-actions">
-          <button type="submit">Update comparison</button>
-          <a href="/cards/compare/" class="reset">Reset to defaults</a>
+          <button type="submit" class="dp-ui-action dp-ui-primary">Update comparison</button>
+          <a href="/cards/compare/" class="dp-ui-action dp-ui-quiet">Reset to defaults</a>
           <span class="caveat">
             Select up to {MAX_CARDS} cards.
           </span>
@@ -288,7 +266,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
 
             <footer class="dp-compare-col-foot">
               <VerifiedStamp lastVerified={card.lastVerified} />
-              <a href={`/cards/${card.slug}/`} class="cta">
+              <a href={`/cards/${card.slug}/`} class="dp-ui-action dp-ui-quiet">
                 Read review →
               </a>
             </footer>
@@ -297,6 +275,22 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       })}
     </section>
   )}
+
+  <section class="dp-compare-matchups" id="dp-compare-matchups" aria-labelledby="dp-matchups-head">
+    <h2 id="dp-matchups-head">Head to head, with a verdict</h2>
+    <p>Written comparisons for cards you might shortlist together, with a verdict on who each suits.</p>
+    <ul>
+      {cardMatchups.map((m) => (
+        <li>
+          <a href={`/cards/compare/${matchupSlug(m)}/`}>
+            {allCards.find((c) => c.slug === m.left)?.name} vs{" "}
+            {allCards.find((c) => c.slug === m.right)?.name}
+          </a>
+          <span class="deck">{m.deck}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
 
   <div class="dp-tools-actions" style="margin-top: 32px;">
     <span style="font-size: 13px; color: var(--ink-soft);">
@@ -314,7 +308,6 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   // "Update comparison" button returned the same three cards every time.
   (function () {
     var grid = document.getElementById("dp-compare-grid");
-    var matchups = document.getElementById("dp-compare-matchups");
     var empty = document.getElementById("dp-compare-empty");
     var countEl = document.getElementById("dp-compare-count");
     var modeEl = document.getElementById("dp-compare-mode");
@@ -362,7 +355,6 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
         img.addEventListener("error", function () { img.remove(); }, { once: true });
         template.replaceWith(img);
       });
-      if (!isDefault && matchups) grid.after(matchups);
 
       countEl.textContent = String(show.length);
       modeEl.textContent = isDefault ? "top welcome-bonus cards" : "selected";
@@ -417,7 +409,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   .dp-compare-matchups a {
     display: inline-flex;
     align-items: center;
-    min-height: 32px;
+    min-height: var(--dp-ui-control, 44px);
     font-family: var(--font-ui);
     font-size: 15px;
     font-weight: 600;
@@ -460,14 +452,14 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     border: 1px solid var(--line);
     border-radius: 8px;
     background: var(--paper);
-    overflow: hidden;
   }
   .dp-compare-picker summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    padding: 16px 24px;
+    min-block-size: var(--dp-ui-control, 44px);
+    padding: 8px 16px;
     cursor: pointer;
     list-style: none;
   }
@@ -475,14 +467,15 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     display: none;
   }
   .dp-compare-picker summary::after {
-    content: "▾";
+    content: "▾" / "";
     color: var(--ink-soft);
     font-size: 12px;
     transition: transform 0.18s ease;
   }
-  .dp-compare-picker details[open] summary::after {
+  .dp-compare-picker details[open] > summary::after {
     transform: rotate(180deg);
   }
+  .dp-compare-picker summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 8px; }
   .dp-compare-picker-title {
     font-family: var(--font-display);
     font-weight: 500;
@@ -525,17 +518,17 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
   .dp-compare-picker-group label {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
     font-size: 13px;
     line-height: 1.4;
     color: var(--ink);
     cursor: pointer;
     padding: 4px 0;
+    min-block-size: var(--dp-ui-control, 44px);
   }
   .dp-compare-picker-group input {
     accent-color: var(--ink);
-    margin-top: 3px;
     flex-shrink: 0;
   }
   .dp-compare-picker-group label span { min-width: 0; overflow-wrap: anywhere; }
@@ -547,32 +540,6 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     margin-top: 24px;
     padding-top: 16px;
     border-top: 1px solid var(--line-soft);
-  }
-  .dp-compare-picker-actions button {
-    font-family: var(--font-ui);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    padding: 10px 20px;
-    background: var(--ink);
-    color: var(--paper);
-    border: 0;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background 0.15s ease;
-  }
-  .dp-compare-picker-actions button:hover {
-    background: var(--green);
-  }
-  .dp-compare-picker-actions .reset {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink-soft);
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 1px;
-  }
-  .dp-compare-picker-actions .reset:hover {
-    color: var(--green);
   }
   .dp-compare-picker-actions .caveat {
     font-size: 12px;
@@ -676,32 +643,17 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     padding-top: 16px;
     border-top: 1px solid var(--line-soft);
   }
-  .dp-compare-col-foot .cta {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    color: var(--ink);
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 2px;
-    transition: color 0.15s ease;
-  }
-  .dp-compare-col-foot .cta:hover {
-    color: var(--green);
-  }
-
   @media (max-width: 720px) {
+    .dp-compare-picker-head { padding: 24px 20px 16px; }
+    .dp-compare-picker-head .dp-tools-stats { margin-block-start: 12px; gap: 5px 14px; }
     .dp-compare-picker,
     .dp-compare-grid {
       padding-inline: 20px;
     }
-    .dp-compare-picker summary {
-      padding: 14px 16px;
-      flex-wrap: wrap;
-    }
-    .dp-compare-picker-hint {
-      width: 100%;
-      margin-left: 0;
-    }
+    .dp-compare-picker { margin-block-start: 14px; }
+    .dp-compare-picker summary { gap: 8px; }
+    .dp-compare-picker-title { font-size: 16px; }
+    .dp-compare-picker-hint { white-space: nowrap; }
     .dp-compare-picker-form {
       padding: 16px;
     }

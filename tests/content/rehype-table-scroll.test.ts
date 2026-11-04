@@ -18,3 +18,14 @@ test("wraps Markdown tables in a focusable scroll region and preserves the nativ
   rehypeTableScroll()(root);
   assert.equal(root.children[1], wrapper);
 });
+
+test("gives multiple scrollable table regions distinct names in reading order", () => {
+  const tables = Array.from({ length: 2 }, () => ({ type: "element", tagName: "table", children: [] }));
+  const root = { type: "root", children: [...tables] };
+  const transform = rehypeTableScroll();
+  transform(root);
+  assert.deepEqual(root.children.map((wrapper) => (wrapper as { properties?: { ariaLabel?: string } }).properties?.ariaLabel),
+    ["Data table 1 of 2", "Data table 2 of 2"]);
+  transform(root);
+  assert.equal(root.children[1].children[0], tables[1]);
+});

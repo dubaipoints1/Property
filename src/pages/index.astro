@@ -918,7 +918,7 @@ const DIRECTORY = [
      --p. Without it, one static screen. Colours are fixed light-on-dark
      in both themes: the stage is always night-navy behind a video. */
   .hp-reel {
-    --hp-head: 92px; /* header + quick-link strip; desktop below. JS measures the real value */
+    --hp-head: var(--dp-sticky-header-height); /* JS measures the actual height when active. */
     --p: 0;
     position: relative;
     height: calc(100svh - var(--hp-head));
@@ -1019,7 +1019,6 @@ const DIRECTORY = [
     transform: scaleX(var(--p)); transform-origin: left center;
   }
   @media (max-width: 899px) {
-    .hp-reel { --hp-head: 92px; }
     /* Shorter trip on phones, and the buttons replace the scroll hint. */
     .hp-reel.is-scrub { height: calc(200svh - var(--hp-head)); }
     .hp-reel.is-scrub .hp-reel-hint { display: none; }
@@ -1051,7 +1050,6 @@ const DIRECTORY = [
     }
   }
   @media (min-width: 1024px) {
-    .hp-reel { --hp-head: 81px; } /* the quick-link strip is phone/tablet only */
   }
   @media (max-width: 380px) {
     .hp-reel-title .hp-hero-kicker { letter-spacing: 0.8px; font-size: 10.5px; }

@@ -126,7 +126,7 @@
      existing 1180px cap is preserved (clamp lower bound). */
   --container-listing: clamp(1180px, 1180px + (100vw - 1600px) * 0.4, 1500px);
   /* Sticky header including its mobile quick-links strip and borders. */
-  --dp-sticky-header-height: 92px;
+  --dp-sticky-header-height: 102px;
 }
 
 /* Source-led news can use the same serif/UI hierarchy without downloading

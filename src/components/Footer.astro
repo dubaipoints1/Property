@@ -61,7 +61,7 @@ const COLUMNS = [
     <div class="dp-footer-top">
       <div class="dp-footer-brand">
         <a href="/" class="dp-footer-wordmark">DubaiPoints</a>
-        <p class="dp-footer-tag">Independent UAE points, miles and card guides. Every figure dated, sourced and in dirhams.</p>
+        <p class="dp-footer-tag">Independent UAE guides to credit cards, points and miles, with dated sources.</p>
       </div>
       {COLUMNS.map((col) => (
         <nav class="dp-footer-col" aria-label={col.heading}>
@@ -86,16 +86,16 @@ const COLUMNS = [
   .dp-footer {
     background: var(--navy-deep);
     color: rgba(255, 255, 255, 0.72);
-    margin-top: 96px;
-    padding: 64px 48px 32px;
+    margin-top: var(--dp-ui-section);
+    padding: clamp(32px, 5vw, 58px) clamp(16px, 4vw, 48px) 24px;
   }
   .dp-footer-inner { max-width: var(--container-listing); margin: 0 auto; }
   .dp-footer-top {
     display: grid;
-    grid-template-columns: 1.4fr repeat(3, 1fr);
-    gap: 40px;
-    padding-bottom: 40px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    gap: var(--dp-ui-gap);
+    padding-bottom: var(--dp-ui-gap);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
   .dp-footer-wordmark {
     font-family: var(--font-display);
@@ -113,41 +113,43 @@ const COLUMNS = [
     color: rgba(255, 255, 255, 0.6);
   }
   .dp-footer-heading {
-    margin: 0 0 14px;
-    font-size: 11px;
+    margin: 0 0 7px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--gold-lift);
+    color: var(--navy-lift);
   }
   .dp-footer-col ul { list-style: none; margin: 0; padding: 0; }
   .dp-footer-col a {
-    display: inline-block;
-    padding: 6px 0;
-    font-size: 14.5px;
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 32px;
+    padding: 3px 0;
+    font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.82);
     text-decoration: none;
     transition: color 0.15s;
   }
   .dp-footer-col a:hover,
-  .dp-footer-wordmark:hover { color: var(--gold-lift); }
-  .dp-footer a:focus-visible { outline: 2px solid var(--gold-lift); outline-offset: 3px; }
+  .dp-footer-wordmark:hover { color: #fff; text-decoration: underline; text-underline-offset: 0.22em; }
+  .dp-footer a:focus-visible { outline: 2px solid var(--navy-lift); outline-offset: 3px; }
   .dp-footer-bottom {
     display: flex;
     justify-content: space-between;
     gap: 16px 32px;
-    margin: 24px 0 0;
+    margin: 16px 0 0;
     font-size: 12.5px;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.68);
   }
-  .dp-footer-bottom a { color: rgba(255, 255, 255, 0.72); white-space: nowrap; margin-right: 64px; }
+  .dp-footer-bottom a { color: rgba(255, 255, 255, 0.82); overflow-wrap: anywhere; text-decoration: underline; }
 
   @media (max-width: 900px) {
-    .dp-footer { margin-top: 64px; padding: 48px 20px 96px; }
-    .dp-footer-top { grid-template-columns: 1fr 1fr; gap: 32px 20px; }
+    .dp-footer { padding-bottom: 64px; }
+    .dp-footer-top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .dp-footer-brand { grid-column: 1 / -1; }
-    .dp-footer-col a { padding: 9px 0; }
-    .dp-footer-bottom { flex-direction: column; }
+    .dp-footer-col a { min-block-size: var(--dp-ui-control); }
+    .dp-footer-bottom { flex-direction: column; align-items: flex-start; }
   }
 </style>

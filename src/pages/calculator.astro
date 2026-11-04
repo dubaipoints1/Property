@@ -38,13 +38,10 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
     <header class="dp-article-head">
       <p class="dp-article-eyebrow is-green">Tool · Calculator</p>
       <h1 class="dp-article-title">
-        Which UAE card pays you back the most on <em>your</em> spend?
+        UAE card rewards calculator
       </h1>
       <p class="dp-article-lede">
-        Enter your monthly spend across seven categories. We rank every
-        card on the site by AED-equivalent monthly reward at its
-        published earn rate. Methodology is below the calculator, not
-        behind an email wall.
+        Estimate monthly rewards in AED from your spending and each card’s published earn rates.
       </p>
       <p class="dp-article-meta">
         <strong>{cardCount}</strong> cards ranked
@@ -56,21 +53,12 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
       </p>
     </header>
 
-    <div class="dp-take">
-      <p class="label">How to read this</p>
-      <p>
-        We do not promise these rewards. We show what each card's
-        published earn rate works out to on the spend you enter, using
-        the AED conversion benchmarks in the methodology section. Your
-        actual redemption value will differ; rare sweet spots beat
-        these rates, mass-market redemptions sit below them.
-      </p>
-    </div>
-
     <RewardsCalculator client:load cards={cards} />
 
     <section id="methodology" class="dp-article-section">
       <h2>Methodology</h2>
+
+      <p>These figures are estimates, not promised rewards. The tool uses the AED benchmarks below; actual redemption value varies. Some awards beat the benchmarks and others fall short.</p>
 
       <p>
         The calculator joins your stated monthly spend to each card's

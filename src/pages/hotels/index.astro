@@ -41,11 +41,12 @@ const schema = collectionPageGraph({
       <p class="dp-article-eyebrow">Hotels</p>
       <h1 class="dp-article-title">Hotel programmes.</h1>
       <p class="dp-article-lede">
-        The hotel loyalty programmes UAE residents earn into, through stays
-        and through co-branded or transferable-points cards. Each page covers
-        earning, the redemptions worth making, transfer partners and how
-        points expire.
+        Compare how to earn hotel points from UAE stays and cards, where to use them and how long they last.
       </p>
+      <nav class="dp-hotel-directory-actions" aria-label="Hotel resources">
+        <a href="/valuations/" class="dp-ui-action dp-ui-primary">Compare points values</a>
+        <a href="/news/hotels/" class="dp-ui-action dp-ui-secondary">Latest hotel news</a>
+      </nav>
     </header>
 
     <div class="dp-dir-grid">
@@ -98,6 +99,7 @@ const schema = collectionPageGraph({
 </BaseLayout>
 
 <style>
+  .dp-hotel-directory-actions { display: flex; flex-wrap: wrap; gap: var(--dp-ui-gap, 8px); margin-block-start: 16px; }
   .dp-hotel-tile { min-inline-size: 0; }
   .dp-hotel-tile-media {
     display: grid;

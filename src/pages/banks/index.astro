@@ -34,10 +34,6 @@ const sortedByCardCount = [...banks].sort(
 const featured = sortedByCardCount[0];
 const others = banks.filter((b) => b.id !== featured?.id);
 
-const tabs = [
-  { label: "All banks", active: true, href: "/banks/" },
-  { label: "Salary-transfer tracker", href: "/salary-transfer/" },
-];
 const siteUrl = siteUrlFrom(Astro.site);
 const schema = collectionPageGraph({ siteUrl, path: "/banks/", name: "UAE banks directory", description: "Every UAE bank we cover, with a hub page each.", crumbs: [{ name: "Banks", path: "/banks/" }] });
 ---
@@ -52,16 +48,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/banks/", name: "UAE banks 
     <div class="intel-pagehead-inner">
       <div class="crumb">DubaiPoints / Banks</div>
       <h1>UAE banks.</h1>
-      <p>A hub page for each bank we cover — salary-transfer offer, card lineup, reward currency, and reputation notes in one place. {banks.length} banks tracked.</p>
+      <p>Explore cards, rewards and salary-transfer offers from the {banks.length} UAE banks we cover.</p>
 
       <div class="intel-tools">
-        <div class="intel-tabs" role="tablist">
-          {tabs.map((t) => (
-            t.active
-              ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
-              : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
-          ))}
-        </div>
+        <nav class="intel-tabs" aria-label="Bank and salary tools">
+          <a href="/salary-transfer/" class="dp-ui-action dp-ui-primary">Open salary tracker</a>
+          <a href="/salary-transfer/calculator/" class="dp-ui-action dp-ui-secondary">Compare salary bonuses</a>
+        </nav>
         <form class="intel-search" action="/search/" method="get" role="search">
           <label class="intel-search-label" for="banks-search-input">Search</label>
           <label for="banks-search-input" class="intel-search-icon" aria-hidden="true">
@@ -74,6 +67,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/banks/", name: "UAE banks 
             id="banks-search-input"
             type="search"
             name="q"
+            class="dp-ui-field"
             placeholder="Search banks…"
             autocomplete="off"
           />

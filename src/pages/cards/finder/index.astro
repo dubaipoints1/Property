@@ -146,10 +146,7 @@ const lastRefreshed = new Date(
   <div class="dp-pagehead dp-finder-head">
     <div class="crumb">DubaiPoints / Cards / Finder</div>
     <h1>Find your card</h1>
-    <p>
-      Start with your salary and the rewards you want. Add spending and
-      other filters if you want a narrower shortlist.
-    </p>
+    <p>Shortlist UAE cards by salary, rewards and the way you spend.</p>
     {/* Stage 5.5 UX Fix #6: visual anchor above the fold. Matches the
         stats-strip pattern used on the compare page so the two tool
         pages read as one publication. */}
@@ -181,6 +178,7 @@ const lastRefreshed = new Date(
         <fieldset class="dp-finder-fs is-salary">
           <legend>Your monthly salary (AED)</legend>
           <input
+            class="dp-ui-field"
             type="number"
             name="salary"
             aria-label="Your monthly salary (AED)"
@@ -198,14 +196,14 @@ const lastRefreshed = new Date(
 
         <fieldset class="dp-finder-fs">
           <legend>Reward preference</legend>
-          <select name="prefer" aria-label="Reward preference">
+          <select class="dp-ui-field" name="prefer" aria-label="Reward preference">
             {PREFER_OPTIONS.map((opt) => <option value={opt.value} selected={preferInit === opt.value}>{opt.label}</option>)}
           </select>
         </fieldset>
 
         <div class="dp-finder-actions">
-          <button type="submit">Rank cards</button>
-          <a href="/cards/finder/" class="reset">Reset filters</a>
+          <button type="submit" class="dp-ui-action dp-ui-primary">Rank cards</button>
+          <a href="/cards/finder/" class="dp-ui-action dp-ui-quiet">Reset filters</a>
         </div>
 
         <details class="dp-finder-more" id="finder-more">
@@ -271,7 +269,7 @@ const lastRefreshed = new Date(
         <div class="dp-finder-fs-row">
           <fieldset class="dp-finder-fs">
             <legend>Invitation-only cards</legend>
-            <select name="include_invite_only" aria-label="Invitation-only cards">
+            <select class="dp-ui-field" name="include_invite_only" aria-label="Invitation-only cards">
               <option value="false" selected={!includeInviteOnlyInit}>Exclude</option>
               <option value="true" selected={includeInviteOnlyInit}>Include</option>
             </select>
@@ -291,7 +289,7 @@ const lastRefreshed = new Date(
           </fieldset>
         </div>
 
-          <div class="dp-finder-actions"><button type="submit">Apply all filters</button></div>
+          <div class="dp-finder-actions"><button type="submit" class="dp-ui-action dp-ui-primary">Apply all filters</button></div>
         </details>
       </form>
     </details>
@@ -321,15 +319,16 @@ const lastRefreshed = new Date(
       <div class="dp-finder-next" id="finder-next">
         <a
           id="finder-compare"
+          class="dp-ui-action dp-ui-secondary"
           href={`/cards/compare/?cards=${defaultCompareSlugs.join(",")}`}
           hidden={defaultCompareSlugs.length < 2}
-        >Compare your top {defaultCompareSlugs.length} side by side →</a>
-        <button type="button" id="finder-share" hidden>Copy link to these results</button>
+        >Compare top {defaultCompareSlugs.length} →</a>
+        <button type="button" id="finder-share" class="dp-ui-action dp-ui-quiet" hidden>Copy results link</button>
         <span id="finder-share-status" role="status" aria-live="polite"></span>
       </div>
 
       <div class="dp-finder-value-context">
-        <CardValueScenario id="finder-card-value" />
+        <CardValueScenario id="finder-card-value" compact />
       </div>
 
       <div class="dp-finder-grid" id="finder-grid">
@@ -404,16 +403,6 @@ const lastRefreshed = new Date(
   // ── Client-side ranker — runs on page load and re-reads on form submit.
   // Mirrors the server-side score formula documented at the top of the file.
   (function () {
-    var filters = document.getElementById("finder-filters");
-    if (filters instanceof HTMLDetailsElement) {
-      var compactFilters = window.matchMedia("(max-width: 820px)");
-      var openSidebar = function () {
-        if (!compactFilters.matches) filters.open = true;
-      };
-      compactFilters.addEventListener("change", openSidebar);
-      openSidebar();
-    }
-
     var idxEl = document.getElementById("finder-card-index");
     if (!idxEl) return;
     var CARDS = JSON.parse(idxEl.textContent || "[]");
@@ -600,7 +589,7 @@ const lastRefreshed = new Date(
       if (compareLink) {
         var top3 = topSlugs.slice(0, 3);
         compareLink.href = "/cards/compare/?cards=" + top3.join(",");
-        compareLink.textContent = "Compare your top " + top3.length + " side by side →";
+        compareLink.textContent = "Compare top " + top3.length + " →";
         compareLink.hidden = top3.length < 2;
       }
       mode.textContent = (p.prefer !== "none" ? preferenceLabel + " matches first. " : "")
@@ -645,7 +634,20 @@ const lastRefreshed = new Date(
       if (legacy) legacy.checked = p.includeLegacy;
     }
 
-    syncControls(readParams());
+    var initial = readParams();
+    var filters = document.getElementById("finder-filters");
+    if (filters instanceof HTMLDetailsElement) {
+      var compactFilters = window.matchMedia("(max-width: 820px)");
+      var activeFilters = initial.salary > 0 || initial.prefer !== "none" || initial.spend !== "general"
+        || initial.network !== "any" || initial.fee !== "any" || initial.includeInviteOnly || initial.includeLegacy;
+      // Default results are immediately visible on phones. Shared filters
+      // stay exposed, and the desktop sidebar (including no-JS) stays open.
+      if (compactFilters.matches && !activeFilters) filters.open = false;
+      compactFilters.addEventListener("change", function () {
+        if (!compactFilters.matches) filters.open = true;
+      });
+    }
+    syncControls(initial);
     apply();
 
     // The form submits by GET, so the address bar already holds the
@@ -676,12 +678,6 @@ const lastRefreshed = new Date(
   .dp-finder-more > :not(summary) { margin-block-start: 16px; }
   .dp-finder-fs select {
     width: 100%;
-    min-height: 44px;
-    padding: 8px 10px;
-    color: var(--ink);
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 8px;
   }
   @media (max-width: 640px) {
     .dp-finder-head { padding-block: 24px 18px; }
@@ -691,27 +687,13 @@ const lastRefreshed = new Date(
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px 20px;
-    margin: 0 0 20px;
+    gap: 4px 8px;
+    margin: 0 0 12px;
     font-family: var(--font-ui);
     font-size: 15px;
   }
-  .dp-finder-next a { font-weight: 600; color: var(--green); }
-  .dp-finder-next a[hidden] { display: none; }
-  .dp-finder-next button {
-    font: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    min-height: 44px;
-    padding: 0 16px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    color: var(--ink);
-    cursor: pointer;
-  }
-  .dp-finder-next button:hover { border-color: var(--green); color: var(--green); }
-  .dp-finder-next button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-finder-next [hidden] { display: none; }
+  #finder-share-status:empty { position: absolute; }
   #finder-share-status { font-size: 13px; color: var(--green); font-weight: 600; }
 
   .dp-finder {
@@ -766,18 +748,8 @@ const lastRefreshed = new Date(
     margin-bottom: 4px;
   }
   .dp-finder-fs input[type="number"] {
-    font-family: var(--font-ui);
     font-size: 16px;
-    padding: 8px 12px;
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    background: var(--bg);
-    color: var(--ink);
     width: 100%;
-  }
-  .dp-finder-fs input[type="number"]:focus {
-    outline: 2px solid var(--green);
-    outline-offset: 1px;
   }
   .dp-finder-fs .hint {
     font-size: 12px;
@@ -801,6 +773,7 @@ const lastRefreshed = new Date(
     color: var(--ink);
     cursor: pointer;
     padding: 4px 0;
+    min-block-size: 44px;
   }
   .dp-finder-radios input {
     accent-color: var(--ink);
@@ -815,6 +788,7 @@ const lastRefreshed = new Date(
     color: var(--ink);
     cursor: pointer;
     padding: 4px 0;
+    min-block-size: 44px;
   }
   .dp-finder-checkbox input {
     accent-color: var(--ink);
@@ -826,32 +800,6 @@ const lastRefreshed = new Date(
     flex-wrap: wrap;
     padding-top: 16px;
     border-top: 1px solid var(--line-soft);
-  }
-  .dp-finder-actions button {
-    font-family: var(--font-ui);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    padding: 12px 20px;
-    background: var(--ink);
-    color: var(--paper);
-    border: 0;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: background 0.15s ease;
-  }
-  .dp-finder-actions button:hover {
-    background: var(--green);
-  }
-  .dp-finder-actions .reset {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink-soft);
-    border-bottom: 1px solid currentColor;
-    padding-bottom: 1px;
-  }
-  .dp-finder-actions .reset:hover {
-    color: var(--green);
   }
 
   /* ── Results ──────────────────────────────────────────────────── */
@@ -976,7 +924,8 @@ const lastRefreshed = new Date(
   @media (max-width: 820px) {
     .dp-finder {
       grid-template-columns: minmax(0, 1fr);
-      gap: 24px;
+      gap: 16px;
+      margin-block-start: 16px;
       padding-inline: 20px;
     }
     .dp-finder-form {
@@ -987,17 +936,13 @@ const lastRefreshed = new Date(
     .dp-finder-grid {
       grid-template-columns: minmax(0, 1fr);
     }
-    /* Stage 5.5 UX Fix #7: surface the <details> disclosure on mobile.
-       The form starts open (per <details open>) so first-load readers
-       see the filters; once they've ranked once, tapping the summary
-       collapses the form and gives the results full screen. */
     .dp-finder-formwrap-summary {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       flex-wrap: wrap;
-      gap: 12px;
-      padding: 14px 18px;
+      gap: 4px 10px;
+      min-block-size: var(--dp-ui-control, 44px);
+      padding: 8px 14px;
       background: var(--paper);
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -1023,20 +968,15 @@ const lastRefreshed = new Date(
     .dp-finder-formwrap-hint {
       font-size: 12px;
       color: var(--ink-soft);
-    }
-    .dp-finder-formwrap[open] .dp-finder-formwrap-summary::after {
-      content: "Hide";
-    }
-    .dp-finder-formwrap:not([open]) .dp-finder-formwrap-summary::after {
-      content: "Show";
+      flex: 1 1 auto;
     }
     .dp-finder-formwrap-summary::after {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
+      content: "▾" / "";
+      margin-inline-start: auto;
       color: var(--green);
     }
+    .dp-finder-formwrap[open] .dp-finder-formwrap-summary::after { transform: rotate(180deg); }
+    .dp-finder-formwrap-summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
     .dp-finder-formwrap[open] > .dp-finder-form {
       border-radius: 0 0 8px 8px;
       border-top: 0;

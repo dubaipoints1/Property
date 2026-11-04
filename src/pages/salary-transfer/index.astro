@@ -104,7 +104,7 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Salary-transfer tracker</div>
     <h1>The salary-transfer tracker.</h1>
-    <p>Each listed salary-transfer offer has been checked against a bank product page or campaign terms and dated per offer. Filter by salary band, reward type, or specific bank.</p>
+    <p>Find current UAE salary-transfer offers for your salary band. Each offer is dated and checked against published bank material.</p>
 
     <div class="dp-tools-stats">
       {/* Phones get the short labels so the three stats fit one line
@@ -116,12 +116,12 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
         <span><span class="lbl st-long">Newest verification:</span><span class="lbl st-short">Checked</span> <strong><span class="st-long">{fmtFull(newestVerification)}</span><span class="st-short">{fmtShort(newestVerification)}</span></strong></span>
       )}
     </div>
+  </div>
 
-    {/* Collapsed by default at every width (9 Oct 2026, Chairman: the
-        open paragraph left "extra spaces" above the table on desktop; at
-        390px it already filled the first viewport, 2026-09-06 audit
-        F-019). The summary line states the coverage; the detail is one
-        tap away. */}
+  <!-- Preact island handles filter UI + sortable table -->
+  <SalaryTransferTracker offers={offers} cardPaths={getTrackerCardPaths(offers)} timelines={getSalaryTransferTimelines(offers)} client:load />
+
+  <div class="st-coverage">
     <details class="dp-coverage-note" id="coverage-note">
       <summary>
         <strong class="st-long">Coverage status.</strong> <span class="st-long">{trackedBanks.size} of {coveredCount} covered
@@ -155,9 +155,6 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
       </p>
     </details>
   </div>
-
-  <!-- Preact island handles filter UI + sortable table -->
-  <SalaryTransferTracker offers={offers} cardPaths={getTrackerCardPaths(offers)} timelines={getSalaryTransferTimelines(offers)} client:load />
 
   <div class="dp-tools-actions">
     <span>See the <a href="/news/uae-salary-switch-scorecard/">Salary Switch Scorecard</a> for worked examples of qualifying steps, payout timing and costs.</span>
@@ -232,24 +229,20 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
     max-width: none;
     padding-inline: max(20px, calc((100% - var(--container-listing)) / 2 + 32px));
   }
+  .st-coverage { padding-inline: 20px; }
+  .st-coverage summary { min-block-size: var(--dp-ui-control, 44px); align-content: center; }
   .st-short { display: none; }
-  /* Phones (19 Oct 2026 UX review): the head used to push the band picker
-     — the page's main control — below the first screen. Tighter padding,
-     stats on one line, the coverage summary on one line. */
   @media (max-width: 640px) {
-    .st-page > :global(.dp-pagehead) { padding-top: 24px; padding-bottom: 18px; }
+    .st-page > :global(.dp-pagehead) { padding-top: 20px; padding-bottom: 14px; }
     .st-page :global(.dp-pagehead h1) { font-size: 32px; margin-bottom: 8px; }
     .st-page :global(.dp-pagehead > p) { font-size: 13px; line-height: 1.5; }
     .st-long { display: none; }
     .st-short { display: inline; }
     .st-page :global(.dp-tools-stats) {
-      margin-top: 12px; gap: 6px 14px; flex-wrap: nowrap;
-      font-size: 12px; white-space: nowrap;
+      margin-top: 10px; gap: 4px 10px;
+      font-size: 12px;
     }
     .st-page :global(.dp-tools-stats .lbl) { margin-right: 3px; }
     .st-page :global(.dp-coverage-note) { margin-top: 12px; padding: 8px 12px; font-size: 13px; }
-    .st-page :global(.dp-coverage-note:not([open]) summary) {
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
   }
 </style>

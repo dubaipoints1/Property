@@ -19,13 +19,17 @@ const listedFee = (fee: number | null) => fee == null ? "Confirm with issuer" : 
   <dl class="dp-card-value-pair">
     <div>
       <dt>First year</dt>
-      <dd data-card-value-first>{formatCardValue(first)}</dd>
-      {terms.assumesYearOneWaiver && <small>If listed annual-fee waiver applies</small>}
+      <dd>
+        <span data-card-value-first>{formatCardValue(first)}</span>
+        {terms.assumesYearOneWaiver && <small>If listed annual-fee waiver applies</small>}
+      </dd>
     </div>
     <div>
       <dt>Each year after</dt>
-      <dd data-card-value-later>{formatCardValue(later)}</dd>
-      {terms.hasConditionalRenewalWaiver && <small>Before any renewal waiver</small>}
+      <dd>
+        <span data-card-value-later>{formatCardValue(later)}</span>
+        {terms.hasConditionalRenewalWaiver && <small>Before any renewal waiver</small>}
+      </dd>
     </div>
   </dl>
   <p class="dp-card-value-issue" data-card-value-reward-issue hidden={!rewardIssue}>{rewardIssue}</p>
@@ -76,6 +80,7 @@ const listedFee = (fee: number | null) => fee == null ? "Confirm with issuer" : 
   }
   .dp-card-value-lines dt, .dp-card-value-lines small { color: var(--ink-soft); font-size: 12px; }
   .dp-card-value-lines dd { margin: 0; font-size: 14px; font-weight: 650; }
+  .dp-card-value-pair dd small { display: block; font-weight: 400; }
   .dp-card-value-lines .dp-card-value-issue { color: var(--ink-soft); margin: 5px 0 0; }
   .dp-card-value-lines details { margin-top: 3px; }
   .dp-card-value-lines summary { color: var(--green); cursor: pointer; font-weight: 600; min-height: 44px; align-content: center; }

@@ -7,6 +7,7 @@
 // across hub pages (banks + airlines).
 
 import BaseLayout from "./BaseLayout.astro";
+import UtilityPageHead from "~/components/UtilityPageHead.astro";
 import { bankMark } from "~/lib/logos";
 
 interface Props {
@@ -87,44 +88,55 @@ const schema = {
 ---
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
-  <header class="dp-pagehead is-narrow">
-    <div class="crumb"><a href="/banks/" class="crumb-link">UAE bank</a></div>
+  <UtilityPageHead variant="bank">
+    <p class="dp-utility-kicker"><a href="/banks/">UAE banks</a></p>
+    <h1>{bankName}</h1>
+    <p class="dp-utility-deck">Compare {bankName} cards and rewards, and check whether there is a tracked salary-transfer offer.</p>
+    <div class="dp-utility-actions">
+      {cardCount ? (
+        <a class="dp-ui-action dp-ui-primary" href="#bank-cards">Compare {bankName} cards</a>
+      ) : (
+        <a class="dp-ui-action dp-ui-primary" href="/cards/">Browse UAE cards</a>
+      )}
+      {topBonusAed != null ? (
+        <a class="dp-ui-action dp-ui-secondary" href="#bank-salary-transfer">See salary-transfer offer</a>
+      ) : (
+        <a class="dp-ui-action dp-ui-secondary" href="/salary-transfer/">Open salary tracker</a>
+      )}
+    </div>
     {mark && (
-      <span class:list={["dp-hub-mark", { "is-plated": mark.plated }]}>
-        <img src={mark.src} alt={`${bankName} logo`} loading="eager" decoding="async" />
+      <span slot="media" class:list={["dp-hub-mark", { "is-plated": mark.plated }]}>
+        <img src={mark.src} alt="" loading="eager" decoding="async" />
       </span>
     )}
-    <h1>{bankName}</h1>
-    {description && <p class="deck">{description}</p>}
 
     {(cardCount != null || topBonusAed != null || lastVerified) && (
-      <div class="dp-metric-strip">
+      <dl slot="facts" class="dp-metric-strip dp-bank-facts">
         {cardCount != null && (
           <div class="metric">
-            <span class="v">{cardCount}</span>
-            <span class="l">Cards covered</span>
+            <dt class="l">Cards covered</dt>
+            <dd class="v">{cardCount}</dd>
           </div>
         )}
         {topBonusAed != null && (
           <div class="metric is-live">
-            <span class="v">AED {topBonusAed.toLocaleString()}</span>
-            <span class="l">Top live bonus</span>
-            <span class="meta">Salary-transfer offer</span>
+            <dt class="l">Top salary-transfer bonus</dt>
+            <dd class="v">AED {topBonusAed.toLocaleString()}</dd>
           </div>
         )}
         {lastVerified && (
           <div class="metric">
-            <span class="v">{fmtVerified(lastVerified)}</span>
-            <span class="l">Last verified</span>
+            <dt class="l">Last card verification</dt>
+            <dd class="v"><time datetime={lastVerified.toISOString()}>{fmtVerified(lastVerified)}</time></dd>
           </div>
         )}
-      </div>
+      </dl>
     )}
-  </header>
+  </UtilityPageHead>
 
   <article class="dp-bank-body">
-    <section class="dp-bank-callout">
-      <p class="label">Current salary transfer offer</p>
+    <section class="dp-bank-callout" id="bank-salary-transfer">
+      <h2 class="label">Current salary transfer offer</h2>
       <slot name="salary-transfer" />
     </section>
 
@@ -133,7 +145,7 @@ const schema = {
       <slot name="currencies" />
     </section>
 
-    <section>
+    <section id="bank-cards">
       <h2>Cards from {bankName}</h2>
       <slot name="cards" />
     </section>
@@ -166,14 +178,18 @@ const schema = {
   .dp-hub-mark {
     display: inline-flex;
     align-items: center;
-    margin: 4px 0 14px;
+    justify-content: center;
+    max-inline-size: 100%;
     padding: 10px 14px;
     background: #fff;
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: var(--dp-ui-radius, 12px);
   }
-  .dp-hub-mark.is-plated { background: #1f3a4d; border-color: #1f3a4d; }
-  .dp-hub-mark img { height: 40px; width: auto; max-width: 220px; object-fit: contain; }
+  .dp-hub-mark.is-plated { background: var(--navy-pin); border-color: var(--navy-pin); }
+  .dp-hub-mark img { block-size: 40px; inline-size: auto; max-inline-size: 100%; object-fit: contain; }
+  .dp-bank-facts.dp-metric-strip { margin: 0; padding-block: 8px 0; border-block-end: 0; }
+  .dp-bank-facts.dp-metric-strip .l { margin: 0 0 4px; letter-spacing: .05em; color: var(--ink-soft); }
+  .dp-bank-facts.dp-metric-strip .v { margin: 0; font-size: clamp(1.125rem, 2vw, 1.45rem); }
   /* Single-column reading width. A Stage 2 sticky rail was trialled here
      but reverted: bank hubs carry too little content to fill two columns,
      so the rail left a large empty void on laptop. Reinstate the rail once
@@ -181,13 +197,14 @@ const schema = {
   .dp-bank-body {
     max-width: 760px;
     margin: 0 auto;
-    padding: 40px 32px 80px;
+    padding: clamp(24px, 3vw, 40px) clamp(16px, 3vw, 32px) 80px;
   }
   @media (max-width: 640px) {
-    .dp-bank-body { padding: 28px 20px 56px; }
+    .dp-bank-body { padding-block-end: 56px; }
     .dp-bank-body section { margin-bottom: 28px; }
   }
   .dp-bank-body section { margin-bottom: 36px; }
+  .dp-bank-body section[id] { scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px); }
   .dp-bank-body h2 {
     font-family: var(--font-display);
     font-weight: 500;
@@ -212,8 +229,10 @@ const schema = {
     letter-spacing: 2.5px; text-transform: uppercase;
     color: var(--gold-ink, var(--gold));
     margin: 0 0 10px;
+    border: 0;
+    padding: 0;
   }
-  .dp-bank-callout :global(*) { color: var(--ink); }
+  .dp-bank-callout :global(strong) { color: var(--ink); }
 
   .dp-bank-cs {
     background: var(--shade-1);
@@ -234,6 +253,7 @@ const schema = {
   .dp-bank-cs p:last-child { margin-bottom: 0; }
   .dp-bank-cs a {
     color: var(--ink); font-weight: 600;
+    overflow-wrap: anywhere;
     text-decoration: underline;
     text-underline-offset: 2px;
     text-decoration-color: var(--line);

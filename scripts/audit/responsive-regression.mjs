@@ -9,6 +9,8 @@ import { deriveRoutes, startStaticServer } from "./_lib.mjs";
 const dist = path.resolve(process.argv[2] ?? "dist");
 const widths = [320, 390, 721, 768, 1024, 1440, 1920];
 const entries = await readdir(dist, { withFileTypes: true, recursive: true });
+const files = new Set(entries.filter((entry) => entry.isFile())
+  .map((entry) => path.relative(dist, path.join(entry.parentPath, entry.name))));
 const routes = deriveRoutes(entries
   .filter((entry) => entry.isFile() && entry.name.endsWith(".html"))
   .map((entry) => path.relative(dist, path.join(entry.parentPath, entry.name))));
@@ -34,6 +36,13 @@ try {
         await page.setViewportSize({ width: widths[0], height: 880 });
         try {
           await navigate(page, route);
+          const images = await page.locator("img[src]").evaluateAll((nodes) => [...new Set(nodes
+            .map((node) => new URL(node.src))
+            .filter((url) => url.origin === location.origin)
+            .map((url) => decodeURIComponent(url.pathname.slice(1))))]);
+          for (const image of images) {
+            if (!files.has(image)) failures.push({ route, image, error: "missing local image file" });
+          }
           for (const width of widths) {
             await page.setViewportSize({ width, height: 880 });
             const dimensions = await page.evaluate(() => ({
@@ -50,12 +59,18 @@ try {
       await page.close();
     }
   }));
-  assert.deepEqual(failures.sort((a, b) => a.route.localeCompare(b.route)), [], "Page-level horizontal overflow or failed load");
-  console.log(`Reflow: ${routes.length} built routes × ${widths.length} widths; no page-level overflow`);
+  assert.deepEqual(failures.sort((a, b) => a.route.localeCompare(b.route)), [], "Page-level horizontal overflow, failed load or missing local image");
+  console.log(`Reflow: ${routes.length} built routes × ${widths.length} widths; no page-level overflow or missing local image src`);
 
   const page = await context.newPage();
   await page.setViewportSize({ width: 1280, height: 880 });
   await navigate(page, "/guides/uae-credit-card-eligibility-2026/");
+  await page.keyboard.press("Tab");
+  const skip = page.getByRole("link", { name: "Skip to content", exact: true });
+  assert.ok(await skip.evaluate((element) => element === document.activeElement));
+  assert.ok((await skip.boundingBox()).y >= 0);
+  await page.keyboard.press("Enter");
+  assert.equal(await page.evaluate(() => document.activeElement.id), "main-content");
   const cards = page.locator(".dp-header-nav summary").filter({ hasText: "Cards" });
   const cardsMenu = page.getByRole("region", { name: "Cards menu" });
   await cards.click();
@@ -83,10 +98,16 @@ try {
   assert.equal(await menu.getAttribute("aria-expanded"), "false");
   assert.equal(await close.isVisible(), false);
   assert.equal(await menu.evaluate((element) => document.activeElement === element), true);
+  for (const quickLink of await page.getByRole("navigation", { name: "Quick links" }).getByRole("link").all()) {
+    assert.ok((await quickLink.boundingBox()).height >= 44);
+  }
   const guideProse = page.locator(".dp-article-body .dp-prose");
   assert.match(await guideProse.innerText(), /starting point, not approval/);
   assert.doesNotMatch(await guideProse.innerText(), /usually mechanical|30–50 points/);
   assert.equal(await guideProse.getByRole("link", { name: /Shortlist cards by salary/ }).getAttribute("href"), "/cards/finder/");
+  await navigate(page, "/guides/uae-transfer-ratios-2026/");
+  const guideIntro = page.locator(".dp-article-body .dp-prose p").first();
+  assert.ok(await guideIntro.evaluate((el) => el.getBoundingClientRect().top < 844));
 
   await page.setViewportSize({ width: 1440, height: 880 });
   const rail = await page.evaluate(() => ({
@@ -97,7 +118,7 @@ try {
 
   await page.setViewportSize({ width: 721, height: 880 });
   await navigate(page, "/guides/best-lounge-access-cards-uae-2026/");
-  const tableRegion = page.getByRole("region", { name: "Data table", exact: true }).first();
+  const tableRegion = page.getByRole("region", { name: /^Data table/ }).first();
   assert.equal(await tableRegion.getAttribute("tabindex"), "0");
   assert.ok(await tableRegion.getByRole("table").isVisible());
   await page.getByText("Check the issuer documents for these cards", { exact: true }).click();
@@ -139,6 +160,9 @@ try {
       else assert.ok(href.startsWith("/airlines/") || href.startsWith("/hotels/"));
     }
     assert.ok(await page.locator(".dp-prog-prose").evaluate((el) => getComputedStyle(el).fontSize !== "13px"));
+    const tableLabels = await page.locator(".dp-prose-table-scroll").evaluateAll((regions) =>
+      regions.map((region) => region.getAttribute("aria-label")));
+    assert.equal(new Set(tableLabels).size, tableLabels.length);
   }
 
   for (const [slug, fee] of [["citi-cashback", "315"], ["adib-cashback-visa", "103.95"]]) {
@@ -152,11 +176,18 @@ try {
     assert.doesNotMatch(glance, /\+ 5% VAT/i);
     assert.equal(await page.locator(".dp-fee-block .vat").first().innerText(), "incl. VAT");
     if (slug === "citi-cashback") {
+      const verdict = page.locator("[data-card-hero-verdict]");
+      assert.ok(await verdict.evaluate((el) => el.getBoundingClientRect().bottom < innerHeight));
       assert.equal(await page.getByRole("link", { name: /Check the current Citi Cash Back terms/ }).getAttribute("href"),
         "https://www.citibank.ae/credit-cards/cashback/citi-cashback-credit-card");
       assert.match(await page.locator("main").innerText(), /not through a partner/);
     }
   }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await navigate(page, "/cards/citi-cashback/");
+  assert.ok(await page.locator("[data-card-hero-verdict]").evaluate((el) => el.getBoundingClientRect().bottom < innerHeight));
+  await navigate(page, "/banks/dib/");
+  assert.match(await page.locator("#bank-salary-transfer").innerText(), /check deadline with the bank/i);
 
   await page.setViewportSize({ width: 768, height: 880 });
   await navigate(page, "/salary-transfer/");
@@ -169,6 +200,7 @@ try {
     has: page.getByRole("link", { name: "Emirates Islamic", exact: true }),
   });
   assert.match(await ei.locator(".dpst-card-val").innerText(), /800\s+Includes optional card reward/);
+  await page.locator(".dpst-options > summary").click();
   await page.getByRole("button", { name: "No credit card required" }).click();
   assert.match(await ei.locator(".dpst-card-val").innerText(), /400\s+Account reward only/);
   await navigate(page, "/salary-transfer/aed-8000-to-15000/");
@@ -191,10 +223,17 @@ try {
   assert.match(await eiCalc.innerText(), /1,000 cash-equivalent/);
   assert.doesNotMatch(await eiCalc.innerText(), /AED 1,500|AED 500/);
   assert.match(await dibCalc.innerText(), /Does not match your inputs/i);
+  await page.locator(".dpsc-options > summary").click();
   await page.getByRole("checkbox", { name: "Auto finance", exact: true }).check();
   assert.match(await dibCalc.innerText(), /Requires confirmation/i);
   assert.doesNotMatch(await dibCalc.innerText(), /cash-equivalent/);
 
+  await navigate(page, "/cards/finder/");
+  const defaultTile = page.locator("#finder-grid > .dp-finder-tile:not([hidden])").first();
+  await defaultTile.waitFor({ state: "visible" });
+  const firstMatchY = await defaultTile.evaluate((el) => Math.round(el.getBoundingClientRect().top));
+  assert.ok(firstMatchY < 844, `A default Finder result should start on the first phone screen; y=${firstMatchY}`);
+  assert.equal(await page.locator("#finder-filters").getAttribute("open"), null);
   await navigate(page, "/cards/finder/?salary=20000&prefer=miles&spend=travel");
   const reward = page.getByRole("combobox", { name: "Reward preference" });
   assert.equal(await reward.inputValue(), "miles");
@@ -284,6 +323,12 @@ try {
     }
   }
   assert.equal(await page.getByRole("searchbox", { name: "Search the site" }).count(), 1);
+  await page.setViewportSize({ width: 1280, height: 844 });
+  await navigate(page, "/deals/");
+  if (await dealTitles.count()) {
+    assert.ok(await dealTitles.first().evaluate((el) => el.getBoundingClientRect().bottom < innerHeight));
+  }
+  await page.setViewportSize({ width: 390, height: 880 });
   await navigate(page, "/deals/dib-air-arabia-20pct-ultimate/");
   assert.equal(await page.locator("[data-deal-source]").getAttribute("href"),
     "https://www.dib.ae/offers/offer-detail/air-arabia");
@@ -321,6 +366,17 @@ try {
       ["/news/hotels/", []],
     ]) {
       await navigate(page, route);
+      assert.equal(await page.locator("main").getByText("Trending now", { exact: true }).count(), 0);
+      const latest = page.locator("[data-news-latest]");
+      const datedStories = await latest.locator("time[datetime]").evaluateAll((nodes) => nodes.map((el) => el.dateTime));
+      assert.deepEqual(datedStories, [...datedStories].sort().reverse(), route + " is chronological");
+      const feature = page.locator("[data-news-feature]");
+      if (route === "/news/banking/") assert.equal(await feature.count(), 0, "Banking photos remain inline");
+      if (await feature.count()) {
+        const featuredHref = await feature.getAttribute("href");
+        const rowLinks = await latest.getByRole("link").evaluateAll((nodes) => nodes.map((el) => el.getAttribute("href")));
+        assert.ok(!rowLinks.includes(featuredHref), route + " does not repeat the feature in its latest list");
+      }
       assert.equal(await page.locator("main .intel-main svg.dp-cover").count(), 0, route);
       const previews = page.locator("main [data-news-preview]");
       const actual = await previews.evaluateAll((nodes) => nodes.map((node) => node.dataset.newsPreview));
@@ -336,7 +392,7 @@ try {
     }
   }
   await navigate(page, "/guides/paint-protection-film-dubai/");
-  const stageCredit = page.locator("main [data-stage-photo-credit]");
+  const stageCredit = page.locator("main [data-reading-media] .dp-ai-label");
   assert.equal(await stageCredit.count(), 1);
   assert.ok(await stageCredit.isVisible());
   assert.equal(await stageCredit.innerText(), "Image: Modcare");
@@ -353,7 +409,10 @@ try {
     const accorCredit = page.locator("main .dp-prog-photo-credit");
     assert.ok(await accorCredit.getByText("Novotel Barcelona City ·", { exact: true }).isVisible());
     assert.ok(await accorCredit.getByRole("link", { name: "Ghassan Hani", exact: true }).isVisible());
-    assert.match(await page.locator("main .dp-stage").getAttribute("style"), /news-all-accor-triple-points/);
+    const accorPhoto = page.locator("main .dp-prog-figure img[data-stock-slug]");
+    assert.match(await accorPhoto.getAttribute("data-stock-slug"), /news-all-accor-triple-points/);
+    await accorPhoto.scrollIntoViewIfNeeded();
+    await accorPhoto.evaluate((image) => image.decode());
   }
   await page.setViewportSize({ width: 390, height: 880 });
   await navigate(page, "/calculator/cash-or-miles/");
@@ -365,6 +424,7 @@ try {
   await cashFare.fill("615");
   await calc.locator("#dp-cm-miles").fill("10000");
   await calc.locator("#dp-cm-awardFees").fill("135");
+  await calc.locator(".dp-cm-target > summary").click();
   await calc.locator("#dp-cm-target").fill("2");
   await calc.getByRole("button", { name: "Compare fares", exact: true }).press("Enter");
   assert.match(await calc.locator("[data-cm-saving]").innerText(), /AED\s*480/);
@@ -378,7 +438,7 @@ try {
     await navigate(page, route);
     const tools = page.locator(".dp-programme-tools");
     assert.equal(await tools.getByRole("link", { name: "Find UAE points that transfer in" }).getAttribute("href"), `/transfer-finder/?to=${id}`);
-    await tools.locator("summary").press("Space");
+    await tools.locator("details > summary").first().press("Space");
     await tools.getByRole("button", { name: "Try a hypothetical example" }).press("Enter");
     assert.match(await tools.locator("[data-cm-value]").innerText(), /2\.67 fils/);
   }
@@ -429,6 +489,18 @@ try {
   await navigate(page, "/");
   assert.equal(await page.locator("body.dp-system-typography").count(), 0);
   assert.equal(await page.locator('link[rel="preload"][as="font"]').count(), 2);
+  await navigate(page, "/search/?q=skywards");
+  const search = page.locator(".pagefind-ui__search-input[aria-label='Search DubaiPoints']");
+  await search.waitFor();
+  assert.equal(await search.inputValue(), "skywards");
+  assert.ok((await search.boundingBox()).height >= 44);
+  await navigate(page, "/editorial-policy/");
+  assert.ok(await page.locator(".dp-trust-meta time[datetime]").isVisible());
+  assert.equal(await page.getByRole("contentinfo").getByRole("navigation").count(), 3);
+  await navigate(page, "/404.html");
+  const recover = page.locator("main").getByRole("link", { name: "Search DubaiPoints", exact: true });
+  assert.equal(await recover.getAttribute("href"), "/search/");
+  assert.ok((await recover.boundingBox()).height >= 44);
   console.log("Interactions: menus, guide, programme quick reference, card fees and net value, article sources and fare evidence, tracker, calculators, Finder, comparison, Deals and news");
 } finally {
   await browser?.close();

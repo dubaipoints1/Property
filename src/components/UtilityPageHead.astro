@@ -1,0 +1,80 @@
+---
+interface Props {
+  variant: "programme" | "bank" | "card";
+  class?: string;
+}
+
+const { variant, class: className } = Astro.props;
+const hasMedia = Astro.slots.has("media");
+---
+
+<header class:list={["dp-utility-head", `is-${variant}`, className, { "has-media": hasMedia }]}>
+  <div class="dp-utility-frame">
+    <div class="dp-utility-copy"><slot /></div>
+    {hasMedia && <div class="dp-utility-media"><slot name="media" /></div>}
+    {Astro.slots.has("facts") && <div class="dp-utility-facts"><slot name="facts" /></div>}
+  </div>
+</header>
+
+<style>
+  .dp-utility-head {
+    --utility-width: var(--container-listing);
+    --utility-gutter: clamp(16px, 3vw, 32px);
+    --utility-media-width: minmax(0, 21rem);
+    border-block-end: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .dp-utility-head.is-programme { --utility-width: 760px; }
+  .dp-utility-head.is-bank { --utility-width: 760px; --utility-media-width: minmax(0, 10rem); }
+  .dp-utility-head.is-card { --utility-media-width: minmax(0, 19rem); }
+  .dp-utility-frame {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    max-inline-size: var(--utility-width);
+    margin-inline: auto;
+    padding: clamp(24px, 4vw, 48px) var(--utility-gutter) clamp(20px, 3vw, 32px);
+    gap: clamp(12px, 2vw, 20px);
+  }
+  .dp-utility-copy, .dp-utility-media, .dp-utility-facts { min-inline-size: 0; }
+  .dp-utility-copy :global(h1) {
+    font: 600 clamp(2.1rem, 4.3vw, 3.6rem)/1.03 var(--font-display);
+    letter-spacing: -.03em;
+    margin: 0;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    text-wrap: pretty;
+  }
+  .dp-utility-copy :global(.dp-utility-kicker) {
+    margin: 0 0 10px;
+    color: var(--green);
+    font: 700 .75rem/1.4 var(--font-ui);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .dp-utility-copy :global(.dp-utility-kicker a) { color: inherit; text-decoration: underline; text-underline-offset: .18em; }
+  .dp-utility-copy :global(.dp-utility-deck) {
+    max-inline-size: 56ch;
+    margin: 12px 0 0;
+    color: var(--ink-soft);
+    font: 400 clamp(1rem, 1.7vw, 1.125rem)/1.5 var(--font-ui);
+    text-wrap: pretty;
+  }
+  .dp-utility-copy :global(.dp-utility-actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--dp-ui-gap, 8px);
+    margin-block-start: 16px;
+  }
+  @media (min-width: 720px) {
+    .dp-utility-head.has-media .dp-utility-frame {
+      grid-template-columns: minmax(0, 1fr) var(--utility-media-width);
+      column-gap: clamp(20px, 4vw, 48px);
+    }
+    .dp-utility-facts { grid-column: 1 / -1; }
+  }
+  @media (min-width: 1024px) {
+    .dp-utility-head.is-programme { --utility-width: var(--container-listing); }
+  }
+</style>

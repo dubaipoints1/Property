@@ -47,10 +47,6 @@ const trendingLinkBase = programmes.length >= 6 ? "/airlines" : "/guides";
 // goes to a real, distinct surface the reader will recognise. Generic
 // /guides/ "transfer partners" tab dropped (it leaked off-section and
 // the guides index isn't filtered to transfer-partner content).
-const tabs = [
-  { label: "All programmes", active: true, href: "/airlines/" },
-  { label: "Valuations method", href: "/valuations/" },
-];
 const siteUrl = siteUrlFrom(Astro.site);
 const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airlines & loyalty programmes", description: "Skywards, Etihad Guest, Qatar Privilege Club and the other airline programmes UAE residents earn and redeem in.", crumbs: [{ name: "Airlines & loyalty", path: "/airlines/" }] });
 ---
@@ -65,16 +61,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     <div class="intel-pagehead-inner">
       <div class="crumb">DubaiPoints / Airlines</div>
       <h1>Airlines &amp; loyalty.</h1>
-      <p>Each programme page covers tiers, sweet spots, transfer partners and expiry policy — the bits that decide whether the Miles you earn are worth what you think they are.</p>
+      <p>Compare how to earn, transfer and spend miles from the UAE. Each programme guide explains tiers, redemption examples and when miles expire.</p>
 
       <div class="intel-tools">
-        <div class="intel-tabs" role="tablist">
-          {tabs.map((t) => (
-            t.active
-              ? <span class="intel-tab is-active" role="tab" aria-selected="true">{t.label}</span>
-              : <a href={t.href} class="intel-tab" role="tab">{t.label}</a>
-          ))}
-        </div>
+        <nav class="intel-tabs" aria-label="Points and miles tools">
+          <a href="/transfer-finder/" class="dp-ui-action dp-ui-primary">Find transfer routes</a>
+          <a href="/valuations/" class="dp-ui-action dp-ui-secondary">Compare points values</a>
+        </nav>
         <form class="intel-search" action="/search/" method="get" role="search">
           <label class="intel-search-label" for="airlines-search-input">Search</label>
           <label for="airlines-search-input" class="intel-search-icon" aria-hidden="true">
@@ -87,6 +80,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
             id="airlines-search-input"
             type="search"
             name="q"
+            class="dp-ui-field"
             placeholder="Search programmes…"
             autocomplete="off"
           />

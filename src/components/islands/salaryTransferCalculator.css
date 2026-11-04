@@ -1,0 +1,28 @@
+.dpsc .dpsc-form { gap: 12px; }
+.dpsc-options {
+  border: 1px solid var(--line);
+  border-radius: var(--dp-ui-radius, 8px);
+}
+.dpsc-options > summary {
+  min-block-size: var(--dp-ui-control, 44px);
+  padding: 8px 12px;
+  align-content: center;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.dpsc-options > summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+.dpsc-options-content {
+  display: grid;
+  gap: 12px;
+  padding: 10px 12px 12px;
+  border-block-start: 1px solid var(--line);
+}
+.dpsc .dpsc-checks { gap: 0; }
+.dpsc-options-content fieldset { margin: 0; padding: 0; min-inline-size: 0; border: 0; }
+.dpsc .dpsc-check { min-block-size: var(--dp-ui-control, 44px); }
+
+@media (max-width: 640px) {
+  .dpsc .dpsc-form { padding: 12px 14px; }
+  .dpsc .dpsc-best { padding: 12px 14px; }
+}

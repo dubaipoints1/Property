@@ -129,11 +129,13 @@ const pendingRoundups = roundups.filter((r) => r.state === "pending");
     <div class="crumb">Best of DubaiPoints</div>
     <h1>The roundups, in one place.</h1>
     <p>
-      Editorial roundups of the best UAE credit cards, salary-transfer offers
-      and points programmes. Each list ranks the eligible products against the
-      <a href="/editorial-policy/">editorial standard</a> and explains the
-      one or two cases where a different choice wins.
+      Find a shortlist of UAE cards, salary-transfer offers and points programmes. Each roundup follows our
+      <a href="/editorial-policy/">editorial standard</a> and explains when a different choice makes sense.
     </p>
+    <nav class="dp-best-actions" aria-label="Shortlist tools">
+      <a href="/cards/finder/" class="dp-ui-action dp-ui-primary">Find cards by salary</a>
+      <a href="/salary-transfer/" class="dp-ui-action dp-ui-secondary">Check salary-transfer offers</a>
+    </nav>
   </header>
 
   <div class="dp-best-grid">
@@ -167,6 +169,7 @@ const pendingRoundups = roundups.filter((r) => r.state === "pending");
 </BaseLayout>
 
 <style>
+  .dp-best-actions { display: flex; flex-wrap: wrap; gap: var(--dp-ui-gap, 8px); margin-block-start: 16px; }
   .dp-best-grid {
     max-width: var(--container-listing);
     margin: 0 auto;

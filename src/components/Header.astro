@@ -222,13 +222,13 @@ const publicationRows: SubRow[] = [
           the accessible name (the text span hides at 1024–1279px, where
           the pill is icon-only) and must start with the visible label
           text for WCAG 2.5.3 Label in Name. */}
-      <a href="/search/" class="dp-search-pill" aria-label="Search cards, guides">
+      <a href="/search/" class="dp-search-pill" aria-label="Search DubaiPoints">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7" />
           <line x1="16.5" y1="16.5" x2="21" y2="21" />
         </svg>
-        <span class="dp-search-pill-text" aria-hidden="true">Search cards, guides…</span>
+        <span class="dp-search-pill-text" aria-hidden="true">Search DubaiPoints…</span>
       </a>
       <ThemeToggle />
     </div>
@@ -529,11 +529,12 @@ const publicationRows: SubRow[] = [
   display: block;
 }
 @media (min-width: 768px) {
-  .dp-wordmark { gap: 10px; justify-self: start; }
+  .dp-wordmark { gap: 10px; }
   .dp-wordmark-text { font-size: 24px; letter-spacing: -0.55px; }
   .dp-wordmark-mark { width: 20px; height: 20px; }
 }
 @media (min-width: 1024px) {
+  .dp-wordmark { justify-self: start; }
   .dp-wordmark-text { font-size: 26px; letter-spacing: -0.6px; }
   .dp-wordmark-mark { width: 22px; height: 22px; }
 }
@@ -552,7 +553,7 @@ const publicationRows: SubRow[] = [
   align-items: center;
   justify-content: center;
   gap: 14px;
-  height: 34px;                         /* was 32px */
+  height: var(--dp-ui-control);
   padding-inline: 16px;
   font-size: 11px;
   font-weight: 600;
@@ -562,14 +563,13 @@ const publicationRows: SubRow[] = [
 @media (min-width: 1440px) {
   .dp-tracker-strip-inner { gap: 22px; letter-spacing: 2px; }
 }
-/* The links themselves were 17px tall inside a 34px strip — the smallest
-   tap targets in the chrome (2026-09-06 audit, F-026). Fill the strip. */
 .dp-quicklink {
   display: inline-flex;
   align-items: center;
-  min-height: 34px;
+  min-height: var(--dp-ui-control);
   padding: 0 4px;
 }
+.dp-quicklink:focus-visible { outline-offset: -3px; }
 
 /* One scrollable row below desktop (19 Oct 2026): centred when it fits,
    scrolls sideways when it does not — never clipped. At 390px the old
@@ -755,7 +755,9 @@ const publicationRows: SubRow[] = [
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    height: 36px;
+    min-width: var(--dp-ui-control);
+    height: var(--dp-ui-control);
+    justify-content: center;
     padding: 0 10px;
     border: 1px solid var(--line);
     border-radius: 999px;

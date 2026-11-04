@@ -17,9 +17,9 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
 import DealVisual from "~/components/deals/DealVisual.astro";
-import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getCollection } from "astro:content";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
+import { getStockEntry } from "~/lib/stockManifest";
 
 import { getLiveDeals, daysLeft, ENDING_SOON_DAYS, SECTOR_LABELS } from "~/lib/deals";
 
@@ -35,6 +35,7 @@ const dealsWithBank = await Promise.all(
       bankName: issuer.name,
       issuerId: d.data.bank?.id ?? d.data.program?.id ?? "",
       days: daysLeft(d, todayMs),
+      hasArt: Boolean(d.data.logo || getStockEntry(`deal-${d.id}`)),
     };
   }),
 );
@@ -62,8 +63,7 @@ const guides = (await getCollection("guides"))
 const featured = dealsWithBank[0];
 const others = dealsWithBank.slice(1);
 
-const trending = dealsWithBank.length >= 6 ? others.slice(0, 5) : guides.slice(0, 5);
-const trendingLinkBase = dealsWithBank.length >= 6 ? "/deals" : "/guides";
+const recentGuides = guides.slice(0, 4);
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
@@ -108,8 +108,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
             <a href="/rss.xml">RSS feed</a> to see the moment something lands.
           </p>
           <div class="news-empty-ctas">
-            <a href="/news/" class="news-empty-cta">Read the news →</a>
-            <a href="/rss.xml" class="news-empty-cta is-ghost">RSS feed →</a>
+            <a href="/news/" class="dp-ui-action dp-ui-primary">Read the news</a>
+            <a href="/rss.xml" class="dp-ui-action dp-ui-secondary">RSS feed</a>
           </div>
         </section>
       ) : (
@@ -117,23 +117,23 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
           <div class="deals-filters" data-deal-filters hidden>
             <label class="deals-sector">
               <span>Deal category</span>
-              <select data-filter-sector>
+              <select class="dp-ui-field" data-filter-sector>
                 <option value="">All categories</option>
                 {sectorChips.map((s) => <option value={s.id}>{s.label} ({s.n})</option>)}
               </select>
             </label>
             <details class="deals-advanced">
-              <summary>More filters <span data-extra-filters hidden></span></summary>
+              <summary class="dp-ui-field">More filters <span data-extra-filters hidden></span></summary>
               <div class="deals-advanced-controls">
                 <label class="deals-issuer">
                   <span>Bank or programme</span>
-                  <select data-filter-issuer>
+                  <select class="dp-ui-field" data-filter-issuer>
                     <option value="">All issuers</option>
                     {issuerOptions.map(([id, name]) => <option value={id}>{name}</option>)}
                   </select>
                 </label>
                 {codeCount > 0 && (
-                  <label class="deals-code-filter"><input type="checkbox" data-filter-code /> Has a promo code</label>
+                  <label class="deals-code-filter dp-ui-filter"><input type="checkbox" data-filter-code /> Has a promo code</label>
                 )}
               </div>
             </details>
@@ -141,28 +141,24 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
           </div>
 
           {featured && (
-            <a href={`/deals/${featured.entry.id}/`} class="intel-featured" data-deal {...dealAttrs(featured)}>
-              <DealVisual
-                dealId={featured.entry.id}
-                title={featured.entry.data.title}
-                logo={featured.entry.data.logo}
-                merchant={featured.entry.data.merchant}
-                bankSlug={featured.entry.data.bank?.id}
-                bankName={featured.bankName}
-                coverSize="hero"
-                class="intel-featured-image"
-                sizes={LISTING_SIZES.featured}
-                loading="eager"
-              />
-              <div class="intel-featured-body">
+            <a href={`/deals/${featured.entry.id}/`} class:list={["intel-featured", { "has-art": featured.hasArt }]} aria-labelledby={`deal-${featured.entry.id}`} data-deal {...dealAttrs(featured)}>
+              <div class="intel-featured-body" data-deal-offer-facts>
                 <span class="intel-featured-eyebrow">{featured.entry.data.sector ? SECTOR_LABELS[featured.entry.data.sector] : formatCategory(featured.entry.data.category)} · {featured.bankName}</span>
-                <h2>{featured.entry.data.title}</h2>
-                <p>Last checked {fmt(featured.entry.data.lastVerified)} · recorded to expire {fmt(featured.entry.data.expiresOn)}.</p>
-                {featured.entry.data.promoCode && <span class="deals-code">Code {featured.entry.data.promoCode}</span>}
-                <span class="intel-featured-meta">
-                  Read the full deal →
+                <h2 id={`deal-${featured.entry.id}`}>{featured.entry.data.title}</h2>
+                {featured.entry.data.eligibilityNote && <p>{featured.entry.data.eligibilityNote}</p>}
+                <span class="deals-card-foot">
+                  <time class:list={["deals-countdown", { "is-soon": 7 >= featured.days }]} datetime={featured.entry.data.expiresOn.toISOString().slice(0, 10)}>Recorded expiry {fmt(featured.entry.data.expiresOn)}</time>
+                  {featured.entry.data.promoCode && <span class="deals-code">Code {featured.entry.data.promoCode}</span>}
                 </span>
+                <p class="intel-featured-meta">Last checked {fmt(featured.entry.data.lastVerified)} · See offer terms <span aria-hidden="true">→</span></p>
               </div>
+              {featured.hasArt && (
+                <span class="dp-deal-listing-art" data-deal-listing-art>
+                  <DealVisual dealId={featured.entry.id} title={featured.entry.data.title} logo={featured.entry.data.logo}
+                    merchant={featured.entry.data.merchant} bankSlug={featured.entry.data.bank?.id} bankName={featured.bankName}
+                    coverSize="med" class="intel-featured-image" sizes="(max-width: 640px) 100px, 230px" loading="eager" />
+                </span>
+              )}
             </a>
           )}
 
@@ -171,38 +167,34 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
               {others.map((d) => {
                 return (
                   <li class="intel-card-item" data-deal {...dealAttrs(d)}>
-                    <a href={`/deals/${d.entry.id}/`} class="intel-card">
-                      <DealVisual
-                        dealId={d.entry.id}
-                        title={d.entry.data.title}
-                        logo={d.entry.data.logo}
-                        merchant={d.entry.data.merchant}
-                        bankSlug={d.entry.data.bank?.id}
-                        bankName={d.bankName}
-                        coverSize="med"
-                        class="intel-card-image"
-                        sizes={LISTING_SIZES.tile}
-                      />
-                      <div class="intel-card-body">
+                    <a href={`/deals/${d.entry.id}/`} class:list={["intel-card", { "has-art": d.hasArt }]} aria-labelledby={`deal-${d.entry.id}`}>
+                      <div class="intel-card-body" data-deal-offer-facts>
                         <span class="intel-card-cat">
                           {d.entry.data.sector ? SECTOR_LABELS[d.entry.data.sector] : formatCategory(d.entry.data.category)} · {d.bankName}
                         </span>
-                        <h2>{d.entry.data.title}</h2>
-                        <p>Last checked {fmt(d.entry.data.lastVerified)}.</p>
+                        <h2 id={`deal-${d.entry.id}`}>{d.entry.data.title}</h2>
+                        {d.entry.data.eligibilityNote && <p>{d.entry.data.eligibilityNote}</p>}
                         <span class="deals-card-foot">
                           <span class:list={["intel-card-meta deals-countdown", { "is-soon": 7 >= d.days }]}>
                             {ENDING_SOON_DAYS >= d.days ? countdownText(d.days) : `Recorded expiry ${fmt(d.entry.data.expiresOn)}`}
                           </span>
                           {d.entry.data.promoCode && <span class="deals-code">Code {d.entry.data.promoCode}</span>}
                         </span>
+                        <p class="intel-card-meta">Last checked <time datetime={d.entry.data.lastVerified.toISOString().slice(0, 10)}>{fmt(d.entry.data.lastVerified)}</time>.</p>
                       </div>
+                      {d.hasArt && (
+                        <span class="dp-deal-listing-art" data-deal-listing-art>
+                          <DealVisual dealId={d.entry.id} title={d.entry.data.title} logo={d.entry.data.logo} merchant={d.entry.data.merchant}
+                            bankSlug={d.entry.data.bank?.id} bankName={d.bankName} coverSize="sm" class="intel-card-image" sizes="132px" />
+                        </span>
+                      )}
                     </a>
                   </li>
                 );
               })}
             </ul>
           )}
-          <p class="deals-none" data-deal-none hidden>No live deals match these filters. <button type="button" data-filter-reset>Clear filters</button></p>
+          <p class="deals-none" data-deal-none hidden>No live deals match these filters. <button type="button" class="dp-ui-action dp-ui-quiet" data-filter-reset>Clear filters</button></p>
         </>
       )}
     </div>
@@ -227,26 +219,21 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
         <form class="intel-search" action="/search/" method="get" role="search" aria-label="Sitewide search">
           <label for="deals-search-input">Search the site</label>
           <div class="intel-search-row">
-            <input id="deals-search-input" type="search" name="q" autocomplete="off" />
-            <button type="submit">Search</button>
+            <input id="deals-search-input" class="dp-ui-field" type="search" name="q" autocomplete="off" />
+            <button type="submit" class="dp-ui-action dp-ui-secondary">Search</button>
           </div>
         </form>
         <a href="/salary-transfer/">Browse the salary-transfer tracker →</a>
       </section>
-      {trending.length > 0 && (
-        <nav class="intel-trending" aria-label="More content">
-          <div class="dp-rail-heading">{dealsWithBank.length >= 6 ? "More live deals · all categories" : "From the guides desk"}</div>
+      {recentGuides.length > 0 && (
+        <nav class="intel-trending" aria-label="From the guides desk">
+          <div class="dp-rail-heading">From the guides desk</div>
           <ol>
-            {trending.map((item, i) => {
-              const title = "entry" in item ? item.entry.data.title : item.data.title;
-              const id = "entry" in item ? item.entry.id : item.id;
-              return (
+            {recentGuides.map((item) => (
                 <li>
-                  <span class="num">{String(i + 1).padStart(2, "0")}</span>
-                  <a href={`${trendingLinkBase}/${id}/`}>{title}</a>
+                  <a href={`/guides/${item.id}/`}>{item.data.title}</a>
                 </li>
-              );
-            })}
+            ))}
           </ol>
         </nav>
       )}
@@ -331,7 +318,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
      shared layout component covers the four once they stabilise. */
   .intel-pagehead {
     background: var(--paper);
-    padding: 48px 32px 32px;
+    padding: clamp(22px, 4vw, 44px) clamp(16px, 3vw, 32px) clamp(16px, 3vw, 28px);
     border-bottom: 1px solid var(--line);
   }
   .intel-pagehead-inner { max-width: var(--container-listing); margin: 0 auto; }
@@ -349,7 +336,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     letter-spacing: -1.6px;
     line-height: 1.04;
     color: var(--green);
-    margin: 0 0 14px;
+    margin: 0 0 8px;
   }
   .intel-pagehead p {
     max-width: 62ch;
@@ -367,55 +354,49 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   .deals-related > a { color: var(--green); font-size: 14px; }
   .intel-search { display: grid; gap: 6px; color: var(--ink); font-family: var(--font-ui); font-size: 13px; font-weight: 600; }
   .intel-search-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
-  .intel-search input[type="search"], .intel-search button {
-    min-width: 0;
-    min-height: 44px;
-    padding: 0 10px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--paper);
-    color: var(--ink);
-    font: inherit;
-  }
-  .intel-search input[type="search"] { font-size: 16px; }
-  .intel-search button { cursor: pointer; }
-  .intel-search :is(input, button):focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
-
   .intel-grid {
     max-width: var(--container-listing);
-    margin: 32px auto 56px;
-    padding: 0 32px;
+    margin: clamp(14px, 3vw, 32px) auto var(--dp-ui-section);
+    padding-inline: clamp(16px, 3vw, 32px);
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    gap: 40px;
+    gap: var(--dp-ui-gap);
     align-items: start;
   }
   .intel-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
 
-  .intel-featured {
-    display: grid; grid-template-rows: auto 1fr;
+  .intel-featured, .intel-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(10px, 2vw, 20px);
     background: var(--paper);
     border: 1px solid var(--line);
-    border-radius: 18px;
+    border-radius: 14px;
+    padding: clamp(12px, 2vw, 20px);
+    text-decoration: none;
+    color: inherit;
+  }
+  .intel-featured.has-art { grid-template-columns: minmax(0, 1fr) minmax(0, clamp(110px, 18vw, 230px)); }
+  .intel-card.has-art { grid-template-columns: minmax(0, 1fr) minmax(0, clamp(80px, 11vw, 132px)); }
+  .intel-featured:hover, .intel-card:hover { border-color: var(--green); }
+  .intel-featured:focus-visible, .intel-card:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+  .dp-deal-listing-art {
+    display: block;
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--dp-ui-radius);
     overflow: hidden;
-    text-decoration: none; color: inherit;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   }
-  .intel-featured:hover {
-    transform: translateY(-2px);
-    border-color: var(--ink-soft);
-    box-shadow: 0 20px 40px -20px rgba(15, 31, 46, 0.22);
+  .dp-deal-listing-art :global(:is(.intel-featured-image, .intel-card-image)) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1.5;
+    object-fit: cover;
+    border: 0;
   }
-  .intel-featured :global(.intel-featured-image) {
-    width: 100%; aspect-ratio: 16 / 9;
-    object-fit: cover; display: block;
-    border-bottom: 1px solid var(--line);
-  }
-  .intel-featured :global(svg.dp-cover) {
-    width: 100%; display: block;
-    border-bottom: 1px solid var(--line);
-  }
-  .intel-featured-body { padding: 24px 28px 28px; display: grid; gap: 10px; }
+  .intel-featured-body { min-width: 0; display: grid; gap: 8px; }
   .intel-featured-eyebrow {
     font-family: var(--font-ui);
     font-size: 11px; font-weight: 700;
@@ -455,31 +436,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     gap: 20px;
   }
   .intel-card-item { display: block; }
-  .intel-card {
-    display: grid; grid-template-rows: auto 1fr;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    overflow: hidden;
-    text-decoration: none; color: inherit;
-    height: 100%;
-    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-  }
-  .intel-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--ink-soft);
-    box-shadow: 0 14px 28px -16px rgba(15, 31, 46, 0.18);
-  }
-  .intel-card :global(.intel-card-image) {
-    width: 100%; aspect-ratio: 3 / 2;
-    object-fit: cover; display: block;
-    border-bottom: 1px solid var(--line);
-  }
-  .intel-card :global(svg.dp-cover) {
-    width: 100%; display: block;
-    border-bottom: 1px solid var(--line);
-  }
-  .intel-card-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
+  .intel-card { height: 100%; }
+  .intel-card-body { min-width: 0; display: grid; gap: 6px; }
   .intel-card-cat {
     font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
@@ -567,32 +525,10 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     display: flex; flex-wrap: wrap; gap: 10px;
     margin-top: 8px;
   }
-  .news-empty-cta {
-    display: inline-flex; align-items: center;
-    height: 40px; padding: 0 18px;
-    background: var(--ink);
-    color: var(--paper);
-    border-radius: 999px;
-    font-family: var(--font-ui);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    text-decoration: none;
-    transition: background 0.15s ease;
-  }
-  .news-empty-cta:hover { background: var(--green); }
-  .news-empty-cta.is-ghost {
-    background: transparent; color: var(--ink);
-    border: 1px solid var(--line);
-  }
-  .news-empty-cta.is-ghost:hover {
-    border-color: var(--ink-soft); background: var(--shade-1);
-  }
-
   /* Sidebar */
   .intel-aside { display: flex; flex-direction: column; gap: 20px; }
   @media (min-width: 1024px) {
-    .intel-aside { position: sticky; top: 32px; align-self: flex-start; }
+    .intel-aside { position: sticky; top: calc(var(--dp-sticky-header-height) + 16px); align-self: flex-start; }
   }
   .intel-trending {
     background: var(--bg);
@@ -615,13 +551,6 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     line-height: 1.35;
   }
   .intel-trending li:last-child { border-bottom: 0; }
-  .intel-trending .num {
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    font-size: 11px; min-width: 20px;
-    flex-shrink: 0; font-weight: 700;
-    letter-spacing: 1px;
-  }
   .intel-trending a {
     color: var(--ink);
     font-family: var(--font-display);
@@ -641,30 +570,16 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     .intel-grid { padding: 0 16px; margin-top: 14px; gap: 28px; }
     .intel-main, .intel-card-grid { gap: 10px; }
     .intel-card-grid { grid-template-columns: minmax(0, 1fr); }
-    .intel-featured, .intel-card {
-      grid-template: auto / clamp(58px, 21vw, 88px) minmax(0, 1fr);
-      gap: 10px;
-      align-items: start;
-      padding: 12px;
-      border-radius: 12px;
+    .intel-featured.has-art, .intel-card.has-art {
+      grid-template-columns: minmax(0, 1fr) clamp(64px, 22vw, 95px);
     }
-    .intel-featured :global(.intel-featured-image),
-    .intel-card :global(.intel-card-image),
-    .intel-featured :global(svg.dp-cover),
-    .intel-card :global(svg.dp-cover) {
-      aspect-ratio: 1;
-      width: 100%;
-      height: auto;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-    }
-    /* The issuer appears in the adjacent text, not over the thumbnail. */
-    .intel-main :global(.dp-deal-logo-bank) { display: none; }
-    .intel-featured-body, .intel-card-body { min-width: 0; padding: 0; gap: 5px; }
-    .intel-featured-body h2, .intel-card h2 { font-size: 18px; line-height: 1.2; text-wrap: pretty; }
-    .intel-featured-body p, .intel-card-body p { font-size: 12px; line-height: 1.4; }
-    .intel-featured-eyebrow, .intel-card-cat { font-size: 10px; letter-spacing: 1px; }
-    .intel-featured-meta { display: none; }
+    .dp-deal-listing-art :global(:is(.intel-featured-image, .intel-card-image)) { aspect-ratio: 1; }
+    /* The issuer is named next to the thumbnail rather than over it. */
+    .dp-deal-listing-art :global(.dp-deal-logo-bank) { display: none; }
+    .intel-featured-body, .intel-card-body { gap: 5px; }
+    .intel-featured-body h2, .intel-card h2 { font-size: 1.125rem; line-height: 1.2; text-wrap: pretty; }
+    .intel-featured-body p, .intel-card-body p { font-size: .8125rem; line-height: 1.4; }
+    .intel-featured-eyebrow, .intel-card-cat { letter-spacing: .06em; }
     .news-empty { padding: 28px 22px; }
   }
 
@@ -730,38 +645,16 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     font-weight: 600;
     color: var(--ink-soft);
   }
-  .deals-filters select {
-    font-family: var(--font-ui); font-size: 16px;
-    min-width: 0; max-width: 100%; min-height: 44px; padding: 0 10px;
-    border: 1px solid var(--line); border-radius: 10px;
-    background: var(--paper); color: var(--ink);
-  }
   .deals-advanced { margin-top: 22px; min-width: 0; max-width: 100%; }
-  .deals-advanced summary {
-    cursor: pointer;
-    min-height: 44px;
-    padding: 11px 10px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--font-ui);
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 20px;
-  }
+  .deals-advanced summary { cursor: pointer; font-size: .875rem; padding-block: 11px; }
   .deals-advanced-controls { display: grid; gap: 8px; margin-top: 8px; }
-  .deals-code-filter { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; font-size: 13px; color: var(--ink); }
-  .deals-filters :is(select, input, summary):focus-visible, .deals-none button:focus-visible {
-    outline: 2px solid var(--green);
-    outline-offset: 2px;
-  }
+  .deals-code-filter { justify-content: start; }
+  .deals-code-filter:focus-within { outline: 2px solid var(--green); outline-offset: 3px; }
 
   .deals-count:empty { display: none; }
   .deals-count { flex-basis: 100%; margin: 0; font-family: var(--font-ui); font-size: 13px; color: var(--ink-soft); min-height: 1em; }
   .deals-none { margin: 0; font-size: 15px; color: var(--ink-soft); }
   .deals-none[hidden] { display: none; }
-  .deals-none button { font: inherit; color: var(--green); background: none; border: 0; text-decoration: underline; cursor: pointer; padding: 0 4px; min-height: 44px; }
   .intel-card-item[hidden], .intel-featured[hidden] { display: none; }
   .deals-card-foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 2px; }
   .deals-code {

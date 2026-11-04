@@ -4,9 +4,8 @@
 // Used by /cards/<slug>/.
 //
 // Shape:
-//   navy hero band: card-art mock (1.586:1 placeholder) + crumb + h1
-//                   + strap + verdict pill (score / denomination /
-//                   verdict label / verified date)
+//   Editorial Utility head: name, recurring fees and eligibility first;
+//   actions and existing issuer card art, contained rather than decorative.
 //   ↓
 //   2-col body grid at >=1024px:
 //     [body] byline + deck + drop-cap prose (slot)
@@ -16,15 +15,18 @@
 //   sources footer (reuses .dp-article-sources from B2)
 
 import BaseLayout from "./BaseLayout.astro";
+import UtilityPageHead from "~/components/UtilityPageHead.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
 import BankOffers from "~/components/deals/BankOffers.astro";
 import NextSteps from "~/components/cards/NextSteps.astro";
 import StockImage from "~/components/StockImage.astro";
+import ImageCredit from "~/components/ImageCredit.astro";
 import CardImage from "~/components/CardImage.astro";
 import { getCardArt } from "~/lib/cardArt";
+import { cardArtSrcset } from "~/lib/stockDerivatives";
 import HeroImage from "~/components/cards/HeroImage.astro";
-import { hasStockEntry } from "~/lib/stockManifest";
-import { formatEarnRate, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
+import { getStockEntry } from "~/lib/stockManifest";
+import { annualFeeLabel, formatEarnRate, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
 import { getActiveCards, getCardData } from "~/lib/cardsData";
 import { matchupsForCard, matchupSlug } from "~/data/cardMatchups";
 import { getCollection } from "astro:content";
@@ -75,7 +77,8 @@ interface Props {
   perks?: string[];
   pros?: string[];
   cons?: string[];
-  editorTake?: string;
+  /** The short verdict already published by the review’s EditorVerdict component. */
+  editorialVerdict?: string;
   category?: string;
   score?: number;
   verdictLabel?: string;
@@ -83,14 +86,14 @@ interface Props {
   verifiedBy?: string;
   sources: string[];
   deck?: string;
-  /** L2 welcomeBonus — rendered as a one-line headline in the navy hero
-   * band beneath the H1. Prefers the structured `headline` field; falls
+  /** L2 welcomeBonus — rendered in the summary below the key facts.
+   * Prefers the structured `headline` field; falls
    * back to `${amount} ${unit}` only when the headline is unset.
    * The page `description` prop is the SEO meta, not the welcome bonus —
    * the strap renders welcomeBonus separately to avoid the cross-wire. */
   welcomeBonus?: CardData["welcomeBonus"];
-  /** Optional licensed editorial hero photo, rendered between the navy
-   * hero band and the body grid. Schema matches `cards` collection
+  /** Optional licensed editorial hero photo, rendered above the body
+   * grid. Schema matches `cards` collection
    * `heroImage` field; the filename resolves against
    * `src/assets/cards/library/`. */
   heroImage?: {
@@ -124,9 +127,7 @@ const {
   // compatibility with existing call sites in src/pages/cards/[slug].astro,
   // but no longer consumed by the layout — see Phase 2a.2.0 (2026-05-20):
   // they are rendered by the MDX-invoked `<ProsCons />` component instead.
-  // `editorTake` is also accepted but no longer consumed — Phase 2a.2.3
-  // (2026-05-20) moved the "Editor's call" sidebar to <EditorScorecard />.
-  editorTake: _editorTake,
+  editorialVerdict,
   category = "Cards",
   score,
   verdictLabel,
@@ -138,7 +139,7 @@ const {
   heroImage,
 } = Astro.props;
 
-// Welcome-bonus headline for the navy-band strap. The page passes the
+// Welcome-bonus headline for the review summary. The page passes the
 // SEO meta description as `description`; that's NOT the welcome bonus
 // (it's the "bankName cardName review · annual fee · min salary · top
 // earn · AED-first verdict" composed string for SERPs). The strap
@@ -147,6 +148,7 @@ const {
 // card has no structured welcome bonus at all (in which case the strap
 // is hidden entirely).
 const welcomeBonusStrap = welcomeBonusHeadline(welcomeBonus) || null;
+const shortVerdict = editorialVerdict?.trim();
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -202,17 +204,23 @@ const relatedCards = getActiveCards()
   )
   .slice(0, 3)
   .map(({ c }) => c);
+const compareHref = slug ? `/cards/compare/?cards=${[slug, ...relatedCards.slice(0, 2).map((c) => c.slug)].join(",")}` : "/cards/compare/";
+const cardData = slug ? getCardData(slug) : undefined;
+const recurringFee = annualFeeLabel(cardData ?? { annualFee: { amount: annualFee } });
+const vatQualifier = annualFee > 0 ? (cardData?.vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT") : null;
 
 // Stock photograph lookup. Each card may have an editorial photograph
 // registered in data/stock/manifest.json under `card-<slug>` (e.g.
 // `card-emirates-nbd-skywards-infinite`). When present, the hero band
-// renders the photo instead of the CSS-only mock. The mock remains the
-// fallback for every card that doesn't yet have a curated photograph.
+// uses the photo if it doesn't have issuer art. There is no synthetic
+// product image if neither is available.
 const stockSlug = slug ? `card-${slug}` : null;
-const hasPhoto = stockSlug ? hasStockEntry(stockSlug) : false;
+const stockEntry = stockSlug ? getStockEntry(stockSlug) : undefined;
+const hasStockCredit = stockEntry?.source === "pexels" || stockEntry?.source === "unsplash";
 // Issuer card art (9 Oct 2026) outranks the stock photograph: the reader
 // is looking at a review of this card, so show this card.
 const cardArt = slug ? getCardArt(slug) : undefined;
+const cardArtSources = slug && cardArt ? cardArtSrcset(slug, cardArt) : undefined;
 
 // JSON-LD: every card review emits a Product entity with a FinancialProduct
 // additionalType so search engines parse it as a credit card. The fee and
@@ -274,96 +282,55 @@ const schema = {
 
 <BaseLayout title={title} description={description} fullWidth schema={schema}>
 
-  <!-- Navy hero band: card photograph (when registered) or CSS mock fallback -->
-  <header class="dp-cr-hero">
+  <UtilityPageHead variant="card" class="dp-card-review-head">
     {cardArt ? (
-      <figure class="dp-cr-art">
-        <img
-          src={`/${cardArt.file}`}
-          width={cardArt.width}
-          height={cardArt.height}
-          alt={`${cardName} card, as shown by ${bankName}`}
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-        />
+      <figure slot="media" class="dp-card-summary-figure">
+        <span class="dp-card-summary-art">
+          <img
+            src={`/${cardArt.file}`}
+            srcset={cardArtSources}
+            sizes={cardArtSources ? "(max-width: 719px) 176px, 264px" : undefined}
+            width={cardArt.width}
+            height={cardArt.height}
+            alt={`${cardName} card, as shown by ${bankName}`}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </span>
         <figcaption>Card image: {bankName}</figcaption>
       </figure>
-    ) : hasPhoto && stockSlug ? (
-      <figure class="dp-cr-photo" data-bank={bankSlug ?? "default"}>
+    ) : stockEntry && stockSlug ? (
+      <figure slot="media" class="dp-card-summary-figure is-photo">
         <StockImage
           slug={stockSlug}
-          coverTitle={cardName}
-          coverCategory="Card review"
-          coverSize="med"
-          class="dp-cr-photo-img"
-          sizes="(max-width: 400px) 100vw, 360px"
+          class="dp-card-summary-photo"
+          sizes="(max-width: 719px) 192px, 304px"
           loading="eager"
         />
-        <figcaption class="dp-cr-photo-cap">
-          <span class="b">{bankName}</span>
-          <span class="dp-cr-photo-name">{cardName}</span>
-          <span class="b">{network}</span>
-        </figcaption>
+        {hasStockCredit && <figcaption><ImageCredit slug={stockSlug} /></figcaption>}
       </figure>
-    ) : (
-      <div class="dp-cr-tile" aria-hidden="true">
-        <span class="b">{bankName}</span>
-        <span class="n">{cardName}</span>
-        <span class="b">{network}</span>
-      </div>
-    )}
+    ) : null}
 
-    <div class="dp-cr-text">
-      <nav class="crumb" aria-label="Breadcrumb">
+    <div class="dp-card-summary">
+      <nav class="dp-utility-kicker" aria-label="Breadcrumb">
         {/* 10 June 2026 SEO audit: the bank segment links to /banks/<slug>/ so
             every review carries a visible inbound link to its issuer hub. */}
         <ol>
-          <li><a href="/cards/" class="crumb-link">Cards</a></li>
+          <li><a href="/cards/">Cards</a></li>
           {category !== "Cards" && <li>{category}</li>}
-          <li>{bankSlug ? <a href={`/banks/${bankSlug}/`} class="crumb-link">{bankName}</a> : bankName}</li>
+          <li>{bankSlug ? <a href={`/banks/${bankSlug}/`}>{bankName}</a> : bankName}</li>
         </ol>
       </nav>
-      {(() => {
-        // Direction B (10 Oct 2026): the card's name in roman, the
-        // "review (Month YYYY)" tail in italic gold, as on the homepage.
-        const h = heading ?? title;
-        const i = h.search(/\sreview\b/i);
-        return i > 0
-          ? <h1>{h.slice(0, i)} <em>{h.slice(i + 1)}</em></h1>
-          : <h1>{h}</h1>;
-      })()}
-
-      {(score != null || verdictLabel) && (
-        <div class="dp-verdict-pill">
-          {score != null && (
-            <div class="score">
-              {fmtScore(score)}<span class="denom">/5</span>
-            </div>
-          )}
-          <div>
-            <div class="label">Our verdict</div>
-            <div class="meta">
-              {verdictLabel ? `${verdictLabel} · ` : ""}
-              Last verified {fmt(lastVerified)}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {welcomeBonusStrap && (
-        <p class="strap">
-          <span class="strap-label">Welcome bonus</span>
-          <span class="strap-value">{welcomeBonusStrap}</span>
-        </p>
-      )}
-
-      {/* Phase 4 (4 Oct 2026, A+B): the four facts a reader scans first,
-          as tiles on the band. Same L2 values the sidebar used to repeat. */}
-      <dl class="dp-cr-facts">
-        <div><dt>Annual fee</dt><dd>{annualFee === 0 ? "Free" : formatAED(annualFee)}</dd></div>
+      <h1>{heading ?? title}</h1>
+      <dl class="dp-card-summary-facts">
         <div>
-          <dt>Min salary</dt>
+          <dt>Annual fee</dt>
+          <dd>{recurringFee.amount}</dd>
+          {(recurringFee.qual || vatQualifier) && <dd class="detail">{[recurringFee.qual, vatQualifier].filter(Boolean).join(" · ")}</dd>}
+        </div>
+        <div>
+          <dt>Minimum salary</dt>
           <dd class={eligibilityProvenance === "needs-review" ? "is-unverified" : ""}>
             {invitationOnly
               ? "Invitation only"
@@ -384,10 +351,22 @@ const schema = {
               : `${fxFee.toFixed(2)}%`}
           </dd>
         </div>
-        <div><dt>Verified</dt><dd class="is-date">{fmt(lastVerified)}</dd></div>
       </dl>
+      <p class="dp-card-summary-proof">
+        {network && <>{network}<span aria-hidden="true"> · </span></>}
+        Verified <time datetime={lastVerified.toISOString()}>{fmt(lastVerified)}</time>
+      </p>
+      {shortVerdict && <p class="dp-card-summary-verdict" data-card-hero-verdict><strong>Our verdict:</strong> {shortVerdict}</p>}
+      {(score != null || verdictLabel) && (
+        <p class="dp-card-summary-verdict"><strong>{shortVerdict ? "Verdict rating:" : "Our verdict:"}</strong> {score != null && `${fmtScore(score)}/5`} {verdictLabel}</p>
+      )}
+      {welcomeBonusStrap && <p class="dp-card-summary-bonus"><strong>Welcome bonus:</strong> {welcomeBonusStrap}</p>}
+      <div class="dp-utility-actions">
+        <a class="dp-ui-action dp-ui-primary" href={compareHref}>Compare cards</a>
+        {sources.length > 0 && <a class="dp-ui-action dp-ui-secondary" href="#card-review-sources">See issuer sources</a>}
+      </div>
     </div>
-  </header>
+  </UtilityPageHead>
 
   {heroImage && (
     <div class="dp-cr-hero-photo-wrap">
@@ -411,13 +390,9 @@ const schema = {
       {deck && <p class="deck">{deck}</p>}
 
       {/*
-        Phase 2a.2.0 (2026-05-20): the "Our take" callout and the
-        pros/cons block were removed from the layout chrome and migrated
-        to MDX-invoked components — `<EditorVerdict card="…" />` and
-        `<ProsCons card="…" />` in `~/components/cards/`. Layout-side
-        rendering would double-render the same content on every page.
-        See `.council/briefs/2026-05-20-phase-2a-2-0-pros-cons-verdict-
-        amendment.md`.
+        Editorial Utility places the MDX's short verdict above the bonus.
+        If there is no authored kicker, the body verdict remains visible.
+        The review's rationale, pros/cons and scorecard remain in the body.
 
         Jump-nav renders from inside the MDX body (every review authors
         its own JumpToSection with curated labels) — same rule: layout-
@@ -429,7 +404,7 @@ const schema = {
       */}
 
       <!-- Editorial prose (MDX slot) -->
-      <div class="dp-prose">
+      <div class:list={["dp-prose", { "dp-card-verdict-in-summary": shortVerdict }]}>
         <slot />
       </div>
 
@@ -502,9 +477,7 @@ const schema = {
       {/* Phase 2a.2.3 (2026-05-20): the layout's `.dp-spec-card.is-call`
          block was removed — it duplicated the EditorVerdict at the top.
          The new <EditorScorecard /> at the end of the MDX body carries
-         the tier badge + dimension scores + apply/skip qualifiers. The
-         `editorTake` prop stays on the layout interface (call sites
-         pass it) but is unused here. */}
+         the tier badge + dimension scores + apply/skip qualifiers. */}
     </aside>
   </div>
 
@@ -560,7 +533,7 @@ const schema = {
 
   <!-- Sources footer -->
   {sources.length > 0 && (
-    <footer class="dp-article-sources">
+    <footer class="dp-article-sources dp-card-review-sources" id="card-review-sources">
       <p>
         <strong>Last verified:</strong> {fmt(lastVerified)}
       </p>
@@ -577,3 +550,71 @@ const schema = {
   )}
 
 </BaseLayout>
+
+<style>
+  .dp-card-summary :global(nav ol) { display: flex; flex-wrap: wrap; column-gap: .45rem; list-style: none; padding: 0; margin: 0; }
+  .dp-card-summary :global(nav li + li::before) { content: "/"; margin-inline-end: .45rem; color: var(--ink-soft); }
+  .dp-card-summary-facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-inline-size: 40rem;
+    margin: 16px 0 0;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--dp-ui-radius, 12px);
+    background: var(--shade-1);
+  }
+  .dp-card-summary-facts > div { min-inline-size: 0; padding: clamp(8px, 1.4vw, 14px); }
+  .dp-card-summary-facts > div + div { border-inline-start: 1px solid var(--line); }
+  .dp-card-summary-facts dt { color: var(--ink-soft); font-size: .75rem; font-weight: 650; line-height: 1.35; }
+  .dp-card-summary-facts dd {
+    color: var(--ink);
+    font: 650 clamp(.92rem, 1.8vw, 1.35rem)/1.25 var(--font-ui);
+    font-variant-numeric: tabular-nums;
+    margin: 4px 0 0;
+    overflow-wrap: anywhere;
+  }
+  .dp-card-summary-facts .detail,
+  .dp-card-summary-facts dd small { color: var(--ink-soft); font: 500 .75rem/1.35 var(--font-ui); }
+  .dp-card-summary-facts dd small { margin-inline-start: 2px; }
+  .dp-card-summary-proof, .dp-card-summary-verdict, .dp-card-summary-bonus {
+    margin: 10px 0 0;
+    color: var(--ink-soft);
+    font-size: .875rem;
+    line-height: 1.5;
+  }
+  .dp-card-summary-bonus, .dp-card-summary-verdict { max-inline-size: 68ch; }
+  .dp-card-summary-verdict[data-card-hero-verdict] { color: var(--ink); }
+  .dp-card-verdict-in-summary :global(.dp-editor-verdict) { display: none; }
+  .dp-card-summary-bonus strong, .dp-card-summary-verdict strong { color: var(--ink); }
+  .dp-card-summary-figure { margin: 0; inline-size: min(100%, 19rem); }
+  .dp-card-summary-figure.is-photo { max-inline-size: 19rem; }
+  .dp-card-summary-figure figcaption { margin-block-start: 6px; color: var(--ink-soft); font-size: .75rem; line-height: 1.4; }
+  .dp-card-summary-figure figcaption :global(p) { margin: 0; }
+  .dp-card-summary-art {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    padding: clamp(8px, 2vw, 20px);
+    background: var(--shade-1);
+    border: 1px solid var(--line);
+    border-radius: var(--dp-ui-radius, 12px);
+  }
+  .dp-card-summary-art img { display: block; inline-size: 100%; block-size: 100%; object-fit: contain; }
+  .dp-card-summary-figure :global(.dp-card-summary-photo) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border-radius: var(--dp-ui-radius, 12px);
+  }
+  .dp-card-review-sources { scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px); }
+  @media (max-width: 719.98px) {
+    .dp-card-summary-figure { inline-size: min(100%, 12rem); }
+  }
+  @media (max-width: 359.98px) {
+    .dp-card-summary-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dp-card-summary-facts > div:nth-child(3) { grid-column: 1 / -1; border-block-start: 1px solid var(--line); border-inline-start: 0; }
+  }
+</style>
