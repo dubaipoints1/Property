@@ -204,7 +204,15 @@ try {
   if (await page.locator("[data-copy-code]").count()) {
     assert.equal(await page.evaluate(() => Boolean(document.querySelector("[data-copy-code]").compareDocumentPosition(document.querySelector("[data-deal-artwork]")) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
   }
-  console.log("Interactions: menus, guide, card fees, article sources, tracker, calculator, Finder, comparison, Deals");
+  await navigate(page, "/news/uae-card-change-log-citi-cash-back-application-route/");
+  assert.ok(await page.locator("body.dp-system-typography").count());
+  assert.equal(await page.locator('link[rel="preload"][as="font"], .article-hero-image').count(), 0);
+  assert.ok(await page.getByRole("heading", { level: 1, name: /UAE Card Change Log/ }).isVisible());
+  assert.ok(await page.getByRole("link", { name: "Citi Cash Back review", exact: true }).isVisible());
+  await navigate(page, "/");
+  assert.equal(await page.locator("body.dp-system-typography").count(), 0);
+  assert.equal(await page.locator('link[rel="preload"][as="font"]').count(), 2);
+  console.log("Interactions: menus, guide, card fees, article sources, tracker, calculator, Finder, comparison, Deals, Change Log");
 } finally {
   await browser?.close();
   server.close();

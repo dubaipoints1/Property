@@ -337,6 +337,9 @@ const news = defineCollection({
     description: z.string(),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
+    // For compact source-led reports whose documents and comparison, not a
+    // decorative hero, are the evidence.
+    textLed: z.boolean().default(false),
     // The date after which the story's claims stop being safe to serve
     // as-is (a promotion window closing, a registration deadline). Set by
     // the editor from the story's own prose — never extracted (§6). Past

@@ -4,10 +4,10 @@ tier: T3
 vertical: business-realestate
 assigned-editor: business-realestate-editor
 research-status: complete
-seo-status: pending
+seo-status: complete
 draft-status: complete
 factcheck-status: complete
-tech-status: pending
+tech-status: local-pass
 chairman-status: approved
 chairman-direction: '“Do it all.” — in-session, 4 November 2026, after the next sprint explicitly included publishing the first Card Change Log; CLAUDE.md 2026-08-06 amendment.'
 target-publish: 2026-11-04
@@ -26,7 +26,7 @@ This is the first dated baseline in the audit follow-up. DubaiPoints found an in
 
 ## Out of scope
 
-No new issuer-change claim without dated primary snapshots. No referral amount, partner invitation, application CTA, tracking, publisher payout or financial-promotion permissions claim. No new imagery; the established news layout uses its own fallback.
+No new issuer-change claim without dated primary snapshots. No referral amount, partner invitation, application CTA, tracking, publisher payout or financial-promotion permissions claim. This text-led edition has no decorative article hero; the listing uses the established fallback.
 
 ## Done when
 
@@ -50,3 +50,5 @@ No new issuer-change claim without dated primary snapshots. No referral amount, 
 [Research dossier](../research/2026-11/uae-card-change-log-citi-cash-back-application-route-dossier.md). Specialist approval and deployment remain recorded separately in the release PR.
 
 Independent Fact-Checker, 4 November 2026: passed the direct versus designated landing-page distinction, published amounts and conditions, and hypothetical worked arithmetic. No commission terms or issuer change are asserted.
+
+Local tech verification, 4 November 2026: article canonical, NewsArticle graph and RSS verified. Mobile Lighthouse on a compressed local preview measured 100 performance and 154.3 KB above the fold; both configured budgets passed. The final exact-head Linux validation and production read-back remain separate.
