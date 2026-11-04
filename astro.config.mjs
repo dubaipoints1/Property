@@ -6,6 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { unified } from "@astrojs/markdown-remark";
 import rehypeSlug from "rehype-slug";
 import rehypeTableScroll from "./src/lib/rehypeTableScroll.mjs";
+import compactAssets from "./scripts/images/build-compact-assets.mjs";
 
 export default defineConfig({
   site: "https://dubaipoints.ae",
@@ -21,6 +22,7 @@ export default defineConfig({
     processor: unified({ rehypePlugins: [rehypeSlug, rehypeTableScroll] }),
   },
   integrations: [
+    compactAssets(),
     preact(),
     // rehype-slug adds id="…" attributes to every heading so the
     // JumpToSection rail's <a href="#earn-rates"> anchors resolve.

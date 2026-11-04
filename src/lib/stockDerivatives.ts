@@ -7,7 +7,7 @@
 // file is actually on disk at build time, so an image added before the
 // script has been re-run renders from its original instead of a 404.
 
-import { existsSync } from "node:fs";
+import { closeSync, existsSync, openSync, readSync, statSync } from "node:fs";
 import path from "node:path";
 import type { StockEntry } from "./stockManifest";
 
@@ -18,21 +18,57 @@ const DERIVATIVES = [
 ] as const;
 
 const PUBLIC = path.join(process.cwd(), "public");
+export type StockDelivery = "compact" | "feature";
+const DELIVERY_WIDTHS = {
+  compact: [240, 400],
+  feature: [400, 800, 960],
+} as const;
 
 /** `srcset` for a manifest entry, or undefined when no derivative exists. */
-export function stockSrcset(entry: StockEntry): string | undefined {
+export function stockSrcset(entry: StockEntry, delivery?: StockDelivery): string | undefined {
   const dir = path.posix.dirname(entry.file);
-  const parts: string[] = [];
+  const parts: { src: string; width: number }[] = [];
+  // Static builds produce the referenced copies in astro:build:done. Dev
+  // keeps using committed derivatives and the original without that hook.
+  if (delivery && (dir === "images/stock" || dir === "images/ai")) {
+    for (const width of DELIVERY_WIDTHS[delivery]) {
+      if (entry.width > width) parts.push({ src: `/${dir}/compact/${entry.slug}-${width}.webp`, width });
+    }
+  }
   for (const d of DERIVATIVES) {
     if (entry.width <= d.width) continue;
     const rel = `${dir}/${d.dir}/${entry.slug}.webp`;
-    if (existsSync(path.join(PUBLIC, rel))) parts.push(`/${rel} ${d.width}w`);
+    if (existsSync(path.join(PUBLIC, rel))) parts.push({ src: `/${rel}`, width: d.width });
   }
   if (parts.length === 0) return undefined;
   // The original closes the set, so a wide hero on a dense screen can
   // still reach full resolution.
-  parts.push(`/${entry.file} ${entry.width}w`);
-  return parts.join(", ");
+  parts.push({ src: `/${entry.file}`, width: entry.width });
+  return parts.sort((a, b) => a.width - b.width).map((part) => `${part.src} ${part.width}w`).join(", ");
+}
+
+/** PNG delivery copy for a modest logo slot, leaving the approved original as src. */
+export function compactLogoSrcset(src: string): string | undefined {
+  const match = /^\/logos\/(partners|banks)\/([a-z0-9-]+)\.png$/.exec(src);
+  if (!match) return undefined;
+  const [, folder, name] = match;
+  const file = path.join(PUBLIC, "logos", folder, `${name}.png`);
+  const original = statSync(file, { throwIfNoEntry: false });
+  if (!original?.isFile() || original.size < 12 * 1024) return undefined;
+  // PNG IHDR carries the intrinsic width in its fixed first 24 bytes.
+  // Keep the original width as the last candidate for dense screens.
+  const header = Buffer.alloc(24);
+  const fd = openSync(file, "r");
+  try {
+    if (readSync(fd, header, 0, header.length, 0) !== header.length) return undefined;
+  } finally {
+    closeSync(fd);
+  }
+  if (header.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a" || header.toString("ascii", 12, 16) !== "IHDR") return undefined;
+  const width = header.readUInt32BE(16);
+  const widths = (folder === "partners" ? [192, 360] : [192]).filter((candidate) => candidate < width);
+  if (!widths.length) return undefined;
+  return [...widths.map((candidate) => `/logos/${folder}/compact/${name}-${candidate}.png ${candidate}w`), `${src} ${width}w`].join(", ");
 }
 
 /**

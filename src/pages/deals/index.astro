@@ -156,7 +156,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                 <span class="dp-deal-listing-art" data-deal-listing-art>
                   <DealVisual dealId={featured.entry.id} title={featured.entry.data.title} logo={featured.entry.data.logo}
                     merchant={featured.entry.data.merchant} bankSlug={featured.entry.data.bank?.id} bankName={featured.bankName}
-                    coverSize="med" class="intel-featured-image" sizes="(max-width: 640px) 100px, 230px" loading="eager" />
+                    coverSize="med" class="intel-featured-image" sizes="(max-width: 640px) clamp(64px, 22vw, 95px), clamp(110px, 18vw, 230px)" loading="eager" />
                 </span>
               )}
             </a>
@@ -185,7 +185,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                       {d.hasArt && (
                         <span class="dp-deal-listing-art" data-deal-listing-art>
                           <DealVisual dealId={d.entry.id} title={d.entry.data.title} logo={d.entry.data.logo} merchant={d.entry.data.merchant}
-                            bankSlug={d.entry.data.bank?.id} bankName={d.bankName} coverSize="sm" class="intel-card-image" sizes="132px" />
+                            bankSlug={d.entry.data.bank?.id} bankName={d.bankName} coverSize="sm" class="intel-card-image"
+                            sizes="(max-width: 640px) clamp(64px, 22vw, 95px), clamp(80px, 11vw, 132px)" />
                         </span>
                       )}
                     </a>

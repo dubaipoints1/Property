@@ -41,7 +41,7 @@
 
 import { getStockEntry } from "../lib/stockManifest";
 import Cover from "./Cover.astro";
-import { stockSrcset } from "../lib/stockDerivatives";
+import { stockSrcset, type StockDelivery } from "../lib/stockDerivatives";
 
 interface Props {
   slug: string;
@@ -52,6 +52,7 @@ interface Props {
   loading?: "eager" | "lazy";
   /** Rendered slot width, e.g. LISTING_SIZES.tile. Used only with a srcset. */
   sizes?: string;
+  delivery?: StockDelivery;
 }
 
 const {
@@ -62,6 +63,7 @@ const {
   class: className,
   loading = "lazy",
   sizes,
+  delivery,
 } = Astro.props;
 
 const entry = getStockEntry(slug);
@@ -72,7 +74,7 @@ const isAi = entry?.source === "ai-generated";
 // renders, not depend on a call site remembering a caption. The
 // photographer field holds the credit owner per the manifest contract.
 const isEditorial = entry?.source === "editorial";
-const srcset = entry ? stockSrcset(entry) : undefined;
+const srcset = entry ? stockSrcset(entry, import.meta.env.PROD ? delivery : undefined) : undefined;
 const sizesAttr = srcset ? (sizes ?? "100vw") : undefined;
 ---
 

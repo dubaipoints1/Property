@@ -105,7 +105,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
           </div>
           {guidePhoto(featured.id) && (
             <span class="dp-guide-feature-art" data-guide-feature-art>
-              <StockImage slug={`guide-${featured.id}`} class="intel-featured-image" sizes="(max-width: 640px) calc(100vw - 56px), 340px" loading="eager" />
+              <StockImage slug={`guide-${featured.id}`} class="intel-featured-image" delivery="feature" sizes="(max-width: 619px) calc(100vw - 56px), 340px" loading="eager" />
             </span>
           )}
         </a>
@@ -123,7 +123,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
                 </div>
                 {guidePhoto(g.id) && (
                   <span class="dp-guide-card-art">
-                    <StockImage slug={`guide-${g.id}`} class="intel-card-image" sizes="120px" />
+                    <StockImage slug={`guide-${g.id}`} class="intel-card-image" delivery="compact" sizes="clamp(70px, 14vw, 120px)" />
                   </span>
                 )}
               </a>

@@ -169,11 +169,18 @@ const lastRefreshed = new Date(
   <section class="dp-finder">
     {/* Compact layouts can collapse the filters; a sidebar always shows
         them, including when the window is resized from a collapsed view. */}
-    <details class="dp-finder-formwrap" id="finder-filters" open>
+    <details class="dp-finder-formwrap" id="finder-filters">
       <summary class="dp-finder-formwrap-summary">
         <span class="dp-finder-formwrap-title">Filter cards</span>
         <span class="dp-finder-formwrap-hint">Salary, spend, preference</span>
       </summary>
+      <script is:inline data-finder-initial-disclosure>
+        // Set the desktop disclosure before the browser parses its content.
+        // Mobile default remains closed even if the rest of the document is slow.
+        if (!window.matchMedia("(max-width: 820px)").matches) {
+          document.currentScript.parentElement.open = true;
+        }
+      </script>
       <form method="get" action="/cards/finder/" class="dp-finder-form" id="finder-form">
         <fieldset class="dp-finder-fs is-salary">
           <legend>Your monthly salary (AED)</legend>
@@ -641,8 +648,8 @@ const lastRefreshed = new Date(
       var activeFilters = initial.salary > 0 || initial.prefer !== "none" || initial.spend !== "general"
         || initial.network !== "any" || initial.fee !== "any" || initial.includeInviteOnly || initial.includeLegacy;
       // Default results are immediately visible on phones. Shared filters
-      // stay exposed, and the desktop sidebar (including no-JS) stays open.
-      if (compactFilters.matches && !activeFilters) filters.open = false;
+      // stay exposed. Without JS, the native disclosure can still open.
+      filters.open = !compactFilters.matches || activeFilters;
       compactFilters.addEventListener("change", function () {
         if (!compactFilters.matches) filters.open = true;
       });
@@ -708,8 +715,13 @@ const lastRefreshed = new Date(
 
   /* ── Form wrapper (mobile <details> collapse) ─────────────────── */
   .dp-finder-formwrap { min-width: 0; }
-  .dp-finder-formwrap-summary {
+  .dp-finder-formwrap[open] > .dp-finder-formwrap-summary {
     display: none;
+  }
+  .dp-finder-formwrap-summary {
+    min-block-size: var(--dp-ui-control, 44px);
+    cursor: pointer;
+    align-content: center;
   }
 
   /* ── Form ─────────────────────────────────────────────────────── */
@@ -827,6 +839,14 @@ const lastRefreshed = new Date(
     display: grid;
     gap: 16px;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  }
+  /* Brief result descriptions are UI copy. Keep their hierarchy without
+     downloading a second display face for the initial shortlist. */
+  .dp-finder-grid :global(.dp-spec-card .tagline) {
+    font: 400 .9375rem/1.45 var(--font-ui);
+  }
+  .dp-finder-grid :global(.dp-spec-card .dp-welcome-callout .body.is-headline) {
+    font-family: var(--font-ui);
   }
   .dp-finder-tile {
     display: block;
@@ -951,6 +971,7 @@ const lastRefreshed = new Date(
       user-select: none;
       font-family: var(--font-ui);
     }
+    .dp-finder-formwrap[open] > .dp-finder-formwrap-summary { display: flex; }
     .dp-finder-formwrap-summary::-webkit-details-marker {
       display: none;
     }

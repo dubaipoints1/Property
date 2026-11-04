@@ -1,5 +1,6 @@
 ---
 import { bankMark } from "~/lib/logos";
+import { compactLogoSrcset } from "~/lib/stockDerivatives";
 // Bank logo — renders the SVG mark from /logos/banks/[slug].svg by default,
 // or the PNG at /logos/banks/[slug].png when the slug is listed in
 // the PNG list in src/lib/logos.ts (a per-slug override for issuers whose only freely-
@@ -31,6 +32,7 @@ const dim = { sm: 18, md: 28, lg: 44 }[size];
 // File and plate come from src/lib/logos.ts (PNG-only and white-only
 // marks are listed there). Sources for each are in public/logos/LICENSES.md.
 const mark = bankMark(slug);
+const srcset = import.meta.env.PROD && size === "sm" ? compactLogoSrcset(mark.src) : undefined;
 
 // Initial fallback: first capital letter of each word, max 2.
 const initials = name
@@ -48,6 +50,8 @@ const initials = name
 >
   <img
     src={mark.src}
+    srcset={srcset}
+    sizes={srcset ? "60px" : undefined}
     alt=""
     width={dim}
     height={dim}

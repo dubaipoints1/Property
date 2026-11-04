@@ -1,10 +1,11 @@
 ---
-// Fonts are self-hosted (7 Oct 2026, UX review): Google Fonts with
+// Keep Newsreader's real normal/italic faces and weights, but use the
+// smaller upstream weight-only builds. Keep swap and the Latin preload:
 // display=optional often left a phone's first visit in Georgia/system-ui.
-import "@fontsource-variable/newsreader/opsz.css";
-import "@fontsource-variable/newsreader/opsz-italic.css";
+import "@fontsource-variable/newsreader/wght.css";
+import "@fontsource-variable/newsreader/wght-italic.css";
 import "@fontsource-variable/geist/wght.css";
-import newsreaderLatin from "@fontsource-variable/newsreader/files/newsreader-latin-opsz-normal.woff2?url";
+import newsreaderLatin from "@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url";
 import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import "~/styles/global.css";
 import "~/styles/editorial-utility.css";
