@@ -91,9 +91,9 @@ const PRIMARY = ["Cards", "Salary tracker", "Points &amp; miles", "Deals", "News
 
 function primaryLabels(block: string): string[] {
   // Top-level entries only: direct <a> children of the desktop nav and
-  // the mega-wrap trigger links, or .dp-nav-row rows in the drawer.
+  // the native desktop disclosures, or .dp-nav-row rows in the drawer.
   const labels: string[] = [];
-  const re = /<(?:a|label)[^>]*class=(?:\{`?)?["`]?(?:dp-nav-row[^"`]*|[^"`]*)["`]?[^>]*>\s*(?:<span>)?([A-Z][A-Za-z &;]+?)\s*(?:<\/span>|<span class="dp-mega-caret"|<span class="dp-nav-expand-arrow"|\{liveDealCount|<\/a>)/g;
+  const re = /<(?:a|label|summary)[^>]*class=(?:\{`?)?["`]?(?:dp-nav-row[^"`]*|[^"`]*)["`]?[^>]*>\s*(?:<span>)?([A-Z][A-Za-z &;]+?)\s*(?:<\/span>|<span class="dp-mega-caret"|<span class="dp-nav-expand-arrow"|\{liveDealCount|<\/a>)/g;
   for (const m of block.matchAll(re)) labels.push(m[1].trim());
   return labels;
 }
@@ -113,6 +113,12 @@ test("mobile drawer carries the same six primary entries in the same order", () 
   const block = headerSrc.slice(start, end)
     .replace(/<div class="dp-nav-panel"[\s\S]*?\n    <\/div>\n/g, "");
   assert.deepEqual(primaryLabels(block), PRIMARY);
+});
+
+test("desktop menus are native disclosures and retain their directory links", () => {
+  assert.equal([...headerSrc.matchAll(/<details class="dp-nav-mega-wrap">\s*<summary\b/g)].length, 2);
+  assert.match(headerSrc, /label: "Best overall UAE cards",\s+href: "\/cards\/"/);
+  assert.match(headerSrc, /label: "All airline programmes",\s+href: "\/airlines\/"/);
 });
 
 test("salary-transfer tracker is a primary entry on both surfaces", () => {

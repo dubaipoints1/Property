@@ -27,7 +27,7 @@ const { title, heading, description, columns, rows } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
-  <header class="dp-pagehead is-narrow">
+  <header class="dp-pagehead is-narrow dp-cmp-head">
     <div class="crumb"><a href="/cards/compare/" class="crumb-link">Compare</a></div>
     <h1>{heading ?? title}</h1>
     {description && <p class="deck">{description}</p>}
@@ -35,21 +35,26 @@ const { title, heading, description, columns, rows } = Astro.props;
 
   <article class="dp-cmp-body">
     <div class="dp-compare-wrap">
-      <table class="dp-compare-table">
-        <thead>
-          <tr>
-            <th>Card</th>
-            {columns.map((c) => <th>{c}</th>)}
+      <table class="dp-compare-table" role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">Card</th>
+            {columns.map((c) => <th scope="col" role="columnheader">{c}</th>)}
           </tr>
         </thead>
-        <tbody>
+        <tbody role="rowgroup">
           {rows.map((r) => (
-            <tr>
-              <td class="dp-compare-card" data-label="Card">
+            <tr role="row">
+              <th scope="row" role="rowheader" class="dp-compare-card">
                 <a href={r.href}>{r.cardName}</a>
                 <span class="dp-compare-bank">{r.bankName}</span>
-              </td>
-              {r.values.map((v, i) => <td data-label={columns[i]}>{v}</td>)}
+              </th>
+              {r.values.map((v, i) => (
+                <td role="cell">
+                  <span class="dp-compare-label" aria-hidden="true">{columns[i]}</span>
+                  <span class="dp-compare-value">{v}</span>
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
@@ -63,6 +68,7 @@ const { title, heading, description, columns, rows } = Astro.props;
 </BaseLayout>
 
 <style>
+  .dp-cmp-head.is-narrow { max-width: 1080px; }
   .dp-cmp-body {
     max-width: 1080px;
     margin: 0 auto;
@@ -83,7 +89,7 @@ const { title, heading, description, columns, rows } = Astro.props;
     background: var(--shade-1);
     text-align: left;
   }
-  .dp-compare-table th {
+  .dp-compare-table thead th {
     padding: 14px 16px;
     font-family: var(--font-ui);
     font-size: 10px; font-weight: 700;
@@ -91,20 +97,23 @@ const { title, heading, description, columns, rows } = Astro.props;
     color: var(--ink-soft);
     white-space: nowrap;
   }
-  .dp-compare-table td {
+  .dp-compare-table :is(td, tbody th) {
     padding: 16px;
     border-top: 1px solid var(--line-soft);
     font-size: 14px;
     color: var(--ink-soft);
     vertical-align: top;
+    text-align: left;
     font-variant-numeric: tabular-nums;
   }
   .dp-compare-table tbody tr:hover td { background: var(--shade-1); }
+  .dp-compare-label { display: none; }
   .dp-compare-card {
     position: sticky;
     left: 0;
     background: var(--paper);
     border-right: 1px solid var(--line);
+    font-weight: 400;
   }
   .dp-compare-table tbody tr:hover .dp-compare-card { background: var(--shade-1); }
   .dp-compare-card a {
@@ -135,13 +144,11 @@ const { title, heading, description, columns, rows } = Astro.props;
     color: inherit;
   }
 
-  /* Mobile: collapse the table into stacked cards. Each row becomes a
-     vertical card with key:value pairs; the column header gets injected
-     as a label via the data-label attribute. Fixes the "one word per
-     line" wrapping that happens when the table can't reach min-width on
-     a 375px viewport. */
-  @media (max-width: 640px) {
-    .dp-cmp-body { padding: 20px 16px 60px; }
+  /* Stack when the 760px data table no longer fits with its gutters.
+     Preserve the real table headings in the accessibility tree and
+     supply compact visual labels separately. */
+  @media (max-width: 824px) {
+    .dp-cmp-body { padding-block: 20px 60px; }
     .dp-compare-wrap {
       overflow: visible;
       border: 0;
@@ -152,7 +159,15 @@ const { title, heading, description, columns, rows } = Astro.props;
       min-width: 0;
       display: block;
     }
-    .dp-compare-table thead { display: none; }
+    .dp-compare-table thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
     .dp-compare-table tbody { display: block; }
     .dp-compare-table tr {
       display: block;
@@ -164,8 +179,8 @@ const { title, heading, description, columns, rows } = Astro.props;
     }
     .dp-compare-table tbody tr:hover td { background: transparent; }
     .dp-compare-table td {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
       align-items: baseline;
       gap: 16px;
       border-top: 0;
@@ -174,18 +189,17 @@ const { title, heading, description, columns, rows } = Astro.props;
       font-size: 14px;
     }
     .dp-compare-table td:last-child { border-bottom: 0; }
-    /* Label injected from data-label attribute on each td */
-    .dp-compare-table td[data-label]::before {
-      content: attr(data-label);
-      flex-shrink: 0;
+    .dp-compare-label {
+      display: block;
       font-family: var(--font-ui);
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: 1.8px;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted);
-      align-self: center;
+      overflow-wrap: anywhere;
     }
+    .dp-compare-value { text-align: end; overflow-wrap: anywhere; }
     /* Card cell renders as a header — full width, no label prefix,
        larger card name + bank below */
     .dp-compare-card {
@@ -194,12 +208,15 @@ const { title, heading, description, columns, rows } = Astro.props;
       background: transparent !important;
       border-right: 0;
       border-bottom: 1px solid var(--line) !important;
-      padding-bottom: 12px !important;
+      border-top: 0 !important;
+      padding: 0 0 12px !important;
       margin-bottom: 6px;
     }
-    .dp-compare-card::before { display: none; }
     .dp-compare-card a {
       font-size: 17px;
     }
+  }
+  @media (max-width: 640px) {
+    .dp-cmp-body { padding-inline: 20px; }
   }
 </style>

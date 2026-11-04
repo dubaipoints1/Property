@@ -1,6 +1,6 @@
 ---
 // Salary-transfer tracker layout — Phase H2 (Claude Design handoff alignment).
-// Used by /salary-transfer/ (master) and /salary-transfer/[slug]/ (per-band).
+// Used by /salary-transfer/[slug]/ for the five salary-band landings.
 //
 // Aligns with Phase C tools template (pagehead + tracker island + bands +
 // calculator CTA). Slot map preserved for backwards compatibility.
@@ -11,24 +11,23 @@ interface Props {
   title: string;
   description?: string;
   liveCount: number;
+  bandLabel: string;
 }
 
-const { title, description, liveCount } = Astro.props;
+const { title, description, liveCount, bandLabel } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
   <header class="dp-pagehead is-narrow">
     <div class="crumb">Tools / <a href="/salary-transfer/" class="crumb-link">Salary transfer</a></div>
-    <h1>UAE <em>salary transfer</em> offers.</h1>
+    <h1>Salary transfer offers: <em>{bandLabel}</em></h1>
     <p class="deck">
-      Live offers tracked across UAE banks, refreshed as promotions
-      change. Filter by salary band, tenure and reward type.
+      Live UAE offers that apply to at least part of this band. Check the
+      salary shown beside each reward for the applicable threshold.
     </p>
     <div class="dp-tools-stats">
       <div><strong class="live"><span class="dot" aria-hidden="true"></span>Live</strong> <span class="lbl">{liveCount} {liveCount === 1 ? "offer" : "offers"}</span></div>
-      <div><strong>Refresh</strong> <span class="lbl">daily</span></div>
       <div><strong>Currency</strong> <span class="lbl">AED-equivalent</span></div>
-      <div><strong>Bands</strong> <span class="lbl">AED 5,000 – 50,000+ across five tiers</span></div>
     </div>
   </header>
 
@@ -38,12 +37,10 @@ const { title, description, liveCount } = Astro.props;
 
   <section class="dp-st-bands">
     <div class="head">
-      <h2>By salary band</h2>
-      <p>Each band lists only the offers a salary at that level qualifies for.</p>
+      <h2>Browse by salary band</h2>
+      <p>Pick another band or <a href="/salary-transfer/">see all offers</a>.</p>
     </div>
-    <div class="grid">
-      <slot name="bands" />
-    </div>
+    <slot name="bands" />
   </section>
 
   <section class="dp-st-cta">
@@ -66,13 +63,13 @@ const { title, description, liveCount } = Astro.props;
   .dp-st-tracker {
     max-width: var(--container-listing);
     margin: 0 auto;
-    padding: 32px 32px 0;
+    padding: 32px clamp(12px, 3vw, 32px) 0;
   }
 
   .dp-st-bands {
     max-width: var(--container-listing);
     margin: 0 auto;
-    padding: 40px 32px 0;
+    padding: 40px clamp(12px, 3vw, 32px) 0;
   }
   .dp-st-bands .head {
     margin-bottom: 18px;
@@ -92,18 +89,6 @@ const { title, description, liveCount } = Astro.props;
     max-width: 60ch;
     margin: 0;
   }
-  .dp-st-bands .grid {
-    display: grid;
-    gap: 12px;
-    grid-template-columns: 1fr;
-  }
-  @media (min-width: 640px) {
-    .dp-st-bands .grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 1024px) {
-    .dp-st-bands .grid { grid-template-columns: repeat(3, 1fr); }
-  }
-
   .dp-st-cta {
     max-width: var(--container-listing);
     margin: 40px auto 0;

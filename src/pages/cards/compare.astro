@@ -389,7 +389,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     margin: 0;
     display: grid;
     gap: 14px;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   }
   .dp-compare-matchups li {
     border-top: 1px solid var(--line);
@@ -404,6 +404,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     font-weight: 600;
     color: var(--green);
     text-decoration: none;
+    overflow-wrap: anywhere;
   }
   .dp-compare-matchups a:hover { text-decoration: underline; }
   .dp-compare-matchups .deck {
@@ -483,7 +484,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    min-inline-size: 0;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
     gap: 24px;
   }
   .dp-compare-picker-group .dp-compare-picker-label {
@@ -517,6 +519,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     margin-top: 3px;
     flex-shrink: 0;
   }
+  .dp-compare-picker-group label span { min-width: 0; overflow-wrap: anywhere; }
   .dp-compare-picker-actions {
     display: flex;
     align-items: center;
@@ -565,7 +568,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     padding: 0 32px;
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
     align-items: start;
   }
   .dp-compare-col {
@@ -576,6 +579,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     display: grid;
     gap: 16px;
     font-family: var(--font-ui);
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .dp-compare-col-head {
     display: grid;
@@ -671,7 +676,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       width: 100%;
     }
     .dp-compare-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

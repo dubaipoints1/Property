@@ -12,6 +12,8 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
 import { getLiveOffers, getLapsedUnarchivedOffers } from "~/lib/offerAdapter";
 import { classifyCoverage, coverageGuardError } from "~/lib/salaryTransferCoverage";
+import { TRACKER_SALARY_BANDS as bands } from "~/lib/salaryTransferTrackerBands";
+import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
 
 const offers = await getLiveOffers();
 const lapsedOffers = await getLapsedUnarchivedOffers();
@@ -73,14 +75,6 @@ const linkList = (slugs: string[]) =>
     name: bankName.get(slug) ?? slug,
     sep: i === 0 ? "" : i === slugs.length - 1 ? " and " : ", ",
   }));
-
-const bands = [
-  { slug: "aed-5000-to-8000",   label: "AED 5,000 – 8,000" },
-  { slug: "aed-8000-to-15000",  label: "AED 8,000 – 15,000" },
-  { slug: "aed-15000-to-30000", label: "AED 15,000 – 30,000" },
-  { slug: "aed-30000-to-50000", label: "AED 30,000 – 50,000" },
-  { slug: "aed-50000-plus",     label: "AED 50,000+" },
-];
 
 const fmtFull = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -162,7 +156,7 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   </div>
 
   <!-- Preact island handles filter UI + sortable table -->
-  <SalaryTransferTracker offers={offers} client:load />
+  <SalaryTransferTracker offers={offers} cardPaths={getTrackerCardPaths(offers)} client:load />
 
   <!-- Salary-band entry points -->
   <section class="dp-featured-band" style="padding-top: 56px;">

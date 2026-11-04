@@ -125,6 +125,11 @@
      1500px once the viewport reaches 2400px. Below 1600px the
      existing 1180px cap is preserved (clamp lower bound). */
   --container-listing: clamp(1180px, 1180px + (100vw - 1600px) * 0.4, 1500px);
+  /* Sticky header including its mobile quick-links strip and borders. */
+  --dp-sticky-header-height: 92px;
+}
+@media (min-width: 1024px) {
+  :root { --dp-sticky-header-height: 81px; }
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -1005,6 +1010,17 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 /* Respect markdown's `:---:` / `---:` column-alignment hints. */
 .dp-prose table th[align="right"], .dp-prose table td[align="right"] { text-align: right; }
 .dp-prose table th[align="center"], .dp-prose table td[align="center"] { text-align: center; }
+.dp-prose-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  margin-bottom: 28px;
+}
+.dp-prose .dp-prose-table-scroll table {
+  display: table;
+  overflow: visible;
+  margin: 0;
+}
 @media (max-width: 719.98px) {
   /* Wide tables scroll sideways on a phone: an edge shadow says so, and
      the first column stays put so each row keeps its name. */

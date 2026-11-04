@@ -5,6 +5,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import { unified } from "@astrojs/markdown-remark";
 import rehypeSlug from "rehype-slug";
+import rehypeTableScroll from "./src/lib/rehypeTableScroll.mjs";
 
 export default defineConfig({
   site: "https://dubaipoints.ae",
@@ -17,7 +18,7 @@ export default defineConfig({
   // Markdown pipeline does not execute rehype plugins, so retain the unified
   // processor explicitly until that plugin is ported.
   markdown: {
-    processor: unified({ rehypePlugins: [rehypeSlug] }),
+    processor: unified({ rehypePlugins: [rehypeSlug, rehypeTableScroll] }),
   },
   integrations: [
     preact(),
