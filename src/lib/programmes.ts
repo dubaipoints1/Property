@@ -34,3 +34,23 @@ export function programmeSection(id: string): ProgrammeSection {
 export function programmeHref(id: string): string {
   return `/${programmeSection(id)}/${id}/`;
 }
+
+interface ProgrammeImage {
+  slug: string;
+  caption?: string;
+}
+
+// Keep the licensed asset's canonical manifest entry (and WebP variants).
+// The former Sofitel photo is of a property now operated by Dorint.
+// Accor's current listing for the replacement: https://all.accor.com/hotel/5560/index.en.shtml
+const PROGRAMME_IMAGES: ReadonlyMap<string, ProgrammeImage> = new Map([
+  ["accor-all", {
+    slug: "news-all-accor-triple-points-uae-hotels-book-by-25-october",
+    caption: "Novotel Barcelona City",
+  }],
+]);
+
+/** One image selection for the programme hub and its hotel directory tile. */
+export function programmeImage(id: string): ProgrammeImage {
+  return PROGRAMME_IMAGES.get(id) ?? { slug: `programme-${id}` };
+}

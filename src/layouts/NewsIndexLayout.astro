@@ -20,8 +20,7 @@
 import type { CollectionEntry } from "astro:content";
 import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import StockImage from "~/components/StockImage.astro";
-import { LISTING_SIZES } from "~/lib/stockDerivatives";
+import NewsListingVisual from "~/components/NewsListingVisual.astro";
 import { getCollection } from "astro:content";
 
 interface Props {
@@ -159,15 +158,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
         <>
           {featured && (
             <a href={`/news/${featured.id}/`} class="intel-featured">
-              <StockImage
-                slug={`news-${featured.id}`}
-                coverTitle={featured.data.title}
-                coverCategory="News"
-                coverSize="hero"
-                class="intel-featured-image"
-                sizes={LISTING_SIZES.featured}
-                loading="eager"
-              />
+              <NewsListingVisual id={featured.id} featured />
               <div class="intel-featured-body">
                 <span class="intel-featured-top">
                   <span class="intel-featured-eyebrow">{formatCategory(featured.data.category)}</span>
@@ -184,14 +175,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
               {others.map((p) => (
                 <li class="intel-card-item">
                   <a href={`/news/${p.id}/`} class="intel-card">
-                    <StockImage
-                      slug={`news-${p.id}`}
-                      coverTitle={p.data.title}
-                      coverCategory="News"
-                      coverSize="med"
-                      class="intel-card-image"
-                      sizes={LISTING_SIZES.tile}
-                    />
+                    <NewsListingVisual id={p.id} />
                     <div class="intel-card-body">
                       <span class="intel-card-top">
                         <span class="intel-card-cat">{formatCategory(p.data.category)}</span>
@@ -361,10 +345,6 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     object-fit: cover; display: block;
     border-bottom: 1px solid var(--line);
   }
-  .intel-featured :global(svg.dp-cover) {
-    width: 100%; display: block;
-    border-bottom: 1px solid var(--line);
-  }
   .intel-featured-body { padding: 24px 28px 28px; display: grid; gap: 10px; }
   .intel-featured-eyebrow {
     font-family: var(--font-ui);
@@ -434,10 +414,8 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     object-fit: cover; display: block;
     border-bottom: 1px solid var(--line);
   }
-  .intel-card :global(svg.dp-cover) {
-    width: 100%; display: block;
-    border-bottom: 1px solid var(--line);
-  }
+  .intel-card:not(:has(> :nth-child(2))),
+  .intel-featured:not(:has(> :nth-child(2))) { grid-template-rows: 1fr; }
   .intel-card-body { padding: 18px 20px 20px; display: grid; gap: 8px; }
   .intel-card-cat {
     font-family: var(--font-ui);

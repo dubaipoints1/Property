@@ -9,9 +9,11 @@
 // + dp-dir-grid of dp-dir-tile. Every tile figure comes from the programmes
 // collection or the valuations table — nothing typed here.
 import BaseLayout from "~/layouts/BaseLayout.astro";
+import StockImage from "~/components/StockImage.astro";
 import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
 import { getCollection } from "astro:content";
-import { isHotelProgramme } from "~/lib/programmes";
+import { isHotelProgramme, programmeHref, programmeImage } from "~/lib/programmes";
+import { getStockEntry } from "~/lib/stockManifest";
 import { dpValueSub } from "~/lib/valuations";
 
 const programmes = (await getCollection("programs", (p) => isHotelProgramme(p.id))).sort((a, b) =>
@@ -49,10 +51,29 @@ const schema = collectionPageGraph({
     <div class="dp-dir-grid">
       {programmes.map((p) => {
         const value = dpValueSub(p.id);
+        const image = programmeImage(p.id);
+        const entry = getStockEntry(image.slug);
+        const stockPhoto = entry?.source === "pexels" || entry?.source === "unsplash" ? entry : undefined;
+        const titleId = `hotel-${p.id}`;
         return (
-          <a class="dp-dir-tile" href={`/hotels/${p.id}/`}>
+          <a class="dp-dir-tile dp-hotel-tile" href={programmeHref(p.id)} aria-labelledby={titleId}>
+            {entry && (
+              <span class="dp-hotel-tile-media">
+                <StockImage
+                  slug={image.slug}
+                  class="dp-hotel-tile-img"
+                  sizes="(max-width: 639px) calc(100vw - 74px), (max-width: 1023px) calc(50vw - 65px), 310px"
+                />
+                {(image.caption || stockPhoto) && (
+                  <span class="dp-hotel-tile-credit">
+                    {image.caption}{image.caption && stockPhoto ? " · " : ""}
+                    {stockPhoto && `Photo: ${stockPhoto.photographer}`}
+                  </span>
+                )}
+              </span>
+            )}
             <span class="eyebrow">{p.data.currencyName}</span>
-            <span class="title">{p.data.name}</span>
+            <span class="title" id={titleId}>{p.data.name}</span>
             {p.data.sweetSpots[0] && <span class="desc">{p.data.sweetSpots[0].title}</span>}
             <span class="meta">
               {p.data.transferPartners.length} transfer partner{p.data.transferPartners.length === 1 ? "" : "s"}
@@ -75,3 +96,25 @@ const schema = collectionPageGraph({
     </section>
   </article>
 </BaseLayout>
+
+<style>
+  .dp-hotel-tile { min-inline-size: 0; }
+  .dp-hotel-tile-media {
+    display: grid;
+    gap: 6px;
+    margin-block-end: 6px;
+  }
+  .dp-hotel-tile-media :global(.dp-hotel-tile-img) {
+    display: block;
+    inline-size: 100%;
+    aspect-ratio: 16 / 9;
+    block-size: auto;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  .dp-hotel-tile-credit {
+    color: var(--ink-soft);
+    font-size: .75rem;
+    line-height: 1.35;
+  }
+</style>

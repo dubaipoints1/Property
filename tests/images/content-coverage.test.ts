@@ -1,6 +1,6 @@
 // Content ↔ image coverage — every rendered content entry should have a
-// manifest image behind its conventional slug (guide-<id>, news-<id>,
-// deal-<id>, bank-<slug>, programme-<slug>, card-<slug>).
+// manifest image behind its resolved slug (conventional unless overridden
+// by the programme image selection).
 //
 // StockImage degrades silently to a generated SVG Cover when a slug is
 // missing (BankHubLayout and AirlineProgramLayout render no hero at
@@ -14,8 +14,9 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { HOTEL_PROGRAMME_IDS, programmeImage } from "../../src/lib/programmes";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
@@ -35,7 +36,7 @@ const ALLOWED_MISSING: Record<string, string> = {
 const manifest = JSON.parse(
   readFileSync(`${root}/data/stock/manifest.json`, "utf8"),
 );
-const manifestEntries: Array<{ slug: string }> = Array.isArray(manifest)
+const manifestEntries: Array<{ slug: string; file: string; source_id?: string; source: string }> = Array.isArray(manifest)
   ? manifest
   : (manifest.images ?? manifest.entries);
 const slugs = new Set(manifestEntries.map((e) => e.slug));
@@ -61,7 +62,7 @@ test("every content entry has a stock-manifest image (or a recorded exception)",
   const missing: string[] = [];
   for (const [prefix, ids] of surfaces) {
     for (const id of ids) {
-      const slug = `${prefix}${id}`;
+      const slug = prefix === "programme-" ? programmeImage(id).slug : `${prefix}${id}`;
       if (!slugs.has(slug) && !(slug in ALLOWED_MISSING)) missing.push(slug);
     }
   }
@@ -70,6 +71,18 @@ test("every content entry has a stock-manifest image (or a recorded exception)",
     [],
     `content entries without a manifest image — fetch one via refetch-image.yml or record a reason in ALLOWED_MISSING:\n  ${missing.join("\n  ")}`,
   );
+});
+
+test("hotel directory and hub images resolve to licensed files, not the retired Accor photo", () => {
+  for (const id of HOTEL_PROGRAMME_IDS) {
+    const image = programmeImage(id);
+    const entry = manifestEntries.find((item) => item.slug === image.slug);
+    assert.ok(entry, `${id} must resolve to a manifest image`);
+    assert.ok(existsSync(`${root}/public/${entry.file}`), `${entry.file} is missing`);
+    assert.notEqual(entry.source, "ai-generated", `${id} must use a photograph`);
+    assert.notEqual(entry.source_id, "20543524", "the former Sofitel is now a Dorint property");
+    if (id === "accor-all") assert.equal(image.caption, "Novotel Barcelona City");
+  }
 });
 
 test("ALLOWED_MISSING carries no stale entries", () => {

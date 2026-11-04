@@ -92,7 +92,8 @@ const fmt = (d?: Date) =>
 
 // Cinematic stage: a licensed hero photo becomes the stage backdrop and
 // leaves the body; AI or missing heroes keep the body figure.
-const stageOwnsHero = showHero && stagePhoto(heroSlug) != null;
+const stageHero = showHero ? stagePhoto(heroSlug) : undefined;
+const stageOwnsHero = stageHero != null;
 
 const showUpdated =
   updatedAt && publishedAt && updatedAt.getTime() !== publishedAt.getTime();
@@ -194,6 +195,9 @@ const schema = {
         )}
         <h1>{heading ?? title}</h1>
         {(deck || description) && <p class="deck">{deck ?? description}</p>}
+        {stageHero?.source === "editorial" && (
+          <p class="dp-stage-photo-credit" data-stage-photo-credit>Image: {stageHero.photographer}</p>
+        )}
       </div>
     </header>
 
@@ -344,6 +348,15 @@ const schema = {
     font-size: clamp(1rem, 1.6vw, 1.1875rem);
     line-height: 1.45;
     margin-block-start: 12px;
+  }
+  .dp-stage-photo-credit {
+    display: table;
+    margin: 12px 0 0;
+    padding: 4px 9px;
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--ink);
+    font: 600 .75rem/1.4 var(--font-ui);
   }
   @media (max-width: 719.98px) {
     .dp-reading-shell .dp-reading-head.dp-stage { min-height: 0; }

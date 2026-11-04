@@ -13,11 +13,12 @@
 //     slots dropped — they were never filled by the [slug] consumer.
 
 import BaseLayout from "./BaseLayout.astro";
+import ImageCredit from "~/components/ImageCredit.astro";
 import StockImage from "~/components/StockImage.astro";
 import { stagePhoto, stageStyle } from "~/lib/stage";
 import { hasStockEntry } from "~/lib/stockManifest";
 import { getEntry } from "astro:content";
-import { programmeHref } from "~/lib/programmes";
+import { programmeHref, programmeImage } from "~/lib/programmes";
 
 interface RelatedCard {
   slug: string;
@@ -29,7 +30,7 @@ interface RelatedCard {
 interface Props {
   title: string;
   description?: string;
-  /** programme slug (e.g. "etihad-guest") — resolves the programme-<slug> hero. */
+  /** Programme slug (e.g. "etihad-guest") — resolves the manifest-backed hero. */
   slug?: string;
   programName: string;
   currencyName: string;
@@ -75,7 +76,8 @@ const partnerLabels = await Promise.all(transferPartners.map(async (p) => {
   };
 }));
 
-const heroSlug = slug ? `programme-${slug}` : null;
+const hero = slug ? programmeImage(slug) : undefined;
+const heroSlug = hero?.slug;
 const hasHero = heroSlug ? hasStockEntry(heroSlug) : false;
 // A licensed photo moves up into the cinematic stage; an AI illustration
 // stays in the body, where StockImage gives it its visible label.
@@ -138,6 +140,12 @@ const schema = {
         <span class="l">Region</span>
       </div>
     </div>
+    {section === "hotels" && stageOwnsHero && heroSlug && (
+      <div class="dp-prog-photo-credit">
+        {hero?.caption && <span>{hero.caption} · </span>}
+        <ImageCredit slug={heroSlug} />
+      </div>
+    )}
   </header>
 
   <div class="dp-prog-grid">
@@ -246,6 +254,13 @@ const schema = {
   }
   .dp-prog-head .deck { font-size: clamp(1rem, 1.7vw, 1.25rem); }
   .dp-prog-head .dp-metric-strip { margin-block-start: clamp(16px, 2vw, 24px); }
+  .dp-prog-photo-credit {
+    margin-block-start: 12px;
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .dp-prog-photo-credit :global(.dp-image-credit) { display: inline; margin: 0; }
   .dp-prog-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
