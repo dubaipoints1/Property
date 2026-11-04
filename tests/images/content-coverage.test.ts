@@ -23,6 +23,8 @@ const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
   "news-uae-card-change-log-citi-cash-back-application-route":
     "Deliberately text-led: the issuer terms and worked comparison are the evidence; no decorative article hero, with the existing fallback cover on the listing.",
+  "news-uae-salary-switch-scorecard":
+    "Deliberately text-led: three dated, issuer-sourced examples need no decorative hero; the news listing retains its existing fallback cover.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
