@@ -73,9 +73,11 @@ try {
 
   await page.setViewportSize({ width: 390, height: 880 });
   const menu = page.getByRole("button", { name: "Open menu" });
+  await menu.waitFor({ state: "visible" });
   await menu.press("Enter");
   const close = page.getByRole("button", { name: "Close menu" });
   await close.waitFor({ state: "visible" });
+  await page.waitForFunction(() => document.activeElement?.getAttribute("aria-label") === "Close menu");
   assert.equal(await close.evaluate((element) => document.activeElement === element), true);
   await page.keyboard.press("Escape");
   assert.equal(await menu.getAttribute("aria-expanded"), "false");

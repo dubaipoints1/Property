@@ -403,7 +403,16 @@ const publicationRows: SubRow[] = [
     const sync = (moveFocus = false) => {
       labels.forEach((l) => l.setAttribute("aria-expanded", String(toggle.checked)));
       drawer.inert = !toggle.checked;
-      if (moveFocus) (toggle.checked ? closer : opener)?.focus();
+      if (moveFocus) {
+        const opened = toggle.checked;
+        const target = opened ? closer : opener;
+        const focus = () => {
+          if (toggle.checked === opened && document.activeElement !== target) target?.focus({ preventScroll: true });
+        };
+        focus();
+        // A breakpoint change can make the CSS drawer visible a frame later.
+        if (target && document.activeElement !== target) requestAnimationFrame(focus);
+      }
     };
     const set = (on) => { toggle.checked = on; sync(true); };
     toggle.addEventListener("change", () => sync(true));
@@ -421,7 +430,10 @@ const publicationRows: SubRow[] = [
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
     });
-    window.matchMedia("(min-width: 1024px)").addEventListener("change", () => {
+    window.matchMedia("(min-width: 1024px)").addEventListener("change", (event) => {
+      // A pending desktop-to-mobile event must not close a drawer the reader
+      // just opened at the newly available mobile breakpoint.
+      if (!event.matches) return;
       toggle.checked = false;
       sync();
     });
