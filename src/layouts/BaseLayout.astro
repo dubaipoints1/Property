@@ -9,6 +9,9 @@ import newsreaderLatin from "@fontsource-variable/newsreader/files/newsreader-la
 import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
 import "~/styles/global.css";
 import "~/styles/editorial-utility.css";
+import runwayEditorialCss from "~/styles/runway-editorial.css?url&no-inline";
+import runwayDiscoveryCss from "~/styles/runway-discovery.css?url&no-inline";
+import runwayReadingCss from "~/styles/runway-reading.css?url&no-inline";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
 import SchemaJsonLd from "~/components/seo/SchemaJsonLd.astro";
@@ -40,6 +43,9 @@ const {
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+// Keep the approved homepage design and deferred reel outside the rollout.
+const runwayInterior = Astro.url.pathname !== "/";
+const runwayDiscovery = /^\/(?:airlines|banks|cards|deals|guides|hotels|topics|news(?:\/(?:airlines|banking|hotels))?)\/$/.test(Astro.url.pathname);
 const siteName = "DubaiPoints";
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://dubaipoints.ae";
 // Default is the PNG raster of og-default.svg — SVG is not a supported
@@ -86,7 +92,7 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
 ---
 
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" data-design={runwayInterior ? "runway" : undefined}>
   <head>
     <meta charset="utf-8" />
 <!-- Theme initialization — MUST run before any styles to prevent flash -->
@@ -98,7 +104,10 @@ const cfBeaconToken = import.meta.env.PUBLIC_CF_BEACON_TOKEN as string | undefin
       document.documentElement.setAttribute('data-theme', theme);
     })();
   </script>
-  
+  {runwayInterior && <link rel="stylesheet" href={runwayEditorialCss} />}
+  {runwayDiscovery && <link rel="stylesheet" href={runwayDiscoveryCss} />}
+  {runwayInterior && <link rel="stylesheet" href={runwayReadingCss} />}
+
   <!-- Logo fallback (BankLogo / ProgrammeLogo). Replaces 3,400+ inline
        onerror attributes, which no CSP hash or nonce can allow. `error`
        does not bubble, so this listens in the capture phase; it sits in

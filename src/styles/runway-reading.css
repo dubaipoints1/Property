@@ -1,0 +1,162 @@
+/* Runway Editorial reading surfaces. Keep the homepage, fact components,
+   article ordering and heading anchors out of the redesign. */
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body, .dp-bank-prose) {
+  --dp-reading-section-gap: clamp(32px, 4.25vw, 56px);
+  --dp-reading-section-rule-gap: clamp(14px, 2vw, 22px);
+}
+
+html[data-design="runway"] .dp-reading-shell .dp-reading-head {
+  background: var(--shade-1);
+  padding-block: clamp(24px, 4.2vw, 52px) clamp(20px, 3vw, 36px);
+}
+
+html[data-design="runway"] :is(.dp-reading-head, .dp-trust-head) h1 {
+  color: var(--ink);
+  font-size: clamp(2rem, 4.7vw, 3.4rem);
+  font-weight: 600;
+  letter-spacing: -.035em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+
+html[data-design="runway"] .dp-reading-shell .dp-reading-head .deck {
+  max-inline-size: 55ch;
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  line-height: 1.48;
+}
+
+html[data-design="runway"] .dp-reading-shell .dp-byline-strip {
+  padding-block: 14px;
+  margin-block-end: clamp(16px, 2.5vw, 24px);
+}
+
+html[data-design="runway"] .dp-reading-shell .dp-reading-toc {
+  background: var(--paper);
+  border-color: var(--muted);
+  margin-block-end: clamp(20px, 3vw, 28px);
+}
+
+html[data-design="runway"] .dp-reading-toc summary {
+  border-radius: var(--dp-ui-radius);
+}
+
+html[data-design="runway"] .dp-utility-head:is(.dp-card-review-head, .dp-prog-head, .is-bank) {
+  background: var(--shade-1);
+}
+
+html[data-design="runway"] .dp-utility-head:is(.dp-card-review-head, .dp-prog-head, .is-bank) .dp-utility-copy h1 {
+  text-wrap: balance;
+}
+
+html[data-design="runway"] .dp-card-summary-facts {
+  background: var(--paper);
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body) .dp-prose,
+html[data-design="runway"] .dp-prose.dp-bank-prose {
+  font-size: clamp(1.0625rem, 1.035rem + .16vw, 1.1875rem);
+  line-height: 1.65;
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-trust-body) .dp-prose {
+  max-inline-size: 100%;
+}
+
+html[data-design="runway"] :is(.dp-prog-body .dp-prog-prose, .dp-prose.dp-bank-prose) {
+  max-inline-size: min(100%, 680px, 64ch);
+}
+
+/* Larger pauses between sections, tighter pairs of headings and copy.
+   Match editorial headings directly; leave card and tool internals alone. */
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body) .dp-prose > h2,
+html[data-design="runway"] .dp-prose.dp-bank-prose > h2,
+html[data-design="runway"] .dp-trust-body .dp-prose > section > h2 {
+  color: var(--ink);
+  font-size: clamp(1.65rem, 3vw, 2.125rem);
+  font-weight: 600;
+  letter-spacing: -.025em;
+  line-height: 1.14;
+  text-wrap: balance;
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body) .dp-prose > h2:not(:first-child),
+html[data-design="runway"] .dp-prose.dp-bank-prose > h2:not(:first-child) {
+  margin-block: var(--dp-reading-section-gap) 16px;
+  padding-block-start: var(--dp-reading-section-rule-gap);
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body) .dp-prose > h3,
+html[data-design="runway"] .dp-prose.dp-bank-prose > h3 {
+  margin-block: clamp(24px, 3vw, 36px) 10px;
+  font-size: clamp(1.25rem, 2.1vw, 1.5rem);
+  line-height: 1.22;
+  text-wrap: balance;
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body) .dp-prose > h2 + h3,
+html[data-design="runway"] .dp-prose.dp-bank-prose > h2 + h3 {
+  margin-block-start: 14px;
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body) .dp-prose > :is(p, ul, ol) a:not([class]),
+html[data-design="runway"] .dp-prose.dp-bank-prose > :is(p, ul, ol) a:not([class]) {
+  color: var(--link);
+  text-decoration-thickness: .08em;
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body) .dp-prose > blockquote,
+html[data-design="runway"] .dp-prose.dp-bank-prose > blockquote {
+  padding: 12px 16px;
+  background: var(--shade-1);
+  border-inline-start-color: var(--green);
+  border-start-end-radius: var(--dp-ui-radius);
+  border-end-end-radius: var(--dp-ui-radius);
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body, .dp-bank-prose) .dp-prose-table-scroll {
+  border: 1px solid var(--line);
+  border-radius: var(--dp-ui-radius);
+  background: var(--paper);
+}
+
+html[data-design="runway"] :is(.dp-reading-toc summary, .dp-prose-table-scroll):focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body, .dp-bank-prose) .dp-prose-table-scroll thead {
+  background: var(--shade-1);
+}
+
+html[data-design="runway"] :is(.dp-reading-shell, .dp-cr-body, .dp-prog-body, .dp-trust-body, .dp-bank-prose) .dp-prose figure figcaption,
+html[data-design="runway"] :is(.dp-card-summary-figure figcaption, .dp-prog-photo-credit) {
+  color: var(--ink-soft);
+  font-size: .8125rem;
+  line-height: 1.45;
+}
+
+html[data-design="runway"] :is(.dp-trust-head, .dp-trust-meta, .dp-trust-facts, .dp-trust-body) {
+  inline-size: min(680px, calc(100% - 2 * clamp(16px, 3vw, 32px)));
+  max-inline-size: none;
+  margin-inline: auto;
+  padding-inline: 0;
+}
+
+html[data-design="runway"] .dp-trust-head {
+  background: transparent;
+  padding-block: clamp(24px, 4.2vw, 52px) clamp(20px, 3vw, 36px);
+}
+
+html[data-design="runway"] .dp-trust-facts {
+  padding-inline: clamp(12px, 2vw, 20px);
+}
+
+html[data-design="runway"] .dp-trust-body .dp-prose > section + section {
+  margin-block-start: var(--dp-reading-section-gap);
+  padding-block-start: var(--dp-reading-section-rule-gap);
+  border-block-start: 1px solid var(--line);
+}
+
+html[data-design="runway"] .dp-trust-body .dp-prose :is(section, h2, h3)[id] {
+  scroll-margin-block-start: calc(var(--dp-sticky-header-height) + 16px);
+}

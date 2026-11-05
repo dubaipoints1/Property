@@ -330,7 +330,7 @@ const schema = {
           {(recurringFee.qual || vatQualifier) && <dd class="detail">{[recurringFee.qual, vatQualifier].filter(Boolean).join(" · ")}</dd>}
         </div>
         <div>
-          <dt>Minimum salary</dt>
+          <dt>Minimum monthly salary</dt>
           <dd class={eligibilityProvenance === "needs-review" ? "is-unverified" : ""}>
             {invitationOnly
               ? "Invitation only"
@@ -338,7 +338,7 @@ const schema = {
               ? <><span aria-hidden="true">—</span><span class="sr-only">not yet verified</span></>
               : minSalary === 0
               ? "No minimum"
-              : <>{formatAED(minSalary)}<small>/mo</small></>}
+              : formatAED(minSalary)}
           </dd>
         </div>
         <div>
@@ -581,9 +581,7 @@ const schema = {
     margin: 4px 0 0;
     overflow-wrap: anywhere;
   }
-  .dp-card-summary-facts .detail,
-  .dp-card-summary-facts dd small { color: var(--ink-soft); font: 500 .75rem/1.35 var(--font-ui); }
-  .dp-card-summary-facts dd small { margin-inline-start: 2px; }
+  .dp-card-summary-facts .detail { color: var(--ink-soft); font: 500 .75rem/1.35 var(--font-ui); }
   .dp-card-summary-proof, .dp-card-summary-verdict, .dp-card-summary-bonus {
     margin: 10px 0 0;
     color: var(--ink-soft);

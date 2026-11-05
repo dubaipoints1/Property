@@ -1,20 +1,14 @@
 ---
-// Airlines & loyalty programmes index — Phase F.5 (May 2026 mockup
-// continuation). Same "All Intel" composition as /guides/ (F.3) and
-// /news/ (F.4) — featured hero + 2-col grid + sticky Trending / Insider
-// Intel sidebar — so the publication's content-feed surfaces read as
-// one family.
-//
-// Today the programmes collection has one entry (Skywards). The
-// featured slot carries it; the card grid is gracefully empty until
-// Travel-Experiences Editor adds etihad-guest / qatar-privilege-club /
-// marriott-bonvoy etc. The Trending sidebar cross-promotes /guides/ so
-// the rail isn't empty.
+// Runway Editorial: a credited programme photograph leads the index,
+// followed by a programme grid that becomes a reader-operated rail on
+// phones. The directory, not the photograph, owns programme discovery.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
+import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
+import ImageCredit from "~/components/ImageCredit.astro";
 import { LISTING_SIZES } from "~/lib/stockDerivatives";
+import { getStockEntry } from "~/lib/stockManifest";
 import { getCollection } from "astro:content";
 import { isHotelProgramme } from "~/lib/programmes";
 
@@ -33,9 +27,9 @@ const guides = (await getCollection("guides")).sort(
 // otherwise the first A–Z.
 const featured = programmes.find((p) => p.id === "skywards") ?? programmes[0];
 const others = programmes.filter((p) => p.id !== featured?.id);
-const programmeGroups = [
-  { id: "airline-programmes", heading: "Airline programmes", items: others },
-].filter((g) => g.items.length > 0);
+const featuredPhoto = featured ? `programme-${featured.id}` : undefined;
+const runwayPhotoEntry = featuredPhoto ? getStockEntry(featuredPhoto) : undefined;
+const runwayFeatured = runwayPhotoEntry?.source === "pexels" || runwayPhotoEntry?.source === "unsplash" ? featured : undefined;
 
 // Trending rail — cross-section guides today (programmes collection is
 // thin). Falls back to programmes once the section has ≥ 6 entries.
@@ -57,7 +51,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   fullWidth
   schema={schema}
 >
-  <header class="intel-pagehead">
+  <header class:list={["intel-pagehead", "dp-runway-pagehead", { "dp-runway-pagehead-split": Boolean(runwayFeatured) }]} data-runway-airlines-hero>
     <div class="intel-pagehead-inner">
       <div class="crumb">DubaiPoints / Airlines</div>
       <h1>Airlines &amp; loyalty.</h1>
@@ -68,30 +62,45 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
           <a href="/transfer-finder/" class="dp-ui-action dp-ui-primary">Find transfer routes</a>
           <a href="/valuations/" class="dp-ui-action dp-ui-secondary">Compare points values</a>
         </nav>
-        <form class="intel-search" action="/search/" method="get" role="search">
-          <label class="intel-search-label" for="airlines-search-input">Search</label>
-          <label for="airlines-search-input" class="intel-search-icon" aria-hidden="true">
-            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="9" cy="9" r="6"/>
-              <line x1="13.5" y1="13.5" x2="17.5" y2="17.5" stroke-linecap="round"/>
-            </svg>
-          </label>
+        <form class="intel-search dp-runway-search" action="/search/" method="get" role="search">
+          <label class="intel-search-label" for="airlines-search-input">Search DubaiPoints</label>
           <input
             id="airlines-search-input"
             type="search"
             name="q"
             class="dp-ui-field"
-            placeholder="Search programmes…"
+            placeholder="Search DubaiPoints…"
             autocomplete="off"
           />
+          <button class="dp-ui-action dp-ui-secondary" type="submit">Search</button>
         </form>
       </div>
+
+      {runwayFeatured && featuredPhoto && (
+        <section class="dp-runway-feature" aria-labelledby="runway-feature-heading">
+          <figure class="dp-runway-feature-figure">
+            <StockImage
+              slug={featuredPhoto}
+              class="dp-runway-feature-image"
+              sizes="(max-width: 799px) calc(100vw - 32px), (max-width: 1199px) 54vw, 660px"
+              delivery="feature"
+              loading="eager"
+            />
+            <figcaption><ImageCredit slug={featuredPhoto} /></figcaption>
+          </figure>
+          <div class="dp-runway-feature-text">
+            <span class="intel-featured-eyebrow">Flagship programme · {runwayFeatured.data.region}</span>
+            <h2 id="runway-feature-heading"><a href={`/airlines/${runwayFeatured.id}/`}>{runwayFeatured.data.name} <span aria-hidden="true">→</span></a></h2>
+            <p>Tiers, sweet spots, transfer partners and expiry policy for {runwayFeatured.data.currencyName} earned and redeemed from the UAE.</p>
+          </div>
+        </section>
+      )}
     </div>
   </header>
 
-  <div class="intel-grid">
+  <div class="intel-grid dp-runway-listing">
     <div class="intel-main">
-      {featured && (
+      {featured && !runwayFeatured && (
         <a href={`/airlines/${featured.id}/`} class="intel-featured">
           <StockImage
             slug={`programme-${featured.id}`}
@@ -114,11 +123,16 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
       )}
 
       {others.length > 0 ? (
-        programmeGroups.map((g) => (
-          <section class="airlines-group" aria-labelledby={g.id}>
-            <h2 id={g.id} class="airlines-group-heading">{g.heading}</h2>
-            <ul class="intel-card-grid">
-              {g.items.map((p) => (
+          <section class="airlines-group" aria-labelledby="airline-programmes" data-runway-programme-rail>
+              <div class="dp-runway-rail-header">
+                <h2 id="airline-programmes" class="airlines-group-heading">Explore programmes</h2>
+                <div class="dp-runway-rail-controls" role="group" aria-label="Programme rail controls">
+                  <button class="dp-carousel-btn" type="button" aria-label="Previous programmes" data-carousel-prev hidden><span aria-hidden="true">←</span></button>
+                  <button class="dp-carousel-btn" type="button" aria-label="Next programmes" data-carousel-next hidden><span aria-hidden="true">→</span></button>
+                </div>
+              </div>
+            <ul class="intel-card-grid dp-runway-track" data-carousel aria-labelledby="airline-programmes">
+              {others.map((p) => (
                 <li class="intel-card-item">
                   <a href={`/airlines/${p.id}/`} class="intel-card">
                     <StockImage
@@ -127,7 +141,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
                       coverCategory="Programme"
                       coverSize="med"
                       class="intel-card-image"
-                      sizes={LISTING_SIZES.tile}
+                      sizes="(max-width: 640px) min(76vw, 290px), (max-width: 1023px) 45vw, 270px"
                     />
                     <div class="intel-card-body">
                       <span class="intel-card-cat">{p.data.region}</span>
@@ -136,11 +150,11 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
                       <span class="intel-card-meta">{p.data.transferPartners.length} transfer partner{p.data.transferPartners.length === 1 ? "" : "s"}</span>
                     </div>
                   </a>
+                  <ImageCredit slug={`programme-${p.id}`} class="dp-runway-tile-credit" />
                 </li>
               ))}
             </ul>
           </section>
-        ))
       ) : (
         <section class="airlines-roster">
           <span class="airlines-roster-eyebrow">More programmes coming</span>
@@ -228,52 +242,17 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     justify-content: space-between;
   }
   .intel-tabs { display: flex; flex-wrap: wrap; gap: 6px; }
-  .intel-tab {
-    font-family: var(--font-ui);
-    font-size: 13px; font-weight: 600; letter-spacing: 0.2px;
-    color: var(--ink-soft);
-    padding: 8px 14px;
-    border-radius: 999px;
-    background: transparent;
-    border: 1px solid transparent;
-    text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease;
-    cursor: pointer;
-  }
-  .intel-tab:hover { background: var(--shade-1); color: var(--ink); }
-  .intel-tab.is-active { background: var(--ink); color: var(--paper); cursor: default; }
-
-  .intel-search {
-    display: flex; align-items: center;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0 14px;
-    height: 36px;
-    min-width: 220px;
-    transition: border-color 0.15s ease;
-  }
-  .intel-search:focus-within { border-color: var(--ink-soft); }
   .intel-search-label {
     position: absolute; width: 1px; height: 1px;
     overflow: hidden; clip: rect(0,0,0,0);
   }
   .intel-search input[type="search"] {
-    border: 0; background: transparent; outline: none;
     font-family: var(--font-ui);
     font-size: 16px;
     color: var(--ink);
     width: 100%;
   }
   .intel-search input[type="search"]::placeholder { color: var(--muted); }
-  .intel-search input[type="search"]:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
-  .intel-search-icon {
-    display: none;
-    align-items: center; justify-content: center;
-    color: var(--ink-soft);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
 
   .intel-grid {
     max-width: var(--container-listing);
@@ -505,37 +484,154 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
     .intel-grid { padding: 0 20px; margin-top: 24px; gap: 28px; }
     .intel-card-grid { grid-template-columns: 1fr; }
     .airlines-roster { padding: 24px 22px 28px; }
-    /* F-UX-4: tabs + icon-only search share one row at <640px.
-       Search expands to a full-width pill when focused. */
-    .intel-tools {
-      flex-direction: row;
-      flex-wrap: nowrap;
-      align-items: center;
-      gap: 8px;
+  }
+
+  /* Photo-led composition with copy and credits in flow. */
+  .dp-runway-pagehead {
+    background: var(--shade-1);
+    padding: clamp(24px, 4.5vw, 64px) clamp(16px, 3vw, 32px);
+  }
+  .dp-runway-pagehead .crumb { margin-block-end: 12px; }
+  .dp-runway-pagehead h1 {
+    max-inline-size: 13ch;
+    color: var(--ink);
+    font-size: clamp(2.65rem, 6.25vw, 5.4rem);
+    letter-spacing: -.045em;
+    line-height: .98;
+    text-wrap: balance;
+  }
+  .dp-runway-pagehead .intel-pagehead-inner > p {
+    max-inline-size: 43ch;
+    margin-block-end: 18px;
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+  }
+  .dp-runway-pagehead .intel-tools { flex-flow: column nowrap; align-items: flex-start; gap: 12px; }
+  .dp-runway-pagehead .intel-tabs { flex: none; gap: 8px; }
+  .intel-search.dp-runway-search {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+    inline-size: min(100%, 27rem);
+    min-inline-size: 0;
+    height: auto;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+  }
+  .dp-runway-search input[type="search"] {
+    border: 1px solid var(--muted);
+    background: var(--paper);
+    border-radius: var(--dp-ui-radius);
+  }
+  .dp-runway-feature { min-inline-size: 0; margin-block-start: 24px; }
+  .dp-runway-feature-figure { margin: 0; }
+  .dp-runway-feature-figure :global(.dp-runway-feature-image) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: var(--dp-ui-radius);
+  }
+  .dp-runway-feature-text {
+    display: grid;
+    gap: 5px;
+    margin-block-start: 16px;
+    padding-block-start: 14px;
+    border-block-start: 1px solid var(--line);
+  }
+  .dp-runway-feature-text h2 {
+    margin: 0;
+    font: 600 clamp(1.5rem, 3vw, 2.25rem) / 1.1 var(--font-display);
+    text-wrap: balance;
+  }
+  .dp-runway-feature-text a {
+    display: inline-flex;
+    align-items: center;
+    gap: .35em;
+    min-block-size: 44px;
+    color: var(--green);
+    text-decoration: underline;
+    text-underline-offset: .16em;
+  }
+  .dp-runway-feature-text a span { font-family: var(--font-ui); font-size: .65em; }
+  .dp-runway-feature-text a:hover { color: var(--link); }
+  .dp-runway-feature-text p { margin: 0; }
+  @media (min-width: 800px) {
+    .dp-runway-pagehead-split .intel-pagehead-inner {
+      display: grid;
+      grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+      grid-template-rows: 1fr repeat(4, auto) 1fr;
+      column-gap: clamp(32px, 5vw, 80px);
+      align-items: start;
     }
-    .intel-tabs { flex: 1 1 auto; min-width: 0; gap: 4px; }
-    .intel-tab { padding: 6px 10px; font-size: 12px; }
-    .intel-search:not(:only-child) {
-      min-width: 36px;
-      width: 36px;
-      flex: 0 0 36px;
-      height: 36px;
-      padding: 0;
-      justify-content: center;
-      transition: width 0.18s ease, flex-basis 0.18s ease, padding 0.18s ease;
+    .dp-runway-pagehead-split .crumb { grid-area: 2 / 1; }
+    .dp-runway-pagehead-split h1 { grid-area: 3 / 1; }
+    .dp-runway-pagehead-split .intel-pagehead-inner > p { grid-area: 4 / 1; }
+    .dp-runway-pagehead-split .intel-tools { grid-area: 5 / 1; }
+    .dp-runway-feature { grid-area: 1 / 2 / 7; margin-block-start: 0; }
+  }
+
+  .dp-runway-listing {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: clamp(16px, 3vw, 32px);
+    margin-block-start: clamp(24px, 4vw, 48px);
+  }
+  .dp-runway-listing > .intel-main {
+    grid-template-columns: minmax(0, 1fr);
+    min-inline-size: 0;
+  }
+  .dp-runway-listing > .intel-aside { position: static; }
+  .dp-runway-rail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px 14px;
+    flex-wrap: wrap;
+    margin-block-end: 12px;
+  }
+  .dp-runway-rail-header h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(1.65rem, 3.25vw, 2.55rem);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+  .dp-runway-rail-controls { display: none; gap: 8px; }
+  .dp-runway-rail-controls .dp-carousel-btn {
+    min-inline-size: var(--dp-ui-control);
+    min-block-size: var(--dp-ui-control);
+    border-color: var(--muted);
+    font-size: 1.15rem;
+  }
+  .dp-runway-rail-controls .dp-carousel-btn:disabled { cursor: default; }
+  .dp-runway-track { gap: clamp(14px, 2vw, 22px); }
+  .dp-runway-track .intel-card-item { display: flex; flex-direction: column; min-inline-size: 0; }
+  .dp-runway-track .intel-card {
+    flex: 1;
+    height: auto;
+    transition: border-color .15s ease;
+  }
+  .dp-runway-track .intel-card:hover { transform: none; box-shadow: none; }
+  .dp-runway-track .intel-card:focus-visible { outline: 2px solid var(--green); outline-offset: -3px; }
+  .dp-runway-track :global(.dp-runway-tile-credit) { padding-inline: 2px; overflow-wrap: anywhere; }
+  @media (min-width: 1024px) {
+    .dp-runway-track { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) {
+    .dp-runway-rail-controls { display: flex; }
+    .dp-runway-rail-controls:not(:has(button:not([hidden]))) { display: none; }
+    .dp-runway-track {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: min(76vw, 290px);
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scroll-snap-type: inline mandatory;
+      scroll-padding-inline: 3px;
+      padding: 3px 3px 10px;
     }
-    .intel-search:not(:only-child) .intel-search-icon {
-      display: inline-flex; width: 36px; height: 36px;
-    }
-    .intel-search:not(:only-child) input[type="search"] {
-      width: 0; padding: 0;
-      transition: width 0.18s ease, padding 0.18s ease;
-    }
-    .intel-search:not(:only-child):focus-within {
-      width: 100%; flex: 1 1 100%; padding: 0 14px;
-    }
-    .intel-search:not(:only-child):focus-within .intel-search-icon { display: none; }
-    .intel-search:not(:only-child):focus-within input[type="search"] { width: 100%; }
-    .intel-search:only-child { width: 100%; min-width: 0; flex: 1 1 100%; }
+    .dp-runway-track .intel-card-item { scroll-snap-align: start; }
   }
 </style>

@@ -1,0 +1,101 @@
+/* Discovery page rhythm. These hooks follow the existing templates rather
+   than rebuilding their grids, filters, controls or media components. */
+html[data-design="runway"] #main-content {
+  --dp-discovery-width: 1280px;
+  --dp-discovery-gutter: clamp(16px, 4vw, 48px);
+  --dp-discovery-head-start: clamp(26px, 4.3vw, 56px);
+  --dp-discovery-head-end: clamp(20px, 3.25vw, 38px);
+  --dp-discovery-title: clamp(2.15rem, 5vw, 4.5rem);
+  --dp-discovery-radius: 12px;
+}
+
+/* News desks, Guides and Banks have a shared listing shell. Airlines and
+   Deals set their own spacing for their split features. */
+html[data-design="runway"] #main-content > :is(.intel-pagehead:not(.runway-deals-head, .dp-runway-pagehead), .cards-pagehead) {
+  padding: var(--dp-discovery-head-start) var(--dp-discovery-gutter) var(--dp-discovery-head-end);
+  border-block-end: 1px solid var(--line);
+  background: var(--bg);
+}
+html[data-design="runway"] #main-content > :is(.intel-pagehead:not(.runway-deals-head, .dp-runway-pagehead), .cards-pagehead)
+  > :is(.intel-pagehead-inner, .cards-pagehead-inner) {
+  max-inline-size: var(--dp-discovery-width);
+  margin-inline: auto;
+  text-align: start;
+}
+html[data-design="runway"] #main-content > :is(.intel-pagehead:not(.runway-deals-head, .dp-runway-pagehead), .cards-pagehead) .crumb {
+  margin-block-end: 9px;
+  letter-spacing: .14em;
+}
+html[data-design="runway"] #main-content > :is(.intel-pagehead:not(.runway-deals-head, .dp-runway-pagehead), .cards-pagehead) h1,
+html[data-design="runway"] #main-content:has(> .dp-topics-body) > .dp-pagehead h1,
+html[data-design="runway"] #main-content > .dp-article > .dp-article-head:has(.dp-hotel-directory-actions) .dp-article-title {
+  max-inline-size: 24ch;
+  margin-inline: 0;
+  color: var(--ink);
+  font-size: var(--dp-discovery-title);
+  line-height: 1.06;
+  letter-spacing: -.04em;
+  text-wrap: pretty;
+}
+html[data-design="runway"] #main-content > :is(.intel-pagehead:not(.runway-deals-head, .dp-runway-pagehead), .cards-pagehead) p {
+  max-inline-size: 64ch;
+  margin-inline: 0;
+  color: var(--ink-soft);
+}
+html[data-design="runway"] #main-content > .intel-grid:not(.runway-deals-grid, .dp-runway-listing),
+html[data-design="runway"] #main-content > :is(.cards-top-picks, .cards-compare-section, .dp-topics-body) {
+  box-sizing: content-box;
+  max-inline-size: var(--dp-discovery-width);
+  padding-inline: var(--dp-discovery-gutter);
+}
+html[data-design="runway"] #main-content > .intel-grid:not(.runway-deals-grid, .dp-runway-listing) .intel-main { min-inline-size: 0; }
+html[data-design="runway"] #main-content > .intel-grid :is(.intel-card, .intel-featured),
+html[data-design="runway"] #main-content > .cards-top-picks .cards-top-card,
+html[data-design="runway"] #main-content .dp-hotel-tile,
+html[data-design="runway"] #main-content .dp-topics-tile {
+  border-radius: var(--dp-discovery-radius);
+}
+html[data-design="runway"] #main-content > .intel-grid :is(.intel-card, .intel-featured):hover,
+html[data-design="runway"] #main-content > .cards-top-picks .cards-top-card:hover,
+html[data-design="runway"] #main-content .dp-topics-tile:hover {
+  transform: none;
+  box-shadow: none;
+}
+html[data-design="runway"] #main-content > .intel-grid .dp-news-section-heading {
+  padding-block-end: 11px;
+  letter-spacing: .11em;
+}
+
+/* Keep the Cards index aligned with its results instead of centring its
+   masthead separately. Existing ranking, verified dates and card art stay. */
+html[data-design="runway"] #main-content > .cards-pagehead .cards-pagehead-actions { justify-content: flex-start; }
+html[data-design="runway"] #main-content > .cards-top-picks .cards-section-head { text-align: start; }
+html[data-design="runway"] #main-content > .cards-top-picks .cards-section-head h2 { text-wrap: pretty; }
+
+/* Hotels uses a directory inside an article shell; the class on the
+   resources row distinguishes it from other directory/article hybrids. */
+html[data-design="runway"] #main-content > .dp-article:has(.dp-hotel-directory-actions) {
+  box-sizing: content-box;
+  max-inline-size: var(--dp-discovery-width);
+  padding-inline: var(--dp-discovery-gutter);
+}
+html[data-design="runway"] #main-content > .dp-article > .dp-article-head:has(.dp-hotel-directory-actions) {
+  margin-block-end: var(--dp-ui-gap);
+  padding-block-end: var(--dp-discovery-head-end);
+}
+html[data-design="runway"] #main-content > .dp-article > .dp-article-head:has(.dp-hotel-directory-actions) .dp-article-lede {
+  max-inline-size: 62ch;
+  font-size: clamp(.9375rem, 1.7vw, 1.125rem);
+}
+
+/* Topics has a dedicated reading-width header and intentionally text-only
+   tiles. Match its header and tiles without giving the topic cards art. */
+html[data-design="runway"] #main-content:has(> .dp-topics-body) > .dp-pagehead {
+  box-sizing: content-box;
+  max-inline-size: var(--dp-discovery-width);
+  margin-inline: auto;
+  padding: var(--dp-discovery-head-start) var(--dp-discovery-gutter) var(--dp-discovery-head-end);
+}
+html[data-design="runway"] #main-content .dp-topics-group h2 { margin-block-end: 14px; }
+html[data-design="runway"] #main-content .dp-topics-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+html[data-design="runway"] #main-content .dp-topics-tile .d { font-size: .8125rem; }
