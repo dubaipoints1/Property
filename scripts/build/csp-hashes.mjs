@@ -23,6 +23,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { collectHtmlFiles } from "../ci/check-links.mjs";
+import { shouldLoadGoogleTag } from "../../src/lib/googleTag.mjs";
 
 /** Cloudflare Pages limit on a single header line in `_headers`. */
 export const MAX_HEADER_LENGTH = 2000;
@@ -109,6 +110,10 @@ export function findInlineHandlers(html) {
  * one is a policy change and belongs in review.
  *  - Cloudflare Web Analytics: the beacon script (BaseLayout.astro, only
  *    when PUBLIC_CF_BEACON_TOKEN is set in production) and its RUM POST.
+ *  - Google Analytics 4: the owner's Google tag and measurement endpoints,
+ *    only for a Cloudflare Pages production/main build. No Ads- or
+ *    Google Signals-specific sources are added. Source:
+ *    https://developers.google.com/tag-platform/security/guides/csp
  *  No form posts off-site since the newsletter was removed (14 October
  *  2026), so form-action is 'self' only.
  */
@@ -118,19 +123,29 @@ export const THIRD_PARTY = {
   formAction: [],
 };
 
+export const GOOGLE_ANALYTICS = {
+  scriptSrc: ["https://www.googletagmanager.com"],
+  connectSrc: [
+    "https://*.google-analytics.com",
+    "https://*.analytics.google.com",
+    "https://www.googletagmanager.com",
+  ],
+};
+
 /** Assemble the policy value from a sorted, de-duplicated hash list. */
-export function buildPolicy(hashes) {
+export function buildPolicy(hashes, { googleTagEnabled = false } = {}) {
+  const google = googleTagEnabled ? GOOGLE_ANALYTICS : { scriptSrc: [], connectSrc: [] };
   const directives = [
     ["default-src", ["'self'"]],
     // 'wasm-unsafe-eval' lets Pagefind instantiate its WebAssembly search
     // core; it does not permit eval() of JavaScript strings.
-    ["script-src", ["'self'", "'wasm-unsafe-eval'", ...THIRD_PARTY.scriptSrc, ...hashes]],
+    ["script-src", ["'self'", "'wasm-unsafe-eval'", ...THIRD_PARTY.scriptSrc, ...google.scriptSrc, ...hashes]],
     // Inline style attributes and <style> blocks are everywhere (Astro
     // scoped styles, per-page tokens). The risk CSP addresses here is script.
     ["style-src", ["'self'", "'unsafe-inline'"]],
     ["img-src", ["'self'", "data:", "https:"]],
     ["font-src", ["'self'", "data:"]],
-    ["connect-src", ["'self'", ...THIRD_PARTY.connectSrc]],
+    ["connect-src", ["'self'", ...THIRD_PARTY.connectSrc, ...google.connectSrc]],
     ["media-src", ["'self'"]],
     ["frame-src", ["'none'"]],
     ["frame-ancestors", ["'none'"]],
@@ -195,7 +210,14 @@ if (isMain) {
     for (const h of handlers.slice(0, 20)) console.error(`  ${h}`);
     process.exit(1);
   }
-  const line = `  Content-Security-Policy: ${buildPolicy(hashes)}`;
+  // This command processes Astro's completed static production build; a
+  // local/CI build and every Pages preview still fail the shared gate.
+  const googleTagEnabled = shouldLoadGoogleTag({
+    production: true,
+    pages: process.env.CF_PAGES,
+    branch: process.env.CF_PAGES_BRANCH,
+  });
+  const line = `  Content-Security-Policy: ${buildPolicy(hashes, { googleTagEnabled })}`;
   if (line.length > MAX_HEADER_LENGTH) {
     console.error(`[csp] header line is ${line.length} characters (> ${MAX_HEADER_LENGTH}, Cloudflare's limit) with ${hashes.length} hashes`);
     process.exit(1);

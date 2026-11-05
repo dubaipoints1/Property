@@ -11,6 +11,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 import {
   isExecutableInline,
@@ -20,6 +25,8 @@ import {
   buildPolicy,
   injectHeader,
   getAttr,
+  GOOGLE_ANALYTICS,
+  MAX_HEADER_LENGTH,
   // @ts-expect-error — plain .mjs module, no type declarations by design.
 } from "../../scripts/build/csp-hashes.mjs";
 
@@ -81,6 +88,72 @@ test("form-action is 'self' only: no form posts off-site since the newsletter wa
   const formAction = p.split("; ").find((d: string) => d.startsWith("form-action"));
   assert.equal(formAction, "form-action 'self'");
   assert.doesNotMatch(p, /buttondown/i);
+});
+
+test("GA sources are absent by default and add only GA4 script/measurement origins when enabled", () => {
+  assert.doesNotMatch(buildPolicy([]), /google|doubleclick/);
+  const enabled = buildPolicy([], { googleTagEnabled: true });
+  const directives = new Map(enabled.split("; ").map((d: string) => {
+    const [name, ...sources] = d.split(" ");
+    return [name, sources];
+  }));
+  assert.deepEqual(GOOGLE_ANALYTICS, {
+    scriptSrc: ["https://www.googletagmanager.com"],
+    connectSrc: ["https://*.google-analytics.com", "https://*.analytics.google.com", "https://www.googletagmanager.com"],
+  });
+  assert.deepEqual(directives.get("script-src"), [
+    "'self'", "'wasm-unsafe-eval'", "https://static.cloudflareinsights.com", ...GOOGLE_ANALYTICS.scriptSrc,
+  ]);
+  assert.deepEqual(directives.get("connect-src"), [
+    "'self'", "https://cloudflareinsights.com", ...GOOGLE_ANALYTICS.connectSrc,
+  ]);
+  assert.doesNotMatch(enabled, /doubleclick|googleadservices|googlesyndication|https:\/\/(?:\*\.)?google\.com(?: |;)|'unsafe-eval'/);
+});
+
+test("enabling GA preserves all other restrictions and the 2,000-character cap", () => {
+  const defaults = buildPolicy([]).split("; ");
+  const enabled = buildPolicy([], { googleTagEnabled: true }).split("; ");
+  const unchanged = (directives: string[]) => directives.filter((d) => !/^(?:script|connect)-src /.test(d));
+  assert.deepEqual(unchanged(enabled), unchanged(defaults));
+  assert.equal(MAX_HEADER_LENGTH, 2000);
+  assert.doesNotMatch(enabled.find((d: string) => d.startsWith("script-src "))!, /'unsafe-inline'|'unsafe-eval'|https:\s|\*\s/);
+});
+
+test("the postbuild command uses the same Cloudflare main gate and fails before writing over-limit CSP", () => {
+  const fixture = mkdtempSync(path.join(tmpdir(), "dp-csp-ga-"));
+  const headersPath = path.join(fixture, "_headers");
+  const originalHeaders = "/*\n  X-Frame-Options: DENY\n";
+  const command = fileURLToPath(new URL("../../scripts/build/csp-hashes.mjs", import.meta.url));
+  const env = { ...process.env };
+  delete env.CF_PAGES;
+  delete env.CF_PAGES_BRANCH;
+  try {
+    writeFileSync(path.join(fixture, "index.html"), "<script>window.dataLayer=[];</script>");
+    for (const [extra, expected] of [
+      [{}, false],
+      [{ CF_PAGES: "1", CF_PAGES_BRANCH: "preview" }, false],
+      [{ CF_PAGES: "1", CF_PAGES_BRANCH: "main" }, true],
+    ] as const) {
+      writeFileSync(headersPath, originalHeaders);
+      const result = spawnSync(process.execPath, [command, fixture], { env: { ...env, ...extra }, encoding: "utf8" });
+      assert.equal(result.status, 0, result.stderr);
+      const headers = readFileSync(headersPath, "utf8");
+      assert.equal(headers.includes("https://www.googletagmanager.com"), expected);
+      assert.ok(headers.includes(hashSource("window.dataLayer=[];")));
+      const cspLine = headers.split("\n").find((line) => line.includes("Content-Security-Policy:"))!;
+      assert.ok(cspLine.length <= MAX_HEADER_LENGTH);
+    }
+    writeFileSync(headersPath, originalHeaders);
+    writeFileSync(path.join(fixture, "index.html"), Array.from({ length: 40 }, (_, i) => `<script>var distinct${i}=${i};</script>`).join(""));
+    const oversized = spawnSync(process.execPath, [command, fixture], {
+      env: { ...env, CF_PAGES: "1", CF_PAGES_BRANCH: "main" }, encoding: "utf8",
+    });
+    assert.equal(oversized.status, 1);
+    assert.match(oversized.stderr, /2,?000|2000/);
+    assert.equal(readFileSync(headersPath, "utf8"), originalHeaders);
+  } finally {
+    rmSync(fixture, { recursive: true, force: true });
+  }
 });
 
 test("injectHeader appends into the /* block and replaces an older CSP line", () => {
