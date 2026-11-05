@@ -57,13 +57,13 @@ const newestVerified = new Date(
   description={`${matchup.deck} Side-by-side fees, salary requirements and earn rates, with our verdict.`}
   fullWidth
 >
-  <article class="dp-article">
+  <article class="dp-article dp-matchup-reader">
     <div class="dp-article-head">
-      <div class="crumb">
+      <div class="crumb dp-article-eyebrow">
         <a href="/cards/">Cards</a> / <a href="/cards/compare/">Compare</a>
       </div>
-      <h1>{left.name} vs {right.name}</h1>
-      <p class="lede">{matchup.deck}</p>
+      <h1 class="dp-article-title">{left.name} vs {right.name}</h1>
+      <p class="lede dp-article-lede">{matchup.deck}</p>
       <VerifiedStamp lastVerified={newestVerified} />
     </div>
 

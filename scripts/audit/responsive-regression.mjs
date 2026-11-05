@@ -270,6 +270,11 @@ try {
   await whyMatch.press("Enter");
   await tiles.nth(0).getByRole("link").last().focus();
   await page.keyboard.press("Tab");
+  assert.equal(await cardDetails.locator(":scope > summary").evaluate((summary) => document.activeElement === summary), true,
+    "Compare is followed by the same card's rates and conditions disclosure");
+  await cardDetails.locator(":scope > summary").press("Enter");
+  assert.equal(await cardDetails.getAttribute("open"), null, "Closing full details removes their controls from the tab order");
+  await page.keyboard.press("Tab");
   assert.equal(await tiles.nth(1).getByRole("link").first().evaluate((link) => document.activeElement === link), true);
   const filters = page.locator("#finder-filters");
   await filters.locator(":scope > summary").click();
@@ -509,7 +514,10 @@ try {
   await page.getByRole("button", { name: "Update estimates", exact: true }).press("Enter");
   assert.match(await citiValue.locator("[data-card-value-first]").innerText(), /AED\s+1,200/);
   assert.match(await citiValue.locator("[data-card-value-later]").innerText(), /AED\s+885/);
-  assert.equal(new URL(page.url()).searchParams.size, 1);
+  const sharedCardScenario = new URL(page.url()).searchParams;
+  assert.equal(sharedCardScenario.get("cards"), "citi-cashback,wio-credit", "Updating spend retains the comparison shortlist");
+  assert.equal(sharedCardScenario.get("cv_spend"), "10000", "The explicit spending example follows review and comparison links");
+  assert.equal(sharedCardScenario.size, 2, "No unrelated profile fields are added to the shared example");
   const wioValue = page.locator(".dp-compare-col[data-slug='wio-credit']");
   assert.equal(await wioValue.locator("[data-card-value-first]").innerText(), "Not estimated");
   assert.match(await wioValue.locator("[data-card-value-reward-issue]").innerText(), /plan/i);

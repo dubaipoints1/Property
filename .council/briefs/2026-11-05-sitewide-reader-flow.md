@@ -4,8 +4,8 @@ vertical: travel-experiences
 assigned-editor: travel-experiences-editor
 tier: T3
 chairman-status: approved
-draft-status: in-progress
-tech-status: pending
+draft-status: complete
+tech-status: pass
 ---
 
 # Site-wide reader flow and continuity
@@ -49,3 +49,17 @@ salary offer, using points, and finding a deal without restarting the task.
    reported. Automated reflow alone is not a visual-flow sign-off.
 5. The tested candidate and the homepage boundary are recorded clearly.
    Implementation/QA is not a claim that it is deployed.
+
+## Completion record
+
+The five accepted changes are implemented across the applicable templates.
+Final local QA passed on 2026-11-05, including all 319 routes and the two
+complete card/salary journeys. The full route inventory and bounded review
+are in the linked session records:
+
+- `.council/sessions/2026-11-05-sitewide-reader-flow.md`
+- `.council/sessions/2026-11-05-reader-flow-route-inventory.md`
+
+T3 review passed with the corrections recorded there. PR #515 still needs
+executed final-head CI and a successful Cloudflare preview before normal
+merge. Deployment and canonical production verification are separate.
