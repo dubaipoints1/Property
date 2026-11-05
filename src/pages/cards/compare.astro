@@ -233,13 +233,13 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
               <CompareCardArt slug={card.slug} deferred />
             </header>
 
+            <div class="dp-compare-col-section dp-compare-fee">
+              <FeeBlock card={card.slug} />
+            </div>
+
             <div class="dp-compare-col-section dp-compare-eligibility">
               <div class="dp-compare-row-label">Eligibility</div>
               <EligibilityChips eligibility={card.eligibility} />
-            </div>
-
-            <div class="dp-compare-col-section dp-compare-fee">
-              <FeeBlock card={card.slug} />
             </div>
 
             <div class="dp-compare-col-section dp-compare-top">
@@ -744,8 +744,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     }
     .dp-compare-col > * { align-self: stretch; }
     .dp-compare-col-head { grid-row: 1; }
-    .dp-compare-eligibility { grid-row: 2; }
-    .dp-compare-fee { grid-row: 3; }
+    .dp-compare-fee { grid-row: 2; }
+    .dp-compare-eligibility { grid-row: 3; }
     .dp-compare-top { grid-row: 4; }
     .dp-compare-reward-rates { grid-row: 5; }
     .dp-compare-col > :global(.dp-card-value-lines) { grid-row: 6; }
