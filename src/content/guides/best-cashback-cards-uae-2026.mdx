@@ -2,7 +2,7 @@
 title: "Best cashback credit cards in the UAE — 2026"
 description: "UAE cashback cards ranked by what they pay on three real spend profiles — AED 3,500, 6,000 and 15,000 a month — with every cap, spend floor and annual fee worked through in dirhams."
 publishedAt: 2026-10-19
-updatedAt: 2026-10-19
+updatedAt: 2026-11-05
 relatedCards:
   - mashreq-cashback
   - fab-cashback
@@ -16,6 +16,9 @@ relatedCards:
   - wio-credit
   - rakbank-world
 ---
+
+import CardFeeAmount from "~/components/cards/CardFeeAmount.astro";
+import CardIllustrativeNet from "~/components/cards/CardIllustrativeNet.astro";
 
 A cashback card's headline rate is the least useful number on its product
 page. What a UAE cashback card actually pays is set by three other things:
@@ -71,7 +74,7 @@ zero. Welcome bonuses are one-off and are listed separately below.
 
 | Card | Light (AED 3,500/mo) | Household (AED 6,000/mo) | Heavy (AED 15,000/mo) | Year-two fee |
 |---|---|---|---|---|
-| [Liv Cashback+](/cards/liv-cashback-plus/) | AED −280 | AED 20 | **AED 6,500** | AED 700 |
+| [Liv Cashback+](/cards/liv-cashback-plus/) | <CardIllustrativeNet card="liv-cashback-plus" annualGross={420} /> | <CardIllustrativeNet card="liv-cashback-plus" annualGross={720} /> | **<CardIllustrativeNet card="liv-cashback-plus" annualGross={7200} />** | <CardFeeAmount card="liv-cashback-plus" /> |
 | [ADCB 365 Cashback](/cards/adcb-365-cashback/) | AED 0 (under floor) | AED 1,957 | AED 4,657 | AED 383.25 |
 | [FAB Cashback](/cards/fab-cashback/) | **AED 1,113** | **AED 2,085** | AED 4,245 | AED 315 |
 | [HSBC Live+](/cards/hsbc-live-plus/) | AED 924 | AED 1,980 | AED 4,140 | Waived above AED 12,000/yr |
@@ -80,13 +83,13 @@ zero. Welcome bonuses are one-off and are listed separately below.
 | [Mashreq Cashback](/cards/mashreq-cashback/) | AED 756 | AED 1,389 | AED 3,138 | Free |
 | [Citi Cash Back](/cards/citi-cashback/) | AED 588 | AED 960 | AED 2,280 | Waived at AED 9,000/yr or more |
 
-Rounded to the nearest dirham. Two cards with strong numbers are kept out
+Rounded to the nearest dirham. The Liv row assumes the stated tier applies to all profile spend and its credit-limit-based cap does not reduce the result; it is an illustration, not the site's card-value model. Its fee deduction follows the current card record. Two cards with strong numbers are kept out
 of this table because a field in our data is under re-verification; they
 are covered in [their own section](#strong-numbers-held-out-of-the-ranking).
 
 Three things stand out. ADCB 365 pays nothing at all on the light profile,
 because AED 3,500 is under its AED 5,000 monthly floor. Liv Cashback+ loses
-money below about AED 5,800 a month, barely breaks even up to AED 7,000, and becomes the best card on the list
+money on the light and household examples after the annual fee, and leads the illustrated table
 at AED 15,000. And the free cards are not the cheap option they look like:
 on the household profile, FAB's AED 315 fee buys roughly AED 700 a year
 more than Mashreq's free card.
@@ -141,7 +144,7 @@ from year two at AED 9,000 of annual spend.
 
 **[Liv Cashback+](/cards/liv-cashback-plus/)** — 1% under AED 7,000 of
 monthly spend, 2% from AED 7,000, 4% from AED 15,000. AED 6,000 × 1% =
-**AED 60 a month, AED 720 a year, AED 20 after the AED 700 fee.**
+**AED 60 a month, AED 720 a year; <CardIllustrativeNet card="liv-cashback-plus" annualGross={720} /> after the current annual fee.**
 
 ## Best for light spenders: FAB Cashback or HSBC Live+
 
@@ -187,7 +190,7 @@ other, so pick on the shape of your spend:
 
 At AED 15,000 a month, [Liv Cashback+](/cards/liv-cashback-plus/) pays 4%
 on everything: AED 15,000 × 4% = AED 600 a month, AED 7,200 a year,
-AED 6,500 after the AED 700 annual fee. No category card on the ranked
+<CardIllustrativeNet card="liv-cashback-plus" annualGross={7200} /> after the current annual fee. No category card on the ranked
 list comes close, because their bonus categories are capped and the rest
 of the spend earns 1% or less.
 
@@ -195,8 +198,8 @@ Two cautions, both from Liv's own terms. The 4% is a tier on **total**
 monthly spend, not a rate you can count on: at AED 14,999 the whole month
 earns 2%. And cashback is capped twice — at AED 1,500 a month, and at a
 share of your credit limit (Liv's own example: an AED 20,000 limit caps
-cashback at AED 800 a month). Liv also charges an AED 700 joining fee,
-waived with an active Liv Max subscription, and issues either the
+cashback at AED 800 a month). Liv also charges a <CardFeeAmount card="liv-cashback-plus" field="joiningFee" /> joining fee,
+waived if you have a Liv Savings/Current Account with an ongoing Liv Max subscription before applying, and issues either the
 Cashback+ or the free Liv Cashback to a customer, not both.
 
 Its points can also be converted to Emirates Skywards Miles, up to 10,000

@@ -8,6 +8,8 @@ interface Props { id: string; featured?: boolean; compact?: boolean; }
 const { id, featured = false, compact = false } = Astro.props;
 const slug = `news-${id}`;
 const photo = getStockEntry(slug);
+const livCorrectionArt = id === "uae-card-change-log-liv-eligibility-vat-correction"
+  ? getCardArt("liv-cashback-plus") : undefined;
 // Listing treatment only. These stories deliberately have no article hero.
 const diagram = id === "cash-or-miles-uae-flight-break-even";
 const quote = id === "cash-or-miles-etihad-abu-dhabi-muscat";
@@ -21,7 +23,13 @@ const photoSizes = featured
   : compact ? "clamp(68px, 12vw, 128px)" : LISTING_SIZES.tile;
 ---
 
-{photo ? (
+{livCorrectionArt ? (
+  <span class:list={["dp-news-issuer-art", { "is-compact": compact }]} data-news-issuer-art="liv">
+    <img src={`/${livCorrectionArt.file}`} alt="" width={livCorrectionArt.width} height={livCorrectionArt.height}
+      loading={featured ? "eager" : "lazy"} decoding="async" />
+    <span>Card image: Liv</span>
+  </span>
+) : photo ? (
   <span class:list={["dp-news-photo", { "is-compact": compact }]}>
     <StockImage slug={slug} class={featured ? "intel-featured-image" : "intel-card-image"}
       delivery={featured ? "feature" : compact ? "compact" : undefined}
@@ -63,6 +71,36 @@ const photoSizes = featured
 )}
 
 <style>
+  .dp-news-issuer-art {
+    display: grid;
+    grid-template: minmax(0, 1fr) auto / minmax(0, 1fr);
+    place-items: center;
+    gap: 6px;
+    block-size: clamp(140px, 26vw, 240px);
+    padding: 12px;
+    box-sizing: border-box;
+    background: var(--shade-1);
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--line);
+  }
+  .dp-news-issuer-art img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    min-inline-size: 0;
+    min-block-size: 0;
+    object-fit: contain;
+  }
+  .dp-news-issuer-art > span { font: 500 .75rem/1.2 var(--font-ui); }
+  .dp-news-issuer-art.is-compact {
+    flex: 0 0 auto;
+    inline-size: clamp(88px, 14vw, 128px);
+    block-size: 88px;
+    padding: 6px;
+    gap: 4px;
+    border: 1px solid var(--line);
+    border-radius: var(--dp-ui-radius, 8px);
+  }
   .dp-news-photo { display: block; }
   .dp-news-photo.is-compact,
   .dp-news-preview.is-compact {

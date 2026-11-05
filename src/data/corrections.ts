@@ -37,6 +37,15 @@ export interface Correction {
 
 export const corrections: readonly Correction[] = [
   {
+    date: new Date("2026-11-05"),
+    title: "Liv Cashback eligibility and Cashback+ fee VAT treatment",
+    cardsAffected: ["liv-cashback", "liv-cashback-plus"],
+    original:
+      'we said Liv did not publish a minimum salary for its <a href="/cards/liv-cashback/">Cashback</a> and <a href="/cards/liv-cashback-plus/">Cashback+</a> cards. Some card listings and the Finder treated both as having no minimum. We also stored Cashback+ joining and annual fees as AED 700 while labelling them as including VAT.',
+    corrected:
+      'the <a href="https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf">January 2026 Liv Key Facts Statement</a>, checked on 5 November 2026, gives a minimum monthly salary of <strong>AED 5,000 for Cashback</strong> and <strong>AED 15,000 for Cashback+</strong>, and Cashback+ joining and annual fees of <strong>AED 735 including VAT each</strong>. The <a href="https://www.liv.me/en/liv-credit-card">product page</a> quotes the fees before VAT. We corrected our data, reviews, bank page and affected guides, not a newly announced bank rule or fee change. Salary requirements are separate from cashback spend thresholds and do not guarantee approval. The joining-fee waiver requires a Liv Savings/Current Account with an ongoing Liv Max subscription before applying.',
+  },
+  {
     date: new Date("2026-11-04"),
     title: "VAT treatment on Citi and ADIB cashback card fees",
     cardsAffected: ["citi-cashback", "adib-cashback-visa"],

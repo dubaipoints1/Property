@@ -1,0 +1,151 @@
+---
+import "@fontsource-variable/newsreader";
+import "@fontsource-variable/geist";
+import "~/styles/global.css";
+import "~/styles/editorial-utility.css";
+import "~/styles/runway-editorial.css";
+import { buildAnalyticsReviewPlan } from "~/lib/analyticsReview";
+
+const initialPlan = buildAnalyticsReviewPlan({ simulatedConsent: "undecided" });
+---
+
+<!doctype html>
+<html lang="en" data-design="runway" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>GA4 consent proposal — private review | DubaiPoints</title>
+  </head>
+  <body class="dp-body">
+    <nav aria-label="Skip navigation"><a class="dp-skip-link dp-ui-action dp-ui-secondary" href="#main-content">Skip to review</a></nav>
+    <main id="main-content" class="dp-main dp-analytics-review" tabindex="-1" data-pagefind-ignore>
+      <div class="dp-review-topline">
+        <p class="dp-article-eyebrow">DubaiPoints · private inspection kit</p>
+        <button class="dp-ui-action dp-ui-secondary" type="button" id="review-theme" aria-pressed="false">Dark preview</button>
+      </div>
+      <div class="dp-article-head">
+        <h1 class="dp-article-title">GA4: review before installation.</h1>
+        <p class="dp-article-lede">Inspect a possible analytics consent flow. This is a demonstration, not a live consent banner.</p>
+      </div>
+
+      <aside class="dp-callout-tip" aria-label="Review boundary">
+        <p><strong>No analytics integration is installed here.</strong> These controls only change an on-screen proposal. They do not contact Google or remember a choice. The public website is unchanged.</p>
+      </aside>
+
+      <div class="dp-review-grid">
+        <section class="dp-review-panel" aria-labelledby="proposal-heading">
+          <h2 id="proposal-heading">1. Try the proposed choices</h2>
+          <p>In a future opt-in setup, measurement would stay off unless the reader accepts. Acceptance and rejection should be equally easy.</p>
+          <fieldset class="dp-review-choices">
+            <legend>Simulated analytics choice</legend>
+            <div class="dp-review-actions">
+              <button class="dp-ui-action dp-ui-secondary" type="button" data-consent="accepted" aria-pressed="false">Simulate acceptance</button>
+              <button class="dp-ui-action dp-ui-secondary" type="button" data-consent="rejected" aria-pressed="false">Simulate rejection</button>
+              <button class="dp-ui-action dp-ui-secondary" type="button" data-consent="withdrawn" aria-pressed="false">Simulate withdrawal</button>
+              <button class="dp-ui-action dp-ui-secondary" type="button" data-consent="undecided" aria-pressed="true">Reset to undecided</button>
+            </div>
+          </fieldset>
+          <label for="review-page">Page example</label>
+          <select id="review-page" class="dp-ui-field" aria-describedby="page-example-help">
+            <option value="/cards/finder/?salary=17500&amp;email=example%40example.test&amp;gclid=fictional-id#fictional-note">Card Finder — fictional query and fragment</option>
+            <option value="/salary-transfer/calculator/?st_salary=25000&amp;st_spend=5000">Salary calculator — fictional inputs</option>
+            <option value="/airlines/skywards/">Skywards — public page</option>
+            <option value="/">Homepage — public page</option>
+            <option value="https://example.test/private-example/?email=example%40example.test">External page — should be refused</option>
+            <option value="/dev/private-example/">Internal page — should be refused</option>
+          </select>
+          <p id="page-example-help" class="dp-review-note">Only fixed fictional examples are used. Queries and fragments are removed; external and non-allowlisted pages are refused. There is no free-text personal-data field.</p>
+          <p class="dp-review-note">Fictional measurement-ID format example: <code>G-DPREVIEW01</code>. No real property is connected.</p>
+          <p id="review-status" class="dp-review-status" role="status" aria-live="polite" aria-atomic="true">Undecided: no measurement commands proposed. Integration remains off.</p>
+          <noscript><p class="dp-review-status">JavaScript is off. The demonstration cannot change state; the initial disabled proposal remains below.</p></noscript>
+        </section>
+
+        <section class="dp-review-panel" aria-labelledby="payload-heading">
+          <h2 id="payload-heading">2. Inspect the data-only plan</h2>
+          <p>The objects below are examples, not executed instructions. Even simulated acceptance always keeps Google requests disabled.</p>
+          <pre id="review-plan" tabindex="0" aria-label="Sanitised review plan in JSON"><code>{JSON.stringify(initialPlan, null, 2)}</code></pre>
+        </section>
+      </div>
+
+      <section class="dp-review-panel dp-review-limits" aria-labelledby="limits-heading">
+        <h2 id="limits-heading">Still needed before any activation</h2>
+        <ul class="dp-bullet-list">
+          <li>Owner approval of the account, property, data stream, privacy notice, retention and reporting settings.</li>
+          <li>A real consent interface with accessible, persistent choices and a working change-of-mind route.</li>
+          <li>Browser tests proving that Google is blocked before acceptance and after rejection or withdrawal.</li>
+          <li>Specific withdrawal handling for a loaded SDK and its identifiers. This planner does not implement or certify that clean-up.</li>
+        </ul>
+        <p class="dp-review-note">Known-bot filtering does not guarantee all bots are excluded. Consented, device-based user estimates are not a count of every natural person, and uncollected visits cannot be backfilled.</p>
+      </section>
+    </main>
+  </body>
+</html>
+
+<script>
+  import { buildAnalyticsReviewPlan, type AnalyticsReviewConsent } from "~/lib/analyticsReview";
+
+  const page = document.querySelector<HTMLSelectElement>("#review-page");
+  const output = document.querySelector<HTMLElement>("#review-plan code");
+  const status = document.querySelector<HTMLElement>("#review-status");
+  const choices = document.querySelectorAll<HTMLButtonElement>("[data-consent]");
+  const theme = document.querySelector<HTMLButtonElement>("#review-theme");
+  let consent: AnalyticsReviewConsent = "undecided";
+
+  function render() {
+    if (!page || !output || !status) return;
+    const plan = buildAnalyticsReviewPlan({ simulatedConsent: consent, measurementId: "G-DPREVIEW01", pageUrl: page.value });
+    output.textContent = JSON.stringify(plan, null, 2);
+    choices.forEach((choice) => choice.setAttribute("aria-pressed", String(choice.dataset.consent === consent)));
+    const messages = {
+      undecided: "Undecided: no measurement commands proposed. Integration remains off.",
+      rejected: "Rejection simulated: no measurement commands proposed. Integration remains off.",
+      withdrawn: "Withdrawal simulated: no measurement commands proposed. No real SDK clean-up has been tested.",
+      accepted: plan.status === "input_not_allowed"
+        ? "Acceptance simulated, but this page is not allowed. No measurement commands proposed. Integration remains off."
+        : "Acceptance simulated: sanitised configuration and page-view examples only. Integration remains off.",
+    };
+    status.textContent = messages[consent];
+  }
+
+  choices.forEach((choice) => choice.addEventListener("click", () => {
+    const value = choice.dataset.consent;
+    if (value === "accepted" || value === "rejected" || value === "withdrawn" || value === "undecided") consent = value;
+    render();
+  }));
+  page?.addEventListener("change", render);
+  theme?.addEventListener("click", () => {
+    const dark = document.documentElement.dataset.theme !== "dark";
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    theme.setAttribute("aria-pressed", String(dark));
+    theme.textContent = dark ? "Light preview" : "Dark preview";
+  });
+</script>
+
+<style>
+  .dp-analytics-review { max-width: 80rem; }
+  .dp-review-topline { display: flex; gap: 1rem; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+  .dp-review-topline p { margin: 0; }
+  .dp-review-topline button { flex-shrink: 0; }
+  .dp-review-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--dp-ui-gap); margin-block: var(--dp-ui-gap); }
+  .dp-review-panel { min-width: 0; padding: clamp(1rem, 2.5vw, 1.75rem); border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+  .dp-review-panel h2 { color: var(--ink); font: 600 clamp(1.35rem, 2vw, 1.7rem)/1.25 var(--font-display); margin-bottom: 1rem; }
+  .dp-review-panel p { line-height: 1.6; margin-bottom: 1rem; }
+  .dp-review-choices { margin-block: 1.5rem; }
+  .dp-review-choices legend, .dp-review-panel label { display: block; margin-bottom: 0.65rem; font-weight: 600; }
+  .dp-review-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .dp-review-actions [aria-pressed="true"] { box-shadow: inset 0 -3px var(--green); background: var(--shade-1); }
+  .dp-review-panel select { width: 100%; }
+  .dp-review-note { color: var(--ink-soft); font-size: 0.875rem; margin-top: 0.75rem; }
+  .dp-review-status { padding: 1rem; border: 1px solid var(--line); border-radius: 8px; background: var(--shade-1); color: var(--ink); }
+  .dp-review-panel pre { max-width: 100%; max-height: 42rem; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: 1rem; border-radius: 8px; background: var(--shade-1); color: var(--ink); font-size: 0.8rem; line-height: 1.55; }
+  .dp-review-panel pre:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  .dp-review-limits { margin-block-end: 1.5rem; }
+  .dp-review-limits ul { margin-bottom: 1rem; }
+  @media (max-width: 900px) { .dp-review-grid { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 420px) {
+    .dp-review-topline { align-items: flex-start; }
+    .dp-review-topline p { max-width: 11rem; }
+    .dp-review-actions { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>

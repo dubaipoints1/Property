@@ -5212,12 +5212,12 @@
       "interestRate": "editor-confirmed",
       "earnRates": "editor-confirmed",
       "earnUnit": "editor-confirmed",
-      "eligibility": "editor-confirmed",
+      "eligibility": "editor-corrected",
       "transferPartners": "editor-confirmed",
-      "perks": "editor-confirmed",
+      "perks": "editor-corrected",
       "applyUrl": "editor-confirmed",
       "lastVerified": "scraped",
-      "sources": "editor-confirmed",
+      "sources": "editor-corrected",
       "partnerBrands": "needs-review",
       "kfsUrl": "editor-confirmed",
       "loyaltyProgram": "scraped",
@@ -5248,7 +5248,7 @@
     },
     "earnUnit": "% cashback",
     "eligibility": {
-      "minSalary": 0,
+      "minSalary": 5000,
       "salaryTransferRequired": false,
       "residencyRequired": true,
       "employmentTypes": [
@@ -5265,13 +5265,13 @@
       "Rewards accrue as points redeemable as cashback or as Emirates Skywards Miles — up to 5,000 Miles per month; redemption requires a 500-point minimum.",
       "Free for life — no joining or annual fee.",
       "25+ airport lounges, 2 VOX cinema tickets/month plus 25% off F&B, 20% off 1 Talabat order/month.",
-      "One card per customer — Liv issues either the Cashback+ or the Cashback card, not both.",
-      "No minimum salary is published on Liv's product page, feature T&C or KFS; application and approval are handled in the Liv X app."
+      "One card per customer — Liv issues either the Cashback+ or the Cashback card, not both."
     ],
     "applyUrl": "https://www.liv.me/en/liv-credit-card",
     "lastVerified": "2026-11-01",
     "sources": [
       "https://www.liv.me/en/liv-credit-card",
+      "https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf",
       "https://www.liv.me/en/important-information/features/liv-credit-card-feature",
       "https://www.liv.me/en/charges"
     ],
@@ -5297,22 +5297,23 @@
       "name": "editor-confirmed",
       "network": "editor-confirmed",
       "categories": "editor-confirmed",
-      "annualFee": "editor-confirmed",
+      "annualFee": "editor-corrected",
       "fxFee": "editor-confirmed",
       "interestRate": "editor-confirmed",
       "earnRates": "editor-confirmed",
       "earnUnit": "editor-confirmed",
-      "eligibility": "editor-confirmed",
+      "eligibility": "editor-corrected",
       "transferPartners": "editor-confirmed",
-      "perks": "editor-confirmed",
+      "perks": "editor-corrected",
       "applyUrl": "editor-confirmed",
       "lastVerified": "scraped",
-      "sources": "editor-confirmed",
+      "sources": "editor-corrected",
       "partnerBrands": "needs-review",
-      "joiningFee": "editor-confirmed",
+      "joiningFee": "editor-corrected",
       "kfsUrl": "editor-confirmed",
       "loyaltyProgram": "scraped",
-      "welcomeBonus": "editor-confirmed-null"
+      "welcomeBonus": "editor-confirmed-null",
+      "vatPolicy": "editor-corrected"
     },
     "_lastScraped": "2026-11-01",
     "_lastReviewed": "2026-09-10",
@@ -5323,11 +5324,11 @@
       "cashback"
     ],
     "joiningFee": {
-      "amount": 700,
+      "amount": 735,
       "currency": "AED"
     },
     "annualFee": {
-      "amount": 700,
+      "amount": 735,
       "currency": "AED"
     },
     "fxFee": 1.99,
@@ -5343,7 +5344,7 @@
     },
     "earnUnit": "% cashback",
     "eligibility": {
-      "minSalary": 0,
+      "minSalary": 15000,
       "salaryTransferRequired": false,
       "residencyRequired": true,
       "employmentTypes": [
@@ -5359,14 +5360,14 @@
       "Monthly cashback cap of AED 1,500, additionally bounded by a percentage of the card's credit limit (Liv's own illustration: an AED 20,000 limit caps cashback at AED 800/month).",
       "Rewards accrue as points redeemable as cashback or as Emirates Skywards Miles — up to 10,000 Miles per month; redemption requires a 500-point minimum.",
       "800+ airport lounges, 3 VOX cinema tickets/month plus 25% off F&B, 1 Careem airport transfer/year, travel medical insurance up to USD 500,000, 20% off 1 Talabat order/month, Global Blue VIP.",
-      "Joining fee AED 700, waived with an active Liv Max subscription; late payment fee AED 175; card replacement AED 25.",
-      "One card per customer — Liv issues either the Cashback+ or the Cashback card, not both.",
-      "No minimum salary is published on Liv's product page, feature T&C or KFS; application and approval are handled in the Liv X app."
+      "Joining fee is waived if you have a Liv Savings/Current Account with an ongoing Liv Max subscription before applying for the credit card. Other charges are listed in the issuer KFS and schedule of charges.",
+      "One card per customer — Liv issues either the Cashback+ or the Cashback card, not both."
     ],
     "applyUrl": "https://www.liv.me/en/liv-credit-card",
     "lastVerified": "2026-11-01",
     "sources": [
       "https://www.liv.me/en/liv-credit-card",
+      "https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf",
       "https://www.liv.me/en/important-information/features/liv-credit-card-feature",
       "https://www.liv.me/en/charges"
     ],
@@ -5384,7 +5385,8 @@
     },
     "kfsUrl": "https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf",
     "loyaltyProgram": "Liv Rewards (cashback / Skywards Miles)",
-    "welcomeBonus": null
+    "welcomeBonus": null,
+    "vatPolicy": "inclusive"
   },
   "mashreq-cashback": {
     "_provenance": {
