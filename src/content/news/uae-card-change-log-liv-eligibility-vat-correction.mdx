@@ -1,0 +1,52 @@
+---
+title: "UAE Card Change Log: correcting our Liv salary and fee figures"
+description: "We corrected our Liv salary eligibility and Cashback+ fee figures against the issuer's key facts. This is a DubaiPoints correction, not a new bank change."
+publishedAt: 2026-11-05
+category: news
+beat: banking
+textLed: true
+relatedCards:
+  - liv-cashback
+  - liv-cashback-plus
+relatedBanks:
+  - liv
+sources:
+  - https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf
+  - https://www.liv.me/en/liv-credit-card
+  - https://www.liv.me/en/important-information/features/liv-credit-card-feature
+---
+
+import livKfsTable from "../../../tests/fixtures/issuer/liv-kfs-january-2026-product-table.txt?raw";
+import { parseLivKfsProductTable } from "../../../scripts/ci/parse-liv-kfs.mjs";
+import CardImage from "~/components/CardImage.astro";
+
+export const snapshot = parseLivKfsProductTable(livKfsTable);
+export const cashback = snapshot["liv-cashback"];
+export const plus = snapshot["liv-cashback-plus"];
+export const money = (amount) => "AED " + amount.toLocaleString("en-GB");
+
+**DubaiPoints got two Liv details wrong.** Our listings treated the Cashback cards as having no minimum salary, and showed Cashback+ fees before VAT while labelling them VAT-inclusive. We corrected our publication on **5 November 2026** against Liv's key facts.
+
+This is **not evidence that Liv has just changed its eligibility or prices**. It is a correction to what we displayed. The [issuer's key facts statement](https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf) checked for this entry is printed January 2026; the older directory in its URL is not the document's edition date.
+
+<figure><CardImage cardSlug="liv-cashback-plus" cardName="Liv Cashback+" bankName="Liv" coverSize="med" sizes="(max-width: 720px) calc(100vw - 32px), 680px" /><figcaption>Card image: <a href="https://www.liv.me/en/liv-credit-card">Liv, as supplied on its product page</a>. The image identifies the product; the key facts statement, not the card art, is the source for the correction.</figcaption></figure>
+
+## What the checked key facts show
+
+<table><thead><tr><th scope="col">Card</th><th scope="col">Minimum monthly salary</th><th scope="col">Joining fee</th><th scope="col">Annual renewal fee</th></tr></thead><tbody><tr><th scope="row">Liv Cashback</th><td>{money(cashback.minSalary)}</td><td>{money(cashback.joiningFee)}</td><td>{money(cashback.annualFee)}</td></tr><tr><th scope="row">Liv Cashback+</th><td>{money(plus.minSalary)}</td><td>{money(plus.joiningFee)} including VAT, before any applicable waiver</td><td>{money(plus.annualFee)} including VAT</td></tr></tbody></table>
+
+These figures come from the named Cashback columns of the checked KFS, not from its separate Tamayaz columns or the monthly spending tiers used to determine cashback. That distinction matters: a rewards-spend requirement is not the salary required to apply.
+
+## Before-tax wording is not an extra bank increase
+
+Liv's [product comparison page](https://www.liv.me/en/liv-credit-card) quotes the Cashback+ fees before VAT and says its listed fees exclude VAT. The KFS lists the higher charge shown above. Reading the two together supports treating the KFS figure as the VAT-inclusive amount; the KFS table does not itself label it that way. Our error was presenting the before-tax fee as though tax was already included. These documents do not establish a new price rise.
+
+The product page also describes a conditional **joining-fee waiver** for customers with the required Liv account and an ongoing Liv Max subscription before applying. Do not read that as an unconditional annual-fee waiver, or assume the subscription has no cost. Check the conditions before taking another product just to avoid a joining fee.
+
+## What to do with the correction
+
+If a previous DubaiPoints result put either card on your shortlist as “no minimum salary”, revisit the [Card Finder](/cards/finder/). Meeting a published salary minimum still does not guarantee approval; Liv applies its other eligibility and credit conditions.
+
+For the latest product details, use our [Liv Cashback review](/cards/liv-cashback/) and [Liv Cashback+ review](/cards/liv-cashback-plus/), then confirm the issuer's current terms before applying. The table above preserves the source snapshot behind this dated correction rather than silently changing with future card data.
+
+The source recheck covered salary and joining/renewal fees. It was not a fresh verification of every reward rate, cap or other charge. The correction is also recorded in our permanent [corrections log](/corrections/).

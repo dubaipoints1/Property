@@ -535,13 +535,24 @@ export async function startStaticServer({ distDir, port, timeoutMs = 15000 } = {
   });
   const baseUrl = `http://127.0.0.1:${p}`;
   let exited = false;
+  let closing = false;
+  let forceClose;
   child.on("exit", () => {
     exited = true;
+    clearTimeout(forceClose);
   });
   const close = () => {
-    if (!exited) {
+    if (!exited && !closing) {
+      closing = true;
       try {
         child.kill("SIGTERM");
+        // http-server may wait indefinitely for an idle keep-alive socket.
+        // This handle belongs to the server spawned above, never a shared
+        // browser or a process selected by name. Bound teardown only.
+        forceClose = setTimeout(() => {
+          if (!exited) child.kill("SIGKILL");
+        }, 1500);
+        forceClose.unref();
       } catch {
         /* already gone */
       }
@@ -553,6 +564,8 @@ export async function startStaticServer({ distDir, port, timeoutMs = 15000 } = {
     if (exited) throw new Error("http-server exited before it started serving");
     try {
       const res = await fetch(`${baseUrl}/`, { method: "GET" });
+      // We only need the readiness status, not a held-open response body.
+      await res.body?.cancel();
       if (res.status === 200) return { baseUrl, port: p, close };
     } catch {
       /* not up yet */

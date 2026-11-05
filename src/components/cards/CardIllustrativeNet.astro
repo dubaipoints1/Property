@@ -1,0 +1,14 @@
+---
+// Fee deduction only for an explicitly stated editorial example. The
+// supplied gross return is NOT a card-value estimate, rate/cap engine or
+// eligibility recommendation; keep its assumptions in the surrounding prose.
+import { getCardData } from "~/lib/cardsData";
+import { cardIllustrativeNetLabel } from "~/lib/cardFeeFacts";
+
+interface Props { card: string; annualGross: number; }
+const { card: slug, annualGross } = Astro.props;
+const card = getCardData(slug);
+if (!card) throw new Error(`CardIllustrativeNet: unknown card "${slug}"`);
+const net = cardIllustrativeNetLabel(card, annualGross);
+---
+{net}

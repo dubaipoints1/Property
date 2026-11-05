@@ -1,6 +1,6 @@
 ---
 slug: liv-cashback
-verifiedBy: DubaiPoints Editorial · verified 22 August 2026
+verifiedBy: DubaiPoints Editorial · salary eligibility checked 5 November 2026
 kicker: Free for life, 1.99% FX and a Skywards exit — but the 2% headline is a spend tier needing AED 10,000+ that month, and the guaranteed floor is 0.75%.
 tier: solid
 applyIf: You want a fee-free first UAE card with low FX and a miles exit, and can live with a spend-tiered rate.
@@ -9,13 +9,12 @@ keyTakeaways:
 - Free for life; cashback tiered by TOTAL monthly spend — 0.75% floor, 1.5% from AED 5,000, 2% at AED 10,000+
 - Capped at AED 750/month, additionally bounded by a percentage of your credit limit
 - Points redeem as cashback or up to 5,000 Skywards Miles/month; 500-point minimum per redemption
-- No published salary minimum — approval is in-app, so our spec table shows "Pending" rather than a guess
+- Liv publishes a minimum salary for this card; meeting it does not guarantee approval
 pros:
 - Free for life — no joining fee, no annual fee
 - Up to 2% cashback on everything in months where total spend clears AED 10,000
 - 1.99% FX fee, well below the typical UAE 2.5–3.5% band — unusual on a free card
 - Points convert to Emirates Skywards Miles (up to 5,000/month) — a miles exit at zero fee
-- No published salary minimum — application and approval are handled in the Liv X app
 cons:
 - The guaranteed rate is 0.75% — the 1.5% and 2% tiers need AED 5,000 and AED 10,000 of total monthly spend
 - Cashback capped at AED 750/month and additionally bounded by a percentage of your credit limit
@@ -31,16 +30,17 @@ editorTake: >-
   5,000 Miles a month, 500-point redemption minimum). The cap is AED
   750 a month, additionally bounded by a percentage of your credit
   limit, and government and utility payments earn 0.1% whatever your
-  tier. There is no published salary minimum; approval is an in-app
-  decision, which is why our table shows "Pending" instead of a number.
+  tier. Check the published minimum salary above before comparing
+  rates; Liv still decides on the application in the app.
   The real decision is Liv's one-card rule: you can hold this or the
-  AED-700-a-year Cashback+, not both. Under AED 7,000 of monthly spend
+  fee-charging Cashback+, not both. Under AED 7,000 of monthly spend
   this card wins on fee alone; above AED 15,000 the Cashback+ pays
   double at the top tier. In between, do the arithmetic on your own
   statements.
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
+import CardFeeAmount from "~/components/cards/CardFeeAmount.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
 import ProsCons from "~/components/cards/ProsCons.astro";
@@ -136,11 +136,7 @@ for this card.
   higher-earning paid alternative.</dd>
 
   <dt>Eligibility</dt>
-  <dd>No minimum salary is published on Liv's product page, feature
-  terms or KFS — application and approval run through the Liv X app,
-  which is why our spec table shows the salary bar as
-  <strong>"Pending"</strong> rather than a number we cannot source. UAE
-  residency required.</dd>
+  <dd>The minimum salary above comes from <a href="https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf">Liv's Key Facts Statement</a>. UAE residency is required. A salary match does not guarantee approval; Liv assesses applications in the Liv X app.</dd>
 </dl>
 
 ## Cashback vs Cashback+
@@ -148,7 +144,7 @@ for this card.
 <CardComparison cards={["liv-cashback", "liv-cashback-plus"]} />
 
 Because of the one-card rule this is the decision, not a comparison.
-The [Cashback+](/cards/liv-cashback-plus/) costs AED 700 a year for
+The [Cashback+](/cards/liv-cashback-plus/) costs <CardFeeAmount card="liv-cashback-plus" /> a year for
 double the top-tier rate (4% at AED 15,000+ vs 2% at AED 10,000+),
 double the cap (AED 1,500 vs 750), double the Skywards ceiling (10,000
 vs 5,000 Miles/month) and a much deeper perk stack. Below AED 7,000 of
@@ -175,6 +171,6 @@ charge: no fee, ever, with a 1.99% FX rate and a Skywards exit that
 fee-free cards almost never offer. **Apply** as a first UAE card or a
 fee-free keeper if your monthly spend sits under AED 10,000. **Take the
 [Cashback+](/cards/liv-cashback-plus/) instead** if you reliably clear
-AED 15,000 a month — the one-card rule means you must pick now. **Look
-elsewhere** if you want a published salary bar, category-based rates,
-or a card whose rate doesn't depend on how the month's total came out.
+AED 15,000 a month in card spend and meet that card's separate salary
+requirement. **Look elsewhere** if you prefer category-based rates or a
+rate that does not depend on the month's total spend.

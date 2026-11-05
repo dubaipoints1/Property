@@ -1,0 +1,14 @@
+---
+import { getCardData } from "~/lib/cardsData";
+import { cardFeeAmountLabel } from "~/lib/cardFeeFacts";
+
+interface Props {
+  card: string;
+  field?: "annualFee" | "joiningFee";
+}
+const { card: slug, field = "annualFee" } = Astro.props;
+const card = getCardData(slug);
+if (!card) throw new Error(`CardFeeAmount: unknown card "${slug}"`);
+const label = cardFeeAmountLabel(card, field);
+---
+{label}

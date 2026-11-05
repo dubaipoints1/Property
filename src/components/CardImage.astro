@@ -59,6 +59,8 @@ const artSizes = artSrcset ? (sizes ?? "100vw") : undefined;
 <style>
   .dp-card-art {
     display: grid !important;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
     place-items: center;
     aspect-ratio: 16 / 10;
     width: 100%;
@@ -70,10 +72,16 @@ const artSizes = artSrcset ? (sizes ?? "100vw") : undefined;
     overflow: hidden;
   }
   .dp-card-art.is-thumb { padding: 10% 8%; }
-  .dp-card-art img {
+  /* More specific than `.dp-prose figure img { height: auto }`: the
+     image box must fit this panel before object-fit can contain its art. */
+  .dp-card-art img[data-card-art] {
     display: block;
     width: 100%;
     height: 100%;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
     filter: drop-shadow(0 12px 16px rgba(19, 35, 47, 0.28));
   }

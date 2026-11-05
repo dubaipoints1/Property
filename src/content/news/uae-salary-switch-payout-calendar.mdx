@@ -1,0 +1,77 @@
+---
+title: "UAE Salary Switch Scorecard: when does the reward become spendable?"
+description: "A salary-switch campaign deadline is not a payment date. Compare the qualifying and payout clocks, then build a record before moving payroll."
+publishedAt: 2026-11-05
+staleAfter: 2026-12-05
+category: news
+beat: banking
+textLed: true
+relatedBanks:
+  - emirates-islamic
+  - fab
+  - dib
+sources:
+  - https://www.emiratesislamic.ae/en/terms-and-conditions/salary-transfer-offer-terms-and-conditions-oct-2026
+  - https://www.bankfab.com/-/media/fab-uds/personal/promotions/2026/20-percent-cashback-on-salary-transfers/terms-and-conditions-en.pdf
+  - https://www.dib.ae/docs/default-source/pdf/dib-xtra-tc.pdf
+---
+
+import { getEntry } from "astro:content";
+import { entryToOffer } from "~/lib/offerAdapter";
+import { getSalaryTransferTimeline } from "~/lib/salaryTransferTimeline";
+import SalaryTransferTimeline from "~/components/SalaryTransferTimeline";
+import StockImage from "~/components/StockImage.astro";
+import ImageCredit from "~/components/ImageCredit.astro";
+
+export const campaigns = await Promise.all(["emirates-islamic-2026-oct-2027-mar", "fab-20-percent-2026"].map(async (id) => {
+  const entry = await getEntry("salaryTransferOffers", id) ?? await getEntry("salaryTransferOfferHistory", id);
+  if (!entry) throw new Error(`Salary Scorecard: source campaign ${id} requires editorial review`);
+  const offer = await entryToOffer(entry);
+  const timeline = getSalaryTransferTimeline(offer);
+  if (!timeline) throw new Error(`Salary Scorecard: changed campaign ${id} requires editorial review`);
+  return { offer, timeline };
+}));
+
+Do not put a salary-switch reward into your spending budget just because you opened the account. **Campaign entry, qualification and payment are different events.** A paid reward can also carry conditions which allow the bank to reverse it later.
+
+This Scorecard checks the relevant terms on **5 November 2026**. It adds a payout record to our [same-salary reward comparison](/news/uae-salary-switch-scorecard/), not a new bonus ranking or a prediction of your payment date. The campaign summaries below reuse our verified timelines; they are dated examples, not confirmation that you qualify. Use the [current tracker](/salary-transfer/) before acting.
+
+<figure><StockImage slug="news-uae-salary-switch-payout-calendar" delivery="feature" sizes="(max-width: 720px) calc(100vw - 32px), 680px" /><figcaption>Stock photograph illustrating elapsed time, not a bank's payroll system or evidence of a payment deadline. <ImageCredit slug="news-uae-salary-switch-payout-calendar" /></figcaption></figure>
+
+## Which date are you writing down?
+
+| Record | What it tells you |
+| --- | --- |
+| Campaign entry deadline | When the required opening, enrolment or first-salary event must happen. Check which event the bank names. |
+| Qualification completed | When the required salary credits, activation, savings or eligible product/spend conditions have actually been met. |
+| Processing window | What starts the bank's payment clock. It may not be the opening date or first payday. |
+| Keep-the-reward conditions | What could forfeit an unpaid reward or reverse one already credited. |
+
+These records are a checklist, not extra bank rules. Confirm the applicable events for your own offer and application route.
+
+## Emirates Islamic: completing the salary test comes first
+
+<SalaryTransferTimeline offer={campaigns[0].offer} timeline={campaigns[0].timeline} showHistory={false} />
+
+An optional Covered Card adds its own retail-spend clock; it does not replace the account conditions. Ask the bank to confirm which parts you have completed before treating a processing deadline as overdue. [Emirates Islamic's terms](https://www.emiratesislamic.ae/en/terms-and-conditions/salary-transfer-offer-terms-and-conditions-oct-2026) also require eligibility at fulfilment, so do not assume opening the account settled the whole question.
+
+## FAB: a monthly test, not one upfront payday
+
+<SalaryTransferTimeline offer={campaigns[1].offer} timeline={campaigns[1].timeline} showHistory={false} />
+
+Keep a separate record for each salary month: employer credit, qualifying savings increase or eligible card spend, and cashback credited. The [FAB terms](https://www.bankfab.com/-/media/fab-uds/personal/promotions/2026/20-percent-cashback-on-salary-transfers/terms-and-conditions-en.pdf) do not make a missed month payable retrospectively. A total headline reward is not evidence that the full amount is already owed to you.
+
+## DIB: do not mix the joining bonus and fee reversal
+
+The [DIB XTRA terms](https://www.dib.ae/docs/default-source/pdf/dib-xtra-tc.pdf) give the joining cashback a bundle/spend timetable. The separate home-finance valuation-fee reversal is linked to the finance and first qualifying salary instead. Copying one deadline into the other benefit's row can produce the wrong expected date.
+
+Ask DIB which benefit applies to your exact bundle and what event starts its clock. Our calculator keeps home finance unpriced; a possible fee reversal is not proof of a cheaper finance deal.
+
+## Before payroll moves
+
+- Save the exact offer and terms for your application route, plus any enrolment acknowledgement.
+- Ask payroll when the first employer credit can reach the new account; distinguish that from the day you submit the instruction.
+- Ask the bank to identify the qualifying event, processing window and any continuing salary or product requirement in writing.
+- Track actual credits and completed conditions. If a payment appears late, query it against that record rather than the account-opening date alone.
+
+Use the [salary-transfer calculator](/salary-transfer/calculator/) for a conditional reward comparison. Keep the payout record alongside it: the amount, the timing and the right to keep it are separate parts of the decision.

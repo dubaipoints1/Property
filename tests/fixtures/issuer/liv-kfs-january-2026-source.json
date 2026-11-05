@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-11-05",
+  "sourceUrl": "https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf",
+  "editionPrinted": "January 2026",
+  "pdfSha256": "5aac22dcc2a4e2b17ffc406f200d95384d2a6fd0b768cf8e3525d728f8711827",
+  "pdfPages": 3,
+  "sourcePage": 1,
+  "extraction": "pdftotext 26.05.0 -layout; captureLivKfsProductTable retains the complete Product Information table, removes surrounding prose and trims trailing spaces only",
+  "fixtureSha256": "77d7a93794d479e9152fb44856310a22c21602af64dacaf8c2d820d7df4456f1",
+  "visualCheck": "Rendered PDF page 1; checked the two Cashback columns against all three neighbouring Tamayaz columns",
+  "supportingSources": [
+    {
+      "url": "https://www.liv.me/en/liv-credit-card",
+      "htmlSha256": "25e3bec63e263ce2339d8ca9cb59ed82011f163adf8ea3b144a242285a64f6b7",
+      "purpose": "Links the current KFS; quotes joining and annual fees before VAT; supplies the joining-fee waiver conditions"
+    },
+    {
+      "url": "https://www.liv.me/en/important-information/features/liv-credit-card-feature",
+      "htmlSha256": "f2e5088ca014dbb0ff641943d9a9ca250df6b2f0d611a010118719b647571be6",
+      "purpose": "Cashback spend tiers and one-card rule are distinct from salary eligibility"
+    }
+  ]
+}

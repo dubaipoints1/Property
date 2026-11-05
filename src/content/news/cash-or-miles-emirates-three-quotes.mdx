@@ -1,0 +1,62 @@
+---
+title: "Cash or Miles? Compare three Emirates prices, not two"
+description: "Cash+Miles and Classic Rewards are different ways to use Skywards Miles. A clearly hypothetical example shows how to compare both with a cash fare."
+publishedAt: 2026-11-05
+staleAfter: 2026-12-05
+category: news
+beat: airline
+textLed: true
+relatedPrograms:
+  - skywards
+sources:
+  - https://www.emirates.com/english/skywards/cash-plus-miles/
+  - https://www.emirates.com/english/help/faq-topics/emirates-skywards/faq/where-can-i-find-out-how-to-spend-my-miles/
+---
+
+import TravelEvidence from "~/components/TravelEvidence.astro";
+import StockImage from "~/components/StockImage.astro";
+import ImageCredit from "~/components/ImageCredit.astro";
+import { calculateCashOrMiles } from "~/lib/cashOrMiles";
+import { dpValueFils } from "~/lib/valuations";
+
+export const example = { "cashFare": "1000", "cashPlusMilesCash": "800", "cashPlusMiles": "15000", "classicCash": "300", "classicMiles": "30000" };
+export const target = dpValueFils("skywards");
+export const money = (aed) => "AED " + Number(aed).toLocaleString("en-GB", { maximumFractionDigits: 2 });
+export const miles = (amount) => Number(amount).toLocaleString("en-GB");
+export const cashPlusMiles = calculateCashOrMiles({ cashFare: example.cashFare, miles: example.cashPlusMiles, awardFees: example.cashPlusMilesCash, target: target === null ? "" : String(target) });
+export const classic = calculateCashOrMiles({ cashFare: example.cashFare, miles: example.classicMiles, awardFees: example.classicCash, target: target === null ? "" : String(target) });
+
+A smaller payment at checkout does not tell you whether you used your miles well. On Emirates, compare the **all-cash price, Cash+Miles price and Classic Reward price** before choosing. They answer the same travel need in different ways.
+
+We checked the programme explanations on **5 November 2026**. The numbers below are deliberately hypothetical: no flight was priced, booked or held for this example.
+
+<figure><StockImage slug="news-cash-or-miles-emirates-three-quotes" delivery="feature" sizes="(max-width: 720px) calc(100vw - 32px), 680px" /><figcaption>An Emirates aircraft in a stock photograph, not the fictional flight in this comparison. The image is not evidence of a fare, reward seat or personal journey. <ImageCredit slug="news-cash-or-miles-emirates-three-quotes" /></figcaption></figure>
+
+## Cash+Miles is not a discounted Classic Reward
+
+[Cash+Miles](https://www.emirates.com/english/skywards/cash-plus-miles/) uses Skywards Miles to reduce a cash payment. Emirates does not publish one fixed conversion rate; the applicable rate appears on the payment page. A Classic Reward is a separate flight reward, and [taxes remain payable in cash](https://www.emirates.com/english/help/faq-topics/emirates-skywards/faq/where-can-i-find-out-how-to-spend-my-miles/). Use the final cash due, not an assumption that a reward ticket is free.
+
+Emirates itself recommends checking both quotations. That does not mean the two fares have identical conditions or that either always beats cash.
+
+## One fictional flight, three ways to pay
+
+<TravelEvidence basis="hypothetical" rows={[
+  { label: "All cash", value: money(example.cashFare) },
+  { label: "Cash+Miles", value: money(example.cashPlusMilesCash) + " + " + miles(example.cashPlusMiles) + " miles" },
+  { label: "Classic Reward", value: money(example.classicCash) + " + " + miles(example.classicMiles) + " miles" },
+]} source={{ href: "/calculator/cash-or-miles/", label: "Use your own quotations in the calculator" }} limitation="Editor-created inputs, not Emirates prices or a conversion offer. Assume the same fictional flight, passengers, cabin, baggage and fare conditions; each cash total includes all cash due. No reward-seat availability is claimed." />
+
+{cashPlusMiles.ok && classic.ok && <p>Against the same cash alternative, Cash+Miles saves <strong>{money(cashPlusMiles.result.cashSavedFils / 100)}</strong> for {miles(example.cashPlusMiles)} miles: <strong>{cashPlusMiles.result.filsPerMile.toFixed(2)} fils per mile</strong>. The Classic Reward saves <strong>{money(classic.result.cashSavedFils / 100)}</strong> for {miles(example.classicMiles)} miles: <strong>{classic.result.filsPerMile.toFixed(2)} fils per mile</strong>.</p>}
+
+{cashPlusMiles.ok && classic.ok && target !== null && cashPlusMiles.result.breakEvenFareFils !== null && classic.result.breakEvenFareFils !== null && <p>At our <a href="/valuations/methodology/">editorial baseline</a> of {target} fils per Skywards Mile, the hypothetical Cash+Miles option ties cash at <strong>{money(cashPlusMiles.result.breakEvenFareFils / 100)}</strong>; the Classic Reward ties at <strong>{money(classic.result.breakEvenFareFils / 100)}</strong>. Those are break-even cash fares, not prices offered by Emirates. The assumed miles and cash due must stay fixed for that comparison.</p>}
+
+In this constructed example, the Classic Reward uses more miles but gives more cash saving per mile. Cash+Miles preserves more miles while reducing the bill less. Neither observation tells us what you should book on a real flight, particularly if the refund rules, bags or flexibility differ. Rewards earned on a paid fare are also excluded here, not assumed to be identical.
+
+## Keep a three-quote record
+
+1. **Match the trip.** Record the flight, date, passengers, cabin, baggage and currency. Use the cash fare you would actually buy; note any different change or refund rules.
+2. **Capture all cash due.** Record the all-cash total, then the final cash and miles for each miles option. Do not compare a headline miles amount with a tax-inclusive cash price.
+3. **Run each option separately.** In the [Cash or Miles calculator](/calculator/cash-or-miles/), keep the same cash alternative and enter each option's miles and cash due. For Cash+Miles, the cash-due field means its whole remaining cash payment, not just taxes.
+4. **Recheck before committing.** Read the applicable fare conditions and refresh the quotations. A better calculation cannot make a non-matching fare or unavailable seat comparable.
+
+Start with the [Skywards guide](/airlines/skywards/) if the programme is new to you, or see the [first Cash or Miles examples](/news/cash-or-miles-uae-flight-break-even/) for the basic break-even method.

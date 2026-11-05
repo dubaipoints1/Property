@@ -138,6 +138,18 @@ test("preferred benefits rank ahead of alternatives and compare uses that DOM or
   assert.equal(result.compare.href, `/cards/compare/?cards=${result.tiles.slice(0, 3).map((tile) => tile.slug).join(",")}`);
 });
 
+test("Liv Cashback cards appear at their published salary thresholds, not below", () => {
+  const liv = getActiveCards().filter((card) => card.bank === "liv");
+  assert.equal(liv.length, 2);
+  const matches = (salary: number) => renderFinder(`?salary=${salary}`, liv)
+    .tiles.map((tile) => tile.slug).sort();
+
+  assert.deepEqual(matches(4999), []);
+  assert.deepEqual(matches(5000), ["liv-cashback"]);
+  assert.deepEqual(matches(14999), ["liv-cashback"]);
+  assert.deepEqual(matches(15000), ["liv-cashback", "liv-cashback-plus"]);
+});
+
 test("old explicit opt-in links still include invitation-only cards", () => {
   const result = renderFinder("?include_invite_only=true");
   assert.equal(result.count.textContent, `Showing 6 of ${result.cards.length} cards that meet your filters`);
