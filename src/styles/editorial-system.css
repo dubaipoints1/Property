@@ -1,0 +1,107 @@
+/* 21st reference adoption, rebuilt in the house idiom. This file is linked
+   on interiors only: the approved homepage and reel remain untouched.
+   Origin UI's state vocabulary informs these existing primitives; no
+   third-party implementation or runtime is imported. */
+html[data-design="runway"] {
+  --dp-ui-control: 46px;
+  --dp-ui-radius: 9px;
+  --dp-ui-state-time: 140ms;
+  --dp-ui-state-ease: var(--dp-ease-hover, ease);
+}
+
+html[data-design="runway"] :where(.dp-ui-action, .dp-ui-filter, .dp-ui-field) {
+  min-block-size: var(--dp-ui-control);
+  border-radius: var(--dp-ui-radius);
+  max-inline-size: 100%;
+  font-family: var(--font-ui);
+  line-height: 1.4;
+}
+html[data-design="runway"] :where(.dp-ui-action, .dp-ui-filter) {
+  padding: 11px 16px;
+  white-space: normal;
+  text-align: center;
+  text-wrap: pretty;
+  transition: background-color var(--dp-ui-state-time) var(--dp-ui-state-ease),
+    border-color var(--dp-ui-state-time) var(--dp-ui-state-ease),
+    color var(--dp-ui-state-time) var(--dp-ui-state-ease);
+}
+html[data-design="runway"] :where(.dp-ui-field) {
+  padding: 11px 12px;
+  border-color: var(--muted);
+  background: var(--paper);
+  color: var(--ink);
+  accent-color: var(--green);
+}
+html[data-design="runway"] :where(.dp-ui-field):hover:not(:disabled) {
+  border-color: var(--green);
+}
+html[data-design="runway"] :is(.dp-ui-action, .dp-ui-filter, .dp-ui-field):focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+html[data-design="runway"] :is(.dp-ui-action, .dp-ui-filter, .dp-ui-field):is(:disabled, [aria-disabled="true"]) {
+  opacity: 1;
+  color: var(--muted);
+  background: var(--shade-1);
+  border-color: var(--line);
+  cursor: not-allowed;
+  text-decoration: none;
+}
+html[data-design="runway"] .dp-ui-action[aria-busy="true"] {
+  cursor: progress;
+}
+html[data-design="runway"] :is(.dp-ui-field[aria-invalid="true"], .dp-ui-field:user-invalid) {
+  border-color: var(--red);
+  outline-color: var(--red);
+}
+
+/* The label never moves or changes meaning. Only its decorative arrow
+   responds to a fine pointer or keyboard focus. Touch needs no hover. */
+html[data-design="runway"] .dp-action-arrow {
+  display: inline-block;
+  flex: none;
+  transition: transform var(--dp-ui-state-time) var(--dp-ui-state-ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  html[data-design="runway"] a:is(.dp-ui-action, .dp-task-link):hover .dp-action-arrow {
+    transform: translateX(2px);
+  }
+}
+html[data-design="runway"] a:is(.dp-ui-action, .dp-task-link):focus-visible .dp-action-arrow {
+  transform: translateX(2px);
+}
+
+/* Native disclosure/control states keep a consistent rhythm across
+   programme rules, calculator settings and the archived reference pages. */
+html[data-design="runway"] #main-content :where(details > summary) {
+  min-block-size: var(--dp-ui-control);
+  align-content: center;
+  cursor: pointer;
+  text-underline-offset: .2em;
+}
+html[data-design="runway"] #main-content :where(details > summary):focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+html[data-design="runway"] #main-content :where(details[open] > summary) {
+  color: var(--green);
+}
+
+html[data-design="runway"] .dp-footer :where(a) {
+  min-block-size: 44px;
+  align-content: center;
+  text-underline-offset: .2em;
+}
+
+/* Archive return links land below the real sticky header in either
+   navigation layout, rather than hiding the edition heading behind it. */
+html[data-design="runway"] #news-edition-top {
+  scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-design="runway"] :where(.dp-ui-action, .dp-ui-filter, .dp-ui-field, .dp-action-arrow) {
+    transition: none;
+  }
+  html[data-design="runway"] .dp-action-arrow { transform: none !important; }
+}

@@ -16,7 +16,7 @@ const { actions = [], guides = [] } = Astro.props;
     {actions.length > 0 && (
       <ul class="dp-reader-actions">
         {actions.map((action, index) => (
-          <li><a href={action.href} class:list={["dp-ui-action", index === 0 ? "dp-ui-primary" : "dp-ui-quiet"]} data-reader-action={action.kind}>{action.label}<span aria-hidden="true"> →</span></a></li>
+          <li><a href={action.href} class:list={["dp-ui-action", index === 0 ? "dp-ui-primary" : "dp-ui-quiet"]} data-reader-action={action.kind}>{action.label}<span class="dp-action-arrow" aria-hidden="true">→</span></a></li>
         ))}
       </ul>
     )}

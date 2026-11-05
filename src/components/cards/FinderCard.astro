@@ -22,7 +22,7 @@ const tagline = editorial?.data.editorTake?.trim().replace(/\s+/g, " ").match(/^
     <div class="brand"><BankLogo slug={card.bank} name={bankName} size="sm" decorative /><span>{bankName}</span></div>
     <span class="network">{card.network}</span>
   </header>
-  <div class="identity"><h3><a href={`/cards/${card.slug}/`}>{card.name}</a></h3><CompareCardArt slug={card.slug} /></div>
+  <div class="identity"><h3><a href={`/cards/${card.slug}/`}>{card.name}</a></h3><CompareCardArt slug={card.slug} size="identity" /></div>
   {card.discontinuedForNewApplicants && <p class="dp-card-chip is-warn">No longer accepting applications</p>}
   <div class="dp-finder-key-facts">
     <FeeBlock card={card.slug} />
@@ -46,14 +46,14 @@ const tagline = editorial?.data.editorTake?.trim().replace(/\s+/g, " ").match(/^
   <footer><VerifiedStamp lastVerified={card.lastVerified} /></footer>
 </article>
 <style>
-  .dp-finder-summary-card { min-width: 0; padding: clamp(16px, 2vw, 24px); display: grid; align-content: start; gap: 14px; background: var(--paper); border-block: 1px solid var(--line); font-family: var(--font-ui); }
+  .dp-finder-summary-card { min-width: 0; padding: clamp(16px, 2vw, 24px); display: grid; align-content: start; gap: 16px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--dp-ui-radius, 12px); font-family: var(--font-ui); }
   header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
   .brand { display: flex; align-items: center; gap: 8px; color: var(--green); font-size: .6875rem; font-weight: 650; }
   .network { color: var(--ink-soft); font-size: .6875rem; }
-  .identity { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .identity { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   h3 { margin: 0; min-width: 0; font: 600 clamp(1.25rem, 1.7vw, 1.5rem)/1.2 var(--font-display); letter-spacing: -.02em; text-wrap: balance; }
   h3 a { color: var(--ink); }
-  .dp-finder-key-facts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(100px, .8fr); gap: 12px; }
+  .dp-finder-key-facts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(100px, .8fr); gap: 12px; padding-block-start: 14px; border-block-start: 1px solid var(--line-soft); }
   .dp-finder-key-facts :global(.dp-fee-block) { margin: 0; }
   .dp-finder-key-facts :global(.dp-fee-block .amt) { font-size: 1.5rem; }
   dl { margin: 0; min-width: 0; padding-inline-start: 14px; border-inline-start: 1px solid var(--line-soft); }
@@ -65,4 +65,9 @@ const tagline = editorial?.data.editorTake?.trim().replace(/\s+/g, " ").match(/^
   .dp-finder-card-details > summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
   .dp-finder-detail-label { margin-block: 16px 8px; color: var(--ink-soft); font-size: .75rem; font-weight: 650; }
   footer { padding-block-start: 2px; }
+  .dp-finder-summary-card :is(a, summary):focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  @media (max-width: 359.98px) {
+    .identity { align-items: start; }
+    .identity :global(.dp-compare-card-art[data-size="identity"]:has(img)) { inline-size: 80px; }
+  }
 </style>

@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "project": {
+    "name": "dubaipoints",
+    "productType": "UAE travel, cards and loyalty editorial publication with financial decision tools",
+    "stack": [
+      "astro",
+      "preact",
+      "tailwind-v4"
+    ]
+  },
+  "sources": {
+    "tokens": ["src/styles/global.css", "src/styles/runway-editorial.css", "src/styles/runway-reading.css", "src/styles/reader-flow.css"],
+    "components": ["src/components", "src/layouts"],
+    "assets": [
+      "public/images",
+      "src/assets"
+    ],
+    "instructions": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  "design": {
+    "colorMode": "light-dark",
+    "colors": {"background":"var(--bg)","surface":"var(--paper)","text":"var(--ink)","secondaryText":"var(--ink-soft)","primary":"var(--green)","trust":"var(--gold-ink)","border":"var(--line)"},
+    "typography": {"display":"Newsreader Variable via --font-display", "body":"Geist Variable via --font-ui"},
+    "spacing": {"gutter":"clamp(16px, 3vw, 32px)","readingMeasure":"680px prose with fluid gutters"},
+    "radius": {"control":"8px", "small":"6px", "panel":"12px", "editorial":"mostly open, unboxed reading"},
+    "shadows": {},
+    "motion": {"existing":"Native WAAPI Tween/useFlip with reduced-motion support; homepage scroll-loaded reel", "new":"Restrained feedback; no autoplay rails or hidden-until-animation body copy"},
+    "density": "Open editorial reading with compact, explicit decision controls"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": ["Native HTML links/buttons/inputs/select/details/table", "Existing Astro components and Preact islands", "House .dp-* CSS tokens"],
+    "patterns": ["One contents system per article/programme", "Image-led editorial discovery", "Contained real issuer card art", "Context-preserving Finder/review/Compare and salary journeys", "Manual, keyboard-operable offer rails"]
+  },
+  "constraints": {
+    "must": ["Preserve homepage hero, poster and no-video-before-scroll behaviour", "Preserve all financial data, calculation/ranking logic, URLs, sources and visible image credits", "Light/dark, responsive, keyboard, touch, reduced-motion and no-JS fallbacks", "Retain Salary Tracker one-band-or-all selection and independent multi-select offer filters", "No production release before owner sees the light/dark previews", "No secrets, paid provider generation or newsletter restoration"],
+    "avoid": ["Blind React/shadcn/Motion/Radix dependency installation", "New palette/font swap", "Autoplay offer carousels, cursor effects and heavy 3D", "Duplicate TOCs or inaccessible custom controls", "Copying code with unresolved licence or demo imagery", "Fabricated figures, testimonials, audience numbers or approval guarantees"]
+  },
+  "decisions": [{"date":"2026-11-05","decision":"Owner directed implementation of the researched 21st shortlist. Adapt patterns in-house across templates; research report and catalogue are references, not source-copying clearance. Preserve approved Runway/Cool Editorial interiors, Newsreader/Geist and protected homepage. Stage for owner previews before release.","source":"Mostafa: Do it all; 21st resource research report in the current project conversation"}],
+  "evidence": [
+    {
+      "fact": "project.instructions",
+      "source": "AGENTS.md"
+    },
+    {
+      "fact": "project.instructions",
+      "source": "CLAUDE.md"
+    },
+    {
+      "fact": "project.stack:astro",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:tailwind-v4",
+      "source": "package.json"
+    }
+  ],
+  "generatedAt": "2026-11-05T18:21:02.992Z"
+}

@@ -21,6 +21,9 @@ const liveDealCount = (await getCollection("deals")).filter(
 
 const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
+// A directory may be the active section without being the current page.
+// In particular, /cards/ must not claim aria-current on every card review.
+const isCurrent = (href: string) => currentPath === href;
 
 // ── One information architecture, desktop and mobile (19 Oct 2026) ──
 // Chairman direction 19 Oct 2026 ("can we do something to the menu
@@ -132,7 +135,7 @@ const publicationRows: SubRow[] = [
 
 <input type="checkbox" id="dp-nav-toggle" class="dp-nav-toggle" aria-hidden="true" tabindex="-1" />
 
-<header class="dp-header" data-pagefind-ignore>
+<header class="dp-header" data-interior={currentPath !== "/" ? "true" : undefined} data-pagefind-ignore>
   <div class="dp-header-inner">
     <!-- Hamburger -->
     <label for="dp-nav-toggle" class="dp-icon-btn dp-mobile-only" role="button"
@@ -161,17 +164,17 @@ const publicationRows: SubRow[] = [
     <!-- Desktop nav -->
     <nav class="dp-header-nav" aria-label="Primary">
       <details class="dp-nav-mega-wrap">
-        <summary class={isActive("/cards/") || isActive("/banks/") ? "is-active" : ""}>
+        <summary class={isActive("/cards/") || isActive("/banks/") ? "is-active" : ""} aria-controls="dp-desktop-cards-panel">
           Cards
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </summary>
-        <div class="dp-megapanel" role="region" aria-label="Cards menu" data-nosnippet>
+        <div class="dp-megapanel" id="dp-desktop-cards-panel" role="region" aria-label="Cards menu" data-nosnippet>
           <div class="dp-megapanel-inner">
             {cardsPanel.map((g) => (
               <div class="dp-mega-grp">
-                <div class="dp-mega-grp-t">{g.title}</div>
-                {g.rows.map((r) => (
-                  <a class="dp-mega-sub" href={r.href}>
+                <div class="dp-mega-grp-t" role="heading" aria-level="2">{g.title}</div>
+                {g.rows.map((r, index) => (
+                  <a class={`dp-mega-sub${isCurrent(r.href) ? " is-current" : ""}`} href={r.href} aria-current={isCurrent(r.href) ? "page" : undefined} data-featured={g.title === "Find a card" && index < 2 ? "true" : undefined}>
                     <span class="lbl">{r.label}</span>
                     {r.sub && <span class="sub">{r.sub}</span>}
                   </a>
@@ -185,17 +188,17 @@ const publicationRows: SubRow[] = [
       <a href="/salary-transfer/" class={isActive("/salary-transfer/") ? "is-active" : ""}>Salary tracker</a>
 
       <details class="dp-nav-mega-wrap">
-        <summary class={isActive("/airlines/") || isActive("/hotels/") || isActive("/valuations/") || isActive("/transfer-finder/") || isActive("/calculator/cash-or-miles/") ? "is-active" : ""}>
+        <summary class={isActive("/airlines/") || isActive("/hotels/") || isActive("/valuations/") || isActive("/transfer-finder/") || isActive("/calculator/cash-or-miles/") ? "is-active" : ""} aria-controls="dp-desktop-points-panel">
           Points &amp; miles
           <span class="dp-mega-caret" aria-hidden="true">▾</span>
         </summary>
-        <div class="dp-megapanel" role="region" aria-label="Points and miles menu" data-nosnippet>
+        <div class="dp-megapanel" id="dp-desktop-points-panel" role="region" aria-label="Points and miles menu" data-nosnippet>
           <div class="dp-megapanel-inner">
             {pointsPanel.map((g) => (
               <div class="dp-mega-grp">
-                <div class="dp-mega-grp-t">{g.title}</div>
+                <div class="dp-mega-grp-t" role="heading" aria-level="2">{g.title}</div>
                 {g.rows.map((r) => (
-                  <a class="dp-mega-sub" href={r.href}>
+                  <a class={`dp-mega-sub${isCurrent(r.href) ? " is-current" : ""}`} href={r.href} aria-current={isCurrent(r.href) ? "page" : undefined}>
                     <span class="lbl">{r.label}</span>
                     {r.sub && <span class="sub">{r.sub}</span>}
                   </a>
@@ -222,7 +225,7 @@ const publicationRows: SubRow[] = [
           the accessible name (the text span hides at 1024–1279px, where
           the pill is icon-only) and must start with the visible label
           text for WCAG 2.5.3 Label in Name. */}
-      <a href="/search/" class="dp-search-pill" aria-label="Search DubaiPoints">
+      <a href="/search/" class="dp-search-pill" aria-label="Search DubaiPoints" aria-keyshortcuts="Control+k Meta+k" title="Search DubaiPoints (Ctrl or ⌘ K)">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none"
              stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
           <circle cx="11" cy="11" r="7" />
@@ -305,7 +308,7 @@ const publicationRows: SubRow[] = [
         <div class="dp-nav-grp">
           <div class="dp-nav-grp-t">{g.title}</div>
           {g.rows.map((r) => (
-            <a class={`dp-nav-sub${isActive(r.href) ? " is-active" : ""}`} href={r.href}>
+            <a class={`dp-nav-sub${isCurrent(r.href) ? " is-active" : ""}`} href={r.href} aria-current={isCurrent(r.href) ? "page" : undefined}>
               <span class="lbl">{r.label}</span>
               {r.sub && <span class="sub">{r.sub}</span>}
             </a>
@@ -325,7 +328,7 @@ const publicationRows: SubRow[] = [
         <div class="dp-nav-grp">
           <div class="dp-nav-grp-t">{g.title}</div>
           {g.rows.map((r) => (
-            <a class={`dp-nav-sub${isActive(r.href) ? " is-active" : ""}`} href={r.href}>
+            <a class={`dp-nav-sub${isCurrent(r.href) ? " is-active" : ""}`} href={r.href} aria-current={isCurrent(r.href) ? "page" : undefined}>
               <span class="lbl">{r.label}</span>
               {r.sub && <span class="sub">{r.sub}</span>}
             </a>
@@ -340,7 +343,7 @@ const publicationRows: SubRow[] = [
     <div class="dp-nav-tools-block">
       <div class="dp-nav-grp-t">Tools</div>
       {toolRows.map((r) => (
-        <a class="dp-nav-sub" href={r.href}>
+        <a class={`dp-nav-sub${isCurrent(r.href) ? " is-active" : ""}`} href={r.href} aria-current={isCurrent(r.href) ? "page" : undefined}>
           <span class="lbl">{r.label}</span>
           {r.sub && <span class="sub">{r.sub}</span>}
         </a>
@@ -350,7 +353,7 @@ const publicationRows: SubRow[] = [
     <div class="dp-nav-pub-block">
       <div class="dp-nav-grp-t is-muted">Publication</div>
       {publicationRows.map((r) => (
-        <a class="dp-nav-sub" href={r.href}>
+        <a class={`dp-nav-sub${isCurrent(r.href) ? " is-active" : ""}`} href={r.href} aria-current={isCurrent(r.href) ? "page" : undefined}>
           <span class="lbl">{r.label}</span>
           {r.sub && <span class="sub">{r.sub}</span>}
         </a>
@@ -367,6 +370,17 @@ const publicationRows: SubRow[] = [
   (() => {
     const disclosures = [...document.querySelectorAll(".dp-header-nav details.dp-nav-mega-wrap")];
     for (const menu of disclosures) {
+      const summary = menu.querySelector("summary");
+      // Native click/Enter/Space disclosure remains the default. ArrowDown
+      // provides a deliberate shortcut into the panel; there is no hover
+      // timer that can close it while the pointer crosses to a link.
+      summary?.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowDown") return;
+        event.preventDefault();
+        for (const other of disclosures) if (other !== menu) other.open = false;
+        menu.open = true;
+        menu.querySelector(".dp-megapanel a[href]")?.focus();
+      });
       menu.addEventListener("toggle", () => {
         if (menu.open) for (const other of disclosures) if (other !== menu) other.open = false;
       });
@@ -451,6 +465,21 @@ const publicationRows: SubRow[] = [
         }
       });
       syncAcc();
+    });
+  })();
+
+  // Search is a real route, not a second search index or a hidden modal.
+  // Do not steal the shortcut while someone is editing a calculator field.
+  (() => {
+    document.addEventListener("keydown", (event) => {
+      if (event.defaultPrevented || event.isComposing || event.altKey || event.shiftKey ||
+          !(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== "k") return;
+      const target = event.target;
+      if (target instanceof Element && target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
+      event.preventDefault();
+      const input = document.querySelector('[data-dp-search-input]');
+      if (input) { input.focus(); input.select(); }
+      else window.location.assign("/search/");
     });
   })();
 </script>
@@ -739,6 +768,41 @@ const publicationRows: SubRow[] = [
   .dp-mega-sub .sub { font-size: 11px; color: var(--muted); }
   .dp-mega-sub:hover .lbl,
   .dp-mega-sub:focus-visible .lbl { color: var(--green); }
+
+  /* ReUI-style grouping in the house idiom. Interior navigation gains
+     stronger task hierarchy; the homepage's initial header is unchanged. */
+  .dp-header[data-interior] .dp-mega-grp + .dp-mega-grp {
+    border-inline-start: 1px solid var(--line);
+    padding-inline-start: 24px;
+  }
+  .dp-header[data-interior] .dp-mega-grp-t {
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    margin-bottom: 12px;
+  }
+  .dp-header[data-interior] .dp-mega-sub {
+    min-height: 44px;
+    justify-content: center;
+    padding-block: 10px;
+  }
+  .dp-header[data-interior] .dp-mega-sub .sub {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-soft);
+  }
+  .dp-header[data-interior] .dp-mega-sub[data-featured] {
+    background: var(--shade-1);
+    border: 1px solid var(--line);
+    margin-bottom: 8px;
+    padding-inline: 12px;
+  }
+  .dp-header[data-interior] .dp-mega-sub[data-featured] .lbl { font-weight: 700; }
+  .dp-header[data-interior] .dp-mega-sub:is(:focus-visible, .is-current) {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+    background: var(--shade-1);
+  }
+  .dp-header[data-interior] .dp-mega-sub.is-current .lbl { color: var(--green); }
 
   .dp-header-actions {
     display: flex;

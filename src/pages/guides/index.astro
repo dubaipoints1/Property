@@ -106,6 +106,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
           {guidePhoto(featured.id) && (
             <span class="dp-guide-feature-art" data-guide-feature-art>
               <StockImage slug={`guide-${featured.id}`} class="intel-featured-image" delivery="feature" sizes="(max-width: 619px) calc(100vw - 56px), 340px" loading="eager" />
+              <span class="dp-guide-photo-credit">Photo: {guidePhoto(featured.id)?.photographer}</span>
             </span>
           )}
         </a>
@@ -123,7 +124,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
                 </div>
                 {guidePhoto(g.id) && (
                   <span class="dp-guide-card-art">
-                    <StockImage slug={`guide-${g.id}`} class="intel-card-image" delivery="compact" sizes="clamp(70px, 14vw, 120px)" />
+                    <StockImage slug={`guide-${g.id}`} class="intel-card-image" delivery="feature" sizes="(max-width: 799px) calc(100vw - 32px), (max-width: 1059px) calc(50vw - 36px), 390px" />
+                    <span class="dp-guide-photo-credit">Photo: {guidePhoto(g.id)?.photographer}</span>
                   </span>
                 )}
               </a>
@@ -225,7 +227,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     text-decoration: none;
   }
   .intel-featured { align-items: center; }
-  .intel-card.has-art { grid-template-columns: minmax(0, 1fr) clamp(70px, 14vw, 120px); }
+  .intel-card.has-art { grid-template-columns: minmax(0, 1fr); }
   .intel-featured:hover, .intel-card:hover { border-color: var(--green); }
   .intel-featured:focus-visible, .intel-card:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
   .dp-guide-feature-art, .dp-guide-card-art {
@@ -235,6 +237,9 @@ const schema = collectionPageGraph({ siteUrl, path: "/guides/", name: "UAE point
     border-radius: var(--dp-ui-radius);
     overflow: hidden;
   }
+  .dp-guide-card-art { order: -1; border: 0; border-radius: 0; }
+  .dp-guide-card-art :global(.intel-card-image) { border-radius: var(--dp-ui-radius); }
+  .dp-guide-photo-credit { display: block; padding: 7px 2px 0; color: var(--ink-soft); font: 400 .6875rem/1.4 var(--font-ui); }
   .dp-guide-feature-art :global(.intel-featured-image), .dp-guide-card-art :global(.intel-card-image) {
     display: block;
     width: 100%;
