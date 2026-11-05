@@ -1,0 +1,51 @@
+---
+import type { ReaderAction, ReaderGuide } from "~/lib/readerJourneys";
+
+interface Props {
+  actions?: ReaderAction[];
+  guides?: ReaderGuide[];
+}
+
+const { actions = [], guides = [] } = Astro.props;
+---
+
+{(actions.length > 0 || guides.length > 0) && (
+  <nav class="dp-reader-next" aria-labelledby="dp-reader-next-heading" data-reader-next>
+    <p class="dp-reader-next-kicker">Continue this topic</p>
+    <h2 id="dp-reader-next-heading">Where to go next</h2>
+    {actions.length > 0 && (
+      <ul class="dp-reader-actions">
+        {actions.map((action, index) => (
+          <li><a href={action.href} class:list={["dp-ui-action", index === 0 ? "dp-ui-primary" : "dp-ui-quiet"]} data-reader-action={action.kind}>{action.label}<span aria-hidden="true"> →</span></a></li>
+        ))}
+      </ul>
+    )}
+    {guides.length > 0 && (
+      <div class="dp-reader-explainers">
+        <h3>Related explainers</h3>
+        <ul>{guides.map((guide) => <li><a href={`/guides/${guide.id}/`}>{guide.title}<span aria-hidden="true"> →</span></a></li>)}</ul>
+      </div>
+    )}
+  </nav>
+)}
+
+<style>
+  .dp-reader-next {
+    margin-block: clamp(28px, 4vw, 48px);
+    padding-block: clamp(20px, 3vw, 32px);
+    border-block: 1px solid var(--line);
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+  .dp-reader-next-kicker { margin: 0 0 8px; font: 700 .6875rem/1.4 var(--font-ui); letter-spacing: .16em; text-transform: uppercase; color: var(--green); }
+  .dp-reader-next h2 { margin: 0 0 18px; font: 600 clamp(1.625rem, 3vw, 2rem)/1.12 var(--font-display); letter-spacing: -.025em; }
+  .dp-reader-actions { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 12px; }
+  .dp-reader-actions li { min-inline-size: 0; max-inline-size: 100%; }
+  .dp-reader-actions a { max-inline-size: 100%; min-block-size: 44px; white-space: normal; text-align: start; }
+  .dp-reader-explainers { margin-block-start: 24px; }
+  .dp-reader-explainers h3 { margin: 0 0 4px; font: 650 .8125rem/1.5 var(--font-ui); color: var(--ink-soft); }
+  .dp-reader-explainers ul { list-style: none; padding: 0; margin: 0; }
+  .dp-reader-explainers li + li { border-block-start: 1px solid var(--line-soft); }
+  .dp-reader-explainers a { display: block; min-block-size: 44px; padding-block: 12px; font: 550 1rem/1.45 var(--font-ui); color: var(--link); text-decoration: underline; text-underline-offset: .18em; }
+  .dp-reader-next a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+</style>

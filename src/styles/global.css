@@ -620,7 +620,8 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
 }
 .dpsc-row.is-eligible { border-left-color: var(--green); }
 .dpsc-row.is-warning { border-left-color: var(--gold); }
-.dpsc-row.is-disqualified { opacity: 0.62; }
+/* Ineligible results still explain a decision: never fade their text. */
+.dpsc-row.is-disqualified { border-left-style: dashed; }
 .dpsc-row-head {
   display: flex; flex-wrap: wrap;
   align-items: baseline; justify-content: space-between;
@@ -638,7 +639,7 @@ a.dpst-bank-name:hover { color: var(--dpst-accent); }
   color: var(--muted);
 }
 .dpsc-row.is-eligible .dpsc-status { color: var(--green); }
-.dpsc-row.is-warning .dpsc-status { color: var(--gold); }
+.dpsc-row.is-warning .dpsc-status { color: var(--gold-ink); }
 .dpsc-row-value { margin-top: 8px; font-size: 14px; color: var(--ink); font-variant-numeric: tabular-nums; }
 .dpsc-row-value .face { color: var(--muted); }
 .dpsc-breakdown {

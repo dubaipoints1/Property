@@ -52,6 +52,7 @@ const deck = isCurrentAtBuild
   deck={deck}
   publishedAt={deal.data.publishedAt}
   toc={toc}
+  readerContext={{ section: "deals", id: deal.id, category: deal.data.category, banks: deal.data.bank ? [deal.data.bank.id] : [], programmes: deal.data.program ? [deal.data.program.id] : [] }}
   showHero
 >
   <Fragment slot="before-hero">

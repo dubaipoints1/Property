@@ -9,6 +9,8 @@ import { routeFromHtmlPath, startStaticServer } from './_lib.mjs';
 
 const dist = path.resolve(process.argv[2] ?? 'dist');
 const output = path.resolve(process.argv[3] ?? 'audit-output/census');
+const workers = Number(process.env.DP_AUDIT_WORKERS ?? 5);
+assert.ok(Number.isInteger(workers) && workers >= 1 && workers <= 8, 'DP_AUDIT_WORKERS must be an integer from 1 to 8');
 const viewports = [[390,844], [320,740], [844,390], [768,1024], [1024,768], [1440,900], [1920,1080], [2560,1080], [390,844]];
 const htmlFiles = (await readdir(dist, { recursive: true, withFileTypes: true }))
   .filter(item => item.isFile() && item.name.endsWith('.html'))
@@ -29,7 +31,7 @@ try {
   browser = await chromium.launch({ executablePath: process.env.DP_CHROME_PATH || undefined });
   const queue = [...rows];
   let finished = 0;
-  await Promise.all(Array.from({ length: 5 }, async () => {
+  await Promise.all(Array.from({ length: workers }, async () => {
     const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
     await context.route('**/*', request => new URL(request.request().url()).origin === server.baseUrl ? request.continue() : request.abort());
     const page = await context.newPage();

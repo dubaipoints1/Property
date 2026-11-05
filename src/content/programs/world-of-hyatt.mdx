@@ -17,17 +17,8 @@ sweetSpots:
 expiryPolicy: "World of Hyatt points are forfeited if the account is inactive for 24 consecutive months; the account itself stays open. Earning points, a partner credit for a Hyatt stay, or redeeming points keeps the account active. Forfeited points are never reinstated. Verified against Hyatt's programme terms (hyatt.com/help/terms/world-of-hyatt), 19 October 2026."
 ---
 
-import JumpToSection from "~/components/cards/JumpToSection.astro";
+import ProgrammeReference from "~/components/ProgrammeReference.astro";
 
-<JumpToSection sections={[
-  { id: "tier-structure", label: "Tier structure" },
-  { id: "the-award-chart", label: "Award chart" },
-  { id: "what-a-hyatt-point-is-worth", label: "Point value" },
-  { id: "who-world-of-hyatt-suits", label: "Who it suits" },
-  { id: "how-to-earn-from-the-uae", label: "How to earn" },
-  { id: "what-to-watch", label: "What to watch" },
-  { id: "related", label: "Related" },
-]} />
 
 World of Hyatt is the loyalty programme of Hyatt's brand family: Park
 Hyatt, Grand Hyatt, Hyatt Regency, Andaz, Alila, Hyatt Centric, Hyatt
@@ -50,6 +41,69 @@ said the opening of Hyatt Place Dubai/Wasl District "brings Hyatt hotels
 in the UAE to 10 properties". Hyatt Place Dubai/Jumeirah
 [opened that October](https://newsroom.hyatt.com/news-releases?item=123901),
 so treat 10 as a 2019 figure, not today's count.
+
+## How to earn from the UAE
+
+- **Paid Hyatt stays.** Per Hyatt's terms, 5 Base Points per USD 1
+  (or the USD equivalent) on an eligible rate, and 2.5 at Hyatt
+  Studios hotels. The tier bonuses above come on top.
+- **Spending at the hotel.** Eligible dining, spa and other charges
+  billed to your room earn Base Points too.
+- **Promotions.** Hyatt runs registration-based offers, such as its
+  [3,000 bonus points every three nights](/news/world-of-hyatt-3000-bonus-points-every-three-nights-15-december/)
+  promotion to 15 December 2026 and a
+  [double-points offer at new hotels](/news/world-of-hyatt-new-hotels-double-points-25000-cap/).
+  Register before you stay.
+- **UAE credit cards:** none. No card in our data earns World of Hyatt
+  points or transfers into them. The World of Hyatt credit card that
+  Hyatt's site promotes is a Chase product.
+
+<ProgrammeReference programme="world-of-hyatt" kind="cards" />
+
+<ProgrammeReference programme="world-of-hyatt" kind="partners" />
+
+## What a Hyatt point is worth
+
+**We have no house valuation for World of Hyatt yet.** Our card reviews
+value hotel currencies at a cost-basis baseline in fils per point (2.5
+for Bonvoy, 1.5 for Hilton), and no UAE card earns Hyatt points, so
+there has been no review that needed one. We have not sampled UAE award
+prices against cash rates either, which is how our
+[valuations methodology](/valuations/methodology/) sets a hotel figure.
+Until we do, this page publishes no fils figure.
+
+What you can do yourself: divide the cash price of the room (in AED,
+after tax) by the points price on the same date. That is the value you
+are getting for that stay. The chart makes the sum easy, because the
+points price is known in advance.
+
+<ProgrammeReference programme="world-of-hyatt" kind="redemptions" />
+
+## The award chart
+
+Hyatt sorts its hotels into eight categories and prices a standard-room
+free night at one of five levels per category. Per Hyatt's free-nights
+page, points per night for a standard room:
+
+| Category | Lowest | Low | Moderate | Upper | Top |
+|---|---|---|---|---|---|
+| 1 | 3,000 | 4,500 | 6,000 | 7,500 | 9,000 |
+| 2 | 6,000 | 7,500 | 10,000 | 12,000 | 15,000 |
+| 3 | 8,000 | 12,000 | 15,000 | 17,500 | 20,000 |
+| 4 | 12,000 | 15,000 | 20,000 | 22,500 | 25,000 |
+| 5 | 15,000 | 20,000 | 25,000 | 30,000 | 35,000 |
+| 6 | 20,000 | 25,000 | 30,000 | 35,000 | 40,000 |
+| 7 | 25,000 | 30,000 | 35,000 | 45,000 | 55,000 |
+| 8 | 35,000 | 45,000 | 55,000 | 65,000 | 75,000 |
+
+Club rooms, standard suites and premium suites have their own, higher
+tables on the same page, and the all-inclusive resorts have a separate
+chart. Hyatt says standard-room free nights have no blackout dates.
+
+The chart sets the range. Which of the five levels applies on a given
+date is Hyatt's call, so check the hotel's category and the date's level
+on hyatt.com before you count on a price. We have not mapped the UAE
+hotels to categories.
 
 ## Tier structure
 
@@ -85,46 +139,21 @@ Separately, **Milestone Rewards** begin at 20 qualifying nights and
 continue every 10 nights up to 150. The choices include points, Club
 access and suite upgrades.
 
-## The award chart
+## What to watch
 
-Hyatt sorts its hotels into eight categories and prices a standard-room
-free night at one of five levels per category. Per Hyatt's free-nights
-page, points per night for a standard room:
+<ProgrammeReference programme="world-of-hyatt" kind="expiry" />
 
-| Category | Lowest | Low | Moderate | Upper | Top |
-|---|---|---|---|---|---|
-| 1 | 3,000 | 4,500 | 6,000 | 7,500 | 9,000 |
-| 2 | 6,000 | 7,500 | 10,000 | 12,000 | 15,000 |
-| 3 | 8,000 | 12,000 | 15,000 | 17,500 | 20,000 |
-| 4 | 12,000 | 15,000 | 20,000 | 22,500 | 25,000 |
-| 5 | 15,000 | 20,000 | 25,000 | 30,000 | 35,000 |
-| 6 | 20,000 | 25,000 | 30,000 | 35,000 | 40,000 |
-| 7 | 25,000 | 30,000 | 35,000 | 45,000 | 55,000 |
-| 8 | 35,000 | 45,000 | 55,000 | 65,000 | 75,000 |
-
-Club rooms, standard suites and premium suites have their own, higher
-tables on the same page, and the all-inclusive resorts have a separate
-chart. Hyatt says standard-room free nights have no blackout dates.
-
-The chart sets the range. Which of the five levels applies on a given
-date is Hyatt's call, so check the hotel's category and the date's level
-on hyatt.com before you count on a price. We have not mapped the UAE
-hotels to categories.
-
-## What a Hyatt point is worth
-
-**We have no house valuation for World of Hyatt yet.** Our card reviews
-value hotel currencies at a cost-basis baseline in fils per point (2.5
-for Bonvoy, 1.5 for Hilton), and no UAE card earns Hyatt points, so
-there has been no review that needed one. We have not sampled UAE award
-prices against cash rates either, which is how our
-[valuations methodology](/valuations/methodology/) sets a hotel figure.
-Until we do, this page publishes no fils figure.
-
-What you can do yourself: divide the cash price of the room (in AED,
-after tax) by the points price on the same date. That is the value you
-are getting for that stay. The chart makes the sum easy, because the
-points price is known in advance.
+- **Inactivity forfeits the balance.** Twenty-four months with no
+  earning or redemption and every point goes. One paid night or one
+  redemption resets the clock.
+- **Price levels move.** The chart is fixed, but where a date sits on
+  it is not. A Moderate night today can be Upper next season.
+- **Conversions are final.** Points moved to Qatar Avios or another
+  partner cannot be moved back, per Hyatt's terms.
+- **No current UAE footprint count.** Hyatt's last published UAE total
+  we could find is 10 properties, in April 2019. Its own hotel list did
+  not render for us, so we have no current count. This note comes out
+  when Hyatt publishes one.
 
 ## Who World of Hyatt suits
 
@@ -138,36 +167,6 @@ It suits you less if you want your hotel points to come from a credit
 card. No UAE card earns Hyatt points, so every point is earned on the
 ground. If you would rather earn hotel points on everyday spend, look at
 [Marriott Bonvoy](/hotels/marriott-bonvoy/), which UAE cards do earn.
-
-## How to earn from the UAE
-
-- **Paid Hyatt stays.** Per Hyatt's terms, 5 Base Points per USD 1
-  (or the USD equivalent) on an eligible rate, and 2.5 at Hyatt
-  Studios hotels. The tier bonuses above come on top.
-- **Spending at the hotel.** Eligible dining, spa and other charges
-  billed to your room earn Base Points too.
-- **Promotions.** Hyatt runs registration-based offers, such as its
-  [3,000 bonus points every three nights](/news/world-of-hyatt-3000-bonus-points-every-three-nights-15-december/)
-  promotion to 15 December 2026 and a
-  [double-points offer at new hotels](/news/world-of-hyatt-new-hotels-double-points-25000-cap/).
-  Register before you stay.
-- **UAE credit cards:** none. No card in our data earns World of Hyatt
-  points or transfers into them. The World of Hyatt credit card that
-  Hyatt's site promotes is a Chase product.
-
-## What to watch
-
-- **Inactivity forfeits the balance.** Twenty-four months with no
-  earning or redemption and every point goes. One paid night or one
-  redemption resets the clock.
-- **Price levels move.** The chart is fixed, but where a date sits on
-  it is not. A Moderate night today can be Upper next season.
-- **Conversions are final.** Points moved to Qatar Avios or another
-  partner cannot be moved back, per Hyatt's terms.
-- **No current UAE footprint count.** Hyatt's last published UAE total
-  we could find is 10 properties, in April 2019. Its own hotel list did
-  not render for us, so we have no current count. This note comes out
-  when Hyatt publishes one.
 
 ## Related
 

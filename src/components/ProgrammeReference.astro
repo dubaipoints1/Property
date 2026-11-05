@@ -1,0 +1,84 @@
+---
+// Programme facts stay in their existing collection/data sources. This component
+// puts each fact next to the editorial section that explains how to use it.
+import { getEntry } from "astro:content";
+import { programmeHref } from "~/lib/programmes";
+import { relatedCardsForProgramme } from "~/lib/programmeRelatedCards";
+
+interface Props {
+  programme: string;
+  kind: "cards" | "redemptions" | "expiry" | "partners";
+}
+const { programme, kind } = Astro.props;
+const entry = await getEntry("programs", programme);
+if (!entry) throw new Error(`Unknown programme reference: ${programme}`);
+const { name, currencyName, sweetSpots, expiryPolicy, transferPartners } = entry.data;
+const cards = kind === "cards" ? await relatedCardsForProgramme(name, currencyName) : [];
+const unlistedPartnerIds = new Set([
+  "british-airways-executive-club", "aer-lingus-aerclub", "iberia-plus", "finnair-plus",
+]);
+const partners = kind === "partners" ? await Promise.all(transferPartners.map(async slug => {
+  const id = slug === "emirates-skywards" ? "skywards" : slug;
+  // Some outbound partners do not have their own DubaiPoints profile.
+  const profile = unlistedPartnerIds.has(slug) ? undefined : await getEntry("programs", id);
+  return { label: profile?.data.name ?? slug, href: profile ? programmeHref(id) : null };
+})) : [];
+---
+
+{kind === "cards" && cards.length > 0 && (
+  <section class="dp-prog-inline-reference dp-prog-related" id="programme-cards" aria-labelledby="programme-cards-heading">
+    <h3 id="programme-cards-heading">UAE cards that earn into {currencyName}</h3>
+    <ul class="dp-prog-related-list">
+      {cards.map(card => <li><a href={`/cards/${card.slug}/`}><span class="bank">{card.bankName}</span><span class="name">{card.name}</span><span class="fee">{card.annualFeeAed === 0 ? "Free" : `AED ${card.annualFeeAed.toLocaleString()}/yr`}</span></a></li>)}
+    </ul>
+    {cards.length > 1 && <a class="dp-ui-action dp-ui-secondary" href={`/cards/compare/?cards=${cards.slice(0, 4).map(card => card.slug).join(",")}`}>Compare these earning cards <span aria-hidden="true">→</span></a>}
+  </section>
+)}
+
+{kind === "redemptions" && sweetSpots.length > 0 && (
+  <section class="dp-prog-inline-reference dp-prog-reference" id="programme-redemptions" aria-labelledby="programme-redemptions-heading">
+    <h3 id="programme-redemptions-heading">Documented redemption examples</h3>
+    <ul class="dp-sweet-list">
+      {sweetSpots.map(spot => <li><p class="title">{spot.title}</p><p class="desc">{spot.description}</p></li>)}
+    </ul>
+  </section>
+)}
+
+{kind === "expiry" && (
+  <details class="dp-prog-inline-reference dp-prog-expiry" id="programme-expiry">
+    <summary>Expiry policy</summary>
+    <p>{expiryPolicy}</p>
+  </details>
+)}
+
+{kind === "partners" && partners.length > 0 && (
+  <section class="dp-prog-inline-reference dp-prog-partners" id="programme-partners" aria-labelledby="programme-partners-heading">
+    <h3 id="programme-partners-heading">Programme partners</h3>
+    <ul>{partners.map(({ label, href }) => <li>{href ? <a href={href}>{label}</a> : <span>{label}</span>}</li>)}</ul>
+  </section>
+)}
+
+<style>
+  .dp-prog-inline-reference { margin-block: 24px 30px; scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px); }
+  .dp-prog-inline-reference h3 { margin: 0 0 14px; color: var(--ink); font: 600 clamp(1.125rem, 2vw, 1.375rem)/1.25 var(--font-display); letter-spacing: -.02em; }
+  .dp-prog-related-list, .dp-sweet-list, .dp-prog-partners ul { list-style: none; padding: 0; margin: 0; }
+  .dp-prog-related-list { border-block: 1px solid var(--line); margin-block-end: 12px; }
+  .dp-prog-related-list li + li { border-block-start: 1px solid var(--line-soft); }
+  .dp-prog-related-list a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 14px; padding-block: 14px; min-block-size: 44px; color: var(--ink); text-decoration: none; }
+  .dp-prog-related-list .bank { grid-column: 1; color: var(--muted); font: 600 .75rem/1.4 var(--font-ui); }
+  .dp-prog-related-list .name { grid-column: 1; font: 600 1rem/1.35 var(--font-ui); }
+  .dp-prog-related-list .fee { grid-column: 2; grid-row: 1 / span 2; align-self: center; white-space: nowrap; color: var(--ink-soft); font: 500 .8125rem/1.4 var(--font-ui); font-variant-numeric: tabular-nums; }
+  .dp-prog-related-list a:hover .name { color: var(--green); text-decoration: underline; text-underline-offset: .18em; }
+  .dp-sweet-list { display: grid; gap: 0; }
+  .dp-sweet-list li { padding-block: 16px; border-block-start: 1px solid var(--line); }
+  .dp-sweet-list .title { margin: 0 0 6px; color: var(--ink); font: 600 1.0625rem/1.35 var(--font-ui); }
+  .dp-sweet-list .desc { margin: 0; color: var(--ink-soft); font: 400 1rem/1.6 var(--font-ui); }
+  .dp-prog-expiry { border-block: 1px solid var(--line); padding: 0; }
+  .dp-prog-expiry summary { min-block-size: 44px; padding-block: 12px; color: var(--green); font: 650 1rem/1.4 var(--font-ui); cursor: pointer; }
+  .dp-prog-expiry p { margin: 0 0 16px; max-inline-size: 64ch; font: 400 1rem/1.6 var(--font-ui); }
+  .dp-prog-partners ul { display: flex; gap: 4px 20px; flex-wrap: wrap; }
+  .dp-prog-partners :is(a, li > span) { display: inline-flex; min-block-size: 44px; align-items: center; color: var(--ink); font: 500 .9375rem/1.4 var(--font-ui); }
+  .dp-prog-inline-reference a { text-underline-offset: .18em; }
+  .dp-prog-inline-reference :is(a, summary):focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  @media (max-width: 440px) { .dp-prog-related-list a { grid-template-columns: minmax(0, 1fr); } .dp-prog-related-list .fee { grid-column: 1; grid-row: auto; } }
+</style>

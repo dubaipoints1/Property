@@ -1,0 +1,124 @@
+/* Reader flow builds on the approved Runway tokens. Only interior pages
+   link this file. Keep warnings and verification panels visibly distinct. */
+html[data-design="runway"] #main-content {
+  --dp-flow-gap: clamp(28px, 4vw, 52px);
+}
+html[data-design="runway"] body { background: var(--paper); }
+
+/* Reading is an open paper column, not another large tinted card. */
+html[data-design="runway"] #main-content :is(.dp-reading-shell .dp-reading-head, .dp-utility-head, .dp-pagehead) {
+  background: transparent;
+}
+html[data-design="runway"] #main-content :is(.dp-reading-shell .dp-reading-head, .dp-utility-head) {
+  border-block-end: 1px solid var(--line-soft);
+}
+html[data-design="runway"] #main-content :is(.dp-reading-shell .dp-reading-toc, .dp-toc-card) {
+  border-inline: 0;
+  border-radius: 0;
+  background: transparent;
+}
+html[data-design="runway"] #main-content .dp-reading-takeaways > div {
+  border: 0;
+  border-inline-start: 2px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  padding: 0 14px;
+}
+
+/* Discovery cards are previews; let their images and headings carry the
+   hierarchy, with compact separators instead of nested panel frames. */
+html[data-design="runway"] #main-content .intel-aside :is(.intel-trending, .deals-related) {
+  border: 0;
+  border-block-start: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  padding: 18px 0;
+}
+html[data-design="runway"] #main-content .intel-aside :is(.intel-trending, .deals-related) .dp-rail-heading {
+  margin-block-end: 12px;
+}
+html[data-design="runway"] #main-content .intel-card-grid .intel-card {
+  border-inline: 0;
+  border-block-start: 0;
+  border-radius: 0;
+  background: transparent;
+}
+html[data-design="runway"] #main-content .intel-card-grid .intel-card:hover {
+  background: var(--paper);
+}
+html[data-design="runway"] #main-content .dp-topics-tile {
+  border-inline: 0;
+  border-block-start: 0;
+  border-radius: 0;
+  background: transparent;
+}
+html[data-design="runway"] #main-content .deals-sort-note {
+  margin: -8px 0 0;
+  color: var(--ink-soft);
+  font: 400 .8125rem/1.5 var(--font-ui);
+}
+
+/* Bank/reference pages keep the useful facts but no longer place an empty
+   offer box ahead of a reader's requested card list. */
+html[data-design="runway"] #main-content .dp-bank-body > section {
+  margin-block-end: var(--dp-flow-gap);
+}
+html[data-design="runway"] #main-content .dp-bank-body > section h2 {
+  font-weight: 600;
+  border-color: var(--line-soft);
+}
+html[data-design="runway"] #main-content :is(.dp-bank-cs, .dp-trust-facts) {
+  border-radius: 0;
+  background: transparent;
+  border-block: 1px solid var(--line-soft);
+}
+html[data-design="runway"] #main-content .dp-bank-card-tile {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* A short tool header gives the first input/result the next visual beat. */
+html[data-design="runway"] #main-content .dp-pagehead:not(.dp-reading-head, .is-narrow) {
+  padding-block-start: clamp(22px, 3.5vw, 38px);
+  padding-block-end: clamp(18px, 2.5vw, 28px);
+}
+html[data-design="runway"] #main-content .dp-pagehead h1 {
+  max-inline-size: 26ch;
+  text-wrap: balance;
+}
+html[data-design="runway"] #main-content :is(.dp-tools-actions, .dp-tools-methodology, .dp-trust-meta) {
+  border-color: var(--line-soft);
+}
+
+/* Curated head-to-head pages keep their aligned data table and verdict,
+   but use the same visible heading hierarchy as the other reading pages. */
+html[data-design="runway"] #main-content .dp-matchup-reader > section > h2 {
+  margin-block: 0 18px;
+  font: 600 clamp(1.375rem, 2.8vw, 1.875rem)/1.2 var(--font-display);
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+html[data-design="runway"] #main-content .dp-matchup-reader .dp-matchup-verdict {
+  border-inline: 0;
+  border-radius: 0;
+  padding-inline: 0;
+  background: transparent;
+}
+html[data-design="runway"] #main-content .dp-matchup-reader > section {
+  margin-block-end: var(--dp-flow-gap);
+}
+
+@media (max-width: 767.98px) {
+  html[data-design="runway"] #main-content .intel-aside {
+    gap: 20px;
+  }
+  html[data-design="runway"] #main-content .dp-pagehead h1 { max-inline-size: 100%; }
+}
+@media (max-width: 679.98px) {
+  html[data-design="runway"] #main-content .dp-reading-takeaways { gap: 0; }
+  html[data-design="runway"] #main-content .dp-reading-takeaways > div {
+    border-inline: 0;
+    border-block-start: 1px solid var(--line-soft);
+    padding: 14px 0 4px;
+  }
+}

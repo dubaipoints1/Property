@@ -19,7 +19,8 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
 import { finderEvidence } from "~/lib/finderEvidence";
-import SpecCard from "~/components/cards/SpecCard.astro";
+import FinderCard from "~/components/cards/FinderCard.astro";
+import CardJourney from "~/components/cards/CardJourney.astro";
 import CardValueLines from "~/components/cards/CardValueLines.astro";
 import CardValueScenario from "~/components/cards/CardValueScenario.astro";
 
@@ -150,6 +151,8 @@ const lastRefreshed = new Date(
     {/* Stage 5.5 UX Fix #6: visual anchor above the fold. Matches the
         stats-strip pattern used on the compare page so the two tool
         pages read as one publication. */}
+    <details class="dp-finder-coverage">
+      <summary>{allCards.length} cards · coverage and methodology</summary>
     <div class="dp-tools-stats">
       <span>
         <span class="lbl">Cards covered</span>
@@ -164,7 +167,10 @@ const lastRefreshed = new Date(
         <strong><a href="/editorial-policy/">Read &rarr;</a></strong>
       </span>
     </div>
+    </details>
   </div>
+
+  <CardJourney />
 
   <section class="dp-finder">
     {/* Compact layouts can collapse the filters; a sidebar always shows
@@ -299,6 +305,9 @@ const lastRefreshed = new Date(
           <div class="dp-finder-actions"><button type="submit" class="dp-ui-action dp-ui-primary">Apply all filters</button></div>
         </details>
       </form>
+      <div class="dp-finder-value-context">
+        <CardValueScenario id="finder-card-value" compact />
+      </div>
     </details>
 
     <div class="dp-finder-results" id="finder-results">
@@ -307,10 +316,14 @@ const lastRefreshed = new Date(
         <p class="count" id="finder-count">
           Showing {defaultTopSlugs.length} of {defaultCandidates.length} cards that meet your filters
         </p>
+        <p class="count">Rate order, not approval or an AED-return ranking.</p>
+        <details class="dp-finder-ranking-details">
+          <summary>How these cards are ordered</summary>
         <p class="count" id="finder-mode">
           Ordered by published earn rate for general spending, then lower annual fee.
           Rates use different units. The order is not based on the AED examples and is not an approval decision.
         </p>
+        </details>
       </div>
 
       <div class="dp-finder-empty" id="finder-empty" hidden>
@@ -332,30 +345,26 @@ const lastRefreshed = new Date(
         >Compare top {defaultCompareSlugs.length} →</a>
         <button type="button" id="finder-share" class="dp-ui-action dp-ui-quiet" hidden>Copy results link</button>
         <span id="finder-share-status" role="status" aria-live="polite"></span>
-      </div>
-
-      <div class="dp-finder-value-context">
-        <CardValueScenario id="finder-card-value" compact />
+        <p class="dp-finder-share-notice">Shared links include salary and spending choices. Share only if you want to.</p>
       </div>
 
       <div class="dp-finder-grid" id="finder-grid">
-        {initialOrder.map(({ card, evidence }) => (
+        {initialOrder.map(({ card, bankName, evidence }) => (
           <div
             class="dp-finder-tile"
             data-slug={card.slug}
             hidden={!defaultRank.has(card.slug)}
           >
-            <SpecCard card={card} variant="full">
+            <FinderCard card={card} bankName={bankName}>
+              <div slot="match-summary" class="dp-finder-match-summary">
+                <p class="dp-finder-match-preference" data-finder-match hidden></p>
+                <p data-finder-ranking>General spending: {evidence.earnLabels.everythingElse ?? "rate needs confirmation"}.</p>
+              </div>
               <Fragment slot="match-explanation">
               <div class="dp-finder-match">
-                <p class="dp-finder-match-preference" data-finder-match hidden></p>
                 <details>
                   <summary>Why this card matched<span class="dp-finder-match-sr">: {card.name}</span></summary>
                   <dl>
-                    <div>
-                      <dt>Ranking</dt>
-                      <dd data-finder-ranking>General spending: {evidence.earnLabels.everythingElse ?? "rate needs confirmation"}.</dd>
-                    </div>
                     <div>
                       <dt>Filters</dt>
                       <dd data-finder-filters>No salary, network or fee filter applied.</dd>
@@ -374,7 +383,7 @@ const lastRefreshed = new Date(
               </div>
               <CardValueLines card={card} slug={card.slug} />
               </Fragment>
-            </SpecCard>
+            </FinderCard>
           </div>
         ))}
       </div>
@@ -675,6 +684,15 @@ const lastRefreshed = new Date(
 </script>
 
 <style>
+  .dp-finder-coverage { margin-block-start: 10px; }
+  .dp-finder-coverage > summary, .dp-finder-ranking-details > summary {
+    min-height: 44px; align-content: center; cursor: pointer; color: var(--green); font: 600 .8125rem/1.4 var(--font-ui);
+  }
+  .dp-finder-coverage > summary:focus-visible, .dp-finder-ranking-details > summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-finder-coverage[open] { padding-block-end: 8px; }
+  .dp-finder-coverage .dp-tools-stats { margin-block-start: 8px; }
+  .dp-finder-ranking-details { margin-block-start: 4px; }
+  .dp-finder-value-context { padding: 0 16px 16px; }
   .dp-finder-more > summary {
     cursor: pointer;
     min-height: 44px;
@@ -682,6 +700,9 @@ const lastRefreshed = new Date(
     font-weight: 600;
     padding-block: 10px;
   }
+  .dp-finder-match-summary { font: 500 .8125rem/1.45 var(--font-ui); color: var(--ink-soft); }
+  .dp-finder-match-summary p { margin: 0; }
+  .dp-finder-match-summary p + p { margin-block-start: 4px; }
   .dp-finder-more > :not(summary) { margin-block-start: 16px; }
   .dp-finder-fs select {
     width: 100%;
@@ -702,6 +723,7 @@ const lastRefreshed = new Date(
   .dp-finder-next [hidden] { display: none; }
   #finder-share-status:empty { position: absolute; }
   #finder-share-status { font-size: 13px; color: var(--green); font-weight: 600; }
+  .dp-finder-share-notice { flex-basis: 100%; margin: 2px 0 0; color: var(--ink-soft); font: 400 .8125rem/1.45 var(--font-ui); }
 
   .dp-finder {
     max-width: var(--container-listing);

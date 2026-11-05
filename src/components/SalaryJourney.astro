@@ -1,0 +1,34 @@
+<nav class="dp-salary-journey" aria-label="Your salary-transfer journey" data-salary-journey hidden>
+  <p data-salary-journey-label></p>
+  <p>Your choices are included in this page’s link. Share it only if you want to share them.</p>
+  <a href="/salary-transfer/" data-salary-journey-back>← Back to your offer shortlist</a>
+  <a href="/salary-transfer/calculator/">Calculate your reward →</a>
+</nav>
+<script>
+  import { hasSalaryJourney, salaryJourneyHref, salaryJourneyReturnHref, salaryJourneyState } from "~/lib/readerJourneyState";
+  import { TRACKER_SALARY_BANDS } from "~/lib/salaryTransferTrackerBands";
+  const update = () => {
+    const state = salaryJourneyState(new URLSearchParams(location.search));
+    for (const link of document.querySelectorAll<HTMLAnchorElement>("main a[href^='/salary-transfer/']")) {
+      const href = link.getAttribute("href");
+      if (href) link.setAttribute("href", salaryJourneyHref(href.split("?")[0], { ...state, offer: link.dataset.salaryOffer ?? state.offer }));
+    }
+    const nav = document.querySelector<HTMLElement>("[data-salary-journey]");
+    const back = nav?.querySelector<HTMLAnchorElement>("[data-salary-journey-back]");
+    const label = nav?.querySelector<HTMLElement>("[data-salary-journey-label]");
+    if (!nav || !back || !label) return;
+    const band = TRACKER_SALARY_BANDS.find(b => b.slug === state.band);
+    label.textContent = [band?.label, state.salary !== undefined ? `Exact salary entered: AED ${state.salary.toLocaleString("en-GB")}` : "", state.cash ? "Cash only" : "", state.noCard ? "No credit card" : "", state.sharia ? "Sharia-compliant" : ""].filter(Boolean).join(" · ");
+    back.href = salaryJourneyReturnHref(state);
+    nav.hidden = !hasSalaryJourney(new URLSearchParams(location.search));
+  };
+  update();
+  addEventListener("dp:salary-profile", update);
+</script>
+<style>
+  .dp-salary-journey { display: flex; flex-wrap: wrap; gap: 8px 24px; padding-block: 14px; margin-block-end: 18px; border-block-end: 1px solid var(--line-soft); font: 500 .8125rem/1.5 var(--font-ui); color: var(--ink-soft); }
+  .dp-salary-journey[hidden] { display: none; }
+  .dp-salary-journey p { flex-basis: 100%; margin: 0; }
+  .dp-salary-journey p:empty { display: none; }
+  .dp-salary-journey a { color: var(--green); font-weight: 650; }
+</style>

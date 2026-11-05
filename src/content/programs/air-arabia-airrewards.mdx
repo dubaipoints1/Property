@@ -17,17 +17,8 @@ sweetSpots:
 expiryPolicy: "AirRewards points expire 24 months from the date they are earned, whatever else happens on the account; each transaction's earning date is shown in the My Activity Statement. Closing the account cancels its points. Points have no cash value. Verified against Air Arabia's AirRewards Terms and Conditions (airarabia.com/en/airrewards/air-rewards-terms-and-conditions), 20 October 2026."
 ---
 
-import JumpToSection from "~/components/cards/JumpToSection.astro";
+import ProgrammeReference from "~/components/ProgrammeReference.astro";
 
-<JumpToSection sections={[
-  { id: "how-airrewards-works", label: "How it works" },
-  { id: "family-account", label: "Family account" },
-  { id: "what-a-point-is-worth", label: "Point value" },
-  { id: "who-airrewards-suits", label: "Who it suits" },
-  { id: "how-to-earn-from-the-uae", label: "How to earn" },
-  { id: "what-to-watch", label: "What to watch" },
-  { id: "related", label: "Related" },
-]} />
 
 AirRewards is the loyalty programme of Air Arabia, the low-cost carrier
 based in Sharjah. Its registration page lists joining routes for
@@ -76,46 +67,6 @@ and fees are always paid in cash. The minimum balance to redeem against
 a flight and baggage reward is **3,000 points**, and **Cash + Points**
 lets you combine the two.
 
-## Family account
-
-Up to **eight family members** can pool into a Head of Household's
-account. The head must be at least 21. Eligible relatives are siblings,
-parents, grandparents, spouses and children. A family member cannot be
-swapped out for 12 months once listed.
-
-There is a catch, and it is in the terms rather than on the programme
-page: **50% of the points a family member earns go to the Head of
-Household, and the other 50% are forfeited.** The head controls all
-redemptions. For a family that flies Air Arabia together, each person
-earning in their own account and redeeming their own points keeps every
-point, at the cost of smaller balances.
-
-## What a point is worth
-
-Air Arabia publishes the value itself: **100 points = USD 1**, "the same
-value anytime of the year". At the dirham's peg of AED 3.6725 to the
-dollar, that is about **3.67 fils per point**. This is our arithmetic on
-Air Arabia's own figure, not a DubaiPoints valuation, and it applies
-only to the part of a booking points can pay for: the base fare and
-surcharge, and add-ons. Our [valuations table](/valuations/) lists
-AirRewards as "Pending" with no house figure.
-
-On the same stated value, the earn rates above come to 5% back on the
-fare and 10% back on meals, seats, insurance and Hala services.
-
-## Who AirRewards suits
-
-AirRewards suits the UAE resident who already flies Air Arabia out of
-Sharjah or Abu Dhabi: short-haul family trips, visits home to the
-subcontinent, Egypt or Morocco. Because points are worth a fixed amount
-off the fare, there is no award chart to learn and no saver seat to hunt
-for.
-
-It suits you less if you want a programme that rewards loyalty with
-status, lounges or upgrades. There are no tiers. It also suits a
-travelling family less than the "Family account" heading suggests,
-because pooling forfeits half of every family member's points.
-
 ## How to earn from the UAE
 
 - **Flying Air Arabia.** 5 points per USD 1 on the fare and baggage,
@@ -142,7 +93,42 @@ because pooling forfeits half of every family member's points.
 - **Other UAE credit cards:** none. No card in our data earns AirRewards
   points or transfers into them.
 
+<ProgrammeReference programme="air-arabia-airrewards" kind="cards" />
+
+<ProgrammeReference programme="air-arabia-airrewards" kind="partners" />
+
+## What a point is worth
+
+Air Arabia publishes the value itself: **100 points = USD 1**, "the same
+value anytime of the year". At the dirham's peg of AED 3.6725 to the
+dollar, that is about **3.67 fils per point**. This is our arithmetic on
+Air Arabia's own figure, not a DubaiPoints valuation, and it applies
+only to the part of a booking points can pay for: the base fare and
+surcharge, and add-ons. Our [valuations table](/valuations/) lists
+AirRewards as "Pending" with no house figure.
+
+On the same stated value, the earn rates above come to 5% back on the
+fare and 10% back on meals, seats, insurance and Hala services.
+
+<ProgrammeReference programme="air-arabia-airrewards" kind="redemptions" />
+
+## Family account
+
+Up to **eight family members** can pool into a Head of Household's
+account. The head must be at least 21. Eligible relatives are siblings,
+parents, grandparents, spouses and children. A family member cannot be
+swapped out for 12 months once listed.
+
+There is a catch, and it is in the terms rather than on the programme
+page: **50% of the points a family member earns go to the Head of
+Household, and the other 50% are forfeited.** The head controls all
+redemptions. For a family that flies Air Arabia together, each person
+earning in their own account and redeeming their own points keeps every
+point, at the cost of smaller balances.
+
 ## What to watch
+
+<ProgrammeReference programme="air-arabia-airrewards" kind="expiry" />
 
 - **Points expire 24 months after you earn them.** This is a hard
   expiry per transaction, not an inactivity rule: flying again does not
@@ -154,6 +140,19 @@ because pooling forfeits half of every family member's points.
 - **No conversion rate published.** The Etihad Guest conversion is real
   per Air Arabia, but check the rate in your account before you move
   points.
+
+## Who AirRewards suits
+
+AirRewards suits the UAE resident who already flies Air Arabia out of
+Sharjah or Abu Dhabi: short-haul family trips, visits home to the
+subcontinent, Egypt or Morocco. Because points are worth a fixed amount
+off the fare, there is no award chart to learn and no saver seat to hunt
+for.
+
+It suits you less if you want a programme that rewards loyalty with
+status, lounges or upgrades. There are no tiers. It also suits a
+travelling family less than the "Family account" heading suggests,
+because pooling forfeits half of every family member's points.
 
 ## Related
 

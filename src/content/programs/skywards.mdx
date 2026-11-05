@@ -18,7 +18,7 @@ sweetSpots:
 expiryPolicy: "Under Emirates’ Programme Rules, Skywards Miles are valid for three years from the flight or partner transaction, then expire at the end of the next birthday month. Activity does not reset the clock. Miles do not expire while Platinum status is held. A change has been reported for miles earned from 1 June 2027; check Emirates’ rules and the expiry shown in your account."
 ---
 
-import JumpToSection from "~/components/cards/JumpToSection.astro";
+import ProgrammeReference from "~/components/ProgrammeReference.astro";
 import ReadingTakeaways from "~/components/ReadingTakeaways.astro";
 import ProgrammeDecisionTools from "~/components/ProgrammeDecisionTools.astro";
 
@@ -30,17 +30,6 @@ import ProgrammeDecisionTools from "~/components/ProgrammeDecisionTools.astro";
   { title: "Check expiry", text: "New earning does not reset the expiry clock. Rules differ by earning date and status.", href: "#mile-expiry-mechanics", linkLabel: "Read the expiry rules" },
 ]} />
 
-<JumpToSection sections={[
-  { id: "how-to-earn-skywards-miles", label: "How to earn" },
-  { id: "what-a-skywards-mile-is-worth", label: "What a mile is worth" },
-  { id: "best-sweet-spot-redemptions", label: "Sweet spots" },
-  { id: "tier-structure-blue--silver--gold--platinum", label: "Tier structure" },
-  { id: "transfer-partners", label: "Transfer partners" },
-  { id: "mile-expiry-mechanics", label: "Expiry mechanics" },
-  { id: "watch-out-for", label: "Watch out for" },
-  { id: "is-skywards-worth-chasing", label: "Is it worth chasing?" },
-  { id: "bottom-line", label: "Bottom line" },
-]} />
 
 ## How to earn Skywards Miles
 
@@ -66,6 +55,8 @@ Check each card’s current welcome offer and price an eligible upgrade before c
 
 Marriott Bonvoy and Accor ALL can top up a Skywards balance. Check the [transfer ratios](#transfer-partners) and confirm the award is available before moving points.
 
+<ProgrammeReference programme="skywards" kind="cards" />
+
 ## What a Skywards Mile is worth
 
 **For comparing cards:** DubaiPoints uses a **2 fils (AED 0.02) per mile** editorial baseline. It is not a live redemption quote.
@@ -84,8 +75,9 @@ Marriott Bonvoy and Accor ALL can top up a Skywards balance. Check the [transfer
 
 ## Best sweet-spot redemptions
 
-The four documented sweet spots are listed in the Programme reference block
-below the prose. Two of them are worth additional context:
+<ProgrammeReference programme="skywards" kind="redemptions" />
+
+Two of these examples are worth additional context:
 
 ### Economy-to-business-class regional upgrade — the canonical break-even
 
@@ -116,6 +108,8 @@ Emirates says Tier Miles are earned mainly on Emirates, flydubai and eligible Em
 
 ## Transfer partners
 
+<ProgrammeReference programme="skywards" kind="partners" />
+
 Two [hotel transfer routes published by Emirates](https://www.emirates.com/au/english/skywards/partners/?partner=hotels):
 
 - **Marriott Bonvoy → Skywards:** published base ratio of 3:1. Compare the flight you can actually book with using your points for a Marriott stay.
@@ -124,6 +118,8 @@ Two [hotel transfer routes published by Emirates](https://www.emirates.com/au/en
 For UAE bank programmes, check the [transfer ratios guide](/guides/uae-transfer-ratios-2026/) and the issuer’s current terms before moving points.
 
 ## Mile expiry mechanics
+
+<ProgrammeReference programme="skywards" kind="expiry" />
 
 Per clause 9 of Emirates' published
 [Programme Rules](https://www.emirates.com/english/skywards/emirates-skywards-programme-rules/),

@@ -45,6 +45,7 @@ const toc = headings
   updatedAt={guide.data.updatedAt}
   toc={toc}
   cards={guideCards}
+  readerContext={{ section: "guides", id: guide.id, cards: guide.data.relatedCards.map((ref) => ref.id), programmes: guide.data.relatedPrograms.map((ref) => ref.id) }}
   showHero
   heroSlug={`guide-${guide.id}`}
 >

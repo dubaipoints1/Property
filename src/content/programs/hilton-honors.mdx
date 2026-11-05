@@ -17,16 +17,8 @@ sweetSpots:
 expiryPolicy: "Hilton Honors Points expire after 24 consecutive months of account inactivity; any earn or redemption activity resets the clock on the full balance. Verified against Hilton's published Help Center policy (hilton.com/en/help-center/hilton-honors-points/), 12 June 2026."
 ---
 
-import JumpToSection from "~/components/cards/JumpToSection.astro";
+import ProgrammeReference from "~/components/ProgrammeReference.astro";
 
-<JumpToSection sections={[
-  { id: "tier-structure", label: "Tier structure" },
-  { id: "what-a-hilton-honors-point-is-worth", label: "Point value" },
-  { id: "who-hilton-honors-suits", label: "Who it suits" },
-  { id: "how-to-earn-from-the-uae", label: "How to earn" },
-  { id: "what-to-watch", label: "What to watch" },
-  { id: "related", label: "Related" },
-]} />
 
 Hilton Honors is the loyalty programme covering Hilton's brand family —
 Waldorf Astoria, Conrad, LXR, Hilton, Curio Collection, DoubleTree,
@@ -43,6 +35,54 @@ rate and fifth-night-free eligibility on this page were read from
 Hilton's [member-benefits page](https://www.hilton.com/en/hilton-honors/member-benefits/)
 on 9 October 2026, and the expiry rule from Hilton's Help Center on
 12 June 2026. Award prices are dynamic and deliberately not quoted.
+
+## How to earn from the UAE
+
+There is currently no UAE-issued Hilton Honors co-brand credit card,
+which shapes everything below — Honors is earned on the ground, not
+on a card.
+
+- **Paid Hilton stays** at the programme's base earn rate of 10
+  points per USD 1 of eligible spend at most brands — 5 at Home2
+  Suites, Homewood Suites, Spark, Tru, Apartment Collection and YOTEL,
+  and 3 at LivSmart Studios — with the tier bonuses above on top.
+  Hilton notes that rates may vary by region.
+- **Promotions.** Hilton runs broad registration-based promotions
+  (double-points or points-per-stay offers) several times a year.
+  They are usually worth registering for and rarely worth changing
+  plans for.
+- **Points purchases** during Hilton's frequent bonus-sale windows.
+  Run the all-in cost against the 1.5-fils baseline and against the
+  specific redemption you have priced — at this programme's
+  valuation, speculative purchases are even harder to justify than
+  at Bonvoy.
+- **Transfers in from UAE bank programmes:** none published that we
+  track. The traffic runs the other way — Honors → Etihad Guest at
+  10:1, covered above and best avoided.
+
+<ProgrammeReference programme="hilton-honors" kind="cards" />
+
+<ProgrammeReference programme="hilton-honors" kind="partners" />
+
+## What a Hilton Honors point is worth
+
+Our card reviews value Hilton Honors at a baseline of **1.5 fils per
+point** (AED 15 per 1,000 points) — the lowest baseline of any
+programme we publish, and deliberately so. Hilton awards price
+dynamically with no published chart, point prices at the Dubai
+luxury tier run well into six figures per night, and the currency
+has a long record of quiet inflation. Where a review shows "Value to
+me: AED X" on a Hilton earn or bonus, 1.5 fils is the rate behind
+the arithmetic.
+
+The corollary: a Hilton point is for spending at Hilton hotels. The
+one published airline exit relevant to UAE residents — Etihad Guest
+at 10:1 — converts 1.5 fils of hotel value into roughly 0.2 fils of
+airline value per point spent at our baselines. The
+[transfer-ratios guide](/guides/uae-transfer-ratios-2026/) files
+that route under "don't".
+
+<ProgrammeReference programme="hilton-honors" kind="redemptions" />
 
 ## Tier structure
 
@@ -77,23 +117,21 @@ What the tiers structurally deliver:
   lounges. The USD 18,000 spend floor puts it beyond almost every
   leisure traveller; it is a road-warrior tier.
 
-## What a Hilton Honors point is worth
+## What to watch
 
-Our card reviews value Hilton Honors at a baseline of **1.5 fils per
-point** (AED 15 per 1,000 points) — the lowest baseline of any
-programme we publish, and deliberately so. Hilton awards price
-dynamically with no published chart, point prices at the Dubai
-luxury tier run well into six figures per night, and the currency
-has a long record of quiet inflation. Where a review shows "Value to
-me: AED X" on a Hilton earn or bonus, 1.5 fils is the rate behind
-the arithmetic.
+<ProgrammeReference programme="hilton-honors" kind="expiry" />
 
-The corollary: a Hilton point is for spending at Hilton hotels. The
-one published airline exit relevant to UAE residents — Etihad Guest
-at 10:1 — converts 1.5 fils of hotel value into roughly 0.2 fils of
-airline value per point spent at our baselines. The
-[transfer-ratios guide](/guides/uae-transfer-ratios-2026/) files
-that route under "don't".
+- **No award chart, no anchor.** Hilton moved to fully dynamic award
+  pricing years ago and publishes no chart. The only defence is the
+  cash-versus-points check on the app for your exact dates; a
+  redemption clearing 1.5 fils per point is acceptable, and the
+  Dubai luxury tier in summer is where you will most often beat it.
+- **Point-price inflation.** The same Dubai room has drifted upward
+  in points faster than in dirhams across recent years. Earn against
+  a near-term redemption, not as a long-term store of value.
+- **The new top tier.** Diamond Reserve arrived with Hilton's latest tier
+  update. For a UAE reader the practical effect is nil unless you
+  already stay 80 nights a year; Diamond remains the realistic ceiling.
 
 ## Who Hilton Honors suits
 
@@ -111,44 +149,6 @@ feeder currency of choice; Hilton's 10:1 route is value-destructive.
 If your points strategy ends in a premium-cabin seat, earn
 [Bonvoy](/hotels/marriott-bonvoy/) or earn the airline currency
 directly.
-
-## How to earn from the UAE
-
-There is currently no UAE-issued Hilton Honors co-brand credit card,
-which shapes everything below — Honors is earned on the ground, not
-on a card.
-
-- **Paid Hilton stays** at the programme's base earn rate of 10
-  points per USD 1 of eligible spend at most brands — 5 at Home2
-  Suites, Homewood Suites, Spark, Tru, Apartment Collection and YOTEL,
-  and 3 at LivSmart Studios — with the tier bonuses above on top.
-  Hilton notes that rates may vary by region.
-- **Promotions.** Hilton runs broad registration-based promotions
-  (double-points or points-per-stay offers) several times a year.
-  They are usually worth registering for and rarely worth changing
-  plans for.
-- **Points purchases** during Hilton's frequent bonus-sale windows.
-  Run the all-in cost against the 1.5-fils baseline and against the
-  specific redemption you have priced — at this programme's
-  valuation, speculative purchases are even harder to justify than
-  at Bonvoy.
-- **Transfers in from UAE bank programmes:** none published that we
-  track. The traffic runs the other way — Honors → Etihad Guest at
-  10:1, covered above and best avoided.
-
-## What to watch
-
-- **No award chart, no anchor.** Hilton moved to fully dynamic award
-  pricing years ago and publishes no chart. The only defence is the
-  cash-versus-points check on the app for your exact dates; a
-  redemption clearing 1.5 fils per point is acceptable, and the
-  Dubai luxury tier in summer is where you will most often beat it.
-- **Point-price inflation.** The same Dubai room has drifted upward
-  in points faster than in dirhams across recent years. Earn against
-  a near-term redemption, not as a long-term store of value.
-- **The new top tier.** Diamond Reserve arrived with Hilton's latest tier
-  update. For a UAE reader the practical effect is nil unless you
-  already stay 80 nights a year; Diamond remains the realistic ceiling.
 
 ## Related
 

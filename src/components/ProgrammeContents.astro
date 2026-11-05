@@ -1,0 +1,49 @@
+---
+interface Props { sections: { id: string; label: string }[]; }
+const { sections } = Astro.props;
+---
+
+<nav class="dp-jump-to-section dp-programme-contents" aria-label="Jump to section">
+  <details data-programme-contents>
+    <summary><span>Jump to section</span><span aria-hidden="true">▾</span></summary>
+    <ol>{sections.map(section => <li><a href={`#${section.id}`}>{section.label}</a></li>)}</ol>
+  </details>
+</nav>
+
+<script>
+  const desktop = window.matchMedia('(min-width: 1024px)');
+  for (const contents of document.querySelectorAll<HTMLDetailsElement>('[data-programme-contents]')) {
+    const sync = () => {
+      // Do not hide the currently focused link when the viewport becomes narrow.
+      if (!desktop.matches && contents.contains(document.activeElement)) contents.querySelector('summary')?.focus();
+      contents.open = desktop.matches;
+    };
+    sync();
+    desktop.addEventListener('change', sync);
+  }
+</script>
+
+<style>
+  .dp-programme-contents { min-inline-size: 0; margin: 0; padding-block: 0 16px; border-block: 1px solid var(--line); background: transparent; }
+  summary { min-block-size: 44px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 14px; color: var(--green); font: 650 .875rem/1.35 var(--font-ui); cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary span:last-child { transition: transform .12s ease; }
+  details[open] summary span:last-child { transform: rotate(180deg); }
+  ol { list-style: none; display: grid; margin: 0; padding: 0; }
+  li { margin: 0; border-block-start: 1px solid var(--line-soft); }
+  a { display: flex; align-items: center; min-block-size: 44px; padding-block: 9px; color: var(--ink-soft); font: 500 .8125rem/1.4 var(--font-ui); text-decoration: none; text-underline-offset: .18em; }
+  a:hover { color: var(--green); text-decoration: underline; }
+  :is(summary, a):focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  @media (min-width: 1024px) {
+    .dp-programme-contents {
+      max-block-size: calc(100vh - var(--dp-sticky-header-height, 81px) - 40px);
+      max-block-size: calc(100dvh - var(--dp-sticky-header-height, 81px) - 40px);
+      overflow-y: auto;
+      padding: 6px 8px 8px 6px;
+      scrollbar-gutter: stable;
+      scroll-padding-block: 12px;
+    }
+  }
+  @media (max-width: 1023.98px) { .dp-programme-contents { padding-block-end: 0; } details[open] { padding-block-end: 12px; } }
+  @media (prefers-reduced-motion: reduce) { summary span:last-child { transition: none; } }
+</style>

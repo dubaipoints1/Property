@@ -1,5 +1,6 @@
 import { Fragment } from "preact";
-import { useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
+import { salaryJourneyHref, salaryJourneyParams, salaryJourneyState, type SalaryJourneyState } from "../../lib/readerJourneyState";
 import {
   type SalaryBand,
   type SalaryTransferOffer,
@@ -126,7 +127,7 @@ function RewardValue({ reward, note }: { reward: SalaryBand; note?: string }) {
   );
 }
 
-function BankIdentity({ offer }: { offer: SalaryTransferOffer }) {
+function BankIdentity({ offer, journey }: { offer: SalaryTransferOffer; journey: SalaryJourneyState }) {
   // Salary offers identify banks and may have multiple product paths. A
   // logo never suggests that a particular credit card is part of an offer.
   const mark = bankMark(offer.bankSlug);
@@ -138,7 +139,7 @@ function BankIdentity({ offer }: { offer: SalaryTransferOffer }) {
       </span>
       <span class="dpst-bank-copy">
         <a
-          href={`/salary-transfer/${offer.bankSlug}/`}
+          href={salaryJourneyHref(`/salary-transfer/${offer.bankSlug}/`, { ...journey, offer: offer.id })}
           class="dpst-bank-name"
           onClick={(event) => event.stopPropagation()}
         >
@@ -159,7 +160,32 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
   const [sharia, setSharia] = useState(false);
   const [sort, setSort] = useState<SortKey>("value");
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
+  const [restored, setRestored] = useState(false);
+  const [exactSalary, setExactSalary] = useState<number | undefined>(undefined);
+  const [calculatorChoices, setCalculatorChoices] = useState<Pick<SalaryJourneyState, "products" | "stay">>({});
   const activeBand = scope ?? (band === null ? null : BANDS[band]);
+  const journey: SalaryJourneyState = {
+    band: activeBand?.slug, cash, noCard, sharia, sort,
+    offer: [...open][0], returnBand: scope?.slug, salary: exactSalary,
+    products: calculatorChoices.products?.filter(product => !noCard || product !== "credit_card"), stay: calculatorChoices.stay,
+  };
+  useEffect(() => {
+    const state = salaryJourneyState(new URLSearchParams(location.search));
+    const index = BANDS.findIndex(item => item.slug === state.band);
+    if (!scope && index >= 0) setBand(index);
+    setCash(state.cash); setNoCard(state.noCard); setSharia(state.sharia); setSort(state.sort);
+    setExactSalary(state.salary);
+    setCalculatorChoices({ products: state.products, stay: state.stay });
+    if (state.offer && offers.some(offer => offer.id === state.offer)) setOpen(new Set([state.offer]));
+    setRestored(true);
+  }, []);
+  useEffect(() => {
+    if (!restored) return;
+    const url = new URL(location.href);
+    for (const key of ["st_band", "st_cash", "st_no_card", "st_sharia", "st_sort", "st_offer", "st_return", "st_salary", "st_products", "st_stay"]) url.searchParams.delete(key);
+    for (const [key, value] of salaryJourneyParams(journey)) url.searchParams.set(key, value);
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+  }, [restored, band, cash, noCard, sharia, sort, open, exactSalary, scope, calculatorChoices]);
 
   const activeFilterCount = [cash, noCard, sharia].filter(Boolean).length;
   const filterCountLabel = activeFilterCount ? `${activeFilterCount} filter${activeFilterCount > 1 ? "s" : ""}` : "";
@@ -330,7 +356,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
               class="dpst-band"
               title={b.label}
               aria-pressed={band === i}
-              onClick={() => setBand(band === i ? null : i)}
+              onClick={() => { setBand(band === i ? null : i); setExactSalary(undefined); }}
             >
               {b.shortLabel}
             </button>
@@ -432,6 +458,10 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
       <p class="dpst-salary-note">
         Rewards shown are the highest within the selected range. Check the salary beside each reward; lower salaries may qualify for a different amount.
       </p>
+      <p class="dpst-salary-note">
+        <a href={salaryJourneyHref("/salary-transfer/calculator/", journey)}>Calculate with these filters →</a>{" "}
+        Your page link keeps these choices. Enter your exact salary in the calculator; a band is not an exact salary.
+      </p>
 
       {offers.length === 0 ? (
         <div class="dpst-empty">
@@ -508,7 +538,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                         onClick={() => toggleOpen(o.id)}
                       >
                         <td class="col-bank">
-                          <BankIdentity offer={o} />
+                          <BankIdentity offer={o} journey={journey} />
                         </td>
                         <td>
                           <span class={`dpst-badge ${badgeClass(reward.rewardType)}`}>
@@ -565,7 +595,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                   class={`dpst-card${isOpen ? " is-open" : ""}`}
                 >
                   <div class="dpst-card-head">
-                    <BankIdentity offer={o} />
+                    <BankIdentity offer={o} journey={journey} />
                     <div class="dpst-card-val">
                       <RewardValue reward={reward} note={rewardNote} />
                     </div>

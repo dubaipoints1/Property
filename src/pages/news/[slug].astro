@@ -31,6 +31,7 @@ const formatCategory = (c: string) =>
   updatedAt={post.data.updatedAt}
   toc={toc}
   sources={post.data.sources}
+  readerContext={{ section: "news", id: post.id, category: post.data.category, cards: post.data.relatedCards.map((ref) => ref.id), programmes: post.data.relatedPrograms.map((ref) => ref.id), banks: post.data.relatedBanks.map((ref) => ref.id) }}
   showHero={!post.data.textLed}
   systemTypography={post.data.textLed}
   heroSlug={`news-${post.id}`}

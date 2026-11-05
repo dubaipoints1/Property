@@ -25,6 +25,7 @@ import { cardMatchups, matchupSlug } from "~/data/cardMatchups";
 import CompareCardArt from "~/components/cards/CompareCardArt.astro";
 import CardValueLines from "~/components/cards/CardValueLines.astro";
 import CardValueScenario from "~/components/cards/CardValueScenario.astro";
+import CardJourney from "~/components/cards/CardJourney.astro";
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EligibilityChips from "~/components/cards/EligibilityChips.astro";
@@ -133,6 +134,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       </span>
     </div>
   </div>
+
+  <CardJourney />
 
   <!-- ── Picker ───────────────────────────────────────────────────── -->
   <section class="dp-compare-picker">

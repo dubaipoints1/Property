@@ -19,21 +19,9 @@ sweetSpots:
 expiryPolicy: "Etihad Guest Miles expire 18 months after the most recent qualifying activity (earn OR redeem). Any qualifying activity — including a single co-brand card spend transaction or a Marriott Bonvoy transfer in — resets the 18-month clock. This is materially more forgiving than Skywards, where Miles carry a fixed three-year validity from the earning date that no activity resets, and only Platinum suspends expiry."
 ---
 
-import JumpToSection from "~/components/cards/JumpToSection.astro";
+import ProgrammeReference from "~/components/ProgrammeReference.astro";
 import ProgrammeDecisionTools from "~/components/ProgrammeDecisionTools.astro";
 
-<JumpToSection sections={[
-  { id: "etihad-guest-in-60-seconds", label: "In 60 seconds" },
-  { id: "how-to-earn-etihad-guest-miles", label: "How to earn" },
-  { id: "what-an-etihad-guest-mile-is-worth", label: "What a mile is worth" },
-  { id: "best-sweet-spot-redemptions", label: "Sweet spots" },
-  { id: "tier-structure-silver--gold--platinum--emerald", label: "Tier structure" },
-  { id: "transfer-partners", label: "Transfer partners" },
-  { id: "mile-expiry-mechanics--the-skywards-differentiator", label: "Expiry mechanics" },
-  { id: "watch-out-for", label: "Watch out for" },
-  { id: "is-etihad-guest-worth-chasing", label: "Is it worth chasing?" },
-  { id: "bottom-line", label: "Bottom line" },
-]} />
 
 Etihad Guest is the loyalty programme of Etihad Airways, headquartered in
 Abu Dhabi. For UAE residents in Abu Dhabi, Al Ain, or the northern emirates
@@ -128,6 +116,8 @@ Bonvoy and Hilton Honors were not on the participating list (offer page
 read 9 October 2026). Transfers made now earn no bonus unless Etihad
 publishes a new campaign.
 
+<ProgrammeReference programme="etihad-guest" kind="cards" />
+
 ## What an Etihad Guest Mile is worth
 
 For a particular flight, use the calculator below with your own quotes. See how that works on the
@@ -173,8 +163,9 @@ expiry mechanics and the network coverage.
 
 ## Best sweet-spot redemptions
 
-The four documented sweet spots are listed in the Programme reference block
-below. Three of them are worth additional context:
+<ProgrammeReference programme="etihad-guest" kind="redemptions" />
+
+Three of these examples are worth additional context:
 
 ### AUH → JFK in Business — the flagship redemption
 
@@ -254,6 +245,8 @@ fly Etihad metal.
 
 ## Transfer partners
 
+<ProgrammeReference programme="etihad-guest" kind="partners" />
+
 Three hotel-programme inbound routes plus the UAE bank programmes (all covered above). Etihad's strongest inbound partner
 is Marriott Bonvoy — the 60,000:25,000 ratio (3:1 + 5k bonus) is one of
 the better Bonvoy → airline rates globally and the route most UAE Bonvoy
@@ -266,6 +259,8 @@ your earning against your intended Etihad redemption; don't bank Etihad
 Guest Miles as a transferable points-bank.
 
 ## Mile expiry mechanics — the Skywards differentiator
+
+<ProgrammeReference programme="etihad-guest" kind="expiry" />
 
 This is where Etihad Guest pulls clear of Skywards for occasional flyers:
 

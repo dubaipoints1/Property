@@ -135,6 +135,11 @@ const schema = {
   </UtilityPageHead>
 
   <article class="dp-bank-body">
+    <section id="bank-cards">
+      <h2>Cards from {bankName}</h2>
+      <slot name="cards" />
+    </section>
+
     <section class="dp-bank-callout" id="bank-salary-transfer">
       <h2 class="label">Current salary transfer offer</h2>
       <slot name="salary-transfer" />
@@ -145,10 +150,9 @@ const schema = {
       <slot name="currencies" />
     </section>
 
-    <section id="bank-cards">
-      <h2>Cards from {bankName}</h2>
-      <slot name="cards" />
-    </section>
+    <div class="dp-prose dp-bank-prose">
+      <slot />
+    </div>
 
     <section>
       <h2>Related reading</h2>
@@ -168,9 +172,6 @@ const schema = {
       </section>
     )}
 
-    <div class="dp-prose dp-bank-prose">
-      <slot />
-    </div>
   </article>
 </BaseLayout>
 
