@@ -197,8 +197,16 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     <CardValueScenario id="compare-card-value" compact />
   </div>
 
+  <p class="dp-compare-overflow-hint">Scroll across to see more cards.</p>
+
   {(
-    <section class="dp-compare-grid" id="dp-compare-grid" aria-label="Card comparison">
+    <section
+      class="dp-compare-grid"
+      id="dp-compare-grid"
+      aria-label="Card comparison"
+      tabindex="0"
+      data-visible-count={defaultSlugs.length}
+    >
       {initialColumns.map(({ card, bankName }) => {
         const wbDisplay = card.welcomeBonus
           ? welcomeBonusDisplay(card.welcomeBonus)
@@ -225,27 +233,29 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
               <CompareCardArt slug={card.slug} deferred />
             </header>
 
-            <div class="dp-compare-col-section">
+            <div class="dp-compare-col-section dp-compare-eligibility">
+              <div class="dp-compare-row-label">Eligibility</div>
+              <EligibilityChips eligibility={card.eligibility} />
+            </div>
+
+            <div class="dp-compare-col-section dp-compare-fee">
               <FeeBlock card={card.slug} />
             </div>
 
-            <CardValueLines card={card} slug={card.slug} />
-
-            <div class="dp-compare-col-section">
+            <div class="dp-compare-col-section dp-compare-top">
               <div class="dp-compare-row-label">Top category</div>
               <p class="line">{earnLine(card)}</p>
             </div>
 
-            <div class="dp-compare-col-section">
-              <div class="dp-compare-row-label">Earn rates</div>
-              <EarnRateTable
-                earnRates={card.earnRates}
-                earnUnit={card.earnUnit}
-              />
-            </div>
+            <details class="dp-compare-reward-rates">
+              <summary>Earn rates<span class="sr-only"> for {card.name}</span></summary>
+              <EarnRateTable earnRates={card.earnRates} earnUnit={card.earnUnit} />
+            </details>
+
+            <CardValueLines card={card} slug={card.slug} />
 
             {showWelcome && card.welcomeBonus && (
-              <div class="dp-compare-col-section">
+              <div class="dp-compare-col-section dp-compare-welcome">
                 <div class="dp-compare-row-label">Welcome offer</div>
                 <WelcomeBonusCallout
                   welcomeBonus={card.welcomeBonus}
@@ -254,12 +264,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
               </div>
             )}
 
-            <div class="dp-compare-col-section">
-              <div class="dp-compare-row-label">Eligibility</div>
-              <EligibilityChips eligibility={card.eligibility} />
-            </div>
-
-            <div class="dp-compare-col-section">
+            <div class="dp-compare-col-section dp-compare-programme">
               <div class="dp-compare-row-label">Loyalty programme</div>
               <p class="line">{card.loyaltyProgram ?? "—"}</p>
             </div>
@@ -358,6 +363,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
 
       countEl.textContent = String(show.length);
       modeEl.textContent = isDefault ? "top welcome-bonus cards" : "selected";
+      grid.dataset.visibleCount = String(show.length);
 
       var none = show.length === 0;
       empty.hidden = !none;
@@ -443,9 +449,19 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
 
   /* ── Picker ───────────────────────────────────────────────────── */
+  .dp-compare-picker-head {
+    max-inline-size: var(--container-listing);
+    margin-inline: auto;
+    padding-block: clamp(22px, 4vw, 48px) 18px;
+    background: none;
+    border-block-end-color: var(--line);
+  }
+  .dp-compare-picker-head h1 { margin-block-end: 8px; }
+  .dp-compare-picker-head .dp-tools-stats { margin-block-start: 12px; gap: 4px 16px; }
+  .dp-compare-picker-head .dp-tools-stats a { text-decoration: underline; text-underline-offset: .16em; }
   .dp-compare-picker {
     max-width: var(--container-listing);
-    margin: 24px auto 0;
+    margin: 12px auto 0;
     padding: 0 32px;
   }
   .dp-compare-picker details {
@@ -466,11 +482,11 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   .dp-compare-picker summary::-webkit-details-marker {
     display: none;
   }
+  .dp-compare-picker summary:hover { background: var(--shade-1); }
   .dp-compare-picker summary::after {
     content: "▾" / "";
     color: var(--ink-soft);
     font-size: 12px;
-    transition: transform 0.18s ease;
   }
   .dp-compare-picker details[open] > summary::after {
     transform: rotate(180deg);
@@ -493,12 +509,15 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
   .dp-compare-picker-form fieldset {
     border: 0;
-    padding: 0;
+    padding: 4px;
     margin: 0;
     display: grid;
     min-inline-size: 0;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
     gap: 24px;
+    max-block-size: min(50vh, 28rem);
+    overflow: auto;
+    scroll-padding-block: 4px;
   }
   .dp-compare-picker-group .dp-compare-picker-label {
     font-family: var(--font-ui);
@@ -537,7 +556,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     align-items: center;
     gap: 16px;
     flex-wrap: wrap;
-    margin-top: 24px;
+    margin-top: 12px;
     padding-top: 16px;
     border-top: 1px solid var(--line-soft);
   }
@@ -553,35 +572,53 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     margin: 10px auto 0;
     padding: 0 32px;
   }
-  .dp-compare-value-context + .dp-compare-grid { margin-block-start: 12px; }
-  @media (max-width: 720px) { .dp-compare-value-context { padding-inline: 20px; } }
+  .dp-compare-overflow-hint { display: none; }
   .dp-compare-grid {
+    --compare-visible: 3;
+    /* Keep absolutely positioned screen-reader labels inside the local
+       scroll region, including labels in off-screen card columns. */
+    position: relative;
     max-width: var(--container-listing);
-    margin: 24px auto 0;
+    margin: 12px auto 0;
     padding: 0 32px;
     display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 16px 10px;
+    grid-template-columns: repeat(var(--compare-visible), minmax(0, 1fr));
     align-items: start;
+  }
+  .dp-compare-grid[data-visible-count="1"] { --compare-visible: 1; }
+  .dp-compare-grid[data-visible-count="2"] { --compare-visible: 2; }
+  .dp-compare-grid[data-visible-count="4"] { --compare-visible: 4; }
+  .dp-compare-grid:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
   }
   .dp-compare-col {
     background: var(--paper);
     border: 1px solid var(--line);
     border-radius: 8px;
-    padding: 20px;
     display: grid;
-    gap: 16px;
+    align-content: start;
     font-family: var(--font-ui);
     min-width: 0;
     overflow-wrap: anywhere;
   }
-  .dp-compare-col-head {
+  .dp-compare-col > :is(.dp-compare-col-head, .dp-compare-col-section, .dp-compare-reward-rates, .dp-compare-col-foot) {
+    min-inline-size: 0;
+    margin: 0;
+    padding: 12px clamp(10px, 1.25vw, 18px);
+    border-block-start: 1px solid var(--line-soft);
+  }
+  .dp-compare-col > .dp-compare-col-head {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--line-soft);
+    border: 0;
+    padding-block-start: 16px;
+    background: var(--shade-1);
+    border-start-start-radius: 7px;
+    border-start-end-radius: 7px;
   }
   .dp-compare-identity {
     display: grid;
@@ -599,7 +636,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     margin: 0;
     font-family: var(--font-display);
     font-weight: 500;
-    font-size: 20px;
+    font-size: clamp(1.125rem, 1.6vw, 1.375rem);
     letter-spacing: -0.3px;
     line-height: 1.2;
     color: var(--ink);
@@ -619,7 +656,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
   .dp-compare-col-section :global(.dp-fee-block) { margin: 0; }
   .dp-compare-col-section .dp-compare-row-label {
-    margin: 0 0 8px;
+    margin: 0 0 5px;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 1.8px;
@@ -638,19 +675,14 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 4px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line-soft);
+    gap: 2px 8px;
   }
   @media (max-width: 720px) {
-    .dp-compare-picker-head { padding: 24px 20px 16px; }
-    .dp-compare-picker-head .dp-tools-stats { margin-block-start: 12px; gap: 5px 14px; }
+    .dp-compare-picker-head { padding-inline: 20px; }
     .dp-compare-picker,
-    .dp-compare-grid {
+    .dp-compare-value-context {
       padding-inline: 20px;
     }
-    .dp-compare-picker { margin-block-start: 14px; }
     .dp-compare-picker summary { gap: 8px; }
     .dp-compare-picker-title { font-size: 16px; }
     .dp-compare-picker-hint { white-space: nowrap; }
@@ -661,8 +693,90 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       margin-left: 0;
       width: 100%;
     }
-    .dp-compare-grid {
-      grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dp-compare-grid :global(.dp-eligibility-primary) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 0;
+    border: 0;
+  }
+  .dp-compare-grid :global(.dp-eligibility-qualifiers) { gap: 4px; }
+  .dp-compare-grid :global(.dp-card-chip) { white-space: normal; }
+  .dp-compare-grid :global(.dp-eligibility-primary dd),
+  .dp-compare-grid :global(.dp-fee-block .amt) { font-variant-numeric: tabular-nums; }
+  .dp-compare-grid :global(.dp-fee-block .amt) { font-size: clamp(1.25rem, 2vw, 1.625rem); }
+  .dp-compare-col > .dp-compare-reward-rates { padding-block: 0; }
+  .dp-compare-reward-rates summary {
+    min-block-size: var(--dp-ui-control, 44px);
+    align-content: center;
+    color: var(--green);
+    cursor: pointer;
+    font: 650 .8125rem/1.35 var(--font-ui);
+  }
+  .dp-compare-reward-rates summary:hover { text-decoration: underline; text-underline-offset: .16em; }
+  .dp-compare-reward-rates summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-compare-reward-rates :global(.dp-earn-table) { margin-block: 0 10px; }
+  .dp-compare-reward-rates :global(.dp-earn-table .row) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+  .dp-compare-reward-rates :global(.dp-earn-table dd) { text-align: start; }
+  .dp-compare-reward-rates :global(.dp-earn-collapsed) { flex-wrap: wrap; margin-block-end: 10px; }
+  .dp-compare-col > :global(.dp-card-value-lines) {
+    margin-inline: clamp(8px, 1vw, 14px);
+    margin-block: 8px;
+  }
+  .dp-compare-welcome :global(.dp-welcome-callout) {
+    margin: 0;
+    padding: 8px;
+    background: var(--shade-1);
+  }
+  .dp-compare-welcome :global(.dp-welcome-callout .eyebrow) { letter-spacing: .08em; }
+
+  /* The corresponding facts share row tracks across visible columns. */
+  @supports (grid-template-rows: subgrid) {
+    .dp-compare-grid { row-gap: 0; align-items: stretch; }
+    .dp-compare-col {
+      grid-row: span 9;
+      grid-template-rows: subgrid;
+      align-items: start;
     }
+    .dp-compare-col > * { align-self: stretch; }
+    .dp-compare-col-head { grid-row: 1; }
+    .dp-compare-eligibility { grid-row: 2; }
+    .dp-compare-fee { grid-row: 3; }
+    .dp-compare-top { grid-row: 4; }
+    .dp-compare-reward-rates { grid-row: 5; }
+    .dp-compare-col > :global(.dp-card-value-lines) { grid-row: 6; }
+    .dp-compare-welcome { grid-row: 7; }
+    .dp-compare-programme { grid-row: 8; }
+    .dp-compare-col-foot { grid-row: 9; }
+  }
+
+  @media (max-width: 840px) {
+    .dp-compare-grid {
+      --compare-column-gap: 8px;
+      grid-template-columns: none;
+      grid-auto-columns: calc((100% - var(--compare-column-gap)) / 2);
+      grid-auto-flow: column;
+      column-gap: var(--compare-column-gap);
+      padding: 3px;
+      margin-inline: 17px;
+      overflow-x: auto;
+      overscroll-behavior-inline: contain;
+      scroll-padding-inline: 3px;
+    }
+    .dp-compare-grid[data-visible-count="1"] { grid-auto-columns: 100%; }
+    .dp-compare-col > .dp-compare-col-head { display: grid; gap: 8px; }
+    .dp-compare-col-head .bank { letter-spacing: .09em; }
+    .dp-compare-grid :global(.dp-card-value-pair) { grid-template-columns: minmax(0, 1fr); }
+    .dp-compare-overflow-hint:has(+ .dp-compare-grid:is([data-visible-count="3"], [data-visible-count="4"])) {
+      display: block;
+      margin: 10px 20px 0;
+      color: var(--ink-soft);
+      font: 500 .75rem/1.4 var(--font-ui);
+    }
+    .dp-compare-overflow-hint + .dp-compare-grid { margin-block-start: 7px; }
   }
 </style>

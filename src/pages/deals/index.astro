@@ -1,7 +1,7 @@
 ---
 // Deals index — Phase F.11 (May 2026 mockup-fidelity rebuild).
 // Same composition as /guides/ (F.3), /news/ (F.4), /airlines/ (F.5):
-// page header with tabs + search, 2-col grid (main feed + sticky
+// page header with tabs + search, 2-col grid (main feed +
 // sidebar), featured deal + card grid + Trending Now + Insider Intel.
 //
 // Differences vs the other surfaces:
@@ -86,7 +86,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
   fullWidth
   schema={schema}
 >
-  <header class="intel-pagehead">
+  <header class="intel-pagehead runway-deals-head">
     <div class="intel-pagehead-inner">
       <div class="crumb">DubaiPoints / Deals</div>
       <h1>Current deals.</h1>
@@ -94,7 +94,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     </div>
   </header>
 
-  <div class="intel-grid">
+  <div class="intel-grid runway-deals-grid">
     <div class="intel-main">
       {dealsWithBank.length === 0 ? (
         <section class="news-empty">
@@ -156,7 +156,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                 <span class="dp-deal-listing-art" data-deal-listing-art>
                   <DealVisual dealId={featured.entry.id} title={featured.entry.data.title} logo={featured.entry.data.logo}
                     merchant={featured.entry.data.merchant} bankSlug={featured.entry.data.bank?.id} bankName={featured.bankName}
-                    coverSize="med" class="intel-featured-image" sizes="(max-width: 640px) clamp(64px, 22vw, 95px), clamp(110px, 18vw, 230px)" loading="eager" />
+                    coverSize="med" class="intel-featured-image" sizes="(max-width: 700px) calc(100vw - 34px), (max-width: 1040px) 40vw, 410px" loading="eager" />
                 </span>
               )}
             </a>
@@ -186,7 +186,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                         <span class="dp-deal-listing-art" data-deal-listing-art>
                           <DealVisual dealId={d.entry.id} title={d.entry.data.title} logo={d.entry.data.logo} merchant={d.entry.data.merchant}
                             bankSlug={d.entry.data.bank?.id} bankName={d.bankName} coverSize="sm" class="intel-card-image"
-                            sizes="(max-width: 640px) clamp(64px, 22vw, 95px), clamp(80px, 11vw, 132px)" />
+                            sizes="clamp(63px, 7.5vw, 105px)" />
                         </span>
                       )}
                     </a>
@@ -526,11 +526,9 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     display: flex; flex-wrap: wrap; gap: 10px;
     margin-top: 8px;
   }
-  /* Sidebar */
+  /* The expiry list varies in height; keep the rail in page flow so its
+     lower tools remain reachable without scrolling to the end of the feed. */
   .intel-aside { display: flex; flex-direction: column; gap: 20px; }
-  @media (min-width: 1024px) {
-    .intel-aside { position: sticky; top: calc(var(--dp-sticky-header-height) + 16px); align-self: flex-start; }
-  }
   .intel-trending {
     background: var(--bg);
     border: 1px solid var(--line);
@@ -668,4 +666,115 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     color: var(--gold-ink);
     justify-self: start;
   }
+
+  /* Runway Deals: split lead, compact secondaries and a restrained rail.
+     The offer facts, asset sources and filters remain shared and unchanged. */
+  .runway-deals-head {
+    padding: clamp(26px, 4vw, 55px) clamp(16px, 4vw, 48px) clamp(22px, 3vw, 34px);
+    background: var(--bg);
+  }
+  .runway-deals-head .intel-pagehead-inner { max-width: 1280px; }
+  .runway-deals-head .crumb { margin-bottom: 10px; }
+  .runway-deals-head h1 {
+    color: var(--ink);
+    font-size: clamp(2.5rem, 5.2vw, 4.65rem);
+    letter-spacing: -.045em;
+    margin-bottom: .1em;
+  }
+  .runway-deals-head p { font-size: clamp(.9375rem, 1.7vw, 1.0625rem); }
+  .runway-deals-grid {
+    box-sizing: content-box;
+    max-width: 1280px;
+    padding-inline: clamp(16px, 4vw, 48px);
+    gap: clamp(20px, 3vw, 40px);
+  }
+  .runway-deals-grid .intel-main, .runway-deals-grid .intel-aside { min-width: 0; }
+  .runway-deals-grid .intel-main { gap: clamp(16px, 2.4vw, 30px); }
+  .runway-deals-grid .deals-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 7px 10px;
+    padding: 12px 0 14px;
+    border-block: 1px solid var(--line);
+  }
+  .runway-deals-grid .deals-filters[hidden] { display: none; }
+  .runway-deals-grid .deals-sector select { width: 100%; }
+  .runway-deals-grid .deals-advanced { margin-top: 20px; }
+  .runway-deals-grid .deals-advanced summary { min-height: 44px; }
+  .runway-deals-grid .deals-count { grid-column: 1 / -1; font-variant-numeric: tabular-nums; }
+  .runway-deals-grid .intel-featured {
+    overflow: clip;
+    border-radius: 12px;
+    padding: 0;
+    gap: 0;
+    align-items: stretch;
+  }
+  .runway-deals-grid .intel-featured.has-art { grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr); }
+  .runway-deals-grid .intel-featured-body {
+    align-content: center;
+    padding: clamp(18px, 2.8vw, 36px);
+    gap: clamp(9px, 1.2vw, 16px);
+  }
+  .runway-deals-grid .intel-featured-body h2 {
+    font-size: clamp(1.65rem, 2.7vw, 2.55rem);
+    line-height: 1.06;
+    letter-spacing: -.038em;
+    text-wrap: balance;
+  }
+  .runway-deals-grid .intel-featured-eyebrow,
+  .runway-deals-grid .intel-card-cat { letter-spacing: .105em; }
+  .runway-deals-grid .intel-featured-body p:not(.intel-featured-meta) { line-height: 1.55; }
+  .runway-deals-grid .intel-featured-body .intel-featured-meta { color: var(--ink-soft); font-size: .8125rem; }
+  .runway-deals-grid .intel-featured > .dp-deal-listing-art {
+    display: grid;
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+    border: 0;
+    border-radius: 0;
+    min-height: clamp(200px, 24vw, 320px);
+    background: var(--shade-1);
+  }
+  .runway-deals-grid .intel-featured > .dp-deal-listing-art > :global(*) { grid-area: 1 / 1; }
+  .runway-deals-grid .intel-featured :global(.intel-featured-image) {
+    width: 100%; height: 100%; min-height: inherit; aspect-ratio: auto;
+  }
+  .runway-deals-grid .intel-featured :global(.dp-ai-figure) { height: 100%; }
+  .runway-deals-grid .intel-card-grid { gap: clamp(12px, 1.6vw, 20px); }
+  .runway-deals-grid .intel-card {
+    padding: clamp(13px, 1.45vw, 20px);
+    border-radius: 10px;
+    gap: 10px;
+  }
+  .runway-deals-grid .intel-card.has-art { grid-template-columns: minmax(0, 1fr) clamp(63px, 7.5vw, 105px); }
+  .runway-deals-grid .intel-card h2 { font-size: clamp(1.1rem, 1.5vw, 1.35rem); text-wrap: pretty; }
+  .runway-deals-grid .intel-card-meta { color: var(--ink-soft); }
+  .runway-deals-grid .deals-card-foot { gap: 5px 7px; }
+  .runway-deals-grid .deals-countdown,
+  .runway-deals-grid .deals-code { overflow-wrap: anywhere; }
+  .runway-deals-grid .deals-code { color: var(--ink); border-color: var(--line); }
+  .runway-deals-grid .intel-aside { gap: 13px; }
+  .runway-deals-grid .intel-aside > * { min-width: 0; padding: 14px; border-radius: 10px; }
+  .runway-deals-grid .deals-dsf { margin-bottom: 0; }
+  .runway-deals-grid .deals-dsf p { color: var(--ink-soft); }
+  .runway-deals-grid .deals-soon a { gap: 5px 10px; align-items: baseline; flex-wrap: wrap; }
+  .runway-deals-grid .deals-soon-who { min-width: 0; overflow-wrap: anywhere; }
+  .runway-deals-grid .intel-search-row { gap: 5px; }
+  .runway-deals-grid .intel-search-row input { min-width: 0; width: 100%; }
+
+  @media (min-width: 1041px) {
+    .runway-deals-grid { grid-template-columns: minmax(0, 1fr) minmax(230px, 25%); }
+    .runway-deals-grid .deals-filters { grid-template-columns: minmax(160px, 235px) minmax(155px, 1fr) auto; }
+    .runway-deals-grid .deals-count { grid-column: auto; margin-top: 32px; text-align: end; }
+  }
+  @media (min-width: 701px) and (max-width: 1040px) {
+    .runway-deals-grid { grid-template-columns: minmax(0, 1fr); }
+    .runway-deals-grid .intel-aside { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  }
+  @media (max-width: 700px) {
+    .runway-deals-grid { grid-template-columns: minmax(0, 1fr); }
+    .runway-deals-grid .intel-featured.has-art { grid-template-columns: minmax(0, 1fr); }
+    .runway-deals-grid .intel-featured > .dp-deal-listing-art { min-height: 0; aspect-ratio: 2.8; border-top: 1px solid var(--line); }
+    .runway-deals-grid .intel-card-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+
 </style>

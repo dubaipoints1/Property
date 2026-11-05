@@ -1,0 +1,104 @@
+/* Runway Editorial — shared interior surfaces. The homepage never links
+   this asset. Keep existing typography and semantic status colours. */
+html[data-design="runway"] {
+  --bg: #f2f6f6;
+  --paper: #ffffff;
+  --shade-1: #e5eeed;
+  --shade-2: #d8e6e5;
+  --ink: #11242d;
+  --ink-soft: #3d535c;
+  --muted: #4d6069;
+  --line: #b6c8ca;
+  --line-soft: #d8e4e5;
+  --green: #145a57;
+  --green-band: #183b44;
+  --navy: #193c48;
+  --navy-deep: #0e2530;
+  --navy-lift: #80bdb8;
+  --navy-lift-soft: #e0efeb;
+  --link: #125e5a;
+  --link-deep: #0b4a46;
+  --link-soft: #e5f2ef;
+  --gold-soft: #fbf1db;
+  --gold-ink: #755018;
+  --brand: var(--link);
+  --brand-deep: var(--link-deep);
+  --brand-soft: var(--link-soft);
+  --dp-runway-rail: clamp(16px, 3vw, 32px);
+  --dp-runway-solid: #145a57;
+  --dp-runway-solid-hover: #103d3c;
+}
+html[data-design="runway"][data-theme="dark"] {
+  --bg: #0e1a21;
+  --paper: #172730;
+  --shade-1: #1e333b;
+  --shade-2: #29444a;
+  --ink: #eaf2f1;
+  --ink-soft: #c1d1d3;
+  --muted: #afc4c8;
+  --line: #42616a;
+  --line-soft: #30474e;
+  --green: #92e0ce;
+  --green-band: #2e5358;
+  --navy: #c1e2df;
+  --navy-deep: #0a151c;
+  --navy-lift: #a6e8da;
+  --navy-lift-soft: #26484a;
+  --link: #9ce3d5;
+  --link-deep: #c3efe7;
+  --link-soft: #244449;
+  --gold-soft: #3d311c;
+  --gold-ink: #efd098;
+  --dp-runway-solid: #226761;
+  --dp-runway-solid-hover: #2e7770;
+}
+
+/* Compact utility/decision heads use the same rail as their tools. Keep
+   the separate reading layouts, listing compositions and hero treatments. */
+html[data-design="runway"] .dp-pagehead:not(.is-narrow, .dp-compare-picker-head, .dp-reading-head) {
+  background: var(--shade-1);
+  padding-block: clamp(24px, 3.5vw, 48px) clamp(20px, 2.8vw, 36px);
+  padding-inline: max(var(--dp-runway-rail), calc((100% - var(--container-listing)) / 2 + var(--dp-runway-rail)));
+}
+html[data-design="runway"] .dp-pagehead h1 { text-wrap: balance; }
+html[data-design="runway"] .dp-pagehead p { line-height: 1.6; }
+
+/* The Tracker has legacy colour aliases of its own. Bind them to Runway
+   surfaces without conflating readable accents with solid button fills. */
+html[data-design="runway"] .dpst {
+  --dpst-cream: var(--bg);
+  --dpst-paper: var(--paper);
+  --dpst-navy: var(--ink);
+  --dpst-navy-2: var(--dp-runway-solid-hover);
+  --dpst-navy-soft: var(--ink-soft);
+  --dpst-accent: var(--green);
+  --dpst-accent-2: var(--link);
+  --dpst-line: var(--line);
+  --dpst-line-soft: var(--line-soft);
+  --dpst-hover: var(--shade-1);
+  --dpst-ochre: var(--gold-ink);
+  --dpst-far: var(--muted);
+  --dpst-soon: var(--gold-ink);
+}
+html[data-design="runway"][data-theme="dark"] .dpst { --dpst-urgent: #ffad9b; }
+html[data-design="runway"] :is(.dpst-band-slider, .dpst-table thead th, .dpst-logo, .dpst-empty button) {
+  background: var(--dp-runway-solid);
+}
+html[data-design="runway"] .dpst-foot { background: var(--dp-runway-solid-hover); color: white; }
+html[data-design="runway"] .dpst-row.is-open .dpst-expand {
+  background: var(--dp-runway-solid);
+  border-color: var(--dp-runway-solid);
+}
+@media (max-width: 720px) {
+  html[data-design="runway"] .dpst-band[aria-pressed="true"] { background: var(--dp-runway-solid); }
+}
+html[data-design="runway"] :is(.dpst-chip, .dpst-sort-btn)[aria-pressed="true"] {
+  background: var(--dp-runway-solid);
+  border-color: var(--dp-runway-solid);
+  color: white;
+}
+html[data-design="runway"] .dpst-chip[aria-pressed="true"] .tick { color: var(--dp-runway-solid); }
+html[data-design="runway"] .dpst-row:hover td.col-bank { background: var(--shade-1); }
+html[data-design="runway"] .dpst-row.is-open td.col-bank { background: var(--paper); }
+html[data-design="runway"] .dpst-badge:is(.cash, .cashback, .points) { background: var(--link-soft); color: var(--link-deep); }
+html[data-design="runway"] .dpst-badge.voucher { background: var(--gold-soft); color: var(--gold-ink); }
