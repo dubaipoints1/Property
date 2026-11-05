@@ -1,0 +1,61 @@
+<nav class="dp-card-journey" aria-label="Your card journey" data-card-journey hidden>
+  <a href="/cards/finder/" data-card-journey-back>← Back to your shortlist</a>
+  <span data-card-journey-spend></span>
+  <span>Choices are included in these links. Share only if you want to share them.</span>
+</nav>
+
+<script>
+  import { cardJourneyHref, cardJourneyParams } from "~/lib/readerJourneyState";
+  const refresh = () => {
+    const state = cardJourneyParams(new URLSearchParams(location.search));
+    if (location.pathname === "/cards/finder/") state.set("via", "finder");
+    const grid = document.querySelector("#finder-grid");
+    if (grid) {
+      const slugs = [...grid.querySelectorAll<HTMLElement>(".dp-finder-tile:not([hidden])")].slice(0, 3).map(tile => tile.dataset.slug).filter(Boolean);
+      if (slugs.length) state.set("cards", slugs.join(","));
+    }
+    for (const link of document.querySelectorAll<HTMLAnchorElement>("main a[href^='/cards/']")) {
+      if (link.matches("[data-card-journey-reset]") || link.getAttribute("href") === "/cards/finder/" && !link.hasAttribute("data-card-journey-back")) continue;
+      const href = link.getAttribute("href");
+      if (href) {
+        let destination = href;
+        const current = location.pathname.match(/^\/cards\/([a-z0-9-]+)\/$/)?.[1];
+        const card = link.closest<HTMLElement>(".dp-finder-tile")?.dataset.slug;
+        if (state.get("via") === "finder" && (link.hasAttribute("data-finder-compare-card") || current && !["finder", "compare"].includes(current) && href.startsWith("/cards/compare/"))) {
+          const selected = [...new Set([card ?? current, ...(state.get("cards")?.split(",") ?? [])].filter(Boolean))].slice(0, 4);
+          destination = "/cards/compare/?cards=" + selected.join(",");
+        }
+        link.setAttribute("href", cardJourneyHref(destination, state));
+      }
+    }
+    // Static GET forms retain the explicit example when filters/picks change.
+    for (const form of document.querySelectorAll<HTMLFormElement>("#finder-form, .dp-compare-picker-form")) {
+      for (const [key, value] of state) {
+        if (form.id === "finder-form" && !["cv_spend", "via"].includes(key) || form.classList.contains("dp-compare-picker-form") && key === "cards") continue;
+        let field = form.querySelector<HTMLInputElement>(`input[type='hidden'][name='${key}']`);
+        if (!field) { field = document.createElement("input"); field.type = "hidden"; field.name = key; form.append(field); }
+        field.value = value;
+      }
+    }
+    const journey = document.querySelector<HTMLElement>("[data-card-journey]");
+    const back = journey?.querySelector<HTMLAnchorElement>("[data-card-journey-back]");
+    const spend = journey?.querySelector<HTMLElement>("[data-card-journey-spend]");
+    if (journey && back && spend) {
+      const finder = new URLSearchParams(state);
+      finder.delete("cards"); finder.delete("via");
+      back.href = "/cards/finder/" + (finder.size ? "?" + finder : "");
+      spend.textContent = state.has("cv_spend") ? `Estimate basis: AED ${Number(state.get("cv_spend")).toLocaleString("en-GB")} a month` : "Your filters stay with this journey";
+      journey.hidden = location.pathname === "/cards/finder/" || state.get("via") !== "finder";
+    }
+  };
+  refresh();
+  addEventListener("dp:card-profile", refresh);
+  addEventListener("dp:card-shortlist", refresh);
+</script>
+
+<style>
+  .dp-card-journey { width: min(var(--container-listing), 100%); padding: 12px clamp(16px, 3vw, 32px); margin-inline: auto; display: flex; flex-wrap: wrap; gap: 8px 24px; border-block-end: 1px solid var(--line-soft); font: 500 .8125rem/1.5 var(--font-ui); }
+  .dp-card-journey[hidden] { display: none; }
+  .dp-card-journey a { color: var(--green); font-weight: 650; }
+  .dp-card-journey span { color: var(--ink-soft); }
+</style>

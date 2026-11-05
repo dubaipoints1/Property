@@ -41,6 +41,7 @@ const { id, compact = false } = Astro.props;
 <script>
   import { calculateCardValue, formatCardValue, type CardValueTerms } from "~/lib/cardValue";
   import { formatAED } from "~/lib/cardsDataFormat";
+  import { boundedInteger, cardJourneyParams } from "~/lib/readerJourneyState";
 
   for (const scenario of document.querySelectorAll<HTMLElement>("[data-card-value-scenario]")) {
     const controls = scenario.querySelector<HTMLFieldSetElement>("[data-card-value-controls]");
@@ -75,7 +76,11 @@ const { id, compact = false } = Astro.props;
         if (row.cap) row.cap.hidden = !result.capBinds;
       }
       amount.textContent = formatAED(spend);
-      status.textContent = `Estimates updated for ${formatAED(spend)} a month. Amount stays on this page.`;
+      const url = new URL(location.href);
+      url.searchParams.set("cv_spend", String(spend));
+      history.replaceState(null, "", url.pathname + url.search + url.hash);
+      status.textContent = `Estimates updated for ${formatAED(spend)} a month. This example follows your card-review and comparison links. Share a link only if you want to share it.`;
+      dispatchEvent(new CustomEvent("dp:card-profile"));
     };
     button.addEventListener("click", update);
     input.addEventListener("keydown", (event) => {
@@ -84,6 +89,8 @@ const { id, compact = false } = Astro.props;
       update();
     });
     controls.hidden = false;
+    const sharedSpend = boundedInteger(cardJourneyParams(new URLSearchParams(location.search)).get("cv_spend"));
+    if (sharedSpend !== undefined) { input.value = String(sharedSpend); update(); }
   }
 </script>
 

@@ -20,16 +20,8 @@ sweetSpots:
 expiryPolicy: "Marriott Bonvoy points expire after 24 months of account inactivity — defined as no earn, redeem, or transfer activity. Any qualifying activity resets the clock, including a points purchase, a dining-programme transaction, or a co-brand card transaction on a Bonvoy-earning card."
 ---
 
-import JumpToSection from "~/components/cards/JumpToSection.astro";
+import ProgrammeReference from "~/components/ProgrammeReference.astro";
 
-<JumpToSection sections={[
-  { id: "tier-structure", label: "Tier structure" },
-  { id: "what-a-bonvoy-point-is-worth", label: "Point value" },
-  { id: "who-bonvoy-suits", label: "Who it suits" },
-  { id: "how-to-earn-from-the-uae", label: "How to earn" },
-  { id: "what-to-watch", label: "What to watch" },
-  { id: "related", label: "Related" },
-]} />
 
 Marriott Bonvoy is the hotel-loyalty programme covering Marriott's 30-plus
 brands — Ritz-Carlton, St. Regis, W, JW Marriott, Edition, Le Méridien,
@@ -40,50 +32,6 @@ the city, including the Ritz-Carlton DIFC, St. Regis Dubai The Palm, W
 The Palm, JW Marriott Marquis Downtown and the Westin Mina Seyahi) and
 the airline-transfer matrix that includes Skywards, Etihad Guest, Qatar
 Privilege Club and British Airways Avios.
-
-## Tier structure
-
-Bonvoy runs six published tiers — **Member**, **Silver Elite**,
-**Gold Elite**, **Platinum Elite**, **Titanium Elite** and **Ambassador
-Elite**. Status is earned on nights stayed in a year: Silver at 10
-nights, Gold at 25, Platinum at 50, Titanium at 75, Ambassador at 100
-plus USD 23,000 of spend. The bonus on stay points runs 10% at Silver,
-25% at Gold, 50% at Platinum and 75% at Titanium and Ambassador
-(Marriott's [member-benefits page](https://www.marriott.com/loyalty/member-benefits.mi),
-read 9 October 2026).
-
-The two tiers that matter for UAE residents are **Gold** (25 nights —
-or, since August 2026, held automatically by the ADIB Marriott Bonvoy
-Visa Infinite cardholder; see below) and **Platinum** (50 nights —
-unlocks lounge access, 50% bonus points on stays, and the chance of a
-suite upgrade on award nights, which is where the redemption maths
-gets interesting at the Address-equivalent Marriott properties on the
-Palm and in DIFC).
-
-## What a Bonvoy point is worth
-
-Our card reviews value Marriott Bonvoy at a baseline of **2.5 fils per
-point** (AED 25 per 1,000 points). That is a deliberately conservative
-cost-basis figure: dynamic award pricing at Dubai Marriott properties
-typically returns AED 0.025–0.06 of cash value per point depending on
-season (see the off-peak sweet spot below), and the 3:1 airline
-transfer with the 5,000-mile bonus prices a point at roughly 0.42
-airline miles. Where a review shows "Value to me: AED X" on a Bonvoy
-earn or bonus, this is the rate behind the arithmetic.
-
-## Who Bonvoy suits
-
-Bonvoy is the default hotel programme for a UAE resident who stays in
-Dubai for staycations, travels for work to Marriott-heavy GCC cities
-(Riyadh, Doha, Manama), or routinely transfers points out to a
-specific airline currency. If your home airline is Emirates and you
-already hold a Skywards co-brand card, a Bonvoy-earning second card
-gives you a path to Skywards Miles outside of paid Emirates flights.
-
-The programme is less useful if your travel pattern is heavy on
-boutique-independent stays in Europe or budget-chain stays in
-South-East Asia — Bonvoy's footprint is weaker there than Hilton's
-or Accor's.
 
 ## How to earn from the UAE
 
@@ -127,7 +75,45 @@ Indirect earn is the more interesting route:
   pays only as a top-up for a specific redemption you have already
   priced well above baseline — never as a speculative purchase.
 
+<ProgrammeReference programme="marriott-bonvoy" kind="cards" />
+
+<ProgrammeReference programme="marriott-bonvoy" kind="partners" />
+
+## What a Bonvoy point is worth
+
+Our card reviews value Marriott Bonvoy at a baseline of **2.5 fils per
+point** (AED 25 per 1,000 points). That is a deliberately conservative
+cost-basis figure: dynamic award pricing at Dubai Marriott properties
+typically returns AED 0.025–0.06 of cash value per point depending on
+season (see the off-peak sweet spot below), and the 3:1 airline
+transfer with the 5,000-mile bonus prices a point at roughly 0.42
+airline miles. Where a review shows "Value to me: AED X" on a Bonvoy
+earn or bonus, this is the rate behind the arithmetic.
+
+<ProgrammeReference programme="marriott-bonvoy" kind="redemptions" />
+
+## Tier structure
+
+Bonvoy runs six published tiers — **Member**, **Silver Elite**,
+**Gold Elite**, **Platinum Elite**, **Titanium Elite** and **Ambassador
+Elite**. Status is earned on nights stayed in a year: Silver at 10
+nights, Gold at 25, Platinum at 50, Titanium at 75, Ambassador at 100
+plus USD 23,000 of spend. The bonus on stay points runs 10% at Silver,
+25% at Gold, 50% at Platinum and 75% at Titanium and Ambassador
+(Marriott's [member-benefits page](https://www.marriott.com/loyalty/member-benefits.mi),
+read 9 October 2026).
+
+The two tiers that matter for UAE residents are **Gold** (25 nights —
+or, since August 2026, held automatically by the ADIB Marriott Bonvoy
+Visa Infinite cardholder; see below) and **Platinum** (50 nights —
+unlocks lounge access, 50% bonus points on stays, and the chance of a
+suite upgrade on award nights, which is where the redemption maths
+gets interesting at the Address-equivalent Marriott properties on the
+Palm and in DIFC).
+
 ## What to watch
+
+<ProgrammeReference programme="marriott-bonvoy" kind="expiry" />
 
 The two persistent watch-items on Bonvoy:
 
@@ -149,6 +135,20 @@ transfer routes with limited notice — most recently affecting
 specific Asia-Pacific partners. The Bonvoy → Skywards and
 Bonvoy → Etihad Guest routes have been stable, but neither is
 contractually guaranteed.
+
+## Who Bonvoy suits
+
+Bonvoy is the default hotel programme for a UAE resident who stays in
+Dubai for staycations, travels for work to Marriott-heavy GCC cities
+(Riyadh, Doha, Manama), or routinely transfers points out to a
+specific airline currency. If your home airline is Emirates and you
+already hold a Skywards co-brand card, a Bonvoy-earning second card
+gives you a path to Skywards Miles outside of paid Emirates flights.
+
+The programme is less useful if your travel pattern is heavy on
+boutique-independent stays in Europe or budget-chain stays in
+South-East Asia — Bonvoy's footprint is weaker there than Hilton's
+or Accor's.
 
 ## Related
 

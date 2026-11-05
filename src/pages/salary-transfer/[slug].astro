@@ -1,5 +1,6 @@
 ---
 import NextStepLinks from "~/components/NextStepLinks.astro";
+import SalaryJourney from "~/components/SalaryJourney.astro";
 import BankLogo from "~/components/BankLogo.astro";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
@@ -101,6 +102,7 @@ const siteUrl = siteUrlFrom(Astro.site);
       schema={breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path: "/salary-transfer/" }, { name: props.bankName, path: Astro.url.pathname }])}
     >
       <article class="dp-article is-wide">
+        <SalaryJourney />
         <header class="dp-article-head">
           <p class="dp-article-eyebrow">Salary transfer</p>
           <div class="dp-st-bank-title">

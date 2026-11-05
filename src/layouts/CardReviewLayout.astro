@@ -19,6 +19,7 @@ import UtilityPageHead from "~/components/UtilityPageHead.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
 import BankOffers from "~/components/deals/BankOffers.astro";
 import NextSteps from "~/components/cards/NextSteps.astro";
+import CardJourney from "~/components/cards/CardJourney.astro";
 import StockImage from "~/components/StockImage.astro";
 import ImageCredit from "~/components/ImageCredit.astro";
 import CardImage from "~/components/CardImage.astro";
@@ -367,6 +368,8 @@ const schema = {
       </div>
     </div>
   </UtilityPageHead>
+
+  <CardJourney />
 
   {heroImage && (
     <div class="dp-cr-hero-photo-wrap">

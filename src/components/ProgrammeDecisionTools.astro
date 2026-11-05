@@ -4,7 +4,7 @@ interface Props { programme: "skywards" | "etihad-guest"; }
 const { programme } = Astro.props;
 ---
 
-<div class="dp-programme-tools">
+<div class="dp-programme-tools" id="programme-calculator">
   <details>
     <summary>Compare a cash and miles fare</summary>
     <CashOrMilesCalculator embedded />
@@ -12,8 +12,22 @@ const { programme } = Astro.props;
   <p><a href={`/transfer-finder/?to=${programme}`}>Find UAE points that transfer in</a> · <a href="/calculator/cash-or-miles/">Open the full calculator</a></p>
 </div>
 
+<script>
+  const openProgrammeCalculator = () => {
+    const disclosure = document.querySelector<HTMLDetailsElement>('#programme-calculator > details');
+    if (disclosure) disclosure.open = true;
+  };
+  for (const link of document.querySelectorAll<HTMLAnchorElement>('a[href="#programme-calculator"]')) {
+    link.addEventListener('click', openProgrammeCalculator);
+  }
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#programme-calculator') openProgrammeCalculator();
+  });
+  if (window.location.hash === '#programme-calculator') openProgrammeCalculator();
+</script>
+
 <style>
-  .dp-programme-tools { margin-block: 1.25rem; }
+  .dp-programme-tools { margin-block: 1.25rem; scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px); }
   .dp-programme-tools details { border: 1px solid var(--line); border-radius: 12px; background: var(--paper); padding-inline: clamp(12px, 2vw, 18px); }
   .dp-programme-tools summary { padding-block: .7rem; color: var(--green); font: 650 1rem/1.4 var(--font-ui); cursor: pointer; }
   .dp-programme-tools summary:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; border-radius: 3px; }

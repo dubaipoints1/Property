@@ -19,16 +19,8 @@ sweetSpots:
 expiryPolicy: "ALL Reward points expire after 12 months without qualifying earn activity; earning resets the clock on the balance. The reset conditions are stricter than the hotel-programme norm (redemption activity alone may not extend validity) — confirm the current expiry terms on Accor's site before relying on the window for a specific balance. Not yet dossier-verified."
 ---
 
-import JumpToSection from "~/components/cards/JumpToSection.astro";
+import ProgrammeReference from "~/components/ProgrammeReference.astro";
 
-<JumpToSection sections={[
-  { id: "tier-structure", label: "Tier structure" },
-  { id: "what-an-all-point-is-worth", label: "Point value" },
-  { id: "who-accor-all-suits", label: "Who it suits" },
-  { id: "how-to-earn-from-the-uae", label: "How to earn" },
-  { id: "what-to-watch", label: "What to watch" },
-  { id: "related", label: "Related" },
-]} />
 
 ALL — Accor Live Limitless — is the loyalty programme of Accor,
 covering Raffles, Fairmont, Sofitel, Pullman, Mövenpick, Novotel,
@@ -47,22 +39,32 @@ expiry terms are pending Head of Research verification against
 Accor's published terms — where a figure carries a verify tag,
 treat the tag as binding.
 
-## Tier structure
+## How to earn from the UAE
 
-ALL runs five published tiers — **Classic**, **Silver**, **Gold**,
-**Platinum** and **Diamond**. Qualification is on status nights or
-status points earned on eligible spend in a calendar year; we have
-not yet verified the current thresholds against Accor's published
-terms, so they are deliberately not quoted here.
+There is currently no UAE-issued ALL co-brand credit card that we
+track, so earning is stay-led:
 
-Structurally: Silver and Gold deliver the usual mid-tier set
-(priority, late check-out where available, a points bonus on
-stays); Platinum adds lounge access at participating brands —
-relevant at the Sofitel and Fairmont tier in Dubai — and Diamond
-sits above it with suite-upgrade and recognition benefits. ALL
-elite benefits are honoured unevenly across the brand spread; the
-economy brands (ibis family) carry almost none of them, which
-matters given how much of the Dubai estate sits there.
+- **Paid stays across the Accor estate.** Points accrue per EUR of
+  eligible spend at a rate that scales with tier and brand family —
+  the economy brands earn at reduced rates. We have not verified
+  the current rate card; check Accor's published earn table before
+  counting on a specific accrual. Not yet dossier-verified.
+- **Accor's booking-channel promotions.** Registration-based
+  double-points and stay-multiplier offers run regularly; as with
+  Hilton's equivalents, register always, re-plan never.
+- **Partner earn in the UAE** exists in pockets (dining and
+  lifestyle partnerships vary by market and cycle); we do not yet
+  track a verified UAE partner list. Verify on the programme site.
+- **Transfers in from UAE bank programmes:** none published that we
+  track. The published routes run outbound — to Skywards and
+  Etihad Guest at 2:1 — and are covered above. Qatar Airways also
+  lists ALL Accor as a partner whose points convert into
+  [Privilege Club Avios](/airlines/qatar-privilege-club/); its offer
+  page does not state the rate, so check it in your ALL account.
+
+<ProgrammeReference programme="accor-all" kind="cards" />
+
+<ProgrammeReference programme="accor-all" kind="partners" />
 
 ## What an ALL point is worth
 
@@ -89,49 +91,28 @@ Two consequences worth being precise about:
   discount. The [transfer-ratios guide](/guides/uae-transfer-ratios-2026/)
   files these routes under expiry salvage only.
 
-## Who Accor ALL suits
+<ProgrammeReference programme="accor-all" kind="redemptions" />
 
-ALL suits the UAE resident who actually pays for hotel rooms — the
-weekday GCC work traveller in a Novotel or Pullman, the family
-running a Rixos all-inclusive weekend, the couple paying cash rates
-at Raffles Dubai or Sofitel Dubai The Obelisk where chart-based
-programmes would never release an award night. Because points apply
-against any rate, the programme rewards the stay pattern you
-already have rather than the one an award chart permits.
+## Tier structure
 
-It does not suit the points maximiser. There is no 5th-night-free,
-no off-peak chart arbitrage, no transfer matrix worth using — the
-upside is capped at EUR 0.02 per point by design. And it actively
-punishes the slow banker: the 12-month earn-activity expiry clock
-makes ALL the worst of the three hotel currencies to hoard. If
-your end goal is a premium-cabin seat, this is the wrong vehicle —
-see the [premium-cabin programme roundup](/guides/best-uae-points-programmes-premium-cabin-2026/)
-for the currencies that get you there.
+ALL runs five published tiers — **Classic**, **Silver**, **Gold**,
+**Platinum** and **Diamond**. Qualification is on status nights or
+status points earned on eligible spend in a calendar year; we have
+not yet verified the current thresholds against Accor's published
+terms, so they are deliberately not quoted here.
 
-## How to earn from the UAE
-
-There is currently no UAE-issued ALL co-brand credit card that we
-track, so earning is stay-led:
-
-- **Paid stays across the Accor estate.** Points accrue per EUR of
-  eligible spend at a rate that scales with tier and brand family —
-  the economy brands earn at reduced rates. We have not verified
-  the current rate card; check Accor's published earn table before
-  counting on a specific accrual. Not yet dossier-verified.
-- **Accor's booking-channel promotions.** Registration-based
-  double-points and stay-multiplier offers run regularly; as with
-  Hilton's equivalents, register always, re-plan never.
-- **Partner earn in the UAE** exists in pockets (dining and
-  lifestyle partnerships vary by market and cycle); we do not yet
-  track a verified UAE partner list. Verify on the programme site.
-- **Transfers in from UAE bank programmes:** none published that we
-  track. The published routes run outbound — to Skywards and
-  Etihad Guest at 2:1 — and are covered above. Qatar Airways also
-  lists ALL Accor as a partner whose points convert into
-  [Privilege Club Avios](/airlines/qatar-privilege-club/); its offer
-  page does not state the rate, so check it in your ALL account.
+Structurally: Silver and Gold deliver the usual mid-tier set
+(priority, late check-out where available, a points bonus on
+stays); Platinum adds lounge access at participating brands —
+relevant at the Sofitel and Fairmont tier in Dubai — and Diamond
+sits above it with suite-upgrade and recognition benefits. ALL
+elite benefits are honoured unevenly across the brand spread; the
+economy brands (ibis family) carry almost none of them, which
+matters given how much of the Dubai estate sits there.
 
 ## What to watch
+
+<ProgrammeReference programme="accor-all" kind="expiry" />
 
 - **The expiry clock is the programme's sharpest edge.** Twelve
   months without qualifying earn activity and the balance goes.
@@ -151,6 +132,25 @@ track, so earning is stay-led:
   expiry reset conditions and current UAE partner earn — is
   pending; issuer hosts are not reachable from the current research
   environment. This note comes out when the dossier lands.
+
+## Who Accor ALL suits
+
+ALL suits the UAE resident who actually pays for hotel rooms — the
+weekday GCC work traveller in a Novotel or Pullman, the family
+running a Rixos all-inclusive weekend, the couple paying cash rates
+at Raffles Dubai or Sofitel Dubai The Obelisk where chart-based
+programmes would never release an award night. Because points apply
+against any rate, the programme rewards the stay pattern you
+already have rather than the one an award chart permits.
+
+It does not suit the points maximiser. There is no 5th-night-free,
+no off-peak chart arbitrage, no transfer matrix worth using — the
+upside is capped at EUR 0.02 per point by design. And it actively
+punishes the slow banker: the 12-month earn-activity expiry clock
+makes ALL the worst of the three hotel currencies to hoard. If
+your end goal is a premium-cabin seat, this is the wrong vehicle —
+see the [premium-cabin programme roundup](/guides/best-uae-points-programmes-premium-cabin-2026/)
+for the currencies that get you there.
 
 ## Related
 

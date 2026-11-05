@@ -1,4 +1,6 @@
-import { useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
+import { boundedSalaryAmount, hasSalaryJourney, salaryJourneyHref, salaryJourneyParams, salaryJourneyReturnHref, salaryJourneyState, type SalaryJourneyState } from "../../lib/readerJourneyState";
+import { TRACKER_SALARY_BANDS } from "../../lib/salaryTransferTrackerBands";
 import {
   type AdditionalProduct,
   type CalculatorInput,
@@ -43,6 +45,27 @@ export default function SalaryTransferCalculator({ offers }: Props) {
   const [willingProducts, setWillingProducts] = useState<AdditionalProduct[]>([]);
   const [shariaOnly, setShariaOnly] = useState(false);
   const [cashOnly, setCashOnly] = useState(false);
+  const [journey, setJourney] = useState<SalaryJourneyState | null>(null);
+  const [needsExactSalary, setNeedsExactSalary] = useState(false);
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const state = salaryJourneyState(params);
+    if (!hasSalaryJourney(params)) return;
+    setJourney(state); setCashOnly(state.cash); setShariaOnly(state.sharia);
+    setWillingProducts(state.products ?? []);
+    if (state.stay !== undefined) setWillStay12Months(state.stay);
+    if (state.salary !== undefined) setMonthlySalary(state.salary);
+    else { setMonthlySalary(0); setNeedsExactSalary(true); }
+  }, []);
+  const context: SalaryJourneyState = { ...(journey ?? { cash: false, noCard: false, sharia: false, sort: "value" }), cash: cashOnly, sharia: shariaOnly, noCard: journey?.noCard === true && !willingProducts.includes("credit_card"), salary: needsExactSalary ? undefined : monthlySalary, products: willingProducts, stay: willStay12Months };
+  useEffect(() => {
+    if (!journey) return;
+    const url = new URL(location.href);
+    for (const key of ["st_band", "st_cash", "st_no_card", "st_sharia", "st_sort", "st_offer", "st_return", "st_salary", "st_products", "st_stay"]) url.searchParams.delete(key);
+    for (const [key, value] of salaryJourneyParams(context)) url.searchParams.set(key, value);
+    history.replaceState(null, "", url.pathname + url.search + url.hash);
+    dispatchEvent(new CustomEvent("dp:salary-profile"));
+  }, [journey, monthlySalary, cashOnly, shariaOnly, needsExactSalary, willingProducts, willStay12Months]);
 
   const input: CalculatorInput = {
     monthlySalary,
@@ -72,6 +95,7 @@ export default function SalaryTransferCalculator({ offers }: Props) {
 
   return (
     <div class="dpsc">
+      {journey?.band && <p class="dpsc-hint">From your tracker: {TRACKER_SALARY_BANDS.find(b => b.slug === journey.band)?.label}. Enter your exact monthly salary; the tracker band is not an exact salary.</p>}
       <form class="dpsc-form" onSubmit={(e) => e.preventDefault()}>
         <div>
           <label class="dpsc-label" for="dpsc-salary">
@@ -81,16 +105,18 @@ export default function SalaryTransferCalculator({ offers }: Props) {
             id="dpsc-salary"
             type="number"
             min={0}
-            step="any"
+            max={1_000_000}
+            step="0.01"
             value={monthlySalary}
-            onInput={(e) =>
-              setMonthlySalary(
-                Number((e.target as HTMLInputElement).value) || 0,
-              )
-            }
+            onInput={(e) => {
+              const value = boundedSalaryAmount(String((e.target as HTMLInputElement).valueAsNumber));
+              if (value !== undefined) { setMonthlySalary(value); setNeedsExactSalary(false); }
+              else { setMonthlySalary(0); setNeedsExactSalary(true); }
+            }}
             class="dpsc-input dp-ui-field"
           />
           <p class="dpsc-hint">Salary thresholds vary by offer. Enter your exact monthly salary.</p>
+          <p class="dpsc-hint">Your choices are included in offer links. Share a link only if you want to share those choices.</p>
         </div>
 
         <details class="dpsc-options">
@@ -147,8 +173,8 @@ export default function SalaryTransferCalculator({ offers }: Props) {
       </form>
 
       <div class="dpsc-results">
-        <p class="sr-only" role="status">{top ? `Highest matching estimate: ${top.offer.bankName}, ${formatAED(top.cashEquivalentAED)} cash-equivalent.` : "No estimate matches without a warning. Review the results and offer conditions."}</p>
-        {top && (
+        <p class="sr-only" role="status">{needsExactSalary ? "Enter your exact salary to calculate." : top ? `Highest matching estimate: ${top.offer.bankName}, ${formatAED(top.cashEquivalentAED)} cash-equivalent.` : "No estimate matches without a warning. Review the results and offer conditions."}</p>
+        {top && !needsExactSalary && (
           <div class="dpsc-best">
             <p class="dpsc-best-eyebrow">Highest matching estimate</p>
             <h2>{top.offer.bankName}</h2>
@@ -170,15 +196,15 @@ export default function SalaryTransferCalculator({ offers }: Props) {
           </div>
         )}
 
-        {!top && (
+        {(!top || needsExactSalary) && (
           <div class="dpsc-empty">
-            {results.some((r) => r.status === "warning")
+            {needsExactSalary ? "Enter a valid exact salary above to calculate, with no more than two decimal places. No estimate is selected until then." : results.some((r) => r.status === "warning")
               ? "No estimate matches without a warning. Review the results and offer conditions below."
               : "No matching estimate for these inputs. Check the offer conditions below."}
           </div>
         )}
 
-        <div class="dpsc-rows" ref={rowList}>
+        <div class="dpsc-rows" ref={rowList} hidden={needsExactSalary}>
           {results.map((r) => (
             <article
               key={r.offer.id}
@@ -227,11 +253,12 @@ export default function SalaryTransferCalculator({ offers }: Props) {
                   ))}
                 </ul>
               )}
-              <p><a href={`/salary-transfer/${r.offer.bankSlug}/`}>Read offer conditions →</a></p>
+              <p><a data-salary-offer={r.offer.id} href={salaryJourneyHref(`/salary-transfer/${r.offer.bankSlug}/`, { ...context, offer: r.offer.id })}>Read offer conditions →</a></p>
             </article>
           ))}
         </div>
       </div>
+      {journey && <p class="dpsc-hint"><a href={salaryJourneyReturnHref(context)}>Return to the same tracker shortlist →</a></p>}
     </div>
   );
 }

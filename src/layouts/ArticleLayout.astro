@@ -7,7 +7,11 @@ import BaseLayout from "./BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
 import { getStockEntry } from "~/lib/stockManifest";
 import CardImage from "~/components/CardImage.astro";
+import ReaderNextSteps from "~/components/ReaderNextSteps.astro";
 import { getCollection } from "astro:content";
+import { getActiveCards } from "~/lib/cardsData";
+import { programmeHref } from "~/lib/programmes";
+import { resolveReaderJourney, type ReaderContext } from "~/lib/readerJourneys";
 
 interface Props {
   title: string;
@@ -47,6 +51,8 @@ interface Props {
   heroSlug?: string;
   /** Editorial opt-in for a selected travel feature; otherwise images follow evidence. */
   photoLead?: boolean;
+  /** Explicit collection references; never inferred from story prose. */
+  readerContext?: ReaderContext;
 }
 
 const {
@@ -68,6 +74,7 @@ const {
   systemTypography = false,
   heroSlug,
   photoLead = false,
+  readerContext,
 } = Astro.props;
 
 const fmt = (d?: Date) =>
@@ -92,11 +99,24 @@ const initials = author
   .join("");
 
 const currentPath = Astro.url.pathname;
-// A recent-updates list, not a claim about traffic or subject relevance.
-const latestGuides = (await getCollection("guides"))
+const allGuides = await getCollection("guides");
+const journey = readerContext ? resolveReaderJourney(readerContext, {
+  cards: getActiveCards().map((c) => ({ id: c.slug, name: c.name, bank: c.bank })),
+  banks: (await getCollection("banks")).map((b) => ({ id: b.id, name: b.data.name })),
+  programmes: (await getCollection("programs")).map((p) => ({ id: p.id, name: p.data.name, href: programmeHref(p.id) })),
+  guides: allGuides.map((g) => ({
+    id: g.id, title: g.data.title, updatedAt: g.data.updatedAt,
+    cards: g.data.relatedCards.map((ref) => ref.id),
+    programmes: g.data.relatedPrograms.map((ref) => ref.id),
+  })),
+}) : { actions: [], relatedGuides: [] };
+// No relation is better than a false relation. Only show a small, explicitly
+// chronological fallback when no contextual route or explainer is available.
+const hasContextualNext = journey.actions.length > 0 || journey.relatedGuides.length > 0;
+const latestGuides = hasContextualNext ? [] : allGuides
   .filter((g) => currentPath !== `/guides/${g.id}/`)
   .sort((a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime())
-  .slice(0, 3);
+  .slice(0, 2);
 
 const fmtShort = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
@@ -272,24 +292,18 @@ const schema = {
       <aside class="dp-reading-column" aria-label="Related reading"><slot name="related" /></aside>
     )}
 
+    {hasContextualNext && (
+      <div class="dp-reading-column" id="dp-latest-guides-heading">
+        <ReaderNextSteps actions={journey.actions} guides={journey.relatedGuides} />
+      </div>
+    )}
+
     {latestGuides.length > 0 && (
-      <section class="dp-article-related" aria-labelledby="dp-latest-guides-heading">
-        <div class="dp-article-related-head">
-          <h2 id="dp-latest-guides-heading">Latest updates from the guides desk</h2>
-        </div>
-        <div class="dp-article-related-grid">
-          {latestGuides.map((g) => (
-            <a href={`/guides/${g.id}/`} class="dp-article-related-card">
-              {getStockEntry(`guide-${g.id}`) && <StockImage slug={`guide-${g.id}`} sizes="(max-width: 900px) calc(100vw - 40px), 380px" />}
-              <div class="body">
-                <span class="cat">Guide · {fmtShort(g.data.updatedAt)}</span>
-                <h3>{g.data.title}</h3>
-                <p>{g.data.description}</p>
-              </div>
-            </a>
-          ))}
-        </div>
-      </section>
+      <aside class="dp-reading-latest dp-reading-column" aria-labelledby="dp-latest-guides-heading" data-reader-latest>
+        <h2 id="dp-latest-guides-heading">Latest guides</h2>
+        <p>Recent updates from the guides desk.</p>
+        <ul>{latestGuides.map((g) => <li><a href={`/guides/${g.id}/`}>{g.data.title}</a><span>Updated {fmtShort(g.data.updatedAt)}</span></li>)}</ul>
+      </aside>
     )}
   </article>
 </BaseLayout>
@@ -384,4 +398,13 @@ const schema = {
     border: 0;
     border-radius: 0;
   }
+  .dp-reading-latest { margin-block: 32px; padding-block: 20px; border-block-start: 1px solid var(--line); }
+  .dp-reading-latest h2 { margin: 0 0 8px; font: 600 1.5rem/1.2 var(--font-display); }
+  .dp-reading-latest p { margin: 0 0 12px; font: 400 .875rem/1.5 var(--font-ui); color: var(--ink-soft); }
+  .dp-reading-latest ul { list-style: none; padding: 0; margin: 0; }
+  .dp-reading-latest li { padding-block: 10px; }
+  .dp-reading-latest li + li { border-block-start: 1px solid var(--line-soft); }
+  .dp-reading-latest a { display: block; min-block-size: 44px; align-content: center; color: var(--link); font: 550 1rem/1.45 var(--font-ui); text-decoration: underline; text-underline-offset: .18em; }
+  .dp-reading-latest span { display: block; font: 400 .75rem/1.4 var(--font-ui); color: var(--ink-soft); }
+  .dp-reading-latest a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
 </style>

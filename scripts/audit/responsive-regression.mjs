@@ -258,9 +258,14 @@ try {
   const compareHref = await page.locator("#finder-compare").getAttribute("href");
   const comparePicks = new URL(compareHref, server.baseUrl).searchParams.get("cards").split(",");
   assert.deepEqual(comparePicks, tileOrder.slice(0, 3));
+  const cardDetails = tiles.first().locator(".dp-finder-card-details");
+  assert.equal(await cardDetails.getAttribute("open"), null, "Finder starts with the short decision summary");
+  await cardDetails.locator(":scope > summary").press("Enter");
+  assert.equal(await cardDetails.getAttribute("open"), "", "The full rates and conditions remain keyboard-accessible");
   const whyMatch = tiles.first().locator(".dp-finder-match summary");
   await whyMatch.press("Enter");
   assert.ok(await tiles.first().locator("[data-finder-ranking]").isVisible());
+  await page.locator(".dp-finder-ranking-details > summary").press("Enter");
   assert.match(await page.locator("#finder-mode").innerText(), /not.*approval decision/i);
   await whyMatch.press("Enter");
   await tiles.nth(0).getByRole("link").last().focus();

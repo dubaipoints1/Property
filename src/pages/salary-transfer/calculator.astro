@@ -1,6 +1,7 @@
 ---
 import SalaryTransferCalculatorLayout from "~/layouts/SalaryTransferCalculatorLayout.astro";
 import SalaryTransferCalculator from "~/components/islands/SalaryTransferCalculator.tsx";
+import SalaryJourney from "~/components/SalaryJourney.astro";
 import { getLiveOffers } from "~/lib/offerAdapter";
 
 const offers = await getLiveOffers();
@@ -11,6 +12,7 @@ const offers = await getLiveOffers();
   description="Compare UAE salary-transfer reward estimates by monthly salary and product choices, with conditions that still need checking shown separately."
 >
   <div slot="calculator">
+    <SalaryJourney />
     <SalaryTransferCalculator offers={offers} client:load />
   </div>
 </SalaryTransferCalculatorLayout>

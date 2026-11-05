@@ -48,7 +48,7 @@ const sectorChips = (Object.keys(SECTOR_LABELS) as (keyof typeof SECTOR_LABELS)[
 const issuerOptions = [...new Map(dealsWithBank.map((d) => [d.issuerId, d.bankName])).entries()]
   .sort((a, b) => a[1].localeCompare(b[1]));
 const codeCount = liveDeals.filter((d) => d.data.promoCode).length;
-const endingSoon = dealsWithBank.filter((d) => d.days <= ENDING_SOON_DAYS);
+const endingSoon = dealsWithBank.filter((d, index) => index > 0 && d.days <= ENDING_SOON_DAYS);
 const dealAttrs = (d: (typeof dealsWithBank)[number]) => ({
   "data-sector": d.entry.data.sector ?? "",
   "data-issuer": d.issuerId,
@@ -63,7 +63,9 @@ const guides = (await getCollection("guides"))
 const featured = dealsWithBank[0];
 const others = dealsWithBank.slice(1);
 
-const recentGuides = guides.slice(0, 4);
+// These explain using issuer offers; recency alone is not topic relevance.
+const dealGuideIds = ["uae-credit-card-eligibility-2026", "dubai-shopping-festival-2026"];
+const dealGuides = dealGuideIds.flatMap((id) => guides.filter((guide) => guide.id === id));
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
@@ -140,10 +142,12 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
             <p class="deals-count" role="status" data-deal-count>{dealsWithBank.length} live deals</p>
           </div>
 
+          <p class="deals-sort-note">Listed by recorded expiry date. The first offer is not an editorial recommendation.</p>
+
           {featured && (
             <a href={`/deals/${featured.entry.id}/`} class:list={["intel-featured", { "has-art": featured.hasArt }]} aria-labelledby={`deal-${featured.entry.id}`} data-deal {...dealAttrs(featured)}>
               <div class="intel-featured-body" data-deal-offer-facts>
-                <span class="intel-featured-eyebrow">{featured.entry.data.sector ? SECTOR_LABELS[featured.entry.data.sector] : formatCategory(featured.entry.data.category)} · {featured.bankName}</span>
+                <span class="intel-featured-eyebrow">Ending first · {featured.entry.data.sector ? SECTOR_LABELS[featured.entry.data.sector] : formatCategory(featured.entry.data.category)} · {featured.bankName}</span>
                 <h2 id={`deal-${featured.entry.id}`}>{featured.entry.data.title}</h2>
                 {featured.entry.data.eligibilityNote && <p>{featured.entry.data.eligibilityNote}</p>}
                 <span class="deals-card-foot">
@@ -203,7 +207,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     <aside class="intel-aside">
       {endingSoon.length > 0 && (
         <section class="deals-soon" aria-labelledby="deals-soon-h" data-deal-soon>
-          <h2 id="deals-soon-h" class="deals-soon-h">Ending soon</h2>
+          <h2 id="deals-soon-h" class="deals-soon-h">Also ending soon</h2>
           <ul>
             {endingSoon.map((d) => (
               <li {...dealAttrs(d)} data-deal-soon-item>
@@ -226,11 +230,11 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
         </form>
         <a href="/salary-transfer/">Browse the salary-transfer tracker →</a>
       </section>
-      {recentGuides.length > 0 && (
-        <nav class="intel-trending" aria-label="From the guides desk">
-          <div class="dp-rail-heading">From the guides desk</div>
+      {dealGuides.length > 0 && (
+        <nav class="intel-trending" aria-label="Using bank offers">
+          <div class="dp-rail-heading">Using bank offers</div>
           <ol>
-            {recentGuides.map((item) => (
+            {dealGuides.map((item) => (
                 <li>
                   <a href={`/guides/${item.id}/`}>{item.data.title}</a>
                 </li>
