@@ -39,6 +39,7 @@ import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 import { getLiveDeals } from "~/lib/deals";
 import { getCardArt } from "~/lib/cardArt";
+import { cardArtSrcset } from "~/lib/stockDerivatives";
 import { isHotelProgramme } from "~/lib/programmes";
 
 const allGuides = await getCollection("guides");
@@ -410,6 +411,8 @@ const DIRECTORY = [
                 <span class="hp-tile is-art">
                   <img
                     src={`/${c.art.file}`}
+                    srcset={cardArtSrcset(c.slug, c.art, import.meta.env.PROD ? "feature" : undefined)}
+                    sizes="(max-width: 459px) calc(100vw - 40px), (max-width: 899px) 420px, (max-width: 1211px) calc((100vw - 176px) / 3), (max-width: 1599px) 345.333px, (max-width: 2159px) calc(132px + 13.333vw), 420px"
                     width={c.art.width}
                     height={c.art.height}
                     alt={`${c.name} card, as shown by ${c.bankName}`}

@@ -5,10 +5,15 @@
 import "@fontsource-variable/newsreader/wght.css";
 import "@fontsource-variable/newsreader/wght-italic.css";
 import "@fontsource-variable/geist/wght.css";
-import newsreaderLatin from "@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url";
-import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
+// Identical existing variable faces/axes, with the original fonts retained
+// above as Unicode fallback. The two normal preloads match these CSS URLs.
+import "~/styles/font-delivery.css";
+import { newsreaderLatinSubset, geistLatinSubset } from "~/lib/fontDelivery";
 import "~/styles/global.css";
 import "~/styles/editorial-utility.css";
+// Emitted as a separate, cacheable asset. The postbuild delivery pass swaps
+// only the homepage's full-site bundle at its existing cascade position.
+import homeGlobalCss from "~/styles/home-global.css?url&no-inline";
 import runwayEditorialCss from "~/styles/runway-editorial.css?url&no-inline";
 import runwayDiscoveryCss from "~/styles/runway-discovery.css?url&no-inline";
 import runwayReadingCss from "~/styles/runway-reading.css?url&no-inline";
@@ -192,12 +197,13 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
     <!-- Self-hosted fonts: preload the two Latin faces used above the fold. -->
     {!systemTypography && (
       <>
-        <link rel="preload" href={newsreaderLatin} as="font" type="font/woff2" crossorigin />
-        <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
+        <link rel="preload" href={newsreaderLatinSubset} as="font" type="font/woff2" crossorigin />
+        <link rel="preload" href={geistLatinSubset} as="font" type="font/woff2" crossorigin />
       </>
     )}
     {schema && <SchemaJsonLd schema={schema} />}
     <SchemaJsonLd schema={defaultGraph} />
+    {!runwayInterior && <meta name="dp-home-style-asset" content={homeGlobalCss} />}
 
     {
       import.meta.env.PROD && cfBeaconToken && (

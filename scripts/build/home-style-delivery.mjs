@@ -1,6 +1,7 @@
-// Homepage-only delivery of the complete, compiled CSS in its original
-// cascade order. This changes neither the rules nor font faces. Other pages
-// and the reusable external CSS assets remain byte-for-byte untouched.
+// Homepage-only CSS delivery. The original exact-inline experiment remains
+// exported and tested below for its historical audit. The active CLI now
+// substitutes a smaller external route asset at the original link position;
+// every interior HTML file and reusable full-site asset stays untouched.
 import { createHash } from "node:crypto";
 import { lstat, readFile, realpath, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -232,11 +233,116 @@ export async function inlineHomeStyles(distDir) {
   return result;
 }
 
+const ROUTE_TOKEN = /<!--[\s\S]*?-->|<script\b[^>]*>[\s\S]*?<\/script\s*>|<style\b[^>]*>[\s\S]*?<\/style\s*>|<link\b[^>]*>|<meta\b[^>]*>/gi;
+const ROUTE_MARKER = "route-v1";
+const isFullSiteBundle = css => /\.dpst\s*\{/.test(css)
+  && css.includes("--container-listing:") && css.includes("--dp-ui-control:");
+
+/**
+ * Replace only the homepage's full-site rule bundle, never filter selectors.
+ * The smaller stylesheet is explicitly authored from complete shared source
+ * sections. Its synchronous link occupies the old link's exact position.
+ */
+export function transformHomeStyleRoute(html, readCss) {
+  const parts = splitHead(html);
+  const tokens = [...parts.head.matchAll(ROUTE_TOKEN)];
+  const assetTags = tokens.filter(match => /^<meta\b/i.test(match[0])
+    && attributes(match[0], "meta").get("name") === "dp-home-style-asset");
+  const delivered = tokens.filter(match => /^<link\b/i.test(match[0])
+    && attributes(match[0], "link").has("data-dp-home-style"));
+  if (assetTags.length === 0 && delivered.length === 1) {
+    const attrs = attributes(delivered[0][0], "link");
+    if (attrs.size !== 4 || attrs.get("rel") !== "stylesheet"
+      || attrs.get("data-dp-home-style") !== ROUTE_MARKER) throw Error("Invalid homepage route delivery marker");
+    const href = safeAssetHref(attrs.get("href"));
+    const css = readCss(href);
+    checkCss(css);
+    if (attrs.get("data-dp-css-sha256") !== hash(css)) throw Error("Homepage route CSS fingerprint mismatch");
+    return { html, href, cssBytes: byteLength(css), replacedCount: 0, originalBytes: null, sha256: hash(css) };
+  }
+  if (assetTags.length !== 1 || delivered.length) throw Error("Expected exactly one undelivered homepage style asset");
+  const meta = attributes(assetTags[0][0], "meta");
+  if (meta.size !== 2 || !meta.has("content")) throw Error("Invalid homepage style asset metadata");
+  const href = safeAssetHref(meta.get("content"));
+  const routeCss = readCss(href);
+  checkCss(routeCss);
+  if (isFullSiteBundle(routeCss) || !routeCss.includes("--container-listing:")
+    || !routeCss.includes("--dp-ui-control:") || !/\.dp-strategy\s*\{/.test(routeCss)) {
+    throw Error("Homepage route CSS is not the expected explicit shared-section asset");
+  }
+  const candidates = [];
+  for (const token of tokens) {
+    if (!/^<link\b/i.test(token[0])) continue;
+    const originalHref = stylesheetHref(token[0]);
+    if (!originalHref) continue;
+    const css = readCss(originalHref);
+    checkCss(css);
+    if (isFullSiteBundle(css)) candidates.push({ token, href: originalHref, css });
+  }
+  if (candidates.length !== 1) throw Error("Expected exactly one full-site homepage stylesheet to replace");
+  const original = candidates[0];
+  if (byteLength(routeCss) >= byteLength(original.css)) throw Error("Homepage route CSS must be smaller than the full-site bundle");
+  const sha256 = hash(routeCss);
+  const link = `<link rel="stylesheet" href="${href}" data-dp-home-style="${ROUTE_MARKER}" data-dp-css-sha256="${sha256}">`;
+  const head = parts.head.replace(ROUTE_TOKEN, token => token === assetTags[0][0] ? ""
+    : token === original.token[0] ? link : token);
+  return {
+    html: parts.before + head + parts.after,
+    href, sha256, cssBytes: byteLength(routeCss), replacedCount: 1,
+    originalBytes: byteLength(original.css),
+  };
+}
+
+/** Preflight all reads before a single homepage-only write. */
+export async function routeHomeStyles(distDir) {
+  const root = await realpath(path.resolve(distDir));
+  const indexPath = path.join(root, "index.html");
+  const indexInfo = await lstat(indexPath);
+  if (!indexInfo.isFile() || indexInfo.isSymbolicLink() || await realpath(indexPath) !== indexPath) {
+    throw Error("Homepage output must be a regular index.html within dist");
+  }
+  const decode = bytes => new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  const html = decode(await readFile(indexPath));
+  const { head } = splitHead(html);
+  const pending = new Set();
+  for (const match of head.matchAll(ROUTE_TOKEN)) {
+    if (/^<meta\b/i.test(match[0])) {
+      const attrs = attributes(match[0], "meta");
+      if (attrs.get("name") === "dp-home-style-asset") pending.add(safeAssetHref(attrs.get("content")));
+    } else if (/^<link\b/i.test(match[0])) {
+      const attrs = attributes(match[0], "link");
+      if (attrs.has("data-dp-home-style")) pending.add(safeAssetHref(attrs.get("href")));
+      else {
+        const href = stylesheetHref(match[0]);
+        if (href) pending.add(href);
+      }
+    }
+  }
+  const astroRoot = path.join(root, "_astro");
+  const astroInfo = await lstat(astroRoot);
+  if (!astroInfo.isDirectory() || astroInfo.isSymbolicLink() || await realpath(astroRoot) !== astroRoot) {
+    throw Error("Homepage stylesheet directory must be a real dist/_astro directory");
+  }
+  const cssByHref = new Map();
+  for (const href of pending) {
+    const file = path.join(astroRoot, path.posix.basename(href));
+    const info = await lstat(file);
+    const resolved = await realpath(file);
+    if (!info.isFile() || info.isSymbolicLink() || path.dirname(resolved) !== astroRoot) {
+      throw Error("Homepage stylesheet escaped the real dist/_astro directory");
+    }
+    cssByHref.set(href, decode(await readFile(resolved)));
+  }
+  const result = transformHomeStyleRoute(html, href => cssByHref.get(href));
+  if (result.html !== html) await writeFile(indexPath, result.html, "utf8");
+  return result;
+}
+
 const isMain = process.argv[1]
   ? import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href
   : false;
 if (isMain) {
   const dist = fileURLToPath(new URL("../../dist/", import.meta.url));
-  const result = await inlineHomeStyles(dist);
-  console.log(`[home-style-delivery] ${result.inlinedCount} stylesheet(s) inlined; CSS ${result.cssBytes} B; HTML ${result.htmlBytesBefore} → ${result.htmlBytesAfter} B; sha256 ${result.fingerprint}`);
+  const result = await routeHomeStyles(dist);
+  console.log(`[home-style-delivery] ${result.replacedCount} stylesheet replaced in place by cached ${result.href}; CSS ${result.originalBytes ?? "unchanged"} → ${result.cssBytes} B; sha256 ${result.sha256}`);
 }

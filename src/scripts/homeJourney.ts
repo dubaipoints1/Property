@@ -15,6 +15,11 @@ export function initialiseHomeJourney() {
   const frame = root.querySelector<HTMLElement>("[data-journey-frame]");
   if (!stage || !copy || !foot || !video || !frame) return;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // Respect an existing browser data-saving preference; never change it.
+  // Unsupported browsers retain the ordinary poster-first scroll journey.
+  const connection = (window.navigator as Navigator & {
+    connection?: { saveData?: boolean; addEventListener?: (type: string, listener: () => void) => void };
+  } | undefined)?.connection;
   let headerHeight = 0;
   let raf = 0;
   let intentAt = -Infinity;
@@ -68,7 +73,7 @@ export function initialiseHomeJourney() {
   const measure = () => {
     headerHeight = document.querySelector<HTMLElement>(".dp-header")?.offsetHeight ?? 0;
     root.style.setProperty("--journey-header", `${headerHeight}px`);
-    const allowed = !reduced.matches && window.innerHeight >= 480
+    const allowed = !reduced.matches && connection?.saveData !== true && window.innerHeight >= 480
       && (window.innerWidth > 700 || window.innerHeight - headerHeight >= 640);
     root.classList.toggle("is-enhanced", allowed);
     const style = getComputedStyle(stage);
@@ -160,6 +165,7 @@ export function initialiseHomeJourney() {
   });
   video.addEventListener("error", () => { failed = true; frame.classList.remove("is-ready"); video.pause(); cancelFrame(); });
   reduced.addEventListener("change", measure);
+  connection?.addEventListener?.("change", measure);
   window.addEventListener("resize", () => { clearIntent(); measure(); }, { passive: true });
   document.addEventListener("visibilitychange", () => {
     clearIntent();

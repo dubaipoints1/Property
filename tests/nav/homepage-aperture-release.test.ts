@@ -80,6 +80,9 @@ function withFixture(run: (state: any) => void) {
     Object.defineProperty(globalThis, name, { configurable: true, writable: true, value });
   };
   const win = new FixtureElement() as any;
+  const connection = new FixtureElement() as any;
+  connection.saveData = false;
+  win.navigator = { connection };
   win.innerWidth = 1440;
   win.innerHeight = 900;
   win.scrollY = 0;
@@ -138,7 +141,7 @@ function withFixture(run: (state: any) => void) {
   install("window", win);
   install("document", doc);
   install("getComputedStyle", () => ({ paddingTop: "24px", paddingBottom: "24px", direction: "ltr" }));
-  try { run({ win, doc, root, stage, copy, foot, frame, video, reduced, frames, fire, flush }); }
+  try { run({ win, doc, root, stage, copy, foot, frame, video, reduced, connection, frames, fire, flush }); }
   finally {
     for (const [name, descriptor] of saved) {
       if (descriptor) Object.defineProperty(globalThis, name, descriptor);
@@ -231,4 +234,40 @@ test("executed reduction, short-height and hidden/offscreen guards stop enhancem
   s.fire(s.win, "resize");
   assert.equal(s.root.classes.has("is-enhanced"), false);
   assert.equal(s.video.src, undefined);
+}));
+
+test("data-saving preference uses the complete static hero and releases an attached reel", () => withFixture(s => {
+  s.connection.saveData = true;
+  initialiseHomeJourney();
+  assert.equal(s.root.classes.has("is-enhanced"), false);
+  s.fire(s.win, "wheel");
+  s.win.scrollY = 100;
+  s.fire(s.win, "scroll");
+  s.flush();
+  assert.equal(s.video.src, undefined);
+  assert.equal(s.video.loads, 0);
+  s.connection.saveData = false;
+  s.fire(s.connection, "change");
+  s.flush();
+  assert.equal(s.root.classes.has("is-enhanced"), true);
+  assert.equal(s.video.src, undefined, "preference change alone cannot initiate video");
+  s.fire(s.win, "wheel");
+  s.win.scrollY = 200;
+  s.fire(s.win, "scroll");
+  assert.ok(s.video.src);
+  s.connection.saveData = true;
+  s.fire(s.connection, "change");
+  assert.equal(s.root.classes.has("is-enhanced"), false);
+  assert.equal(s.video.src, undefined);
+  assert.equal(s.frames.size, 0);
+}));
+
+test("browsers without Network Information keep the ordinary scroll gate", () => withFixture(s => {
+  s.win.navigator = {};
+  initialiseHomeJourney();
+  assert.equal(s.video.src, undefined);
+  s.fire(s.win, "wheel");
+  s.win.scrollY = 100;
+  s.fire(s.win, "scroll");
+  assert.ok(s.video.src);
 }));

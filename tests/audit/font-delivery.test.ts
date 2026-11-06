@@ -28,10 +28,21 @@ test("Newsreader's lighter normal and italic files keep the same script subsets 
   }
 });
 
-test("the Latin Newsreader preload is the normal face actually used by CSS", () => {
+test("the smaller shared normal-face preloads match delivery CSS while original Unicode fallback remains", () => {
   const latinFilename = "newsreader-latin-wght-normal.woff2";
-  const css = readFileSync(packagePath("wght.css"), "utf8");
-  assert.ok(css.includes(`./files/${latinFilename}`));
-  assert.ok(baseLayout.includes(`/files/${latinFilename}?url`));
+  const fallbackCss = readFileSync(packagePath("wght.css"), "utf8");
+  const deliveryCss = readFileSync(new URL("../../src/styles/font-delivery.css", import.meta.url), "utf8");
+  const deliveryModule = readFileSync(new URL("../../src/lib/fontDelivery.ts", import.meta.url), "utf8");
+  assert.ok(fallbackCss.includes(`./files/${latinFilename}`), "original complete Latin file remains available");
+  assert.ok(baseLayout.includes('import "@fontsource-variable/geist/wght.css"'));
+  assert.ok(baseLayout.indexOf('import "~/styles/font-delivery.css"') > baseLayout.indexOf('import "@fontsource-variable/geist/wght.css"'));
+  for (const [family, exported] of [["newsreader", "newsreaderLatinSubset"], ["geist", "geistLatinSubset"]]) {
+    const file = `${family}-latin-wght-normal-site.woff2`;
+    assert.ok(deliveryCss.includes(`../assets/fonts/${file}`));
+    assert.ok(deliveryModule.includes(`../assets/fonts/${file}?url`));
+    assert.ok(baseLayout.includes(`href={${exported}} as="font" type="font/woff2" crossorigin`));
+  }
+  assert.ok(!baseLayout.includes(`/files/${latinFilename}?url`), "do not preload both original and subset");
+  assert.equal([...baseLayout.matchAll(/rel="preload"[^>]+as="font"/g)].length, 2);
   assert.ok(!baseLayout.includes("newsreader-latin-opsz-normal.woff2"));
 });

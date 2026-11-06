@@ -1,6 +1,6 @@
 ---
 import { getStockEntry } from "~/lib/stockManifest";
-import { stockSrcset } from "~/lib/stockDerivatives";
+import { stockAvifSrcset, stockSrcset } from "~/lib/stockDerivatives";
 
 // Journey Aperture: the owner-selected native adaptation of the researched
 // frame-expansion pattern. Existing media/provenance, never catalogue media.
@@ -11,6 +11,9 @@ const poster = getStockEntry("hero-card-desk");
 const posterWebpSrcset = poster
   ? stockSrcset(poster, import.meta.env.PROD ? "feature" : undefined)
     ?.split(", ").filter(candidate => /\.webp\s+\d+w$/.test(candidate)).join(", ")
+  : undefined;
+const posterAvifSrcset = poster
+  ? stockAvifSrcset(poster, import.meta.env.PROD ? "feature" : undefined)
   : undefined;
 // A portrait screen covers the frame by height, not only by its slot width.
 // The original is approximately 4:3; use a conservative viewport-height
@@ -23,6 +26,7 @@ const posterSizes = "(max-aspect-ratio: 4/3) 134vh, 100vw";
     <div class="journey-media" aria-hidden="true">
       <div class="journey-frame" data-journey-frame>
         {poster && <picture>
+          {posterAvifSrcset && <source type="image/avif" srcset={posterAvifSrcset} sizes={posterSizes} />}
           {posterWebpSrcset && <source type="image/webp" srcset={posterWebpSrcset} sizes={posterSizes} />}
           <img class="journey-poster" src={`/${poster.file}`} alt="" width={poster.width} height={poster.height} fetchpriority="high" decoding="async" />
         </picture>}

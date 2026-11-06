@@ -1,0 +1,891 @@
+/* Homepage delivery subset. Complete source sections copied byte-for-byte
+   from global.css in their original order; guarded by home-style-route tests.
+   Do not hand-tune this copy: update the source section and its copy together.
+   Tailwind is deliberately retained in full for its identical reset, layers,
+   sr-only helper and any shared navigation utility behaviour. */
+
+/* dp-home-section:foundation:start */
+/* Fonts load via <link> in BaseLayout.astro with preconnect for
+   non-blocking critical render. Redesign Phase 2 (4 October 2026, A+B
+   direction): Newsreader (display) + Geist (UI/body) replace Fraunces +
+   DM Sans. Every font-family in src/ reads --font-display / --font-ui, so
+   the next change is one line here, not 300 edits. */
+@import "tailwindcss";
+
+/* Body + main shells — moved out of inline styles to dedupe per-page bytes */
+.dp-body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+.dp-main { flex: 1; }
+.dp-main:not(.is-full) {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 80rem;
+  padding: 2.5rem 1rem;
+}
+
+:root {
+  --font-display: 'Newsreader Variable', 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-ui:      'Geist Variable', 'Geist', system-ui, -apple-system, sans-serif;
+
+  /* Claude Design handoff palette — locked 2026-05-09 (supersedes TPG pivot).
+     Source: Claude Design bundle JVW6dPIKTdYcvhrGrNtGfg, palette A "Editorial green".
+     Session doc: .council/sessions/2026-05-09-design-handoff.md.
+     Warm-paper editorial system: deep ink, deep green accent, teal-navy band,
+     link blue interactive only. Five-tone surface rotation via shade-1 / shade-2
+     / paper / bg / navy. */
+
+  /* Surfaces — warm, layered */
+  --bg:        #fbfaf6;          /* default page surround (warm) */
+  --paper:     #fdfcf8;          /* cards, callouts (slightly warmer cream) */
+  --shade-1:   #f1eee7;          /* hover wash, page-head gradient stop */
+  --shade-2:   #e0dccf;          /* deeper shade, byline avatar bg */
+
+  /* Dark band identity (teal-navy, not royal navy) */
+  --navy:      #1f3a4d;          /* primary dark band — feature card, hero */
+  --navy-deep: #0f1f2e;          /* footer / very dark band */
+
+  /* Type — warm near-black, NOT royal navy */
+  --ink:       #1f2328;          /* body text */
+  --ink-soft:  #56606b;          /* meta, secondary copy */
+  --muted:     #6b7178;          /* dates, byline timestamps — AA on paper */
+
+  /* Lines — warm hairlines */
+  --line:      #dad6cd;
+  --line-soft: #ece9e1;
+
+  /* Accent — deep editorial green */
+  /* Brand accent — navy. The 2026-05-16 Chairman directive moved the
+     primary accent off green (2026-05-09 amendment) to deep navy. The
+     `--green` and `--green-band` token NAMES are kept to avoid a full-
+     repo rename in one commit; future cleanup may rename them to
+     `--brand`. Every `var(--green)` reference across the site now
+     resolves to navy. */
+  --green:     #1f3a4d;          /* eyebrows, pull-quote mark, accents (navy after F.9) */
+  --green-band:#15293a;          /* .dp-band-green — slightly darker navy for depth */
+  /* Lightened brand navy. Was --mint #5fb88a, a third hue the 2026-07-25
+     no-third-hue rule does not admit; on Chairman ruling R1 (10 Sep 2026,
+     audit F-006) it resolves to the same #8fb3cc the dark palette has used
+     since that amendment replaced its teal. Renamed rather than re-pointed
+     so the token does not repeat the --green naming lie the 2026-05-16
+     amendment had to live with. */
+  --navy-lift:      #8fb3cc;     /* .dp-callout-tip rail, live dot, accents on dark */
+  --navy-lift-soft: #e8eef3;     /* wash for callout backgrounds (derived from it) */
+
+  /* Interactive (link / focus / hover only — never display type, never eyebrows) */
+  --link:      #1a5fc6;
+  --link-deep: #154fa3;
+  --link-soft: #eef3fb;
+
+  /* Signal (live / expiry / warnings only) */
+  --red:       #c8412d;
+
+  /* Single-use feedback tokens — Chairman-scoped 2026-05-20.
+     Reserved to `ProsCons` ✓ / ✗ icons on card-review pages.
+     Do not use anywhere else — no chrome, no chips, no copy.
+     If you find yourself reaching for these outside ProsCons.astro,
+     stop and check with the Standards Editor / Chairman first.
+     `--positive` is tuned warmer than the old `--green` (#2d6a52)
+     so it holds at 16px icon size; `--negative` is muted brick
+     (not the flag-red `--red` reserved for live/expiry signals). */
+  --positive: #2f6a4f;          /* ProsCons ✓ icon fill */
+  --negative: #b54a2c;          /* ProsCons ✗ icon fill */
+
+  /* Legacy — defined for backward compat, NOT used in new UI.
+     Quiet Ledger sunsetted gold; TPG pivot kept it sunsetted; design handoff
+     keeps it sunsetted. The chat-1 navy + gold + Sora system is the v1 brand
+     work superseded by chat-4 iterations. */
+  --gold:      #b8842a;
+  --gold-soft: #f3ead6;
+  /* Text-weight gold for labels at 14px and below (eyebrows, callout
+     labels). #b8842a is 3.0:1 on paper at 11px — it stays the chip, rule
+     and Verified-badge colour; small text uses this shade of the same
+     hue (2026-09-06 audit, F-004). Not a new hue: same family, darker. */
+  --gold-ink:  #8a6118;
+  --gold-lift: #d9a441;          /* gold on navy (5.3:1): hero em, kicker, focus ring on dark bands */
+  --gold-hover:#c9933a;          /* gold CTA hover (ink text 5.8:1) */
+  --navy-pin:  #16202c;          /* dark-theme pin for navy bands (same on both themes); the card-review tile sits one step below it */
+  /* Motion (audit 4 Oct 2026, finding 15): one entrance curve, one hover curve. */
+  --dp-ease:       cubic-bezier(0.22, 1, 0.36, 1);
+  --dp-ease-hover: cubic-bezier(0.2, 0, 0, 1);
+  --brand:     #1a5fc6;          /* legacy alias to --link */
+  --brand-deep:#154fa3;
+  --brand-soft:#eef3fb;
+  --cool:      #f4f5f7;          /* legacy from TPG pivot */
+  --cream:     #f8f0e0;          /* legacy from TPG pivot */
+
+  /* ── Container widths ────────────────────────────────────────────
+     `--container-listing` is the canonical max-width for listing
+     surfaces (homepage, /cards/, /banks/, /guides/, /news/, /deals/,
+     /airlines/, /salary-transfer/). Smoothly scales from 1180px at
+     a 1600px viewport to 1500px at 2400px+, so 34" ultra-wide
+     monitors don't render the site as a postcard centred in a
+     warm-paper void. Long-form reading prose stays narrow per
+     Charter §"Editorial conventions" — `.dp-article` and
+     `.dp-prose` keep their existing caps (880/1080/70ch) so the
+     reading measure isn't compromised.
+
+     The scaling slope `(100vw - 1600px) * 0.4` lifts the container
+     by 0.4px for every 1px of viewport above 1600px, plateauing at
+     1500px once the viewport reaches 2400px. Below 1600px the
+     existing 1180px cap is preserved (clamp lower bound). */
+  --container-listing: clamp(1180px, 1180px + (100vw - 1600px) * 0.4, 1500px);
+  /* Sticky header including its mobile quick-links strip and borders. */
+  --dp-sticky-header-height: 102px;
+}
+
+/* Source-led news can use the same serif/UI hierarchy without downloading
+   display fonts. The normal site and homepage still use the brand faces. */
+.dp-system-typography {
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-ui: system-ui, -apple-system, sans-serif;
+}
+@media (min-width: 1024px) {
+  :root { --dp-sticky-header-height: 81px; }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg); }
+body {
+  font-family: var(--font-ui);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-size: 17px;            /* Stage 1 redesign: 16→17 toward competitor 17-18px band (2026-05-25) */
+  line-height: 1.55;
+}
+a { text-decoration: none; color: inherit; }
+img { display: block; max-width: 100%; }
+
+/* Global focus-visible — WCAG 2.2 AA. Site-wide green outline so every
+   interactive element shows where keyboard focus is. Components that
+   need a different style (e.g. dark-band CTAs on navy) override locally. */
+*:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+/* Suppress focus ring on mouse-click; keep it on keyboard nav. */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* dp-home-section:foundation:end */
+
+/* dp-home-section:strategy:start */
+/* ── .dp-strategy — goal-based strategy panel (v0-layout adoption) ────────
+   "Start from the goal, not the card." Four pre-rendered goal panels
+   swapped by a no-JS radio group — same input-hack doctrine as the
+   header's .dp-nav-toggle checkbox. To assistive tech this is honestly a
+   radio group ("choose a goal"), not a tablist; all four panels are
+   build-time static, Pagefind-indexable, zero hydration.
+
+   The radio inputs MUST precede .dps-pills and the panels as siblings —
+   every rule below is a `:checked ~` / `:focus-visible ~` sibling
+   combinator. Inputs are hidden with opacity, NOT display:none, so they
+   stay focusable; the four :focus-visible rules are load-bearing for
+   keyboard users. */
+.dp-strategy {
+  padding: 40px 32px 36px;
+  border-bottom: 1px solid var(--line);
+}
+.dp-strategy .inner {
+  max-width: var(--container-listing);
+  margin: 0 auto;
+}
+.dp-strategy h2 {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: clamp(24px, 3vw, 32px);
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  margin: 0 0 20px;
+}
+.dps-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.dps-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 24px;
+}
+.dps-pills label {
+  padding: 8px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 13px; font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.dps-pills label:hover { border-color: var(--ink); color: var(--ink); }
+#dps-travel:checked ~ .dps-pills label[for="dps-travel"],
+#dps-cashback:checked ~ .dps-pills label[for="dps-cashback"],
+#dps-welcome:checked ~ .dps-pills label[for="dps-welcome"],
+#dps-first:checked ~ .dps-pills label[for="dps-first"] {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+
+/* Navy-band variant (v0-layout adoption): the panel sits on a dark navy
+   band; goal labels render as underline TABS (v0's idiom), gold carries
+   the active underline as the on-band accent. Same radio mechanism. */
+.dp-strategy.is-navy {
+  background: var(--navy);
+  border-bottom: 0;
+}
+[data-theme="dark"] .dp-strategy.is-navy { background: #16202c; }
+.dp-strategy.is-navy h2 { color: #fff; }
+.dp-strategy.is-navy h2 em {
+  font-style: italic; color: var(--gold);
+}
+.dp-strategy.is-navy .dp-featured-eyebrow { color: rgba(255,255,255,0.75); }
+.dp-strategy.is-navy .dp-featured-eyebrow .rule { background: rgba(255,255,255,0.2); }
+.dp-strategy.is-navy .dp-featured-eyebrow .meta { color: rgba(255,255,255,0.62); }
+.dp-strategy.is-navy .dps-lede {
+  font-size: 15px; line-height: 1.6;
+  color: rgba(255,255,255,0.72);
+  max-width: 44ch;
+  margin: 0 0 24px;
+}
+.dp-strategy.is-navy .dps-pills {
+  gap: 26px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+.dp-strategy.is-navy .dps-pills label {
+  border: 0; border-radius: 0;
+  padding: 0 0 12px;
+  margin-bottom: -1px;
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  background: transparent;
+}
+.dp-strategy.is-navy .dps-pills label:hover { color: #fff; }
+.dp-strategy.is-navy #dps-travel:checked ~ .dps-pills label[for="dps-travel"],
+.dp-strategy.is-navy #dps-cashback:checked ~ .dps-pills label[for="dps-cashback"],
+.dp-strategy.is-navy #dps-welcome:checked ~ .dps-pills label[for="dps-welcome"],
+.dp-strategy.is-navy #dps-first:checked ~ .dps-pills label[for="dps-first"] {
+  background: transparent;
+  color: #fff;
+  border-bottom-color: var(--gold);
+}
+.dp-strategy.is-navy #dps-travel:focus-visible ~ .dps-pills label[for="dps-travel"],
+.dp-strategy.is-navy #dps-cashback:focus-visible ~ .dps-pills label[for="dps-cashback"],
+.dp-strategy.is-navy #dps-welcome:focus-visible ~ .dps-pills label[for="dps-welcome"],
+.dp-strategy.is-navy #dps-first:focus-visible ~ .dps-pills label[for="dps-first"] {
+  outline-color: var(--gold);
+}
+.dp-strategy.is-navy .dps-cards,
+.dp-strategy.is-navy .dps-cards li { border-color: rgba(255,255,255,0.16); }
+/* Small-text whites on the navy band sit at ≥0.55 alpha: 0.45–0.5 white
+   over #1f3a4d measures ≈3.7–4.2:1 — under the 4.5:1 AA floor for the
+   11–16px sizes these carry (UX 5.5, 29 Aug 2026). */
+.dp-strategy.is-navy .dps-cards .rank { color: rgba(255,255,255,0.55); }
+.dp-strategy.is-navy .dps-cards .name { color: #fff; }
+.dp-strategy.is-navy .dps-cards a:hover .name { color: var(--gold); }
+.dp-strategy.is-navy .dps-cards .bank { color: rgba(255,255,255,0.62); }
+.dp-strategy.is-navy .dps-cards .stat { color: rgba(255,255,255,0.85); }
+.dp-strategy.is-navy .dps-cards .stat small { color: rgba(255,255,255,0.62); }
+.dp-strategy.is-navy .dps-aside a {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.2);
+  border-radius: 0; /* the navy band belongs to the v0 square-box idiom */
+}
+.dp-strategy.is-navy .dps-aside a:hover { border-color: var(--gold); }
+.dp-strategy.is-navy .dps-aside .eyebrow { color: rgba(255,255,255,0.62); }
+.dp-strategy.is-navy .dps-aside .t { color: #fff; }
+.dp-strategy.is-navy .dps-aside a:hover .t { color: var(--gold); }
+.dp-strategy.is-navy .dps-aside .m { color: rgba(255,255,255,0.62); }
+#dps-travel:focus-visible ~ .dps-pills label[for="dps-travel"],
+#dps-cashback:focus-visible ~ .dps-pills label[for="dps-cashback"],
+#dps-welcome:focus-visible ~ .dps-pills label[for="dps-welcome"],
+#dps-first:focus-visible ~ .dps-pills label[for="dps-first"] {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+.dps-panel { display: none; }
+#dps-travel:checked ~ .dps-panel.is-travel,
+#dps-cashback:checked ~ .dps-panel.is-cashback,
+#dps-welcome:checked ~ .dps-panel.is-welcome,
+#dps-first:checked ~ .dps-panel.is-first {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+@media (min-width: 900px) {
+  #dps-travel:checked ~ .dps-panel.is-travel,
+  #dps-cashback:checked ~ .dps-panel.is-cashback,
+  #dps-welcome:checked ~ .dps-panel.is-welcome,
+  #dps-first:checked ~ .dps-panel.is-first {
+    grid-template-columns: 1.4fr 1fr;
+    gap: 32px;
+  }
+}
+/* Card rows — the .dp-live-desk row idiom: rank / name+bank / stat chip */
+.dps-cards {
+  list-style: none; margin: 0; padding: 0;
+  border-top: 1px solid var(--line);
+}
+.dps-cards li { border-bottom: 1px solid var(--line); }
+.dps-cards a {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 14px; align-items: baseline;
+  padding: 14px 0;
+  text-decoration: none;
+}
+.dps-cards .rank {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 16px; color: var(--muted);
+}
+.dps-cards .name {
+  font-weight: 700; font-size: 14px; color: var(--ink);
+  transition: color 0.15s;
+}
+.dps-cards a:hover .name { color: var(--green); }
+.dps-cards .bank {
+  display: block;
+  font-size: 12px; font-weight: 400; color: var(--muted);
+  margin-top: 2px;
+}
+.dps-cards .stat {
+  font-size: 12px; font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  text-align: right;
+}
+.dps-cards .stat small {
+  display: block;
+  font-size: 11px; font-weight: 400; color: var(--muted);
+}
+.dps-aside { display: flex; flex-direction: column; gap: 12px; }
+.dps-aside a {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+.dps-aside a:hover { border-color: var(--green); }
+.dps-aside .eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted);
+}
+.dps-aside .t {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: 16px; line-height: 1.3;
+  color: var(--ink);
+  transition: color 0.15s;
+}
+.dps-aside a:hover .t { color: var(--green); }
+.dps-aside .m { font-size: 11px; color: var(--muted); }
+@media (max-width: 640px) {
+  .dp-strategy { padding: 32px 24px 28px; }
+  .dps-cards .stat { white-space: normal; max-width: 120px; }
+}
+
+/* dp-home-section:strategy:end */
+
+/* dp-home-section:back-to-top:start */
+/* ════════════════════════════════════════════════════════════════════════
+   Back-to-top button — site-wide, fixed bottom-right.
+   Hidden by default; .is-visible toggled by inline script in BaseLayout
+   when window.scrollY > 600. Click smooths to top, honouring
+   prefers-reduced-motion. Sits above the footer at z-index 40 (under the
+   header overlay at 200 / mega-panel at 48 by design).
+   ════════════════════════════════════════════════════════════════════════ */
+.dp-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(15, 31, 46, 0.12);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    visibility 0s linear 0.2s;
+  z-index: 40;
+  padding: 0;
+}
+.dp-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+.dp-to-top:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+@media (prefers-reduced-motion: reduce) {
+  .dp-to-top {
+    transition: opacity 0.01s, visibility 0s linear 0.01s;
+    transform: none;
+  }
+  .dp-to-top.is-visible { transform: none; }
+}
+@media (max-width: 768px) {
+  .dp-to-top {
+    bottom: 16px;
+    right: 16px;
+  }
+}
+
+/* dp-home-section:back-to-top:end */
+
+/* dp-home-section:image-theme-motion:start */
+/* ════════════════════════════════════════════════════════════════════════
+   IMAGE SKELETON / LOADING STATES — July 2026
+   Prevents layout shift while StockImage loads or falls back to SVG.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Skeleton pulse animation */
+@keyframes dp-skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+/* Any image container with data-loading */
+.dp-img-wrap {
+  position: relative;
+  background: var(--shade-1);
+  overflow: hidden;
+}
+.dp-img-wrap[data-loading="true"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--shade-2) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: dp-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+/* StockImage SVG fallback: ensure it fills container */
+svg.dp-cover {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Smooth image fade-in when loaded */
+.dp-img-wrap img {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.dp-img-wrap img[data-loaded="true"],
+.dp-img-wrap img:not([data-loading]) {
+  opacity: 1;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   DARK MODE — July 2026
+   Toggle via data-theme="dark" on <html> (init script in BaseLayout;
+   ThemeToggle in the header). Palette authored in PR #274 (@sweater9),
+   applied here because the fork branch conflicted with main after the
+   #271 skeleton styles landed. Contrast fixes appended below.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* Smooth transition between themes */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+html * {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Dark palette overrides */
+[data-theme="dark"] {
+  --bg:        #0f1419;
+  --paper:     #1a1f2e;
+  --shade-1:   #242b3d;
+  --shade-2:   #2d3548;
+
+  --navy:      #c5d1e0;          /* inverted: light text on dark */
+  --navy-deep: #0a0e17;
+
+  --ink:       #e8ecf1;
+  --ink-soft:  #9aa5b8;
+  --muted:     #9aa5b8;          /* AA on dark paper and page backgrounds */
+
+  --line:      #2a3142;
+  --line-soft: #1e2535;
+
+  /* Dark accents derive from the brand navy #1f3a4d, lightened for
+     contrast on dark surfaces — NOT a new hue. The original dark palette
+     (PR #274) substituted teal #7dd3c0 here; Chairman ruling 25 July
+     2026: off-brand, removed. Gold stays the sole secondary accent. */
+  --green:     #8fb3cc;          /* lightened brand navy for dark bg */
+  --green-band:#6f95ad;
+  --navy-lift:      #8fb3cc;
+  --navy-lift-soft: rgba(143, 179, 204, 0.08);
+  /* Gold on dark surfaces: the light-theme wash (#f3ead6) stayed light in
+     dark mode, so light text sat on it at 2.1:1 (2026-09-06 audit, F-003). */
+  --gold-soft: #2e2a1c;
+  --gold-ink:  #d9a85a;
+  --gold-lift: #d9a441;
+  --gold-hover:#c9933a;
+
+  /* Signal and feedback tokens had NO dark values, so they kept their
+     light-theme hues against the dark surface: --red at 3.3:1 on the "Our
+     take" label and the calculator's drift chip, --positive at 2.6:1.
+     Lightened here to the same hue at 6:1 or better on #1a1f2e. These stay
+     outside the two-accent system as state, not brand accent, per the
+     10 September 2026 amendment — but state still has to be legible. */
+  --red:      #e8836f;
+  --positive: #7fc3a1;
+  --negative: #e0947c;
+
+  --link:      #6ba3f5;
+  --link-deep: #4a8de0;
+  --link-soft: rgba(107, 163, 245, 0.1);
+}
+
+/* Dark mode specific adjustments */
+[data-theme="dark"] .dp-header {
+  background: var(--paper);
+  border-bottom-color: var(--line);
+}
+/* F-003 knock-on: same light-navy --green under white text on hover. */
+[data-theme="dark"] .dp-dir-pill.is-feature:hover { background: #1f3a4d; }
+[data-theme="dark"] .dp-footer {
+  background: #0a0e17;
+}
+[data-theme="dark"] .dp-story-card {
+  background: var(--paper);
+  border-color: var(--line);
+}
+
+/* Navy-band surfaces (merge review, July 2026): the inverted --navy
+   token (#c5d1e0) is right for navy *text* but wrong for navy *band
+   backgrounds* — the card-review hero, live strip, subscribe pill and
+   navy feature bands would wash out to pale blue behind white text.
+   Pin those surfaces to a dark navy instead. */
+[data-theme="dark"] .dp-cr-hero,
+[data-theme="dark"] .dp-band-navy,
+[data-theme="dark"] .dp-band-green,
+[data-theme="dark"] .dp-feature-card {
+  background: var(--navy-pin);
+}
+/* The feat-arrow is white-circle + var(--navy) glyph; inverted --navy is
+   near-white in dark mode — pin the glyph to the dark surface colour. */
+[data-theme="dark"] .dp-feature-card .feat-arrow { color: #16202c; }
+
+/* Contrast note (Aug 2026 homepage rewrite): the hero CTAs use
+   var(--ink) on var(--paper), which self-inverts with the theme — no
+   per-theme override needed. The old .hp-hero-form-cta green-button
+   fixes left with the classes they patched. */
+/* The frosted-glass scrolled header keyframe bakes in a light paper
+   colour; keep the header solid dark instead. */
+@supports (animation-timeline: scroll()) {
+  [data-theme="dark"] .dp-header { animation: none; }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html, html * {
+    transition: none !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Motion layer — 2026-10-04 redesign, Phase 1 (A+B direction).
+   Patterns modelled on the animated libraries on 21st.dev (scroll reveal,
+   number ticker, cursor spotlight, CTA shine), rebuilt in house CSS + a
+   small vanilla module in BaseLayout.astro — no React, no animation lib.
+   Rules: transform/opacity only; everything is fully visible without JS
+   (the module adds .dp-motion to <html> before anything hides); and the
+   whole layer is off under prefers-reduced-motion.
+   ════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero entrance — staggered rise of kicker, headline, lede, CTAs. */
+  .hp-hero-text > * {
+    animation: dp-rise 0.7s var(--dp-ease) both;
+  }
+  .hp-hero-text > :nth-child(2) { animation-delay: 0.08s; }
+  .hp-hero-text > :nth-child(3) { animation-delay: 0.16s; }
+  .hp-hero-text > :nth-child(4) { animation-delay: 0.24s; }
+  .hp-hero-text > :nth-child(5) { animation-delay: 0.32s; }
+  /* The h1 already rises; a second rise on its <em> compounded the two
+     (motion audit F9). The LCP image fades briefly with no delay (F10). */
+
+  /* Scroll reveal — only once the module has marked the page. */
+  .dp-motion .dp-reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.5s var(--dp-ease), transform 0.5s var(--dp-ease);
+    /* --dp-i is the element's index within the batch that entered the
+       viewport together (0–3), never its position in the DOM (audit F2). */
+    transition-delay: calc(var(--dp-i, 0) * 60ms);
+  }
+  .dp-motion .dp-reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Lift on hover — declared once for directory tiles, tool cards and the
+     homepage picks (audit F6: the same rule had three copies). */
+  .dp-dir-tile, .dp-tool, .hp-pick {
+    transition: border-color 0.15s, transform 0.2s var(--dp-ease-hover), box-shadow 0.2s var(--dp-ease-hover);
+  }
+  .dp-dir-tile:hover, .dp-tool:hover, .hp-pick:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px -16px rgba(15, 42, 68, 0.45);
+  }
+
+  /* The primary hero CTA keeps its once-only load shimmer (::before, below)
+     and the 1px lift. The hover sweep that sat on ::after is gone: three
+     motions on one button, and it swept back on mouse-out (audit F7, F8). */
+  .hp-hero-cta:not(.is-ghost) {
+    position: relative;
+    overflow: hidden;
+  }
+}
+
+/* Figures keep their width while a ticker counts up. */
+[data-count] { font-variant-numeric: tabular-nums; }
+
+@keyframes dp-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes dp-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Phase 3 idioms (4 Oct 2026): carousel + hover peek ─────────────── */
+/* Swipeable row: CSS scroll-snap, so it works with no JS (swipe, drag,
+   trackpad, keyboard). The motion module only unhides the prev/next
+   buttons and scrolls by one viewport of items. */
+.dp-carousel {
+  list-style: none; margin: 0; padding: 4px 0 12px;
+  display: grid; grid-auto-flow: column;
+  grid-auto-columns: min(300px, 78vw);
+  gap: 16px;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-padding-inline: var(--dp-carousel-gutter, 0px);
+  -webkit-overflow-scrolling: touch;
+  padding-inline: var(--dp-carousel-gutter, 0px);
+}
+/* The scrollbar is the one no-JS overflow cue for mouse users; hide it only
+   where the prev/next buttons stand in, and keep it under reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .dp-carousel { scrollbar-width: none; }
+  .dp-carousel::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 640px) {
+  /* Full-bleed on phones: the next card peeks past the gutter on purpose. */
+  .dp-carousel { --dp-carousel-gutter: 20px; margin-inline: -20px; }
+}
+.dp-carousel-item { scroll-snap-align: start; }
+.dp-carousel-nav { display: flex; gap: 8px; }
+.dp-carousel-btn {
+  width: 40px; height: 40px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--paper); color: var(--ink);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; touch-action: manipulation;
+  transition: border-color 0.15s, color 0.15s, transform 0.15s;
+}
+.dp-carousel-btn:hover { border-color: var(--green); color: var(--green); }
+.dp-carousel-btn:active:not(:disabled) { transform: scale(0.96); }
+.dp-carousel-btn:disabled { opacity: 0.35; cursor: default; }
+.dp-carousel-btn[hidden] { display: none; }
+
+/* Hover peek: a fact card that appears over a card link on pointer hover
+   or keyboard focus. Decorative (aria-hidden): the same facts live on the
+   review page the link opens. Never shown on touch-only devices. */
+.has-peek { position: relative; }
+.dp-peek {
+  display: none;
+  position: absolute; left: 42px; bottom: calc(100% + 6px); z-index: 5;
+  min-width: 240px;
+  padding: 14px 16px;
+  background: var(--paper); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 8px;
+  box-shadow: 0 18px 40px -18px rgba(15, 31, 46, 0.45);
+  max-width: 320px;
+  font-size: 12px; font-weight: 500; text-align: left; white-space: normal;
+  pointer-events: none;
+}
+.dp-peek-row { display: flex; justify-content: space-between; gap: 18px; padding: 3px 0; }
+.dp-peek-row span { color: var(--muted); }
+.dp-peek-row strong { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; overflow-wrap: anywhere; }
+.dp-peek-more { display: block; margin-top: 8px; font-weight: 700; color: var(--green); }
+@media (hover: hover) {
+  .has-peek:hover .dp-peek, .has-peek:focus-visible .dp-peek { display: block; }
+}
+@media (prefers-reduced-motion: no-preference) and (hover: hover) {
+  .has-peek:hover .dp-peek, .has-peek:focus-visible .dp-peek { animation: dp-rise 0.22s var(--dp-ease) both; }
+}
+
+/* ── Phase 3 motion: hero drift, gold shimmer, mobile-menu stagger ──── */
+@media (prefers-reduced-motion: no-preference) {
+  /* A slow gold/navy light drifts across the homepage hero once (14 s) and
+     settles. WCAG 2.2.2 covers any motion lasting > 5 s alongside content;
+     the brief records why this one is kept (a 12% translate of a soft
+     gradient, below the threshold at which it reads as movement).
+     The card review gets the short, translate-only variant: a reader opens
+     several reviews a session (audit F11; UX review 4 Oct 2026). */
+  .hp-hero::before { animation: dp-drift 14s ease-out 1 forwards; }
+  .dp-cr-hero::before { animation: dp-drift-soft 4.5s ease-out 1 forwards; }
+
+  /* Continuous soft sheen on the gold CTA; the hover sweep sits on top. */
+  .hp-hero-cta:not(.is-ghost)::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(100deg, transparent 20%, rgba(255, 255, 255, 0.28) 50%, transparent 80%);
+    background-size: 250% 100%;
+    animation: dp-shimmer 2.4s ease-in-out 0.6s 1 both;
+    pointer-events: none;
+  }
+
+  /* The mobile menu's staggered row entrance and backdrop blur were removed
+     on 4 Oct 2026 (motion audit F12, F13): navigation is a daily utility and
+     opens from the keyboard too, so the panel slide (Header.astro) is the
+     one orientation cue. */
+}
+@keyframes dp-drift {
+  from { transform: translate3d(-6%, -4%, 0) scale(1); }
+  to   { transform: translate3d(6%, 5%, 0) scale(1.12); }
+}
+@keyframes dp-drift-soft {
+  from { transform: translate3d(-4%, -3%, 0) scale(1); }
+  to   { transform: translate3d(4%, 3%, 0) scale(1.04); }
+}
+@keyframes dp-shimmer {
+  0%   { background-position: 120% 0; }
+  100% { background-position: -120% 0; }
+}
+
+/* ── Scroll motion, site-wide (5 Oct 2026) — removed 7 Oct 2026 ─────────
+   The scroll-driven picture "open" crop and lede blur that stood here were
+   removed by the UX review: pictures and text arrive still. */
+
+/* ── Page transitions (6 Oct 2026) ─────────────────────────────────────
+   Cross-document view transitions: moving between pages fades the old
+   page down and the new one up instead of a hard blink, the way the
+   template sites feel. CSS only; browsers without support navigate as
+   before. The header keeps its own name so it stays put. */
+@view-transition { navigation: auto; }
+.dp-header { view-transition-name: dp-header; }
+::view-transition-old(root) { animation: dp-vt-out 0.22s ease-in both; }
+::view-transition-new(root) { animation: dp-vt-in 0.38s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes dp-vt-out { to { opacity: 0; transform: translateY(-12px); } }
+@keyframes dp-vt-in { from { opacity: 0; transform: translateY(18px); } }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+/* Guides (6 Oct 2026): reading progress along the very top of the window,
+   and the "In this guide" row for the section on screen. src/scripts/
+   reading.ts creates and scales the bar; without JS there is no bar. */
+.dp-read-progress {
+  position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 200;
+  background: var(--gold);
+  transform: scaleX(0); transform-origin: 0 50%;
+  pointer-events: none;
+}
+.dp-toc-card li { transition: color 0.25s ease; }
+.dp-toc-card li.is-current a { color: var(--green); font-weight: 600; }
+.dp-toc-card li.is-current .num { color: var(--gold-ink); } /* --gold failed 4.5:1 on paper (render audit, 10 Oct 2026) */
+[data-theme="dark"] .dp-toc-card li.is-current a { color: var(--navy-lift); }
+
+/* dp-home-section:image-theme-motion:end */
+
+/* dp-home-section:utility:start */
+/* Editorial Utility — shared controls, with colour from the active theme. */
+:root {
+  --dp-ui-control: 44px;
+  --dp-ui-radius: 8px;
+  --dp-ui-gap: clamp(16px, 2.4vw, 28px);
+  --dp-ui-section: clamp(28px, 5vw, 64px);
+}
+
+:where(.dp-ui-action, .dp-ui-field, .dp-ui-filter) {
+  min-block-size: var(--dp-ui-control);
+  border-radius: var(--dp-ui-radius);
+  font-family: var(--font-ui);
+}
+
+:where(.dp-ui-action, .dp-ui-filter) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.55em 0.85em;
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+:is(.dp-ui-action, .dp-ui-field, .dp-ui-filter)[hidden] { display: none !important; }
+
+.dp-ui-primary { background: var(--green); border-color: var(--green); color: var(--paper); }
+.dp-ui-primary:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+:is(.dp-ui-secondary, .dp-ui-filter) { background: var(--paper); border-color: var(--muted); color: var(--ink); }
+:is(.dp-ui-secondary, .dp-ui-filter):hover { background: var(--shade-1); border-color: var(--green); color: var(--green); }
+.dp-ui-quiet { color: var(--green); background: transparent; }
+.dp-ui-quiet:hover { background: var(--shade-1); text-decoration: underline; text-underline-offset: 0.2em; }
+:where(.dp-ui-field) {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: 0.5em 0.7em;
+  border: 1px solid var(--muted);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.25;
+}
+.dp-ui-filter:is([aria-pressed="true"], [aria-selected="true"], [aria-current="page"], :has(input:checked)) {
+  background: var(--shade-1);
+  color: var(--green);
+  border-color: var(--green);
+  box-shadow: inset 0 -2px var(--green);
+}
+:is(.dp-ui-action, .dp-ui-field, .dp-ui-filter):focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+  border-radius: var(--dp-ui-radius);
+}
+:is(.dp-ui-action, .dp-ui-field, .dp-ui-filter):is(:disabled, [aria-disabled="true"]) {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.dp-skip-link {
+  position: fixed;
+  z-index: 1000;
+  inset: 6px auto auto 12px;
+  transform: translateY(calc(-100% - 12px));
+}
+.dp-skip-link:focus { transform: none; }
+#main-content { scroll-margin-top: var(--dp-sticky-header-height); }
+#main-content:focus { outline: none; }
+/* dp-home-section:utility:end */
+
