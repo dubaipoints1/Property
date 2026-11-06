@@ -62,6 +62,7 @@ const integrityMismatch = routes.length !== scope.routeCount || families.length 
       <ol class="dp-site-review-directions">
         {directions.map((direction, index) => <li><span class="dp-site-review-number" aria-hidden="true">0{index + 1}</span><h3>{direction.name}</h3><p>{direction.idea}</p><p class="dp-site-review-direction-fit">{direction.fit}</p><a class="dp-ui-action dp-ui-secondary" href={`/dev/21st-site-directions/#${direction.id}`}>Explore {direction.name} <span aria-hidden="true">→</span></a></li>)}
       </ol>
+      <p>Prefer the cinematic feel of the current homepage? Compare the newer working animation candidates: <a href="/dev/homepage-motion/aperture/">Journey Aperture</a>, <a href="/dev/homepage-motion/mosaic/">Travel Mosaic</a> and <a href="/dev/homepage-motion/cinema/">Cinema Cut</a>. These evolve the media choreography; none is approved or live.</p>
     </section>
 
     <section class="dp-site-review-section" id="review-findings" aria-labelledby="review-findings-heading">

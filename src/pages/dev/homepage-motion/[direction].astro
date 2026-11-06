@@ -1,0 +1,356 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import StockImage from "~/components/StockImage.astro";
+import ImageCredit from "~/components/ImageCredit.astro";
+import NewsStoryRow from "~/components/NewsStoryRow.astro";
+import { getCollection } from "astro:content";
+import { getStockEntry } from "~/lib/stockManifest";
+
+// Owner exploration only: /dev/ is excluded from the sitemap and pruned
+// before production delivery. These are unselected native compositions,
+// not imported 21st source or changes to the live homepage.
+export function getStaticPaths() {
+  return ["aperture", "mosaic", "cinema"].map(direction => ({ params: { direction }, props: { direction } }));
+}
+const { direction } = Astro.props as { direction: "aperture" | "mosaic" | "cinema" };
+const directions = [
+  { id: "aperture", label: "Journey Aperture", letter: "A", detail: "An intimate frame opens into the journey. Recommended direction." },
+  { id: "mosaic", label: "Travel Mosaic", letter: "B", detail: "Three real photographs form one travel canvas. No video." },
+  { id: "cinema", label: "Cinema Cut", letter: "C", detail: "A wide film frame opens vertically, with a shorter transition." },
+];
+const current = directions.find(item => item.id === direction)!;
+const poster = getStockEntry("hero-card-desk")!;
+const news = (await getCollection("news")).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()).slice(0, 5);
+const reel = {
+  small: "/videos/hero-journey-scrub-720.mp4",
+  standard: "/videos/hero-journey-scrub.mp4",
+  large: "/videos/hero-journey-scrub-2560.mp4",
+};
+const photos = [
+  { slug: "programme-skywards", label: "Emirates, photographed on the runway", position: "left" },
+  { slug: "guide-expat-starter", label: "Dubai, seen from above", position: "centre" },
+  { slug: "programme-etihad-guest", label: "Etihad, photographed on the apron", position: "right" },
+];
+---
+
+<BaseLayout title={`${current.label} — private homepage motion preview | DubaiPoints`} description="An unselected local homepage motion direction. Not the live website." fullWidth>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+  <div class:list={["home-motion", `is-${direction}`]} data-home-motion data-direction={direction} data-pagefind-ignore>
+    <nav class="motion-review-nav" aria-label="Private homepage motion directions">
+      <span>Private preview · not live</span>
+      <div>{directions.map(item => <a href={`/dev/homepage-motion/${item.id}/`} aria-current={item.id === direction ? "page" : undefined}><span>{item.letter}</span> {item.label}</a>)}</div>
+      <label class="motion-simulation"><input type="checkbox" data-motion-static disabled /> Reduce motion in this preview</label>
+    </nav>
+
+    <section class="motion-journey" aria-label={current.label} data-journey>
+      <div class="motion-stage" data-stage>
+        <div class="motion-media" aria-hidden="true">
+          {direction === "mosaic" ? (
+            <div class="mosaic-panels">
+              {photos.map(photo => <div class:list={["mosaic-panel", `is-${photo.position}`]}><StockImage slug={photo.slug} class="motion-photo" loading="eager" delivery="feature" sizes={photo.position === "centre" ? "(max-width: 700px) 100vw, 62vw" : "(max-width: 700px) 48vw, 27vw"} /></div>)}
+            </div>
+          ) : (
+            <div class="reel-frame" data-reel-frame>
+              <img class="reel-poster" src={`/${poster.file}`} alt="" width={poster.width} height={poster.height} fetchpriority="high" decoding="async" />
+              <video class="motion-video" data-motion-video data-src-small={reel.small} data-src={reel.standard} data-src-large={reel.large} preload="none" muted playsinline aria-hidden="true" tabindex="-1"></video>
+              <div class="frame-lines" aria-hidden="true"><span>DubaiPoints / the journey</span><span>Earn · fly · arrive</span></div>
+            </div>
+          )}
+        </div>
+
+        <header class="motion-copy">
+          <p class="motion-eyebrow">Independent UAE points &amp; miles publication</p>
+          <h1>Fly further.<br /><em>Pay less.</em></h1>
+          <p class="motion-deck">UAE-resident guides to the card combinations, salary-transfer bonuses and miles redemptions that stretch a Dubai paycheque further — AED-first, dated and sourced.</p>
+          <div class="motion-actions"><a href="#reporting">Read the latest <span aria-hidden="true">↘</span></a><a href="#tools">Start with a tool <span aria-hidden="true">↗</span></a></div>
+        </header>
+        <div class="motion-direction"><span>{current.letter} / {current.label}</span><span data-motion-status>Static preview · scroll enhancement optional</span></div>
+      </div>
+    </section>
+
+    <section class="motion-reporting" id="reporting" aria-labelledby="reporting-title">
+      <header class="section-heading"><div><p class="section-eyebrow">The latest reporting</p><h2 id="reporting-title">Know more.<br /><em>Travel better.</em></h2></div><a class="motion-text-link" href="/news/">All news <span aria-hidden="true">↗</span></a></header>
+      <ul class="motion-news-list">{news.map(post => <NewsStoryRow post={post} />)}</ul>
+    </section>
+
+    <section class="motion-tools" id="tools" aria-labelledby="tools-title">
+      <header class="section-heading"><div><p class="section-eyebrow">Put the information to work</p><h2 id="tools-title">Your next move.</h2></div><a class="motion-text-link" href="/guides/">Explore the guides <span aria-hidden="true">↗</span></a></header>
+      <div class="motion-tool-grid">
+        <a href="/cards/finder/"><span>01 / Cards</span><h3>Find your fit.</h3><p>Filter the card options, then read the fees, eligibility and terms.</p><strong>Open Card Finder ↗</strong></a>
+        <a href="/salary-transfer/"><span>02 / Salary</span><h3>Check the switch.</h3><p>Compare the qualifying conditions, timing and required products.</p><strong>Open Salary Tracker ↗</strong></a>
+        <a href="/calculator/cash-or-miles/"><span>03 / Miles</span><h3>Cash or miles?</h3><p>Put the fare beside the miles and total cash due on the award.</p><strong>Compare the options ↗</strong></a>
+      </div>
+    </section>
+
+    <aside class="motion-provenance" aria-label="Private preview and media sources">
+      <div><p class="section-eyebrow">Unselected direction / {current.label}</p><p>{current.detail} Normal scrolling is never locked. The preview control above simulates the static fallback; your system preference is also respected.</p></div>
+      {direction === "mosaic" ? <div class="photo-credits">{photos.map(photo => <div><span>{photo.label}</span><ImageCredit slug={photo.slug} /></div>)}</div> : <div><p>The poster is an AI illustration, not a photograph. This uses the existing homepage reel: generated transitions between the card illustration, an illustrated aircraft-window view and a licensed Dubai night photograph. It does not document a named airline cabin or product.</p><ImageCredit slug="hero-card-desk" /><ImageCredit slug="hero-dubai-night" /><p><a href="/editorial-policy/">Our imagery and editorial policy ↗</a></p></div>}
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .home-motion { --motion-p: 0; --motion-header: 88px; color: var(--ink); background: var(--paper); }
+  .motion-review-nav { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 24px; padding: 12px clamp(18px, 4vw, 64px); border-bottom: 1px solid var(--line); font: 500 12px/1.4 var(--font-ui); }
+  .motion-review-nav > span { color: var(--ink-soft); }
+  .motion-review-nav > div { display: flex; gap: 6px; flex-wrap: wrap; }
+  .motion-review-nav a { display: inline-flex; align-items: center; min-block-size: 44px; padding: 10px 12px; border: 1px solid transparent; border-radius: 999px; color: var(--ink); text-decoration: none; }
+  .motion-review-nav a[aria-current="page"] { border-color: var(--green); color: var(--green); background: var(--shade-1); }
+  .motion-review-nav a span { opacity: .6; margin-right: 3px; }
+  .motion-simulation { display: flex; align-items: center; gap: 8px; min-block-size: 44px; cursor: pointer; padding: 10px 0; margin-left: auto; }
+  .motion-simulation input { accent-color: var(--green); width: 18px; height: 18px; }
+  .motion-journey { position: relative; background: #10191a; color: #fff; }
+  .motion-stage { position: relative; isolation: isolate; min-height: min(840px, calc(100svh - var(--motion-header))); display: flex; flex-direction: column; justify-content: flex-end; padding: clamp(30px, 6vw, 90px); overflow: clip; }
+  .motion-media { position: absolute; inset: 0; z-index: -2; }
+  .reel-frame { position: absolute; inset: 0; overflow: hidden; background: #152323; }
+  .reel-poster, .motion-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .motion-video { opacity: 0; }
+  .reel-frame.is-ready .motion-video { opacity: 1; }
+  .reel-frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(4 15 17 / .68), rgb(4 15 17 / .08) 85%), linear-gradient(0deg, rgb(4 15 17 / .8), transparent 85%); }
+  .motion-copy { position: relative; max-width: 780px; padding-block: 50px 28px; }
+  .motion-eyebrow { font: 600 clamp(10px, 1vw, 12px)/1.6 var(--font-ui); text-transform: uppercase; letter-spacing: .19em; color: #d6e6e5; margin: 0 0 20px; }
+  .motion-copy h1 { font: 500 clamp(64px, 8vw, 128px)/.94 var(--font-display); letter-spacing: -.055em; margin: 0; text-wrap: balance; }
+  .motion-copy h1 em { font-weight: 400; }
+  .motion-deck { max-width: 49ch; margin: 26px 0; color: #f1f4f2; font: 400 clamp(16px, 1.4vw, 20px)/1.65 var(--font-ui); text-wrap: pretty; }
+  .motion-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .motion-actions a { display: inline-flex; align-items: center; justify-content: space-between; gap: 25px; min-height: 48px; padding: 12px 20px; border: 1px solid rgb(255 255 255 / .6); border-radius: 999px; color: #fff; background: rgb(4 15 17 / .34); font: 600 14px/1.4 var(--font-ui); text-decoration: none; }
+  .motion-actions a:first-child { color: #122b2d; background: #fff; border-color: #fff; }
+  .motion-actions a:hover { background: #dceeed; color: #122b2d; }
+  .motion-direction { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid rgb(255 255 255 / .3); padding-top: 16px; color: #d5e1df; font: 500 11px/1.6 var(--font-ui); letter-spacing: .04em; }
+  .frame-lines { position: absolute; z-index: 1; inset: 25px 28px auto; display: none; justify-content: space-between; gap: 16px; font: 500 10px/1.4 var(--font-ui); text-transform: uppercase; letter-spacing: .16em; color: #e8efed; }
+  .motion-reporting, .motion-tools, .motion-provenance { max-width: 1180px; margin-inline: auto; padding: clamp(42px, 6vw, 84px) clamp(20px, 4vw, 48px); scroll-margin-top: calc(var(--motion-header) + 20px); }
+  .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+  .section-eyebrow { margin: 0 0 14px; color: var(--green); font: 600 11px/1.6 var(--font-ui); text-transform: uppercase; letter-spacing: .15em; }
+  .section-heading h2 { font: 500 clamp(38px, 4.5vw, 64px)/1.04 var(--font-display); letter-spacing: -.035em; margin: 0; }
+  .section-heading h2 em { font-weight: 400; }
+  .motion-text-link { color: var(--green); font: 600 14px/1.5 var(--font-ui); text-underline-offset: 5px; white-space: nowrap; }
+  .motion-news-list { padding: 0; margin: 0; list-style: none; }
+  .motion-tools { padding-top: 20px; }
+  .motion-tool-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--line); }
+  .motion-tool-grid a { display: flex; flex-direction: column; min-width: 0; padding: 28px 24px; color: var(--ink); text-decoration: none; }
+  .motion-tool-grid a + a { border-left: 1px solid var(--line); }
+  .motion-tool-grid a > span { font: 600 11px/1.5 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; color: var(--green); }
+  .motion-tool-grid h3 { font: 500 33px/1.1 var(--font-display); margin: 20px 0 12px; letter-spacing: -.025em; }
+  .motion-tool-grid p { margin: 0 0 24px; font: 400 15px/1.65 var(--font-ui); color: var(--ink-soft); }
+  .motion-tool-grid strong { margin-top: auto; font: 600 13px/1.5 var(--font-ui); color: var(--green); }
+  .motion-tool-grid a:hover { background: var(--shade-1); }
+  .motion-provenance { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; border-top: 1px solid var(--line); padding-top: 28px; padding-bottom: 32px; color: var(--ink-soft); font: 400 12px/1.7 var(--font-ui); }
+  .motion-provenance p { margin: 0 0 12px; }
+  .motion-provenance a { color: var(--green); text-underline-offset: 3px; }
+  .photo-credits { display: grid; gap: 15px; }
+  .photo-credits > div > span { color: var(--ink); }
+  .home-motion :is(a, input):focus-visible { outline: 3px solid var(--green); outline-offset: 5px; }
+  .motion-journey a:focus-visible { outline-color: #fff; }
+
+  /* The default is a complete single-screen composition. Only JS with
+     motion allowed adds the short native-scroll choreography. */
+  .home-motion.is-enhanced .motion-journey { height: 170svh; }
+  .home-motion.is-enhanced .motion-stage { position: sticky; top: var(--motion-header); height: calc(100svh - var(--motion-header)); min-height: 0; }
+  .is-aperture.is-enhanced .reel-frame { inset: calc((1 - var(--motion-p)) * 24px) calc((1 - var(--motion-p)) * 5vw); border-radius: calc((1 - var(--motion-p)) * 46px); }
+  .is-aperture.is-enhanced .reel-poster, .is-aperture.is-enhanced .motion-video { transform: scale(calc(1.09 - var(--motion-p) * .09)); }
+  .is-cinema .frame-lines { display: flex; }
+  .is-cinema .motion-copy { max-width: 920px; }
+  .is-cinema .motion-copy h1 { font-size: clamp(64px, 8.8vw, 140px); }
+  .is-cinema .motion-copy h1 br { display: none; }
+  .is-cinema.is-enhanced .motion-journey { height: 145svh; }
+  .is-cinema.is-enhanced .reel-frame { inset: calc((1 - var(--motion-p)) * 12vh) 0; }
+  .is-cinema.is-enhanced .reel-poster, .is-cinema.is-enhanced .motion-video { transform: scale(calc(1.16 - var(--motion-p) * .16)); }
+  .is-cinema.is-enhanced .motion-copy { padding-bottom: 40px; }
+
+  .mosaic-panels { position: absolute; inset: 0; display: grid; grid-template-columns: 25% 50% 25%; align-items: center; }
+  /* One continuous scrim keeps the deck readable when phone copy crosses
+     from the skyline into a bright aircraft photograph. */
+  .mosaic-panels::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 24%, rgb(0 0 0 / .58) 55%, rgb(0 0 0 / .72)); }
+  .mosaic-panel { position: relative; min-width: 0; height: 100%; overflow: hidden; background: #153235; }
+  .mosaic-panel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(4 15 17 / .9), rgb(4 15 17 / .15) 95%); }
+  .mosaic-panel :global(.motion-photo) { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .mosaic-panel.is-left :global(.motion-photo) { object-position: 48% center; }
+  .mosaic-panel.is-right :global(.motion-photo) { object-position: 58% center; }
+  .is-mosaic.is-enhanced .mosaic-panels { inset: 6vh 4vw; gap: calc((1 - var(--motion-p)) * 20px); }
+  .is-mosaic.is-enhanced .mosaic-panel { border-radius: calc((1 - var(--motion-p)) * 24px); }
+  .is-mosaic.is-enhanced .mosaic-panel.is-left { height: calc(70% + var(--motion-p) * 30%); transform: translateY(calc((1 - var(--motion-p)) * -30px)) rotate(calc((1 - var(--motion-p)) * -5deg)); }
+  .is-mosaic.is-enhanced .mosaic-panel.is-centre { transform: scale(calc(.92 + var(--motion-p) * .08)); }
+  .is-mosaic.is-enhanced .mosaic-panel.is-right { height: calc(70% + var(--motion-p) * 30%); transform: translateY(calc((1 - var(--motion-p)) * 30px)) rotate(calc((1 - var(--motion-p)) * 5deg)); }
+
+  @media (max-width: 700px) {
+    .motion-review-nav { gap: 4px 12px; padding: 8px 16px; }
+    .motion-review-nav > span { width: 100%; font-size: 10px; }
+    .motion-review-nav > div { gap: 0; }
+    .motion-review-nav a { font-size: 10px; padding: 10px 8px; }
+    .motion-simulation { margin-left: 0; font-size: 10px; }
+    .motion-stage { padding: 24px; min-height: max(640px, calc(100svh - var(--motion-header))); }
+    .motion-copy { padding-top: 90px; padding-bottom: 30px; }
+    .motion-copy h1, .is-cinema .motion-copy h1 { font-size: clamp(60px, 17vw, 90px); }
+    .motion-copy h1 br { display: block; }
+    .motion-eyebrow { max-width: 27ch; font-size: 10px; margin-bottom: 18px; }
+    .motion-deck { font-size: 15px; line-height: 1.65; margin-block: 22px; }
+    .motion-actions { gap: 8px; }
+    .motion-actions a { padding: 12px 15px; font-size: 12px; gap: 12px; }
+    .motion-direction { font-size: 9px; gap: 10px; }
+    .motion-direction > span:last-child { text-align: right; max-width: 20ch; }
+    .home-motion.is-enhanced .motion-journey { height: 160svh; }
+    .home-motion.is-enhanced .motion-stage { height: max(640px, calc(100svh - var(--motion-header))); }
+    .is-cinema.is-enhanced .motion-journey { height: 140svh; }
+    .is-aperture.is-enhanced .reel-frame { inset: calc((1 - var(--motion-p)) * 12px); border-radius: calc((1 - var(--motion-p)) * 26px); }
+    .is-cinema.is-enhanced .reel-frame { inset-block: calc((1 - var(--motion-p)) * 6vh); }
+    .frame-lines { inset: 20px 18px auto; font-size: 8px; }
+    .frame-lines > span:last-child { display: none; }
+    .mosaic-panels { grid-template-columns: 1fr 1fr; grid-template-rows: 62% 38%; }
+    .mosaic-panel.is-centre { grid-column: 1 / -1; grid-row: 1; }
+    .mosaic-panel.is-left, .mosaic-panel.is-right { grid-row: 2; }
+    .is-mosaic.is-enhanced .mosaic-panels { inset: 12px; gap: calc((1 - var(--motion-p)) * 10px); }
+    .is-mosaic.is-enhanced .mosaic-panel.is-left, .is-mosaic.is-enhanced .mosaic-panel.is-right { height: 100%; transform: translateY(calc((1 - var(--motion-p)) * 20px)); }
+    .is-mosaic.is-enhanced .mosaic-panel.is-centre { transform: none; }
+    .section-heading { align-items: flex-start; gap: 16px; }
+    .motion-text-link { font-size: 12px; padding-top: 7px; white-space: normal; }
+    .motion-tool-grid { grid-template-columns: 1fr; }
+    .motion-tool-grid a { padding: 26px 0; }
+    .motion-tool-grid a + a { border-left: 0; border-top: 1px solid var(--line); }
+    .motion-tool-grid h3 { margin-top: 12px; }
+    .motion-provenance { grid-template-columns: 1fr; gap: 20px; }
+  }
+  @media (max-height: 479px) {
+    .motion-stage { min-height: 570px; }
+    .motion-copy { padding-top: 65px; max-width: 720px; }
+    .motion-copy h1, .is-cinema .motion-copy h1 { font-size: 76px; }
+    .motion-copy h1 br { display: none; }
+    .motion-deck { max-width: 58ch; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .home-motion.is-enhanced .motion-journey { height: auto; }
+    .home-motion.is-enhanced .motion-stage { position: relative; top: auto; height: auto; min-height: min(840px, calc(100svh - var(--motion-header))); }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>("[data-home-motion]");
+  if (root) {
+    const journey = root.querySelector<HTMLElement>("[data-journey]")!;
+    const stage = root.querySelector<HTMLElement>("[data-stage]")!;
+    const copy = root.querySelector<HTMLElement>(".motion-copy")!;
+    const directionLabel = root.querySelector<HTMLElement>(".motion-direction")!;
+    const video = root.querySelector<HTMLVideoElement>("[data-motion-video]");
+    const frame = root.querySelector<HTMLElement>("[data-reel-frame]");
+    const staticControl = root.querySelector<HTMLInputElement>("[data-motion-static]")!;
+    const status = root.querySelector<HTMLElement>("[data-motion-status]")!;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let headerHeight = 0;
+    let raf = 0;
+    let intentAt = -Infinity;
+    let desiredProgress = 0;
+    let attached = false;
+    let enhancement = false;
+    let previousY = window.scrollY;
+    const clamp = (value: number) => Math.max(0, Math.min(1, value));
+    const canAnimate = () => !reduced.matches && !staticControl.checked && window.innerHeight >= 480 && (window.innerWidth > 700 || window.innerHeight - headerHeight >= 640);
+    const withinHero = () => {
+      const rect = journey.getBoundingClientRect();
+      return rect.top < window.innerHeight && rect.bottom > headerHeight + 40;
+    };
+    const progress = () => {
+      const rect = journey.getBoundingClientRect();
+      return clamp((headerHeight - rect.top) / Math.max(1, rect.height - stage.offsetHeight));
+    };
+    const cancelFrame = () => { if (raf) window.cancelAnimationFrame(raf); raf = 0; };
+    const detach = () => {
+      if (!video) return;
+      video.pause();
+      frame?.classList.remove("is-ready");
+      if (attached) { video.removeAttribute("src"); video.load(); }
+      attached = false;
+    };
+    // A seek is requested only after a scroll/data/seek completion event.
+    // No playback, perpetual interpolation loop or idle animation timer.
+    const seek = () => {
+      if (!video || !attached || !enhancement || document.hidden || !withinHero() || video.readyState < 2 || video.seeking || !Number.isFinite(video.duration) || video.duration <= 0) return;
+      const target = desiredProgress * Math.max(0, video.duration - .08);
+      if (Math.abs(video.currentTime - target) > .055) {
+        try { video.currentTime = target; } catch { /* Retain the complete poster if seeking is unavailable. */ }
+      } else frame?.classList.add("is-ready");
+    };
+    const paint = () => {
+      raf = 0;
+      if (!enhancement || document.hidden) return;
+      desiredProgress = progress();
+      root.style.setProperty("--motion-p", desiredProgress.toFixed(4));
+      seek();
+    };
+    const queue = () => { if (!raf && enhancement && !document.hidden) raf = window.requestAnimationFrame(paint); };
+    const reset = () => {
+      cancelFrame();
+      intentAt = -Infinity;
+      desiredProgress = 0;
+      root.style.setProperty("--motion-p", "0");
+      detach();
+    };
+    const measure = () => {
+      headerHeight = document.querySelector<HTMLElement>(".dp-header")?.offsetHeight ?? 0;
+      root.style.setProperty("--motion-header", `${headerHeight}px`);
+      const allowed = canAnimate();
+      // A short but wide window may pass a breakpoint while the actual
+      // headline/deck/actions cannot fit. Measure the enhanced candidate,
+      // then prefer normal-height static flow to clipping any control.
+      root.classList.toggle("is-enhanced", allowed);
+      const style = getComputedStyle(stage);
+      const contentHeight = copy.offsetHeight + directionLabel.offsetHeight
+        + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + 8;
+      const next = allowed && contentHeight <= stage.clientHeight;
+      if (next !== enhancement) reset();
+      enhancement = next;
+      root.classList.toggle("is-enhanced", enhancement);
+      status.textContent = enhancement ? (video ? "Scroll to open the frame and explore the reel" : "Scroll to bring the photographs together") : "Static preview · no video loading";
+      previousY = window.scrollY;
+      queue(); // Layout only: a resize never attaches media.
+    };
+    const recordIntent = (event: Event) => {
+      if (event.isTrusted && enhancement && withinHero() && !document.hidden) intentAt = performance.now();
+    };
+    window.addEventListener("wheel", recordIntent, { passive: true });
+    window.addEventListener("touchmove", recordIntent, { passive: true });
+    window.addEventListener("keydown", event => {
+      const target = event.target;
+      if (event.defaultPrevented) return;
+      if (target instanceof Element && target.closest("input, textarea, select, [contenteditable]")) return;
+      // Arrow/Page keys also scroll when a link has focus. Only Space on
+      // a button is activation rather than scroll; Enter is not allowed.
+      if (event.key === " " && target instanceof Element && target.closest("button")) return;
+      if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", " "].includes(event.key) && !event.metaKey && !event.ctrlKey && !event.altKey) recordIntent(event);
+    });
+    // All anchor navigation, including Enter and smooth anchor travel, revokes
+    // earlier intent. The next real scrolling input must grant fresh intent.
+    document.addEventListener("click", event => {
+      if (event.target instanceof Element && event.target.closest("a[href]")) intentAt = -Infinity;
+    }, true);
+    window.addEventListener("hashchange", () => { intentAt = -Infinity; queue(); });
+    window.addEventListener("popstate", () => { intentAt = -Infinity; queue(); });
+    window.addEventListener("scroll", () => {
+      const changed = Math.abs(window.scrollY - previousY) > .5;
+      previousY = window.scrollY;
+      if (!enhancement) return;
+      const p = progress();
+      // Intent alone is not enough: the resulting scroll must actually pass
+      // through this hero. A direct jump beyond it leaves the reel detached.
+      if (video && !attached && changed && performance.now() - intentAt < 900 && withinHero() && p > 0 && p < .96 && !document.hidden) {
+        const source = window.innerWidth <= 899 ? video.dataset.srcSmall : window.innerWidth >= 1600 ? video.dataset.srcLarge : video.dataset.src;
+        if (source) { attached = true; video.preload = "auto"; video.src = source; video.load(); }
+      }
+      if (!withinHero()) video?.pause();
+      queue();
+    }, { passive: true });
+    video?.addEventListener("loadeddata", () => { if (attached && enhancement) queue(); });
+    video?.addEventListener("seeked", () => { if (attached && enhancement && !document.hidden && withinHero()) { frame?.classList.add("is-ready"); queue(); } });
+    video?.addEventListener("error", () => { frame?.classList.remove("is-ready"); video?.pause(); });
+    staticControl.addEventListener("change", measure);
+    reduced.addEventListener("change", measure);
+    window.addEventListener("resize", () => { intentAt = -Infinity; measure(); }, { passive: true });
+    document.addEventListener("visibilitychange", () => {
+      intentAt = -Infinity;
+      cancelFrame();
+      video?.pause();
+      if (!document.hidden) measure();
+    });
+    staticControl.disabled = false;
+    measure();
+    document.fonts?.ready.then(measure);
+  }
+</script>
