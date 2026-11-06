@@ -3,6 +3,11 @@
     "asOf": "2026-11-06",
     "baseSha": "d4a4f9494e3ef6f9cd929d440160a80f316b14ff",
     "sourceSha": "d4a4f9494e3ef6f9cd929d440160a80f316b14ff",
+    "sourceReferenceRefresh": {
+      "asOf": "2026-11-06",
+      "files": ["src/pages/index.astro"],
+      "reason": "Homepage hero extraction moved source lines. Homepage references below now identify the current staged source; sourceSha and the rendered observations retain their original audit baseline. No finding is marked fixed by this address refresh."
+    },
     "productionSha": "651fb0506cc03f5821e0d28659043c57eee76062",
     "previewBase": "https://b56c0664.dubaipoints.pages.dev",
     "routeCount": 322,
@@ -2100,11 +2105,11 @@
       "sources": [
         {
           "file": "src/pages/index.astro",
-          "line": 120
+          "line": 99
         },
         {
           "file": "src/pages/index.astro",
-          "line": 200
+          "line": 180
         }
       ]
     },
@@ -2184,11 +2189,11 @@
       "sources": [
         {
           "file": "src/pages/index.astro",
-          "line": 437
+          "line": 373
         },
         {
           "file": "src/pages/index.astro",
-          "line": 562
+          "line": 499
         }
       ]
     },
@@ -2303,20 +2308,20 @@
       "priority": "P2",
       "title": "Motion must react to live preference changes",
       "evidenceType": "proven-source",
-      "observation": "Homepage scripts sample prefers-reduced-motion on initialisation. CSS alone may leave reveal states or animation work on a live preference change. Runtime-change testing is pending.",
+      "observation": "The unchanged below-hero homepage script samples prefers-reduced-motion on initialisation. CSS alone may leave reveal states or animation work on a live preference change. The extracted Aperture controller has a change listener; this finding remains about the below-hero motion, not a claim that the new hero resolves it. Runtime-change testing is pending.",
       "recommendation": "Cancel observers/RAF/seeking and reveal final states immediately. No gallery autoplay, scroll lock or animated financial values.",
       "sources": [
         {
           "file": "src/pages/index.astro",
-          "line": 709
+          "line": 638
         },
         {
           "file": "src/pages/index.astro",
-          "line": 796
+          "line": 647
         },
         {
           "file": "src/pages/index.astro",
-          "line": 1390
+          "line": 998
         }
       ]
     },
@@ -2334,7 +2339,7 @@
         },
         {
           "file": "src/pages/index.astro",
-          "line": 364
+          "line": 342
         },
         {
           "file": "src/components/Footer.astro",

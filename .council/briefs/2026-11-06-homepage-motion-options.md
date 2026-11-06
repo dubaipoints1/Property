@@ -1,7 +1,22 @@
 # Homepage motion: evolve the existing journey
 
 Date: 2026-11-06. Tier: T3 exploration. Coordinator: Codex.
-State: unselected local previews; no production release authority.
+State: Journey Aperture selected for staging on 2026-11-06; no production release authority.
+
+## Owner selection — 2026-11-06
+
+Mostafa answered “Yes. Is that the best. All happy?” to taking Journey
+Aperture forward. This selects the motion direction only. The earlier
+unselected exploration below is retained as history; it is not approval of
+a new palette, the separate full-homepage compositions or deployment.
+
+Recommendation: strongest fit of these three because it preserves the
+existing journey while improving frame choreography. No conversion uplift
+is established. Fresh independent source review found no further private
+preview blocker, but identified scrollbar-only initiation as unsupported by
+the current wheel/touch/key intent gate. Actual homepage integration,
+that input case, physical iPhone Safari and the recorded accessibility,
+performance, CI and T3 Council/release gates remain open.
 
 ## Owner direction
 

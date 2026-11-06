@@ -2,7 +2,22 @@
 
 Date: 2026-11-06. Coordinator: Codex. State: local candidate, not live.
 Owner likes the existing animated journey and requested stronger 21st-inspired
-motion. No replacement direction selected or production release authorised.
+motion. Journey Aperture was selected for staging on 2026-11-06; production
+release remains unauthorised.
+
+## Selection and fresh readiness review — 2026-11-06
+
+Mostafa answered “Yes. Is that the best. All happy?” to taking Journey
+Aperture forward. Selection is limited to this motion direction, not the
+separate full-page composition, palette/type changes or live release.
+
+Fresh independent source review supports Aperture as the strongest fit
+among these three, not a proven conversion improvement. No further private
+preview blocker was found. Scrollbar-only initiation is unsupported by the
+current trusted wheel/touch/key gate and must be resolved/tested before
+release. The runtime/physical Safari/performance gates below, actual
+homepage integration, exact-head remote CI and T3 approval remain open.
+This turn records selection only; no functional site change, push or release.
 
 ## Implemented
 

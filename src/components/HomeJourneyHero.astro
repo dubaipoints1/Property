@@ -1,0 +1,136 @@
+---
+import { getStockEntry } from "~/lib/stockManifest";
+
+// Journey Aperture: the owner-selected native adaptation of the researched
+// frame-expansion pattern. Existing media/provenance, never catalogue media.
+const poster = getStockEntry("hero-card-desk");
+---
+
+<header class="dp-home-journey" data-home-journey aria-label="The points journey">
+  <div class="journey-stage" data-journey-stage>
+    <div class="journey-media" aria-hidden="true">
+      <div class="journey-frame" data-journey-frame>
+        {poster && <img class="journey-poster" src={`/${poster.file}`} alt="" width={poster.width} height={poster.height} fetchpriority="high" decoding="async" />}
+        <video
+          class="journey-video"
+          data-journey-video
+          data-src-small="/videos/hero-journey-scrub-720.mp4"
+          data-src="/videos/hero-journey-scrub.mp4"
+          data-src-large="/videos/hero-journey-scrub-2560.mp4"
+          width="1280"
+          height="960"
+          preload="none"
+          muted
+          playsinline
+          aria-hidden="true"
+          tabindex="-1"
+        ></video>
+      </div>
+    </div>
+    <div class="journey-copy" data-journey-copy>
+      <p class="journey-eyebrow">Independent UAE points &amp; miles publication</p>
+      <h1>Fly further. <br /><em>Pay less.</em></h1>
+      <p class="journey-deck">UAE-resident guides to the card combinations, salary-transfer bonuses and miles redemptions that stretch a Dubai paycheque further — AED-first, dated and sourced.</p>
+      <div class="journey-actions">
+        <a href="#tools">Start with a tool <span aria-hidden="true">↗</span></a>
+        <a href="#latest">Read the latest <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+    <div class="journey-foot" data-journey-foot>
+      <span class="journey-hint" aria-hidden="true">Scroll to explore</span>
+      <span>Home to Dubai, with the next trip already earning.</span>
+    </div>
+  </div>
+</header>
+
+<script>
+  import { initialiseHomeJourney } from "~/scripts/homeJourney";
+  initialiseHomeJourney();
+</script>
+
+<style>
+  .dp-home-journey {
+    --journey-progress: 0;
+    --journey-header: var(--dp-sticky-header-height);
+    position: relative;
+    color: #fff;
+    background: var(--navy-pin);
+  }
+  .journey-stage {
+    position: relative; isolation: isolate;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    min-height: min(840px, calc(100svh - var(--journey-header)));
+    padding: clamp(30px, 6vw, 90px);
+    overflow: clip;
+  }
+  .journey-media { position: absolute; inset: 0; z-index: -2; }
+  .journey-frame { position: absolute; inset: 0; overflow: hidden; background: var(--navy-pin); }
+  .journey-poster, .journey-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .journey-video { opacity: 0; }
+  .journey-frame.is-ready .journey-video { opacity: 1; }
+  .journey-frame::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgb(4 15 17 / .72), rgb(4 15 17 / .14) 85%), linear-gradient(0deg, rgb(4 15 17 / .86), transparent 85%);
+  }
+  .journey-copy { position: relative; max-width: 780px; padding-block: 50px 28px; }
+  .journey-eyebrow { font: 600 clamp(10px, 1vw, 12px)/1.6 var(--font-ui); text-transform: uppercase; letter-spacing: .19em; color: #e2edeb; margin: 0 0 20px; }
+  .journey-copy h1 { font: 500 clamp(64px, 8vw, 128px)/.94 var(--font-display); letter-spacing: -.055em; margin: 0; color: #fff; text-wrap: balance; }
+  .journey-copy h1 em { font-weight: 400; font-style: italic; white-space: nowrap; }
+  .journey-deck { max-width: 49ch; margin: 26px 0; color: #f1f4f2; font: 400 clamp(16px, 1.4vw, 20px)/1.65 var(--font-ui); text-wrap: pretty; }
+  .journey-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .journey-actions a { display: inline-flex; align-items: center; justify-content: space-between; gap: 25px; min-height: 48px; padding: 12px 20px; border: 1px solid rgb(255 255 255 / .75); border-radius: 999px; color: #fff; background: rgb(4 15 17 / .6); font: 600 14px/1.4 var(--font-ui); text-decoration: none; }
+  .journey-actions a:first-child { color: var(--navy-pin); background: #fff; border-color: #fff; }
+  .journey-actions a:hover { color: var(--navy-pin); background: #e2edeb; border-color: #e2edeb; }
+  .journey-actions a:focus-visible { outline: 3px solid #fff; outline-offset: 5px; }
+  .journey-foot { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid rgb(255 255 255 / .4); padding-top: 16px; color: #e2edeb; font: 500 11px/1.6 var(--font-ui); letter-spacing: .04em; }
+  .journey-foot > span:last-child { max-width: 36ch; text-align: right; }
+  .journey-hint { visibility: hidden; }
+
+  /* Complete natural-height static composition first. JS opts into the
+     short sticky track only when both the preference and real content fit. */
+  .dp-home-journey.is-enhanced { height: 170svh; }
+  .is-enhanced .journey-stage { position: sticky; top: var(--journey-header); height: calc(100svh - var(--journey-header)); min-height: 0; }
+  .is-enhanced .journey-frame { inset: calc((1 - var(--journey-progress)) * 24px) calc((1 - var(--journey-progress)) * 5vw); border-radius: calc((1 - var(--journey-progress)) * 46px); }
+  .is-enhanced .journey-poster, .is-enhanced .journey-video { transform: scale(calc(1.09 - var(--journey-progress) * .09)); }
+  .is-enhanced .journey-hint { visibility: visible; }
+
+  /* Laptop height, not only width, controls the display scale. The first
+     candidate's 6vw vertical gutter consumed too much of a normal laptop
+     screen; keep its framing and full copy while fitting real controls. */
+  @media (min-width: 701px) and (min-height: 480px) and (max-height: 800px) {
+    .journey-stage { padding-block: 24px; }
+    .journey-copy { padding-block: 12px 20px; }
+    .journey-copy h1 { font-size: clamp(56px, 12svh, 96px); }
+    .journey-eyebrow { margin-bottom: 14px; }
+    .journey-deck { max-width: 55ch; font-size: clamp(16px, 2.5svh, 18px); line-height: 1.55; margin-block: 18px; }
+    .journey-foot { padding-top: 12px; }
+  }
+  @media (max-width: 700px) {
+    .journey-stage { padding: 24px; min-height: max(640px, calc(100svh - var(--journey-header))); }
+    .journey-copy { padding-top: 90px; padding-bottom: 30px; }
+    .journey-copy h1 { font-size: clamp(60px, 17vw, 90px); }
+    .journey-eyebrow { max-width: 27ch; font-size: 10px; margin-bottom: 18px; }
+    .journey-deck { font-size: 15px; line-height: 1.65; margin-block: 22px; }
+    .journey-actions { gap: 8px; }
+    .journey-actions a { padding: 12px 15px; font-size: 12px; gap: 12px; }
+    .journey-foot { font-size: 10px; gap: 10px; }
+    .journey-foot > span:last-child { max-width: 26ch; }
+    .dp-home-journey.is-enhanced { height: 160svh; }
+    .is-enhanced .journey-stage { height: max(640px, calc(100svh - var(--journey-header))); }
+    .is-enhanced .journey-frame { inset: calc((1 - var(--journey-progress)) * 12px); border-radius: calc((1 - var(--journey-progress)) * 26px); }
+  }
+  @media (max-height: 479px) {
+    .journey-stage { min-height: 570px; }
+    .journey-copy { padding-top: 65px; max-width: 720px; }
+    .journey-copy h1 { font-size: 76px; }
+    .journey-copy h1 br { display: none; }
+    .journey-deck { max-width: 58ch; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dp-home-journey.is-enhanced { height: auto; }
+    .is-enhanced .journey-stage { position: relative; top: auto; height: auto; min-height: min(840px, calc(100svh - var(--journey-header))); }
+    .is-enhanced .journey-frame { inset: 0; border-radius: 0; }
+    .is-enhanced .journey-poster, .is-enhanced .journey-video { transform: none; }
+    .journey-hint { visibility: hidden; }
+  }
+</style>
