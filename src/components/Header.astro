@@ -511,6 +511,10 @@ const publicationRows: SubRow[] = [
     0% { background-color: var(--paper); backdrop-filter: none; box-shadow: none; }
     100% { background-color: rgba(253, 252, 248, 0.72); backdrop-filter: blur(12px) saturate(1.2); box-shadow: 0 1px 0 rgba(15, 31, 46, 0.04); }
   }
+  /* Keep the existing solid dark treatment above this component's scoped
+     animation selector. A global .dp-header override ties its specificity
+     and can lose when this stylesheet is delivered later. */
+  :global([data-theme="dark"]) .dp-header { animation: none; }
 }
 
 .dp-header-inner {
@@ -1029,6 +1033,7 @@ const publicationRows: SubRow[] = [
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .dp-header { animation: none; }
   .dp-nav-overlay,
   .dp-nav-backdrop,
   .dp-megapanel,
