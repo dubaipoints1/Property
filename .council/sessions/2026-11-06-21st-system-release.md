@@ -93,3 +93,39 @@ Native scrollbar-only runtime, physical iPhone Safari, remaining hidden-tab/
 offscreen/zoom/contrast checks, performance acceptance and exact-head genuine
 Linux CI remain separate gates. No merge/auto-merge/admin bypass while open.
 No live deployment claimed. Earlier broad-audit findings remain separate work.
+
+## Follow-up: genuine CI and bounded poster optimisation
+
+Head9a737e4280abff2c4fa9e90f994528dfa25c27cd was pushed, not merged.
+PR checks42188257428 executed check/build/tests successfully:744 tests,
+744 pass, zero failures/skips/cancellations. Council42188260626 executed its
+advisory steps successfully; this does not close the pending role gates.
+Cloudflare deployed the exact head to857380d1.dubaipoints.pages.dev.
+
+Clean Incognito hosted mobile Lighthouse13.4.1 / Chromium155 / Slow4G scored
+85 performance,100 accessibility,100 best practices and69 SEO. FCP2.5s,
+LCP3.8s,TBT0,CLS0.008. SEO loss is the preview's deliberate indexing block;
+it is not a reason to remove that protection. Performance remains below95.
+Expanded report names img.journey-poster as LCP and790ms estimated blocking
+savings. Existing global/Tailwind CSS dominates the large stylesheet; it
+was not refactored or blanket-deferred to chase a score.
+
+The smallest follow-up uses existing same-source WebP poster derivatives
+through the existing stockSrcset/build delivery system, with unchanged
+JPEG fallback, dimensions, object-fit crop and provenance. Largest existing
+WebP30,896B versus original90,304B; no new source asset/manifests/fonts/global
+CSS/controller/dependency change. Independent Technical reviewer confirmed
+source contract; two new poster plus seven release guards pass.
+
+Fresh post-poster check/build pass;746 local tests execute,745 pass and the
+same Bash3 failure remains (zero skips/cancellations). Fresh actual16-state
+layout/image run confirms every image decoded from the existing md WebP,
+no root overflow/clipped actions/resize-triggered video source. Dark desktop
+visual inspected. Hosted performance and Linux CI must rerun on the new head.
+
+Actual hosted #latest click reached its heading at153.5px and left the
+video source absent. A hidden-tab test attempt did not yield document.hidden
+true through this browser surface, so hidden cancellation is NOT runtime
+certified by it. A Copy JSON UI export returned empty clipboard data; no
+JSON report delivery is claimed. Report screenshots and observed metrics
+are retained privately. Native scrollbar and physical Safari remain open.
