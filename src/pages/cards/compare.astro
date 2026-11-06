@@ -147,7 +147,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
         </span>
       </summary>
       <form method="get" action="/cards/compare/" class="dp-compare-picker-form">
-        <fieldset>
+        <p id="dp-compare-selection" class="dp-compare-selection" role="status" aria-live="polite">{selectedSet.size} of {MAX_CARDS} selected. Choose cards, then update the comparison.</p>
+        <fieldset aria-describedby="dp-compare-selection">
           <legend class="sr-only">Select up to {MAX_CARDS} cards</legend>
           {bankGroups.map(([bankName, items]) => (
             <div class="dp-compare-picker-group">
@@ -233,10 +234,11 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
                 </h2>
                 <span class="network">{card.network}</span>
               </div>
-              <CompareCardArt slug={card.slug} deferred />
+              <CompareCardArt slug={card.slug} deferred size="identity" />
             </header>
 
             <div class="dp-compare-col-section dp-compare-fee">
+              <div class="dp-compare-row-label">Fees</div>
               <FeeBlock card={card.slug} />
             </div>
 
@@ -381,6 +383,26 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     }
 
     apply();
+
+    // Native checkboxes remain independent. At the comparison limit,
+    // prevent a fifth choice being silently discarded on submission.
+    var picker = document.querySelector(".dp-compare-picker-form");
+    var selection = document.getElementById("dp-compare-selection");
+    if (picker && selection) {
+      var boxes = Array.prototype.slice.call(picker.querySelectorAll('input[name="cards"]'));
+      function updatePickerState() {
+        var selected = boxes.filter(function (box) { return box.checked; }).length;
+        boxes.forEach(function (box) {
+          box.disabled = !box.checked && selected >= MAX_CARDS;
+        });
+        selection.textContent = selected + " of " + MAX_CARDS + " selected. "
+          + (selected >= MAX_CARDS ? "Deselect a card to choose another."
+            : selected === 0 ? "Choose a card, or update to restore the defaults."
+              : "Choose cards, then update the comparison.");
+      }
+      boxes.forEach(function (box) { box.addEventListener("change", updatePickerState); });
+      updatePickerState();
+    }
   })();
 </script>
 
@@ -546,13 +568,22 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     line-height: 1.4;
     color: var(--ink);
     cursor: pointer;
-    padding: 4px 0;
+    padding: 8px;
+    border: 1px solid transparent;
+    border-radius: var(--dp-ui-radius-small, 6px);
     min-block-size: var(--dp-ui-control, 44px);
   }
   .dp-compare-picker-group input {
-    accent-color: var(--ink);
+    accent-color: var(--green);
     flex-shrink: 0;
+    inline-size: 16px;
+    block-size: 16px;
+    margin: 0;
   }
+  .dp-compare-selection { margin: 0 0 12px; color: var(--ink-soft); font: 500 .8125rem/1.5 var(--font-ui); }
+  .dp-compare-picker-group label:has(input:checked) { background: var(--shade-1); border-color: var(--line); }
+  .dp-compare-picker-group label:has(input:focus-visible) { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-compare-picker-group label:has(input:disabled) { color: var(--ink-soft); cursor: not-allowed; }
   .dp-compare-picker-group label span { min-width: 0; overflow-wrap: anywhere; }
   .dp-compare-picker-actions {
     display: flex;
@@ -614,7 +645,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
   .dp-compare-col > .dp-compare-col-head {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: flex-start;
     gap: 12px;
     border: 0;
@@ -623,6 +654,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     border-start-start-radius: 7px;
     border-start-end-radius: 7px;
   }
+  .dp-compare-col-head :global(.dp-compare-card-art) { order: -1; }
   .dp-compare-identity {
     display: grid;
     min-width: 0;

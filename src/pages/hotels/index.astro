@@ -10,6 +10,7 @@
 // collection or the valuations table — nothing typed here.
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import StockImage from "~/components/StockImage.astro";
+import EditorialHubHero from "~/components/EditorialHubHero.astro";
 import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
 import { getCollection } from "astro:content";
 import { isHotelProgramme, programmeHref, programmeImage } from "~/lib/programmes";
@@ -19,6 +20,11 @@ import { dpValueSub } from "~/lib/valuations";
 const programmes = (await getCollection("programs", (p) => isHotelProgramme(p.id))).sort((a, b) =>
   a.data.name.localeCompare(b.data.name),
 );
+const visualProgrammes = programmes.filter((p) => {
+  const entry = getStockEntry(programmeImage(p.id).slug);
+  return entry?.source === "pexels" || entry?.source === "unsplash";
+});
+const heroFeature = (p: typeof programmes[number] | undefined) => p ? { ...programmeImage(p.id), title: p.data.name, href: programmeHref(p.id), eyebrow: p.data.currencyName } : undefined;
 
 const siteUrl = siteUrlFrom(Astro.site);
 const schema = collectionPageGraph({
@@ -38,6 +44,7 @@ const schema = collectionPageGraph({
 >
   <article class="dp-article is-wide">
     <header class="dp-article-head">
+      <EditorialHubHero primary={heroFeature(visualProgrammes[0])} secondary={heroFeature(visualProgrammes[1])}>
       <p class="dp-article-eyebrow">Hotels</p>
       <h1 class="dp-article-title">Hotel programmes.</h1>
       <p class="dp-article-lede">
@@ -47,6 +54,7 @@ const schema = collectionPageGraph({
         <a href="/valuations/" class="dp-ui-action dp-ui-primary">Compare points values</a>
         <a href="/news/hotels/" class="dp-ui-action dp-ui-secondary">Latest hotel news</a>
       </nav>
+      </EditorialHubHero>
     </header>
 
     <div class="dp-dir-grid">

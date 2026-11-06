@@ -104,7 +104,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
     title={feedLabel}
     href={feedHref}
   />
-  <header class="intel-pagehead">
+  <header class="intel-pagehead" id="news-edition-top">
     <div class="intel-pagehead-inner">
       <div class="crumb">{crumb}</div>
       <h1>{heading}</h1>
@@ -196,8 +196,10 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
           )}
           {archive.length > 0 && (
             <details class="dp-news-archive" data-news-archive>
-              <summary class="dp-ui-action dp-ui-secondary">Older news <span>({archive.length})</span></summary>
+              <summary class="dp-ui-action dp-ui-secondary"><span class="dp-news-archive-closed">Browse older news</span><span class="dp-news-archive-open">Older news is open</span> <span>({archive.length} {archive.length === 1 ? "story" : "stories"})</span></summary>
+              <div class="dp-news-archive-range"><p>Recorded publication dates: <time datetime={archive[archive.length - 1].data.publishedAt.toISOString()}>{fmt(archive[archive.length - 1].data.publishedAt)}</time> to <time datetime={archive[0].data.publishedAt.toISOString()}>{fmt(archive[0].data.publishedAt)}</time>. Newest first.</p><a class="dp-ui-action dp-ui-quiet" href="#news-edition-top">Back to current edition ↑</a></div>
               <ol>{archive.map((post) => <NewsStoryRow post={post} />)}</ol>
+              <a class="dp-ui-action dp-ui-secondary" href="#news-edition-top">Back to current edition ↑</a>
             </details>
           )}
         </>
@@ -222,6 +224,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
 </BaseLayout>
 
 <style>
+  #news-latest-heading { scroll-margin-block-start: calc(var(--dp-sticky-header-height, 102px) + 16px); }
   .intel-pagehead {
     padding: clamp(24px, 4vw, 44px) clamp(16px, 3vw, 32px) clamp(16px, 3vw, 28px);
     border-bottom: 1px solid var(--line);
@@ -325,6 +328,11 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   .dp-news-archive ol { list-style: none; margin: 10px 0 0; padding: 0; }
   .dp-news-archive > summary { display: list-item; width: fit-content; list-style-position: inside; padding-inline: 12px; align-content: center; }
   .dp-news-archive > summary span { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .dp-news-archive > summary .dp-news-archive-open { display: none; }
+  .dp-news-archive[open] > summary .dp-news-archive-open { display: inline; }
+  .dp-news-archive[open] > summary .dp-news-archive-closed { display: none; }
+  .dp-news-archive-range { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 8px 18px; padding-block: 16px 6px; border-block-start: 1px solid var(--line-soft); margin-block-start: 14px; }
+  .dp-news-archive-range p { margin: 0; max-inline-size: 48ch; color: var(--ink-soft); font-size: .8125rem; line-height: 1.5; }
   @media (min-width: 820px) {
     .intel-main.has-feature { grid-template-columns: minmax(0, 1fr) minmax(0, 1.28fr); align-items: start; }
     .intel-main.feature-is-latest { grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr); }

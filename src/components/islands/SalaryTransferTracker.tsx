@@ -362,6 +362,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
             </button>
           ))}
         </div>
+        <p class="dpst-band-help">Select a band; select it again to show all bands.</p>
         </>}
 
         <details class="dpst-options">
@@ -370,42 +371,21 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
             <span class="dpst-options-state">{filterCountLabel ? `${filterCountLabel} active` : (sort === "value" ? "By reward value" : "Ending soonest")}</span>
           </summary>
         <div class="dpst-ctrl-row">
-          <div>
-            <span class="dpst-ctrl-label">Filters</span>
-            <div class="dpst-chips" role="group" aria-label="Offer filters">
-              <button
-                type="button"
-                class="dpst-chip dp-ui-filter"
-                aria-pressed={cash}
-                onClick={() => setCash(!cash)}
-              >
-                <span class="tick" aria-hidden="true">
-                  ✓
-                </span>
-                Cash only
-              </button>
-              <button
-                type="button"
-                class="dpst-chip dp-ui-filter"
-                aria-pressed={noCard}
-                onClick={() => setNoCard(!noCard)}
-              >
-                <span class="tick" aria-hidden="true">
-                  ✓
-                </span>
-                No credit card required
-              </button>
-              <button
-                type="button"
-                class="dpst-chip dp-ui-filter"
-                aria-pressed={sharia}
-                onClick={() => setSharia(!sharia)}
-              >
-                <span class="tick" aria-hidden="true">
-                  ✓
-                </span>
-                Sharia-compliant
-              </button>
+          <fieldset class="dpst-option-group">
+            <legend class="dpst-ctrl-label">Filters <span class="dpst-legend-hint">Choose any combination</span></legend>
+            <div class="dpst-chips">
+              <label class="dpst-filter-choice">
+                <input type="checkbox" checked={cash} onChange={() => setCash(!cash)} />
+                <span>Cash only</span>
+              </label>
+              <label class="dpst-filter-choice">
+                <input type="checkbox" checked={noCard} onChange={() => setNoCard(!noCard)} />
+                <span>No credit card required</span>
+              </label>
+              <label class="dpst-filter-choice">
+                <input type="checkbox" checked={sharia} onChange={() => setSharia(!sharia)} />
+                <span>Sharia-compliant</span>
+              </label>
               <button
                 type="button"
                 class="dp-ui-action dp-ui-quiet"
@@ -418,9 +398,9 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
               </button>
             </div>
             {noCard && <p class="dpst-filter-note">Some offers still require another product, such as qualifying finance.</p>}
-          </div>
-          <div>
-            <span class="dpst-ctrl-label">Sort by</span>
+          </fieldset>
+          <fieldset class="dpst-option-group">
+            <legend class="dpst-ctrl-label">Sort by</legend>
             <div class="dpst-sort" role="group" aria-label="Sort offers">
               <button
                 type="button"
@@ -442,7 +422,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                 Ends soonest
               </button>
             </div>
-          </div>
+          </fieldset>
         </div>
         </details>
       </div>
@@ -468,7 +448,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
           <div class="mark" aria-hidden="true">
             ⌀
           </div>
-          <h4>No current offers in the latest sweep.</h4>
+          <h2>No current offers in the latest sweep.</h2>
           <p>
             We list salary-transfer offers only while bank material supports
             them. None were current at the latest editorial sweep — check back,
@@ -480,13 +460,14 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
           <div class="mark" aria-hidden="true">
             ⌀
           </div>
-          <h4>No offers match — yet.</h4>
+          <h2>No offers match — yet.</h2>
           <p>
             No current salary-transfer offers fit this band and filter combination.
             Loosen a filter to see more.
           </p>
           <button
             type="button"
+            class="dp-ui-action dp-ui-primary"
             onClick={() => {
               clearFilters();
               setBand(null);
@@ -500,6 +481,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
           {/* TABLE (desktop) */}
           <div class="dpst-tablewrap">
             <table class="dpst-table">
+              <caption class="sr-only">Current salary-transfer offers, rewards, qualifying salary and published validity</caption>
               <thead>
                 <tr>
                   <th scope="col">Bank</th>

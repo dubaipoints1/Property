@@ -1,0 +1,73 @@
+---
+// An ordinary native scroll-snap list, not a third-party carousel. Content
+// stays in the HTML and all links remain available without JavaScript.
+interface Props { id: string; heading: string; description?: string; class?: string; }
+const { id, heading, description, class: className } = Astro.props;
+---
+
+<section class:list={["dp-editorial-rail", className]} data-editorial-rail aria-labelledby={id}>
+  <div class="dp-editorial-rail-head">
+    <div><h2 id={id}>{heading}</h2>{description && <p>{description}</p>}</div>
+    <div class="dp-editorial-rail-controls" data-editorial-controls hidden>
+      <span class="dp-editorial-rail-position" data-editorial-position aria-hidden="true"></span>
+      <button type="button" class="dp-ui-action dp-ui-secondary" data-editorial-prev aria-label={`Previous items in ${heading}`} aria-controls={`${id}-items`}>←</button>
+      <button type="button" class="dp-ui-action dp-ui-secondary" data-editorial-next aria-label={`Next items in ${heading}`} aria-controls={`${id}-items`}>→</button>
+    </div>
+  </div>
+  <ul class="dp-editorial-rail-track" id={`${id}-items`} data-editorial-track tabindex="0" aria-labelledby={id}><slot /></ul>
+</section>
+
+<script>
+  import { editorialRailBounds, preserveEditorialRailFocus } from "../lib/editorialNavigation";
+  for (const rail of document.querySelectorAll<HTMLElement>("[data-editorial-rail]")) {
+    const track = rail.querySelector<HTMLElement>("[data-editorial-track]");
+    const controls = rail.querySelector<HTMLElement>("[data-editorial-controls]");
+    const prev = rail.querySelector<HTMLButtonElement>("[data-editorial-prev]");
+    const next = rail.querySelector<HTMLButtonElement>("[data-editorial-next]");
+    const position = rail.querySelector<HTMLElement>("[data-editorial-position]");
+    if (!track || !controls || !prev || !next) continue;
+    const sync = () => {
+      const bounds = editorialRailBounds(track.scrollLeft, track.clientWidth, track.scrollWidth);
+      // A focused native button can lose focus when it becomes disabled.
+      // Preserve it before changing availability, without moving the page.
+      preserveEditorialRailFocus(bounds, {
+        active: document.activeElement,
+        hasControlFocus: controls.contains(document.activeElement),
+        previous: prev, next, track,
+      });
+      controls.hidden = !bounds.overflow;
+      prev.disabled = bounds.atStart;
+      next.disabled = bounds.atEnd;
+      const items = [...track.children].filter((item): item is HTMLElement => item instanceof HTMLElement && !item.hidden);
+      const viewport = track.getBoundingClientRect();
+      const visible = items.map((item, index) => ({ rect: item.getBoundingClientRect(), index })).filter(({ rect }) => rect.right > viewport.left + 8 && rect.left < viewport.right - 8);
+      if (position && visible.length) position.textContent = `${visible[0].index + 1}–${visible.at(-1)!.index + 1} / ${items.length}`;
+    };
+    const move = (direction: number) => track.scrollBy({ left: direction * Math.max(track.clientWidth * .8, 240), behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    prev.addEventListener("click", () => move(-1));
+    next.addEventListener("click", () => move(1));
+    track.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync, { passive: true });
+    window.addEventListener("pageshow", sync);
+    // Existing deal filters change hidden attributes, not the source order.
+    new MutationObserver(sync).observe(track, { subtree: true, attributes: true, attributeFilter: ["hidden"] });
+    if ("ResizeObserver" in window) new ResizeObserver(sync).observe(track);
+    sync();
+  }
+</script>
+
+<style>
+  .dp-editorial-rail { min-inline-size: 0; }
+  .dp-editorial-rail-head { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 12px 20px; margin-block-end: 18px; }
+  h2 { margin: 0; color: var(--ink); font: 550 clamp(1.6rem, 3vw, 2.4rem)/1.1 var(--font-display); letter-spacing: -.025em; text-wrap: balance; }
+  p { margin: 8px 0 0; max-inline-size: 60ch; color: var(--ink-soft); font-size: .875rem; line-height: 1.5; }
+  .dp-editorial-rail-controls { display: flex; align-items: center; gap: 8px; }
+  .dp-editorial-rail-controls[hidden] { display: none; }
+  .dp-editorial-rail-controls button { min-inline-size: 44px; min-block-size: 44px; font-size: 1.1rem; }
+  .dp-editorial-rail-position { color: var(--ink-soft); font: 500 .75rem/1.4 var(--font-ui); font-variant-numeric: tabular-nums; margin-inline-end: 6px; }
+  .dp-editorial-rail-track { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(250px, 31%); gap: clamp(14px, 2vw, 24px); list-style: none; margin: 0; padding: 4px 3px 14px; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: inline proximity; scroll-padding-inline: 3px; scrollbar-width: thin; }
+  .dp-editorial-rail-track:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  .dp-editorial-rail-track > :global(li) { min-inline-size: 0; scroll-snap-align: start; }
+  .dp-editorial-rail-track > :global(li[hidden]) { display: none; }
+  @media (max-width: 640px) { .dp-editorial-rail-track { grid-auto-columns: min(82vw, 320px); } }
+</style>

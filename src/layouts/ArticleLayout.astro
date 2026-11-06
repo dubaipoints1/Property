@@ -8,6 +8,7 @@ import StockImage from "~/components/StockImage.astro";
 import { getStockEntry } from "~/lib/stockManifest";
 import CardImage from "~/components/CardImage.astro";
 import ReaderNextSteps from "~/components/ReaderNextSteps.astro";
+import ReadingContents from "~/components/ReadingContents.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
 import { programmeHref } from "~/lib/programmes";
@@ -226,16 +227,7 @@ const schema = {
     <div class="dp-article-body dp-reading-column">
       <slot name="before-hero" />
       {toc.length >= 2 && (
-        <nav class="dp-toc-card dp-reading-toc" aria-label="Article contents">
-          <details>
-            <summary>In this article</summary>
-            <ol>
-              {toc.map((t) => (
-                <li><a href={`#${t.id}`}>{t.label}</a></li>
-              ))}
-            </ol>
-          </details>
-        </nav>
+        <ReadingContents sections={toc} />
       )}
 
       {showHero && Astro.slots.has("hero") && <slot name="hero" />}

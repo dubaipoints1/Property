@@ -13,6 +13,7 @@ import runwayEditorialCss from "~/styles/runway-editorial.css?url&no-inline";
 import runwayDiscoveryCss from "~/styles/runway-discovery.css?url&no-inline";
 import runwayReadingCss from "~/styles/runway-reading.css?url&no-inline";
 import readerFlowCss from "~/styles/reader-flow.css?url&no-inline";
+import editorialSystemCss from "~/styles/editorial-system.css?url&no-inline";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
 import SchemaJsonLd from "~/components/seo/SchemaJsonLd.astro";
@@ -124,6 +125,7 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
   {runwayDiscovery && <link rel="stylesheet" href={runwayDiscoveryCss} />}
   {runwayInterior && <link rel="stylesheet" href={runwayReadingCss} />}
   {runwayInterior && <link rel="stylesheet" href={readerFlowCss} />}
+  {runwayInterior && <link rel="stylesheet" href={editorialSystemCss} />}
 
   <!-- Logo fallback (BankLogo / ProgrammeLogo). Replaces 3,400+ inline
        onerror attributes, which no CSP hash or nonce can allow. `error`

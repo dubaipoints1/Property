@@ -7,6 +7,8 @@ import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
 import StockImage from "~/components/StockImage.astro";
 import ImageCredit from "~/components/ImageCredit.astro";
+import EditorialHubHero from "~/components/EditorialHubHero.astro";
+import EditorialRail from "~/components/EditorialRail.astro";
 import { LISTING_SIZES } from "~/lib/stockDerivatives";
 import { getStockEntry } from "~/lib/stockManifest";
 import { getCollection } from "astro:content";
@@ -30,6 +32,10 @@ const others = programmes.filter((p) => p.id !== featured?.id);
 const featuredPhoto = featured ? `programme-${featured.id}` : undefined;
 const runwayPhotoEntry = featuredPhoto ? getStockEntry(featuredPhoto) : undefined;
 const runwayFeatured = runwayPhotoEntry?.source === "pexels" || runwayPhotoEntry?.source === "unsplash" ? featured : undefined;
+const supportingProgramme = others.find((p) => {
+  const entry = getStockEntry(`programme-${p.id}`);
+  return entry?.source === "pexels" || entry?.source === "unsplash";
+});
 
 // Trending rail — cross-section guides today (programmes collection is
 // thin). Falls back to programmes once the section has ≥ 6 entries.
@@ -51,8 +57,12 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
   fullWidth
   schema={schema}
 >
-  <header class:list={["intel-pagehead", "dp-runway-pagehead", { "dp-runway-pagehead-split": Boolean(runwayFeatured) }]} data-runway-airlines-hero>
+  <header class="intel-pagehead dp-runway-pagehead" data-runway-airlines-hero>
     <div class="intel-pagehead-inner">
+      <EditorialHubHero
+        primary={runwayFeatured && featuredPhoto ? { slug: featuredPhoto, href: `/airlines/${runwayFeatured.id}/`, title: runwayFeatured.data.name, headingId: "runway-feature-heading", eyebrow: `Flagship programme · ${runwayFeatured.data.region}`, description: `Tiers, sweet spots, transfer partners and expiry policy for ${runwayFeatured.data.currencyName} earned and redeemed from the UAE.` } : undefined}
+        secondary={supportingProgramme ? { slug: `programme-${supportingProgramme.id}`, href: `/airlines/${supportingProgramme.id}/`, title: supportingProgramme.data.name } : undefined}
+      >
       <div class="crumb">DubaiPoints / Airlines</div>
       <h1>Airlines &amp; loyalty.</h1>
       <p>Compare how to earn, transfer and spend miles from the UAE. Each programme guide explains tiers, redemption examples and when miles expire.</p>
@@ -76,25 +86,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
         </form>
       </div>
 
-      {runwayFeatured && featuredPhoto && (
-        <section class="dp-runway-feature" aria-labelledby="runway-feature-heading">
-          <figure class="dp-runway-feature-figure">
-            <StockImage
-              slug={featuredPhoto}
-              class="dp-runway-feature-image"
-              sizes="(max-width: 799px) calc(100vw - 32px), (max-width: 1199px) 54vw, 660px"
-              delivery="feature"
-              loading="eager"
-            />
-            <figcaption><ImageCredit slug={featuredPhoto} /></figcaption>
-          </figure>
-          <div class="dp-runway-feature-text">
-            <span class="intel-featured-eyebrow">Flagship programme · {runwayFeatured.data.region}</span>
-            <h2 id="runway-feature-heading"><a href={`/airlines/${runwayFeatured.id}/`}>{runwayFeatured.data.name} <span aria-hidden="true">→</span></a></h2>
-            <p>Tiers, sweet spots, transfer partners and expiry policy for {runwayFeatured.data.currencyName} earned and redeemed from the UAE.</p>
-          </div>
-        </section>
-      )}
+      </EditorialHubHero>
     </div>
   </header>
 
@@ -123,15 +115,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
       )}
 
       {others.length > 0 ? (
-          <section class="airlines-group" aria-labelledby="airline-programmes" data-runway-programme-rail>
-              <div class="dp-runway-rail-header">
-                <h2 id="airline-programmes" class="airlines-group-heading">Explore programmes</h2>
-                <div class="dp-runway-rail-controls" role="group" aria-label="Programme rail controls">
-                  <button class="dp-carousel-btn" type="button" aria-label="Previous programmes" data-carousel-prev hidden><span aria-hidden="true">←</span></button>
-                  <button class="dp-carousel-btn" type="button" aria-label="Next programmes" data-carousel-next hidden><span aria-hidden="true">→</span></button>
-                </div>
-              </div>
-            <ul class="intel-card-grid dp-runway-track" data-carousel aria-labelledby="airline-programmes">
+          <div data-runway-programme-rail>
+          <EditorialRail id="airline-programmes" heading="Explore programmes" class="airlines-group">
               {others.map((p) => (
                 <li class="intel-card-item">
                   <a href={`/airlines/${p.id}/`} class="intel-card">
@@ -153,8 +138,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
                   <ImageCredit slug={`programme-${p.id}`} class="dp-runway-tile-credit" />
                 </li>
               ))}
-            </ul>
-          </section>
+          </EditorialRail>
+          </div>
       ) : (
         <section class="airlines-roster">
           <span class="airlines-roster-eyebrow">More programmes coming</span>
@@ -203,6 +188,11 @@ const schema = collectionPageGraph({ siteUrl, path: "/airlines/", name: "Airline
 </BaseLayout>
 
 <style>
+  [data-runway-programme-rail] .intel-card-item { display: flex; flex-direction: column; min-inline-size: 0; }
+  [data-runway-programme-rail] .intel-card { flex: 1; block-size: auto; transition: border-color .15s ease; }
+  [data-runway-programme-rail] .intel-card:hover { transform: none; box-shadow: none; }
+  [data-runway-programme-rail] .intel-card:focus-visible { outline: 2px solid var(--green); outline-offset: -3px; }
+  [data-runway-programme-rail] :global(.dp-runway-tile-credit) { padding-inline: 2px; overflow-wrap: anywhere; }
   /* Inherits the same .intel-* idiom as /guides/ and /news/.
      Reproduced scoped to /airlines/ so the three siblings can evolve
      independently. If they stay locked, a future refactor lifts these
