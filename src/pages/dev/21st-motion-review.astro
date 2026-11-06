@@ -1,0 +1,365 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import StockImage from "~/components/StockImage.astro";
+import ImageCredit from "~/components/ImageCredit.astro";
+
+// Private design exploration. /dev/ is pruned before Pagefind and delivery.
+// These are native in-house experiments, not copied 21st implementations.
+const chapters = [
+  { id: "start", label: "Start with the card", title: "The next trip starts before the airport.", slug: "guide-expat-starter-points-101", copy: "Start with how you spend, the card's published eligibility and the fees you would actually pay. A rewards currency is useful only when it fits the trip you want to take.", href: "/cards/finder/", action: "Find a card for your spending", note: "Card choices · UAE eligibility" },
+  { id: "understand", label: "Understand the miles", title: "Know the programme behind the promise.", slug: "programme-skywards", copy: "A programme guide puts earning, transfers, redemption examples and expiry rules in one place. Read the rules alongside the headline benefit, then decide whether the miles work for you.", href: "/airlines/skywards/", action: "Explore Emirates Skywards", note: "Airline programmes · Earning and using miles" },
+  { id: "decide", label: "Make the comparison", title: "A good redemption starts with another option.", slug: "programme-etihad-guest", copy: "Before using miles, compare the cash fare with the miles and charges for the flight you are considering. Keep your own travel plans at the centre of the decision.", href: "/calculator/cash-or-miles/", action: "Compare cash with miles", note: "Travel tools · Your own flight quotes" },
+];
+const dispatches = [
+  { id: "miles", title: "Airline miles", kicker: "The programme desk", headline: "One programme. A clearer way through it.", slug: "programme-skywards", copy: "From earning to expiry: start with the programme guide, then follow the routes that matter to your next trip.", href: "/airlines/skywards/", action: "Read the Skywards guide" },
+  { id: "stays", title: "Hotel points", kicker: "The hotel desk", headline: "Make the stay part of the story.", slug: "programme-marriott-bonvoy", copy: "Explore hotel loyalty programmes before deciding where a points balance belongs in your travel plans.", href: "/hotels/", action: "Explore hotel programmes" },
+  { id: "uae", title: "New to the UAE", kicker: "The practical guide", headline: "Start here. Find your own route.", slug: "guide-expat-starter", copy: "Banking, cards and points: a practical starting point, with separate guides when you want the detail.", href: "/guides/expat-starter/", action: "Open the UAE starter guide" },
+];
+const tasks = [
+  { id: "cards", label: "Choose a card", question: "What fits the way I spend?", slug: "guide-expat-starter-points-101", copy: "Use the Finder to explore cards, then compare the published fees, eligibility and benefits. A published minimum is not a guarantee of approval.", href: "/cards/finder/", action: "Open Card Finder", secondaryHref: "/cards/compare/", secondary: "Compare cards", note: "Your priorities. Published card information." },
+  { id: "salary", label: "Move my salary", question: "What should I check before switching?", slug: "guide-expat-starter-banking-basics", copy: "Start with the salary-transfer tracker. Read the qualifying conditions, required products, payout timing and clawback terms before applying.", href: "/salary-transfer/", action: "Open Salary Tracker", secondaryHref: "/salary-transfer/calculator/", secondary: "Check a salary offer", note: "Bank offers. Conditions first." },
+  { id: "travel", label: "Plan the next trip", question: "Where do my points take me?", slug: "programme-skywards", copy: "Begin with the airline programmes, then compare the cash and miles options for your own flight. Programme terms and availability still decide what you can book.", href: "/airlines/", action: "Explore airline programmes", secondaryHref: "/calculator/cash-or-miles/", secondary: "Compare cash with miles", note: "Real programmes. Your travel plans." },
+];
+---
+
+<BaseLayout title="Private motion directions | DubaiPoints" description="Local-only design exploration: three native motion and layout directions for DubaiPoints." fullWidth>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+  <div class="dp-motion-review" data-pagefind-ignore>
+    <header class="dp-motion-intro">
+      <p class="dp-motion-eyebrow">Private prototype · not selected · not live</p>
+      <h1>More flow.<br /><em>Three different ways.</em></h1>
+      <p class="dp-motion-intro-copy">The same DubaiPoints identity, explored through a story, a magazine and a decision tool. These are working layout and interaction concepts—not changes to the homepage or its video.</p>
+      <nav class="dp-motion-direction-links" aria-label="Compare the three design directions">
+        <a href="#runway-chapters"><span>01</span> Runway Chapters <span aria-hidden="true">↘</span></a>
+        <a href="#dispatch-gallery"><span>02</span> Dispatch Gallery <span aria-hidden="true">↘</span></a>
+        <a href="#decision-studio"><span>03</span> Decision Studio <span aria-hidden="true">↘</span></a>
+      </nav>
+      <p class="dp-motion-review-note">Use the header's theme control to compare light and dark. Resize the window for the phone layout. No autoplay, account sign-up or scroll locking.</p>
+    </header>
+
+    <section class="dp-motion-direction" id="runway-chapters" aria-labelledby="runway-title">
+      <header class="dp-motion-section-head">
+        <div><p class="dp-motion-eyebrow">01 / A guided editorial story</p><h2 id="runway-title">Runway Chapters</h2></div>
+        <p>A companion picture changes as you reach each chapter. Your scroll stays ordinary. On a phone, the picture and text sit together.</p>
+      </header>
+      <div class="dp-motion-story" data-motion-story>
+        <div class="dp-motion-story-companion" data-story-companion hidden>
+          <div class="dp-motion-story-stage" data-story-stage></div>
+          <nav class="dp-motion-story-dots" aria-label="Story chapters">
+            {chapters.map((chapter, index) => <a href={`#motion-chapter-${chapter.id}`} data-story-link aria-label={chapter.label}><span aria-hidden="true">0{index + 1}</span><span>{chapter.label}</span></a>)}
+          </nav>
+        </div>
+        <div class="dp-motion-story-copy">
+          {chapters.map((chapter, index) => (
+            <article class="dp-motion-chapter" id={`motion-chapter-${chapter.id}`} data-motion-chapter>
+              <figure class="dp-motion-story-inline" data-story-figure>
+                <StockImage slug={chapter.slug} class="dp-motion-photo" delivery="feature" sizes="(max-width: 859px) calc(100vw - 40px), 560px" />
+                <figcaption><span>{chapter.note}</span><ImageCredit slug={chapter.slug} /></figcaption>
+              </figure>
+              <div class="dp-motion-chapter-copy">
+                <p class="dp-motion-eyebrow">Chapter 0{index + 1} · {chapter.label}</p>
+                <h3 tabindex="-1">{chapter.title}</h3><p>{chapter.copy}</p>
+                <a class="dp-motion-text-link" href={chapter.href}>{chapter.action}<span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+      <footer class="dp-motion-concept-note"><span>Best for programme guides and an occasional editorial feature.</span><a href="https://21st.dev/@felipemenezes098/components/scroll-01">21st reference: Scroll 01 ↗</a></footer>
+    </section>
+
+    <section class="dp-motion-direction" id="dispatch-gallery" aria-labelledby="dispatch-title">
+      <header class="dp-motion-section-head">
+        <div><p class="dp-motion-eyebrow">02 / A browsable travel edition</p><h2 id="dispatch-title">Dispatch Gallery</h2></div>
+        <p>A photo-led feature with named chapters you choose yourself. Compact stories below keep discovery moving, without a timer moving it for you.</p>
+      </header>
+      <div class="dp-motion-dispatch" data-motion-dispatch>
+        <div class="dp-motion-edition-head"><p class="dp-motion-eyebrow">The DubaiPoints edit</p><p>Travel, with a useful starting point.</p></div>
+        <div class="dp-motion-dispatch-controls" data-dispatch-controls hidden role="group" aria-label="Choose a discovery chapter">
+          {dispatches.map((dispatch, index) => <button type="button" data-dispatch-control={index} aria-pressed={index === 0 ? "true" : "false"} aria-controls={`motion-dispatch-${dispatch.id}`}><span>0{index + 1}</span>{dispatch.title}<span class="dp-motion-selection-rule" aria-hidden="true"></span></button>)}
+        </div>
+        {dispatches.map((dispatch, index) => (
+          <article class="dp-motion-dispatch-panel" id={`motion-dispatch-${dispatch.id}`} data-dispatch-panel>
+            <figure>
+              <StockImage slug={dispatch.slug} class="dp-motion-photo" delivery="feature" sizes="(max-width: 719px) calc(100vw - 40px), 720px" />
+              <figcaption><ImageCredit slug={dispatch.slug} /></figcaption>
+            </figure>
+            <div class="dp-motion-dispatch-copy"><p class="dp-motion-eyebrow">{dispatch.kicker}</p><span class="dp-motion-display-number" aria-hidden="true">0{index + 1}</span><h3>{dispatch.headline}</h3><p>{dispatch.copy}</p><a class="dp-motion-text-link" href={dispatch.href}>{dispatch.action}<span aria-hidden="true">↗</span></a></div>
+          </article>
+        ))}
+        <nav class="dp-motion-dispatch-briefs" aria-label="More from DubaiPoints">
+          <a href="/news/"><span class="dp-motion-eyebrow">The news desk</span><strong>What changed?</strong><span>Follow the latest airline, hotel and banking coverage.</span><span class="dp-motion-brief-arrow" aria-hidden="true">↗</span></a>
+          <a href="/deals/"><span class="dp-motion-eyebrow">The offer desk</span><strong>Read the conditions.</strong><span>Explore current offers with their recorded end dates.</span><span class="dp-motion-brief-arrow" aria-hidden="true">↗</span></a>
+          <a href="/guides/"><span class="dp-motion-eyebrow">The guide shelf</span><strong>Go a little deeper.</strong><span>Practical reading for the next decision.</span><span class="dp-motion-brief-arrow" aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
+      <footer class="dp-motion-concept-note"><span>Best for News, Guides, Hotels and lower-homepage discovery.</span><a href="https://21st.dev/@uilayout.contact/components/progressive-carousel">21st reference: Progressive Carousel ↗</a></footer>
+    </section>
+
+    <section class="dp-motion-direction" id="decision-studio" aria-labelledby="decision-title">
+      <header class="dp-motion-section-head">
+        <div><p class="dp-motion-eyebrow">03 / Start with your task</p><h2 id="decision-title">Decision Studio</h2></div>
+        <p>A reader-selected route, not a forced wizard. Open a question, see the next useful action and keep the rest of the site within reach.</p>
+      </header>
+      <div class="dp-motion-decisions" data-motion-decisions>
+        <div class="dp-motion-decision-copy">
+          <p class="dp-motion-eyebrow">Make the next decision clearer</p><h3 class="dp-motion-decision-title">What brings<br />you here?</h3>
+          <div class="dp-motion-task-list">
+            {tasks.map((task, index) => (
+              <details class="dp-motion-task" data-motion-task open={index === 0}>
+                <summary><span class="dp-motion-task-number">0{index + 1}</span><span>{task.label}<small>{task.question}</small></span><span class="dp-motion-task-toggle" aria-hidden="true">+</span></summary>
+                <div class="dp-motion-task-body">
+                  <figure class="dp-motion-task-inline" data-task-figure>
+                    <StockImage slug={task.slug} class="dp-motion-photo" delivery="feature" sizes="(max-width: 859px) calc(100vw - 64px), 560px" />
+                    <figcaption><span>{task.note}</span><ImageCredit slug={task.slug} /></figcaption>
+                  </figure>
+                  <p>{task.copy}</p>
+                  <div class="dp-motion-task-actions"><a class="dp-ui-action dp-ui-primary" href={task.href}>{task.action}<span aria-hidden="true">↗</span></a><a class="dp-motion-text-link" href={task.secondaryHref}>{task.secondary}<span aria-hidden="true">↗</span></a></div>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+        <div class="dp-motion-decision-companion" data-task-companion hidden><div data-task-stage></div><p class="dp-motion-companion-note">Choose the task.<br /><em>Keep the decision yours.</em></p></div>
+      </div>
+      <footer class="dp-motion-concept-note"><span>Best for a tool gateway; no calculator or ranking logic changes.</span><a href="https://21st.dev/@ravikatiyar162/components/registration-stepper">21st reference: task progression ↗</a></footer>
+    </section>
+
+    <aside class="dp-motion-wrap-up" aria-labelledby="motion-review-prompt"><p class="dp-motion-eyebrow">The choice is the flow—not another colour scheme</p><h2 id="motion-review-prompt">Which one feels most like DubaiPoints?</h2><p>Chapters explains. Gallery invites browsing. Studio gets to a task. Each keeps the existing fonts, colours, real imagery and ordinary page controls. All three need review on actual pages before any rollout.</p><a class="dp-motion-text-link" href="/dev/21st-ui-review/">Back to the existing page previews<span aria-hidden="true">↗</span></a></aside>
+    <noscript><p class="dp-motion-review-note">JavaScript is off. All story chapters, discovery features and task disclosures remain available. Scroll-linked picture changes and chapter selection are optional enhancements.</p></noscript>
+  </div>
+</BaseLayout>
+
+<script>
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // Short landscape windows use the ordinary illustrated sequence too.
+  const wide = window.matchMedia("(min-width: 860px) and (min-height: 680px)");
+  const enter = (element: HTMLElement, axis: "x" | "y" = "y") => {
+    if (reducedMotion.matches || typeof element.animate !== "function") return;
+    element.getAnimations().forEach(animation => animation.cancel());
+    const from = axis === "x" ? "translateX(16px)" : "translateY(12px)";
+    element.animate([{ opacity: .65, transform: from }, { opacity: 1, transform: "none" }], { duration: 320, easing: "cubic-bezier(.2,.7,.2,1)" });
+  };
+
+  const story = document.querySelector<HTMLElement>("[data-motion-story]");
+  if (story) {
+    const chapters = [...story.querySelectorAll<HTMLElement>("[data-motion-chapter]")];
+    const companion = story.querySelector<HTMLElement>("[data-story-companion]")!;
+    const stage = story.querySelector<HTMLElement>("[data-story-stage]")!;
+    const links = [...story.querySelectorAll<HTMLAnchorElement>("[data-story-link]")];
+    let current = -1;
+    let pending = false;
+    const show = (index: number) => {
+      if (index === current || stage.contains(document.activeElement)) return;
+      const figure = chapters[index]?.querySelector<HTMLElement>("[data-story-figure]");
+      if (!figure) return;
+      stage.replaceChildren(figure.cloneNode(true));
+      chapters.forEach((chapter, i) => chapter.dataset.current = String(i === index));
+      links.forEach((link, i) => { if (i === index) link.setAttribute("aria-current", "step"); else link.removeAttribute("aria-current"); });
+      const hadChapter = current >= 0;
+      current = index;
+      if (hadChapter) enter(stage);
+    };
+    const paint = () => {
+      pending = false;
+      if (!wide.matches) return;
+      const sticky = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dp-sticky-header-height")) || 81;
+      const readingLine = Math.max(sticky + 80, window.innerHeight * .42);
+      let index = 0;
+      chapters.forEach((chapter, i) => { if (chapter.getBoundingClientRect().top <= readingLine) index = i; });
+      show(index);
+    };
+    const queue = () => { if (pending) return; pending = true; requestAnimationFrame(paint); };
+    const layout = () => {
+      if (!wide.matches && companion.contains(document.activeElement)) chapters[Math.max(0, current)]?.querySelector<HTMLElement>("h3")?.focus({ preventScroll: true });
+      companion.hidden = !wide.matches;
+      story.dataset.enhanced = String(wide.matches);
+      if (wide.matches) { current = -1; paint(); }
+    };
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", queue, { passive: true });
+    window.addEventListener("pageshow", queue);
+    stage.addEventListener("focusout", queue);
+    wide.addEventListener("change", layout);
+    layout();
+  }
+
+  const dispatch = document.querySelector<HTMLElement>("[data-motion-dispatch]");
+  if (dispatch) {
+    const controls = dispatch.querySelector<HTMLElement>("[data-dispatch-controls]")!;
+    const buttons = [...dispatch.querySelectorAll<HTMLButtonElement>("[data-dispatch-control]")];
+    const panels = [...dispatch.querySelectorAll<HTMLElement>("[data-dispatch-panel]")];
+    let current = 0;
+    const select = (index: number) => {
+      if (!panels[index]) return;
+      buttons.forEach((button, i) => button.setAttribute("aria-pressed", String(i === index)));
+      panels.forEach((panel, i) => panel.hidden = i !== index);
+      if (current !== index) enter(panels[index], "x");
+      current = index;
+    };
+    buttons.forEach((button, index) => button.addEventListener("click", () => select(index)));
+    controls.hidden = false;
+    select(0);
+  }
+
+  const decisions = document.querySelector<HTMLElement>("[data-motion-decisions]");
+  if (decisions) {
+    const tasks = [...decisions.querySelectorAll<HTMLDetailsElement>("[data-motion-task]")];
+    const companion = decisions.querySelector<HTMLElement>("[data-task-companion]")!;
+    const stage = decisions.querySelector<HTMLElement>("[data-task-stage]")!;
+    let current = -1;
+    const show = (index: number) => {
+      if (index === current || stage.contains(document.activeElement)) return;
+      const figure = tasks[index]?.querySelector<HTMLElement>("[data-task-figure]");
+      if (!figure) return;
+      stage.replaceChildren(figure.cloneNode(true));
+      const hadTask = current >= 0;
+      current = index;
+      if (hadTask && wide.matches) enter(stage, "x");
+    };
+    tasks.forEach((task, index) => task.addEventListener("toggle", () => {
+      if (!task.open) return;
+      tasks.forEach(other => { if (other !== task) other.open = false; });
+      show(index);
+    }));
+    const layout = () => {
+      if (!wide.matches && companion.contains(document.activeElement)) tasks[Math.max(0, current)]?.querySelector("summary")?.focus({ preventScroll: true });
+      companion.hidden = !wide.matches;
+      decisions.dataset.enhanced = String(wide.matches);
+      const index = tasks.findIndex(task => task.open);
+      if (index >= 0) show(index);
+    };
+    stage.addEventListener("focusout", () => { const index = tasks.findIndex(task => task.open); if (index >= 0) show(index); });
+    wide.addEventListener("change", layout);
+    layout();
+  }
+</script>
+
+<style>
+  .dp-motion-review { --motion-gutter: clamp(20px, 3vw, 40px); max-inline-size: 1320px; margin-inline: auto; padding: 0 var(--motion-gutter) 72px; color: var(--ink); font-family: var(--font-ui); }
+  .dp-motion-review :is(h1,h2,h3,p,figure) { margin: 0; }
+  .dp-motion-review :is(h1,h2,h3) { color: var(--ink); font-family: var(--font-display); font-weight: 500; letter-spacing: -.035em; text-wrap: balance; }
+  .dp-motion-review :is(a,button,summary):focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+  .dp-motion-review [hidden] { display: none !important; }
+  .dp-motion-eyebrow { color: var(--green); font: 650 .6875rem/1.5 var(--font-ui); letter-spacing: .12em; text-transform: uppercase; }
+  .dp-motion-intro { padding-block: clamp(36px, 7vw, 88px) clamp(32px, 5vw, 64px); }
+  .dp-motion-intro h1 { margin-block: 22px 24px; max-inline-size: 14ch; font-size: clamp(2.7rem, 6.7vw, 5.7rem); line-height: .98; }
+  .dp-motion-intro h1 em { color: var(--green); font-weight: 450; }
+  .dp-motion-intro-copy { max-inline-size: 65ch; color: var(--ink-soft); font-size: clamp(1rem, 1.65vw, 1.1875rem); line-height: 1.65; }
+  .dp-motion-direction-links { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-block: 28px 20px; }
+  .dp-motion-direction-links a { display: inline-flex; align-items: center; gap: 10px; min-block-size: 46px; padding-block: 8px; border-block-end: 1px solid var(--line); color: var(--ink); text-decoration: none; font-size: .875rem; font-weight: 600; }
+  .dp-motion-direction-links a > span:first-child { color: var(--green); font-size: .6875rem; font-variant-numeric: tabular-nums; }
+  .dp-motion-direction-links a:hover { color: var(--green); border-color: var(--green); }
+  .dp-motion-review-note { max-inline-size: 76ch; color: var(--muted); font-size: .8125rem; line-height: 1.6; }
+  .dp-motion-direction { border-block-start: 1px solid var(--line); padding-block: clamp(32px, 5vw, 58px) clamp(48px, 7vw, 88px); scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 20px); }
+  .dp-motion-section-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .65fr); align-items: end; gap: 24px 48px; margin-block-end: 36px; }
+  .dp-motion-section-head h2 { margin-block-start: 12px; font-size: clamp(2.1rem, 4.3vw, 3.5rem); line-height: 1.05; }
+  .dp-motion-section-head > p { max-inline-size: 48ch; color: var(--ink-soft); font-size: .9375rem; line-height: 1.65; }
+  .dp-motion-review :global(.dp-motion-photo) { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 1.27; object-fit: cover; border-radius: 9px; }
+  .dp-motion-review figcaption { padding-block-start: 12px; color: var(--ink-soft); font-size: .8125rem; line-height: 1.5; }
+  .dp-motion-review figcaption > span { display: block; }
+  .dp-motion-review figcaption :global(.dp-image-credit) { font-size: .6875rem; line-height: 1.5; margin-block-start: 6px; }
+  .dp-motion-review figcaption :global(a) { overflow-wrap: anywhere; }
+  .dp-motion-text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 16px; min-block-size: 46px; padding-block: 8px; color: var(--green); font: 600 .875rem/1.4 var(--font-ui); text-decoration: underline; text-underline-offset: .25em; }
+  .dp-motion-text-link > span { flex: none; font-size: 1.2rem; }
+  .dp-motion-text-link:hover { text-decoration-thickness: 2px; }
+  .dp-motion-concept-note { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 24px; padding-block-start: 22px; margin-block-start: 28px; border-block-start: 1px solid var(--line-soft); color: var(--muted); font: 400 .75rem/1.6 var(--font-ui); }
+  .dp-motion-concept-note a { color: var(--ink-soft); text-underline-offset: .2em; }
+
+  /* Chapters: default HTML is an ordinary illustrated sequence. */
+  .dp-motion-chapter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .85fr); gap: 32px 64px; align-items: center; padding-block: 24px 40px; scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 40px); }
+  .dp-motion-chapter-copy h3 { margin-block: 16px 20px; font-size: clamp(1.9rem, 3.3vw, 2.8rem); line-height: 1.08; }
+  .dp-motion-chapter-copy > p:not(.dp-motion-eyebrow) { max-inline-size: 43ch; color: var(--ink-soft); font-size: 1rem; line-height: 1.75; }
+  .dp-motion-chapter-copy > a { margin-block-start: 20px; }
+  .dp-motion-story-companion { min-inline-size: 0; }
+  .dp-motion-story-dots { display: grid; margin-block-start: 20px; border-block-start: 1px solid var(--line); }
+  .dp-motion-story-dots a { display: flex; gap: 12px; align-items: center; min-block-size: 46px; border-block-end: 1px solid var(--line-soft); color: var(--ink-soft); text-decoration: none; font-size: .75rem; }
+  .dp-motion-story-dots a > span:first-child { color: var(--muted); font-variant-numeric: tabular-nums; }
+  .dp-motion-story-dots a[aria-current="step"] { color: var(--green); font-weight: 650; }
+  .dp-motion-story-dots a[aria-current="step"] > span:first-child { color: var(--green); }
+  @media (min-width: 860px) {
+    .dp-motion-story[data-enhanced="true"] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .85fr); gap: 64px; align-items: start; }
+    .dp-motion-story[data-enhanced="true"] .dp-motion-story-companion { position: sticky; top: calc(var(--dp-sticky-header-height, 81px) + 24px); }
+    .dp-motion-story[data-enhanced="true"] .dp-motion-story-inline { display: none; }
+    .dp-motion-story[data-enhanced="true"] .dp-motion-story-stage :global(.dp-motion-story-inline) { display: block; }
+    .dp-motion-story[data-enhanced="true"] .dp-motion-story-stage :global(.dp-motion-photo) { block-size: clamp(220px, 38svh, 380px); aspect-ratio: auto; }
+    .dp-motion-story[data-enhanced="true"] .dp-motion-chapter { display: flex; align-items: center; min-block-size: clamp(360px, 55svh, 540px); padding-block: 40px; border-block-start: 1px solid var(--line-soft); }
+    .dp-motion-story[data-enhanced="true"] .dp-motion-chapter[data-current="true"] { border-color: var(--green); }
+  }
+
+  /* Gallery: named, manual chapter selection; without JS all features show. */
+  .dp-motion-edition-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; margin-block-end: 18px; }
+  .dp-motion-edition-head > p:last-child { color: var(--ink-soft); font: 450 1.125rem/1.3 var(--font-display); }
+  .dp-motion-dispatch-controls { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); margin-block-end: 24px; border-block: 1px solid var(--line); }
+  .dp-motion-dispatch-controls button { position: relative; display: flex; align-items: center; gap: 14px; min-block-size: 64px; padding: 15px 12px; border: 0; border-inline-end: 1px solid var(--line-soft); background: transparent; color: var(--ink-soft); font: 550 .9375rem/1.4 var(--font-ui); text-align: start; cursor: pointer; }
+  .dp-motion-dispatch-controls button:last-child { border-inline-end: 0; }
+  .dp-motion-dispatch-controls button > span:first-child { font-size: .6875rem; font-variant-numeric: tabular-nums; }
+  .dp-motion-selection-rule { position: absolute; inset-inline: 0; bottom: -1px; block-size: 3px; background: var(--green); transform: scaleX(0); transform-origin: left; transition: transform .22s ease; }
+  .dp-motion-dispatch-controls button[aria-pressed="true"] { color: var(--green); background: var(--shade-1); }
+  .dp-motion-dispatch-controls button[aria-pressed="true"] .dp-motion-selection-rule { transform: scaleX(1); }
+  .dp-motion-dispatch-panel { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .8fr); gap: clamp(24px, 4vw, 56px); align-items: center; margin-block-end: 36px; }
+  .dp-motion-dispatch-panel :global(.dp-motion-photo) { aspect-ratio: 1.48; }
+  .dp-motion-dispatch-copy { position: relative; padding-block: 20px; }
+  .dp-motion-display-number { display: block; margin-block: 14px 20px; color: var(--line); font: 450 clamp(3.5rem, 7vw, 6rem)/.8 var(--font-display); letter-spacing: -.05em; }
+  .dp-motion-dispatch-copy h3 { font-size: clamp(2rem, 3.5vw, 3.1rem); line-height: 1.08; }
+  .dp-motion-dispatch-copy > p:not(.dp-motion-eyebrow) { margin-block: 18px; color: var(--ink-soft); font-size: .9375rem; line-height: 1.7; }
+  .dp-motion-dispatch-briefs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; padding-block-start: 28px; border-block-start: 1px solid var(--line); }
+  .dp-motion-dispatch-briefs > a { position: relative; display: grid; align-content: start; gap: 12px; min-block-size: 160px; padding-inline-end: 30px; color: var(--ink); text-decoration: none; }
+  .dp-motion-dispatch-briefs strong { font: 500 1.6rem/1.15 var(--font-display); letter-spacing: -.02em; }
+  .dp-motion-dispatch-briefs a > span:not(.dp-motion-eyebrow,.dp-motion-brief-arrow) { color: var(--ink-soft); font-size: .8125rem; line-height: 1.6; }
+  .dp-motion-brief-arrow { position: absolute; inset-inline-end: 0; top: 30px; color: var(--green); font-size: 1.3rem; transition: transform .18s ease; }
+  .dp-motion-dispatch-briefs a:hover .dp-motion-brief-arrow { transform: translate(2px,-2px); }
+  .dp-motion-dispatch-briefs a:hover strong { color: var(--green); text-decoration: underline; text-underline-offset: .18em; }
+
+  /* Studio: real native task disclosures, not an invented calculator. */
+  .dp-motion-decisions { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: center; padding: clamp(24px, 4vw, 48px); background: var(--paper); border: 1px solid var(--line); border-radius: 12px; }
+  .dp-motion-decision-copy { min-inline-size: 0; }
+  .dp-motion-decision-title { margin-block: 18px 30px !important; font-size: clamp(2.2rem, 4vw, 3.6rem); line-height: 1.02; }
+  .dp-motion-task { border-block-start: 1px solid var(--line); }
+  .dp-motion-task:last-child { border-block-end: 1px solid var(--line); }
+  .dp-motion-task summary { display: grid; grid-template-columns: 24px minmax(0,1fr) 24px; align-items: center; gap: 14px; min-block-size: 88px; padding-block: 16px; list-style: none; color: var(--ink); cursor: pointer; font: 600 .9375rem/1.4 var(--font-ui); }
+  .dp-motion-task summary::-webkit-details-marker { display: none; }
+  .dp-motion-task-number { color: var(--muted); font-size: .6875rem; font-variant-numeric: tabular-nums; }
+  .dp-motion-task summary small { display: block; margin-block-start: 4px; color: var(--ink-soft); font-size: .75rem; font-weight: 400; }
+  .dp-motion-task-toggle { justify-self: end; color: var(--green); font-size: 1.4rem; font-weight: 400; }
+  .dp-motion-task[open] summary { color: var(--green); }
+  .dp-motion-task[open] .dp-motion-task-toggle { transform: rotate(45deg); }
+  .dp-motion-task-body { padding: 0 0 24px 38px; }
+  .dp-motion-task-body > p { margin-block: 18px; color: var(--ink-soft); font-size: .875rem; line-height: 1.7; }
+  .dp-motion-task-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; }
+  .dp-motion-task-actions .dp-ui-action { gap: 16px; justify-content: space-between; text-decoration: none; }
+  .dp-motion-task-actions .dp-motion-text-link { font-size: .8125rem; }
+  .dp-motion-companion-note { margin-block-start: 28px !important; padding-block-start: 22px; border-block-start: 1px solid var(--line); color: var(--ink); font: 450 clamp(1.4rem, 2.4vw, 2rem)/1.2 var(--font-display); letter-spacing: -.02em; }
+  .dp-motion-companion-note em { color: var(--green); }
+  @media (min-width: 860px) {
+    .dp-motion-decisions[data-enhanced="true"] { grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); }
+    .dp-motion-decisions[data-enhanced="true"] .dp-motion-task-inline { display: none; }
+    .dp-motion-decisions[data-enhanced="true"] [data-task-stage] :global(.dp-motion-task-inline) { display: block; }
+  }
+
+  .dp-motion-wrap-up { padding-block: 40px; border-block-start: 1px solid var(--line); }
+  .dp-motion-wrap-up h2 { max-inline-size: 20ch; margin-block: 18px 20px; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.08; }
+  .dp-motion-wrap-up > p:not(.dp-motion-eyebrow) { max-inline-size: 65ch; margin-block-end: 16px; color: var(--ink-soft); font-size: 1rem; line-height: 1.7; }
+  @media (max-width: 859px) {
+    .dp-motion-section-head, .dp-motion-chapter, .dp-motion-decisions { grid-template-columns: minmax(0,1fr); }
+    .dp-motion-section-head { gap: 16px; }
+    .dp-motion-chapter { gap: 20px; padding-block: 0 44px; }
+    .dp-motion-chapter-copy h3 { max-inline-size: 22ch; }
+    .dp-motion-chapter-copy > p:not(.dp-motion-eyebrow) { max-inline-size: 60ch; }
+    .dp-motion-task-body { padding-inline-start: 0; }
+  }
+  @media (max-width: 719px) {
+    .dp-motion-dispatch-panel { grid-template-columns: minmax(0,1fr); gap: 14px; }
+    .dp-motion-dispatch-copy { padding-block: 8px; }
+    .dp-motion-display-number { display: none; }
+    .dp-motion-dispatch-copy h3 { margin-block-start: 12px; }
+    .dp-motion-dispatch-briefs { grid-template-columns: minmax(0,1fr); gap: 18px; }
+    .dp-motion-dispatch-briefs > a { min-block-size: 0; padding-block-end: 20px; border-block-end: 1px solid var(--line-soft); }
+    .dp-motion-dispatch-controls button { flex-direction: column; align-items: start; gap: 6px; font-size: .8125rem; padding-inline: 8px; }
+    .dp-motion-decisions { padding: 22px 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dp-motion-review *, .dp-motion-review *::before, .dp-motion-review *::after { transition: none !important; animation: none !important; }
+    .dp-motion-dispatch-briefs a:hover .dp-motion-brief-arrow { transform: none; }
+  }
+</style>
