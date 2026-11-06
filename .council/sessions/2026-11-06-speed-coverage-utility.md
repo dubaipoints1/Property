@@ -155,3 +155,58 @@ also distinguishes generated font assets from manifest-derived CSS/module.
 Generator behaviour/binaries/manifest are unchanged. Focused font/CSS27checks
 and exact private font `--check` pass. Full staged and main-diff whitespace
 checks must pass before the push.
+
+## Verified held handoff — 2026-11-07
+
+Functional/remote head: a1a3436ba6edda53dc1e8776ebad5c65d4f5e932, draft
+PR https://github.com/dubaipoints1/Property/pull/519 . Auto-merge is off;
+main read-back remains 651fb0506cc03f5821e0d28659043c57eee76062. No merge or
+production mutation. Push and PR Linux runs 42282486089 / 42282622587 both
+genuinely execute check/build/tests successfully. Exact push log: 792 tests,
+792 pass, zero failures/skips/cancellations. Council jobs execute but remain
+advisory; substantive final acceptance is not closed.
+
+Cloudflare preview https://ab89c54e.dubaipoints.pages.dev/ deploys successfully.
+Root observes both themes, actual AVIF decoding, no initial video source and
+no production-tag scripts. Chrome viewport override is reset; held preview
+tab is retained. Proof image `hosted-desktop-light.png` is shown in commentary.
+Physical Safari, native scrollbar and full final task/accessibility/media
+acceptance are NOT certified.
+
+The full local geometry census now has 322 routes × 3 sizes × 2 themes =
+1,932 records. No measured root overflow, visible completed broken image,
+missing headline or wrong homepage-only CSS marker. An initial hidden
+desktop-only transparent placeholder finding was explicitly rechecked as
+display:none / zero rectangle and retained as a reclassification, not erased.
+This is geometry/completed-image smoke coverage, not all interaction states.
+
+Two clean hosted mobile runs score 93 / 93, LCP 2,865 / 2,864 ms, TBT 0,
+CLS 0.031, transfer proxy 235.8 KiB each. Targets 95 / 200 KiB still fail.
+Both accessibility/best-practices 100; preview SEO 69 is intentional noindex.
+No GA/CF tag requests appear. Do not call this live performance or claim a
+three-run median; production analytics cost remains unaccepted. Raw files:
+`hosted-mobile-01.json`, `hosted-mobile-02.json`, `phase1-census.json` under
+`/private/tmp/dubaipoints-implementation.UQUeSa`.
+
+Source runs 42282685935 / 42283892186 capture twenty bounded public documents.
+All sixty evidence files match manifest bytes/SHA; nineteen have readable
+output. ADCB365 product403 is incomplete. No canonical card values/dates,
+card count, MDX, monitor/scraper registry or new utility production UI changed.
+The private deterministic diagnostic and reconciliation plan remain separate
+from accepted data changes. Conditional eligibility, unit/VAT/table attribution,
+malformed numbers and protected values must fail closed. Fifty-six candidate
+names and 181 planned URLs are not a finished refresh or market census.
+
+SkyNet status and decisions updated on 2026-11-07, raw read-back verified with
+same IDs/names/text-markdown MIME/parents and all original history/Claude QA.
+Status: 108,032 B / 487 LF / SHA256
+26d9093120a1c4ba160aca7cbd504464ecaf1d63faf7e6c567571ab1febc80eb.
+Decisions: 79,041 B / 453 LF / SHA256
+654940114a7cd3475897bf5352fabc8e359f26a3c55aa4c83817c43f7499f94f.
+
+Next action: owner answers the two pending GA-timing / paid merge-trigger
+choices. Both controls remain unchanged; no paid calls or worker activation.
+Continue optimisation and source-backed data/UI stages only within authority;
+do not merge on the advisory green job. This handoff is a local records-only
+follow-up; it does not invalidate the separate exact functional-head evidence
+and is not itself a fresh hosted performance certification.
