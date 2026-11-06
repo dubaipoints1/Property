@@ -4,7 +4,7 @@ Prepared 2026-11-06 from the already-installed Fontsource 5.3.0 packages.
 Newsreader normal/italic retain the complete **wght 200–800** axis; Geist normal
 retains **wght 100–900**. These are subsets, not static instances or new fonts.
 The original Fontsource stylesheets remain the fallback for other characters.
-The generated CSS declares the actual output cmap, including canonical and
+The manifest-derived CSS declares the actual output cmap, including canonical and
 FontTools bidi/layout closure; it never advertises a whole Unicode block that
 the smaller file cannot render. Families and `font-display: swap` are unchanged.
 
@@ -45,9 +45,13 @@ or add a dependency merely to run the site. After a normal production build:
 
 `--dist` accepts an existing build directory; `--out-dir` can keep an experiment
 private. `--check` regenerates privately, repeats the proof and requires exact
-existing output bytes without writing. It also compares corpus metadata, so
+existing WOFF2, notice and JSON-manifest bytes without writing. It also compares corpus metadata, so
 an intervening page/source edit may require an explicit regeneration/review.
 The utility never writes to `dist/` or installs dependencies.
+
+The utility emits three WOFF2 files, two source notices and the JSON manifest;
+it does not emit the CSS or URL module. The CSS's manifest-derived ranges and
+the module/preload integration are checked separately by the Node guards.
 
 The repertoire is shared across the whole site: printable ASCII, every parsed
 production-page text/UI attribute, a source-UI non-ASCII superset, and explicit
@@ -77,4 +81,3 @@ Lighthouse score. Actual rendered before/after and hosted mobile performance
 checks remain separate release gates. CI's Node guards check the recorded
 source/output/licence hashes and integration contract without requiring a
 Python/font tool installation on every build.
-

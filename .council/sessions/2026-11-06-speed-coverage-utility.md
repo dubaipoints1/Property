@@ -146,3 +146,12 @@ Full 792-test run: 791 pass, one unchanged Bash3 automation-state failure,
 zero skips/cancellations. This is not a full-suite pass; Linux CI must execute
 the same test on the pushed head. No canonical data/content/dependency/paid-
 scrape trigger diff is present.
+
+Before first push, the cached-diff check caught four new files with an extra
+EOF blank line, which an earlier unstaged-only check had not covered. The
+unpublished first commit4689852 was followed by a narrow corrective commit,
+not represented as a clean first check. All four now end with one LF; README
+also distinguishes generated font assets from manifest-derived CSS/module.
+Generator behaviour/binaries/manifest are unchanged. Focused font/CSS27checks
+and exact private font `--check` pass. Full staged and main-diff whitespace
+checks must pass before the push.

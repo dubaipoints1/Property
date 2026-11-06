@@ -4,4 +4,3 @@ import newsreaderLatinSubset from "../assets/fonts/newsreader-latin-wght-normal-
 import geistLatinSubset from "../assets/fonts/geist-latin-wght-normal-site.woff2?url";
 
 export { newsreaderLatinSubset, geistLatinSubset };
-
