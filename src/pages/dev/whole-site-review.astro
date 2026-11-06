@@ -1,0 +1,263 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import review from "../../../.council/research/2026-11/whole-site-experience-review.json";
+
+// Private review only: the normal build prunes /dev/ before indexing and
+// production delivery. This route does not change any publication page.
+const { scope, familyPlans, routes, findings, resources, directions } = review;
+const families = Object.entries(familyPlans);
+const familyLabel = (key: string) => familyPlans[key as keyof typeof familyPlans]?.label ?? key;
+const evidenceLabels: Record<string, string> = {
+  "proven-source": "Source-proven",
+  "rendered-observation": "Recorded rendered observation",
+  "design-judgement": "Design judgement",
+  "risk-not-confirmed": "Unconfirmed risk",
+};
+const sourceHref = (file: string, line: number) =>
+  `https://github.com/dubaipoints1/Property/blob/${scope.sourceSha}/${file.split("/").map(encodeURIComponent).join("/")}#L${line}`;
+const shortSha = (sha: string) => sha.slice(0, 7);
+const integrityMismatch = routes.length !== scope.routeCount || families.length !== scope.familyCount;
+---
+
+<BaseLayout title="Whole-site experience review — private candidate | DubaiPoints" description="Local-only evidence, page-family plans and complete route inventory for the DubaiPoints experience review." fullWidth>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+  <div class="dp-site-review" data-pagefind-ignore>
+    <header class="dp-site-review-head">
+      <p class="dp-site-review-kicker">Private review · candidate, not live</p>
+      <h1>The whole site.<br /><em>One experience.</em></h1>
+      <p class="dp-site-review-deck">A review of the publication's flow, useful detail and animation—not a claim that every page has passed every test.</p>
+      <p class="dp-site-review-authority">{scope.ownerScope}</p>
+      <div class="dp-site-review-meta">
+        <span>Evidence dated <time datetime={scope.asOf}>{scope.asOf}</time></span>
+        <span>Audited candidate <code>{shortSha(scope.sourceSha)}</code></span>
+        <span>Production reference <code>{shortSha(scope.productionSha)}</code></span>
+      </div>
+      <nav class="dp-site-review-nav" aria-label="Review sections">
+        <a href="#review-scope">What was checked</a>
+        <a href="#review-directions">Design directions</a>
+        <a href="#review-findings">Priority findings</a>
+        <a href="#review-families">Family plans</a>
+        <a href="#review-routes">Every route</a>
+        <a href="#review-resources">21st references</a>
+      </nav>
+    </header>
+
+    <section class="dp-site-review-section" id="review-scope" aria-labelledby="review-scope-heading">
+      <div class="dp-site-review-section-head"><p class="dp-site-review-kicker">Evidence and limits</p><h2 id="review-scope-heading">Mapped is not the same as tested.</h2></div>
+      <dl class="dp-site-review-metrics">
+        <div><dt>Routes inventoried</dt><dd>{routes.length}</dd></div>
+        <div><dt>Page-family plans</dt><dd>{families.length}</dd></div>
+        <div><dt>Representative routes measured</dt><dd>{scope.renderedRoutes}</dd></div>
+        <div><dt>Recorded rendered states</dt><dd>{scope.renderedStates}</dd></div>
+      </dl>
+      {integrityMismatch && <p class="dp-site-review-warning" role="alert">Inventory totals do not match the declared review scope. Resolve the review data before relying on these counts.</p>}
+      <div class="dp-site-review-scope-grid">
+        <div><h3>Review method</h3><p>{scope.method}</p><p>File-and-line links below point to the audited candidate, not necessarily the production version. Route links distinguish the local candidate from the public site.</p><a class="dp-ui-action dp-ui-secondary" href={scope.previewBase} target="_blank" rel="noopener noreferrer">Open held deployment preview <span aria-hidden="true">↗</span></a></div>
+        <div><h3>What this does not establish</h3><ul class="dp-site-review-limits">{scope.limits.map((limit) => <li>{limit}</li>)}</ul></div>
+      </div>
+    </section>
+
+    <section class="dp-site-review-section" id="review-directions" aria-labelledby="review-directions-heading">
+      <div class="dp-site-review-section-head"><p class="dp-site-review-kicker">Compare the composition</p><h2 id="review-directions-heading">Three genuinely different front doors.</h2><p>Open the working concepts, use the site's light/dark control and compare the flow. These are options for review, not an approved rollout.</p></div>
+      <ol class="dp-site-review-directions">
+        {directions.map((direction, index) => <li><span class="dp-site-review-number" aria-hidden="true">0{index + 1}</span><h3>{direction.name}</h3><p>{direction.idea}</p><p class="dp-site-review-direction-fit">{direction.fit}</p><a class="dp-ui-action dp-ui-secondary" href={`/dev/21st-site-directions/#${direction.id}`}>Explore {direction.name} <span aria-hidden="true">→</span></a></li>)}
+      </ol>
+    </section>
+
+    <section class="dp-site-review-section" id="review-findings" aria-labelledby="review-findings-heading">
+      <div class="dp-site-review-section-head"><p class="dp-site-review-kicker">{findings.length} recorded findings</p><h2 id="review-findings-heading">Fix the foundations. Then improve the flow.</h2><p>Evidence labels distinguish a source finding, an observed render, a judgement and an unconfirmed risk. Priority is not a claim of a proven production incident.</p></div>
+      <ol class="dp-site-review-findings">
+        {findings.map((finding) => <li class:list={["dp-site-review-finding", { "is-priority": finding.priority === "P1" }]}>
+          <div class="dp-site-review-finding-meta"><span class="dp-site-review-priority">{finding.priority}</span><span>{finding.id}</span><span class="dp-site-review-evidence">{evidenceLabels[finding.evidenceType] ?? finding.evidenceType.replaceAll("-", " ")}</span></div>
+          <h3>{finding.title}</h3><p>{finding.observation}</p>
+          <p class="dp-site-review-recommendation"><strong>Proposed response:</strong> {finding.recommendation}</p>
+          <ul class="dp-site-review-sources" aria-label={`Source locations for ${finding.id}`}>
+            {finding.sources.map((source) => <li><a href={sourceHref(source.file, source.line)} target="_blank" rel="noopener noreferrer"><code>{source.file}:{source.line}</code><span class="sr-only"> in audited candidate, opens a new tab</span></a></li>)}
+          </ul>
+        </li>)}
+      </ol>
+    </section>
+
+    <section class="dp-site-review-section" id="review-families" aria-labelledby="review-families-heading">
+      <div class="dp-site-review-section-head"><p class="dp-site-review-kicker">Coverage by template</p><h2 id="review-families-heading">A plan for every page family.</h2><p>These are proposed changes, not completed family-wide QA or release approvals. Open a family for its role and next design step.</p></div>
+      <div class="dp-site-review-families">
+        {families.map(([family, plan]) => <details class="dp-site-review-family"><summary><span>{plan.label}<small>{family}</small></span><span class="dp-site-review-family-count">{plan.count} {plan.count === 1 ? "route" : "routes"}</span><span class="dp-site-review-family-chevron" aria-hidden="true">⌄</span></summary><div><p><strong>Role:</strong> {plan.role}</p><p>{plan.plan}</p><p class="dp-site-review-phase">Proposed phase {plan.phase} · not a delivery status</p></div></details>)}
+      </div>
+    </section>
+
+    <section class="dp-site-review-section" id="review-routes" aria-labelledby="review-routes-heading" data-review-inventory>
+      <div class="dp-site-review-section-head"><p class="dp-site-review-kicker">Complete inventory</p><h2 id="review-routes-heading">All {routes.length} routes. No hidden remainder.</h2><p>Candidate opens this local working copy. Live opens the public URL; it does not mean the new design is deployed. “Recorded representative” marks a measured sample, not exhaustive page QA.</p></div>
+      <form class="dp-site-review-filters" data-review-filters hidden aria-label="Filter the route inventory">
+        <label for="review-family-filter">Page family<select class="dp-ui-field" id="review-family-filter" data-review-family><option value="">All {families.length} families</option>{families.map(([family, plan]) => <option value={family}>{plan.label} ({plan.count})</option>)}</select></label>
+        <label for="review-route-filter">Find a title or route<input class="dp-ui-field" id="review-route-filter" data-review-query type="search" autocomplete="off" placeholder="Try Skywards, salary or /news/" /></label>
+        <button class="dp-ui-action dp-ui-secondary" type="reset">Clear filters</button>
+      </form>
+      <p class="dp-site-review-route-status" role="status" aria-live="polite" aria-atomic="true" data-review-route-count>{routes.length} of {routes.length} routes shown.</p>
+      <noscript><p class="dp-site-review-note">JavaScript is off. The complete route table remains below; use your browser's Find command to locate a title or URL.</p></noscript>
+      <div class="dp-site-review-table-scroll" tabindex="0" role="region" aria-label="Complete route inventory; scroll horizontally on narrow screens">
+        <table>
+          <caption>Inventory at {scope.asOf}. All {routes.length} rows are present; filters do not paginate or remove records from this review.</caption>
+          <thead><tr><th scope="col">Page and route</th><th scope="col">Family</th><th scope="col">Measured sample</th><th scope="col">Candidate</th><th scope="col">Live URL</th></tr></thead>
+          <tbody>{routes.map((entry) => <tr data-review-route data-family={entry.family} data-search={`${entry.title} ${entry.route} ${familyLabel(entry.family)}`.toLocaleLowerCase("en-GB")}>
+            <th scope="row"><span class="dp-site-review-route-title">{entry.title}</span><code>{entry.route}</code></th>
+            <td>{familyLabel(entry.family)}</td><td><span class:list={["dp-site-review-sample", { "is-recorded": entry.renderedRepresentative }]}>{entry.renderedRepresentative ? "Recorded representative" : "Not in measured sample"}</span></td>
+            <td><a href={entry.route} target="_blank" rel="noopener noreferrer" aria-label={`Open local candidate: ${entry.title}`}>Candidate <span aria-hidden="true">↗</span></a></td>
+            <td><a href={`https://dubaipoints.ae${entry.route}`} target="_blank" rel="noopener noreferrer" aria-label={`Open live URL, not verification: ${entry.title}`}>Live <span aria-hidden="true">↗</span></a></td>
+          </tr>)}</tbody>
+        </table>
+      </div>
+      <p class="dp-site-review-empty" data-review-empty hidden>No mapped routes match these filters. Clear the filters or try a shorter term.</p>
+    </section>
+
+    <section class="dp-site-review-section" id="review-resources" aria-labelledby="review-resources-heading">
+      <div class="dp-site-review-section-head"><p class="dp-site-review-kicker">21st resource ledger</p><h2 id="review-resources-heading">References—not blanket clearance.</h2><p>A listing's licence label does not establish that its source, dependencies and bundled media have all been cleared or tested. The uses below are candidate adaptations, not claims that the original resource is installed.</p></div>
+      <ol class="dp-site-review-resources">{resources.map((resource) => <li><h3><a href={resource.url} target="_blank" rel="noopener noreferrer">{resource.title} <span aria-hidden="true">↗</span></a></h3><p>{resource.use}</p><p class="dp-site-review-licence">{resource.licence}</p></li>)}</ol>
+    </section>
+    <footer class="dp-site-review-close"><p>Review, choose, implement, verify—then decide whether to release.</p><a href="#review-directions" class="dp-ui-action dp-ui-secondary">Compare the three directions <span aria-hidden="true">↑</span></a></footer>
+  </div>
+</BaseLayout>
+
+<script>
+  const inventory = document.querySelector<HTMLElement>("[data-review-inventory]");
+  if (inventory) {
+    const form = inventory.querySelector<HTMLFormElement>("[data-review-filters]");
+    const family = inventory.querySelector<HTMLSelectElement>("[data-review-family]");
+    const query = inventory.querySelector<HTMLInputElement>("[data-review-query]");
+    const status = inventory.querySelector<HTMLElement>("[data-review-route-count]");
+    const empty = inventory.querySelector<HTMLElement>("[data-review-empty]");
+    const rows = [...inventory.querySelectorAll<HTMLTableRowElement>("[data-review-route]")];
+    if (form && family && query && status && empty) {
+      const apply = () => {
+        const term = query.value.trim().toLocaleLowerCase("en-GB");
+        let shown = 0;
+        for (const row of rows) {
+          const matches = (!family.value || row.dataset.family === family.value) && (!term || (row.dataset.search ?? "").includes(term));
+          row.hidden = !matches;
+          if (matches) shown += 1;
+        }
+        status.textContent = `${shown} of ${rows.length} ${rows.length === 1 ? "route" : "routes"} shown.`;
+        empty.hidden = shown !== 0;
+      };
+      family.addEventListener("change", apply);
+      query.addEventListener("input", apply);
+      form.addEventListener("submit", (event) => { event.preventDefault(); apply(); });
+      form.addEventListener("reset", (event) => {
+        event.preventDefault();
+        family.value = "";
+        query.value = "";
+        apply();
+        query.focus({ preventScroll: true });
+      });
+      window.addEventListener("pageshow", apply);
+      form.hidden = false;
+      apply();
+    }
+  }
+</script>
+
+<style>
+  .dp-site-review { max-inline-size: 1440px; margin-inline: auto; padding: clamp(24px, 4vw, 64px) clamp(16px, 3vw, 40px); min-inline-size: 0; color: var(--ink); }
+  .dp-site-review [hidden] { display: none !important; }
+  .dp-site-review-head { max-inline-size: 1040px; }
+  .dp-site-review-kicker { margin: 0 0 12px; color: var(--green); font: 700 .6875rem/1.5 var(--font-ui); letter-spacing: .14em; text-transform: uppercase; }
+  h1 { margin: 0; font: 550 clamp(2.6rem, 6.4vw, 5.25rem)/1.02 var(--font-display); letter-spacing: -.035em; text-wrap: balance; }
+  h1 em { font-weight: 450; }
+  .dp-site-review-deck { max-inline-size: 58ch; margin: 22px 0 0; font: 400 clamp(1.1rem, 1.7vw, 1.35rem)/1.5 var(--font-ui); color: var(--ink-soft); }
+  .dp-site-review-authority { max-inline-size: 80ch; margin: 22px 0 0; padding-inline-start: 16px; border-inline-start: 3px solid var(--green); font-weight: 550; }
+  p, li { line-height: 1.65; }
+  .dp-site-review-meta { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-block: 22px; color: var(--ink-soft); font: 400 .8125rem/1.6 var(--font-ui); }
+  code { font: 400 .75rem/1.6 var(--font-mono, ui-monospace, monospace); overflow-wrap: anywhere; white-space: normal; }
+  .dp-site-review-nav { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-block-start: 20px; }
+  a { color: var(--green); text-underline-offset: .2em; }
+  .dp-site-review-nav a { display: inline-flex; align-items: center; min-block-size: 44px; font-size: .875rem; font-weight: 600; }
+  :is(a, button, input, select, summary, [tabindex]):focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+  .dp-site-review-section { margin-block-start: clamp(44px, 6vw, 88px); padding-block-start: clamp(24px, 3vw, 36px); border-block-start: 1px solid var(--line); scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 20px); min-inline-size: 0; }
+  .dp-site-review-section-head { max-inline-size: 850px; margin-block-end: 24px; }
+  h2 { margin: 0; font: 550 clamp(1.8rem, 3.2vw, 2.75rem)/1.12 var(--font-display); letter-spacing: -.025em; text-wrap: balance; }
+  h3 { margin: 0 0 10px; font: 550 clamp(1.3rem, 2vw, 1.7rem)/1.2 var(--font-display); letter-spacing: -.015em; }
+  .dp-site-review-section-head > p:last-child { margin-block: 14px 0; color: var(--ink-soft); }
+  .dp-site-review-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0 0 28px; border-block: 1px solid var(--line); }
+  .dp-site-review-metrics > div { padding: 20px 18px; min-inline-size: 0; border-inline-end: 1px solid var(--line); }
+  .dp-site-review-metrics > div:first-child { padding-inline-start: 0; }
+  .dp-site-review-metrics > div:last-child { border-inline-end: 0; }
+  dt { color: var(--ink-soft); font: 550 .75rem/1.4 var(--font-ui); }
+  dd { margin: 10px 0 0; color: var(--ink); font: 500 clamp(2rem, 4vw, 3.25rem)/1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .dp-site-review-scope-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 56px); }
+  .dp-site-review-scope-grid p { margin: 0 0 16px; color: var(--ink-soft); }
+  .dp-site-review-limits { margin: 0; padding-inline-start: 20px; color: var(--ink-soft); }
+  .dp-site-review-limits li + li { margin-block-start: 8px; }
+  .dp-site-review-warning { padding: 16px; border: 1px solid var(--red); color: var(--ink); }
+  .dp-site-review-directions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 36px); list-style: none; padding: 0; margin: 0; }
+  .dp-site-review-directions > li { display: flex; flex-direction: column; align-items: flex-start; padding-block: 20px 0; border-block-start: 2px solid var(--green); min-inline-size: 0; }
+  .dp-site-review-number { margin-block-end: 18px; color: var(--ink-soft); font: 500 .75rem/1.4 var(--font-ui); }
+  .dp-site-review-directions p { margin: 0 0 14px; color: var(--ink-soft); }
+  .dp-site-review-direction-fit { font-size: .8125rem; }
+  .dp-site-review-directions a { margin-block-start: auto; }
+  .dp-site-review-findings { list-style: none; padding: 0; margin: 0; display: grid; gap: 28px; }
+  .dp-site-review-finding { padding-inline-start: clamp(16px, 2vw, 24px); border-inline-start: 2px solid var(--line); }
+  .dp-site-review-finding.is-priority { border-inline-start-color: var(--red); }
+  .dp-site-review-finding-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-block-end: 10px; color: var(--ink-soft); font: 500 .75rem/1.5 var(--font-ui); }
+  .dp-site-review-priority { font-weight: 750; color: var(--ink); }
+  .dp-site-review-evidence { border: 1px solid var(--line); border-radius: 4px; padding: 3px 7px; }
+  .dp-site-review-finding p { max-inline-size: 94ch; margin: 0 0 10px; color: var(--ink-soft); }
+  .dp-site-review-recommendation strong { color: var(--ink); }
+  .dp-site-review-sources { display: flex; flex-wrap: wrap; gap: 0 18px; list-style: none; margin: 10px 0 0; padding: 0; }
+  .dp-site-review-sources li { min-inline-size: 0; max-inline-size: 100%; }
+  .dp-site-review-sources a { display: inline-flex; align-items: center; min-block-size: 44px; max-inline-size: 100%; }
+  .dp-site-review-families { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; align-items: start; }
+  .dp-site-review-family { border-block-start: 1px solid var(--line); min-inline-size: 0; }
+  .dp-site-review-family summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 16px; min-block-size: 60px; cursor: pointer; font: 600 .9375rem/1.4 var(--font-ui); }
+  .dp-site-review-family summary small { display: block; margin-block-start: 4px; color: var(--ink-soft); font-size: .75rem; font-weight: 400; overflow-wrap: anywhere; }
+  .dp-site-review-family-count { flex-shrink: 0; margin-inline-start: auto; color: var(--ink-soft); font: 500 .75rem/1.5 var(--font-ui); }
+  .dp-site-review-family-chevron { flex-shrink: 0; color: var(--green); font-size: 1.2rem; }
+  .dp-site-review-family[open] .dp-site-review-family-chevron { transform: rotate(180deg); }
+  .dp-site-review-family > div { padding-block-end: 18px; }
+  .dp-site-review-family p { margin: 0 0 10px; color: var(--ink-soft); font-size: .875rem; }
+  .dp-site-review-family strong { color: var(--ink); }
+  .dp-site-review-family .dp-site-review-phase { font-size: .75rem; }
+  .dp-site-review-filters { display: grid; grid-template-columns: minmax(180px, .8fr) minmax(220px, 1.2fr) auto; gap: 14px; align-items: end; margin-block: 24px 16px; }
+  .dp-site-review-filters label { display: flex; flex-direction: column; gap: 8px; min-inline-size: 0; font: 600 .8125rem/1.5 var(--font-ui); }
+  .dp-site-review-filters :is(select, input) { inline-size: 100%; min-inline-size: 0; font-size: 16px; }
+  .dp-site-review-route-status, .dp-site-review-note { color: var(--ink-soft); font-size: .875rem; }
+  .dp-site-review-table-scroll { max-inline-size: 100%; overflow-x: auto; overscroll-behavior-inline: contain; border-block: 1px solid var(--line); margin-block-start: 16px; }
+  table { border-collapse: collapse; inline-size: 100%; min-inline-size: 850px; font: 400 .8125rem/1.5 var(--font-ui); }
+  caption { text-align: start; padding-block: 14px; color: var(--ink-soft); font-size: .75rem; }
+  th, td { text-align: start; vertical-align: top; padding: 14px 16px; border-block-end: 1px solid var(--line-soft); }
+  th:first-child, td:first-child { padding-inline-start: 2px; }
+  thead th { color: var(--ink-soft); font-size: .6875rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 650; white-space: nowrap; }
+  tbody th { inline-size: 43%; font-weight: 500; overflow-wrap: anywhere; }
+  tbody th code { display: block; margin-block-start: 5px; color: var(--ink-soft); }
+  .dp-site-review-route-title { display: block; color: var(--ink); }
+  tbody td:nth-child(2) { inline-size: 18%; }
+  tbody td:nth-child(3) { inline-size: 18%; }
+  tbody td:last-child, tbody td:nth-last-child(2) { white-space: nowrap; }
+  td a { display: inline-flex; align-items: center; gap: 4px; min-block-size: 44px; font-weight: 600; }
+  .dp-site-review-sample { display: inline-block; color: var(--ink-soft); font-size: .75rem; }
+  .dp-site-review-sample.is-recorded { color: var(--green); font-weight: 650; }
+  .dp-site-review-empty { padding: 20px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); }
+  .dp-site-review-resources { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 40px; list-style: none; margin: 0; padding: 0; }
+  .dp-site-review-resources li { padding-block-start: 16px; border-block-start: 1px solid var(--line); min-inline-size: 0; }
+  .dp-site-review-resources h3 { font-size: 1.25rem; }
+  .dp-site-review-resources p { margin: 0 0 8px; color: var(--ink-soft); font-size: .875rem; }
+  .dp-site-review-resources .dp-site-review-licence { font-size: .75rem; }
+  .dp-site-review-close { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px 28px; margin-block-start: 56px; padding-block: 28px 0; border-block-start: 1px solid var(--line); }
+  .dp-site-review-close p { max-inline-size: 40ch; margin: 0; font: 500 1.5rem/1.25 var(--font-display); }
+  @media (max-width: 850px) {
+    .dp-site-review-directions, .dp-site-review-scope-grid { grid-template-columns: 1fr; }
+    .dp-site-review-directions { gap: 28px; }
+    .dp-site-review-directions a { margin-block-start: 4px; }
+    .dp-site-review-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dp-site-review-filters button { justify-self: start; }
+  }
+  @media (max-width: 600px) {
+    .dp-site-review-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dp-site-review-metrics > div { border-block-end: 1px solid var(--line); }
+    .dp-site-review-metrics > div:nth-child(odd) { padding-inline-start: 0; }
+    .dp-site-review-metrics > div:nth-child(even) { border-inline-end: 0; }
+    .dp-site-review-metrics > div:nth-last-child(-n + 2) { border-block-end: 0; }
+    .dp-site-review-families, .dp-site-review-resources, .dp-site-review-filters { grid-template-columns: 1fr; }
+    .dp-site-review-family summary { gap: 10px; }
+    .dp-site-review-filters button { inline-size: 100%; }
+    .dp-site-review-finding-meta { gap: 6px 10px; }
+  }
+</style>

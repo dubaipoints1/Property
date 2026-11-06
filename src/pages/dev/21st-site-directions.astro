@@ -1,0 +1,492 @@
+---
+import BaseLayout from "~/layouts/BaseLayout.astro";
+import StockImage from "~/components/StockImage.astro";
+import ImageCredit from "~/components/ImageCredit.astro";
+import CompareCardArt from "~/components/cards/CompareCardArt.astro";
+import { getCollection } from "astro:content";
+import { getActiveCards } from "~/lib/cardsData";
+import { getCardArt } from "~/lib/cardArt";
+import { getStockEntry } from "~/lib/stockManifest";
+import { cardArtSrcset } from "~/lib/stockDerivatives";
+import { getLiveOffers } from "~/lib/offerAdapter";
+import { getLiveDeals } from "~/lib/deals";
+
+// Local owner review only. /dev/ is excluded from the sitemap and pruned
+// before Pagefind/production delivery. No homepage or working tool changes.
+// Composition references only: 21st Hero 07/08 (felipemenezes098), the
+// existing Runway exploration, and house editorial/decision primitives.
+// No third-party source code, demo assets, generation or dependencies.
+const news = (await getCollection("news")).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const guides = (await getCollection("guides")).sort((a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime());
+const banks = await getCollection("banks");
+const bankNames = new Map(banks.map(bank => [bank.id, bank.data.name]));
+const lead = news.find(post => post.id === "cash-or-miles-emirates-three-quotes") ?? news[0];
+const leadImage = lead && getStockEntry(`news-${lead.id}`);
+const latest = news.filter(post => post.id !== lead?.id).slice(0, 4);
+const atlasStories = lead ? [lead, ...latest] : latest;
+const guide = guides.find(item => item.id === "expat-starter") ?? guides[0];
+const guideShelf = guides.filter(item => item.id !== guide?.id).slice(0, 3);
+const salaryOffers = (await getLiveOffers()).slice(0, 2);
+const deals = (await getLiveDeals()).slice(0, 2);
+const activeCards = getActiveCards();
+const reviewCards = ["emirates-nbd-skywards-infinite", "adcb-365-cashback"].flatMap(slug => {
+  const card = activeCards.find(item => item.slug === slug);
+  const art = getCardArt(slug);
+  return card && art ? [{ card, art, bank: bankNames.get(card.bank) ?? card.bank }] : [];
+});
+const compareHref = reviewCards.length > 1 ? `/cards/compare/?cards=${reviewCards.map(item => item.card.slug).join(",")}` : "/cards/compare/";
+const date = (value: Date | string) => (value instanceof Date ? value : new Date(value)).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+const photoFor = (id: string, collection = "news") => {
+  const entry = getStockEntry(`${collection}-${id}`);
+  return entry && entry.source !== "ai-generated" ? entry : undefined;
+};
+const deck = "UAE-resident guides to the card combinations, salary-transfer bonuses and miles redemptions that stretch a Dubai paycheque further — AED-first, dated and sourced.";
+const directions = [
+  { id: "editorial-atlas", name: "Editorial Atlas", letter: "A", idea: "A landscape-led publication. Discover the story, then the useful next step.", fit: "Best when editorial discovery and travel imagery should lead.", reference: "Composition reference: 21st Hero 07 / Hero 08, felipemenezes098. Rebuilt with native house CSS; not imported source." },
+  { id: "runway-journal", name: "Runway Journal", letter: "B", idea: "A panoramic opening, followed by three chapters you explore at your own pace.", fit: "Best when a connected travel story should organise the homepage.", reference: "Composition reference: the Runway editorial direction and native chapter navigation. Still photography only; no video download." },
+  { id: "decision-desk", name: "Decision Desk", letter: "C", idea: "Start with cards, salary or miles. The reporting supports the decision.", fit: "Best when readers arrive with a specific task and want a clear route.", reference: "Composition reference: native task progression, contained issuer art and the existing Finder / Tracker / Compare journeys." },
+];
+const tasks = [
+  { id: "cards", label: "Choose a card", title: "What fits the way I spend?", description: "Compare the published fees, eligibility and benefits before choosing a card.", href: "/cards/finder/", action: "Open Card Finder", secondary: compareHref, secondaryLabel: "Compare cards" },
+  { id: "salary", label: "Move my salary", title: "What should I check before switching?", description: "Read the qualifying conditions, required products, payout timing and clawback terms before applying.", href: "/salary-transfer/", action: "Open Salary Tracker", secondary: "/salary-transfer/calculator/", secondaryLabel: "Check a reward estimate" },
+  { id: "miles", label: "Use my miles", title: "Cash or miles for the next trip?", description: "Compare the cash fare with the miles and total cash due on the award. Check the itinerary and conditions match.", href: "/calculator/cash-or-miles/", action: "Compare cash with miles", secondary: "/airlines/skywards/", secondaryLabel: "Read the Skywards guide" },
+];
+const chapters = [
+  { id: "earn", label: "Earn", title: "The next trip starts before the airport.", slug: "guide-expat-starter", description: guide?.data.description ?? "Explore the UAE guides.", href: guide ? `/guides/${guide.id}/` : "/guides/", action: "Start with the UAE guide" },
+  { id: "understand", label: "Understand", title: "Know the programme behind the promise.", slug: "programme-skywards", description: "How to earn and spend Skywards Miles from the UAE, with transfer routes, redemption examples and expiry rules.", href: "/airlines/skywards/", action: "Explore Emirates Skywards" },
+  { id: "decide", label: "Decide", title: "Put two flight quotes side by side.", slug: "programme-etihad-guest", description: "See how much cash the award saves, what you get per mile, and when the award reaches your target value.", href: "/calculator/cash-or-miles/", action: "Compare cash with miles" },
+];
+---
+
+<BaseLayout title="Private whole-site design directions | DubaiPoints" description="Three unselected local design compositions for owner review. Not the live website." fullWidth>
+  <meta slot="head" name="robots" content="noindex,nofollow" />
+  <div class="dp-site-directions" data-pagefind-ignore>
+    <header class="directions-intro" id="site-direction-review-top">
+      <p class="eyebrow">Private owner review · unselected · not live</p>
+      <h1>One publication.<br />Three complete directions.</h1>
+      <p>Compare the homepage, then the article and tool language beneath it. The content, brand and fonts stay the same; the composition and path through them change. These are prototypes, not approved replacements.</p>
+      <nav class="direction-index" aria-label="Choose a complete design direction">
+        {directions.map(direction => <a href={`#${direction.id}`}><span>{direction.letter}</span><strong>{direction.name}</strong><span aria-hidden="true">↘</span></a>)}
+      </nav>
+      <p class="review-note">Use the site's theme control for light and dark. All chapters, tasks and links work without JavaScript. Optional motion never locks scrolling or loads video.</p>
+    </header>
+
+    {directions.map(direction => (
+      <section class:list={["direction", `is-${direction.id}`]} id={direction.id} aria-labelledby={`${direction.id}-title`}>
+        <header class="direction-label"><div><p class="eyebrow">Direction {direction.letter} · complete homepage composition</p><h2 id={`${direction.id}-title`}>{direction.name}</h2></div><p>{direction.idea}</p></header>
+        <div class="concept-home">
+          <div class="concept-masthead">
+            <a href="/" class="concept-wordmark"><span aria-hidden="true">↗</span>DubaiPoints</a>
+            <nav aria-label={`${direction.name} preview navigation`}><a href={`#${direction.id}-tools`}>Tools</a><a href={`#${direction.id}-reporting`}>Reporting</a><a href={`#${direction.id}-guides`}>Guides</a><a href="/deals/">Deals</a></nav>
+          </div>
+
+          {direction.id === "editorial-atlas" ? (
+            <header class="atlas-opening">
+              <figure class="atlas-landscape"><StockImage slug="guide-expat-starter" class="concept-photo" delivery="feature" sizes="(max-width: 720px) calc(100vw - 32px), 1180px" /><figcaption><span>Dubai skyline · an aerial photograph</span><ImageCredit slug="guide-expat-starter" /></figcaption></figure>
+              <div class="atlas-title" data-direction-reveal><p class="eyebrow">Independent UAE points &amp; miles publication</p><h3>Fly further.<br /><em>Pay less.</em></h3><div><p>{deck}</p><a class="text-action" href={`#${direction.id}-tools`}>Start with a tool <span aria-hidden="true">↗</span></a></div></div>
+            </header>
+          ) : direction.id === "runway-journal" ? (
+            <header class="journal-opening">
+              <figure><StockImage slug="hero-dubai-night" class="concept-photo" delivery="feature" sizes="(max-width: 720px) calc(100vw - 32px), 1180px" /><figcaption><span>Dubai, photographed · not a rendered travel scene</span><ImageCredit slug="hero-dubai-night" /></figcaption></figure>
+              <div class="journal-opening-copy" data-direction-reveal><p class="eyebrow">Independent UAE points &amp; miles publication</p><h3>Fly further. <em>Pay less.</em></h3><p>{deck}</p><nav class="chapter-index" aria-label="Runway Journal chapters">{chapters.map((chapter, index) => <a href={`#journal-${chapter.id}`}><span>0{index + 1}</span>{chapter.label}<span aria-hidden="true">↓</span></a>)}</nav></div>
+            </header>
+          ) : (
+            <header class="decision-opening">
+              <div data-direction-reveal><p class="eyebrow">Independent UAE points &amp; miles publication</p><h3>Fly further.<br /><em>Pay less.</em></h3><p>{deck}</p><a class="text-action" href={`#${direction.id}-tools`}>Choose your next step <span aria-hidden="true">↘</span></a></div>
+              <div class="decision-card-wall" aria-label="Real issuer card artwork, not a recommendation">
+                {reviewCards.map(({ card, art, bank }) => <figure><a href={`/cards/${card.slug}/`} aria-label={card.name}><img src={`/${art.file}`} srcset={cardArtSrcset(card.slug, art)} sizes="(max-width: 600px) calc(50vw - 48px), 230px" alt={card.name} width={art.width} height={art.height} loading="lazy" decoding="async" /></a><figcaption>Card image: {bank}<a href={art.page ?? art.url}>Issuer source ↗</a></figcaption></figure>)}
+                <p>Two reviews to explore—not a ranking.</p>
+              </div>
+            </header>
+          )}
+
+          {direction.id === "runway-journal" && (
+            <div class="journal-chapters">
+              {chapters.map((chapter, index) => <article class="journal-chapter" id={`journal-${chapter.id}`} data-direction-reveal><figure><StockImage slug={chapter.slug} class="concept-photo" delivery="feature" sizes="(max-width: 760px) calc(100vw - 64px), 520px" /><figcaption><ImageCredit slug={chapter.slug} /></figcaption></figure><div><p class="eyebrow">Chapter 0{index + 1} · {chapter.label}</p><h4>{chapter.title}</h4><p>{chapter.description}</p><a class="text-action" href={chapter.href}>{chapter.action} <span aria-hidden="true">↗</span></a></div></article>)}
+            </div>
+          )}
+
+          {direction.id === "editorial-atlas" && (
+            <section class="home-reporting atlas-briefing" id="editorial-atlas-reporting" aria-labelledby="editorial-atlas-reporting-title" data-atlas-briefing>
+              <div class="section-heading"><div><p class="eyebrow">Dated, sourced reporting</p><h3 id="editorial-atlas-reporting-title">Fresh from the desk.</h3></div><a class="text-action" href="/news/">All news ↗</a></div>
+              <p class="atlas-preview-help" data-atlas-help hidden>Read any headline directly. The numbered preview buttons let you explore a story without leaving the briefing.</p>
+              <div class="atlas-briefing-grid">
+                <div class="atlas-stories">
+                  {atlasStories.map((post, index) => (
+                    <article class="atlas-story" data-atlas-story>
+                      <div class="atlas-story-head"><span class="atlas-story-number" aria-hidden="true">0{index + 1}</span><div><p class="story-meta">News · <time datetime={post.data.publishedAt.toISOString()}>{date(post.data.publishedAt)}</time></p><h4><a href={`/news/${post.id}/`} data-atlas-story-link>{post.data.title}</a></h4></div></div>
+                      <p class="atlas-story-description" data-atlas-description>{post.data.description}</p>
+                      <button class="atlas-preview-control" type="button" hidden data-atlas-select={index} aria-pressed="false" aria-controls={`atlas-inline-${post.id}`}><span aria-hidden="true">0{index + 1}</span> Preview story <span class="sr-only">{post.data.title}</span><span aria-hidden="true">↗</span></button>
+                      <div class="atlas-inline-panel" id={`atlas-inline-${post.id}`} data-atlas-inline>
+                        {photoFor(post.id) ? <figure class:list={["atlas-inline-figure", { "is-issuer": photoFor(post.id)?.source === "editorial" }]}>{photoFor(post.id)?.source === "editorial" ? <img class="concept-photo" src={`/${photoFor(post.id)?.file}`} alt={photoFor(post.id)?.alt} width={photoFor(post.id)?.width} height={photoFor(post.id)?.height} loading="lazy" decoding="async" data-stock-source="editorial" /> : <StockImage slug={`news-${post.id}`} class="concept-photo" delivery="feature" sizes="(max-width: 799px) calc(100vw - 64px), 540px" />}<figcaption>{photoFor(post.id)?.source === "editorial" ? <span>Card image: <a href={photoFor(post.id)?.photographer_url ?? photoFor(post.id)?.source_url}>{photoFor(post.id)?.photographer}</a></span> : <ImageCredit slug={`news-${post.id}`} />}</figcaption></figure> : <p class="atlas-text-led">The full report carries the source detail.</p>}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+                <aside class="atlas-companion" id="atlas-briefing-companion" aria-label="Selected story preview" hidden>
+                  <p class="eyebrow">In focus</p><div data-atlas-stage></div><h4><a href="/news/" data-atlas-companion-link>Open the news desk</a></h4><p data-atlas-companion-description></p><a class="text-action" href="/news/" data-atlas-companion-read>Read the full story ↗</a>
+                </aside>
+              </div>
+              <p class="atlas-preview-status" role="status" aria-live="polite" aria-atomic="true" data-atlas-status></p>
+            </section>
+          )}
+
+          <section class="home-tools" id={`${direction.id}-tools`} aria-labelledby={`${direction.id}-tools-title`}>
+            <div class="section-heading"><div><p class="eyebrow">Start with a useful question</p><h3 id={`${direction.id}-tools-title`}>What brings you here?</h3></div><a class="text-action" href="/cards/finder/">All card choices ↗</a></div>
+            {direction.id === "decision-desk" ? (
+              <div class="decision-task-layout"><div class="decision-task-list">{tasks.map((task, index) => <details name="decision-desk-tasks" open={index === 0}><summary><span class="task-number">0{index + 1}</span><span>{task.label}<small>{task.title}</small></span><span class="task-toggle" aria-hidden="true">+</span></summary><div class="task-body"><p>{task.description}</p><div class="action-row"><a class="primary-action" href={task.href}>{task.action} ↗</a><a class="text-action" href={task.secondary}>{task.secondaryLabel} →</a></div></div></details>)}</div><aside class="decision-context"><p class="eyebrow">Keep the decision yours</p><h4>Published terms.<br />A clearer next step.</h4><p>A published minimum is not a guarantee of approval. Read the issuer's current terms before applying.</p><a class="text-action" href="/editorial-policy/">How we check the details ↗</a></aside></div>
+            ) : (
+              <div class="tool-grid">{tasks.map((task, index) => <article><span class="task-number">0{index + 1}</span><h4>{task.label}</h4><p>{task.description}</p><a class="text-action" href={task.href}>{task.action}<span aria-hidden="true">↗</span></a></article>)}</div>
+            )}
+          </section>
+
+          {direction.id !== "editorial-atlas" && <section class="home-reporting" id={`${direction.id}-reporting`} aria-labelledby={`${direction.id}-reporting-title`}>
+            <div class="section-heading"><div><p class="eyebrow">Dated, sourced reporting</p><h3 id={`${direction.id}-reporting-title`}>Fresh from the desk.</h3></div><a class="text-action" href="/news/">All news ↗</a></div>
+            <div class="reporting-grid">
+              {lead && <article class="lead-story" data-direction-reveal>{leadImage && <figure><a href={`/news/${lead.id}/`} aria-label={lead.data.title}><StockImage slug={leadImage.slug} class="concept-photo" delivery="feature" sizes="(max-width: 760px) calc(100vw - 64px), 660px" /></a><figcaption><ImageCredit slug={leadImage.slug} /></figcaption></figure>}<div class="story-body"><p class="story-meta">News <span>·</span> <time datetime={lead.data.publishedAt.toISOString()}>{date(lead.data.publishedAt)}</time></p><h4><a href={`/news/${lead.id}/`}>{lead.data.title}</a></h4><p>{lead.data.description}</p><a class="text-action" href={`/news/${lead.id}/`}>Read the story ↗</a></div></article>}
+              <div class="latest-stories"><p class="eyebrow">Latest reporting</p><ol>{latest.map(post => <li><span class="story-meta"><time datetime={post.data.publishedAt.toISOString()}>{date(post.data.publishedAt)}</time></span><h4><a href={`/news/${post.id}/`}>{post.data.title}</a></h4></li>)}</ol></div>
+            </div>
+          </section>}
+
+          <section class="home-live" aria-labelledby={`${direction.id}-live-title`}>
+            <div class="section-heading"><div><p class="eyebrow">The practical desk</p><h3 id={`${direction.id}-live-title`}>Offers, with the conditions.</h3></div><a class="text-action" href="/deals/">Browse current deals ↗</a></div>
+            <div class="live-grid"><section><h4>Salary-transfer tracker</h4>{salaryOffers.length ? <ul>{salaryOffers.map(offer => <li><a href={`/salary-transfer/${offer.bankSlug}/`}>{offer.name}<span aria-hidden="true">↗</span></a><p>{offer.bankName} · Last checked <time datetime={offer.lastVerified}>{date(offer.lastVerified)}</time></p></li>)}</ul> : <p>Open the tracker to see current coverage and recorded offer history.</p>}<a class="text-action" href="/salary-transfer/">Check all tracked offers →</a></section><section><h4>Recorded deal deadlines</h4>{deals.length ? <ul>{deals.map(deal => <li><a href={`/deals/${deal.id}/`}>{deal.data.title}<span aria-hidden="true">↗</span></a><p>Recorded expiry <time datetime={deal.data.expiresOn.toISOString()}>{date(deal.data.expiresOn)}</time></p></li>)}</ul> : <p>No live deals are listed in this build.</p>}<a class="text-action" href="/deals/">Read the offer terms →</a></section></div>
+          </section>
+
+          <section class="home-guides" id={`${direction.id}-guides`} aria-labelledby={`${direction.id}-guides-title`}>
+            <div class="section-heading"><div><p class="eyebrow">Keep the useful detail</p><h3 id={`${direction.id}-guides-title`}>A guide to what comes next.</h3></div><a class="text-action" href="/guides/">The guide shelf ↗</a></div>
+            <div class="guide-grid">{guideShelf.map(item => <article>{photoFor(item.id, "guide") && <figure><StockImage slug={`guide-${item.id}`} class="concept-photo" delivery="feature" sizes="(max-width: 760px) calc(100vw - 64px), 360px" /><figcaption><ImageCredit slug={`guide-${item.id}`} /></figcaption></figure>}<p class="story-meta">Updated <time datetime={item.data.updatedAt.toISOString()}>{date(item.data.updatedAt)}</time></p><h4><a href={`/guides/${item.id}/`}>{item.data.title}</a></h4><p>{item.data.description}</p></article>)}</div>
+          </section>
+
+          <footer class="concept-footer"><a href="/" class="concept-wordmark"><span aria-hidden="true">↗</span>DubaiPoints</a><p>Independent UAE points &amp; miles publication.<br />AED-first, dated and sourced.</p><nav aria-label={`${direction.name} trust links`}><a href="/editorial-policy/">Editorial standards</a><a href="/how-we-make-money/">How we make money</a><a href="/corrections/">Corrections</a></nav></footer>
+        </div>
+
+        <section class="interior-continuity" aria-labelledby={`${direction.id}-interiors-title`}>
+          <header class="section-heading"><div><p class="eyebrow">The same direction, beyond the homepage</p><h3 id={`${direction.id}-interiors-title`}>One visual language.<br />Different jobs.</h3></div><p>Mini-previews of article and tool hierarchy. The links open the real pages; these panels do not recalculate or replace them.</p></header>
+          <div class="interior-grid">
+            <article class="article-preview"><p class="eyebrow">Article language · real story</p>{lead && <><p class="story-meta">DubaiPoints Editorial · <time datetime={lead.data.publishedAt.toISOString()}>{date(lead.data.publishedAt)}</time></p><h4>{lead.data.title}</h4><p class="preview-deck">{lead.data.description}</p><nav class="preview-contents" aria-label={`${direction.name} article preview contents`}><a href={`#${direction.id}-article-detail`}>Compare like for like ↓</a><a href={`/news/${lead.id}/`}>Open the complete story ↗</a></nav><div id={`${direction.id}-article-detail`}><h5>Compare like for like</h5><p>Use the same flight, dates, cabin and passengers. Compare baggage and change or cancellation rules before treating the two fares as equivalent.</p><p>Include taxes, fees and surcharges. Use booking-screen totals rather than an indicative mileage calculator or a “from” fare.</p><aside class="preview-next"><span>Continue this task</span><a href="/calculator/cash-or-miles/">Compare your own cash and miles quotes ↗</a></aside></div></>}</article>
+            <section class="tool-preview" aria-labelledby={`${direction.id}-tool-title`}><p class="eyebrow">Tool language · real card identities</p><h4 id={`${direction.id}-tool-title`}>Compare the details.<br />Keep the conditions.</h4><p>Published minimums are not a guarantee of approval. These two reviews are examples to explore, not a ranked shortlist.</p><div class="mini-card-grid">{reviewCards.map(({ card, bank }) => <article><CompareCardArt slug={card.slug} size="identity" /><span class="story-meta">{bank} · {card.network}</span><h5><a href={`/cards/${card.slug}/`}>{card.name}</a></h5><a class="text-action" href={`/cards/${card.slug}/`}>Read review →</a></article>)}</div><div class="action-row"><a class="primary-action" href={compareHref}>Compare these cards ↗</a><a class="text-action" href="/cards/finder/">Start with your own needs →</a></div></section>
+          </div>
+        </section>
+        <footer class="direction-notes"><p><strong>{direction.fit}</strong><br />{direction.reference}</p><a href="#site-direction-review-top" class="text-action">Compare the directions ↑</a></footer>
+      </section>
+    ))}
+    <aside class="review-close"><p class="eyebrow">Review before rollout</p><h2>Choose the composition,<br />then test the whole journey.</h2><p>Atlas leads with discovery. Journal leads with a story. Decision Desk leads with a task. None is selected or live. Financial data, analytics and the existing homepage are unchanged.</p><nav class="direction-index" aria-label="Return to a design direction">{directions.map(direction => <a href={`#${direction.id}`}><span>{direction.letter}</span><strong>{direction.name}</strong><span aria-hidden="true">↑</span></a>)}</nav></aside>
+  </div>
+</BaseLayout>
+
+<script>
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const activeMotion = new Set<Animation>();
+  let entranceObserver: IntersectionObserver | undefined;
+  const animatePreview = (element: Element, frames: Keyframe[], options: KeyframeAnimationOptions) => {
+    if (reducedMotion.matches) return;
+    const animation = element.animate(frames, options);
+    activeMotion.add(animation);
+    const release = () => activeMotion.delete(animation);
+    animation.addEventListener("finish", release, { once: true });
+    animation.addEventListener("cancel", release, { once: true });
+  };
+  reducedMotion.addEventListener("change", () => {
+    if (!reducedMotion.matches) return;
+    entranceObserver?.disconnect();
+    for (const animation of activeMotion) animation.cancel();
+    activeMotion.clear();
+  });
+  const atlas = document.querySelector<HTMLElement>("[data-atlas-briefing]");
+  if (atlas) {
+    const stories = [...atlas.querySelectorAll<HTMLElement>("[data-atlas-story]")];
+    const buttons = [...atlas.querySelectorAll<HTMLButtonElement>("[data-atlas-select]")];
+    const companion = atlas.querySelector<HTMLElement>("#atlas-briefing-companion");
+    const stage = companion?.querySelector<HTMLElement>("[data-atlas-stage]");
+    const title = companion?.querySelector<HTMLAnchorElement>("[data-atlas-companion-link]");
+    const description = companion?.querySelector<HTMLElement>("[data-atlas-companion-description]");
+    const read = companion?.querySelector<HTMLAnchorElement>("[data-atlas-companion-read]");
+    const status = atlas.querySelector<HTMLElement>("[data-atlas-status]");
+    const help = atlas.querySelector<HTMLElement>("[data-atlas-help]");
+    const desktop = window.matchMedia("(min-width: 800px)");
+    let selected = 0;
+    if (stories.length && buttons.length === stories.length && companion && stage && title && description && read && status) {
+      if (help) help.hidden = false;
+      const show = (index: number, animate = false) => {
+        selected = index;
+        const story = stories[index];
+        const link = story.querySelector<HTMLAnchorElement>("[data-atlas-story-link]")!;
+        const panel = story.querySelector<HTMLElement>("[data-atlas-inline]")!;
+        // Preserve intentional keyboard focus when a preview moves between
+        // the inline phone layout and desktop companion at a resize.
+        const activePreview = desktop.matches ? stories.find(item => item.querySelector("[data-atlas-inline]")?.contains(document.activeElement)) : companion.contains(document.activeElement);
+        if (activePreview) buttons[index].focus({ preventScroll: true });
+        for (let item = 0; item < stories.length; item++) {
+          const inline = stories[item].querySelector<HTMLElement>("[data-atlas-inline]")!;
+          buttons[item].hidden = false;
+          buttons[item].setAttribute("aria-pressed", String(item === index));
+          buttons[item].setAttribute("aria-controls", desktop.matches ? companion.id : inline.id);
+          stories[item].classList.toggle("is-selected", item === index);
+          inline.hidden = desktop.matches || item !== index;
+        }
+        companion.hidden = !desktop.matches;
+        // Clone only the existing image/caption, never an ID or a story row.
+        // Its provenance and visible credit remain attached to the image.
+        stage.replaceChildren(...[...panel.children].map(child => child.cloneNode(true)));
+        title.textContent = link.textContent;
+        title.href = read.href = link.href;
+        description.textContent = story.querySelector("[data-atlas-description]")?.textContent ?? "";
+        status.textContent = `Preview ${index + 1} of ${stories.length}: ${link.textContent}`;
+        if (animate) {
+          for (const animation of activeMotion) animation.cancel();
+          animatePreview(desktop.matches ? stage : panel, [{ opacity: .45, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 280, easing: "ease-out" });
+        }
+      };
+      buttons.forEach((button, index) => button.addEventListener("click", () => show(index, true)));
+      desktop.addEventListener("change", () => show(selected));
+      show(0);
+    }
+  }
+
+  // Optional entrance feedback; the rendered state is always visible.
+  // No body locking, timers, video or scroll-position manipulation.
+  if (!reducedMotion.matches && "IntersectionObserver" in window) {
+    entranceObserver = new IntersectionObserver(entries => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        entranceObserver?.unobserve(entry.target);
+        if (entry.boundingClientRect.top < 80) continue;
+        animatePreview(entry.target, [{ transform: "translateY(14px)", opacity: .75 }, { transform: "none", opacity: 1 }], { duration: 440, easing: "cubic-bezier(.22, 1, .36, 1)" });
+      }
+    }, { threshold: .12 });
+    document.querySelectorAll(".dp-site-directions [data-direction-reveal]").forEach(element => entranceObserver?.observe(element));
+  }
+</script>
+
+<style>
+  .dp-site-directions { color: var(--ink); font-family: var(--font-ui); --direction-gap: clamp(32px, 5vw, 76px); }
+  .dp-site-directions * { box-sizing: border-box; }
+  .directions-intro, .review-close { max-inline-size: 1280px; margin-inline: auto; padding: clamp(28px, 5vw, 72px) clamp(16px, 3vw, 40px); }
+  .directions-intro > h1, .review-close > h2 { margin: 12px 0 20px; font: 550 clamp(2.5rem, 6vw, 5.5rem)/1.02 var(--font-display); letter-spacing: -.045em; text-wrap: balance; }
+  .directions-intro > p:not(.eyebrow), .review-close > p:not(.eyebrow) { max-inline-size: 70ch; color: var(--ink-soft); line-height: 1.6; }
+  .eyebrow { margin: 0 0 12px; color: var(--green); font: 650 .6875rem/1.4 var(--font-ui); text-transform: uppercase; letter-spacing: .13em; }
+  .direction-index { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-block: 28px 20px; }
+  .direction-index a { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px; min-block-size: 64px; border: 1px solid var(--line); color: var(--ink); text-decoration: none; background: var(--paper); }
+  .direction-index a > span:first-child { color: var(--green); font: 500 1.8rem/1 var(--font-display); }
+  .direction-index strong { flex: 1; font-size: .875rem; }
+  .review-note { font-size: .8125rem; }
+  .direction { padding: 0 clamp(12px, 2vw, 32px) clamp(40px, 6vw, 96px); scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px); }
+  .direction-label, .direction-notes { max-inline-size: 1280px; margin-inline: auto; padding-block: 28px; display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 16px 40px; }
+  .direction-label h2 { margin: 0; font: 550 clamp(2rem, 4vw, 3.5rem)/1.1 var(--font-display); letter-spacing: -.03em; }
+  .direction-label > p { max-inline-size: 45ch; margin: 0; color: var(--ink-soft); font-size: .875rem; line-height: 1.5; }
+  .concept-home { max-inline-size: 1280px; margin-inline: auto; border: 1px solid var(--line); background: var(--paper); overflow: clip; }
+  .concept-masthead { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 18px; padding: 22px clamp(16px, 3vw, 40px); border-block-end: 1px solid var(--line); }
+  .concept-wordmark { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); font: 750 clamp(1.25rem, 2vw, 1.8rem)/1 var(--font-ui); letter-spacing: -.045em; text-decoration: none; }
+  .concept-wordmark > span { display: grid; place-items: center; inline-size: 28px; aspect-ratio: 1; border-radius: 50%; background: var(--green); color: var(--paper); font-size: 1.1rem; }
+  .concept-masthead nav, .concept-footer nav { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+  .concept-masthead nav a, .concept-footer nav a { min-block-size: 44px; display: inline-flex; align-items: center; color: var(--ink-soft); font-size: .8125rem; text-decoration: none; }
+  figure { min-inline-size: 0; margin: 0; }
+  .dp-site-directions :global(.concept-photo) { display: block; inline-size: 100%; block-size: auto; object-fit: cover; }
+  figcaption { padding-block-start: 8px; color: var(--ink-soft); font-size: .6875rem; line-height: 1.45; }
+  figcaption :global(.dp-image-credit) { display: inline; margin: 0; font-size: inherit; }
+  figcaption > span + :global(.dp-image-credit)::before { content: " · "; }
+  .atlas-opening { padding: clamp(16px, 3vw, 40px) clamp(16px, 3vw, 40px) 0; }
+  .atlas-landscape :global(.concept-photo) { aspect-ratio: 2.8; object-position: center 58%; }
+  .atlas-title { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); column-gap: clamp(24px, 4vw, 64px); padding-block: 34px 14px; }
+  .atlas-title > .eyebrow { grid-column: 1 / -1; }
+  .atlas-title h3, .decision-opening h3 { margin: 0; font: 500 clamp(3rem, 7.5vw, 6.5rem)/.99 var(--font-display); letter-spacing: -.055em; }
+  .atlas-title h3 em, .decision-opening h3 em, .journal-opening h3 em { font-weight: 450; }
+  .atlas-title > div { padding-block-start: 22px; max-inline-size: 44ch; }
+  .atlas-title p:not(.eyebrow), .decision-opening > div > p:not(.eyebrow) { margin: 0 0 24px; color: var(--ink-soft); font-size: clamp(.9375rem, 1.6vw, 1.125rem); line-height: 1.55; }
+  .text-action { display: inline-flex; align-items: center; justify-content: space-between; gap: 12px; min-block-size: 44px; max-inline-size: 100%; color: var(--green); font: 650 .8125rem/1.4 var(--font-ui); text-decoration: none; text-underline-offset: .2em; }
+  .text-action:hover, h4 a:hover, h5 a:hover { text-decoration: underline; }
+  .home-tools, .home-reporting, .home-live, .home-guides { margin: var(--direction-gap) clamp(16px, 3vw, 40px); }
+  .section-heading { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 16px 32px; margin-block-end: 24px; }
+  .section-heading h3 { margin: 0; font: 550 clamp(1.75rem, 3.3vw, 3rem)/1.08 var(--font-display); letter-spacing: -.035em; }
+  .section-heading > p { max-inline-size: 48ch; color: var(--ink-soft); font-size: .875rem; line-height: 1.55; }
+  .tool-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--line); }
+  .tool-grid article { min-inline-size: 0; padding: 22px; border-inline-start: 1px solid var(--line); display: flex; flex-direction: column; align-items: start; }
+  .tool-grid article:first-child { border-inline-start: 0; padding-inline-start: 0; }
+  .task-number { color: var(--ink-soft); font: 500 1.4rem/1.2 var(--font-display); }
+  h4 { margin: 14px 0 10px; font: 550 clamp(1.25rem, 2vw, 1.7rem)/1.15 var(--font-display); letter-spacing: -.025em; text-wrap: pretty; }
+  h4 a, h5 a { color: var(--ink); text-decoration: none; text-underline-offset: .15em; }
+  .tool-grid p, .story-body > p:not(.story-meta), .guide-grid p:not(.story-meta), .task-body > p, .decision-context > p:not(.eyebrow) { color: var(--ink-soft); font-size: .875rem; line-height: 1.55; margin: 0 0 16px; }
+  .tool-grid .text-action { margin-block-start: auto; }
+  .reporting-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); }
+  .lead-story figure :global(.concept-photo) { aspect-ratio: 1.8; }
+  .story-meta { display: flex; flex-wrap: wrap; gap: 6px; color: var(--ink-soft); font: 550 .6875rem/1.45 var(--font-ui); margin: 12px 0 6px; }
+  .lead-story h4 { font-size: clamp(1.65rem, 3vw, 2.5rem); margin-block-start: 8px; }
+  .latest-stories { border-block-start: 1px solid var(--line); padding-block-start: 16px; }
+  .latest-stories ol, .live-grid ul { list-style: none; margin: 0; padding: 0; }
+  .latest-stories li { display: grid; grid-template-columns: minmax(0, 1fr); padding-block: 16px; border-block-end: 1px solid var(--line-soft); }
+  .latest-stories li .story-meta { grid-column: 1; margin: 0 0 6px; }
+  .latest-stories h4 { grid-column: 1; margin: 0; font-size: 1.15rem; }
+  .atlas-preview-help { margin: -8px 0 24px; max-inline-size: 68ch; color: var(--ink-soft); font-size: .8125rem; line-height: 1.5; }
+  .atlas-briefing-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 52px); align-items: start; }
+  .atlas-story { min-inline-size: 0; padding-block: 22px; border-block-start: 1px solid var(--line); }
+  .atlas-story:first-child { padding-block-start: 0; border-block-start: 0; }
+  .atlas-story-head { display: flex; gap: 14px; align-items: start; }
+  .atlas-story-head > div { min-inline-size: 0; }
+  .atlas-story-number { flex: none; min-inline-size: 26px; padding-block-start: 3px; color: var(--ink-soft); font: 450 1.5rem/1 var(--font-display); }
+  .atlas-story .story-meta { margin-block: 0 7px; }
+  .atlas-story h4 { margin: 0; font-size: clamp(1.3rem, 2.4vw, 1.85rem); }
+  .atlas-story-description { margin: 12px 0 6px 40px; color: var(--ink-soft); font-size: .875rem; line-height: 1.55; }
+  .atlas-preview-control { display: inline-flex; align-items: center; gap: 12px; min-block-size: 44px; margin-inline-start: 40px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--paper); color: var(--green); font: 650 .75rem/1.4 var(--font-ui); cursor: pointer; }
+  .atlas-preview-control > span:first-child { color: var(--ink-soft); font-weight: 450; }
+  .atlas-preview-control[aria-pressed="true"] { border-color: var(--green); background: var(--shade-1); }
+  .atlas-preview-control:focus-visible { outline: 3px solid var(--green); outline-offset: 3px; }
+  .atlas-inline-panel { margin-block-start: 18px; }
+  .atlas-inline-figure :global(.concept-photo) { aspect-ratio: 1.6; }
+  .atlas-inline-figure.is-issuer :global(.concept-photo) { object-fit: contain; background: var(--shade-1); padding: 12px; }
+  .atlas-companion { min-inline-size: 0; position: sticky; top: calc(var(--dp-sticky-header-height, 81px) + 20px); padding: 22px; border: 1px solid var(--line); background: var(--shade-1); }
+  .atlas-companion h4 { margin-block: 22px 12px; font-size: clamp(1.5rem, 2.5vw, 2rem); }
+  .atlas-companion > p:not(.eyebrow) { color: var(--ink-soft); font-size: .875rem; line-height: 1.55; }
+  .atlas-companion[hidden], .atlas-inline-panel[hidden], .atlas-preview-control[hidden] { display: none; }
+  .atlas-preview-status { margin: 8px 0 0; color: var(--ink-soft); font-size: .75rem; line-height: 1.45; }
+  .atlas-preview-status:empty { display: none; }
+  .live-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(24px, 4vw, 48px); }
+  .live-grid > section { border-block-start: 1px solid var(--line); }
+  .live-grid li { padding-block: 14px; border-block-end: 1px solid var(--line-soft); }
+  .live-grid li a { display: flex; align-items: start; justify-content: space-between; gap: 16px; color: var(--ink); font: 550 1.15rem/1.25 var(--font-display); text-decoration: none; }
+  .live-grid li a:hover { text-decoration: underline; }
+  .live-grid li p, .live-grid > section > p { margin: 7px 0 0; color: var(--ink-soft); font-size: .75rem; line-height: 1.5; }
+  .guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .guide-grid :global(.concept-photo) { aspect-ratio: 1.5; }
+  .guide-grid h4 { margin-block-start: 8px; }
+  .concept-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: var(--direction-gap) clamp(16px, 3vw, 40px) 0; padding-block: 28px; border-block-start: 1px solid var(--line); }
+  .concept-footer > p { margin: 0; color: var(--ink-soft); font-size: .8125rem; line-height: 1.6; }
+  .concept-footer nav { grid-column: 1 / -1; }
+  .journal-opening { padding: 0 clamp(16px, 3vw, 40px); }
+  .journal-opening figure :global(.concept-photo) { aspect-ratio: 3; }
+  .journal-opening-copy { padding-block: clamp(28px, 4vw, 56px); text-align: center; max-inline-size: 950px; margin-inline: auto; }
+  .journal-opening h3 { margin: 10px 0 20px; font: 500 clamp(3rem, 7.5vw, 6rem)/1 var(--font-display); letter-spacing: -.05em; }
+  .journal-opening-copy > p:not(.eyebrow) { max-inline-size: 62ch; margin-inline: auto; color: var(--ink-soft); line-height: 1.55; }
+  .chapter-index { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-block-start: 30px; border-block: 1px solid var(--line); }
+  .chapter-index a { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; min-block-size: 60px; padding: 10px 14px; color: var(--ink); text-decoration: none; font: 600 .8125rem/1.4 var(--font-ui); }
+  .chapter-index a + a { border-inline-start: 1px solid var(--line); }
+  .chapter-index a > span:first-child { color: var(--ink-soft); font-weight: 400; }
+  .journal-chapters { margin-inline: clamp(16px, 3vw, 40px); }
+  .journal-chapter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, 5vw, 72px); padding-block: clamp(28px, 5vw, 56px); border-block-start: 1px solid var(--line); scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 20px); }
+  .journal-chapter:nth-child(even) > figure { order: 2; }
+  .journal-chapter :global(.concept-photo) { aspect-ratio: 1.65; }
+  .journal-chapter h4 { font-size: clamp(1.75rem, 3.5vw, 3rem); }
+  .journal-chapter > div > p:not(.eyebrow) { color: var(--ink-soft); line-height: 1.6; }
+  .journal-chapter:target { border-block-start-color: var(--green); }
+  .is-runway-journal .home-tools { padding-block: 28px; border-block: 1px solid var(--line); }
+  .is-runway-journal .tool-grid { border: 0; }
+  .is-runway-journal .reporting-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .decision-opening { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, 5vw, 64px); padding: clamp(28px, 5vw, 64px) clamp(16px, 3vw, 40px); background: var(--shade-1); }
+  .decision-opening > div > p:not(.eyebrow) { margin-block-start: 24px; }
+  .decision-card-wall { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: center; gap: 18px; }
+  .decision-card-wall figure { padding: 16px; border: 1px solid var(--line); background: var(--paper); }
+  .decision-card-wall figure:nth-child(2) { margin-block-start: 48px; }
+  .decision-card-wall img { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 1.6; object-fit: contain; }
+  .decision-card-wall figcaption { font-size: .625rem; }
+  .decision-card-wall figcaption > a { display: block; color: var(--ink-soft); padding-block: 5px; }
+  .decision-card-wall > p { grid-column: 1 / -1; margin: 0; color: var(--ink-soft); font-size: .75rem; }
+  .decision-task-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 32px; }
+  .decision-task-list details { border-block-start: 1px solid var(--line); }
+  .decision-task-list details:last-child { border-block-end: 1px solid var(--line); }
+  .decision-task-list summary { display: flex; align-items: center; gap: 16px; min-block-size: 88px; padding: 18px 0; cursor: pointer; list-style: none; }
+  .decision-task-list summary::-webkit-details-marker { display: none; }
+  .decision-task-list summary > span:nth-child(2) { flex: 1; font: 550 1.4rem/1.2 var(--font-display); }
+  .decision-task-list summary small { display: block; margin-block-start: 6px; color: var(--ink-soft); font: 400 .8125rem/1.4 var(--font-ui); }
+  .task-toggle { font-size: 1.5rem; color: var(--green); }
+  .decision-task-list details[open] .task-toggle { transform: rotate(45deg); }
+  .task-body { padding: 0 0 22px 40px; }
+  .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; }
+  .primary-action { display: inline-flex; align-items: center; justify-content: center; min-block-size: 46px; max-inline-size: 100%; padding: 10px 16px; border: 1px solid var(--green); border-radius: 6px; background: var(--green); color: var(--paper); font: 650 .8125rem/1.4 var(--font-ui); text-decoration: none; }
+  .decision-context { padding: clamp(20px, 3vw, 36px); background: var(--shade-1); align-self: start; border-radius: 8px; }
+  .decision-context h4 { font-size: clamp(1.65rem, 2.8vw, 2.5rem); margin-block: 0 16px; }
+  .is-decision-desk .reporting-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+  .is-decision-desk .lead-story { padding: 20px; border: 1px solid var(--line); border-radius: 8px; }
+  .is-decision-desk .lead-story figure :global(.concept-photo) { aspect-ratio: 2; }
+  .is-decision-desk .home-live { padding: 24px; background: var(--shade-1); border-radius: 8px; }
+  .interior-continuity { max-inline-size: 1280px; margin: 36px auto 0; padding: clamp(20px, 3vw, 40px); border: 1px dashed var(--muted); }
+  .interior-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; gap: clamp(24px, 4vw, 56px); }
+  .article-preview, .tool-preview { min-inline-size: 0; background: var(--paper); padding: clamp(18px, 3vw, 32px); }
+  .article-preview h4, .tool-preview h4 { margin-block-start: 12px; font-size: clamp(1.7rem, 3vw, 2.6rem); }
+  .preview-deck { font-size: 1rem; line-height: 1.5; color: var(--ink-soft); }
+  .preview-contents { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-block: 22px; padding-block: 10px; border-block: 1px solid var(--line); }
+  .preview-contents a { min-block-size: 44px; display: inline-flex; align-items: center; color: var(--green); font-size: .75rem; font-weight: 650; }
+  .article-preview h5 { margin: 26px 0 10px; font: 550 1.4rem/1.2 var(--font-display); }
+  .article-preview > div > p { color: var(--ink-soft); font-size: .9375rem; line-height: 1.65; }
+  .preview-next { margin-block-start: 24px; padding-block-start: 14px; border-block-start: 1px solid var(--line); display: grid; gap: 8px; }
+  .preview-next span { color: var(--ink-soft); font-size: .75rem; }
+  .preview-next a { color: var(--green); font-size: .8125rem; font-weight: 650; min-block-size: 44px; }
+  .tool-preview > p:not(.eyebrow) { color: var(--ink-soft); font-size: .875rem; line-height: 1.6; }
+  .mini-card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-block: 24px; }
+  .mini-card-grid > article { min-inline-size: 0; padding: 14px; border: 1px solid var(--line); }
+  .mini-card-grid h5 { margin: 10px 0; font: 550 1.1rem/1.25 var(--font-display); }
+  .mini-card-grid :global(.dp-compare-card-art) { margin-block-end: 18px; }
+  .is-runway-journal .article-preview { border-block-start: 3px solid var(--green); }
+  .is-runway-journal .tool-preview { background: var(--shade-1); }
+  .is-decision-desk .article-preview, .is-decision-desk .tool-preview { border: 1px solid var(--line); border-radius: 8px; }
+  .direction-notes { align-items: center; border-block-end: 1px solid var(--line); }
+  .direction-notes p { max-inline-size: 84ch; margin: 0; color: var(--ink-soft); font-size: .8125rem; line-height: 1.6; }
+  .review-close { padding-block-end: 80px; }
+  :is(.direction, .home-tools, .home-reporting, .home-guides, .article-preview > div) { scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 20px); }
+  :is(a, summary):focus-visible { outline: 3px solid var(--green); outline-offset: 4px; }
+  @media (hover: hover) and (pointer: fine) {
+    .direction-index a, .tool-grid article, .primary-action { transition: background-color 160ms ease, border-color 160ms ease; }
+    .direction-index a:hover, .tool-grid article:hover { background: var(--shade-1); }
+    .atlas-landscape :global(.concept-photo) { transition: object-position 500ms ease; }
+    .atlas-landscape:hover :global(.concept-photo) { object-position: center 62%; }
+  }
+  @media (max-width: 900px) {
+    .direction-index { grid-template-columns: minmax(0, 1fr); }
+    .reporting-grid, .is-runway-journal .reporting-grid, .is-decision-desk .reporting-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .decision-task-layout { grid-template-columns: minmax(0, 1fr); }
+    .decision-context { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+    .decision-context .eyebrow { grid-column: 1 / -1; }
+    .decision-context h4 { grid-row: span 2; }
+    .interior-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 799px) {
+    .atlas-briefing-grid { grid-template-columns: minmax(0, 1fr); }
+    .atlas-companion { position: static; }
+  }
+  @media (min-width: 800px) and (max-height: 700px) { .atlas-companion { position: static; } }
+  @media (max-width: 680px) {
+    .concept-masthead { gap: 10px; }
+    .concept-masthead nav { inline-size: 100%; justify-content: space-between; gap: 8px; }
+    .atlas-landscape :global(.concept-photo) { aspect-ratio: 1.6; }
+    .atlas-title, .decision-opening { grid-template-columns: minmax(0, 1fr); }
+    .atlas-title { gap: 8px; padding-block-start: 26px; }
+    .atlas-title > div { padding-block-start: 14px; }
+    .atlas-title h3, .decision-opening h3, .journal-opening h3 { font-size: clamp(2.75rem, 14vw, 4.8rem); }
+    .tool-grid, .reporting-grid, .is-runway-journal .reporting-grid, .is-decision-desk .reporting-grid, .live-grid, .guide-grid { grid-template-columns: minmax(0, 1fr); }
+    .tool-grid article, .tool-grid article:first-child { padding: 20px 0; border-inline-start: 0; }
+    .tool-grid article + article { border-block-start: 1px solid var(--line-soft); }
+    .tool-grid article { display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 14px; }
+    .tool-grid article .task-number { grid-row: 1 / 4; margin-block-start: 10px; }
+    .tool-grid h4, .tool-grid p, .tool-grid .text-action { grid-column: 2; }
+    .guide-grid { gap: 32px; }
+    .guide-grid article { display: grid; grid-template-columns: minmax(0, 1fr); }
+    .guide-grid :global(.concept-photo) { aspect-ratio: 1.9; }
+    .concept-footer { grid-template-columns: minmax(0, 1fr); }
+    .concept-footer nav { grid-column: 1; }
+    .journal-opening figure :global(.concept-photo) { aspect-ratio: 1.8; }
+    .journal-opening-copy { text-align: start; }
+    .chapter-index a { padding-inline: 8px; font-size: .75rem; }
+    .chapter-index a > span:first-child { inline-size: 100%; }
+    .journal-chapter { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .journal-chapter:nth-child(even) > figure { order: 0; }
+    .journal-chapter h4 { margin-block-start: 0; }
+    .decision-card-wall { gap: 12px; }
+    .decision-card-wall figure { padding: 10px; }
+    .decision-context { display: block; }
+    .task-body { padding-inline-start: 0; }
+    .mini-card-grid { grid-template-columns: minmax(0, 1fr); }
+    .mini-card-grid > article { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 0 14px; }
+    .mini-card-grid :global(.dp-compare-card-art) { grid-row: 1 / 4; margin: 0; max-inline-size: 100%; }
+    .mini-card-grid h5 { margin-block: 6px; }
+    .mini-card-grid .story-meta, .mini-card-grid h5, .mini-card-grid .text-action { grid-column: 2; }
+    .is-decision-desk .home-live { padding: 18px; }
+    .direction-notes { align-items: start; }
+  }
+  @media (max-width: 359px) {
+    .mini-card-grid > article { grid-template-columns: minmax(0, 1fr); }
+    .mini-card-grid :global(.dp-compare-card-art) { grid-row: auto; margin-block-end: 14px; }
+    .mini-card-grid .story-meta, .mini-card-grid h5, .mini-card-grid .text-action { grid-column: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dp-site-directions * { transition: none !important; animation: none !important; }
+  }
+</style>
