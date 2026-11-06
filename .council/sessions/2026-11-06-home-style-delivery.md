@@ -2,7 +2,7 @@
 slug: home-style-delivery
 convened-by: technical-lead
 tier: T3
-status: candidate-pending-hosted-performance
+status: held-performance-and-device-gates
 ---
 
 # Appearance-preserving homepage CSS delivery — 2026-11-06
@@ -78,3 +78,63 @@ closed by these local results. PR #518 remains draft / auto-merge off until actu
 release gates close. No admin bypass, merge or production deployment here.
 
 Evidence: `/private/tmp/dubaipoints-css-delivery.WNh994`.
+
+## Hosted result — release held
+
+Functional candidate `9b2e2db0c6902a5b12c5a940e9e7100744150a24` passed
+genuine executed Linux validation run 42195793007: check, build and all 757
+tests pass, zero failures/skips/cancellations. Council workflows also execute
+successfully but remain advisory; Technical/UX/Managing Editor acceptance is
+not granted by a green workflow.
+
+Cloudflare's first deployment a353d409 failed after successful build/upload
+with `Failed to publish your Function ... Unknown internal error occurred`.
+One dashboard retry recovered on the same head. Successful preview:
+https://7f7823ce.dubaipoints.pages.dev/ (deployment
+7f7823ce-be29-47e3-8a66-fd051d30395b). This is not production.
+
+Three native DevTools Incognito mobile navigation reports, Lighthouse 13.4.1
+/ Chromium 155, Moto G Power / simulated Slow 4G, storage reset enabled:
+
+| Run | Performance | FCP | LCP | CLS | Pre-LCP transfer proxy |
+|---|---:|---:|---:|---:|---:|
+| 1 | 89 | 2,414 ms | 3,296 ms | 0.030 | 290.7 KiB |
+| 2 | 95 | 1,978 ms | 2,573 ms | 0 | 290.8 KiB |
+| 3 | 94 | 2,030 ms | 2,839 ms | 0.013 | 290.7 KiB |
+
+Median performance is 94, below 95. Transfer exceeds 200 KiB in every run.
+Timing values above are rounded from saved raw JSON. TBT is zero in all three. All score
+100 accessibility and best practices, 69 SEO from intentional preview noindex.
+Do not remove preview exclusion or describe those automated scores as a
+complete accessibility audit. Existing audit helpers compute this transfer
+proxy from requests completed before modelled LCP; it is not an exact
+viewport census or field measurement. Production analytics are absent on
+preview, so this cannot certify production with its tags.
+
+The LCP element is the poster. The raw report has no remaining render-blocking
+CSS items. In run 1, fonts transfer 156,971 B (52.7% of 297,715 B), homepage
+document 49,174 B, three below-fold cards 49,218 B, poster 32,544 B, scripts
+7,667 B and other 2,141 B. Cards already use native lazy loading; Chrome's
+prefetch distance explains their early fetch. Replacing them with JS-only
+placeholders is not accepted as a way to manipulate the proxy. An actual
+home-to-News hop retained external CSS, no homepage markers, no measured
+root overflow and no broken completed images. Cache-transfer timing for that
+hop was not separately quantified. JS was restored and viewport reset.
+
+Private font feasibility (not site integration): current Fontsource OFL files
+declare no Reserved Font Names; modified copies still require applicable
+copyright/licence retention. Three same-axis variable WOFF2 subsets reduce
+152,004 raw font bytes to 95,392 (saving 56,612 B), insufficient for the
+92,915 B run-1 gap. Private glyph/weight comparisons found no outline changes,
+but complete shaping equivalence is not certified. Static italic 400 plus
+two variable subsets saves 82,324 B, still 10,591 B short and fails some name/
+raw-metric invariants. Reject that option. No font assets, source/dependency
+or production changes from the experiment. Report/commands/hashes:
+`/private/tmp/dubaipoints-font-subset.NLNM3x/report.json`.
+
+The prior single-run 86 is not a matched repeated baseline; no causal eight-
+point uplift or conversion effect is claimed. Retain draft / auto-merge off.
+Performance, production-tag impact, physical Safari/native-scrollbar and
+remaining runtime/contrast/zoom gates remain open. The next pass needs a
+combined, visually verified payload plan, not a typography substitution or
+budget waiver. This entry records a failed acceptance gate, not a live release.
