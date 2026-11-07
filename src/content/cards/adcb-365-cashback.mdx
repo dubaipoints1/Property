@@ -6,19 +6,19 @@ tier: strong
 applyIf: You will reliably spend AED 5,000+ a month and weight that spend toward dining, fuel and digital subscriptions.
 skipIf: Your monthly spend swings below AED 5,000 — months under the floor earn nothing back at all.
 keyTakeaways:
-  - 6% on dining, 5% on fuel & Salik and digital/AI subscriptions, 3% on groceries, 1% on everything else and international spend
+  - Category rates are shown below; eligible digital entertainment and AI subscriptions are narrower than general entertainment or online spend
   - Hard AED 5,000 monthly spend floor before any cashback accrues, and an AED 1,000 monthly cashback cap
   - No annual fee in year one; AED 383.25 (incl. VAT) from year two — no spend-based waiver on this card
-  - AED 365 welcome bonus — AED 5,000 spend in 45 days, paid within 90; AED 5,000 minimum salary, no salary transfer required
+  - Current eligibility has a salary OR credit-limit route; confirm the applicable qualification with ADCB
 pros:
   - Strong category rates — 6% dining, 5% fuel & Salik, 5% on Netflix/ChatGPT-class subscriptions — ahead of most flat-rate UAE cashback cards
-  - No annual fee in year one and a low AED 5,000 minimum-salary bar with no salary-transfer requirement
+  - A salary-or-credit-limit route is published, but neither is an approval guarantee
   - AED 365 welcome bonus, paid within 90 days of card issuance, covers all but AED 18.25 of the year-two fee
   - VOX cinema buy-one-get-one (up to 4 tickets/month) on top of the cashback
 cons:
   - The AED 5,000 monthly-spend gate is unforgiving — a quiet month earns AED 0 cashback
   - AED 1,000 monthly cashback cap means the headline rates suit moderate, not heavy, category spend
-  - International retail purchases earn 1% only, regardless of category — not a card to take abroad
+  - No universal overseas rate is asserted from this source review; check merchant and payment-channel eligibility
   - 2.99% foreign-currency fee is in line with the UAE market band — no FX advantage versus peers
   - No spend-based waiver on the AED 383.25 year-two fee — unlike most ADCB cards we cover
 editorTake: >-
@@ -53,6 +53,7 @@ import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
 import ProsCons from "~/components/cards/ProsCons.astro";
 import AtAGlance from "~/components/cards/AtAGlance.astro";
+import CardDataIssues from "~/components/cards/CardDataIssues.astro";
 import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
@@ -72,6 +73,7 @@ subscriptions and groceries, with a hard AED 5,000 monthly-spend floor and an AE
 ceiling that bracket who the card is actually for.
 
 <AtAGlance card="adcb-365-cashback" />
+<CardDataIssues card="adcb-365-cashback" />
 
 <GreatCardIf card="adcb-365-cashback" />
 
@@ -92,9 +94,10 @@ ceiling that bracket who the card is actually for.
 
 ## Earn rates
 
-Cashback is paid as a percentage of spend per category. The 1% on
-"everything else" also applies to **all international retail purchases**,
-regardless of which domestic category the merchant would normally fall into:
+Cashback is paid as a percentage of eligible spend per category. Digital
+entertainment and AI subscriptions are specific categories, not a boost for all
+entertainment or online shopping. The current source review does not assert a
+single rate for every international transaction:
 
 <EarnRateTable card="adcb-365-cashback" />
 
@@ -160,7 +163,7 @@ miss the AED 5,000 monthly floor, which zeroes that month's earn entirely.
   <dd>AED 5,000 minimum monthly spend before any cashback is earned; AED 1,000 maximum cashback per month. Both reset on the calendar month.</dd>
 
   <dt>Accelerated categories</dt>
-  <dd>6% on dining (including online food orders); 5% on fuel & Salik; 5% on Home Digital Entertainment subscriptions (Netflix, Prime, Disney+ and peers) and AI-powered subscriptions (ChatGPT, Copilot, Gemini) when paid directly to the merchant; 3% on groceries & supermarkets; 0.5% on select categories and EU spend; 1% on everything else and on international retail purchases outside the EU.</dd>
+  <dd>Use the source-backed category table above. Eligible subscriptions must be paid directly to listed providers; app-store and aggregator payments do not qualify for the subscription rate. Salik must be paid directly or through Dubai Now. Bill payments, school fees and transactions through ADCB channels do not earn cashback, although they count towards qualifying spend. Reduced categories are determined by merchant category codes; they are not all eligible for the general rate.</dd>
 
   <dt>Welcome bonus</dt>
   <dd>AED 365 one-time cashback, credited within 90 days of card issuance in the first year — conditional on AED 5,000 of spend within the first 45 days (retail purchases, balance transfer and credit-card loans count, per the product page).</dd>
@@ -169,7 +172,7 @@ miss the AED 5,000 monthly floor, which zeroes that month's earn entirely.
   <dd>VOX Cinemas buy-one-get-one ticket offer — up to 4 tickets per month per card.</dd>
 
   <dt>Eligibility</dt>
-  <dd>Minimum salary AED 5,000/month, or eligibility for a credit limit of at least AED 3,000; minimum age 18 per the product page. UAE residency required. Salary transfer not required.</dd>
+  <dd>Current product wording offers a salary OR credit-limit route. The previous scalar salary and other qualification fields are withheld pending product-specific confirmation; neither route guarantees approval.</dd>
 </dl>
 
 ## Watch out for
@@ -180,8 +183,8 @@ miss the AED 5,000 monthly floor, which zeroes that month's earn entirely.
 - **The AED 1,000 cashback ceiling.** The 6% headline tops out at around
   AED 16,700 of dining spend alone. Heavier monthly spenders should
   pair this card with a flat-rate card for spend above the cap.
-- **International spend earns 1% only.** This is a domestic card. Take a
-  travel card abroad — the 6% category rates do not follow you across borders.
+- **Do not assume a universal overseas rate.** Check the merchant category,
+  payment channel and current eligibility guide before assigning a return.
 - **No spend-based waiver on the year-two fee.** Budget for the
   AED 383.25 from year two — unlike most ADCB cards we cover, this one
   has no waiver mechanic.
@@ -200,8 +203,8 @@ AED 365 welcome bonus covers all but AED 18.25 of year two if triggered.
 It is the wrong card for anyone whose monthly spend swings below AED 5,000,
 because the entire month's earn falls to zero on those months. For that
 profile, ADCB's Essential Cashback sibling has a lower AED 1,000 monthly
-floor and is the safer pick. For international travel spend the rate is a
-flat 1% — take a dedicated travel card abroad.
+floor. For international travel spend, check the merchant and payment-channel
+conditions rather than assuming one universal rate.
 
 ## Bottom line
 

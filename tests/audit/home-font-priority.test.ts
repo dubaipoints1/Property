@@ -13,7 +13,8 @@ test("only the homepage prioritises its unchanged above-fold italic variable fac
   assert.match(css, /font-style: italic;[\s\S]*?font-display: swap;[\s\S]*?font-weight: 200 800;[\s\S]*?src: url\("\.\.\/assets\/fonts\/newsreader-latin-wght-italic-home\.woff2"\)/);
   assert.equal((layout.match(/href=\{newsreaderItalicHomeSubset\}/g) ?? []).length, 1);
   assert.match(layout, /!runwayInterior && <link rel="preload" href=\{newsreaderItalicHomeSubset\} as="font" type="font\/woff2" crossorigin/);
-  assert.match(layout, /!systemTypography && \([\s\S]*?href=\{newsreaderLatinSubset\}[\s\S]*?href=\{geistLatinSubset\}[\s\S]*?href=\{newsreaderItalicHomeSubset\}/);
+  assert.match(layout, /const newsreaderNormalPreload = runwayInterior \? newsreaderLatinSubset : newsreaderNormalHomeSubset;/);
+  assert.match(layout, /!systemTypography && \([\s\S]*?href=\{newsreaderNormalPreload\}[\s\S]*?href=\{geistLatinSubset\}[\s\S]*?href=\{newsreaderItalicHomeSubset\}/);
   assert.ok(read("src/styles/font-delivery.css").includes("newsreader-latin-wght-italic-site.woff2"), "interior/shared fallback is retained");
   for (const original of ["newsreader/wght.css", "newsreader/wght-italic.css", "geist/wght.css"]) {
     assert.ok(layout.indexOf(`@fontsource-variable/${original}`) < layout.indexOf('import "~/styles/font-delivery.css"'));

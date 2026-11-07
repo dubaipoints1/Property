@@ -12,6 +12,7 @@ import RewardsCalculator from "~/components/islands/RewardsCalculator";
 import { getActiveCards } from "~/lib/cardsData";
 import { PLACEHOLDER_AED_PER_UNIT } from "~/components/islands/RewardsCalculator";
 import { VALUATION_SLUG_BY_LOYALTY_PROGRAM, dpValueFils } from "~/lib/valuations";
+import { hasUsableGenericEarnRate } from "~/lib/cardEarnModel";
 
 // The currencies this publication has published a baseline for, read from
 // the same rows /valuations/ renders so the two can never disagree.
@@ -21,7 +22,8 @@ const publishedRates = Object.entries(VALUATION_SLUG_BY_LOYALTY_PROGRAM)
   .sort((a, b) => a.programme.localeCompare(b.programme));
 
 const cards = getActiveCards();
-const cardCount = cards.length;
+const cardCount = cards.filter(hasUsableGenericEarnRate).length;
+const unmodelledCount = cards.length - cardCount;
 const lastUpdated = new Date().toLocaleDateString("en-GB", {
   day: "numeric",
   month: "long",
@@ -44,7 +46,7 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
         Estimate monthly rewards in AED from your spending and each card’s published earn rates.
       </p>
       <p class="dp-article-meta">
-        <strong>{cardCount}</strong> cards ranked
+        <strong>{cardCount}</strong> cards with a usable general-spend model
         <span class="sep">·</span> Last updated {lastUpdated}
         <span class="sep">·</span>
         <a href="#methodology">Methodology</a>
@@ -54,6 +56,7 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
     </header>
 
     <RewardsCalculator client:load cards={cards} />
+    {unmodelledCount > 0 && <p class="dp-card-note">{unmodelledCount} other source profiles are not return-ranked here because their base rate, reward limits, plan or merchant/channel conditions are not fully modelled. They remain available in the <a href="/cards/">card directory</a>; unknown is not a zero return.</p>}
 
     <section id="methodology" class="dp-article-section">
       <h2>Methodology</h2>

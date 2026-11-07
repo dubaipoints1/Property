@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { getCardData } from "../../src/lib/cardsData.ts";
 import { formatAED } from "../../src/lib/cardsDataFormat.ts";
-import { cardFeeAmountLabel, cardFeeNeedsReview, cardIllustrativeNetLabel } from "../../src/lib/cardFeeFacts.ts";
+import { cardFeeAmountLabel, cardFeeNeedsReview, cardIllustrativeNetLabel, cardFxFeeLabel } from "../../src/lib/cardFeeFacts.ts";
 
 const base = getCardData("liv-cashback-plus")!;
 const flagged = (key: string) => ({ ...base, _provenance: { ...base._provenance, [key]: "needs-review" } });
@@ -52,4 +52,16 @@ test("both Astro consumers use the tested guard-backed formatters", () => {
   const net = readFileSync("src/components/cards/CardIllustrativeNet.astro", "utf8");
   assert.match(fee, /const label = cardFeeAmountLabel\(card, field\)/);
   assert.match(net, /const net = cardIllustrativeNetLabel\(card, annualGross\)/);
+});
+
+test("issuer-only FX fee retains tax and additional-scheme qualifiers on every value surface", () => {
+  const card = getCardData("hsbc-live-plus")!;
+  const label = cardFxFeeLabel(card);
+  assert.equal(card.fxFeeScope, "issuer-processing-only");
+  assert.match(label, /issuer processing fee including VAT; scheme charges may also apply/);
+  assert.equal(cardFxFeeLabel({ ...card, _provenance: { fxFee: "needs-review" } }), "Pending");
+  for (const file of ["src/pages/cards/cashback.astro", "src/pages/cards/islamic.astro", "src/pages/cards/miles.astro", "src/pages/cards/salary/[point].astro", "src/pages/cards/fees.astro", "src/pages/index.astro", "src/components/cards/FeeBlock.astro", "src/layouts/CardReviewLayout.astro"])
+    assert.match(readFileSync(file, "utf8"), /cardFxFeeLabel\(/, file);
+  const scenario = readFileSync("src/components/cards/CardValueScenario.astro", "utf8");
+  assert.match(scenario, /foreign-currency charges aren’t included/);
 });

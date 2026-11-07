@@ -5,7 +5,7 @@ import { earnIsPercentage, formatAED, formatEarnRate } from "./cardsDataFormat";
 // from the same L2 data as the full card and leave unknowns as unknowns.
 const spendKeys = ["dining", "groceries", "travel", "fuel", "online", "everythingElse"] as const;
 
-export function finderEvidence(card: CardData) {
+export function finderEvidence(card: CardData & { slug?: string }) {
   const pending = (key: string) => card._provenance?.[key] === "needs-review";
   const vat = card.vatPolicy === "exclusive" ? " + VAT" : " incl. VAT";
   const priced = (amount: number) => formatAED(amount) + (amount > 0 ? vat : "");
@@ -38,6 +38,7 @@ export function finderEvidence(card: CardData) {
   const monthlyCap = caps?.monthly_max_aed;
   const spendFloor = caps?.min_monthly_spend_to_qualify_aed;
   const capNotes = [
+    card._dataIssues?.earnRates ?? "",
     typeof monthlyCap === "number" && !pending("earnRates._caps.monthly_max_aed")
       ? `Listed overall cap: ${formatAED(monthlyCap)} a month.` : "",
     typeof spendFloor === "number" && spendFloor > 0 && !pending("earnRates._caps.min_monthly_spend_to_qualify_aed")
@@ -52,13 +53,17 @@ export function finderEvidence(card: CardData) {
   }));
 
   return {
+    // A generic all-spend fallback cannot represent the current merchant,
+    // payment-channel and reduced-category conditions on this product.
+    fallbackPending: card.slug === "adcb-365-cashback" || card.earnRates.everythingElse === null || !!card.scopedEarnRates?.length
+      || pending("earnRates") || pending("earnRates.everythingElse") || pending("earnUnit"),
     earnLabels,
     feeNotes,
     feeExcludesVat: card.annualFee.amount > 0 && card.vatPolicy === "exclusive",
     capNotes,
     categoryCaps,
-    salaryPending: pending("eligibility") || pending("eligibility.minSalary"),
-    salaryLabel: card.eligibility.minSalary > 0 ? formatAED(card.eligibility.minSalary) : null,
+    salaryPending: card.eligibility.minSalary === null || pending("eligibility") || pending("eligibility.minSalary"),
+    salaryLabel: card.eligibility.minSalary !== null && card.eligibility.minSalary > 0 ? formatAED(card.eligibility.minSalary) : null,
     sourceUrl: card.kfsUrl ?? card.sources[0],
   };
 }

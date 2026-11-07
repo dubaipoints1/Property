@@ -5,7 +5,7 @@ cons:
 - The 10% rate needs AED 15,000+ total monthly spend; most users earn 3-5%
 - Foreign-currency cashback is largely offset by the up-to-2.99% FX fee
 - Per-channel caps (AED 400 / 400 / 200) limit total cashback to about AED 1,000/month
-- 44.28% APR and AED 525 fee from year two
+- Carrying a balance can outweigh the cashback; confirm finance charges before applying
 pros:
 - Up to 10% cashback on online, foreign-currency and mobile-wallet spend — the highest headline rate among UAE cashback cards
 - Unlimited complimentary access to 20+ local and international airport lounges via Mastercard
@@ -32,8 +32,9 @@ editorTake: >-
   online, AED 400 foreign-currency, AED 200 mobile-wallet), so the most you bank is about
   AED 1,000 a month. Two further catches: the 10% on foreign-currency spend is
   substantially offset by SC's up-to-2.99% FX fee, and the published finance charge
-  differs between SC's product page (3.45%/month) and its Service & Price Guide (3.69%),
-  which we've flagged. For a high spender who routes everything through mobile wallet and
+  is now recorded from the product-specific retail monthly rate. An annual rate has not
+  been corroborated for this product and is not inferred from the monthly figure.
+  For a high spender who routes everything through mobile wallet and
   online it can pay well; for a typical swipe-in-store shopper it earns little. Treat it
   as a specialist online/mobile-wallet card, not a general cashback card.
 ---
@@ -47,6 +48,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
 import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
+import CardDataIssues from "~/components/cards/CardDataIssues.astro";
 
 <JumpToSection sections={[
   { id: "cashback", label: "Cashback" },
@@ -60,6 +62,8 @@ Mastercard: up to 10% back, but only on specific spend channels and tiered by ho
 you spend each month.
 
 <AtAGlance card="sc-platinum-x" />
+
+<CardDataIssues card="sc-platinum-x" />
 
 <GreatCardIf card="sc-platinum-x" />
 
@@ -102,10 +106,10 @@ FX fee.
 
 The card is free in year one, then AED 525 (waived on meeting SC's minimum annual spend).
 The foreign-currency fee is up to 2.99%, and the cash-advance fee is 3.15% (min AED 105).
-One inconsistency worth noting: SC's product page lists the retail finance charge at
-3.45%/month, while its January 2026 Service & Price Guide lists 3.69%/month (44.28% APR)
-— we've recorded the Guide figure and flagged the field. As with any cashback card, clear
-the balance in full.
+The retail monthly finance charge is recorded from the current product-specific fee
+block. The captured shared price guide did not establish this product's annual rate,
+so that figure is withheld rather than calculated from the monthly charge. As with any
+cashback card, clear the balance in full.
 
 ## What you get — per-benefit value
 

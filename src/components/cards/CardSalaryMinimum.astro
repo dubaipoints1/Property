@@ -1,6 +1,6 @@
 ---
 import { getCardData } from "~/lib/cardsData";
-import { formatAED } from "~/lib/cardsDataFormat";
+import { cardSalaryLabel } from "~/lib/cardEligibility";
 
 interface Props {
   card: string;
@@ -11,12 +11,6 @@ const { card: slug, amountOnly = false } = Astro.props;
 const card = getCardData(slug);
 if (!card) throw new Error(`CardSalaryMinimum: unknown card "${slug}"`);
 
-const { minSalary, invitationOnly } = card.eligibility;
-const pending = card._provenance?.eligibility === "needs-review" ||
-  card._provenance?.["eligibility.minSalary"] === "needs-review";
-const label = invitationOnly ? "Invitation only"
-  : pending ? "Pending"
-  : minSalary === 0 ? "No minimum"
-  : amountOnly ? minSalary.toLocaleString("en-GB") : formatAED(minSalary);
+const label = cardSalaryLabel(card, { amountOnly });
 ---
 {label}

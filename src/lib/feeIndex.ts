@@ -20,6 +20,9 @@
  */
 import { isStructuredAnnualFeeWaiver } from "./cardsDataFormat";
 import { median } from "./interestPayoff";
+import type { CardData } from "./cardsData";
+import { hasUsableSalaryMinimum } from "./cardEligibility";
+import { cardFxNeedsReview } from "./cardFeeFacts";
 
 export interface CardForFeeIndex {
   slug: string;
@@ -27,8 +30,11 @@ export interface CardForFeeIndex {
   bank: string;
   annualFee: { amount: number; currency: string };
   annualFeeWaiver?: unknown;
-  fxFee: number;
-  eligibility: { minSalary: number; invitationOnly?: boolean };
+  fxFee: number | null;
+  fxFeeScope?: CardData["fxFeeScope"];
+  fxFeeVatTreatment?: CardData["fxFeeVatTreatment"];
+  fxFeeUpperBound?: CardData["fxFeeUpperBound"];
+  eligibility: { minSalary: number | null; invitationOnly?: boolean };
   _provenance?: Record<string, string> | null;
 }
 
@@ -38,7 +44,11 @@ export interface FeeIndexRow {
   bank: string;
   annualFee: number;
   firstYearWaived: boolean;
-  fxFee: number;
+  fxFee: number | null;
+  fxFeeScope?: CardData["fxFeeScope"];
+  fxFeeVatTreatment?: CardData["fxFeeVatTreatment"];
+  fxFeeUpperBound?: CardData["fxFeeUpperBound"];
+  _provenance?: Record<string, string> | null;
   minSalary: number | null;
 }
 
@@ -47,7 +57,7 @@ export interface BankFeeRow {
   cards: number;
   freeForLife: number;
   medianFee: number;
-  medianFx: number;
+  medianFx: number | null;
 }
 
 export interface SalaryTierRow {
@@ -73,8 +83,9 @@ export interface FeeIndex {
   highest: FeeIndexRow | null;
   lowestPaid: FeeIndexRow | null;
   fxZero: number;
-  medianFx: number;
-  maxFx: number;
+  medianFx: number | null;
+  maxFx: number | null;
+  fxSampleSize: number;
   byBank: BankFeeRow[];
   bySalaryTier: SalaryTierRow[];
   /** Every card, cheapest annual fee first, ties by FX fee then name. */
@@ -100,8 +111,7 @@ function mean(values: number[]): number | null {
 }
 
 export function toRow(card: CardForFeeIndex): FeeIndexRow {
-  const unverified =
-    card._provenance?.eligibility === "needs-review" || card.eligibility.invitationOnly === true;
+  const unverified = !hasUsableSalaryMinimum(card);
   return {
     slug: card.slug,
     name: card.name,
@@ -109,6 +119,10 @@ export function toRow(card: CardForFeeIndex): FeeIndexRow {
     annualFee: card.annualFee.amount,
     firstYearWaived: firstYearWaived(card),
     fxFee: card.fxFee,
+    fxFeeScope: card.fxFeeScope,
+    fxFeeVatTreatment: card.fxFeeVatTreatment,
+    fxFeeUpperBound: card.fxFeeUpperBound,
+    _provenance: card._provenance,
     minSalary: unverified ? null : card.eligibility.minSalary,
   };
 }
@@ -116,12 +130,13 @@ export function toRow(card: CardForFeeIndex): FeeIndexRow {
 export function buildFeeIndex(cards: CardForFeeIndex[]): FeeIndex {
   const rows = cards
     .map(toRow)
-    .sort((a, b) => a.annualFee - b.annualFee || a.fxFee - b.fxFee || a.name.localeCompare(b.name));
+    .sort((a, b) => a.annualFee - b.annualFee || (exactFxForStatistics(a) !== null && exactFxForStatistics(b) !== null
+      ? exactFxForStatistics(a)! - exactFxForStatistics(b)! : 0) || a.name.localeCompare(b.name));
 
   const fees = rows.map((r) => r.annualFee);
   const paid = rows.filter((r) => r.annualFee > 0);
   const free = rows.filter((r) => r.annualFee === 0);
-  const fx = rows.map((r) => r.fxFee);
+  const fx = rows.map(exactFxForStatistics).filter((value): value is number => value !== null);
 
   const banks = new Map<string, FeeIndexRow[]>();
   for (const r of rows) banks.set(r.bank, [...(banks.get(r.bank) ?? []), r]);
@@ -131,7 +146,7 @@ export function buildFeeIndex(cards: CardForFeeIndex[]): FeeIndex {
       cards: list.length,
       freeForLife: list.filter((r) => r.annualFee === 0).length,
       medianFee: median(list.map((r) => r.annualFee)) ?? 0,
-      medianFx: median(list.map((r) => r.fxFee)) ?? 0,
+      medianFx: median(list.map(exactFxForStatistics).filter((value): value is number => value !== null)),
     }))
     .sort((a, b) => b.cards - a.cards || a.bank.localeCompare(b.bank));
 
@@ -159,11 +174,18 @@ export function buildFeeIndex(cards: CardForFeeIndex[]): FeeIndex {
     meanPaidFee: mean(paid.map((r) => r.annualFee)),
     highest: rows.length ? rows[rows.length - 1]! : null,
     lowestPaid: paid.length ? paid[0]! : null,
-    fxZero: rows.filter((r) => r.fxFee === 0).length,
-    medianFx: median(fx) ?? 0,
-    maxFx: fx.length ? Math.max(...fx) : 0,
+    fxZero: fx.filter(value => value === 0).length,
+    medianFx: median(fx),
+    maxFx: fx.length ? Math.max(...fx) : null,
+    fxSampleSize: fx.length,
     byBank,
     bySalaryTier,
     rows,
   };
+}
+
+/** No unknown/upper-bound fee can masquerade as a precise zero or median input. */
+export function exactFxForStatistics(card: Pick<FeeIndexRow, "fxFee" | "fxFeeScope" | "fxFeeUpperBound" | "_provenance">): number | null {
+  if (card.fxFee === null || card.fxFeeScope || card.fxFeeUpperBound || cardFxNeedsReview(card)) return null;
+  return Number.isFinite(card.fxFee) ? card.fxFee : null;
 }

@@ -18,7 +18,8 @@
 
 import { z } from "astro/zod";
 import cardsJson from "../data/cards.json";
-import { welcomeBonusRank } from "./cardsDataFormat";
+import { welcomeBonusRank, cardHasKnownFeature } from "./cardsDataFormat";
+import { hasUsableSalaryMinimum } from "./cardEligibility";
 
 const NETWORK = z.enum([
   "Visa",
@@ -349,6 +350,9 @@ const EarnRates = z
     travel: z.number().optional(),
     fuel: z.number().optional(),
     entertainment: z.number().optional(),
+    /** Narrow subscription categories, not a boost for all entertainment/online spend. */
+    digitalEntertainment: z.number().optional(),
+    aiSubscriptions: z.number().optional(),
     online: z.number().optional(),
     international: z.number().optional(),
     partnerBrands: z.number().optional(),
@@ -367,9 +371,23 @@ const EarnRates = z
     airfare: z.number().optional(),
     hotels: z.number().optional(),
     cinema: z.number().optional(),
-    everythingElse: z.number(),
+    /** null = no confirmed universal base. Scoped rows are display-only. */
+    everythingElse: z.number().nullable(),
   })
   .extend({ _caps: EarnCaps.optional() });
+
+/** Source-qualified display rows, never calculator/ranking inputs. A regional
+ * or named-merchant rate must not be forced into a universal base field. */
+export const ScopedEarnRateSchema = z.object({
+  key: z.string().regex(/^[a-z][a-z0-9-]*$/),
+  label: z.string().min(1).max(140),
+  value: z.number().finite().nonnegative(),
+  unit: z.string().min(1).max(120),
+  denominator: z.object({ amount: z.number().finite().positive(), currency: z.enum(["AED", "USD"]) }).nullable(),
+  scope: z.string().min(1).max(1800),
+  bound: z.enum(["exact", "upper"]),
+}).refine(row => row.unit.startsWith("percent ") ? row.denominator === null : row.denominator !== null,
+  "Native earning rows need an explicit spend denominator; percentage rows have no separate denominator");
 
 // Free-text fields that the scraper writes verbatim — kept around so the
 // editor can read them when authoring typed _features. Once a field is
@@ -386,7 +404,7 @@ const ScrapedFreetext = z
   })
   .partial();
 
-const CardDataSchema = z.object({
+export const CardDataSchema = z.object({
   bank: z.string(),
   name: z.string(),
   network: NETWORK,
@@ -408,7 +426,19 @@ const CardDataSchema = z.object({
    * present, fall through to the string for cards still on freetext.
    */
   annualFeeWaiver: z.union([AnnualFeeWaiver, z.string()]).nullable().optional(),
-  fxFee: z.number().min(0).max(10),
+  /** null is an unconfirmed/variable exact fee, never a zero-cost claim. */
+  fxFee: z.number().min(0).max(10).nullable(),
+  fxFeeUpperBound: z.object({
+    amount: z.number().min(0).max(10),
+    unit: z.literal("percent"),
+    vatTreatment: z.enum(["inclusive", "exclusive"]),
+    scope: z.enum(["issuer-fx-charges", "issuer-processing-only"]),
+    schemeCharges: z.enum(["additional", "included"]),
+  }).optional(),
+  /** Explicit issuer-only fee, not a total foreign-currency conversion cost.
+   * Scheme charges may be additional; consumers must retain the qualifier. */
+  fxFeeScope: z.enum(["issuer-processing-only", "issuer-fx-charges-only"]).optional(),
+  fxFeeVatTreatment: z.enum(["inclusive", "exclusive", "not-applicable"]).optional(),
   interestRate: z
     .object({ monthly: z.number(), annual: z.number().optional() })
     .optional(),
@@ -417,6 +447,7 @@ const CardDataSchema = z.object({
 
   loyaltyProgram: z.string().optional(),
   earnRates: EarnRates,
+  scopedEarnRates: z.array(ScopedEarnRateSchema).min(1).optional(),
   earnUnit: z.string().optional(),
 
   /** Either structured WelcomeBonus, the bifurcated form (different
@@ -439,11 +470,15 @@ const CardDataSchema = z.object({
   sharia: z.boolean().optional(),
 
   eligibility: z.object({
-    minSalary: z.number().nonnegative(),
-    salaryTransferRequired: z.boolean(),
-    residencyRequired: z.boolean(),
+    /** null = product-specific salary threshold not confirmed/published.
+     * It is never zero, and is excluded from salary-qualified recommendations. */
+    minSalary: z.number().nonnegative().nullable(),
+    /** null = not confirmed; never silently coerced to "not required". */
+    salaryTransferRequired: z.boolean().nullable(),
+    residencyRequired: z.boolean().nullable(),
     employmentTypes: z.array(EMPLOYMENT_TYPE).default(["salaried"]),
     minAge: z.number().optional(),
+    maxAge: z.number().optional(),
     nationalities: z.string().optional(),
     documents: z.array(z.string()).default([]),
     /** Phase 2a.0 (2026-05-20): when true, the card is issued by
@@ -493,6 +528,9 @@ const CardDataSchema = z.object({
   kfsUrl: z.url().optional(),
   lastVerified: z.coerce.date(),
   sources: z.array(z.url()).min(1),
+  /** Offline/manual primary-source maintenance; never silently enrolled in
+   * the existing paid scraper/monitor fleet. */
+  refreshMode: z.literal("manual-primary").optional(),
 
   /** Phase 2a.2.3 (2026-05-20): VAT treatment of stored fee figures.
    * "inclusive" (default) = AED amounts in this record already include 5% UAE VAT.
@@ -502,6 +540,35 @@ const CardDataSchema = z.object({
 
   /** Per-field provenance map. Keys mirror dotted paths into the data. */
   _provenance: z.record(z.string(), PROVENANCE).default({}),
+  /** Field-level primary-source audit trail. Observed dates do not replace
+   * lastVerified; an individual field review is not a whole-card refresh. */
+  _fieldEvidence: z.record(z.string(), z.array(z.object({
+    parserId: z.string().min(1),
+    productScope: z.string().min(1),
+    unit: z.string().min(1),
+    vatTreatment: z.enum(["inclusive", "exclusive", "not-applicable"]),
+    sourceUrl: z.url(),
+    capturedAt: z.string().datetime(),
+    sourceTextSha256: z.string().regex(/^[a-f0-9]{64}$/),
+    sourceBodySha256: z.string().regex(/^[a-f0-9]{64}$/).nullable(),
+    sourceRepresentation: z.enum(["http-decoded-response-body", "visible-main-dom-and-accessibility-snapshot"]).default("http-decoded-response-body"),
+    captureMethod: z.enum(["public-http-reader", "normal-public-browser-ui"]).default("public-http-reader"),
+    sourceSnapshotSha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
+    sourceScope: z.string().optional(),
+    sourceExtraction: z.enum(["pdftotext-layout", "http-decoded-readable-text", "http-decoded-html-excerpt"]).optional(),
+    sourceStartByte: z.number().int().nonnegative().optional(),
+    sourceEndByte: z.number().int().nonnegative().optional(),
+    firstLine: z.number().int().positive(),
+    lastLine: z.number().int().positive(),
+    rawText: z.string().min(1),
+    rawTextSha256: z.string().regex(/^[a-f0-9]{64}$/),
+  }).refine(v => v.lastLine >= v.firstLine, "source evidence lines must be ordered")
+    .refine(v => v.sourceRepresentation === "visible-main-dom-and-accessibility-snapshot"
+      ? v.sourceBodySha256 === null && v.captureMethod === "normal-public-browser-ui" && v.sourceSnapshotSha256 !== undefined
+      : v.sourceBodySha256 !== null,
+      "Rendered DOM evidence requires a snapshot hash and must not claim HTTP body bytes"))).optional(),
+  /** Visible unresolved source conflicts, not a machine guess at resolution. */
+  _dataIssues: z.record(z.string(), z.string().min(1)).optional(),
   _lastScraped: z.string().nullable().default(null),
   /** ISO date string. Required as of Stage 1 schema hardening (2026-05-10):
    * every card must have an editorial review date. Future PRs that touch
@@ -513,7 +580,12 @@ const CardDataSchema = z.object({
   /** Raw scraper output kept verbatim so the editor can author typed
    * fields from it. Optional. */
   _scraped_freetext: ScrapedFreetext.optional(),
-});
+}).refine(c => c.fxFeeUpperBound === undefined || c.fxFee === null,
+  "A variable FX upper bound requires fxFee:null; it is not an exact scalar fee")
+  .refine(c => c.scopedEarnRates === undefined || new Set(c.scopedEarnRates.map(r => r.key)).size === c.scopedEarnRates.length,
+    "Scoped earning keys must be unique")
+  .refine(c => c.scopedEarnRates === undefined || c.scopedEarnRates.every(row => (c._fieldEvidence?.[`scopedEarnRates.${row.key}`]?.length ?? 0) > 0),
+    "Every scoped earning row needs its own source evidence");
 
 export type CardData = z.infer<typeof CardDataSchema>;
 export type CardFeature = z.infer<typeof Feature>;
@@ -561,7 +633,12 @@ export function getCardData(slug: string): CardData | undefined {
 export function getAllCards(): Array<CardData & { slug: string }> {
   return Object.entries(validated)
     .map(([slug, data]) => ({ slug, ...data }))
-    .sort((a, b) => a.eligibility.minSalary - b.eligibility.minSalary);
+    .sort((a, b) => {
+      const left = a.eligibility.minSalary, right = b.eligibility.minSalary;
+      if (left === null) return right === null ? a.name.localeCompare(b.name) : 1;
+      if (right === null) return -1;
+      return left - right;
+    });
 }
 
 /** Cards the issuer is still onboarding new applicants for. Filters out any
@@ -579,6 +656,7 @@ export function getActiveCards(): Array<CardData & { slug: string }> {
 export function getEditorConfirmedCards(): Array<CardData & { slug: string }> {
   const matcherKeys = ["annualFee", "fxFee", "eligibility", "earnRates"];
   return getActiveCards().filter((c) => {
+    if (!hasUsableSalaryMinimum(c)) return false;
     for (const k of matcherKeys) {
       const p = c._provenance[k];
       if (p === "scraped" || p === "needs-review") return false;
@@ -600,7 +678,7 @@ export function getCardsWithFeature(
   featureType: CardFeature["type"],
 ): Array<CardData & { slug: string }> {
   return getActiveCards().filter((c) =>
-    c._features.some((f) => f.type === featureType),
+    cardHasKnownFeature(c, featureType),
   );
 }
 
@@ -634,5 +712,5 @@ export function earnRatesNumeric(
   rates: CardData["earnRates"],
 ): Record<string, number | undefined> {
   const { _caps: _ignored, ...rest } = rates;
-  return rest;
+  return Object.fromEntries(Object.entries(rest).filter((entry): entry is [string, number] => typeof entry[1] === "number" && Number.isFinite(entry[1])));
 }

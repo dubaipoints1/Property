@@ -176,7 +176,7 @@ test("existing production font-notice artefacts contain the complete exact suppl
   }
 });
 
-test("the shared integration keeps fallback faces, two shared normal preloads and one home-only italic preload", () => {
+test("font delivery retains fallback faces and replaces only the home normal preload, without adding requests", () => {
   const layout = readFileSync(path.join(root, "src/layouts/BaseLayout.astro"), "utf8");
   const module = readFileSync(path.join(root, "src/lib/fontDelivery.ts"), "utf8");
   const subsetImport = layout.indexOf('import "~/styles/font-delivery.css";');
@@ -185,13 +185,17 @@ test("the shared integration keeps fallback faces, two shared normal preloads an
     const index = layout.indexOf(`import "${name}";`);
     assert.ok(index >= 0 && index < subsetImport, "original complete Unicode faces precede overrides");
   }
-  for (const [name, file] of [["newsreaderLatinSubset", "newsreader-latin-wght-normal-site.woff2"], ["geistLatinSubset", "geist-latin-wght-normal-site.woff2"]]) {
+  for (const file of ["newsreader-latin-wght-normal-site.woff2", "geist-latin-wght-normal-site.woff2"]) {
     assert.ok(module.includes(`../assets/fonts/${file}?url`));
-    assert.ok(layout.includes(`href={${name}} as="font" type="font/woff2" crossorigin`));
   }
+  assert.match(module, /newsreader-latin-wght-normal-home\.woff2\?url/);
+  assert.match(layout, /const newsreaderNormalPreload = runwayInterior \? newsreaderLatinSubset : newsreaderNormalHomeSubset;/);
+  assert.match(layout, /href=\{newsreaderNormalPreload\} as="font" type="font\/woff2" crossorigin/);
+  assert.match(layout, /href=\{geistLatinSubset\} as="font" type="font\/woff2" crossorigin/);
   const fontPreloads = [...layout.matchAll(/<link rel="preload"[^>]+as="font"[^>]*\/>/g)].map(match => match[0]);
   assert.equal(fontPreloads.length, 3);
-  assert.equal(fontPreloads.filter(link => /href=\{(?:newsreaderLatinSubset|geistLatinSubset)\}/.test(link)).length, 2);
+  assert.equal(fontPreloads.filter(link => /href=\{(?:newsreaderNormalPreload|geistLatinSubset)\}/.test(link)).length, 2);
+  assert.doesNotMatch(layout, /<link rel="preload" href=\{newsreaderLatinSubset\}/, "the shared normal face must not also be fetched on home");
   assert.match(layout, /\{!runwayInterior && <link rel="preload" href=\{newsreaderItalicHomeSubset\} as="font" type="font\/woff2" crossorigin \/>\}/);
   assert.match(module, /newsreader-latin-wght-italic-home\.woff2\?url/);
   assert.doesNotMatch(module, /newsreader-latin-wght-italic-site\.woff2\?url/);

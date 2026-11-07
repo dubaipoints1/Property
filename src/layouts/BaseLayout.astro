@@ -6,9 +6,9 @@ import "@fontsource-variable/newsreader/wght.css";
 import "@fontsource-variable/newsreader/wght-italic.css";
 import "@fontsource-variable/geist/wght.css";
 // Identical existing variable faces/axes, with the original fonts retained
-// above as Unicode fallback. The two normal preloads match these CSS URLs.
+// above as Unicode fallback. Normal preloads match each route's CSS URLs.
 import "~/styles/font-delivery.css";
-import { newsreaderLatinSubset, geistLatinSubset, newsreaderItalicHomeSubset } from "~/lib/fontDelivery";
+import { newsreaderLatinSubset, geistLatinSubset, newsreaderItalicHomeSubset, newsreaderNormalHomeSubset } from "~/lib/fontDelivery";
 import "~/styles/global.css";
 import "~/styles/editorial-utility.css";
 // Emitted as a separate, cacheable asset. The postbuild delivery pass swaps
@@ -54,6 +54,7 @@ const {
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 // Keep the approved homepage design and deferred reel outside the rollout.
 const runwayInterior = Astro.url.pathname !== "/";
+const newsreaderNormalPreload = runwayInterior ? newsreaderLatinSubset : newsreaderNormalHomeSubset;
 const runwayDiscovery = /^\/(?:airlines|banks|cards|deals|guides|hotels|topics|news(?:\/(?:airlines|banking|hotels))?)\/$/.test(Astro.url.pathname);
 const siteName = "DubaiPoints";
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://dubaipoints.ae";
@@ -189,10 +190,10 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Two shared normal faces; the homepage alone also needs real italic. -->
+    <!-- Two normal faces, route-matched; only the homepage preloads italic. -->
     {!systemTypography && (
       <>
-        <link rel="preload" href={newsreaderLatinSubset} as="font" type="font/woff2" crossorigin />
+        <link rel="preload" href={newsreaderNormalPreload} as="font" type="font/woff2" crossorigin />
         <link rel="preload" href={geistLatinSubset} as="font" type="font/woff2" crossorigin />
         {/* The selected homepage heading uses real italic above the fold.
             Discover the unchanged face here, not after the blocking CSS. */}

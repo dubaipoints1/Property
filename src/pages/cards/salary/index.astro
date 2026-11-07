@@ -3,13 +3,10 @@
 // L2 at build time so the tiles can never overstate coverage.
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getActiveCards } from "~/lib/cardsData";
+import { hasUsableSalaryMinimum } from "~/lib/cardEligibility";
 
 const POINTS = [5000, 8000, 12000, 20000, 30000];
-const cards = getActiveCards().filter(
-  (c) =>
-    c._provenance?.eligibility !== "needs-review" &&
-    c.eligibility.invitationOnly !== true,
-);
+const cards = getActiveCards().filter(hasUsableSalaryMinimum);
 const tiles = POINTS.map((p) => ({
   point: p,
   label: `AED ${p.toLocaleString("en-GB")}`,

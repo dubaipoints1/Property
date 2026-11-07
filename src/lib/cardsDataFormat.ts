@@ -3,6 +3,7 @@
 // Lives separately from cardsData.ts so it can be unit-tested without
 // pulling in `astro:content` (which is a virtual module unavailable to
 // node:test running under tsx).
+import { cardSalaryLabel } from "./cardEligibility";
 
 export type RewardUnit =
   | "skywards_miles"
@@ -458,7 +459,8 @@ export interface CardForComparison {
   name: string;
   annualFee: { amount: number };
   joiningFee?: { amount: number } | null;
-  eligibility: { minSalary: number; invitationOnly?: boolean };
+  eligibility: { minSalary: number | null; invitationOnly?: boolean };
+  _provenance?: Record<string, string> | null;
   earnRates: Record<string, number | unknown | undefined>;
   /** L2 earnUnit + categories — drive whether the top-earn comparison row
    * renders "5%" (cashback) or "5×" (points). §6 unit-integrity. */
@@ -523,14 +525,20 @@ const TOP_EARN_ITERATION_ORDER = [
  * EarnRateTable.is-top, CardComparison, and AtAGlance. Keep one
  * implementation. Iterates a fixed key order so ties resolve
  * deterministically across Zod-parsed data and raw JSON. */
-export function topEarnEntry(earnRates: Record<string, unknown>):
+export function earnRateFieldPending(provenance: Record<string, string | undefined> | null | undefined, key: string): boolean {
+  return Object.entries(provenance ?? {}).some(([field, state]) => state === "needs-review"
+    && (field === "earnUnit" || field === "earnRates" || field === `earnRates.${key}` || field.startsWith(`earnRates.${key}.`)));
+}
+
+export function topEarnEntry(earnRates: Record<string, unknown>, provenance?: Record<string, string | undefined> | null):
   | { key: string; label: string; value: number }
   | null {
   let best: { key: string; label: string; value: number } | null = null;
   for (const key of TOP_EARN_ITERATION_ORDER) {
+    if (earnRateFieldPending(provenance, key)) continue;
     if (!(key in earnRates)) continue;
     const val = earnRates[key];
-    if (typeof val !== "number") continue;
+    if (typeof val !== "number" || !Number.isFinite(val)) continue;
     if (!best || val > best.value) {
       best = {
         key,
@@ -657,7 +665,30 @@ interface LoungeFeature {
   scope: "unlimited" | "limited" | { visits_per_year: number };
 }
 
+type FeatureEvidenceCard = { _features?: ReadonlyArray<{ type?: unknown }>; _provenance?: Record<string, string> | null };
+/** An untyped or held benefit is unknown, not evidence that none exists.
+ * Supports both semantic and index-based subtree provenance. */
+export function cardFeatureNeedsReview(card: FeatureEvidenceCard, featureType?: string): boolean {
+  return Object.entries(card._provenance ?? {}).some(([field, state]) => {
+    if (state !== "needs-review") return false;
+    if (field === "_features") return true;
+    if (!field.startsWith("_features.")) return false;
+    if (!featureType) return true;
+    const part = field.slice("_features.".length).split(".")[0];
+    if (part === featureType) return true;
+    if (/^\d+$/.test(part)) {
+      const typed = card._features?.[Number(part)];
+      return typed === undefined || typed.type === featureType;
+    }
+    return false;
+  });
+}
+export function cardHasKnownFeature(card: FeatureEvidenceCard, featureType: string): boolean {
+  return !cardFeatureNeedsReview(card, featureType) && (card._features ?? []).some(f => f.type === featureType);
+}
+
 export function loungeFeatureOf(card: CardForComparison): LoungeFeature | null {
+  if (cardFeatureNeedsReview(card, "lounge_access")) return null;
   const features = card._features ?? [];
   for (const f of features) {
     if ((f as { type?: string }).type === "lounge_access") {
@@ -767,30 +798,22 @@ export function cardComparisonRows(
   {
     const lInvite = left.eligibility.invitationOnly === true;
     const rInvite = right.eligibility.invitationOnly === true;
-    const lSalary = lInvite ? null : left.eligibility.minSalary;
-    const rSalary = rInvite ? null : right.eligibility.minSalary;
+    const lSalary = lInvite || left._provenance?.eligibility === "needs-review" || left._provenance?.["eligibility.minSalary"] === "needs-review" ? null : left.eligibility.minSalary;
+    const rSalary = rInvite || right._provenance?.eligibility === "needs-review" || right._provenance?.["eligibility.minSalary"] === "needs-review" ? null : right.eligibility.minSalary;
     rows.push({
       key: "minSalary",
       label: "Minimum salary",
       mobileLabel: "Min salary",
-      leftValue: lInvite
-        ? "Invitation only"
-        : lSalary && lSalary > 0
-          ? `${formatAED(lSalary)}/mo`
-          : "No minimum",
-      rightValue: rInvite
-        ? "Invitation only"
-        : rSalary && rSalary > 0
-          ? `${formatAED(rSalary)}/mo`
-          : "No minimum",
-      winner: lowerWins(lSalary, rSalary),
+      leftValue: cardSalaryLabel(left, { perMonth: true }),
+      rightValue: cardSalaryLabel(right, { perMonth: true }),
+      winner: lSalary === null || rSalary === null ? "none" : lowerWins(lSalary, rSalary),
     });
   }
 
   // 4. Top earn rate (single highest non-base category)
   {
-    const lTop = topEarnEntry(left.earnRates as Record<string, unknown>);
-    const rTop = topEarnEntry(right.earnRates as Record<string, unknown>);
+    const lTop = topEarnEntry(left.earnRates as Record<string, unknown>, left._provenance);
+    const rTop = topEarnEntry(right.earnRates as Record<string, unknown>, right._provenance);
     const lValue = lTop
       ? `${lTop.label} ${formatEarnRate(lTop.value, left.earnUnit, left.categories)}`
       : "—";
@@ -798,9 +821,7 @@ export function cardComparisonRows(
       ? `${rTop.label} ${formatEarnRate(rTop.value, right.earnUnit, right.categories)}`
       : "—";
     let winner: ComparisonWinner;
-    if (!lTop && !rTop) winner = "none";
-    else if (!lTop) winner = "right";
-    else if (!rTop) winner = "left";
+    if (!lTop || !rTop) winner = "none";
     else {
       const leftKey = earnRateComparisonKey(left.earnUnit, left.categories);
       const rightKey = earnRateComparisonKey(right.earnUnit, right.categories);
@@ -832,12 +853,14 @@ export function cardComparisonRows(
   {
     const lF = loungeFeatureOf(left);
     const rF = loungeFeatureOf(right);
+    const lPending = cardFeatureNeedsReview(left, "lounge_access");
+    const rPending = cardFeatureNeedsReview(right, "lounge_access");
     rows.push({
       key: "lounge",
       label: "Lounge access",
-      leftValue: loungeDisplay(lF),
-      rightValue: loungeDisplay(rF),
-      winner: !lF && !rF ? "none" : higherWins(loungeScore(lF), loungeScore(rF)),
+      leftValue: lPending ? "Pending" : loungeDisplay(lF),
+      rightValue: rPending ? "Pending" : loungeDisplay(rF),
+      winner: lPending || rPending || (!lF && !rF) ? "none" : higherWins(loungeScore(lF), loungeScore(rF)),
     });
   }
 

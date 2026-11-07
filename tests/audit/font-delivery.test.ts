@@ -40,8 +40,12 @@ test("the smaller shared normal-face preloads match delivery CSS while original 
     const file = `${family}-latin-wght-normal-site.woff2`;
     assert.ok(deliveryCss.includes(`../assets/fonts/${file}`));
     assert.ok(deliveryModule.includes(`../assets/fonts/${file}?url`));
-    assert.ok(baseLayout.includes(`href={${exported}} as="font" type="font/woff2" crossorigin`));
+    const preload = family === "newsreader" ? "newsreaderNormalPreload" : exported;
+    assert.ok(baseLayout.includes(`href={${preload}} as="font" type="font/woff2" crossorigin`));
   }
+  assert.match(baseLayout, /const newsreaderNormalPreload = runwayInterior \? newsreaderLatinSubset : newsreaderNormalHomeSubset;/);
+  assert.ok(deliveryModule.includes("../assets/fonts/newsreader-latin-wght-normal-home.woff2?url"));
+  assert.equal((baseLayout.match(/href=\{newsreaderNormalPreload\}/g) ?? []).length, 1, "one route-owned normal preload, not both faces");
   assert.ok(!baseLayout.includes(`/files/${latinFilename}?url`), "do not preload both original and subset");
   assert.equal([...baseLayout.matchAll(/rel="preload"[^>]+as="font"/g)].length, 3);
   assert.match(baseLayout, /!runwayInterior && <link rel="preload" href=\{newsreaderItalicHomeSubset\}/);

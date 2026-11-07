@@ -26,11 +26,20 @@ test("first-year and renewal show comparable spend rewards without assuming a we
 });
 
 test("monthly cash caps apply before annualising, and a zero-spend estimate remains genuinely zero", () => {
-  const terms = termsFor("adcb-365-cashback");
+  // Synthetic pure-model fixture, not a claim that a real product's channel
+  // and merchant conditions have become an unlimited all-spend rate.
+  const terms = cardValueTerms({ ...citi, earnRates: { everythingElse: 1, _caps: { monthly_max_aed: 1000 } } }, "synthetic-cash-cap-fixture");
   assert.equal(terms.cap, 1000);
   assert.equal(calculateCardValue(terms, 200_000).rewards, 12_000);
   assert.equal(calculateCardValue(terms, 200_000).capBinds, true);
   assert.equal(calculateCardValue(termsFor(citiSlug), 0).first, 0);
+});
+test("365 merchant and payment-channel exceptions block a generic all-spend estimate", () => {
+  const terms = termsFor("adcb-365-cashback");
+  assert.equal(terms.rate, null); assert.equal(terms.cap, null);
+  assert.equal(calculateCardValue(terms, base).first, null);
+  assert.equal(calculateCardValue(terms, 200_000).rewards, null);
+  assert.match(terms.rewardIssue, /direct-payment channels and reduced-category exclusions/);
 });
 
 test("below the published monthly minimum no reward or net amount is inferred", () => {

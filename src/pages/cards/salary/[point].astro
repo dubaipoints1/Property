@@ -1,4 +1,6 @@
 ---
+import { cardFxFeeLabel } from "~/lib/cardFeeFacts";
+import { hasUsableSalaryMinimum } from "~/lib/cardEligibility";
 // Per-salary-band card pages — audit recommendation #5 (22 August 2026).
 //
 // One page per common salary point, derived entirely from L2
@@ -35,12 +37,8 @@ const { prev } = Astro.props;
 const fmtAED = (n: number) => `AED ${n.toLocaleString("en-GB")}`;
 
 const qualifying = getActiveCards()
-  .filter(
-    (c) =>
-      c._provenance?.eligibility !== "needs-review" &&
-      c.eligibility.invitationOnly !== true &&
-      c.eligibility.minSalary <= point,
-  )
+  .filter(hasUsableSalaryMinimum)
+  .filter((c) => c.eligibility.minSalary <= point)
   // Highest gate first: the cards this salary only just unlocks are the
   // reason the reader picked this page over the generic directory.
   .sort((a, b) => b.eligibility.minSalary - a.eligibility.minSalary);
@@ -60,8 +58,9 @@ const rows = await Promise.all(
           ? `${fmtAED(c.eligibility.minSalary)}/mo`
           : "No minimum",
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
-        c._provenance?.fxFee === "needs-review" ? "—" : `${c.fxFee}%`,
-        c.eligibility.salaryTransferRequired ? "Required" : "Not required",
+        cardFxFeeLabel(c),
+        c.eligibility.salaryTransferRequired === null || c._provenance?.["eligibility.salaryTransferRequired"] === "needs-review"
+          ? "Pending" : c.eligibility.salaryTransferRequired ? "Required" : "Not required",
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };

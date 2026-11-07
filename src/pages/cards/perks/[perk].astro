@@ -1,4 +1,5 @@
 ---
+import { cardSalaryLabel } from "~/lib/cardEligibility";
 // Perk facet pages — /cards/perks/<perk>/.
 //
 // `_features` is a typed discriminated union of fourteen perk types, and
@@ -63,13 +64,7 @@ const rows = await Promise.all(
       values: [
         detail,
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
-        c.eligibility.invitationOnly === true
-          ? "Invitation only"
-          : c._provenance?.eligibility === "needs-review"
-            ? "—"
-            : c.eligibility.minSalary > 0
-              ? `AED ${c.eligibility.minSalary.toLocaleString()}/mo`
-              : "No minimum",
+        cardSalaryLabel(c, { perMonth: true }),
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };

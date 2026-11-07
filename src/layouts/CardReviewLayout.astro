@@ -29,6 +29,7 @@ import HeroImage from "~/components/cards/HeroImage.astro";
 import { getStockEntry } from "~/lib/stockManifest";
 import { annualFeeLabel, formatEarnRate, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
 import { getActiveCards, getCardData } from "~/lib/cardsData";
+import { cardFxFeeLabel, cardFxNeedsReview } from "~/lib/cardFeeFacts";
 import { matchupsForCard, matchupSlug } from "~/data/cardMatchups";
 import { getCollection } from "astro:content";
 import type { CardData } from "~/lib/cardsData";
@@ -47,8 +48,11 @@ interface Props {
   cardName: string;
   network: string;
   annualFee: number;
-  fxFee: number;
-  minSalary: number;
+  fxFee: number | null;
+  fxFeeScope?: CardData["fxFeeScope"];
+  fxFeeVatTreatment?: CardData["fxFeeVatTreatment"];
+  fxFeeUpperBound?: CardData["fxFeeUpperBound"];
+  minSalary: number | null;
   earnRates: Record<string, number | undefined>;
   /** L2 earnUnit — drives whether the spec-card earn rows render "5%"
    * (cashback) or "2×" (points). §6 unit-integrity (2026-05-29). */
@@ -84,6 +88,7 @@ interface Props {
   score?: number;
   verdictLabel?: string;
   lastVerified: Date;
+  verificationLimited?: boolean;
   verifiedBy?: string;
   sources: string[];
   deck?: string;
@@ -116,6 +121,9 @@ const {
   network,
   annualFee,
   fxFee,
+  fxFeeScope,
+  fxFeeVatTreatment,
+  fxFeeUpperBound,
   minSalary,
   earnRates,
   earnUnit,
@@ -133,6 +141,7 @@ const {
   score,
   verdictLabel,
   lastVerified,
+  verificationLimited = false,
   verifiedBy = "DubaiPoints Editorial",
   sources,
   deck,
@@ -207,6 +216,8 @@ const relatedCards = getActiveCards()
   .map(({ c }) => c);
 const compareHref = slug ? `/cards/compare/?cards=${[slug, ...relatedCards.slice(0, 2).map((c) => c.slug)].join(",")}` : "/cards/compare/";
 const cardData = slug ? getCardData(slug) : undefined;
+const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
+const fxPending = cardFxNeedsReview({ _provenance: fxProvenance });
 const recurringFee = annualFeeLabel(cardData ?? { annualFee: { amount: annualFee } });
 const vatQualifier = annualFee > 0 ? (cardData?.vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT") : null;
 
@@ -333,20 +344,24 @@ const schema = {
         <div>
           <dt>Minimum monthly salary</dt>
           <dd class={eligibilityProvenance === "needs-review" ? "is-unverified" : ""}>
-            {invitationOnly
+            {eligibilityProvenance === "needs-review"
+              ? "Pending"
+              : invitationOnly
               ? "Invitation only"
-              : eligibilityProvenance === "needs-review"
+              : minSalary === null
               ? <><span aria-hidden="true">—</span><span class="sr-only">not yet verified</span></>
               : minSalary === 0
               ? "No minimum"
-              : formatAED(minSalary)}
+              : minSalary === null ? "Pending" : formatAED(minSalary)}
           </dd>
         </div>
         <div>
           <dt>FX markup</dt>
-          <dd class={fxFeeProvenance === "needs-review" ? "is-unverified" : ""}>
-            {fxFeeProvenance === "needs-review"
+          <dd class={fxPending ? "is-unverified" : ""}>
+            {fxPending
               ? <><span aria-hidden="true">—</span><span class="sr-only">not yet verified</span></>
+              : fxFeeScope || fxFeeUpperBound || fxFee === null
+              ? cardFxFeeLabel({ fxFee, fxFeeScope, fxFeeVatTreatment, fxFeeUpperBound, _provenance: fxProvenance })
               : fxFee === 0
               ? "None"
               : `${fxFee.toFixed(2)}%`}
@@ -355,7 +370,7 @@ const schema = {
       </dl>
       <p class="dp-card-summary-proof">
         {network && <>{network}<span aria-hidden="true"> · </span></>}
-        Verified <time datetime={lastVerified.toISOString()}>{fmt(lastVerified)}</time>
+        {verificationLimited ? "Source record" : "Verified"} <time datetime={lastVerified.toISOString()}>{fmt(lastVerified)}</time>{verificationLimited && " — some terms pending"}
       </p>
       {shortVerdict && <p class="dp-card-summary-verdict" data-card-hero-verdict><strong>Our verdict:</strong> {shortVerdict}</p>}
       {(score != null || verdictLabel) && (
@@ -386,7 +401,7 @@ const schema = {
         <div class="av" aria-hidden="true">{initials}</div>
         <div>
           <div class="name">{verifiedBy}</div>
-          <div class="when">Verified {fmt(lastVerified)} against issuer T&amp;Cs</div>
+          <div class="when">{verificationLimited ? `Source record ${fmt(lastVerified)} — see unresolved terms below` : `Verified ${fmt(lastVerified)} against issuer T&Cs`}</div>
         </div>
       </div>
 
@@ -425,7 +440,7 @@ const schema = {
           bankSlug={bankSlug}
           bankName={bankName}
           earnUnit={earnUnit}
-          minSalary={eligibilityProvenance === "needs-review" ? 0 : minSalary}
+          minSalary={eligibilityProvenance === "needs-review" ? null : minSalary}
           rivals={relatedCards.map((c) => ({ slug: c.slug, name: c.name }))}
         />
       )}
@@ -545,7 +560,7 @@ const schema = {
   {sources.length > 0 && (
     <footer class="dp-article-sources dp-card-review-sources" id="card-review-sources">
       <p>
-        <strong>Last verified:</strong> {fmt(lastVerified)}
+        <strong>{verificationLimited ? "Source record date:" : "Last verified:"}</strong> {fmt(lastVerified)}{verificationLimited && " — some terms remain pending; this is not whole-card verification."}
       </p>
       <p>
         <strong>Sources:</strong>{" "}

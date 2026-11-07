@@ -1,3 +1,8 @@
+---
+import { getActiveCards } from "~/lib/cardsData";
+const knownSlugs = getActiveCards().map(card => card.slug);
+---
+<script is:inline type="application/json" id="card-journey-known" set:html={JSON.stringify(knownSlugs).replace(/</g, "\\u003c")}></script>
 <nav class="dp-card-journey" aria-label="Your card journey" data-card-journey hidden>
   <a href="/cards/finder/" data-card-journey-back>← Back to your shortlist</a>
   <span data-card-journey-spend></span>
@@ -7,33 +12,44 @@
 <script>
   import { cardJourneyHref, cardJourneyParams } from "~/lib/readerJourneyState";
   const refresh = () => {
-    const state = cardJourneyParams(new URLSearchParams(location.search));
+    const known = new Set<string>(JSON.parse(document.getElementById("card-journey-known")?.textContent || "[]"));
+    const state = cardJourneyParams(new URLSearchParams(location.search), known);
+    const explicit = state.get("cards")?.split(",") ?? [];
     if (location.pathname === "/cards/finder/") state.set("via", "finder");
     const grid = document.querySelector("#finder-grid");
-    if (grid) {
+    let suggested: string[] = [];
+    if (grid && explicit.length === 0) {
       const slugs = [...grid.querySelectorAll<HTMLElement>(".dp-finder-tile:not([hidden])")].slice(0, 3).map(tile => tile.dataset.slug).filter(Boolean);
-      if (slugs.length) state.set("cards", slugs.join(","));
+      suggested = slugs.filter((slug): slug is string => typeof slug === "string");
     }
     for (const link of document.querySelectorAll<HTMLAnchorElement>("main a[href^='/cards/']")) {
       if (link.matches("[data-card-journey-reset]") || link.getAttribute("href") === "/cards/finder/" && !link.hasAttribute("data-card-journey-back")) continue;
       const href = link.getAttribute("href");
       if (href) {
-        let destination = href;
+        const base = link.dataset.cardJourneyBase ?? href;
+        link.dataset.cardJourneyBase = base;
+        let destination = base;
         const current = location.pathname.match(/^\/cards\/([a-z0-9-]+)\/$/)?.[1];
         const card = link.closest<HTMLElement>(".dp-finder-tile")?.dataset.slug;
-        if (state.get("via") === "finder" && (link.hasAttribute("data-finder-compare-card") || current && !["finder", "compare"].includes(current) && href.startsWith("/cards/compare/"))) {
-          const selected = [...new Set([card ?? current, ...(state.get("cards")?.split(",") ?? [])].filter(Boolean))].slice(0, 4);
+        const target = new URL(base, "https://dubaipoints.ae");
+        const genericComparison = target.pathname === "/cards/compare/";
+        if (genericComparison && explicit.length && !target.searchParams.has("cards")) {
+          target.searchParams.set("cards", explicit.join(","));
+          destination = target.pathname + target.search + target.hash;
+        } else if (genericComparison && explicit.length === 0 && state.get("via") === "finder" && (link.hasAttribute("data-finder-compare-card") || current && !["finder", "compare"].includes(current) && !target.searchParams.has("cards"))) {
+          const selected = [...new Set([card ?? current, ...suggested].filter(Boolean))].slice(0, 4);
           destination = "/cards/compare/?cards=" + selected.join(",");
         }
-        link.setAttribute("href", cardJourneyHref(destination, state));
+        link.setAttribute("href", cardJourneyHref(destination, state, known));
       }
     }
     // Static GET forms retain the explicit example when filters/picks change.
     for (const form of document.querySelectorAll<HTMLFormElement>("#finder-form, .dp-compare-picker-form")) {
+      for (const field of form.querySelectorAll("[data-card-journey-field]")) field.remove();
       for (const [key, value] of state) {
-        if (form.id === "finder-form" && !["cv_spend", "via"].includes(key) || form.classList.contains("dp-compare-picker-form") && key === "cards") continue;
+        if (form.id === "finder-form" && !["cv_spend", "via", "cards", "include_legacy"].includes(key) || form.classList.contains("dp-compare-picker-form") && key === "cards") continue;
         let field = form.querySelector<HTMLInputElement>(`input[type='hidden'][name='${key}']`);
-        if (!field) { field = document.createElement("input"); field.type = "hidden"; field.name = key; form.append(field); }
+        if (!field) { field = document.createElement("input"); field.type = "hidden"; field.name = key; field.dataset.cardJourneyField = ""; form.append(field); }
         field.value = value;
       }
     }
@@ -42,7 +58,7 @@
     const spend = journey?.querySelector<HTMLElement>("[data-card-journey-spend]");
     if (journey && back && spend) {
       const finder = new URLSearchParams(state);
-      finder.delete("cards"); finder.delete("via");
+      if (!explicit.length) finder.delete("cards");
       back.href = "/cards/finder/" + (finder.size ? "?" + finder : "");
       spend.textContent = state.has("cv_spend") ? `Estimate basis: AED ${Number(state.get("cv_spend")).toLocaleString("en-GB")} a month` : "Your filters stay with this journey";
       journey.hidden = location.pathname === "/cards/finder/" || state.get("via") !== "finder";
@@ -51,6 +67,9 @@
   refresh();
   addEventListener("dp:card-profile", refresh);
   addEventListener("dp:card-shortlist", refresh);
+  document.addEventListener("dp:card-results", refresh);
+  document.addEventListener("dp:card-selection", refresh);
+  addEventListener("popstate", refresh);
 </script>
 
 <style>

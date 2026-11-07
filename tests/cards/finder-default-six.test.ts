@@ -4,6 +4,8 @@ import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 import { getActiveCards, getCardData } from "../../src/lib/cardsData.ts";
 import { finderEvidence } from "../../src/lib/finderEvidence.ts";
+import { cardFinderState, cardJourneyParams } from "../../src/lib/readerJourneyState";
+import { eligibleForSalaryFilter } from "../../src/lib/cardSelection";
 
 /**
  * /cards/finder/ renders every card and lets an inline script hide all but
@@ -24,10 +26,12 @@ function defaultSix(): string[] {
     .filter((card) => card.discontinuedForNewApplicants === undefined && card.eligibility.invitationOnly !== true)
     .map((card) => ({
       slug: card.slug,
-      score: card.earnRates.everythingElse ?? 0,
+      score: finderEvidence(card).fallbackPending ? null : card.earnRates.everythingElse ?? null,
       annualFee: card.annualFee.amount,
     }))
-    .sort((a, b) => (b.score !== a.score ? b.score - a.score : a.annualFee - b.annualFee))
+    .sort((a, b) => a.score === null || b.score === null
+      ? a.score === b.score ? a.annualFee - b.annualFee : a.score === null ? 1 : -1
+      : b.score !== a.score ? b.score - a.score : a.annualFee - b.annualFee)
     .slice(0, 6)
     .map((c) => c.slug);
 }
@@ -52,8 +56,8 @@ test("the page still derives its pre-rendered set the documented way", () => {
   assert.match(SOURCE, /const defaultRank = new Map\(defaultTopSlugs\.map\(/);
   assert.match(SOURCE, /card\.discontinuedForNewApplicants === undefined/);
   assert.match(SOURCE, /card\.eligibility\.invitationOnly !== true/);
-  assert.match(SOURCE, /card\.earnRates\.everythingElse \?\? 0/);
-  assert.match(SOURCE, /b\.score !== a\.score \? b\.score - a\.score : a\.annualFee - b\.annualFee/);
+  assert.match(SOURCE, /score: evidence\.fallbackPending \? null : card\.earnRates\.everythingElse \?\? null/);
+  assert.match(SOURCE, /a\.score === null \|\| b\.score === null/);
   assert.match(SOURCE, /\.slice\(0, 6\)/);
 });
 
@@ -63,6 +67,7 @@ function renderFinder(search: string, fixtures = getActiveCards()) {
     network: card.network,
     annualFee: card.annualFee.amount,
     minSalary: card.eligibility.minSalary,
+    eligibleForSalaryFilter: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary),
     salaryTransferRequired: card.eligibility.salaryTransferRequired,
     invitationOnly: card.eligibility.invitationOnly === true,
     discontinued: card.discontinuedForNewApplicants !== undefined,
@@ -98,8 +103,8 @@ function renderFinder(search: string, fixtures = getActiveCards()) {
     "finder-options": {
       textContent: JSON.stringify({
         prefer: ["none", "cashback", "miles", "lounges"],
-        spend: ["general", "groceries", "online", "dining"],
-        spendLabels: { general: "General / mixed", groceries: "Groceries", online: "Online shopping", dining: "Dining" },
+        spend: ["general", "groceries", "online", "dining", "travel", "fuel"],
+        spendLabels: { general: "General / mixed", groceries: "Groceries", online: "Online shopping", dining: "Dining", travel: "Travel", fuel: "Fuel" },
         preferLabels: { cashback: "AED cashback", miles: "Airline miles", lounges: "Airport lounges" },
         network: ["any", "Visa", "Mastercard"],
         fee: ["any", "free", "under-500", "under-1000"],
@@ -112,12 +117,15 @@ function renderFinder(search: string, fixtures = getActiveCards()) {
     "finder-empty": {},
     "finder-compare": compare,
   };
-  const script = SOURCE.match(/<script is:inline>([\s\S]*?)<\/script>/)?.[1];
-  assert.ok(script, "finder inline script");
+  assert.match(SOURCE, /import \{ initialiseCardFinder \} from "~\/scripts\/cardFinder\.mjs"/);
+  const script = readFileSync("src/scripts/cardFinder.mjs", "utf8")
+    .replace(/^import[^\n]+\n/gm, "").replace("export function initialiseCardFinder", "function initialiseCardFinder") + "\ninitialiseCardFinder();";
   runInNewContext(script, {
     document: { getElementById: (id: string) => elements[id], createElement: () => ({ textContent: "" }) },
     window: { location: { search } },
     URLSearchParams,
+    cardFinderState,
+    cardJourneyParams,
     HTMLDetailsElement: class {},
   });
   return { cards, tiles: tiles.filter((tile) => !tile.hidden), compare, count };
@@ -128,14 +136,19 @@ test("the bare URL preserves server order, distinguishes count from preview and 
   const slugs = result.tiles.map((tile) => tile.slug);
   assert.deepEqual(slugs, defaultSix());
   assert.equal(result.count.textContent, `Showing 6 of ${result.cards.filter((c) => !c.invitationOnly).length} cards that meet your filters`);
-  assert.equal(result.compare.href, `/cards/compare/?cards=${slugs.slice(0, 3).join(",")}`);
+  const compare = new URL(result.compare.href, "https://dubaipoints.ae");
+  assert.equal(compare.searchParams.get("cards"), slugs.slice(0, 3).join(","));
+  assert.equal(compare.searchParams.get("via"), "finder");
 });
 
 test("preferred benefits rank ahead of alternatives and compare uses that DOM order", () => {
   const result = renderFinder("?salary=12000&prefer=cashback&include_invite_only=false");
   assert.equal(result.tiles.length, 6);
   assert.match(result.tiles[0].note.textContent, /Matches your preference: AED cashback/);
-  assert.equal(result.compare.href, `/cards/compare/?cards=${result.tiles.slice(0, 3).map((tile) => tile.slug).join(",")}`);
+  const target = new URL(result.compare.href, "https://dubaipoints.ae");
+  assert.equal(target.searchParams.get("cards"), result.tiles.slice(0, 3).map((tile) => tile.slug).join(","));
+  assert.equal(target.searchParams.get("salary"), "12000");
+  assert.equal(target.searchParams.get("prefer"), "cashback");
 });
 
 test("Liv Cashback cards appear at their published salary thresholds, not below", () => {
@@ -175,6 +188,28 @@ test("the explanation uses the same selected-category rate and base fallback as 
   assert.match(fallback.note.textContent, /Different reward or benefit/);
   assert.equal(fallback.parts["[data-finder-filters]"].textContent, "No salary, network or fee filter applied.");
 });
+test("365 missing-category fallback remains unranked, not an assumed zero or universal base rate", () => {
+  const adcb = getActiveCards().find(c => c.slug === "adcb-365-cashback")!;
+  const citi = getActiveCards().find(c => c.slug === "citi-cashback")!;
+  for (const spend of ["online", "travel", "general"]) {
+    const result = renderFinder(`?spend=${spend}`, [adcb, citi]);
+    assert.equal(result.tiles[0].slug, citi.slug);
+    const tile = result.tiles.find(t => t.slug === adcb.slug)!;
+    assert.match(tile.parts["[data-finder-ranking]"].textContent, /Not rate-ranked.*No general rate is assumed/);
+    assert.doesNotMatch(tile.parts["[data-finder-ranking]"].textContent, /1%|0%/);
+  }
+  const dining = renderFinder("?spend=dining", [adcb]).tiles[0];
+  assert.match(dining.parts["[data-finder-ranking]"].textContent, /Dining:/);
+});
+test("unknown required eligibility flags never qualify under an active salary filter", () => {
+  const citi = getActiveCards().find(c => c.slug === "citi-cashback")!;
+  const unknown = { ...citi, slug: "unknown-eligibility-fixture", eligibility: { ...citi.eligibility, salaryTransferRequired: null, residencyRequired: null, employmentTypes: [] },
+    _provenance: { ...citi._provenance, eligibility: "needs-review", "eligibility.salaryTransferRequired": "needs-review", "eligibility.residencyRequired": "needs-review", "eligibility.employmentTypes": "needs-review" } };
+  assert.equal(renderFinder("?salary=50000", [unknown]).tiles.length, 0);
+  const bare = renderFinder("", [unknown]).tiles[0];
+  assert.match(bare.note.textContent, /Eligibility confirmation pending/);
+  assert.doesNotMatch(bare.parts["[data-finder-checks]"].textContent, /Salary transfer required|not required|Any employment/);
+});
 
 test("display evidence preserves rate denominators, pending data and published terms", () => {
   const bonvoy = getCardData("emirates-nbd-marriott-bonvoy-world-elite")!;
@@ -191,4 +226,26 @@ test("display evidence preserves rate denominators, pending data and published t
   assert.deepEqual(pending.categoryCaps, {});
   assert.match(pending.feeNotes[0], /confirmation pending/);
   assert.equal(pending.salaryPending, true);
+});
+
+test("pending eligibility is accessible without salary but never a salary-qualified recommendation", () => {
+  const original = structuredClone(getCardData("citi-cashback")!);
+  const conflicted = { ...original, _provenance: { ...original._provenance, eligibility: "needs-review" as const } };
+  const bare = renderFinder("", [conflicted]);
+  assert.equal(bare.tiles.length, 1);
+  assert.match(bare.tiles[0].note.textContent, /Eligibility confirmation pending/);
+  assert.equal(renderFinder("?salary=1000000", [conflicted]).tiles.length, 0);
+  const fieldPending = { ...original, _provenance: { ...original._provenance, "eligibility.minSalary": "needs-review" as const } };
+  assert.equal(renderFinder("?salary=1000000", [fieldPending]).tiles.length, 0);
+  const unpublished = { ...original, eligibility: { ...original.eligibility, minSalary: null } };
+  assert.equal(renderFinder("", [unpublished]).tiles.length, 1);
+  assert.equal(renderFinder("?salary=1000000", [unpublished]).tiles.length, 0);
+  const scraped = { ...original, _provenance: { ...original._provenance, eligibility: "scraped" as const } };
+  assert.equal(renderFinder("?salary=1000000", [scraped]).tiles.length, 1, "Do not silently change existing scraped-data handling");
+});
+
+test("malformed or repeated filter values use exactly the canonical default ranking", () => {
+  for (const query of ["?salary=12000junk", "?salary=12000&salary=1", "?network=visa", "?prefer=miles&prefer=cashback", "?salary=1e6", "?salary=-1"]) {
+    assert.deepEqual(renderFinder(query).tiles.map(tile => tile.slug), defaultSix(), query);
+  }
 });

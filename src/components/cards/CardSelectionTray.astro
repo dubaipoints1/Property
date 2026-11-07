@@ -1,0 +1,22 @@
+<section class="dp-selection-tray" data-card-selection-tray aria-labelledby="finder-selection-title" hidden>
+  <h3 id="finder-selection-title">Your comparison</h3>
+  <p data-selection-caption></p>
+  <ul data-selection-items></ul>
+  <div class="actions">
+    <a class="dp-ui-action dp-ui-primary" data-selection-compare data-card-journey-reset href="/cards/compare/" hidden>Compare selected</a>
+    <button type="button" class="dp-ui-action dp-ui-quiet" data-selection-clear>Clear selection</button>
+  </div>
+  <p class="hint">Up to four cards, in your chosen order. Selection stays even if a filter hides a card. Links include your choices.</p>
+</section>
+<p class="sr-only" data-selection-status role="status" aria-live="polite"></p>
+<style>
+  .dp-selection-tray { padding: 18px; margin-block: 18px; border: 1px solid var(--line); border-radius: var(--dp-ui-radius, 12px); background: var(--paper); }
+  .dp-selection-tray[hidden] { display: none; }
+  h3 { margin: 0 0 6px; font: 600 1.2rem/1.25 var(--font-display); }
+  p { margin: 6px 0; color: var(--ink-soft); font: 400 .875rem/1.5 var(--font-ui); }
+  ul { list-style: none; padding: 0; margin: 10px 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  ul :global(button) { min-height: 44px; max-width: 100%; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); background: var(--bg); text-align: start; font: 500 .8125rem/1.4 var(--font-ui); overflow-wrap: anywhere; cursor: pointer; }
+  ul :global(button:focus-visible) { outline: 2px solid var(--green); outline-offset: 3px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .hint { font-size: .75rem; }
+</style>

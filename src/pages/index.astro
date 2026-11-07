@@ -24,6 +24,9 @@ import PressStrip from "~/components/PressStrip.astro";
 import HomeJourneyHero from "~/components/HomeJourneyHero.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
+import { cardFxFeeLabel } from "~/lib/cardFeeFacts";
+import { hasUsableSalaryMinimum, cardSalaryLabel, cardHasUnresolvedTerms } from "~/lib/cardEligibility";
+import { hasUsableGenericEarnRate } from "~/lib/cardEarnModel";
 import {
   loyaltyTag,
   welcomeBonusRank,
@@ -142,27 +145,27 @@ const rated = cards
       art: getCardArt(c.slug),
       tier: TIER_LABEL[tierOf.get(c.slug) as string] ?? "",
       fee: annualFeeLabel(c),
-      minSalary: c.eligibility.invitationOnly
-        ? "By invitation"
-        : c.eligibility.minSalary > 0
-          ? `${formatAED(c.eligibility.minSalary)} /mo`
-          : "None stated",
+      minSalary: cardSalaryLabel(c, { perMonth: true }).replace(/\/mo$/, " /mo"),
       bonus: typedBonus(c.welcomeBonus),
-      fx: typeof c.fxFee === "number" ? `${c.fxFee}%` : null,
+      fx: cardFxFeeLabel(c),
       verified: new Date(c.lastVerified),
+      limited: cardHasUnresolvedTerms(c),
     };
   });
 
 const TOOLS = [
-  { href: "/cards/finder/", title: "Card finder", desc: `Rank ${cards.length} cards against your own monthly spending.` },
+  { href: "/cards/finder/", title: "Card finder", desc: `Explore ${cards.length} cards against your own monthly spending.` },
   { href: "/calculator/", title: "Spend-return calculator", desc: "What a card pays back, in AED, on the way you actually spend." },
   { href: "/salary-transfer/calculator/", title: "Salary-transfer calculator", desc: "Match your salary band to the live bank offers." },
   { href: "/cards/compare/", title: "Compare cards", desc: "Put a shortlist side by side: fees, earn, FX and eligibility." },
 ];
 
-const spendRate = (c: ActiveCard, key: string): number => {
+// Source-qualified rows are useful discovery, not a universal rankable rate.
+const strategyCards = cards.filter(hasUsableGenericEarnRate);
+type StrategyCard = (typeof strategyCards)[number];
+const spendRate = (c: StrategyCard, key: string): number => {
   const v = (c.earnRates as Record<string, unknown>)[key];
-  return typeof v === "number" ? v : (c.earnRates.everythingElse ?? 0);
+  return typeof v === "number" ? v : c.earnRates.everythingElse;
 };
 const feeAsc = (a: ActiveCard, b: ActiveCard) =>
   a.annualFee.amount - b.annualFee.amount;
@@ -176,7 +179,7 @@ const asRow = (c: ActiveCard, stat: string, statSub: string): GoalRow => ({
   statSub,
 });
 
-const travelTop = cards
+const travelTop = strategyCards
   .filter((c) => loyaltyTag(c.loyaltyProgram) === "miles")
   .sort((a, b) => spendRate(b, "travel") - spendRate(a, "travel") || feeAsc(a, b))
   .slice(0, 3)
@@ -186,11 +189,11 @@ const travelTop = cards
   // page carries the exact table.
   .map((c) => asRow(c, c.loyaltyProgram ?? "Miles", "ranked on travel earn rate"));
 
-const cashbackTop = cards
+const cashbackTop = strategyCards
   .filter((c) => loyaltyTag(c.loyaltyProgram) === "cashback")
   .sort(
     (a, b) =>
-      (b.earnRates.everythingElse ?? 0) - (a.earnRates.everythingElse ?? 0) ||
+      b.earnRates.everythingElse - a.earnRates.everythingElse ||
       feeAsc(a, b),
   )
   .slice(0, 3)
@@ -208,13 +211,14 @@ const welcomeTop = cards
     return asRow(c, `≈ AED ${aed.toLocaleString()}`, "welcome value");
   });
 
-const firstTop = cards
+const firstTop = strategyCards
+  .filter(hasUsableSalaryMinimum)
   .filter((c) => c.eligibility.minSalary <= 8000 && c.eligibility.invitationOnly !== true)
   .sort(
     (a, b) =>
       feeAsc(a, b) ||
       a.eligibility.minSalary - b.eligibility.minSalary ||
-      (b.earnRates.everythingElse ?? 0) - (a.earnRates.everythingElse ?? 0),
+      b.earnRates.everythingElse - a.earnRates.everythingElse,
   )
   .slice(0, 3)
   .map((c) =>
@@ -377,7 +381,7 @@ const DIRECTORY = [
         <p class="hp-kicker">Tools</p>
         <h2 id="hp-tools-h">Start with <em>a tool.</em></h2>
       </div>
-      <p class="hp-sec-sub">Rank, compare and calculate against verified card data — before you apply.</p>
+      <p class="hp-sec-sub">Explore, compare and calculate against sourced card data — before you apply.</p>
     </div>
     <ol class="hp-tools">
       {TOOLS.map((t, i) => (
@@ -437,7 +441,7 @@ const DIRECTORY = [
                 {c.fx && <div><dt>FX fee</dt><dd>{c.fx}</dd></div>}
                 {c.bonus && <div><dt>Welcome</dt><dd class="is-long">{c.bonus}</dd></div>}
               </dl>
-              <span class="hp-verified">Verified {fmtShort(c.verified)}{c.art ? ` · card image: ${c.bankName}` : ""} · read the review →</span>
+              <span class="hp-verified">{c.limited ? "Source record" : "Verified"} {fmtShort(c.verified)}{c.limited ? " — terms pending" : ""}{c.art ? ` · card image: ${c.bankName}` : ""} · read the review →</span>
             </a>
           </li>
         ))}
@@ -527,7 +531,7 @@ const DIRECTORY = [
       <h2>What are you <em>optimising for?</em></h2>
       <p class="dps-lede">
         Pick a goal and the cards are ranked for it — straight from the
-        verified card database.
+        sourced card database, with pending terms identified.
       </p>
       <input type="radio" name="dps-goal" id="dps-travel" class="dps-radio" checked />
       <input type="radio" name="dps-goal" id="dps-cashback" class="dps-radio" />

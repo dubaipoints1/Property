@@ -48,6 +48,26 @@ gate. The new digest reflects that ruling;32 focused tests pass. This is
 not automatic article publication, paid activation or release acceptance.
 Policy brief: `.council/briefs/2026-11-07-news-no-ceiling.md`.
 
+Later exact pushed head e8dcda8a48fe3195808080f14ec86e99eefff63f passes
+executed Linux validation42370230857 /42370233811. DraftPR519 and auto-merge
+off are read-back verified; main remains651fb0506cc03f5821e0d28659043c57eee76062.
+Green advisory Council jobs do not close the pending substantive role reviews.
+
+Local financial integration now includes the14 source/mapping-reviewed ADIB
+partial profiles plus the earlier3 HSBC candidates. This is not a published
+coverage count or a full-market census. The ADIB independent review verifies291
+raw evidence spans across29 original captures and67 mapped reward rows. Scoped
+rates stay display-only; unknown terms remain held and no all-spend/annual-return
+estimate is supplied. The discontinued Exceed Platinum and conditional-fee
+Skywards Infinite stay excluded. Mashreq/FAB new profiles remain uninserted.
+Final L3/registry integration, compiled QA and aggregate approval are outstanding.
+
+The additional homepage normal font is prepared at35,584B rather than47,308B,
+with the same variable axis and original/shared fallback. Its interim exact
+shaping proof is not final-corpus, browser or wire-performance acceptance. Both
+home font proofs require regeneration/check after the content freeze and build.
+No new financial/UI/font changes from this local stage are committed or live.
+
 Exact pushed head3de665f5341457ab49c01b08f80f848e42a19bfa passes executed
 Linux check/build/all833 tests (zero fail/skip/cancel). The Cloudflare preview
 is https://10d1c0a1.dubaipoints.pages.dev/ . One clean hosted mobile report
@@ -360,3 +380,62 @@ implements the narrower timer/lifecycle contract; root reproduces27focused
 analytics/CSP tests. New fixed-buffer build succeeds with325routes/22,939links,
 including the separately staged three HSBC profiles, but it has not yet been
 measured. The score/proxy and hosted/production-tag limits remain open.
+
+## Integrated 75-record candidate — 2026-11-07, not deployed
+
+The frozen local candidate now contains75 records/74 active: baseline58
+(including one archived), plus HSBC3 and ADIB14 partial source profiles.
+All17 have exact reviewed issuer images, fetched by workflow42372261496
+into bot commit23ebd42d2c8a8cd7f787e27140358f90a07f5881. All53 prior image
+manifest rows are unchanged. Independent source/visual review checks product,
+tier, decoded dimensions and the four resolution-variant responses; final
+rendered clarity/containment remains a separate check. No substitute/AI card art.
+
+Independent final-04 field/mapping review passes within its named bounded
+scope. Final cards SHA475bb0b4c539d3aba3af41ad155890a9fa2dab0329ed6997a7d46761e52184f2;
+manual registry SHA35181d7f2e36a859e6701a97b21adc8a5cc22332235c38f9144f327554538156.
+Every new profile has one manual maintenance route with exact parser/fixture
+pins and explicit partner-brand uncertainty. Unknown salary, eligibility,
+FX, benefits, joining/waiver costs and native/scoped rewards do not become
+invented zeros, qualification claims or universal returns. Source-qualified
+ADIB rates remain display-only. HSBC untyped joining fees suppress first-year
+totals; standard-renewal illustrations are labelled as before any renewal waiver.
+
+Seven guides and affected curated comparisons correct bounded source conflicts,
+unrestricted reward examples and stale qualification/lounge wording. Historical
+correction entries are retained; new corrections distinguish our copy errors
+from issuer changes. No existing lastVerified/_lastScraped dates are reset.
+The existing58 whole-card refresh is NOT complete: the intake ledger records
+readable matched evidence for57, incomplete CBD One capture, and zero whole-card
+re-verifications. Readable bank-wide sources are not field acceptance. The five
+new Mashreq mappings and FAB candidates remain private, uninserted proposals.
+
+Five native utilities are implemented without a new UI runtime, storage or
+tracking: deliberate four-card selection, canonical filter tokens, conservative
+known-only differences, progressive native filters and an optional guide using
+the same form. Actual browser testing reproduces a zero-results keyboard loss;
+the fixed controller returns focus to Reset filters after Clear/last removal,
+and the rebuilt page is observed doing so. Comparison identity frames now retain
+unlike shapes with contain in a larger shared128/144px4:3 frame, not cropping.
+
+Final2 production-like local build (Google main gate enabled, no fake Cloudflare
+token) succeeds:339 routes/23,929 internal links,16 CSP hashes/1,393characters.
+Fresh Astro check is0errors/0warnings/7hints. Full Node22 suite run AFTER the
+completed build executes939 tests:938pass, one unchanged macOS Bash3
+automation-state empty-array failure, zero skips/cancellations. This is NOT a
+full-suite pass; exact-head Linux CI remains required. The first full run also
+caught two stale preload-source assertions, a missing explicit partner marker
+and an image-coverage test unaware of the separate issuer-art manifest; all four
+are corrected with their substantive guards retained, not waived.
+
+All font families are regenerated and exact-checked against this339-page corpus.
+All five binaries/cmap ranges remain unchanged; home-normal stays35,584B, saving
+11,724filebytes versus shared normal. Its actual home HTML is86,635B/SHA
+4da8ccc6c195cef50adf8a27857fbf2f7cf11261239b0e18a7f00dcefea60e18.
+This is shaping/source evidence, not a browser network or score claim. Full
+responsive census, selected task/visual QA and repeated performance are still
+in progress. No release acceptance, merge or production change is asserted.
+
+The later SkyNet raw-download stop remains in force; a fresh owner retry/update
+question has been sent but no reply received at this checkpoint. No later Drive
+write or silent fallback has been performed.

@@ -20,7 +20,7 @@ const creditLabel = creditUrl ? new URL(creditUrl).hostname.replace(/^www\./, ""
 const image = art && {
   src: `/${art.file}`,
   srcset,
-  sizes: srcset ? (size === "identity" ? "(max-width: 640px) 96px, 112px" : "56px") : undefined,
+  sizes: srcset ? (size === "identity" ? "(max-width: 640px) 128px, 144px" : "56px") : undefined,
   width: art.width,
   height: art.height,
   alt: "",
@@ -50,10 +50,13 @@ const image = art && {
   }
   .dp-compare-card-imagebox { display: block; inline-size: 100%; aspect-ratio: 16 / 10; }
   .dp-compare-card-art[data-size="identity"]:has(img) {
-    inline-size: 112px;
+    inline-size: 144px;
     max-inline-size: 100%;
   }
   .dp-compare-card-art[data-size="identity"] .dp-compare-card-imagebox {
+    /* One shared frame gives portrait and angled issuer faces useful room
+       without clipping, stretching or pretending their shapes are equal. */
+    aspect-ratio: 4 / 3;
     padding: 6px;
     border: 1px solid var(--line);
     border-radius: var(--dp-ui-radius-small, 6px);
@@ -69,6 +72,6 @@ const image = art && {
     object-fit: contain;
   }
   @media (max-width: 640px) {
-    .dp-compare-card-art[data-size="identity"]:has(img) { inline-size: 96px; }
+    .dp-compare-card-art[data-size="identity"]:has(img) { inline-size: 128px; }
   }
 </style>

@@ -15,6 +15,7 @@ import CardComparison from "~/components/cards/CardComparison.astro";
 import CardValueLines from "~/components/cards/CardValueLines.astro";
 import CardValueScenario from "~/components/cards/CardValueScenario.astro";
 import VerifiedStamp from "~/components/cards/VerifiedStamp.astro";
+import { cardHasUnresolvedTerms } from "~/lib/cardEligibility";
 import { getCardData } from "~/lib/cardsData";
 import { cardMatchups, matchupSlug, type CardMatchup } from "~/data/cardMatchups";
 
@@ -64,7 +65,7 @@ const newestVerified = new Date(
       </div>
       <h1 class="dp-article-title">{left.name} vs {right.name}</h1>
       <p class="lede dp-article-lede">{matchup.deck}</p>
-      <VerifiedStamp lastVerified={newestVerified} />
+      <VerifiedStamp lastVerified={newestVerified} limited={cardHasUnresolvedTerms(left) || cardHasUnresolvedTerms(right)} />
     </div>
 
     <section class="dp-matchup-verdict" aria-labelledby="verdict-head">

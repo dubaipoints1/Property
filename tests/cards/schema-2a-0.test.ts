@@ -38,9 +38,10 @@ const JoiningFee = z.object({
 
 const Eligibility2a0 = z
   .object({
-    minSalary: z.number().nonnegative(),
-    salaryTransferRequired: z.boolean(),
-    residencyRequired: z.boolean(),
+    // T3 primary-source expansion: explicit unknowns, never 0/false defaults.
+    minSalary: z.number().nonnegative().nullable(),
+    salaryTransferRequired: z.boolean().nullable(),
+    residencyRequired: z.boolean().nullable(),
     invitationOnly: z.boolean().default(false),
   })
   .passthrough();

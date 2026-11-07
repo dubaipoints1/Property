@@ -39,19 +39,19 @@ export const cardMatchups: readonly CardMatchup[] = [
   {
     left: "liv-cashback",
     right: "wio-credit",
-    deck: "Two free-for-life cashback cards with no salary floor and no transfer condition.",
+    deck: "Two cashback cards whose account-plan, spend-tier and credit-limit conditions matter.",
     verdict: [
-      "Wio, on the numbers in the table below. It pays a higher flat rate on everything, and its monthly cashback ceiling is more than three times Liv's, so the gap widens rather than closing as spend rises.",
-      "Liv's case is the account behind it rather than the card. If your salary already lands in Liv and you want one app for both, the difference is small in absolute dirhams at low spend. If it does not, there is no argument here.",
+      "Wio's cashback depends on the account plan, its fee and a cap shared with My Money; the Standard plan earns none. Liv's spend tiers and credit-limit cap also change the result. A headline rate alone cannot settle this comparison, and the generic example does not estimate either card's return.",
+      "Start with the account you can qualify for and the conditions you can meet, then check how your actual spending fits the issuer's rules. Neither card should be described as having no salary floor merely because a salary transfer is a separate condition.",
     ],
   },
   {
     left: "liv-cashback",
     right: "adcb-365-cashback",
-    deck: "A free flat-rate card against a category card with a fee and a spend gate.",
+    deck: "Spend-tier cashback against merchant-specific rewards and qualification conditions.",
     verdict: [
-      "This one turns on whether your spending is concentrated. ADCB 365 pays several times Liv's rate on dining, fuel and entertainment, which covers its fee comfortably for a household that spends there — and pays nothing at all in a month where total card spend falls under its gate.",
-      "Liv asks nothing and gates nothing. If your spend is spread thin, or uneven month to month, the flat card keeps what the category card forfeits.",
+      "ADCB 365's listed subscription rewards depend on named providers and payment channels, while reduced-category and spend conditions also apply. Liv has its own spend tiers and credit-limit cap. Neither is an unrestricted flat return, and this generic comparison does not estimate whether the rewards cover a fee.",
+      "Check which merchants and payment channels actually qualify before choosing between them. ADCB eligibility is still being reconciled in this source record; read the pending terms rather than treating a retained income figure as a complete qualification test.",
     ],
   },
   {
@@ -96,7 +96,7 @@ export const cardMatchups: readonly CardMatchup[] = [
     deck: "Two free everyday cards, one paying inside an ecosystem and one in cash.",
     verdict: [
       "The noon One pays a far higher rate than anything else here, but in noon credits and only on noon — outside that it is an ordinary flat-rate card. It is a good card if your groceries and food delivery already run through noon, and unremarkable if they do not.",
-      "Mashreq pays real cashback and pays it anywhere, with a strong dining rate. Note its bill-bundle rate, which is very low and covers a wide list of everyday categories; the table carries the current figures.",
+      "Mashreq's dining rewards are subject to the assigned-credit-limit restriction; they are not uncapped. Its everyday-rate wording also needs reconciliation, so we withhold a generic return estimate. Check the exclusions and current issuer terms rather than assuming that every purchase earns the headline rate.",
     ],
   },
   {
@@ -113,7 +113,7 @@ export const cardMatchups: readonly CardMatchup[] = [
     right: "emirates-islamic-switch-cashback",
     deck: "Near-identical fees, a conventional card and a Sharia-compliant one.",
     verdict: [
-      "Emirates Islamic pays the higher headline rates in every shared category and applies a lower minimum monthly spend to qualify, which makes it the better card for most spending profiles at this fee.",
+      "Compare the category rates alongside their spend gates and caps, not as a guaranteed return. HSBC's product and KFS eligibility wording remain unreconciled in this source record, so a rate comparison is not a recommendation that you qualify for either card.",
       "HSBC's counter is its waiver, which clears at a much lower annual spend. Both cap their bonus categories tightly in dirhams per month, so the headline rates are reached on a smaller slice of spend than they appear to cover — the caps are in the table.",
     ],
   },

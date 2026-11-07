@@ -1,4 +1,6 @@
 ---
+import { cardSalaryLabel } from "~/lib/cardEligibility";
+import { cardFxFeeLabel } from "~/lib/cardFeeFacts";
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
 import {
@@ -18,14 +20,8 @@ const rows = await Promise.all(
       href: `/cards/${c.slug}/`,
       values: [
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
-        c._provenance?.fxFee === "needs-review" ? "—" : `${c.fxFee}%`,
-        c.eligibility.invitationOnly === true
-          ? "Invitation only"
-          : c._provenance?.eligibility === "needs-review"
-          ? "—"
-          : c.eligibility.minSalary > 0
-          ? `AED ${c.eligibility.minSalary.toLocaleString()}/mo`
-          : "No minimum",
+        cardFxFeeLabel(c),
+        cardSalaryLabel(c, { perMonth: true }),
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };

@@ -3,12 +3,17 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 import { cardComparisonRows, type CardForComparison } from "../../src/lib/cardsDataFormat";
+import { cardJourneyParams } from "../../src/lib/readerJourneyState";
+import { readCardSelection, setCardSelection, updateCardSelection } from "../../src/lib/cardSelection";
 
 const compare = readFileSync("src/pages/cards/compare.astro", "utf8");
 const tracker = readFileSync("src/components/islands/SalaryTransferTracker.tsx", "utf8");
 
 function comparePicker(search = "") {
   const changeHandlers = new Map<string, () => void>();
+  const windowHandlers = new Map<string, () => void>();
+  let submit: ((event: { preventDefault(): void }) => void) | undefined;
+  const location = { search, href: "" };
   const boxes = ["a", "b", "c", "d", "e"].map(value => ({
     value, checked: false, disabled: false,
     addEventListener(_event: string, handler: () => void) { changeHandlers.set(value, handler); },
@@ -32,18 +37,17 @@ function comparePicker(search = "") {
     "dp-compare-mode": { textContent: "" },
     "dp-compare-selection": selection,
   };
-  const script = compare.match(/<script is:inline define:vars=\{\{ MAX_CARDS, defaultSlugs \}\}>([\s\S]*?)<\/script>/)?.[1];
-  assert.ok(script);
+  const script = readFileSync("src/scripts/cardComparison.mjs", "utf8").replace(/^import .*;\n/gm, "").replace("export function", "function") + '\ninitialiseCardComparison(["a", "b", "c"]);';
   runInNewContext(script, {
-    MAX_CARDS: 4, defaultSlugs: ["a", "b", "c"], URLSearchParams,
-    window: { location: { search } },
+    MAX_CARDS: 4, URLSearchParams, cardJourneyParams, readCardSelection, setCardSelection, updateCardSelection,
+    window: { location, addEventListener: (event: string, handler: () => void) => windowHandlers.set(event, handler) },
     document: {
       getElementById: (id: string) => elements[id],
       querySelectorAll: () => boxes,
-      querySelector: () => ({ querySelectorAll: () => boxes }),
+      querySelector: () => ({ querySelectorAll: () => boxes, addEventListener: (_event: string, handler: typeof submit) => { submit = handler; } }),
     },
   });
-  return { boxes, cols, grid, count, selection, changeHandlers };
+  return { boxes, cols, grid, count, selection, changeHandlers, windowHandlers, location, submit };
 }
 
 test("comparison picker keeps URL order, distinct cards and the existing four-card limit", () => {
@@ -76,6 +80,26 @@ test("comparison checkboxes remain multi-select and re-enable choices after dese
 test("unknown comparison links retain the readable default comparison", () => {
   const result = comparePicker("?cards=unknown");
   assert.deepEqual(result.cols.filter(col => !col.hidden).map(col => col.slug), ["a", "b", "c"]);
+});
+
+test("comparison submission keeps deliberate order, whitelisted filters and zero example spend", () => {
+  const result = comparePicker("?cards=d,b&salary=20000&prefer=miles&cv_spend=0&via=finder&email=private");
+  const third = result.boxes.find(box => box.value === "a")!;
+  third.checked = true;
+  result.changeHandlers.get("a")!();
+  let prevented = false;
+  result.submit!({ preventDefault() { prevented = true; } });
+  const state = new URL(result.location.href, "https://dubaipoints.ae").searchParams;
+  assert.equal(prevented, true);
+  assert.equal(state.get("cards"), "d,b,a");
+  assert.equal(state.get("salary"), "20000");
+  assert.equal(state.get("prefer"), "miles");
+  assert.equal(state.get("cv_spend"), "0");
+  assert.equal(state.get("email"), null);
+  result.location.search = "?cards=b,a";
+  result.windowHandlers.get("popstate")!();
+  assert.deepEqual(result.cols.filter(col => !col.hidden).map(col => col.slug), ["b", "a"]);
+  assert.ok(result.boxes.every(box => !box.disabled));
 });
 
 test("tracker uses native independent checkboxes but retains its single-band toggle and salary warning", () => {
