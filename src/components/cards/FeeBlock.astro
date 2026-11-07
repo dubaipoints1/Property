@@ -18,7 +18,7 @@ import {
   isStructuredAnnualFeeWaiver,
   getCardData,
 } from "~/lib/cardsData";
-import { cardFxFeeLabel, cardFxNeedsReview } from "~/lib/cardFeeFacts";
+import { cardFxFeeLabel, cardFxNeedsReview, cardFeeNeedsReview } from "~/lib/cardFeeFacts";
 
 interface Props {
   /** Phase 2a.2: when set, the component resolves all inline props
@@ -82,7 +82,11 @@ const joiningFee = resolved?.joiningFee ?? joiningFeeProp;
 // schema default so cards without an explicit policy render the
 // inclusive treatment.
 const vatPolicy = resolved?.vatPolicy ?? "inclusive";
-const showVatTag = annualFee.amount > 0;
+const feeEvidence = resolved ?? { annualFee, _provenance: provenanceProp ?? {} };
+const annualFeePending = cardFeeNeedsReview(feeEvidence, "annualFee");
+const joiningFeePending = cardFeeNeedsReview(feeEvidence, "joiningFee");
+const waiverPending = Object.entries(feeEvidence._provenance ?? {}).some(([key, state]) => state === "needs-review" && /^annualFeeWaiver(?:\.|$)/.test(key));
+const showVatTag = !annualFeePending && annualFee.amount > 0;
 const vatTagText =
   vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
 
@@ -107,7 +111,7 @@ function formatAED(amount: number): string {
 }
 
 const feeLabel =
-  annualFee.amount === 0
+  annualFeePending ? "Pending" : annualFee.amount === 0
     ? "Free"
     : formatAED(annualFee.amount);
 
@@ -115,7 +119,7 @@ const waiverString = annualFeeWaiverDisplay(
   waiver as StructuredAnnualFeeWaiver | string | null | undefined,
 );
 const showWaiver =
-  waiverString.length > 0 &&
+  !annualFeePending && !waiverPending && waiverString.length > 0 &&
   (isStructuredAnnualFeeWaiver(waiver) || typeof waiver === "string");
 
 // Phase 2a.0: only show the joining-fee line when the year-1 figure
@@ -123,7 +127,7 @@ const showWaiver =
 // Platinum is the inverse: year-1 525, year-2 262.50, so they differ;
 // dnata World is 1048.95 / 1048.95, so equal and suppressed).
 const showJoiningFee =
-  joiningFee !== undefined &&
+  !joiningFeePending && joiningFee !== undefined &&
   joiningFee !== null &&
   joiningFee.amount !== annualFee.amount;
 ---
@@ -132,6 +136,8 @@ const showJoiningFee =
   <div class="amt">{feeLabel}</div>
   {showVatTag && <div class="vat">{vatTagText}</div>}
   <div class="lbl">Annual fee</div>
+  {annualFeePending && <div class="joining">The standard annual fee is Pending; joining and other charges are not assumed to be zero.</div>}
+  {joiningFeePending && <div class="joining">Joining fee — confirmation pending</div>}
   {showJoiningFee && joiningFee && (
     <div class="joining">
       Joining fee {formatAED(joiningFee.amount)} (year 1{vatPolicy === "inclusive" ? ", incl. VAT" : ""})

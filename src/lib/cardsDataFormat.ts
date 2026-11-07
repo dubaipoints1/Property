@@ -4,6 +4,7 @@
 // pulling in `astro:content` (which is a virtual module unavailable to
 // node:test running under tsx).
 import { cardSalaryLabel } from "./cardEligibility";
+import { cardFeeNeedsReview } from "./cardFeeProvenance";
 
 export type RewardUnit =
   | "skywards_miles"
@@ -391,6 +392,7 @@ export interface CardForAnnualFee {
   annualFee: { amount: number };
   joiningFee?: { amount: number } | null;
   annualFeeWaiver?: unknown;
+  _provenance?: Record<string, string> | null;
 }
 
 /**
@@ -435,15 +437,17 @@ export function annualFeeLabel(card: CardForAnnualFee): {
   amount: string;
   qual: string | null;
 } {
+  if (cardFeeNeedsReview(card, "annualFee")) return { amount: "Pending", qual: null };
   const amount =
     card.annualFee.amount === 0 ? "Free" : formatAED(card.annualFee.amount);
   const jf = card.joiningFee?.amount;
-  if (typeof jf === "number" && jf > card.annualFee.amount) {
+  if (!cardFeeNeedsReview(card, "joiningFee") && typeof jf === "number" && jf > card.annualFee.amount) {
     return { amount, qual: "year 2+" };
   }
   const waiver = card.annualFeeWaiver;
+  const waiverPending = Object.entries(card._provenance ?? {}).some(([key, state]) => state === "needs-review" && /^annualFeeWaiver(?:\.|$)/.test(key));
   if (
-    waiver &&
+    !waiverPending && waiver &&
     typeof waiver === "object" &&
     "year_one_waived" in waiver &&
     (waiver as { year_one_waived?: unknown }).year_one_waived === true
@@ -761,14 +765,16 @@ export function cardComparisonRows(
   {
     const lFee = left.annualFee.amount;
     const rFee = right.annualFee.amount;
+    const lPending = cardFeeNeedsReview(left, "annualFee");
+    const rPending = cardFeeNeedsReview(right, "annualFee");
     rows.push({
       key: "annualFee",
       label: "Annual fee (year 2+)",
       mobileLabel: "Annual fee",
       subtext: "year 2+",
-      leftValue: lFee === 0 ? "Free" : formatAED(lFee),
-      rightValue: rFee === 0 ? "Free" : formatAED(rFee),
-      winner: lowerWins(lFee, rFee),
+      leftValue: lPending ? "Pending" : lFee === 0 ? "Free" : formatAED(lFee),
+      rightValue: rPending ? "Pending" : rFee === 0 ? "Free" : formatAED(rFee),
+      winner: lPending || rPending ? "none" : lowerWins(lFee, rFee),
     });
   }
 
@@ -780,16 +786,18 @@ export function cardComparisonRows(
   {
     const lJoin = left.joiningFee?.amount ?? null;
     const rJoin = right.joiningFee?.amount ?? null;
-    if (lJoin !== null || rJoin !== null) {
+    const lPending = cardFeeNeedsReview(left, "joiningFee");
+    const rPending = cardFeeNeedsReview(right, "joiningFee");
+    if (lJoin !== null || rJoin !== null || lPending || rPending) {
       rows.push({
         key: "joiningFee",
         label: "Joining fee (year 1)",
         mobileLabel: "Joining fee",
         subtext: "year 1",
-        leftValue: lJoin === null ? "—" : formatAED(lJoin),
-        rightValue: rJoin === null ? "—" : formatAED(rJoin),
+        leftValue: lPending ? "Pending" : lJoin === null ? "—" : formatAED(lJoin),
+        rightValue: rPending ? "Pending" : rJoin === null ? "—" : formatAED(rJoin),
         winner:
-          lJoin === null || rJoin === null ? "none" : lowerWins(lJoin, rJoin),
+          lPending || rPending || lJoin === null || rJoin === null ? "none" : lowerWins(lJoin, rJoin),
       });
     }
   }

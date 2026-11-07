@@ -27,6 +27,7 @@ import { getActiveCards } from "~/lib/cardsData";
 import { cardFxFeeLabel } from "~/lib/cardFeeFacts";
 import { hasUsableSalaryMinimum, cardSalaryLabel, cardHasUnresolvedTerms } from "~/lib/cardEligibility";
 import { hasUsableGenericEarnRate } from "~/lib/cardEarnModel";
+import { cardFeeNeedsReview, compareKnownAnnualFees } from "~/lib/cardFeeProvenance";
 import {
   loyaltyTag,
   welcomeBonusRank,
@@ -168,7 +169,8 @@ const spendRate = (c: StrategyCard, key: string): number => {
   return typeof v === "number" ? v : c.earnRates.everythingElse;
 };
 const feeAsc = (a: ActiveCard, b: ActiveCard) =>
-  a.annualFee.amount - b.annualFee.amount;
+  compareKnownAnnualFees(cardFeeNeedsReview(a, "annualFee") ? null : a.annualFee.amount,
+    cardFeeNeedsReview(b, "annualFee") ? null : b.annualFee.amount);
 
 type GoalRow = { slug: string; name: string; bank: string; stat: string; statSub: string };
 const asRow = (c: ActiveCard, stat: string, statSub: string): GoalRow => ({

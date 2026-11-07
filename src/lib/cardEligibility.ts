@@ -1,3 +1,5 @@
+import { cardFeeNeedsReview } from "./cardFeeProvenance";
+
 type SalaryCard = {
   eligibility: { minSalary: number | null; invitationOnly?: boolean; salaryTransferRequired?: boolean | null; residencyRequired?: boolean | null; employmentTypes?: string[] };
   _provenance?: Record<string, string> | null;
@@ -54,8 +56,9 @@ export function hasUsableSalaryMinimum<T extends SalaryCard>(card: T): card is T
     && !Object.entries(card._provenance ?? {}).some(([key, state]) => state === "needs-review" && key.startsWith("eligibility."));
 }
 
-export function cardHasUnresolvedTerms(card: SalaryCard & { _dataIssues?: Record<string, string>; earnRates?: { everythingElse: number | null }; scopedEarnRates?: readonly unknown[] }): boolean {
-  return cardSalaryPending(card) || card.earnRates?.everythingElse === null || !!card.scopedEarnRates?.length || Object.keys(card._dataIssues ?? {}).length > 0
+export function cardHasUnresolvedTerms(card: SalaryCard & { annualFee?: { amount: number }; _dataIssues?: Record<string, string>; earnRates?: { everythingElse: number | null }; scopedEarnRates?: readonly unknown[] }): boolean {
+  return (card.annualFee !== undefined && cardFeeNeedsReview({ annualFee: card.annualFee, _provenance: card._provenance }, "annualFee"))
+    || cardSalaryPending(card) || card.earnRates?.everythingElse === null || !!card.scopedEarnRates?.length || Object.keys(card._dataIssues ?? {}).length > 0
     || Object.entries(card._provenance ?? {}).some(([field, state]) => state === "needs-review"
       && /^(?:annualFee|fxFee|eligibility|earnRates|interestRate)(?:\.|$)/.test(field));
 }

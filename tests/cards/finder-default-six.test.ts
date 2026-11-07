@@ -6,6 +6,7 @@ import { getActiveCards, getCardData } from "../../src/lib/cardsData.ts";
 import { finderEvidence } from "../../src/lib/finderEvidence.ts";
 import { cardFinderState, cardJourneyParams } from "../../src/lib/readerJourneyState";
 import { eligibleForSalaryFilter } from "../../src/lib/cardSelection";
+import { cardFeeNeedsReview, compareKnownAnnualFees } from "../../src/lib/cardFeeProvenance";
 
 /**
  * /cards/finder/ renders every card and lets an inline script hide all but
@@ -27,11 +28,11 @@ function defaultSix(): string[] {
     .map((card) => ({
       slug: card.slug,
       score: finderEvidence(card).fallbackPending ? null : card.earnRates.everythingElse ?? null,
-      annualFee: card.annualFee.amount,
+      annualFee: finderEvidence(card).annualFeePending ? null : card.annualFee.amount,
     }))
     .sort((a, b) => a.score === null || b.score === null
-      ? a.score === b.score ? a.annualFee - b.annualFee : a.score === null ? 1 : -1
-      : b.score !== a.score ? b.score - a.score : a.annualFee - b.annualFee)
+      ? a.score === b.score ? compareKnownAnnualFees(a.annualFee, b.annualFee) : a.score === null ? 1 : -1
+      : b.score !== a.score ? b.score - a.score : compareKnownAnnualFees(a.annualFee, b.annualFee))
     .slice(0, 6)
     .map((c) => c.slug);
 }
@@ -65,14 +66,14 @@ function renderFinder(search: string, fixtures = getActiveCards()) {
   const cards = fixtures.map((card) => ({
     slug: card.slug,
     network: card.network,
-    annualFee: card.annualFee.amount,
+    annualFee: finderEvidence(card).annualFeePending ? null : card.annualFee.amount,
     minSalary: card.eligibility.minSalary,
     eligibleForSalaryFilter: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary),
     salaryTransferRequired: card.eligibility.salaryTransferRequired,
     invitationOnly: card.eligibility.invitationOnly === true,
     discontinued: card.discontinuedForNewApplicants !== undefined,
     loyaltyProgram: card.loyaltyProgram ?? "",
-    earnRates: card.earnRates,
+    earnRates: finderEvidence(card).rankRates,
     hasLounge: card._features.some((f) => f.type === "lounge_access"),
     hasStatus: card._features.some((f) => f.type === "status_match"),
     evidence: finderEvidence(card),
@@ -126,6 +127,7 @@ function renderFinder(search: string, fixtures = getActiveCards()) {
     URLSearchParams,
     cardFinderState,
     cardJourneyParams,
+    compareKnownAnnualFees,
     HTMLDetailsElement: class {},
   });
   return { cards, tiles: tiles.filter((tile) => !tile.hidden), compare, count };
@@ -201,6 +203,43 @@ test("365 missing-category fallback remains unranked, not an assumed zero or uni
   const dining = renderFinder("?spend=dining", [adcb]).tiles[0];
   assert.match(dining.parts["[data-finder-ranking]"].textContent, /Dining:/);
 });
+
+test("actual Finder controller cannot rank held category, unit or dotted rate inputs", () => {
+  const original = getCardData("citi-cashback")!;
+  const confirmed = { ...original, slug: "confirmed-example", earnRates: { everythingElse: 1, online: 2 }, _provenance: {} };
+  for (const field of ["earnRates", "earnUnit", "earnRates.online", "earnRates.online.value"]) {
+    const held = { ...original, slug: "held-example", earnRates: { everythingElse: 1, online: 99 }, _provenance: { [field]: "needs-review" as const } };
+    const evidence = finderEvidence(held);
+    assert.equal(evidence.rankRates.online, undefined, field);
+    assert.equal(evidence.earnLabels.online, undefined, field);
+    const result = renderFinder("?spend=online", [held, confirmed]);
+    assert.equal(result.tiles[0].slug, confirmed.slug, field);
+    assert.match(result.tiles.find(t => t.slug === held.slug)!.parts["[data-finder-ranking]"].textContent, /Not rate-ranked/);
+  }
+  const current = getCardData("sc-platinum-x")!;
+  const result = renderFinder("?spend=online", [{ ...current, slug: "sc-platinum-x" }, confirmed]);
+  assert.equal(result.tiles[0].slug, confirmed.slug, "The actual held SC online rate must not win");
+  assert.match(SOURCE, /earnRates: evidence\.rankRates/);
+});
+
+test("unknown annual fees cannot match fee buckets or win the cheaper-fee tie-break", () => {
+  const original = getCardData("citi-cashback")!;
+  const known = { ...original, slug: "known-fee-example", earnRates: { everythingElse: 1 }, annualFee: { amount: 315, currency: "AED" as const }, _provenance: { annualFee: "editor-confirmed" as const } };
+  for (const field of ["annualFee", "annualFee.amount", "vatPolicy"]) {
+    const held = { ...known, slug: "held-fee-example", annualFee: { amount: 0, currency: "AED" as const }, _provenance: { [field]: "needs-review" as const } };
+    assert.equal(renderFinder("", [held, known]).tiles[0].slug, known.slug, field);
+    assert.equal(renderFinder("?fee=free", [held]).tiles.length, 0, field);
+    assert.equal(renderFinder("?fee=under-500", [held]).tiles.length, 0, field);
+    assert.match(finderEvidence(held).feeNotes[0], /confirmation pending/, field);
+  }
+  const scrapedZero = { ...known, slug: "scraped-zero-example", annualFee: { amount: 0, currency: "AED" as const }, _provenance: { annualFee: "scraped" as const } };
+  assert.equal(renderFinder("?fee=free", [scrapedZero]).tiles.length, 0);
+  const confirmedZero = { ...scrapedZero, _provenance: { annualFee: "editor-confirmed" as const } };
+  assert.equal(renderFinder("?fee=free", [confirmedZero]).tiles.length, 1);
+  assert.equal(renderFinder("", [known, confirmedZero]).tiles[0].slug, confirmedZero.slug);
+  for (const tile of renderFinder("?fee=free").tiles) assert.equal(cardFeeNeedsReview(getCardData(tile.slug)!, "annualFee"), false);
+  assert.equal((SOURCE.match(/annualFee: evidence\.annualFeePending \? null : card\.annualFee\.amount/g) ?? []).length, 2, "Both serialized and SSR fee inputs must use the guard");
+});
 test("unknown required eligibility flags never qualify under an active salary filter", () => {
   const citi = getActiveCards().find(c => c.slug === "citi-cashback")!;
   const unknown = { ...citi, slug: "unknown-eligibility-fixture", eligibility: { ...citi.eligibility, salaryTransferRequired: null, residencyRequired: null, employmentTypes: [] },
@@ -209,6 +248,17 @@ test("unknown required eligibility flags never qualify under an active salary fi
   const bare = renderFinder("", [unknown]).tiles[0];
   assert.match(bare.note.textContent, /Eligibility confirmation pending/);
   assert.doesNotMatch(bare.parts["[data-finder-checks]"].textContent, /Salary transfer required|not required|Any employment/);
+});
+
+test("held VAT also suppresses a separate joining-fee quote and annual VAT qualifier", () => {
+  const original = getCardData("citi-cashback")!;
+  const held = { ...original, annualFee: { amount: 315, currency: "AED" as const },
+    joiningFee: { amount: 100, currency: "AED" as const }, vatPolicy: "exclusive" as const,
+    _provenance: { ...original._provenance, vatPolicy: "needs-review" as const } };
+  const evidence = finderEvidence(held);
+  assert.deepEqual(evidence.feeNotes.slice(0, 2), ["Annual fee: confirmation pending.", "Joining fee: confirmation pending."]);
+  assert.equal(evidence.feeExcludesVat, false);
+  assert.doesNotMatch(evidence.feeNotes.join(" "), /AED|VAT/);
 });
 
 test("display evidence preserves rate denominators, pending data and published terms", () => {

@@ -15,6 +15,7 @@
 
 import { getCardData } from "~/lib/cardsData";
 import { cardSalaryLabel } from "~/lib/cardEligibility";
+import { cardFeeNeedsReview } from "~/lib/cardFeeFacts";
 import {
   topEarnEntry,
   CATEGORY_LABELS_FOR_TOP,
@@ -62,11 +63,11 @@ if (wb && typeof wb === "object") {
 }
 
 const annualFeeLabel =
-  annualFeeAmount === 0 ? "Free" : formatAED(annualFeeAmount);
+  cardFeeNeedsReview(card, "annualFee") ? "Pending" : annualFeeAmount === 0 ? "Free" : formatAED(annualFeeAmount);
 
 // Phase 2a.2.3 (2026-05-20) — VAT qualifier on the annual fee tile.
 const vatPolicy = card.vatPolicy ?? "inclusive";
-const showVatQual = annualFeeAmount > 0;
+const showVatQual = !cardFeeNeedsReview(card, "annualFee") && annualFeeAmount > 0;
 const vatQualText =
   vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
 

@@ -55,8 +55,8 @@ export function provenanceFields(): string {
   return nf.format(n);
 }
 
-/** Month stamp of the newest verification across the card set. */
-export function verifiedThrough(): string {
+/** Newest source-record month, not a through-date for full-catalogue verification. */
+export function latestSourceRecord(): string {
   const newest = Math.max(
     ...getActiveCards().map((c) => new Date(c.lastVerified).getTime()),
   );

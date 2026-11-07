@@ -1,15 +1,10 @@
 import type { CardData } from "./cardsData";
 import { formatAED } from "./cardsDataFormat";
+import { cardFeeNeedsReview } from "./cardFeeProvenance";
+export { cardFeeNeedsReview } from "./cardFeeProvenance";
 
 type FeeCard = Pick<CardData, "annualFee" | "joiningFee" | "vatPolicy" | "_provenance">;
 type FeeField = "annualFee" | "joiningFee";
-
-/** Keep a flagged parent, amount or tax basis from becoming a precise fee. */
-export function cardFeeNeedsReview(card: FeeCard, field: FeeField): boolean {
-  const pending = (key: string) => card._provenance?.[key] === "needs-review";
-  return pending(field) || pending(`${field}.amount`) || pending("vatPolicy") ||
-    (field === "annualFee" && card.annualFee.amount === 0 && card._provenance?.annualFee === "scraped");
-}
 
 export function cardFeeAmountLabel(card: FeeCard, field: FeeField = "annualFee"): string {
   if (cardFeeNeedsReview(card, field)) return "Pending";

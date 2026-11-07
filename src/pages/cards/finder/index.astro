@@ -28,6 +28,7 @@ import FinderFilterTokens from "~/components/cards/FinderFilterTokens.astro";
 import { cardFinderState } from "~/lib/readerJourneyState";
 import { eligibleForSalaryFilter } from "~/lib/cardSelection";
 import { cardHasKnownFeature } from "~/lib/cardsDataFormat";
+import { compareKnownAnnualFees } from "~/lib/cardFeeProvenance";
 
 const allCards = getActiveCards();
 
@@ -61,14 +62,14 @@ const cardIndex = cardsWithBanks.map(({ card, evidence }) => ({
   name: card.name,
   bank: card.bank,
   network: card.network,
-  annualFee: card.annualFee.amount,
+  annualFee: evidence.annualFeePending ? null : card.annualFee.amount,
   minSalary: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary) ? card.eligibility.minSalary : null,
   eligibleForSalaryFilter: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary),
   salaryTransferRequired: card._provenance?.eligibility === "needs-review" || card._provenance?.["eligibility.salaryTransferRequired"] === "needs-review" ? null : card.eligibility.salaryTransferRequired,
   invitationOnly: card._provenance?.eligibility !== "needs-review" && card._provenance?.["eligibility.invitationOnly"] !== "needs-review" && card.eligibility.invitationOnly === true,
   discontinued: card.discontinuedForNewApplicants !== undefined,
   loyaltyProgram: card.loyaltyProgram ?? "",
-  earnRates: card.earnRates,
+  earnRates: evidence.rankRates,
   hasLounge: cardHasKnownFeature(card, "lounge_access"),
   hasStatus: cardHasKnownFeature(card, "status_match"),
   evidence,
@@ -124,11 +125,11 @@ const defaultTopSlugs = defaultCandidates
   .map(({ card, evidence }) => ({
     slug: card.slug,
     score: evidence.fallbackPending ? null : card.earnRates.everythingElse ?? null,
-    annualFee: card.annualFee.amount,
+    annualFee: evidence.annualFeePending ? null : card.annualFee.amount,
   }))
   .sort((a, b) => a.score === null || b.score === null
-    ? a.score === b.score ? a.annualFee - b.annualFee : a.score === null ? 1 : -1
-    : b.score !== a.score ? b.score - a.score : a.annualFee - b.annualFee)
+    ? a.score === b.score ? compareKnownAnnualFees(a.annualFee, b.annualFee) : a.score === null ? 1 : -1
+    : b.score !== a.score ? b.score - a.score : compareKnownAnnualFees(a.annualFee, b.annualFee))
   .slice(0, 6)
   .map((c) => c.slug);
 

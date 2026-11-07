@@ -15,4 +15,8 @@ test("homepage featured cards use shared pending salary and limited source-recor
     assert.match(page, new RegExp(`const ${group} = strategyCards`));
   }
   assert.doesNotMatch(page, /earnRates\.everythingElse \?\? 0/);
+  assert.match(page, /compareKnownAnnualFees\(cardFeeNeedsReview\(a, "annualFee"\) \? null : a\.annualFee\.amount/);
+  assert.doesNotMatch(page, /a\.annualFee\.amount - b\.annualFee\.amount/);
+  const perks = readFileSync("src/pages/cards/perks/[perk].astro", "utf8");
+  assert.match(perks, /compareKnownAnnualFees\(cardFeeNeedsReview\(a, "annualFee"\) \? null : a\.annualFee\.amount/);
 });

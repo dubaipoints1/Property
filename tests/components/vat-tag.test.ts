@@ -14,6 +14,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { cardFeeNeedsReview } from "../../src/lib/cardFeeProvenance.ts";
 
 const FEE_BLOCK = readFileSync(
   path.join("src", "components", "cards", "FeeBlock.astro"),
@@ -28,6 +29,12 @@ const CARD_COMPARISON = readFileSync(
   "utf8",
 );
 
+function sourceExpression(source: string, name: string): string {
+  const expression = source.match(new RegExp(`const ${name} = ([^;]+);`))?.[1];
+  assert.ok(expression, `${name} gate not found`);
+  return expression;
+}
+
 // ── 1. FeeBlock — inclusive policy renders "incl. VAT" ──────────────────
 
 test("FeeBlock: inclusive vatPolicy renders 'incl. VAT' line beneath the amount", () => {
@@ -37,8 +44,8 @@ test("FeeBlock: inclusive vatPolicy renders 'incl. VAT' line beneath the amount"
     FEE_BLOCK,
     /const vatTagText\s*=\s*\n?\s*vatPolicy === "exclusive" \? "\+ 5% VAT" : "incl\. VAT";/,
   );
-  // The JSX renders the tag only when annualFee.amount > 0.
-  assert.match(FEE_BLOCK, /const showVatTag = annualFee\.amount > 0;/);
+  // Positive, source-qualified fees only; unknown fees carry no VAT claim.
+  assert.match(FEE_BLOCK, /const showVatTag = !annualFeePending && annualFee\.amount > 0;/);
   // And the tag DOM sits between .amt and .lbl.
   assert.match(
     FEE_BLOCK,
@@ -52,13 +59,13 @@ test("FeeBlock: inclusive vatPolicy renders 'incl. VAT' line beneath the amount"
 
 // ── 2. FeeBlock — annualFee.amount === 0 suppresses the tag ─────────────
 
-test("FeeBlock: amount === 0 suppresses the VAT tag (showVatTag gate)", () => {
-  // showVatTag gate is `annualFee.amount > 0` — when amount is 0, the
-  // JSX gate evaluates false and the .vat div is not rendered.
-  const m = FEE_BLOCK.match(
-    /const showVatTag = annualFee\.amount > 0;/,
-  );
-  assert.ok(m, "showVatTag gate not found");
+test("FeeBlock: zero and held positive fees suppress VAT tags; known positive fees retain them", () => {
+  const gate = new Function("annualFeePending", "annualFee", `return (${sourceExpression(FEE_BLOCK, "showVatTag")});`);
+  for (const amount of [0, 315]) {
+    for (const pending of [false, true]) {
+      assert.equal(gate(pending, { amount }), !pending && amount > 0);
+    }
+  }
 });
 
 // ── 3. FeeBlock — exclusive policy renders "+ 5% VAT" ───────────────────
@@ -73,9 +80,18 @@ test("FeeBlock: exclusive vatPolicy renders '+ 5% VAT' tag text", () => {
 
 test("AtAGlance: VAT qualifier appended to Annual fee tile when amount > 0", () => {
   // Resolver block:
-  //   const showVatQual = annualFeeAmount > 0;
+  //   const showVatQual = !cardFeeNeedsReview(card, "annualFee") && annualFeeAmount > 0;
   //   const vatQualText = vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
-  assert.match(AT_A_GLANCE, /const showVatQual = annualFeeAmount > 0;/);
+  assert.match(AT_A_GLANCE, /const showVatQual = !cardFeeNeedsReview\(card, "annualFee"\) && annualFeeAmount > 0;/);
+  const gate = new Function("card", "cardFeeNeedsReview", "annualFeeAmount", `return (${sourceExpression(AT_A_GLANCE, "showVatQual")});`);
+  for (const amount of [0, 315]) {
+    const confirmed = { annualFee: { amount }, _provenance: { annualFee: "editor-confirmed" } };
+    assert.equal(gate(confirmed, cardFeeNeedsReview, amount), amount > 0);
+    for (const field of ["annualFee", "annualFee.amount", "vatPolicy"]) {
+      const held = { ...confirmed, _provenance: { ...confirmed._provenance, [field]: "needs-review" } };
+      assert.equal(gate(held, cardFeeNeedsReview, amount), false, field);
+    }
+  }
   assert.match(
     AT_A_GLANCE,
     /const vatQualText\s*=\s*\n?\s*vatPolicy === "exclusive" \? "\+ 5% VAT" : "incl\. VAT";/,

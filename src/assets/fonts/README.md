@@ -2,9 +2,14 @@
 
 Prepared 2026-11-06 from the already-installed Fontsource 5.3.0 packages.
 Corpus proof refreshed 2026-11-07 against the latest frozen 339-page build,
-after comparison-artwork/copy, guide and feature/cost-guard corrections; the
+including comparison-artwork/copy, guide, cost/benefit, held-data consumer,
+metadata and public trust-copy corrections; the
 five shared/home delivery binaries and their exact character ranges are
 unchanged. This records a local proof, not a hosted release or visual sign-off.
+The final6 renewal covers 339 pages and 17,269 deduplicated HTML text nodes;
+the homepage-normal corpus has 308 strings. Its 86,586-byte compiled homepage
+has SHA-256 `d0076eb1dcfe4e601b7a644254ebc9b95324e6a52c528474b5844ca6058b9ef6`.
+All three generators reproduce the integrated files exactly with `--check`.
 Newsreader normal/italic retain the complete **wght 200–800** axis; Geist normal
 retains **wght 100–900**. These are subsets, not static instances or new fonts.
 The original Fontsource stylesheets remain the fallback for other characters.

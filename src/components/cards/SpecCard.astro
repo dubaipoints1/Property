@@ -111,7 +111,7 @@ if (variant === "full") {
   if (!tagline && top) {
     const lbl = CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key;
     const feeStr =
-      card.annualFee.amount === 0
+      feeLabel.amount === "Pending" ? "annual fee pending" : card.annualFee.amount === 0
         ? "no annual fee"
         : `${feeLabel.amount} a year`;
     tagline = `${formatEarnRate(top.value, card.earnUnit, card.categories)} on ${lbl} — ${feeStr}.`;

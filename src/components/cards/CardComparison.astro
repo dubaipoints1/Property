@@ -22,6 +22,7 @@ import {
   shortCardLabel,
 } from "~/lib/cardsData";
 import CompareCardArt from "./CompareCardArt.astro";
+import { cardFeeNeedsReview } from "~/lib/cardFeeProvenance";
 
 interface Props {
   /** Exactly two card slugs. Left-to-right on desktop, both columns
@@ -79,6 +80,7 @@ function vatTagFor(
 ): string | null {
   if (rowKey !== "annualFee" && rowKey !== "joiningFee") return null;
   const card = side === "left" ? leftCard : rightCard;
+  if (cardFeeNeedsReview(card, rowKey)) return null;
   const inclusive = side === "left" ? leftVat : rightVat;
   if (!inclusive) return null;
   const amount =

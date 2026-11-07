@@ -10,10 +10,9 @@
  * Definitions, stated once so the page and the tests agree:
  *  - "free for life" — annualFee.amount is 0. A card that waives year one
  *    but charges from year two is NOT free for life; it is counted under
- *    "first year free".
+ *    "year-one annual fee waived". Neither label includes joining charges.
  *  - "paid" — annualFee.amount > 0, before any waiver.
- *  - The FX column is the card's published foreign-currency margin; every
- *    card carries a numeric one.
+ *  - Unknown and issuer-only FX figures are not exact comparable samples.
  *  - Salary tiers exclude cards whose minimum is unverified
  *    (`_provenance.eligibility: needs-review`) or invitation-only, on the
  *    same footing as /cards/salary/.
@@ -23,6 +22,7 @@ import { median } from "./interestPayoff";
 import type { CardData } from "./cardsData";
 import { hasUsableSalaryMinimum } from "./cardEligibility";
 import { cardFxNeedsReview } from "./cardFeeFacts";
+import { cardFeeNeedsReview, compareKnownAnnualFees } from "./cardFeeProvenance";
 
 export interface CardForFeeIndex {
   slug: string;
@@ -42,8 +42,8 @@ export interface FeeIndexRow {
   slug: string;
   name: string;
   bank: string;
-  annualFee: number;
-  firstYearWaived: boolean;
+  annualFee: number | null;
+  firstYearAnnualFeeStatus: FirstYearAnnualFeeStatus;
   fxFee: number | null;
   fxFeeScope?: CardData["fxFeeScope"];
   fxFeeVatTreatment?: CardData["fxFeeVatTreatment"];
@@ -56,7 +56,7 @@ export interface BankFeeRow {
   bank: string;
   cards: number;
   freeForLife: number;
-  medianFee: number;
+  medianFee: number | null;
   medianFx: number | null;
 }
 
@@ -73,15 +73,18 @@ export interface SalaryTierRow {
 export interface FeeIndex {
   total: number;
   freeForLife: number;
-  freeShare: number;
+  freeShare: number | null;
   firstYearFree: number;
+  firstYearPending: number;
+  annualFeePending: number;
+  annualFeeSampleSize: number;
   paidCount: number;
-  medianFee: number;
-  meanFee: number;
+  medianFee: number | null;
+  meanFee: number | null;
   medianPaidFee: number | null;
   meanPaidFee: number | null;
-  highest: FeeIndexRow | null;
-  lowestPaid: FeeIndexRow | null;
+  highest: (FeeIndexRow & { annualFee: number }) | null;
+  lowestPaid: (FeeIndexRow & { annualFee: number }) | null;
   fxZero: number;
   medianFx: number | null;
   maxFx: number | null;
@@ -100,9 +103,27 @@ export const SALARY_TIERS: ReadonlyArray<{ label: string; min: number; max: numb
   { label: "AED 25,000 and above", min: 25000, max: null },
 ];
 
-function firstYearWaived(card: CardForFeeIndex): boolean {
+export type FirstYearAnnualFeeStatus = "waived" | "standard" | "pending";
+
+/** Annual-fee status only, not the full first-year cost. Absence of a
+ * joining-fee observation must never turn this into a free-first-year claim.
+ * Unresolved annual-fee/waiver evidence is not a negative waiver decision. */
+export function firstYearAnnualFeeStatus(card: CardForFeeIndex): FirstYearAnnualFeeStatus {
+  const relevant = ["annualFee", "annualFeeWaiver", "vatPolicy"];
+  const pending = Object.entries(card._provenance ?? {}).some(([field, state]) => state === "needs-review"
+    && relevant.some(group => field === group || field.startsWith(group + ".")));
+  if (pending || cardFeeNeedsReview(card, "annualFee") || !Number.isFinite(card.annualFee.amount) || card.annualFee.amount < 0) return "pending";
   const w = card.annualFeeWaiver;
-  return card.annualFee.amount > 0 && isStructuredAnnualFeeWaiver(w) && w.year_one_waived === true;
+  if (w != null && !isStructuredAnnualFeeWaiver(w)) return "pending";
+  return card.annualFee.amount > 0 && isStructuredAnnualFeeWaiver(w) && w.year_one_waived === true ? "waived" : "standard";
+}
+
+/** The page uses this formatter rather than inferring Charged from a
+ * false boolean. A listed annual zero does not establish zero joining costs. */
+export function firstYearAnnualFeeLabel(row: Pick<FeeIndexRow, "annualFee" | "firstYearAnnualFeeStatus">): string {
+  if (row.firstYearAnnualFeeStatus === "pending") return "Pending";
+  if (row.firstYearAnnualFeeStatus === "waived") return "Waived";
+  return row.annualFee === null ? "Pending" : row.annualFee === 0 ? "No annual fee listed" : "Standard fee";
 }
 
 function mean(values: number[]): number | null {
@@ -116,8 +137,8 @@ export function toRow(card: CardForFeeIndex): FeeIndexRow {
     slug: card.slug,
     name: card.name,
     bank: card.bank,
-    annualFee: card.annualFee.amount,
-    firstYearWaived: firstYearWaived(card),
+    annualFee: cardFeeNeedsReview(card, "annualFee") || !Number.isFinite(card.annualFee.amount) || card.annualFee.amount < 0 ? null : card.annualFee.amount,
+    firstYearAnnualFeeStatus: firstYearAnnualFeeStatus(card),
     fxFee: card.fxFee,
     fxFeeScope: card.fxFeeScope,
     fxFeeVatTreatment: card.fxFeeVatTreatment,
@@ -130,11 +151,12 @@ export function toRow(card: CardForFeeIndex): FeeIndexRow {
 export function buildFeeIndex(cards: CardForFeeIndex[]): FeeIndex {
   const rows = cards
     .map(toRow)
-    .sort((a, b) => a.annualFee - b.annualFee || (exactFxForStatistics(a) !== null && exactFxForStatistics(b) !== null
+    .sort((a, b) => compareKnownAnnualFees(a.annualFee, b.annualFee) || (exactFxForStatistics(a) !== null && exactFxForStatistics(b) !== null
       ? exactFxForStatistics(a)! - exactFxForStatistics(b)! : 0) || a.name.localeCompare(b.name));
 
-  const fees = rows.map((r) => r.annualFee);
-  const paid = rows.filter((r) => r.annualFee > 0);
+  const known = rows.filter((r): r is FeeIndexRow & { annualFee: number } => r.annualFee !== null);
+  const fees = known.map((r) => r.annualFee);
+  const paid = known.filter((r) => r.annualFee > 0);
   const free = rows.filter((r) => r.annualFee === 0);
   const fx = rows.map(exactFxForStatistics).filter((value): value is number => value !== null);
 
@@ -145,7 +167,7 @@ export function buildFeeIndex(cards: CardForFeeIndex[]): FeeIndex {
       bank,
       cards: list.length,
       freeForLife: list.filter((r) => r.annualFee === 0).length,
-      medianFee: median(list.map((r) => r.annualFee)) ?? 0,
+      medianFee: median(list.map((r) => r.annualFee).filter((fee): fee is number => fee !== null)),
       medianFx: median(list.map(exactFxForStatistics).filter((value): value is number => value !== null)),
     }))
     .sort((a, b) => b.cards - a.cards || a.bank.localeCompare(b.bank));
@@ -157,7 +179,7 @@ export function buildFeeIndex(cards: CardForFeeIndex[]): FeeIndex {
     return {
       ...t,
       cards: inTier.length,
-      medianFee: median(inTier.map((r) => r.annualFee)),
+      medianFee: median(inTier.map((r) => r.annualFee).filter((fee): fee is number => fee !== null)),
       freeForLife: inTier.filter((r) => r.annualFee === 0).length,
     };
   });
@@ -165,14 +187,17 @@ export function buildFeeIndex(cards: CardForFeeIndex[]): FeeIndex {
   return {
     total: rows.length,
     freeForLife: free.length,
-    freeShare: rows.length === 0 ? 0 : free.length / rows.length,
-    firstYearFree: rows.filter((r) => r.firstYearWaived).length,
+    freeShare: known.length === 0 ? null : free.length / known.length,
+    firstYearFree: rows.filter((r) => r.firstYearAnnualFeeStatus === "waived").length,
+    firstYearPending: rows.filter((r) => r.firstYearAnnualFeeStatus === "pending").length,
+    annualFeePending: rows.length - known.length,
+    annualFeeSampleSize: known.length,
     paidCount: paid.length,
-    medianFee: median(fees) ?? 0,
-    meanFee: mean(fees) ?? 0,
+    medianFee: median(fees),
+    meanFee: mean(fees),
     medianPaidFee: median(paid.map((r) => r.annualFee)),
     meanPaidFee: mean(paid.map((r) => r.annualFee)),
-    highest: rows.length ? rows[rows.length - 1]! : null,
+    highest: known.length ? known[known.length - 1]! : null,
     lowestPaid: paid.length ? paid[0]! : null,
     fxZero: fx.filter(value => value === 0).length,
     medianFx: median(fx),

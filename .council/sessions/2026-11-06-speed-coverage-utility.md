@@ -439,3 +439,76 @@ in progress. No release acceptance, merge or production change is asserted.
 The later SkyNet raw-download stop remains in force; a fresh owner retry/update
 question has been sent but no reply received at this checkpoint. No later Drive
 write or silent fallback has been performed.
+
+## Independent fee and search consistency closure — 2026-11-07
+
+Post-checkpoint independent review finds two real consistency defects: a held
+reward category could still enter the Finder scorer, and raw zero/scraped fee
+records could show Free while the metadata correctly said Pending. The unchanged
+canonical fee guard now lives in a dependency-free module and is shared by
+Finder inputs, list/review labels, fee blocks, comparison values/VAT tags,
+structured Offers and known-only fee-index samples. Unknown fees are null rather
+than zero in sort/filter inputs. Confirmed zero fees remain distinct and usable.
+Held joining costs and VAT cannot acquire a precise qualifier; held rewards do
+not silently fall back to an unrelated rate. No financial data, provenance,
+verification date or parser pin is promoted by this correction.
+
+The current active set has69 known annual fees and five Pending,14 known
+first-year annual-fee waivers and20 Pending first-year annual-fee statuses.
+Those are annual-fee-only statements, not zero joining/other costs. All17 manual
+profiles carry source-profile search wording and source-qualified fee labels.
+Trust pages now distinguish the newest source record from verification of the
+entire catalogue. Existing Article/Review schema reconciliation is not closed
+by these changes.
+
+Independent Technical review (fee_guard_final_review) passes with corrected
+findings:88 focused Node22 tests, exit0, zero skips. It independently identifies
+and verifies the joining-VAT and Pending-plus-VAT fixes. Catalogue bytes remain
+475bb0b4c539d3aba3af41ad155890a9fa2dab0329ed6997a7d46761e52184f2.
+This is source/unit evidence, not rendered/performance/CI/deployment approval.
+The prior765-state responsive census is explicitly intermediate; it does not
+certify this later source. Fresh compiled/font/browser checks remain required.
+
+Owner news ruling remains no fixed numerical ceiling, not unconditional
+publication or provider activation. The seven existing feeds only produce
+unread, unverified leads. No automatic news publication or new spend is enabled.
+Main remains651fb05 and PR519 remains draft, with auto-merge off and substantive
+Council approval pending. No production deployment is asserted.
+
+Final6 built source passes Astro213files/0errors/0warnings/7hints;339routes and
+23,929internal links resolve, with16CSP hashes/1,393characters. The first full
+post-build suite executes955/951pass/fourfail, including three old VAT assertions
+that expected unguarded expressions. Those tests now execute the actual
+known/held-positive/zero gates and retain inclusive/exclusive/markup contracts;
+13focused tests pass. A second full run executes955:954pass, one unchanged
+macOSBash3 automation-state empty-array failure, zero skips/cancellations.
+No full-suite pass is inferred; exact-head Linux execution remains required.
+
+Independent final6 compiled SEO/Standards review passes all17new profile pages,
+three trust pages, five held-fee renders/Offer omissions, canonicals, sitemap and
+Pagefind. Those20profile/trust artefacts match the independently checked final5
+hashes. The comparison VAT guard has no current compiled held-fee cell to
+exercise, so its branch is covered by source/actual-expression tests, not a
+claimed rendered example. This is one bounded reviewer, not three independent
+specialist reviews or closure of inherited schema/backlog work.
+
+The final6 Chrome census persists120routes/360states at320/390/1440 in light
+mode with no observed root overflow, H1 anomaly or broken completed visible
+images. The next batch times out before persistence and is not counted.
+Browser inventory reports transport closed; native Chrome control also times
+out. Owner reconnect has been requested. No alternate browser/CDP control,
+security change or production release is attempted. Remaining routes, dark
+states, selected interactions/images and repeated performance are still open.
+
+Root renews final6 font proofs offline after the delayed delegated renewal is
+interrupted. All five WOFF2 files and copied OFL notices remain byte-identical;
+exact cmap ranges are unchanged. All three generators pass direct integrated
+`--check`;40focused font/delivery tests pass, zero skips. Final corpus339pages,
+17,269deduplicated HTML nodes/157source-UI files,342representatives/1,017windows.
+Shared normal/italic each30,160string cases/4,371,755glyphs;Geist33,403/5,121,301;
+home italic2,259/20,807;home normal10,996/270,109. Home HTML86,586B/SHA256
+d0076eb1dcfe4e601b7a644254ebc9b95324e6a52c528474b5844ca6058b9ef6,
+308home-normal corpus strings. Only proof JSON/README changed; no binary,
+range, font family, dependency, layout or serving contract changed. These
+figures supersede earlier corpus/home hashes, not performance/runtime gates.
+Main was read again from GitHub and remains651fb0506cc03f5821e0d28659043c57eee76062.

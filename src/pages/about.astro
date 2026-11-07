@@ -4,7 +4,7 @@ import {
   banksCovered,
   cardsSourced,
   cardsTracked,
-  verifiedThrough,
+  latestSourceRecord,
 } from "~/lib/trustFacts";
 ---
 
@@ -13,18 +13,18 @@ import {
   description="Why DubaiPoints publishes sourced, dated UAE rewards and banking coverage, what the publication does not claim, and how to submit a correction."
   eyebrow="About DubaiPoints"
   heading="Why DubaiPoints exists."
-  lastUpdated={new Date("2026-08-06")}
-  deck="A sourced, dated record of UAE card, bank and loyalty terms — with the verification date on every entry and the corrections we have made kept permanently in public."
+  lastUpdated={new Date("2026-11-07")}
+  deck="A sourced, dated record of UAE card, bank and loyalty terms — with source-record or verification dates, pending terms identified, and corrections kept permanently in public."
   facts={[
     { label: "Cards tracked", value: String(cardsTracked()) },
     { label: "Banks covered", value: String(banksCovered()) },
     { label: "Carrying a source URL", value: cardsSourced() },
-    { label: "Verified through", value: verifiedThrough() },
+    { label: "Latest source record", value: latestSourceRecord() },
   ]}
 >
   <section>
     <p>UAE card, bank and loyalty-programme terms are often spread across product pages, key-facts statements, schedules of charges and campaign terms. A product page may describe the headline benefit while a separate document sets the fee, eligibility rule, cap or expiry.</p>
-    <p>DubaiPoints exists to bring those details into one editorial record without giving a summary more force than its sources support. Figures are shown in the unit the provider publishes, with AED used for monetary comparisons where the evidence permits it. Verification dates show when an entry was checked; they are not a promise that a provider has made no later change.</p>
+    <p>DubaiPoints exists to bring those details into one editorial record without giving a summary more force than its sources support. Figures are shown in the unit the provider publishes, with AED used for monetary comparisons where the evidence permits it. Dates identify source checks, not a promise that every term is confirmed or that a provider has made no later change. The latest source-record month above is the newest entry, not a verification-through date for the whole catalogue.</p>
   </section>
 
   <section>

@@ -29,7 +29,7 @@ import HeroImage from "~/components/cards/HeroImage.astro";
 import { getStockEntry } from "~/lib/stockManifest";
 import { annualFeeLabel, formatEarnRate, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
 import { getActiveCards, getCardData } from "~/lib/cardsData";
-import { cardFxFeeLabel, cardFxNeedsReview } from "~/lib/cardFeeFacts";
+import { cardFxFeeLabel, cardFxNeedsReview, cardFeeNeedsReview } from "~/lib/cardFeeFacts";
 import { matchupsForCard, matchupSlug } from "~/data/cardMatchups";
 import { getCollection } from "astro:content";
 import type { CardData } from "~/lib/cardsData";
@@ -195,7 +195,7 @@ const relatedBankName = (bankId: string) =>
   relatedBanks.find((b) => b.id === bankId)?.data.name ?? bankId;
 const relatedDescriptor = (c: CardData) =>
   welcomeBonusHeadline(c.welcomeBonus) ||
-  (c.annualFee.amount === 0
+  (cardFeeNeedsReview(c, "annualFee") ? "Annual fee pending" : c.annualFee.amount === 0
     ? "No annual fee"
     : `${formatAED(c.annualFee.amount)} annual fee`);
 const relatedCards = getActiveCards()
@@ -219,7 +219,8 @@ const cardData = slug ? getCardData(slug) : undefined;
 const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
 const fxPending = cardFxNeedsReview({ _provenance: fxProvenance });
 const recurringFee = annualFeeLabel(cardData ?? { annualFee: { amount: annualFee } });
-const vatQualifier = annualFee > 0 ? (cardData?.vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT") : null;
+const annualFeePending = cardData ? cardFeeNeedsReview(cardData, "annualFee") : false;
+const vatQualifier = !annualFeePending && annualFee > 0 ? (cardData?.vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT") : null;
 
 // Stock photograph lookup. Each card may have an editorial photograph
 // registered in data/stock/manifest.json under `card-<slug>` (e.g.
@@ -268,12 +269,12 @@ const schema = {
             },
           }
         : {}),
-      offers: {
+      ...(!annualFeePending ? { offers: {
         "@type": "Offer",
         priceCurrency: "AED",
         price: annualFee,
         url: canonicalUrl,
-      },
+      } } : {}),
     },
     {
       "@type": "BreadcrumbList",

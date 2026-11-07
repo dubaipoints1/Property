@@ -1,4 +1,5 @@
 import { cardFinderState, cardJourneyParams } from "../lib/readerJourneyState";
+import { compareKnownAnnualFees } from "../lib/cardFeeProvenance";
 
 // ── Client-side ranker — runs on page load and re-reads on form submit.
   // Mirrors the server-side score formula documented at the top of the file.
@@ -49,17 +50,23 @@ import { cardFinderState, cardJourneyParams } from "../lib/readerJourneyState";
 
     function feeMatches(annualFee, bucket) {
       if (bucket === "any") return true;
+      if (!Number.isFinite(annualFee) || annualFee < 0) return false;
       if (bucket === "free") return annualFee === 0;
       if (bucket === "under-500") return annualFee < 500;
       if (bucket === "under-1000") return annualFee < 1000;
       return true;
     }
 
-    function spendBasis(rates, key, fallbackPending) {
-      if (key !== "general" && typeof rates[key] === "number") {
+    function spendBasis(rates, key, evidence) {
+      // A held category is not an absent category: do not replace its
+      // unknown conditions with a guessed universal base-rate fallback.
+      if (key !== "general" && evidence.pendingEarnKeys?.includes(key)) {
+        return { key: key, value: null };
+      }
+      if (key !== "general" && Number.isFinite(rates[key]) && evidence.earnLabels[key]) {
         return { key: key, value: rates[key] };
       }
-      return { key: "everythingElse", value: fallbackPending ? null : rates.everythingElse ?? null };
+      return { key: "everythingElse", value: evidence.fallbackPending || !Number.isFinite(rates.everythingElse) || !evidence.earnLabels.everythingElse ? null : rates.everythingElse };
     }
 
     function matchesPreference(card, prefer) {
@@ -86,7 +93,7 @@ import { cardFinderState, cardJourneyParams } from "../lib/readerJourneyState";
         return true;
       })
         .map(function (c) {
-          var basis = spendBasis(c.earnRates, p.spend, c.evidence.fallbackPending);
+          var basis = spendBasis(c.earnRates, p.spend, c.evidence);
           return {
             slug: c.slug,
             preferred: matchesPreference(c, p.prefer),
@@ -101,7 +108,7 @@ import { cardFinderState, cardJourneyParams } from "../lib/readerJourneyState";
           if ((a.score === null) !== (b.score === null)) return a.score === null ? 1 : -1;
           if (b.preferred !== a.preferred) return Number(b.preferred) - Number(a.preferred);
           if (b.score !== a.score) return b.score - a.score;
-          return a.annualFee - b.annualFee;
+          return compareKnownAnnualFees(a.annualFee, b.annualFee);
         });
 
       var top = ranked.slice(0, 6);
