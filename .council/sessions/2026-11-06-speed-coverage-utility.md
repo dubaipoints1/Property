@@ -512,3 +512,95 @@ d0076eb1dcfe4e601b7a644254ebc9b95324e6a52c528474b5844ca6058b9ef6,
 range, font family, dependency, layout or serving contract changed. These
 figures supersede earlier corpus/home hashes, not performance/runtime gates.
 Main was read again from GitHub and remains651fb0506cc03f5821e0d28659043c57eee76062.
+
+## Source reconciliation and final candidate — 2026-11-08
+
+The original 58 profiles now have bounded selected-field reconciliations, not
+whole-card recertification. Three deterministic source packets and independent
+cross-reviews are recorded in
+`.council/factcheck/2026-11-07-existing-58-refresh.md`. Root rehashed 662 complete
+source files and checked 301 evidence spans. All 420 changed business-number
+leaves match approved evidence-bearing operations; all 75 original verification
+and scrape dates remain unchanged. The final canonical SHA-256 is
+`b259eba28c58b699068bd0af0c3506f6bbece286e708108925ca72ed4710aae8`.
+
+The catalogue has 75 profiles: 73 application-available, one archived Manchester
+United profile and one FAB World Elite profile with invitation availability
+unconfirmed. The 17 HSBC/ADIB additions remain partial source profiles. This is
+not an exhaustive UAE market census. Held fees, earning models, bonus units,
+qualification flags and benefits cannot become zero costs, unrestricted return
+rankings, Product Offers or static annual-value charts. DIB's incomplete generic
+earning model is withheld without changing any source number. FAB's unsupported
+annual perk-package chart is withdrawn. Empty unconfirmed benefit records say
+Pending, not None; explicitly confirmed absence remains distinct.
+
+All 58 original reviews, eight dependent guides and curated comparisons have a
+finite prose sweep. The final 66-source aggregate is
+`dab136ee5031bef729525e63427b730f45aa3ddcfd03e2989f6c91fada42fa12`.
+Independent compiled review checks 76 pages, 5,406 internal links and 502 fragments,
+including metadata, headings, canonicals and source-qualified Product Offers.
+This is one reviewer covering several scopes, not several independent people.
+
+The native mobile filter drawer and optional same-form guide now have real
+modal focus, Escape/close/submit, resize restoration and no-JavaScript fallback.
+Twelve focused regressions pass. Source cross-review is separate from root's
+remaining browser interaction acceptance. Calculator hydration omits unused
+audit payload only; source/data equality, all presets and actual rendered output
+are tested. Below-threshold perk references retain their URLs without indexed
+comparison tables; the eight-known-card publication threshold is unchanged.
+
+The current production-like local build has 339 HTML pages, 337 searchable pages
+and 23,691 resolving internal links. Long source-qualified homepage FX disclosures
+revealed a real intrinsic-width overflow. A scoped fact-grid wrapping fix retains
+the full text and homepage composition; its new regression passes. The actual
+dist identity is `72d74f782324418d88bffba2fcc617c6c55adb4f43ae289760a354ee9e0635a0`.
+The first failed/intermediate browser sweeps are retained, not counted as final.
+
+All font proofs are renewed offline against the corrected build. Five fonts and
+both OFL notices match the reviewed generated outputs; the only changed binary
+is the reviewed home-normal subset at 35,452 bytes (132 fewer than final6).
+Three integrated generators pass `--check`; 18 focused font/home tests pass.
+The actual home HTML is 83,059 bytes, SHA-256
+`021de0c6a77b944b8cf21e4757db3abbdf90b7d6054542d06ddfc6b210f8c49e`.
+This records shaping and byte identity, not browser performance.
+
+Final local Astro check: 218 files, zero errors, zero warnings, seven hints.
+The complete post-build suite executes 1,024 tests: 1,023 pass, one unchanged
+macOS Bash 3 empty-array failure, zero skips/cancellations. No full-suite pass
+is claimed; a genuine successful exact-head Linux run is still required.
+
+Remaining gates at this checkpoint: finish both-theme responsive and selected
+interaction/device QA; repeat matched mobile performance with real production
+analytics cost; show light/dark previews; obtain substantive final T3 approvals;
+push and inspect executed exact-head Linux/Cloudflare preview checks; normal
+protected merge; canonical production read-back. PR #519 is still draft at
+20b96d7, auto-merge off. Main remains 651fb05. No production deployment is claimed.
+
+### Final DIB consumer correction and renewed evidence
+
+The complete 2,034-state responsive sweep passes on the 72d74f intermediate
+build. Later selected-task QA catches DIB's held model still appearing as a
+zero general-spending rate in Finder. Two shared public-rate guards now respect
+`earnRates.model` and its descendants. Canonical figures and dates do not change.
+Independent Technical review and root review approve the boundary correction;
+31 targeted tests distinguish this held model from a separately confirmed zero.
+
+The corrected dist identity is
+`61552804ffeb6a34c7a43ea3cecfc4061053727ce078b490aff75a5f71bb2c86`.
+Per-file comparison identifies seven changed HTML pages plus Pagefind's derived
+index files. All homepage HTML/CSS/fonts and other delivery assets are identical.
+The seven changed pages receive a fresh 42-state both-theme/three-width sweep,
+with zero issues. Thus the original 332 unchanged routes retain their exact
+rendered evidence, and all seven changed routes have new rendered evidence.
+No stale intermediate state is silently counted as a fresh final inspection.
+
+Font proof renewal now pins 14,242 actual deduplicated HTML nodes, SHA-256
+`06b55a1c8f0e20d25ce6c007780dfbce48c879c75bdc649cbe50554b39a8e125`.
+All 339 pages and 1,017 representative windows remain covered. Root rehashes
+all ten generated proof/font/licence files against integrated files: exact match.
+The former prose-volume test minimum is replaced by this exact complete-corpus
+identity, not a smaller sampling contract.
+
+Fresh check remains zero errors/warnings across 218 files. The final full local
+suite now executes 1,025 tests: 1,024 pass, the same one macOS Bash 3 failure,
+zero skips/cancellations. Exact-head Linux CI and performance remain open.

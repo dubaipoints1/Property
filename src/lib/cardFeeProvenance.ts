@@ -4,8 +4,9 @@ export interface CardFeeReviewEvidence {
   _provenance?: Record<string, string> | null;
 }
 export function cardFeeNeedsReview(card: CardFeeReviewEvidence, field: "annualFee" | "joiningFee"): boolean {
-  const pending = (key: string) => card._provenance?.[key] === "needs-review";
-  return pending(field) || pending(`${field}.amount`) || pending("vatPolicy") ||
+  const held = Object.entries(card._provenance ?? {}).some(([key, state]) => state === "needs-review"
+    && [field, "vatPolicy"].some(prefix => key === prefix || key.startsWith(prefix + ".")));
+  return held ||
     (field === "annualFee" && card.annualFee.amount === 0 && card._provenance?.annualFee === "scraped");
 }
 

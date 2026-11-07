@@ -1,5 +1,33 @@
 # Shared variable-font delivery subsets
 
+## Current candidate proof — 8 November 2026
+
+Renewed against the complete 339-page production-like build, including the
+existing public production Cloudflare beacon configuration and the unchanged
+Google-property loader. This is local artefact evidence, not hosted acceptance.
+The current compiled tree has SHA-256
+`61552804ffeb6a34c7a43ea3cecfc4061053727ce078b490aff75a5f71bb2c86`.
+The source/UI corpus has 14,242 deduplicated HTML text nodes, 158 UI files and
+1,017 representative page windows. The compiled homepage is 83,059 B, SHA-256
+`021de0c6a77b944b8cf21e4757db3abbdf90b7d6054542d06ddfc6b210f8c49e`;
+its normal-face corpus has 297 strings. This renewal includes the homepage
+fact-grid wrapping and DIB model-hold fixes; all five font binaries and both
+supplied OFL notices remain byte-identical to the reviewed final8 candidate
+outputs.
+
+Four delivery binaries and both OFL notices remain unchanged. The regenerated
+homepage-normal subset is35,452B rather than35,584B: the current homepage no
+longer uses en dash, so onlyU+2013 is removed from this route-only cmap. The
+shared/original fallback still supplies it. The exact CSS range is updated;
+names, full variable axis, metrics, outlines, hinting and layout remain equal.
+Independent Technical review inspected the candidate against the original font
+and licence. Final proof records10,632normal-home string cases/260,056glyphs;
+shared Newsreader normal/italic each27,073/4,100,693, Geist30,308/4,850,110.
+All recorded shaping comparisons agree. No new typeface or family is introduced.
+The132B reduction is a file-byte observation, not a claimed network uplift.
+
+## Historical final6 checkpoint — 7 November 2026
+
 Prepared 2026-11-06 from the already-installed Fontsource 5.3.0 packages.
 Corpus proof refreshed 2026-11-07 against the latest frozen 339-page build,
 including comparison-artwork/copy, guide, cost/benefit, held-data consumer,

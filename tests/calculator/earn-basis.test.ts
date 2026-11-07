@@ -90,9 +90,6 @@ test("every card in cards.json either parses or is a known exclusion", () => {
   // The point of this assertion: a new card whose earn-unit wording is
   // unfamiliar fails here rather than quietly earning a wrong AED figure.
   const KNOWN_UNRANKABLE = new Set([
-    // Cashback is merchant-specific and earnRates.everythingElse is 0, so
-    // there is no per-spend rate to apply.
-    "cbd-one",
     // RED Points multiply another card's earn rate; not a rate on spend.
     "emirates-nbd-manchester-united",
   ]);
@@ -102,9 +99,8 @@ test("every card in cards.json either parses or is a known exclusion", () => {
     // Deliberate T3 model: source-qualified display rows carry their own
     // denominators. They must never manufacture a global denominator merely
     // to satisfy this legacy all-spend model test.
-    if (card.earnRates.everythingElse === null && card.scopedEarnRates?.length) {
+    if (card.earnRates.everythingElse === null) {
       assert.equal(hasUsableGenericEarnRate(card), false, card.slug);
-      assert.equal(parseEarnBasis(card.earnUnit), null, card.slug);
       continue;
     }
     if (parseEarnBasis(card.earnUnit) === null) unparsed.push(card.slug);

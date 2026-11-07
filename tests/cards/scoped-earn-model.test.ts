@@ -36,7 +36,7 @@ test("null base and scoped rows are never auto-ranked, top-rated, totalled or tr
   assert.equal(diff.rates.known, false); assert.equal(identicalKnownSections([diff, diff]).includes("rates"), false);
   // Even a real published zero remains usable in a synthetic fully-modelled
   // test card; null is not substituted by that genuine zero.
-  assert.equal(hasUsableGenericEarnRate({ ...base, slug: "synthetic-zero", earnRates: { everythingElse: 0 } }), true);
+  assert.equal(hasUsableGenericEarnRate({ ...base, slug: "synthetic-zero", earnRates: { everythingElse: 0 }, scopedEarnRates: undefined, _provenance: {} }), true);
 });
 test("legacy broad calculators also exclude 365 until merchant/channel exceptions are modelled", () => {
   const card = { ...getCardData("adcb-365-cashback")!, slug: "adcb-365-cashback" };
@@ -53,7 +53,7 @@ test("shared rate renderers retain display-only row scope and never convert an E
 test("held earn-rate fields never become numeric headlines, including inline table consumers", () => {
   const rates = { dining: 5, travel: 3, everythingElse: 1 };
   assert.equal(topEarnEntry(rates, { "earnRates.dining": "needs-review" })?.key, "travel");
-  for (const field of ["earnRates", "earnUnit"]) assert.equal(topEarnEntry(rates, { [field]: "needs-review" }), null);
+  for (const field of ["earnRates", "earnRates.model", "earnRates.model.paymentChannels", "earnUnit"]) assert.equal(topEarnEntry(rates, { [field]: "needs-review" }), null);
   assert.equal(earnRateFieldPending({ "earnRates.everythingElse": "needs-review" }, "everythingElse"), true);
   assert.equal(earnRateFieldPending({ "earnRates.everythingElse": "needs-review" }, "dining"), false);
   const source = readFileSync("src/components/cards/EarnRateTable.astro", "utf8");

@@ -20,6 +20,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import { getCardData } from "../../src/lib/cardsData.ts";
 
 import {
   formatAED,
@@ -88,15 +89,11 @@ test("AtAGlance: Skywards Infinite — min salary renders as 'AED 30,000/mo'", (
   assert.equal(label, "AED 30,000/mo");
 });
 
-test("AtAGlance: Skywards Infinite — top earn rate is Dining 2× (first-hit tie)", () => {
-  const card = cards["emirates-nbd-skywards-infinite"];
-  const top = topEarnEntry(card.earnRates);
-  assert.ok(top, "expected a top earn entry");
-  // earnRates: dining 2, travel 2, partnerBrands 2 — the canonical
-  // iteration order puts dining first, so dining wins the tie.
-  assert.equal(top!.key, "dining");
-  assert.equal(top!.value, 2);
-  assert.equal(CATEGORY_LABELS_FOR_TOP[top!.key], "Dining");
+test("AtAGlance: scoped Skywards Infinite rates do not become a generic headline", () => {
+  const card = getCardData("emirates-nbd-skywards-infinite")!;
+  assert.equal(card.earnRates.everythingElse, null);
+  assert.ok(card.scopedEarnRates?.length);
+  assert.equal(topEarnEntry(card.earnRates, card._provenance), null);
 });
 
 // ── Skywards Signature ──────────────────────────────────────────────────
@@ -119,12 +116,11 @@ test("AtAGlance: Skywards Signature — min salary renders as 'AED 12,000/mo'", 
   assert.equal(label, "AED 12,000/mo");
 });
 
-test("AtAGlance: Skywards Signature — top earn rate is Dining 1.5× (first-hit tie)", () => {
-  const card = cards["emirates-nbd-skywards-signature"];
-  const top = topEarnEntry(card.earnRates);
-  assert.ok(top, "expected a top earn entry");
-  // earnRates: dining 1.5, travel 1.5, partnerBrands 1.5 — dining
-  // wins on iteration order.
+test("AtAGlance: a confirmed synthetic tie still chooses Dining first", () => {
+  const card = getCardData("emirates-nbd-skywards-signature")!;
+  assert.equal(topEarnEntry(card.earnRates, card._provenance), null);
+  const top = topEarnEntry({ dining: 1.5, travel: 1.5, partnerBrands: 1.5, everythingElse: 1 });
+  assert.ok(top);
   assert.equal(top!.key, "dining");
   assert.equal(top!.value, 1.5);
   assert.equal(CATEGORY_LABELS_FOR_TOP[top!.key], "Dining");

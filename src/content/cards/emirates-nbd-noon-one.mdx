@@ -1,51 +1,36 @@
 ---
 slug: emirates-nbd-noon-one
 cons:
-- Welcome bonus is new-to-bank or new-to-card only — existing Emirates NBD cardholders get nothing
-- Earn outside the noon ecosystem is just 1%, making this a one-shop card
-- noon Credits are a captive currency — useful only if you keep shopping on noon, noon Food, NowNow or Namshi
-- 1.99% foreign-currency fee — not a travel card despite the no-annual-fee positioning
+  - Off-platform rewards have their own qualifying-purchase rules and exclusions
+  - noon Credits are a captive currency — useful only if you keep shopping on noon, noon Food, NowNow or Namshi
+  - The published foreign-currency percentage is the VAT-inclusive issuer fee, not an all-in conversion cost; scheme processing and any acquirer charges may be additional.
+  - Merchant exclusions, reward caps and benefit conditions can change the headline value.
+  - Application-specific salary-transfer conditions remain unconfirmed in the reviewed public terms.
 pros:
-- AED 500 noon Credits welcome on AED 5,000 of spend in 60 days — roughly 10% return on the qualifying window
-- Up to 20% back on noon Food, 10% on NowNow and 5% on noon / Namshi / supermall — capped at AED 2,000/month
-- Free for life — no annual fee, no salary-transfer requirement, AED 5,000 salary bar
-- AED 250 YOUGotaGift HappyYOU Card on issue plus a 1-year free noon One membership
-verifiedBy: DubaiPoints Editorial — verified against the Emirates NBD Noon One product page and Key Facts Statement
-kicker: A new-to-bank noon co-brand with a strong AED 500 welcome on AED 5,000 spend, then up to 20% back on noon platforms — paid in noon Credits, not dirhams.
+  - The issuer publishes product-specific rewards and benefits that can be checked against your actual use.
+verifiedBy: DubaiPoints Editorial — scoped issuer-source review, 7 November 2026; unresolved terms disclosed
+kicker: Rewards for named noon platforms, not every restaurant or online purchase. The welcome statement cashback is separate from noon Credits earned on spend.
 tier: niche
-applyIf: You are new to Emirates NBD, shop AED 2,000+ a month on noon platforms and want a free-for-life noon-credits card.
-skipIf: You already bank with Emirates NBD or rarely shop on noon — the welcome excludes existing customers and base earn is 1%.
+applyIf: You already use the named noon platforms and can confirm your application and restricted-reward conditions.
+skipIf: You need an unconditional return or a benefit whose current qualification and usage limit are unconfirmed.
 keyTakeaways:
-- AED 500 noon Credits welcome on AED 5,000 of spend in the first 60 days (new-to-bank or new-to-card only)
-- Up to 20% back on noon Food, 10% on NowNow, 5% on noon / Namshi / supermall — capped at AED 2,000 of noon Credits per month
-- 1% earn on everything outside the noon ecosystem; 1.99% foreign-currency fee
-- Free for life with an AED 5,000 minimum salary; payouts are noon Credits, not AED — captive to the noon ecosystem
-editorTake: >-
-  The Emirates NBD Noon One Visa is a co-brand with noon, the regional ecommerce platform
-  that competes head-on with Amazon.ae across the UAE and Saudi Arabia. The opening hook is
-  strong — AED 500 in noon Credits when you spend AED 5,000 on the card inside 60 days, plus
-  AED 250 on a YOUGotaGift HappyYOU Card and a year of free noon One membership. For a
-  household that already shops on noon weekly, that is roughly a 10% return on the
-  qualifying spend window and an easy claim. After the welcome, the earn structure is sharp
-  but narrow: 20% back on noon Food, 10% on NowNow, 5% on noon, Namshi and supermall —
-  capped at AED 2,000 of noon Credits a month — and 1% on everything else. The catch is the
-  payout currency. noon Credits are not AED; they are a closed-loop balance redeemable only
-  at checkout on noon platforms. If you'd shop there anyway, that is a non-issue. If you
-  wouldn't, the card sits idle in a drawer once the welcome clears. Crucially, the welcome
-  excludes existing Emirates NBD cardholders, so this works as a first-ENBD-card for
-  residents inside their first two years in the UAE, not as an add-on for the bank's own
-  customers.
+  - Rewards apply to named merchants and qualifying categories, not automatically to every purchase.
+  - Joining, renewal and promotional fee terms must be read separately.
+  - Scoped reward rows do not imply an unconditional all-spend return.
+  - Pending source conflicts and benefit allowances are disclosed below.
+editorTake: "Rewards for named noon platforms, not every restaurant or online purchase. The welcome statement cashback is separate from noon Credits earned on spend. noon Food: 20% as noon credits; NowNow: 10% as noon credits; noon Minutes: 5% as noon credits; noon: 5% as noon credits; Namshi: 5% as noon credits; supermall: 5% as noon credits. These are qualifying merchant/category rates, not a single rate for every purchase. Use the exact rows in the table and check the issuer exclusions and caps. Treat the product-specific salary minimum separately from any application-specific salary-transfer condition. Check the fee and benefit terms before applying."
 ---
-
-import FeeBlock from "~/components/cards/FeeBlock.astro";
-import EarnRateTable from "~/components/cards/EarnRateTable.astro";
-import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
-import EditorVerdict from "~/components/cards/EditorVerdict.astro";
-import ProsCons from "~/components/cards/ProsCons.astro";
+import CardDataIssues from "~/components/cards/CardDataIssues.astro";
+import JumpToSection from "~/components/cards/JumpToSection.astro";
 import AtAGlance from "~/components/cards/AtAGlance.astro";
 import GreatCardIf from "~/components/cards/GreatCardIf.astro";
+import EditorVerdict from "~/components/cards/EditorVerdict.astro";
+import ProsCons from "~/components/cards/ProsCons.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import HotTip from "~/components/cards/HotTip.astro";
-import JumpToSection from "~/components/cards/JumpToSection.astro";
+import FeeBlock from "~/components/cards/FeeBlock.astro";
+
+Rewards for named noon platforms, not every restaurant or online purchase. The welcome statement cashback is separate from noon Credits earned on spend.
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Earn rates" },
@@ -63,6 +48,8 @@ and supermall.
 
 <AtAGlance card="emirates-nbd-noon-one" />
 
+<CardDataIssues card="emirates-nbd-noon-one" />
+
 <GreatCardIf card="emirates-nbd-noon-one" />
 
 <EditorVerdict card="emirates-nbd-noon-one" />
@@ -78,99 +65,58 @@ all noon platforms:
 <EarnRateTable card="emirates-nbd-noon-one" />
 
 <HotTip>
-noon Credits are not AED — they are a captive currency. A 20% return on a noon Food order
-is genuine 20% off your next noon Food order; it is not cash, statement credit, miles or
-points transferable elsewhere. The economics work if you would shop on noon anyway. They do
-not work as a general cashback card — the off-platform rate is just 1%.
+noon Credits are a captive reward, not cash, statement credit or transferable miles.
+Credit earned on a qualifying order does not promise the same percentage discount
+on a later order. Check redemption conditions and count only purchases you would
+make anyway. Off-platform rewards have separate exclusions; this is not a flat
+cashback rate on every purchase.
 </HotTip>
 
 ## Fee summary
 
 <FeeBlock card="emirates-nbd-noon-one" />
 
-The card is free for life — AED 0 annual fee, no spend threshold, no clawback. The cost to
-watch is a **1.99% foreign-currency fee**: most noon purchases settle in AED, but anything
-through a non-AED merchant — or a noon site billed in another GCC currency — picks the fee
-up. All published fees include 5% VAT.
+Read the joining fee, renewal fee and any promotional waiver separately. A renewal figure is not the complete first-year cost, and a current application promotion is not a guarantee that every applicant receives it. The fee table carries the source-qualified VAT treatment. The foreign-currency fee shown is the issuer’s charge, not a total conversion-cost quote. The issuer fee guide states that scheme processing and any acquirer charges may be additional. A merchant’s AED-conversion offer can add a different cost; an issuer-fee waiver does not remove every possible overseas charge.
 
 ## Welcome bonus breakdown
 
-<WelcomeBonusCallout card="emirates-nbd-noon-one" />
+AED 500 statement cashback on AED 5,000 spend in the first two calendar months (60 days), subject to new-to-card eligibility in the special terms. The linked YOUGotaGift campaign ended on 28 February 2026. The cashback is separate from noon Credits earned on purchases.
 
-The welcome stack runs to three pieces: **AED 500 in noon Credits** for **AED 5,000** of
-spend in the first **60 days**, plus a **AED 250 YOUGotaGift HappyYOU Card** on issue, plus
-a **1-year free noon One membership** (50% off thereafter). The AED 500 + AED 250 = AED
-750 on AED 5,000 of qualifying spend is roughly a 15% return on the opening window — strong
-by UAE no-fee-card standards. Critically, the welcome is **new-to-bank or new-to-card
-only**: existing Emirates NBD cardholders are excluded and receive nothing for opening it.
+
 
 ## Perks worth using
 
-The Noon One is a free-for-life card, so the per-perk maths is a question of
-how much annual return the noon ecosystem actually delivers — not a
-break-even against a renewal fee. We've put a per-benefit Value to me on each
-so you can see where the AED comes from before applying:
+Read the joining fee, renewal fee and any promotional waiver separately. A renewal figure is not the complete first-year cost, and a current application promotion is not a guarantee that every applicant receives it. The fee table carries the source-qualified VAT treatment.
 
-### AED 500 noon Credits welcome (new-to-bank/card only)
+### Statement-cashback welcome offer
 
-Spend AED 5,000 in the first 60 days and AED 500 in noon Credits hit your noon
-wallet — a structured 10% return on the qualifying spend. Treat this at face
-value if you'll spend the credits on noon within their validity (you will, if
-you shop the platform). **Value to me: AED 500 in year one** — straight credit
-to noon checkout.
+AED 500 statement cashback on AED 5,000 spend in the first two calendar months (60 days), subject to new-to-card eligibility in the special terms. The linked YOUGotaGift campaign ended on 28 February 2026. The cashback is separate from noon Credits earned on purchases.
 
-### AED 250 YOUGotaGift HappyYOU Card on issue
+### Ended online-application gift-voucher offer
 
-A multi-merchant gift card honoured at a published list of UAE retailers and
-F&B partners. Face value redeemable at par if the merchant list covers a brand
-you'd spend at anyway. **Value to me: AED 250 in year one** if the merchant
-list works for you; **AED 150** if you'd discount the card 40% to a brand you
-care less about.
+No total annual value is quoted while reward qualification, caps or benefit allowances remain unresolved. Use only the benefits you can verify and actually use; an advertised upper bound is not guaranteed annual value.
 
 ### 1-year free noon One membership (50% off thereafter)
 
-The standalone noon One subscription retails around AED 119/year and bundles
-free delivery on noon, NowNow and noon Food, plus member-only pricing. The card
-covers a full year. **Value to me: AED 119 in year one** — face-value the
-subscription. From year two, the 50% discount is **AED ~60/year** if you renew.
+No total annual value is quoted while reward qualification, caps or benefit allowances remain unresolved. Use only the benefits you can verify and actually use; an advertised upper bound is not guaranteed annual value.
 
 ### 20% back on noon Food
 
-The headline category rate. UAE families ordering noon Food twice a week at an
-average AED 60 basket: 2 × AED 60 × 4.3 weeks × 12 × 20% = **Value to me:
-AED 1,238/year** in noon Credits. Light user (one order a week, AED 50 basket):
-**AED 516/year**. The combined AED 2,000/month cap binds only if total
-accelerated earn exceeds AED 2,000 — for a noon Food-only user, that's AED
-10,000/month of orders, which is not most readers.
+No total annual value is quoted while reward qualification, caps or benefit allowances remain unresolved. Use only the benefits you can verify and actually use; an advertised upper bound is not guaranteed annual value.
 
 ### 10% back on NowNow
 
-NowNow is noon's quick-commerce grocery arm. Weekly AED 150 basket: 4.3 × AED
-150 × 12 × 10% = **Value to me: AED 774/year** in noon Credits. The AED 2,000
-combined monthly cap starts to bite if you stack NowNow + noon Food + noon
-retail in the same month — track this if you genuinely live on the platform.
+No total annual value is quoted while reward qualification, caps or benefit allowances remain unresolved. Use only the benefits you can verify and actually use; an advertised upper bound is not guaranteed annual value.
 
 ### 5% back on noon, Namshi and supermall
 
-The broader retail rate. Household spending AED 1,500/month across noon retail,
-Namshi fashion and supermall purchases: 1,500 × 12 × 5% = **Value to me:
-AED 900/year**. This is where the AED 2,000 monthly cap is most likely to
-trigger for heavy users — combined accelerated earn above AED 2,000 stops
-paying that month.
+No total annual value is quoted while reward qualification, caps or benefit allowances remain unresolved. Use only the benefits you can verify and actually use; an advertised upper bound is not guaranteed annual value.
 
-### 1% off-platform
+### Qualifying off-platform spend
 
-The base earn outside the noon ecosystem. Monthly off-platform card spend of
-AED 3,000 (the rest of household life on a non-noon merchant): 3,000 × 12 × 1%
-= **Value to me: AED 360/year** in noon Credits. Below the UAE cashback floor
-— this is filler earn, not a reason to use the card for general spend.
+No total annual value is quoted while reward qualification, caps or benefit allowances remain unresolved. Use only the benefits you can verify and actually use; an advertised upper bound is not guaranteed annual value.
 
-For a household that already shops noon weekly across food, NowNow and retail,
-the ongoing earn comfortably clears **AED 2,000–3,000/year** in noon Credits,
-plus the **AED 869 year-one welcome stack** (AED 500 + AED 250 + AED 119).
-**Total package: ~AED 2,900–3,900 in year one against AED 0 fee** — fully
-captive to the noon ecosystem. If you'd shop noon anyway, the maths is
-unambiguous; if you wouldn't, the credits trap the rewards in a drawer.
+
 
 ## Key conditions to know
 
@@ -179,13 +125,13 @@ unambiguous; if you wouldn't, the credits trap the rewards in a drawer.
   <dd>noon Credits sit in your noon wallet and are redeemed at checkout on noon, noon Food, NowNow, Namshi and supermall. No transfers to airlines, hotels, statement credit, AED cash-out or third-party programmes.</dd>
 
   <dt>Earn caps</dt>
-  <dd>The accelerated rates (20% / 10% / 5%) are capped at a combined AED 2,000 of noon Credits per calendar month across all noon platforms. The 1% off-platform earn is uncapped.</dd>
+  <dd>The platform rows share the combined reward cap described above. Check which purchases and credits count towards it; separate platform rates do not create separate unrestricted allowances.</dd>
 
   <dt>Welcome eligibility</dt>
-  <dd>AED 500 noon Credits on AED 5,000 of spend in the first 60 days; new-to-bank or new-to-card customers only. AED 250 YOUGotaGift HappyYOU Card and 1-year free noon One membership packaged with issue.</dd>
+  <dd>Check the new-to-card definition, eligible application channel, qualifying spend and calendar-month conditions in the special terms. Statement cashback and noon Credits are different rewards; an ended voucher campaign is not current joining value.</dd>
 
   <dt>Eligibility</dt>
-  <dd>Minimum monthly salary AED 5,000; salaried only; UAE residency required; salary transfer not required. Standard ENBD documentation — Emirates ID, passport with visa page, three months' bank statements, security cheque.</dd>
+  <dd>The issuer product page states a minimum monthly salary of AED 5,000. The reviewed product, Key Facts Statement and shared credit-card terms do not establish a universal salary-transfer requirement. Confirm the conditions of your own application; we do not assume a transfer-related clawback or that none can apply.</dd>
 
   <dt>Network</dt>
   <dd>Visa — accepted everywhere noon and its sub-brands process card payments. Apple Pay, Samsung Pay and Google Pay supported.</dd>
@@ -193,30 +139,19 @@ unambiguous; if you wouldn't, the credits trap the rewards in a drawer.
 
 ## Watch out for
 
-- **Captive-currency payout.** noon Credits redeem only on noon platforms. The 20% on noon
-  Food is genuine, but only if you order noon Food. Stop shopping on noon and the balance
-  effectively traps the rewards.
-- **New-to-bank gate on the welcome.** Existing Emirates NBD cardholders get the earn rates
-  but none of the AED 500 + AED 250 + noon One welcome. If you already hold an ENBD card,
-  the maths is much weaker.
-- **1% off-platform.** Outside the noon ecosystem the card is a 1% cashback — well below
-  the UAE average. Carry a flat-rate cashback card for everything that isn't noon.
-- **FX fee at 1.99%.** Modest by UAE standards but not zero. The no-annual-fee positioning
-  shouldn't be confused with a travel card.
+The foreign-currency fee shown is the issuer’s charge, not a total conversion-cost quote. The issuer fee guide states that scheme processing and any acquirer charges may be additional. A merchant’s AED-conversion offer can add a different cost; an issuer-fee waiver does not remove every possible overseas charge.
 
 ## Bottom line
 
-A clean welcome-bonus product for new-to-bank residents who already live on noon. Spend
-AED 2,000+ a month on noon platforms, clear AED 5,000 in the first 60 days, and the AED 500
-+ AED 250 + free noon One stack is roughly 15% back on the opening window with strong
-ongoing earn on spend you'd be doing anyway. **Apply** if you fit the new-to-bank criteria
-and shop on noon weekly. **Skip** if you already bank with Emirates NBD (the welcome
-disappears), or if your spend isn't concentrated on noon platforms — the 1% off-platform
-rate makes a flat-rate AED-denominated cashback card the cleaner hold.
+Rewards for named noon platforms, not every restaurant or online purchase. The welcome statement cashback is separate from noon Credits earned on spend. It makes sense only if your real purchases fit those conditions and the benefits you can actually use justify the cost. Confirm pending qualification and benefit terms before applying.
 
 ---
 
-**Pay smart:** for AED-denominated rewards on the spend that doesn't go through noon, pair
-this with a broad-merchant cashback card like the [Mashreq Cashback](/cards/mashreq-cashback/), free for life
-at 1% on everyday spend. Newer UAE residents setting up their first bank account and card should start with
-our [expat starter guide](/guides/expat-starter/).
+**Pay smart:** compare any companion card using its current confirmed terms, not an old flat-rate or fee promise. New UAE residents can start with our [expat starter guide](/guides/expat-starter/).
+
+
+## Source status and open questions
+
+The source-notes panel identifies pending fields and any conflicting issuer terms. The original whole-card verification and scrape dates have not been advanced by this scoped review. Pending does not mean zero, free or guaranteed.
+
+Sources: [issuer product page](https://www.emiratesnbd.com/en/cards/credit-cards/noon-one-visa-credit-card); [shared credit-card terms](https://www.emiratesnbd.com/-/media/enbd/files/others/fees-and-charges/accounts/generaltermsandconditions.pdf), and the relevant programme documents linked by the issuer.

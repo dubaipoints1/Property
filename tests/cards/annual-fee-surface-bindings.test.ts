@@ -49,19 +49,20 @@ test("actual AtAGlance and FeeBlock fee expressions render Pending and suppress 
   assert.match(read("src/components/cards/SpecCard.astro"), /provenance=\{card\._provenance\}/);
 });
 
-test("actual Product graph omits only held Offer, retaining product identity, description and breadcrumbs", () => {
+test("actual Product graph omits held or unavailable Offers, retaining product identity, description and breadcrumbs", () => {
   const text = read("src/layouts/CardReviewLayout.astro");
   const object = text.match(/const schema = (\{[\s\S]*?\n\});\n---/)?.[1];
   assert.ok(object);
-  const factory = new Function("cardName", "bankName", "category", "description", "canonicalUrl", "slug", "score", "bankSlug", "siteUrl", "annualFeePending", "annualFee", `return (${object});`);
-  for (const pending of [true, false]) {
-    const graph = factory("Example card", "Example issuer", "Cards", "Source-qualified description", "https://example.test/cards/example/", "example", undefined, "example-bank", "https://example.test", pending, 0)["@graph"];
+  const factory = new Function("cardName", "bankName", "category", "description", "canonicalUrl", "slug", "score", "bankSlug", "siteUrl", "annualFeePending", "annualFee", "applicationUnavailable", `return (${object});`);
+  for (const pending of [true, false]) for (const unavailable of [true, false]) {
+    const graph = factory("Example card", "Example issuer", "Cards", "Source-qualified description", "https://example.test/cards/example/", "example", undefined, "example-bank", "https://example.test", pending, 0, unavailable)["@graph"];
     assert.equal(graph[0].name, "Example card"); assert.equal(graph[0].description, "Source-qualified description");
     assert.equal(graph[0].sku, "example"); assert.equal(graph[1]["@type"], "BreadcrumbList");
-    if (pending) assert.equal(graph[0].offers, undefined);
+    if (pending || unavailable) assert.equal(graph[0].offers, undefined);
     else assert.equal(graph[0].offers.price, 0, "a separately known zero fee is not deleted");
   }
   assert.match(text, /annualFeePending = cardData \? cardFeeNeedsReview\(cardData, "annualFee"\)/);
+  assert.match(text, /applicationUnavailable = availabilityUnconfirmed \|\| cardData\?\.discontinuedForNewApplicants !== undefined/);
   assert.match(text, /vatQualifier = !annualFeePending/);
   assert.match(text, /cardFeeNeedsReview\(c, "annualFee"\) \? "Annual fee pending"/);
 });

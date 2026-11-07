@@ -1,8 +1,9 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { PERK_PAGES, PERK_PAGE_MIN_CARDS } from "../../src/data/perkPages.ts";
+import { PERK_PAGES, PERK_PAGE_RECORDS, PERK_PAGE_MIN_CARDS, hasPerkComparisonCoverage, isHeldPerkReferenceRoute } from "../../src/data/perkPages.ts";
 import { getCardsWithFeature, getActiveCards } from "../../src/lib/cardsData.ts";
 import { FEATURE_CHIP_LABELS } from "../../src/lib/cardsDataFormat.ts";
+import { readFileSync } from "node:fs";
 
 /**
  * getCardsWithFeature() shipped with the typed perk union and had zero call
@@ -62,4 +63,32 @@ test("every card on a perk page really carries that feature", () => {
       );
     }
   }
+});
+
+test("the unchanged eight-card threshold separates discovery from retained noindex reference URLs", () => {
+  assert.equal(PERK_PAGE_MIN_CARDS, 8);
+  assert.equal(hasPerkComparisonCoverage(8), true);
+  for (const count of [0, 3, 5, 7, NaN, Infinity]) assert.equal(hasPerkComparisonCoverage(count), false);
+  assert.deepEqual(PERK_PAGE_RECORDS.map(perk => perk.slug).sort(), ["golf", "lounge-access", "travel-insurance"]);
+  assert.deepEqual(PERK_PAGES.map(perk => perk.slug), ["lounge-access"]);
+  for (const perk of PERK_PAGE_RECORDS.filter(perk => !PERK_PAGES.includes(perk)))
+    assert.ok(getCardsWithFeature(perk.feature).length < PERK_PAGE_MIN_CARDS);
+  const source = readFileSync("src/pages/cards/perks/[perk].astro", "utf8");
+  assert.match(source, /return PERK_PAGE_RECORDS\.map\(/);
+  assert.match(source, /comparisonEligible = hasPerkComparisonCoverage\(cards\.length\)/);
+  assert.match(source, /comparisonEligible \? <ComparisonTableLayout[\s\S]*?\/\> : <BaseLayout/);
+  assert.match(source, /<meta slot="head" name="robots" content="noindex,follow"/);
+  assert.match(source, /Incomplete coverage does not mean those cards have no benefit/);
+  assert.match(source, /<article class="dp-article" data-pagefind-ignore>/);
+  assert.match(source, /fullWidth\s+excludeFromSearch/);
+  assert.match(readFileSync("src/layouts/BaseLayout.astro", "utf8"), /<body[^>]*data-pagefind-ignore=\{excludeFromSearch \? "all" : undefined\}/);
+  assert.match(readFileSync("src/pages/cards/index.astro", "utf8"), /\.\.\.PERK_PAGES\.map/);
+  for (const perk of PERK_PAGE_RECORDS) {
+    const expected = !PERK_PAGES.includes(perk);
+    assert.equal(isHeldPerkReferenceRoute(`/cards/perks/${perk.slug}/`), expected, perk.slug);
+    assert.equal(isHeldPerkReferenceRoute(`https://dubaipoints.ae/cards/perks/${perk.slug}/`), expected, perk.slug);
+  }
+  assert.equal(isHeldPerkReferenceRoute("/cards/"), false);
+  assert.equal(isHeldPerkReferenceRoute("/cards/perks/not-a-record/"), false);
+  assert.match(readFileSync("astro.config.mjs", "utf8"), /!isHeldPerkReferenceRoute\(page\)/);
 });

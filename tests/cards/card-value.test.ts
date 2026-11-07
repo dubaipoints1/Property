@@ -13,9 +13,15 @@ const base = DEFAULT_CARD_VALUE_MONTHLY_SPEND;
 const citi = getCardData("citi-cashback")!;
 const citiSlug = "citi-cashback";
 const termsFor = (slug: string) => cardValueTerms(getCardData(slug)!, slug);
+// Explicit synthetic known terms preserve arithmetic positives independently
+// of source products that now correctly withhold generic earning estimates.
+const cashFixture = { ...citi, annualFee: { amount: 315, currency: "AED" as const }, joiningFee: undefined,
+  annualFeeWaiver: { year_one_waived: true, ongoing_threshold_aed: 9000, threshold_period: "annual" as const },
+  earnRates: { everythingElse: 1 }, earnUnit: "% cashback", loyaltyProgram: "Cashback",
+  scopedEarnRates: undefined, _provenance: {}, _dataIssues: {}, vatPolicy: "inclusive" as const };
 
 test("first-year and renewal show comparable spend rewards without assuming a welcome offer or renewal waiver", () => {
-  const terms = termsFor(citiSlug);
+  const terms = cardValueTerms(cashFixture, "synthetic-cash");
   const estimate = calculateCardValue(terms, base);
   assert.equal(terms.hasWelcomeOffer, true);
   assert.equal(terms.assumesYearOneWaiver, true);
@@ -28,11 +34,11 @@ test("first-year and renewal show comparable spend rewards without assuming a we
 test("monthly cash caps apply before annualising, and a zero-spend estimate remains genuinely zero", () => {
   // Synthetic pure-model fixture, not a claim that a real product's channel
   // and merchant conditions have become an unlimited all-spend rate.
-  const terms = cardValueTerms({ ...citi, earnRates: { everythingElse: 1, _caps: { monthly_max_aed: 1000 } } }, "synthetic-cash-cap-fixture");
+  const terms = cardValueTerms({ ...cashFixture, earnRates: { everythingElse: 1, _caps: { monthly_max_aed: 1000 } } }, "synthetic-cash-cap-fixture");
   assert.equal(terms.cap, 1000);
   assert.equal(calculateCardValue(terms, 200_000).rewards, 12_000);
   assert.equal(calculateCardValue(terms, 200_000).capBinds, true);
-  assert.equal(calculateCardValue(termsFor(citiSlug), 0).first, 0);
+  assert.equal(calculateCardValue(cardValueTerms(cashFixture, "synthetic-cash"), 0).first, 0);
 });
 test("365 merchant and payment-channel exceptions block a generic all-spend estimate", () => {
   const terms = termsFor("adcb-365-cashback");
@@ -43,7 +49,8 @@ test("365 merchant and payment-channel exceptions block a generic all-spend esti
 });
 
 test("below the published monthly minimum no reward or net amount is inferred", () => {
-  const terms = termsFor("rakbank-world");
+  const terms = cardValueTerms({ ...cashFixture, annualFee: { amount: 0, currency: "AED" }, annualFeeWaiver: null,
+    earnRates: { everythingElse: 1, _caps: { min_monthly_spend_to_qualify_aed: 10000 } } }, "synthetic-spend-floor");
   assert.equal(terms.minimum, 10_000);
   assert.equal(calculateCardValue(terms, 9_999).first, null);
   assert.match(calculateCardValue(terms, 9_999).rewardIssue, /monthly qualifying minimum/);
@@ -51,7 +58,8 @@ test("below the published monthly minimum no reward or net amount is inferred", 
 });
 
 test("published miles use the actual per-AED denomination and conservative value", () => {
-  const terms = termsFor("fab-etihad-guest-infinite");
+  const terms = cardValueTerms({ ...cashFixture, annualFee: { amount: 2625, currency: "AED" }, annualFeeWaiver: null,
+    earnRates: { everythingElse: 3.5 }, earnUnit: "Etihad Guest Miles per AED 10 spent", loyaltyProgram: "Etihad Guest" }, "synthetic-miles");
   assert.equal(terms.pointsBaseline, true);
   const estimate = calculateCardValue(terms, base);
   assert.equal(estimate.rewards, 655.20);
@@ -76,8 +84,8 @@ test("a promotional zero does not establish a zero renewal", () => {
 });
 
 test("unclear joining-fee timing suppresses first-year value without hiding a known renewal", () => {
-  const card = { ...citi, joiningFee: { amount: 120, currency: "AED" as const }, annualFeeWaiver: null };
-  const terms = cardValueTerms(card, citiSlug);
+  const card = { ...cashFixture, joiningFee: { amount: 120, currency: "AED" as const }, annualFeeWaiver: null };
+  const terms = cardValueTerms(card, "synthetic-joining-timing");
   assert.equal(terms.firstFee, null);
   assert.equal(terms.laterFee, 315);
   assert.match(terms.firstFeeIssue, /whether both joining and annual fees/);
@@ -85,9 +93,19 @@ test("unclear joining-fee timing suppresses first-year value without hiding a kn
 });
 
 test("a documented first-year annual-fee waiver does not waive an independent joining fee", () => {
-  const terms = termsFor("emirates-nbd-skywards-infinite");
+  const terms = cardValueTerms({ ...cashFixture, annualFee: { amount: 1575, currency: "AED" }, joiningFee: { amount: 3148.95, currency: "AED" } }, "synthetic-joining-waiver");
   assert.equal(terms.firstFee, 3148.95);
   assert.equal(terms.laterFee, 1575);
+});
+
+test("live held or source-qualified profiles do not retain former generic return estimates", () => {
+  for (const slug of ["citi-cashback", "rakbank-world", "emirates-nbd-skywards-infinite", "emirates-nbd-marriott-bonvoy-world-elite"]) {
+    const terms = termsFor(slug);
+    const value = calculateCardValue(terms, base);
+    assert.equal(value.rewards, null, slug); assert.equal(value.first, null, slug); assert.equal(value.later, null, slug);
+    assert.notEqual(value.rewardIssue, "", slug);
+  }
+  assert.equal(termsFor("emirates-nbd-skywards-infinite").firstFee, null, "held waiver is not an assumed first-year cost");
 });
 
 test("uncertain caps, gross fee and invalid input are handled without inventing values", () => {

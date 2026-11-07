@@ -7,6 +7,7 @@ import { unified } from "@astrojs/markdown-remark";
 import rehypeSlug from "rehype-slug";
 import rehypeTableScroll from "./src/lib/rehypeTableScroll.mjs";
 import compactAssets from "./scripts/images/build-compact-assets.mjs";
+import { isHeldPerkReferenceRoute } from "./src/data/perkPages.ts";
 
 export default defineConfig({
   site: "https://dubaipoints.ae",
@@ -38,7 +39,8 @@ export default defineConfig({
         !page.includes("/design-spike") &&
         !page.includes("/style-guide") &&
         !page.includes("/dev/") &&
-        !page.includes("/404"),
+        !page.includes("/404") &&
+        !isHeldPerkReferenceRoute(page),
     }),
   ],
   vite: {

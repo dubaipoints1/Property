@@ -7,6 +7,8 @@ import {
   type SpendProfile,
 } from "../../src/components/islands/RewardsCalculator.tsx";
 import { getActiveCards } from "../../src/lib/cardsData.ts";
+import { readFileSync } from "node:fs";
+import { hasUsableGenericEarnRate } from "../../src/lib/cardEarnModel.ts";
 
 /**
  * The methodology page said, from May 2026, that the calculator applies
@@ -145,17 +147,23 @@ test("break-even uses the uncapped rate, so a capped card still gets a figure wh
   assert.equal(r!.feeNeverCovered, false);
 });
 
-test("every typed cap in L2 is on a card the calculator treats as cashback, or is an untyped points cap", () => {
+test("every canonical cap profile is either unavailable, deliberately unmodelled or applied by a usable model", () => {
   // The clamp only runs for cashback cards. This guards against a future
   // AED-denominated cap landing on a points card and silently doing nothing.
-  const capped = getActiveCards().filter((c) => c.earnRates._caps);
-  assert.ok(capped.length >= 10, `expected the thirteen known capped cards, found ${capped.length}`);
+  const raw = JSON.parse(readFileSync("src/data/cards.json", "utf8")) as Record<string, CardForCalc>;
+  const cappedSlugs = Object.entries(raw).filter(([, card]) => card.earnRates._caps).map(([slug]) => slug);
+  assert.ok(cappedSlugs.length > 0, "expected canonical cap-bearing profiles");
+  const active = new Map(getActiveCards().map(card => [card.slug, card]));
+  const capped = cappedSlugs.flatMap(slug => active.has(slug) ? [active.get(slug)!] : []);
   // AED 200,000 a category: enough that even a 1% flat card with a
   // AED 2,500 monthly cap (Wio) is clamped. Online is included because
   // one capped card (SC Platinum X) earns only on online, foreign-currency
   // and wallet spend and would otherwise never reach its cap.
   const heavy = { ...ZERO, dining: 200000, groceries: 200000, fuel: 200000, travel: 200000, online: 200000 };
   const ranked = rankCards(capped as CardForCalc[], heavy, { netOfFee: false, now: NOW });
+  for (const card of capped) if (!hasUsableGenericEarnRate(card)) {
+    assert.ok(!ranked.some(row => row.card.slug === card.slug), `${card.slug}: held/unmodelled terms must not be ranked`);
+  }
   for (const r of ranked) {
     const caps = r.card.earnRates._caps!;
     const hasAedCap = caps.monthly_max_aed != null || (caps.per_category && Object.keys(caps.per_category).length > 0);

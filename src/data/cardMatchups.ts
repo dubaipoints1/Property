@@ -57,10 +57,10 @@ export const cardMatchups: readonly CardMatchup[] = [
   {
     left: "emirates-nbd-skywards-signature",
     right: "emirates-nbd-skywards-infinite",
-    deck: "The same Skywards Miles at two tiers, two fees and two salary floors.",
+    deck: "Compare Skywards earning, fees and qualification at two card tiers.",
     verdict: [
-      "The Infinite earns a third more on every category and carries more than twice the fee, so it is a spend-volume question rather than a preference. Its fee waiver is the deciding term for most holders: it is conditional on an annual spend threshold that the Signature's is not.",
-      "Both earn per US dollar, not per dirham, which is why the mile counts in the table are lower than the rate numbers suggest. The salary floors differ enough that the choice is often made for you.",
+      "Compare the source-qualified Skywards earning rows against your actual merchants and transaction currencies. Reduced categories, excluded payments and statement caps mean the headline rate is not a promise on every purchase. Neither tier gets an unrestricted annual-return estimate here.",
+      "Check the separately stated joining fee, renewal fee and application-specific waiver before paying for the higher tier. The published salary minimum is only one qualification condition; a pending salary-transfer rule is not evidence that transfer is either compulsory or unnecessary.",
     ],
   },
   {
@@ -68,62 +68,62 @@ export const cardMatchups: readonly CardMatchup[] = [
     right: "fab-etihad-guest-infinite",
     deck: "The same Etihad Guest Miles from two issuers, at very different fees.",
     verdict: [
-      "The Inspire is the better-value card on ordinary spend: its everyday rate is higher than the FAB card's and its fee is a fraction of it. The FAB Infinite earns more only on international spend, and charges a higher foreign-transaction fee to do it.",
-      "The FAB card's argument is its Accelerator option, which lifts every category to a single flat rate for a monthly fee — worth modelling only if your card spend is high and evenly spread. At a normal spend level the Inspire wins on both sides of the ledger.",
+      "There is no defensible universal winner while the Inspire's product page and linked reward booklet disagree on some earning categories. Those disputed rows are held, not silently resolved in favour of the more attractive number. FAB's welcome wording also needs checking against the exact application offer.",
+      "Compare the known fees and the qualifying merchants first. Any optional paid earning enhancement needs its own current terms and cost calculation; it is not part of the default return. Issuer FX charges are not necessarily the complete conversion cost, and an upper bound cannot be ranked as a fixed fee.",
     ],
   },
   {
     left: "emirates-nbd-marriott-bonvoy-world",
     right: "emirates-nbd-marriott-bonvoy-world-elite",
-    deck: "Free against AED 1,575 for the same Bonvoy currency, doubled.",
+    deck: "Two Bonvoy tiers, with different fees, earning schedules and award conditions.",
     verdict: [
-      "The Elite earns exactly twice the World on every category, so the whole question is whether your annual Bonvoy earning is worth more than the fee at the published baseline. The table shows both rates; the valuations page shows what a point is worth.",
-      "One term separates them beyond the fee: the Elite requires a salary transfer and the World does not. If you are not moving your salary, the comparison is settled before the earn rates matter.",
+      "Start with the qualifying Marriott and general-retail rows, then check the reduced categories and geographical exceptions. Those source-qualified schedules are more useful than treating all spending as the headline earn rate. A generic annual return is not assumed here.",
+      "Free Night Awards are restricted hotel certificates, not interchangeable with transferable Bonvoy points. Check each award's spending, fee-payment, redemption and expiry conditions separately. Do not infer a salary-transfer requirement or its absence from the tier name.",
     ],
   },
   {
     left: "emirates-nbd-share-visa-signature",
     right: "emirates-nbd-share-visa-infinite",
-    deck: "Two SHARE cards where the free one is not obviously the worse one.",
+    deck: "Compare SHARE earning and fee conditions at two card tiers.",
     verdict: [
-      "The Infinite earns more at Carrefour and the other partner brands, and half again on general spend — but it carries a fee the Signature does not, and its waiver terms are the weaker of the two.",
-      "Both cut their rate sharply on groceries, fuel and utilities, so the partner-brand rate is doing almost all the work on either card. Judge them on how much of your spend actually lands with the partners; on everything else the difference is small.",
+      "The useful question is how much of your eligible spending already lands with the named SHARE partners. Partner earning, reduced categories and statement caps must stay attached to the displayed rates; they are not one flat return on household spending.",
+      "Compare the standard fees and the exact waiver offered to you before choosing a tier. Earlier linked gift-voucher campaigns have ended and are not current joining value. The source notes identify any remaining benefit or qualification terms that still need confirmation.",
     ],
   },
   {
     left: "emirates-nbd-noon-one",
     right: "mashreq-cashback",
-    deck: "Two free everyday cards, one paying inside an ecosystem and one in cash.",
+    deck: "Named-platform credits compared with cash rewards and their qualifying conditions.",
     verdict: [
-      "The noon One pays a far higher rate than anything else here, but in noon credits and only on noon — outside that it is an ordinary flat-rate card. It is a good card if your groceries and food delivery already run through noon, and unremarkable if they do not.",
+      "The noon One's accelerated rates belong to specific named platforms, not all dining, delivery or online shopping. Its credits are not unrestricted cash. Use the individual platform rows and combined cap, rather than an ecosystem headline, when judging whether it fits purchases you already make.",
       "Mashreq's dining rewards are subject to the assigned-credit-limit restriction; they are not uncapped. Its everyday-rate wording also needs reconciliation, so we withhold a generic return estimate. Check the exclusions and current issuer terms rather than assuming that every purchase earns the headline rate.",
     ],
   },
   {
     left: "emirates-nbd-voyager-world",
     right: "adcb-traveller",
-    deck: "A free travel-miles card against a premium travel-cashback card at zero FX.",
+    deck: "Portal-linked travel miles compared with travel cashback and separate issuer FX charges.",
     verdict: [
-      "The Traveller is the stronger card for someone who books flights and hotels on it: it pays a double-digit cashback rate on both, and charges no foreign-transaction fee at all, which is rare in this market. It also carries a high fee with no waiver, so it needs the travel spend to make sense.",
-      "The Voyager World costs nothing and earns miles rather than dirhams, but we publish no baseline for that currency, so we do not present an AED figure for it. Treat the two as answering different questions rather than as a like-for-like.",
+      "Traveller's qualifying airfare and hotel cashback must be read with its monthly spending gate, cap and exclusions. Its other-spend row is domestic-only. An issuer processing-fee waiver is not a promise that card-scheme or merchant conversion costs are absent.",
+      "Voyager's portal, other travel and qualifying retail rates use its own miles, with reduced categories and a statement cap. We publish no approved AED baseline for that currency. Compare booking channels, reward usability and separately stated fees instead of declaring a like-for-like annual winner.",
     ],
   },
   {
     left: "hsbc-live-plus",
     right: "emirates-islamic-switch-cashback",
-    deck: "Near-identical fees, a conventional card and a Sharia-compliant one.",
+    deck: "Conventional and Sharia-compliant cashback, with different qualification and reward conditions.",
     verdict: [
       "Compare the category rates alongside their spend gates and caps, not as a guaranteed return. HSBC's product and KFS eligibility wording remain unreconciled in this source record, so a rate comparison is not a recommendation that you qualify for either card.",
-      "HSBC's counter is its waiver, which clears at a much lower annual spend. Both cap their bonus categories tightly in dirhams per month, so the headline rates are reached on a smaller slice of spend than they appear to cover — the caps are in the table.",
+      "Check the applicable mode, qualifying spend, category caps and renewal waiver separately. Neither an advertised category rate nor a previous fee example establishes what your own spending will earn. Unresolved qualification stays visible rather than becoming an approval recommendation.",
     ],
   },
   {
     left: "fab-cashback",
     right: "citi-cashback",
-    deck: "Two mid-fee cashback cards at the same price, with different shapes.",
+    deck: "Category-led cashback compared with currency-led cashback and their qualifying terms.",
     verdict: [
-      "FAB pays more on dining and shopping and Citi pays more on international spend, so the answer follows your largest category rather than the headline rate. FAB also gates earning behind a minimum previous-month spend, which Citi does not.",
-      "Citi's fee waiver is threshold-based and reachable at a moderate annual spend; FAB's card has no waiver. Over a year that term is worth more than the rate difference for most holders.",
+      "Start with the categories and transaction currencies you actually use, then check the qualifying spending period and cap for each source-stated rate. Do not assume that a retail purchase, a supermarket payment and an overseas transaction use the same earning rule.",
+      "Compare confirmed fees and the exact renewal-waiver terms in the reviews. FAB's current FX statement is an issuer upper bound with additional scheme charges, not a fixed total conversion cost. Neither a marketing rate nor a temporary welcome promotion settles the ongoing value on its own.",
     ],
   },
 ] as const;

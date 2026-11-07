@@ -22,19 +22,19 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
+import { parse as parseYaml } from "yaml";
 
 const CARD_MDX_DIR = path.join("src", "content", "cards");
 const COMPONENT_DIR = path.join("src", "components", "cards");
 
 // ── Minimal YAML frontmatter parser ──────────────────────────────────────
-// Hand-rolled because js-yaml isn't a project dependency and adding one
-// for a single test is the wrong trade. Only handles the shapes that the
-// cards collection actually uses (string scalars, arrays of strings with
-// hyphen markers and 2-space continuation indents). If a card's
-// frontmatter grows beyond these shapes the test will fail loudly and
-// the parser can be extended.
+// This small parser keeps the isolated component-contract examples explicit.
+// It handles string scalars, arrays of strings with hyphen markers and folded
+// continuations. The separate real-YAML check below validates every actual
+// card's parsed value types, including colon-containing bullets that this
+// deliberately limited parser would otherwise mistake for plain strings.
 
 type ParsedFrontmatter = {
   pros?: string[];
@@ -70,7 +70,7 @@ function parseFrontmatter(mdxSource: string): ParsedFrontmatter {
     // matching below.
     const topMatch = line.match(/^([A-Za-z_][A-Za-z0-9_]*):\s*(.*)$/);
     // List item — accept any indent; canonical is no leading space.
-    const listMatch = line.match(/^-\s+(.*)$/);
+    const listMatch = line.match(/^\s*-\s+(.*)$/);
     // Continuation line of a folded scalar (2-space indent, non-empty).
     const contMatch = line.match(/^\s{2,}(\S.*)$/);
 
@@ -121,7 +121,40 @@ function readMdx(slug: string): ParsedFrontmatter {
   return parseFrontmatter(readFileSync(file, "utf8"));
 }
 
+function assertEditorialYamlTypes(frontmatter: Record<string, unknown>, label: string): void {
+  assert.equal(typeof frontmatter.slug, "string", `${label}: slug must be a string`);
+  for (const key of ["pros", "cons", "keyTakeaways"]) {
+    const value = frontmatter[key];
+    if (value === undefined) continue;
+    assert.ok(Array.isArray(value), `${label}: ${key} must be an array`);
+    for (const entry of value) {
+      assert.equal(typeof entry, "string", `${label}: ${key} entries must be strings, not YAML objects`);
+    }
+  }
+  for (const key of ["editorTake", "verifiedBy", "kicker", "applyIf", "skipIf"]) {
+    const value = frontmatter[key];
+    if (value === undefined) continue;
+    assert.equal(typeof value, "string", `${label}: ${key} must be a string`);
+    const limit = key === "kicker" ? 200 : ["applyIf", "skipIf"].includes(key) ? 120 : undefined;
+    if (limit !== undefined) assert.ok((value as string).length <= limit, `${label}: ${key} exceeds ${limit} characters`);
+  }
+}
+
 // ── Parser self-check ────────────────────────────────────────────────────
+
+test("real YAML card frontmatter preserves editorial string types and schema length limits", () => {
+  for (const filename of readdirSync(CARD_MDX_DIR).filter((name) => name.endsWith(".mdx"))) {
+    const source = readFileSync(path.join(CARD_MDX_DIR, filename), "utf8");
+    const block = source.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1];
+    assert.ok(block, `${filename}: frontmatter is required`);
+    assertEditorialYamlTypes(parseYaml(block) as Record<string, unknown>, filename);
+  }
+});
+
+test("real YAML validation rejects an unquoted colon turning a con into an object", () => {
+  const malformed = parseYaml("slug: sample\ncons:\n  - Online-only: not a physical-terminal card\n") as Record<string, unknown>;
+  assert.throws(() => assertEditorialYamlTypes(malformed, "fixture"), /cons entries must be strings/);
+});
 
 test("parseFrontmatter: handles inline scalar key", () => {
   const out = parseFrontmatter(
@@ -142,6 +175,14 @@ test("parseFrontmatter: handles list with folded continuation", () => {
   ]);
 });
 
+test("parseFrontmatter: accepts the indented YAML lists used by source-reviewed cards", () => {
+  const out = parseFrontmatter(
+    "---\npros:\n  - first pro\n  - second pro\ncons:\n  - a qualified restriction\n---\n",
+  );
+  assert.deepEqual(out.pros, ["first pro", "second pro"]);
+  assert.deepEqual(out.cons, ["a qualified restriction"]);
+});
+
 test("parseFrontmatter: handles folded scalar", () => {
   const out = parseFrontmatter(
     "---\neditorTake: line one of the take\n  line two folds in here\n  line three closes it.\n---\n",
@@ -154,12 +195,12 @@ test("parseFrontmatter: handles folded scalar", () => {
 
 // ── ProsCons contract — Skywards Infinite (the reference page) ───────────
 
-test("ProsCons contract: skywards-infinite frontmatter carries 5 pros + 5 cons", () => {
+test("ProsCons contract: skywards-infinite carries substantive pros and cons without a fixed marketing count", () => {
   const fm = readMdx("emirates-nbd-skywards-infinite");
   assert.ok(Array.isArray(fm.pros), "pros[] must exist");
   assert.ok(Array.isArray(fm.cons), "cons[] must exist");
-  assert.equal(fm.pros!.length, 5, "expected exactly 5 pros");
-  assert.equal(fm.cons!.length, 5, "expected exactly 5 cons");
+  assert.ok(fm.pros!.length > 0, "at least one supported pro must be present");
+  assert.ok(fm.cons!.length > 0, "at least one restriction must be present");
   // Every entry is a non-empty trimmed string.
   for (const p of fm.pros!) {
     assert.equal(typeof p, "string");
@@ -229,11 +270,11 @@ test("EditorVerdict contract: skywards-infinite editorTake is a non-empty string
   const fm = readMdx("emirates-nbd-skywards-infinite");
   assert.equal(typeof fm.editorTake, "string");
   assert.ok(fm.editorTake!.trim().length > 0);
-  // Sanity: the take mentions both the strategic pitch ("Emirates") and the
-  // fee constraint ("AED 3,149") that the brief calls out as the verdict
-  // signals readers need above the fold.
-  assert.match(fm.editorTake!, /Emirates/);
-  assert.match(fm.editorTake!, /AED 3,149/);
+  // The verdict explains the earning scope and cost constraint. Exact fees
+  // belong to the canonical data display, not a duplicated prose snapshot.
+  assert.match(fm.editorTake!, /Skywards/);
+  assert.match(fm.editorTake!, /joining fee/i);
+  assert.match(fm.editorTake!, /qualifying|merchant|statement limits/i);
 });
 
 test("EditorVerdict contract: skywards-signature editorTake is a non-empty string", () => {

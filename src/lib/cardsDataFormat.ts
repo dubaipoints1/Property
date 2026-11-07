@@ -531,7 +531,8 @@ const TOP_EARN_ITERATION_ORDER = [
  * deterministically across Zod-parsed data and raw JSON. */
 export function earnRateFieldPending(provenance: Record<string, string | undefined> | null | undefined, key: string): boolean {
   return Object.entries(provenance ?? {}).some(([field, state]) => state === "needs-review"
-    && (field === "earnUnit" || field === "earnRates" || field === `earnRates.${key}` || field.startsWith(`earnRates.${key}.`)));
+    && (field === "earnUnit" || field === "earnRates" || field === "earnRates.model" || field.startsWith("earnRates.model.")
+      || field === `earnRates.${key}` || field.startsWith(`earnRates.${key}.`)));
 }
 
 export function topEarnEntry(earnRates: Record<string, unknown>, provenance?: Record<string, string | undefined> | null):

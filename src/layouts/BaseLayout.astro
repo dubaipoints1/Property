@@ -39,6 +39,8 @@ interface Props {
    * BreadcrumbList) injected before the default WebSite + Organization graph.
    * Layout components compose the right shape and hand it through. */
   schema?: unknown;
+  /** Exclude the complete document, including shared chrome, from Pagefind. */
+  excludeFromSearch?: boolean;
 }
 
 const {
@@ -49,6 +51,7 @@ const {
   ogImage,
   ogType = "website",
   schema,
+  excludeFromSearch = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
@@ -215,7 +218,7 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
       )
     }
   </head>
-  <body class:list={["dp-body", { "dp-system-typography": systemTypography }]}>
+  <body class:list={["dp-body", { "dp-system-typography": systemTypography }]} data-pagefind-ignore={excludeFromSearch ? "all" : undefined}>
     <a class="dp-skip-link dp-ui-action dp-ui-primary" href="#main-content" data-pagefind-ignore>Skip to content</a>
     <Header />
     <main id="main-content" tabindex="-1" class={fullWidth ? "dp-main is-full" : "dp-main"}>

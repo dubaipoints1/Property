@@ -11,8 +11,8 @@ pros:
 - No annual fee in year one, waived from year two above AED 30,000 of annual spend
 - Sharia-compliant (Murabaha) with multi-trip travel takaful
 - Generous perks for a no-first-year-fee card — 1,200+ lounges, 2 golf rounds and 2 BOGO cinema tickets a month
-- Accessible — minimum age 21, income assessed at application, no salary-transfer requirement
-verifiedBy: DubaiPoints Editorial — verified against the Emirates Islamic Schedule of Charges and Switch Cashback product page
+- Confirm the exact income, residency and salary-transfer conditions for your application
+verifiedBy: "DubaiPoints Editorial — partial source review; unresolved terms are identified in the review"
 kicker: Emirates Islamic's switchable Sharia-compliant cashback card — 8% on fuel or 4% on travel, but only one category per month, with tight caps and an AED 2,500 minimum spend to earn.
 tier: solid
 applyIf: You want Sharia-compliant cashback on everyday domestic spend and will switch Lifestyle/Travel to match each month.
@@ -40,6 +40,7 @@ editorTake: >-
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
+import CardDataIssues from "~/components/cards/CardDataIssues.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
@@ -62,6 +63,8 @@ The Switch Cashback is Emirates Islamic's everyday Sharia-compliant cashback car
 built around a monthly choice between two reward modes — Lifestyle or Travel.
 
 <AtAGlance card="emirates-islamic-switch-cashback" />
+
+<CardDataIssues card="emirates-islamic-switch-cashback" />
 
 <GreatCardIf card="emirates-islamic-switch-cashback" />
 
@@ -88,6 +91,8 @@ category** — but you only earn the accelerated rate of the **one mode you have
 selected for that month**:
 
 <EarnRateTable card="emirates-islamic-switch-cashback" />
+
+Only the chosen Lifestyle or Travel mode earns its accelerated categories in a given month. The combined category grid is not a simultaneous all-category reward promise. Salary and FX differences remain pending as noted above.
 
 <HotTip>
 This is a **switchable** card, not a stacking one. Each calendar month you pick
@@ -165,19 +170,16 @@ annual spend (the worked profile clears that comfortably at ~AED 49,000).
 <dl class="dp-conditions">
   <dt>Switching modes</dt>
   <dd>Change between Lifestyle and Travel any time in the month via the EI+ app or eirewards.ae. The category active during the month sets that month's earning, and carries forward until you change it.</dd>
-
   <dt>Minimum spend</dt>
   <dd>AED 2,500 of posted spend per calendar month is required before any cashback is earned. Cashback credits within three working days of the following month.</dd>
-
   <dt>Redemption</dt>
   <dd>Cashback sits in an EI Rewards wallet, needs a minimum AED 300 balance to redeem, and expires 24 months after it is credited. Redeem as statement credit, vouchers, flights, hotels or miles transfers.</dd>
-
   <dt>Perks fine print</dt>
   <dd>Lounge access (1,200+ lounges), 2 golf rounds, 2 VOX/Reel BOGO cinema tickets, valet and airport meet-and-greet are each gated behind a minimum monthly spend — see Emirates Islamic's benefits quick guide.</dd>
-
   <dt>Eligibility</dt>
   <dd>Minimum age 21; UAE residency required. Emirates Islamic does not publish a fixed minimum salary for this card — income is assessed at application — so treat any salary figure shown here as indicative.</dd>
 </dl>
+
 
 ## Watch out for
 

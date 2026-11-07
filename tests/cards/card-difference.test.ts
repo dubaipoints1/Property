@@ -7,7 +7,8 @@ function fixture() {
   const card = structuredClone(getCardData("citi-cashback")!);
   card._provenance = { annualFee: "editor-confirmed", fxFee: "editor-confirmed", joiningFee: "editor-confirmed-null", annualFeeWaiver: "editor-confirmed-null", eligibility: "editor-confirmed", earnRates: "editor-confirmed", earnUnit: "editor-confirmed", loyaltyProgram: "editor-confirmed", welcomeBonus: "editor-confirmed" };
   delete card.joiningFee; card.annualFeeWaiver = null;
-  card.earnRates._caps = { monthly_max_aed: null, per_category: {}, min_monthly_spend_to_qualify_aed: null };
+  card.earnRates = { everythingElse: 1, dining: 2, _caps: { monthly_max_aed: null, per_category: {}, min_monthly_spend_to_qualify_aed: null } };
+  card.scopedEarnRates = undefined;
   card.welcomeBonus = { amount: 100, unit: "aed_cashback", spend_threshold_aed: 1000, qualify_window_days: 30 };
   return card;
 }

@@ -41,6 +41,8 @@ import {
 import { publishedAEDPerUnit } from "../../lib/valuations";
 import { SPEND_PRESETS } from "../../data/spendProfiles";
 import { hasUsableGenericEarnRate } from "../../lib/cardEarnModel";
+import { cardFeeNeedsReview } from "../../lib/cardFeeProvenance";
+import { cardHasUnresolvedTerms } from "../../lib/cardEligibility";
 
 // ── Public types ─────────────────────────────────────────────────────────
 
@@ -86,10 +88,12 @@ export type RankResult = {
   monthlyRewardAED: number;
   /** AED rate used for the conversion (per native unit). */
   aedPerUnit: number;
-  /** Monthly annual-fee accrual (annualFee.amount / 12). */
-  monthlyFeeAED: number;
+  /** Known VAT-inclusive annual fee; null when fee/tax evidence is held. */
+  annualFeeAED: number | null;
+  /** Monthly annual-fee accrual; null is never substituted with zero. */
+  monthlyFeeAED: number | null;
   /** Reward AED minus monthlyFeeAED. May be negative. */
-  netMonthlyAED: number;
+  netMonthlyAED: number | null;
   /** Single biggest contributing spend category by AED reward. */
   topCategory: keyof SpendProfile | null;
   /** Where aedPerUnit came from — drives the disclosure chip on the tile. */
@@ -371,7 +375,9 @@ export function rankCards(
           topCategory: null,
         };
     const { totalNative, totalAED, topCategory } = breakdown;
-    const monthlyFeeAED = card.annualFee.amount / 12;
+    const annualFeeAED = cardFeeNeedsReview(card, "annualFee") ? null
+      : card.vatPolicy === "exclusive" ? Math.round(card.annualFee.amount * 105) / 100 : card.annualFee.amount;
+    const monthlyFeeAED = annualFeeAED === null ? null : annualFeeAED / 12;
     const verifiedAt =
       card.lastVerified instanceof Date
         ? card.lastVerified
@@ -379,8 +385,8 @@ export function rankCards(
     const staleData = refTime - verifiedAt.getTime() > NINETY_DAYS_MS;
 
     const qualifying = card.earnRates._caps?.min_monthly_spend_to_qualify_aed ?? null;
-    const be = breakEven(
-      card.annualFee.amount,
+    const be = annualFeeAED === null ? { breakEvenMonthlySpendAED: null, feeNeverCovered: false } : breakEven(
+      annualFeeAED,
       breakdown.uncappedAED,
       totalSpend,
       breakdown.cappedAtAED,
@@ -399,21 +405,22 @@ export function rankCards(
       monthlyRewardAED: totalAED,
       aedPerUnit,
       monthlyFeeAED,
-      netMonthlyAED: totalAED - monthlyFeeAED,
+      netMonthlyAED: monthlyFeeAED === null ? null : totalAED - monthlyFeeAED,
       topCategory,
       rateBasis: basis,
+      annualFeeAED,
       staleData,
     };
   });
 
   const keyFn = opts.netOfFee
-    ? (r: RankResult) => r.netMonthlyAED
+    ? (r: RankResult) => r.netMonthlyAED ?? Number.NEGATIVE_INFINITY
     : (r: RankResult) => r.monthlyRewardAED;
 
   // A card whose earnUnit states no denominator has no honest AED figure, so
   // it is not ranked at all rather than ranked at zero.
   return results
-    .filter((r) => r.rateBasis !== "unrankable")
+    .filter((r) => r.rateBasis !== "unrankable" && (!opts.netOfFee || r.netMonthlyAED !== null))
     .sort((a, b) => keyFn(b) - keyFn(a));
 }
 
@@ -849,6 +856,7 @@ export default function RewardsCalculator({ cards }: Props) {
             what each card's published earn rate works out to on your stated
             spend.
           </p>
+          {netOfFee && <p class="dp-calc-results-sub">Cards with unconfirmed annual-fee or VAT terms are not net-ranked. Switch to gross reward to see them without assuming a zero fee.</p>}
         </header>
 
         {walletActive && winners.length > 0 && (
@@ -892,8 +900,8 @@ export default function RewardsCalculator({ cards }: Props) {
 
         {walletActive && ranked.length === 0 && (
           <p class="dp-calc-empty" role="status">
-            None of the cards you ticked states an earn denominator we can
-            price, so nothing can be ranked. Clear the wallet to see every card.
+            None of the selected cards has a usable reward model{netOfFee ? " and confirmed annual-fee/VAT terms for a net estimate" : ""}.
+            {netOfFee ? " Try gross reward or clear the wallet." : " Clear the wallet to see every card."}
           </p>
         )}
 
@@ -928,9 +936,11 @@ export default function RewardsCalculator({ cards }: Props) {
                 <div class="num-block">
                   <span class="num-label">Annual fee</span>
                   <strong class="num-value">
-                    {fmtAED(r.card.annualFee.amount)}
+                    {r.annualFeeAED === null ? "Pending" : fmtAED(r.annualFeeAED)}
                   </strong>
-                  {netOfFee && (
+                  {r.annualFeeAED === null && <span class="num-sub">Fee and VAT confirmation pending; no net return or fee break-even estimated.</span>}
+                  {r.annualFeeAED !== null && r.annualFeeAED > 0 && <span class="num-sub">including VAT, before any waiver</span>}
+                  {netOfFee && r.netMonthlyAED !== null && (
                     <span class="num-sub">
                       Net: <Tween value={r.netMonthlyAED} format={fmtAED} />/mo
                     </span>
@@ -988,7 +998,7 @@ export default function RewardsCalculator({ cards }: Props) {
 
               <div class="dp-calc-tile-meta">
                 <span class="verified">
-                  Last verified: {fmtVerified(r.card.lastVerified)}
+                  {cardHasUnresolvedTerms(r.card) ? "Source record" : "Last verified"}: {fmtVerified(r.card.lastVerified)}{cardHasUnresolvedTerms(r.card) && " — terms pending"}
                 </span>
                 {r.staleData && (
                   <span class="chip is-stale" title="Verified more than 90 days ago">

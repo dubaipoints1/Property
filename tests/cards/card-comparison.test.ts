@@ -17,8 +17,7 @@
 
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import path from "node:path";
+import { getAllCards } from "../../src/lib/cardsData.ts";
 
 import {
   shortCardLabel,
@@ -26,11 +25,8 @@ import {
   type CardForComparison,
 } from "../../src/lib/cardsDataFormat";
 
-const CARDS_PATH = path.join("src", "data", "cards.json");
-const cards = JSON.parse(readFileSync(CARDS_PATH, "utf8")) as Record<
-  string,
-  CardForComparison & { _features?: unknown[] }
->;
+// Public consumers use the projection, not held canonical source history.
+const cards = Object.fromEntries(getAllCards().map(card => [card.slug, card]));
 
 // ── shortCardLabel ───────────────────────────────────────────────────────
 
@@ -107,7 +103,7 @@ test("cardComparisonRows: Signature wins fee / joining-fee / min-salary rows", (
   assert.equal(byKey.minSalary.winner, "right");
 });
 
-test("cardComparisonRows: Infinite wins topEarn; lounge rows tie", () => {
+test("cardComparisonRows: scoped earning and a held lounge do not declare a winner", () => {
   const rows = cardComparisonRows(
     cards["emirates-nbd-skywards-infinite"],
     cards["emirates-nbd-skywards-signature"],
@@ -115,14 +111,10 @@ test("cardComparisonRows: Infinite wins topEarn; lounge rows tie", () => {
 
   const byKey = Object.fromEntries(rows.map((r) => [r.key, r]));
 
-  // Infinite top earn rate is 2× (dining / travel / partnerBrands tie at 2),
-  // Signature top is 1.5× — left wins.
-  assert.equal(byKey.topEarn.winner, "left");
-
-  // Both now Visa Airport Companion, unlimited (ENBD product pages,
-  // re-read 19 Oct 2026; the Signature was previously recorded as
-  // DragonPass 6/yr).
-  assert.equal(byKey.lounge.winner, "tie");
+  assert.equal(byKey.topEarn.leftValue, "—"); assert.equal(byKey.topEarn.rightValue, "—");
+  assert.equal(byKey.topEarn.winner, "none");
+  assert.equal(byKey.lounge.leftValue, "Pending");
+  assert.equal(byKey.lounge.winner, "none");
 });
 
 test("cardComparisonRows: welcome bonus row never highlights a winner", () => {
@@ -201,25 +193,21 @@ test("cardComparisonRows: snapshot of Skywards Infinite vs Signature display val
     },
     {
       key: "topEarn",
-      // earnRates: dining 2, travel 2, partnerBrands 2 — `topEarnEntry`
-      // iterates in the fixed TOP_EARN_ITERATION_ORDER (dining first),
-      // and breaks ties on first-hit. The USD denominator is preserved.
-      // The numeric value is what drives the winner-rule comparison.
-      left: "Dining 2× per USD 1",
-      right: "Dining 1.5× per USD 1",
-      winner: "left",
+      left: "—",
+      right: "—",
+      winner: "none",
     },
     {
       key: "welcome",
-      left: "Up to 100,000 Skywards Miles + complimentary Rotana Rewards",
-      right: "Up to 40,000 Skywards Miles + Visa lounge access",
+      left: "Up to 100,000 Skywards Miles: 35,000 on joining-fee payment; 40,000 on USD 25,000 spend within the first 3 billing statements; 25,000 on USD 7,500 Emirates spend within the first 12 billing statements. Subject to current offer terms, not a 90-day unconditional award.",
+      right: "Up to 40,000 Skywards Miles: 15,000 on joining-fee payment; 15,000 on USD 10,000 spend within the first 3 billing statements; 10,000 on USD 3,750 Emirates spend within the first 12 billing statements. Subject to current offer terms.",
       winner: "none",
     },
     {
       key: "lounge",
-      left: "Visa Airport Companion — unlimited",
+      left: "Pending",
       right: "Visa Airport Companion — unlimited",
-      winner: "tie",
+      winner: "none",
     },
   ]);
 });
@@ -415,14 +403,13 @@ test("cards.json: unknown slug returns undefined (basis for CardComparison's bui
 // numbers; cashback cards must render "5%" and points cards "5×". The
 // cardComparisonRows top-earn row was the call-site missed in the first
 // pass (caught at the Chairman gate) — these assertions lock both polarities.
-// Anchored to live cards.json: citi-cashback (earnUnit "% cashback") and
-// emirates-nbd-skywards-infinite (earnUnit "Skywards Miles per USD 1 spent").
+// Synthetic positive fixtures keep unit formatting tested separately from
+// live source profiles whose generic rates are deliberately withheld.
+const syntheticCash: CardForComparison = { name: "Synthetic cashback", annualFee: { amount: 0 }, eligibility: { minSalary: 0 }, earnRates: { dining: 3, everythingElse: 1 }, earnUnit: "% cashback" };
+const syntheticMiles: CardForComparison = { ...syntheticCash, name: "Synthetic miles", earnRates: { dining: 2, everythingElse: 1 }, earnUnit: "Skywards Miles per USD 1 spent" };
 
 test("cardComparisonRows: cashback card top-earn row renders % not ×", () => {
-  const citi = cards["citi-cashback"];
-  const skywards = cards["emirates-nbd-skywards-infinite"];
-  assert.ok(citi && skywards, "fixture cards present in cards.json");
-  const rows = cardComparisonRows(citi, skywards);
+  const rows = cardComparisonRows(syntheticCash, syntheticMiles);
   const top = rows.find((r) => r.key === "topEarn")!;
   // citi-cashback is the left side — must carry a % and never a ×
   assert.match(top.leftValue, /%/);
@@ -453,9 +440,7 @@ test("cardComparisonRows: unlike reward currencies or denominators do not claim 
 });
 
 test("cardComparisonRows: points card top-earn row renders × not %", () => {
-  const citi = cards["citi-cashback"];
-  const skywards = cards["emirates-nbd-skywards-infinite"];
-  const rows = cardComparisonRows(citi, skywards);
+  const rows = cardComparisonRows(syntheticCash, syntheticMiles);
   const top = rows.find((r) => r.key === "topEarn")!;
   // skywards is the right side (points per USD) — must carry × not %
   assert.match(top.rightValue, /×/);

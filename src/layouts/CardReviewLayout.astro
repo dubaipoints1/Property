@@ -216,6 +216,8 @@ const relatedCards = getActiveCards()
   .map(({ c }) => c);
 const compareHref = slug ? `/cards/compare/?cards=${[slug, ...relatedCards.slice(0, 2).map((c) => c.slug)].join(",")}` : "/cards/compare/";
 const cardData = slug ? getCardData(slug) : undefined;
+const availabilityUnconfirmed = cardData?.applicationAvailability === "unconfirmed";
+const applicationUnavailable = availabilityUnconfirmed || cardData?.discontinuedForNewApplicants !== undefined;
 const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
 const fxPending = cardFxNeedsReview({ _provenance: fxProvenance });
 const recurringFee = annualFeeLabel(cardData ?? { annualFee: { amount: annualFee } });
@@ -269,7 +271,7 @@ const schema = {
             },
           }
         : {}),
-      ...(!annualFeePending ? { offers: {
+      ...(!annualFeePending && !applicationUnavailable ? { offers: {
         "@type": "Offer",
         priceCurrency: "AED",
         price: annualFee,
@@ -373,6 +375,7 @@ const schema = {
         {network && <>{network}<span aria-hidden="true"> · </span></>}
         {verificationLimited ? "Source record" : "Verified"} <time datetime={lastVerified.toISOString()}>{fmt(lastVerified)}</time>{verificationLimited && " — some terms pending"}
       </p>
+      {availabilityUnconfirmed && <p class="dp-card-summary-proof">New applications are unconfirmed. This source profile is retained for reference, not an open-application recommendation.</p>}
       {shortVerdict && <p class="dp-card-summary-verdict" data-card-hero-verdict><strong>Our verdict:</strong> {shortVerdict}</p>}
       {(score != null || verdictLabel) && (
         <p class="dp-card-summary-verdict"><strong>{shortVerdict ? "Verdict rating:" : "Our verdict:"}</strong> {score != null && `${fmtScore(score)}/5`} {verdictLabel}</p>

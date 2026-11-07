@@ -56,9 +56,12 @@ export function hasUsableSalaryMinimum<T extends SalaryCard>(card: T): card is T
     && !Object.entries(card._provenance ?? {}).some(([key, state]) => state === "needs-review" && key.startsWith("eligibility."));
 }
 
-export function cardHasUnresolvedTerms(card: SalaryCard & { annualFee?: { amount: number }; _dataIssues?: Record<string, string>; earnRates?: { everythingElse: number | null }; scopedEarnRates?: readonly unknown[] }): boolean {
+export function cardHasUnresolvedTerms(card: SalaryCard & { annualFee?: { amount: number }; _dataIssues?: Record<string, string>; earnRates?: { everythingElse: number | null }; scopedEarnRates?: readonly unknown[]; applicationAvailability?: "unconfirmed" }): boolean {
   return (card.annualFee !== undefined && cardFeeNeedsReview({ annualFee: card.annualFee, _provenance: card._provenance }, "annualFee"))
     || cardSalaryPending(card) || card.earnRates?.everythingElse === null || !!card.scopedEarnRates?.length || Object.keys(card._dataIssues ?? {}).length > 0
+    || card.eligibility.salaryTransferRequired === null || card.eligibility.residencyRequired === null
+    || card.eligibility.employmentTypes?.length === 0 || card.applicationAvailability === "unconfirmed"
     || Object.entries(card._provenance ?? {}).some(([field, state]) => state === "needs-review"
-      && /^(?:annualFee|fxFee|eligibility|earnRates|interestRate)(?:\.|$)/.test(field));
+      && (/^(?:annualFee|annualFeeWaiver|joiningFee|eligibility|earnRates|earnUnit|interestRate|welcomeBonus|_features|perks|cashAdvanceFee|minPayment|applicationAvailability)(?:\.|$)/.test(field)
+        || /^fxFee(?:$|[A-Z.])/.test(field)));
 }

@@ -18,12 +18,17 @@
 
 import { z } from "astro/zod";
 import cardsJson from "../data/cards.json";
+import { publicCardFacts } from "./cardPublicFacts";
+import { hasCurrentApplicationProfile } from "./cardAvailability";
 import { welcomeBonusRank, cardHasKnownFeature } from "./cardsDataFormat";
 import { hasUsableSalaryMinimum } from "./cardEligibility";
 
 const NETWORK = z.enum([
   "Visa",
   "Mastercard",
+  // One issuer product family offering a choice of network variants. This
+  // does not assert that all variants share every network-specific benefit.
+  "Visa + Mastercard",
   "Amex",
   // 2026-05-20 audit: ENBD Diners Club Credit Card is its own network
   // (was incorrectly tagged as Mastercard in the original scrape).
@@ -503,6 +508,10 @@ export const CardDataSchema = z.object({
     })
     .optional(),
 
+  /** A current invitation-only description does not by itself establish that
+   * new invitations/applications are available. No closure date is invented. */
+  applicationAvailability: z.literal("unconfirmed").optional(),
+
   /** Free-text perks. Kept as fallback for benefits not yet in _features. */
   perks: z.array(z.string()).default([]),
   /** Typed feature array. The matcher reads ONLY this. */
@@ -627,12 +636,13 @@ const validated = AllCardsSchema.parse(cardsJson);
 // ── Helpers ──────────────────────────────────────────────────────────────
 
 export function getCardData(slug: string): CardData | undefined {
-  return validated[slug];
+  const card = validated[slug];
+  return card ? publicCardFacts(card) : undefined;
 }
 
 export function getAllCards(): Array<CardData & { slug: string }> {
   return Object.entries(validated)
-    .map(([slug, data]) => ({ slug, ...data }))
+    .map(([slug, data]) => ({ slug, ...publicCardFacts(data) }))
     .sort((a, b) => {
       const left = a.eligibility.minSalary, right = b.eligibility.minSalary;
       if (left === null) return right === null ? a.name.localeCompare(b.name) : 1;
@@ -650,7 +660,7 @@ export function getAllCards(): Array<CardData & { slug: string }> {
  * this helper to surface only currently-applicable products to readers.
  * Brief: .council/briefs/2026-05-28-cards-archived-schema-field.md */
 export function getActiveCards(): Array<CardData & { slug: string }> {
-  return getAllCards().filter((c) => !c.discontinuedForNewApplicants);
+  return getAllCards().filter(hasCurrentApplicationProfile);
 }
 
 export function getEditorConfirmedCards(): Array<CardData & { slug: string }> {

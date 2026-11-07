@@ -3,6 +3,7 @@
 import { SPEND_PRESETS, presetTotal } from "../data/spendProfiles";
 import type { CardData } from "./cardsData";
 import { cardRewardModelIssue } from "./cardEarnModel";
+import { cardFeeNeedsReview } from "./cardFeeProvenance";
 import {
   annualFeeWaiverDisplay,
   formatAED,
@@ -90,11 +91,11 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
 
   const rawWaiver = card.annualFeeWaiver;
   const waiver = isStructuredAnnualFeeWaiver(rawWaiver) ? rawWaiver : null;
-  const waiverPending = pending("annualFeeWaiver") || pending("annualFeeWaiver.year_one_waived");
+  const waiverPending = Object.entries(card._provenance).some(([field, state]) => state === "needs-review"
+    && (field === "annualFeeWaiver" || field.startsWith("annualFeeWaiver.")));
   const assumesYearOneWaiver = waiver?.year_one_waived === true && !waiverPending;
-  const feePending = pending("annualFee") || pending("annualFee.amount") ||
-    (card.annualFee.amount === 0 && card._provenance.annualFee === "scraped");
-  const joinPending = pending("joiningFee") || pending("joiningFee.amount");
+  const feePending = cardFeeNeedsReview(card, "annualFee");
+  const joinPending = cardFeeNeedsReview(card, "joiningFee");
   const joining = card.joiningFee?.amount;
   const standard = feeWithVAT(card.annualFee.amount, card.vatPolicy);
   let firstFee = feePending ? null : standard;
@@ -109,7 +110,11 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
     laterFee = null;
     laterFeeIssue = "A zero first-year or promotional fee does not establish the standard renewal fee.";
   }
-  if (joinPending) {
+  if (feePending) {
+    // A known waiver must not turn held annual-fee/VAT evidence into a
+    // confident zero first-year cost.
+    firstFee = null;
+  } else if (joinPending) {
     firstFee = null;
     firstFeeIssue = "Confirm the joining fee with the issuer.";
   } else if (waiverPending) {

@@ -104,7 +104,10 @@ test("all original names, weight axes, line/advance/outline and hinting proof re
 test("real shaping proof covers the full site plus every-page weighted kerning/ligature/numeric cases", () => {
   assert.deepEqual(manifest.tools, { fontTools: "4.68.0", brotli: "1.2.1", harfBuzz: "hb-shape (HarfBuzz) 14.2.1" });
   assert.ok(manifest.corpus.htmlPages >= 322);
-  assert.ok(manifest.corpus.htmlTextNodesDeduplicated > 16000);
+  // The refreshed financial prose removes obsolete repetitions. Pin the
+  // reviewed complete corpus, not the former prose-volume minimum.
+  assert.equal(manifest.corpus.htmlTextNodesDeduplicated, 14242);
+  assert.equal(manifest.corpus.htmlTextSha256, "06b55a1c8f0e20d25ce6c007780dfbce48c879c75bdc649cbe50554b39a8e125");
   assert.ok(manifest.corpus.sourceUiFiles > 100);
   assert.ok(manifest.corpus.representativeStrings > 300, "shared headers/footers are intentionally deduplicated");
   assert.equal(manifest.corpus.representativePageCoverage, manifest.corpus.htmlPages);
@@ -118,7 +121,7 @@ test("real shaping proof covers the full site plus every-page weighted kerning/l
     assert.equal(full.length, 1);
     assert.equal(full[0].weight, 400);
     assert.equal(full[0].features, "default");
-    assert.ok(full[0].strings > 16000);
+    assert.ok(full[0].strings >= manifest.corpus.htmlTextNodesDeduplicated);
     for (const weight of face.invariants.outlineWeights) {
       const cases = proof.cases.filter((c: any) => c.corpus === "every-page-representatives-and-layout-fixtures" && c.weight === weight);
       assert.deepEqual(cases.map((c: any) => c.features), ["default", "kern-ligatures-off", "layout-on-tabular", "proportional-oldstyle"]);

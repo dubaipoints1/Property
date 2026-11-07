@@ -83,7 +83,7 @@ import { compareKnownAnnualFees } from "../lib/cardFeeProvenance";
       var ranked = CARDS.filter(function (c) {
         if (hasSalary && c.eligibleForSalaryFilter === false) return false;
         if (hasSalary && c.minSalary > p.salary) return false;
-        if (p.network !== "any" && c.network !== p.network) return false;
+        if (p.network !== "any" && !c.network.split(" + ").includes(p.network)) return false;
         if (!feeMatches(c.annualFee, p.fee)) return false;
         // Invitation-only products enter the shortlist only on opt-in.
         if (!p.includeInviteOnly && c.invitationOnly) return false;

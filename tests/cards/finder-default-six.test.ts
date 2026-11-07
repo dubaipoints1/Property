@@ -143,6 +143,18 @@ test("the bare URL preserves server order, distinguishes count from preview and 
   assert.equal(compare.searchParams.get("via"), "finder");
 });
 
+test("a documented network-choice family matches either network without adding duplicate cards", () => {
+  const source = getActiveCards()[0];
+  const fixtures = [
+    { ...source, slug: "choice", network: "Visa + Mastercard" as const, eligibility: { ...source.eligibility, invitationOnly: false } },
+    { ...source, slug: "mastercard-only", network: "Mastercard" as const, eligibility: { ...source.eligibility, invitationOnly: false } },
+  ];
+  assert.deepEqual(renderFinder("?network=Visa", fixtures).tiles.map(t => t.slug), ["choice"]);
+  assert.deepEqual(new Set(renderFinder("?network=Mastercard", fixtures).tiles.map(t => t.slug)), new Set(["choice", "mastercard-only"]));
+  assert.equal(renderFinder("?network=Amex", fixtures).tiles.length, 0);
+  assert.equal(renderFinder("", fixtures).cards.length, 2);
+});
+
 test("preferred benefits rank ahead of alternatives and compare uses that DOM order", () => {
   const result = renderFinder("?salary=12000&prefer=cashback&include_invite_only=false");
   assert.equal(result.tiles.length, 6);
@@ -166,16 +178,20 @@ test("Liv Cashback cards appear at their published salary thresholds, not below"
 });
 
 test("old explicit opt-in links still include invitation-only cards", () => {
-  const result = renderFinder("?include_invite_only=true");
-  assert.equal(result.count.textContent, `Showing 6 of ${result.cards.length} cards that meet your filters`);
+  const fixtures = [getActiveCards().find(card => card.eligibility.invitationOnly)!, getActiveCards().find(card => !card.eligibility.invitationOnly)!];
+  assert.ok(fixtures.every(Boolean));
+  assert.equal(renderFinder("", fixtures).tiles.length, 1);
+  const result = renderFinder("?include_invite_only=true", fixtures);
+  assert.equal(result.count.textContent, "Showing 2 of 2 cards that meet your filters");
   assert.ok(result.tiles.some((tile) => tile.note.textContent.includes("Invitation only")));
   const invitation = result.tiles.find((tile) => tile.note.textContent.includes("Invitation only"));
   assert.match(invitation?.parts["[data-finder-checks]"].textContent ?? "", /The bank must invite you/);
 });
 
-test("the explanation uses the same selected-category rate and base fallback as ranking", () => {
-  const citi = getActiveCards().find((c) => c.slug === "citi-cashback")!;
-  const dib = getActiveCards().find((c) => c.slug === "dib-consumer-cashback")!;
+test("confirmed synthetic category rates and base fallbacks use the same ranking and explanation", () => {
+  const source = getCardData("citi-cashback")!;
+  const citi = { ...source, slug: "synthetic-cash", earnRates: { everythingElse: 1, groceries: 2 }, scopedEarnRates: undefined, _provenance: {} };
+  const dib = { ...citi, slug: "synthetic-groceries", earnRates: { everythingElse: 1, groceries: 3, _caps: { per_category: { groceries: { monthly_aed: 200 } } } } };
   const result = renderFinder("?salary=12000&spend=groceries&fee=under-500", [citi, dib]);
   const tile = result.tiles.find((t) => t.slug === citi.slug)!;
   assert.match(tile.parts["[data-finder-ranking]"].textContent, /Groceries: 2%/);
@@ -207,7 +223,7 @@ test("365 missing-category fallback remains unranked, not an assumed zero or uni
 test("actual Finder controller cannot rank held category, unit or dotted rate inputs", () => {
   const original = getCardData("citi-cashback")!;
   const confirmed = { ...original, slug: "confirmed-example", earnRates: { everythingElse: 1, online: 2 }, _provenance: {} };
-  for (const field of ["earnRates", "earnUnit", "earnRates.online", "earnRates.online.value"]) {
+  for (const field of ["earnRates", "earnRates.model", "earnRates.model.paymentChannels", "earnUnit", "earnRates.online", "earnRates.online.value"]) {
     const held = { ...original, slug: "held-example", earnRates: { everythingElse: 1, online: 99 }, _provenance: { [field]: "needs-review" as const } };
     const evidence = finderEvidence(held);
     assert.equal(evidence.rankRates.online, undefined, field);
@@ -220,6 +236,25 @@ test("actual Finder controller cannot rank held category, unit or dotted rate in
   const result = renderFinder("?spend=online", [{ ...current, slug: "sc-platinum-x" }, confirmed]);
   assert.equal(result.tiles[0].slug, confirmed.slug, "The actual held SC online rate must not win");
   assert.match(SOURCE, /earnRates: evidence\.rankRates/);
+});
+
+test("the actual DIB model hold stays unknown in public summaries and Finder ranking, not a published zero", () => {
+  const dib = { ...getCardData("dib-consumer-cashback")!, slug: "dib-consumer-cashback" };
+  assert.equal(dib._provenance?.["earnRates.model"], "needs-review");
+  assert.deepEqual(dib.earnRates, { everythingElse: null }, "The canonical numeric model is withheld from public consumers, not replaced by zero");
+  const evidence = finderEvidence(dib);
+  assert.equal(evidence.fallbackPending, true);
+  assert.deepEqual(evidence.rankRates, {}); assert.deepEqual(evidence.earnLabels, {});
+  assert.doesNotMatch(`General spending: ${evidence.earnLabels.everythingElse ?? "rate needs confirmation"}.`, /0%/);
+  const confirmedZero = { ...getCardData("citi-cashback")!, slug: "confirmed-zero-example", earnRates: { everythingElse: 0 }, scopedEarnRates: undefined, _provenance: {} };
+  for (const spend of ["general", "groceries", "fuel", "online"]) {
+    const result = renderFinder(`?spend=${spend}`, [dib, confirmedZero]);
+    assert.equal(result.tiles[0].slug, confirmedZero.slug, spend);
+    const tile = result.tiles.find(card => card.slug === dib.slug)!;
+    assert.match(tile.parts["[data-finder-ranking]"].textContent, /Not rate-ranked.*No general rate is assumed/, spend);
+    assert.doesNotMatch(tile.parts["[data-finder-ranking]"].textContent, /0%/, spend);
+    assert.match(result.tiles[0].parts["[data-finder-ranking]"].textContent, /0%/, "A separately confirmed genuine zero remains distinct from unknown");
+  }
 });
 
 test("unknown annual fees cannot match fee buckets or win the cheaper-fee tie-break", () => {
@@ -263,16 +298,20 @@ test("held VAT also suppresses a separate joining-fee quote and annual VAT quali
 
 test("display evidence preserves rate denominators, pending data and published terms", () => {
   const bonvoy = getCardData("emirates-nbd-marriott-bonvoy-world-elite")!;
-  assert.equal(finderEvidence(bonvoy).earnLabels.everythingElse, "3× per USD 1");
+  assert.equal(finderEvidence(bonvoy).earnLabels.everythingElse, undefined, "source-qualified rows are not generic ranking rates");
+  assert.equal(finderEvidence({ ...bonvoy, earnRates: { everythingElse: 3 }, scopedEarnRates: undefined,
+    earnUnit: "Marriott Bonvoy Points per USD 1 spent", _provenance: {} }).earnLabels.everythingElse, "3× per USD 1");
   const adib = getCardData("adib-cashback-visa")!;
   const adibEvidence = finderEvidence(adib);
   assert.match(adibEvidence.feeNotes.join(" "), /AED\s103\.95 incl\. VAT/);
-  assert.match(adibEvidence.categoryCaps.groceries, /AED\s300 a month/);
+  assert.deepEqual(adibEvidence.categoryCaps, {}, "held cap terms must not escape through display evidence");
+  const knownCap = finderEvidence({ ...adib, earnRates: { everythingElse: 0, groceries: 4, _caps: { per_category: { groceries: { monthly_aed: 300 } } } }, scopedEarnRates: undefined, _provenance: {} });
+  assert.match(knownCap.categoryCaps.groceries, /AED\s300 a month/);
   assert.equal(adibEvidence.sourceUrl, adib.kfsUrl);
 
   const pending = finderEvidence({ ...adib, _provenance: { earnRates: "needs-review", annualFee: "needs-review", eligibility: "needs-review" } });
   assert.deepEqual(pending.earnLabels, {});
-  assert.deepEqual(pending.capNotes, []);
+  assert.deepEqual(pending.capNotes, [adib._dataIssues?.earnRates].filter(Boolean), "source conflicts remain visible while held numeric cap quotes are removed");
   assert.deepEqual(pending.categoryCaps, {});
   assert.match(pending.feeNotes[0], /confirmation pending/);
   assert.equal(pending.salaryPending, true);

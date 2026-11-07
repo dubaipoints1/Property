@@ -261,7 +261,7 @@ test("schema-2a-0: cards.json validates against the augmented schema", () => {
   );
 });
 
-test("schema-2a-0: 10 cards carry joiningFee", () => {
+test("schema-2a-0: refreshed joining-fee inventory retains every recorded field", () => {
   // 9th added 2026-06-11: etihad-guest-elevate AED 2,625 joining fee,
   // verified against the live product page + May 2026 KFS (both agree).
   // 10th added 2026-08-22: liv-cashback-plus AED 700 joining fee, per the
@@ -269,11 +269,13 @@ test("schema-2a-0: 10 cards carry joiningFee", () => {
   const slugs = Object.entries(cards)
     .filter(([, c]) => (c as { joiningFee?: unknown }).joiningFee !== undefined)
     .map(([s]) => s);
-  assert.equal(
-    slugs.length,
-    10,
-    `Expected 10 cards with joiningFee, got ${slugs.length}: ${slugs.join(", ")}`,
-  );
+  assert.deepEqual(slugs.sort(), [
+    "emirates-nbd-darna-visa-infinite", "emirates-nbd-dnata-platinum", "emirates-nbd-dnata-world",
+    "emirates-nbd-etihad-guest-elevate", "emirates-nbd-etihad-guest-inspire", "emirates-nbd-lulu-247-platinum",
+    "emirates-nbd-marriott-bonvoy-world-elite", "emirates-nbd-share-visa-infinite", "emirates-nbd-skywards-infinite",
+    "emirates-nbd-skywards-signature", "emirates-nbd-u-by-emaar-infinite", "emirates-nbd-visa-infinite",
+    "emirates-nbd-webshopper", "liv-cashback-plus",
+  ].sort());
 });
 
 test("schema-2a-0: 2 cards carry eligibility.invitationOnly = true", () => {
