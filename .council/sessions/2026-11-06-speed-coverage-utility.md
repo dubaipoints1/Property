@@ -1,7 +1,11 @@
 ---
 slug: speed-coverage-utility
 tier: T3
-status: implementation-phase-1
+status: verified-candidate-awaiting-protected-release
+convened-by: technical-lead
+convened: 2026-11-06
+deliverable-shape: full-implementation
+participants: root, final_refresh_technical, final_refresh_editorial, refresh_adcb_11, finder_patterns
 ---
 
 ## Exact-head validation correction — 2026-11-07
@@ -681,3 +685,59 @@ open. Main is still 651fb05; PR #519 remains draft. Production is unchanged.
 SkyNet's fresh guard download fails before mutation. Controlled verification
 therefore pauses Drive writes; renewed retry authority has been requested.
 No record-update success is claimed, and no silent retry/fallback occurs.
+
+## Verified candidate and substantive Council closure — 2026-11-08
+
+Source head 56cc003811ce6ac09bd1eb5ae0c02363a5541327 passes actual push
+42415983925 and PR 42415987034 Linux validation: all 1,035 tests pass, zero
+failures/skips/cancellations; check/build steps genuinely execute. Cloudflare
+preview 95b106d0-760f-45e2-bb08-bc178df9bcad succeeds at that source head.
+The candidate has not yet merged or changed production at this checkpoint.
+
+Three renewed matched local mobile audits all score 98; each initial-load proxy
+is 190,501 bytes (186.04 KiB), median LCP 2.369 seconds. Cloudflare's real public
+beacon cost is included; the localhost collector CORS error explains BP 96.
+Two corrected hosted mobile audits score 97, with 181,069/181,052-byte proxies,
+zero blocking time and 100 accessibility/best practices. Preview SEO 69 is solely
+the deliberate preview noindex response. Preview analytics are gated off; these
+are lab observations, not field or causal traffic-uplift evidence. Earlier HARs
+remain evidence of the unchanged delayed Google component, not an exact total
+for the new 487-byte-larger initial request set. A live tag read-back remains a
+post-deployment condition.
+
+Corrected hosted native media passes: initial and Read-the-latest jump have no
+video source; deliberate wheel scrolling produces a blob source with a full
+10.166667-second seekable range, actual 4.194499 → 6.996358 → 4.899108 forward and
+reverse positions and visibly different decoded footage. Desktop seeking also
+works (6.107327 seconds); history restoration clears the source until fresh input.
+Keyboard PageDown initiates the same decoded media path. Native reduced-motion
+emulation preserves the complete static composition and records zero media
+requests across 11 network entries after scrolling; the test setting is restored.
+
+All 339 routes retain the 2,034-state complete light/dark, 320/390/1440 baseline,
+with exact inventories and fresh six-state rechecks of every subsequently changed
+HTML page: seven DIB-dependent routes and thirteen bank/home routes. Unchanged
+delivery assets are independently compared. The current build has no observed
+root overflow, broken completed visible image, H1/anchor or theme mismatch in
+this scope. Drawer, guide, tray, comparison, empty-result, five salary-band,
+keyboard/menu and selected image checks pass. Light/dark previews are shown.
+Native no-JavaScript Finder access and actual 200% Chrome reflow are observed.
+No physical iPhone Safari certificate is claimed. A native overlay-scrollbar
+drag could not be established in this configuration and is not marked passed;
+wheel and keyboard delivery are actually observed and edge handling has explicit
+mocked coverage. These are declared coverage limits, not hidden success states.
+
+Substantive role dispositions are complete within the brief's bounded scope:
+Research/Factcheck source-cohort cross-reviews; editorial/SEO/Standards/Section
+compiled and copy review; root runtime plus independent visual/technical review
+for UX; independent root/Finder review of specialist implementation and Technical
+cross-review of root guards; Technical/Growth approval of actual CI, proof and
+measurements. One agent covering several roles remains one reviewer. Implementers
+do not provide their own independent approval. Root accepts the synthesis as
+Managing Editor. Mostafa's instruction authorises normal release once the exact
+head's protected checks succeed; it does not authorise bypass or an untested merge.
+
+The synthesis is `2026-11-06-speed-coverage-utility-synthesis.md`. This final
+record-only checkpoint must receive its own genuine successful exact-head checks
+before normal merge. No production/live or SkyNet-update completion is asserted
+in advance of observation. PR #518 remains held and out of scope.
