@@ -9,9 +9,9 @@
 //
 // Two kinds of feed live here and the difference is load-bearing.
 //
-//   tier: "aggregator"  Competitor coverage. DISCOVERY ONLY — a lead to
-//                       chase, never a fact, never a number, never a
-//                       structure. Content laundering is a §10 kill.
+//   tier: "aggregator"  Unread discovery here. The 27 September 2026
+//                       amendment permits attributed secondary news facts
+//                       only AFTER reading and editorial review.
 //   tier: "primary"     The issuer's OWN newsroom. This is a primary
 //                       source under the sourcing ladder, so a desk may
 //                       cite it directly. It is also free, which is the
@@ -55,28 +55,11 @@ export const RSS_FEEDS = [
   { id: "tpg", name: "The Points Guy", url: "https://thepointsguy.com/feed/", tier: "aggregator", filter: true },
 ];
 
-// RSS 2.0 uses <item> with a <link> element; Atom uses <entry> with
-// <link href>. Parsing only the first would have silently contributed
-// zero items from any Atom newsroom rather than failing, so both are
-// handled.
-export function parseFeed(xml) {
-  const out = [];
-  for (const [, body] of xml.matchAll(/<item\b[^>]*>([\s\S]*?)<\/item>/gi)) {
-    out.push({
-      title: (body.match(/<title[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i) || [])[1]?.trim(),
-      link: (body.match(/<link[^>]*>([\s\S]*?)<\/link>/i) || [])[1]?.trim(),
-      date: (body.match(/<pubDate[^>]*>([\s\S]*?)<\/pubDate>/i) || [])[1]?.trim(),
-    });
-  }
-  for (const [, body] of xml.matchAll(/<entry\b[^>]*>([\s\S]*?)<\/entry>/gi)) {
-    out.push({
-      title: (body.match(/<title[^>]*>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i) || [])[1]?.trim(),
-      link: (body.match(/<link[^>]*\bhref=["']([^"']+)["']/i) || [])[1]?.trim(),
-      date: (body.match(/<(?:updated|published)[^>]*>([\s\S]*?)<\/(?:updated|published)>/i) || [])[1]?.trim(),
-    });
-  }
-  return out;
-}
+// RSS and Atom share one structure-aware bounded scanner. Comments and
+// markup-looking CDATA are never reparsed as actual feed elements.
+import { scanMetadata } from "./_xml.mjs";
+export { scanMetadata } from "./_xml.mjs";
+export const parseFeed = (xml) => scanMetadata(xml).items;
 
 // At least three ASCII letters. A transliterated Prezly slug still reads
 // as Latin, so this tests the TITLE, which is the human-language field.
@@ -85,6 +68,30 @@ export const hasLatin = (s) => (s.match(/[A-Za-z]/g) || []).length >= 3;
 // UAE-relevance filter for RSS titles (press pages pass everything —
 // they are already first-party and low-volume).
 export const RELEVANT = /\b(uae|dubai|abu dhabi|sharjah|dxb|auh|dwc|shj|emirates|skywards|etihad|flydubai|air arabia|qatar airways|avios|privilege club|alfursan|saudia|gcc|bonvoy|rotana|jumeirah|address hotels|staycation)\b/i;
+
+// Programme name alone would flood the queue with global property openings
+// and corporate results. Require an actionable loyalty-change/promo signal.
+const HOTEL_PROGRAMME = /\b(hilton hono[u]?rs|world of hyatt|ihg(?: one rewards)?|accor(?: all)?|all accor|all - accor|all – accor)\b/i;
+const PROGRAMME_ACTION = /\b(bonus|promotion|promo|buy points|purchase points|points sale|status match|status challenge|fast track|elite nights?|award (?:nights?|stays?|pricing|charts?|categor(?:y|ies))|redeem|redemption|devaluation|points expir(?:y|ation)|register|registration)\b|\b(?:double|triple)\b.{0,40}\b(?:points|miles|elite nights?)\b|\b(?:transfer|conversion|convert)\b.{0,40}\b(?:points|miles|avios|skywards)\b|\b(?:points|miles|avios|skywards)\b.{0,40}\b(?:transfer|conversion|convert)\b/i;
+const SENSITIVE = /\b(accident|emergency|emergencies|diversion|diverted|hijack|terror|violence|assault|crash|security incident|safety incident|crew misconduct|staff misconduct)\b/i;
+
+export function relevanceFor(feed, title) {
+  if (SENSITIVE.test(title)) return { keep: false, reason: "Passed over: possible incident/safety/security story; 1 October 2026 exclusion. Human review still required for all leads." };
+  if (feed.latinOnly && !hasLatin(title)) return { keep: false, reason: "Non-Latin edition omitted by this feed's existing language rule." };
+  if (feed.filter === false) return { keep: true, reason: "UAE carrier newsroom; title relevance only, not editorial verification." };
+  if (RELEVANT.test(title)) return { keep: true, reason: "Matched existing UAE/regional/programme title terms; eligibility not established." };
+  if (HOTEL_PROGRAMME.test(title) && PROGRAMME_ACTION.test(title)) return {
+    keep: true, reason: "Global hotel-programme action candidate; UAE-resident/property eligibility and full terms are UNCONFIRMED.",
+  };
+  return { keep: false, reason: "No supported title-level relevance signal." };
+}
+
+// Currency governs the eventual desk; title routing is merely a suggestion.
+export function suggestedDesk(title) {
+  if (/\b(skywards|etihad guest|avios|privilege club|alfursan|emirates|etihad|flydubai|air arabia|qatar airways|saudia)\b/i.test(title)) return "airline-news-editor";
+  if (/\b(hotel|hilton|hyatt|ihg|accor|bonvoy|marriott|rotana|jumeirah|staycation)\b/i.test(title)) return "hotel-news-editor";
+  return "managing-editor";
+}
 
 
 // A "soft 404": HTTP 200 with an error page for a body. airarabia.com and

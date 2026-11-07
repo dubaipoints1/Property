@@ -127,8 +127,10 @@ personal experience or a staffed newsroom.
 Existing automation is real: the latest inspected scheduled run42283838379
 successfully read all seven configured feeds and produced a new-item digest.
 The gap is coverage/relevance, failure visibility and editorial throughput,
-not a missing cron job. Free probe42364338274 found a potentially useful
-official Accor feed; validation is required before activation.
+not a missing cron job. Free probe42364338274 found an official Accor feed,
+but full-body review rejected it for this tranche:10.9MB, mixed languages,
+non-monotonic dates and no qualified titles in the retained first25 window.
+It remains inactive; no cap exception or guessed smaller endpoint.
 
 Proposed/authorised bounded implementation uses the same twice-daily free
 workflow: validated feed → safe canonical lead → desk/relevance reason →
