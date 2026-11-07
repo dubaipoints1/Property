@@ -40,6 +40,7 @@ import {
 } from "../../lib/earnBasis";
 import { publishedAEDPerUnit } from "../../lib/valuations";
 import { SPEND_PRESETS } from "../../data/spendProfiles";
+import { hasUsableGenericEarnRate } from "../../lib/cardEarnModel";
 
 // ── Public types ─────────────────────────────────────────────────────────
 
@@ -54,9 +55,10 @@ export type SpendProfile = {
 };
 
 export type CardForCalc = CardData & { slug: string };
+type ReadyCardForCalc = CardForCalc & { earnRates: CardData["earnRates"] & { everythingElse: number } };
 
 export type RankResult = {
-  card: CardForCalc;
+  card: ReadyCardForCalc;
   /** Monthly reward in the card's native earnUnit (points/miles/AED). */
   monthlyRewardNative: number;
   /**
@@ -177,7 +179,7 @@ export const SPEND_CATEGORIES: readonly (keyof SpendProfile)[] = [
 
 /** Native reward one category earns on one card, through the card's own denominator. */
 function categoryNative(
-  card: CardForCalc,
+  card: ReadyCardForCalc,
   category: keyof SpendProfile,
   spendAED: number,
   earnBasis: EarnBasis,
@@ -243,7 +245,7 @@ function applyCashbackCaps(
 
 /** Compute per-category AED reward and pick the top contributing category. */
 function perCategoryBreakdown(
-  card: CardForCalc,
+  card: ReadyCardForCalc,
   spend: SpendProfile,
   aedPerUnit: number,
   earnBasis: EarnBasis,
@@ -356,7 +358,7 @@ export function rankCards(
   const refTime = (opts.now ?? new Date()).getTime();
   const totalSpend = SPEND_CATEGORIES.reduce((sum, k) => sum + spend[k], 0);
 
-  const results: RankResult[] = cards.map((card) => {
+  const results: RankResult[] = cards.filter(hasUsableGenericEarnRate).map((card) => {
     const { aedPerUnit, basis, earnBasis } = conversionForCard(card);
     const breakdown = earnBasis
       ? perCategoryBreakdown(card, spend, aedPerUnit, earnBasis, basis === "cashback")
@@ -420,7 +422,7 @@ export function rankCards(
 export type CategoryWinner = {
   category: keyof SpendProfile;
   spendAED: number;
-  card: CardForCalc;
+  card: ReadyCardForCalc;
   /** AED-equivalent reward this category alone earns on the winning card. */
   monthlyAED: number;
   rateBasis: RateBasis;
@@ -446,6 +448,7 @@ export function bestCardPerCategory(
   spend: SpendProfile,
 ): CategoryWinner[] {
   const rankable = held
+    .filter(hasUsableGenericEarnRate)
     .map((card) => ({ card, conv: conversionForCard(card) }))
     .filter((x) => x.conv.earnBasis != null);
   if (rankable.length === 0) return [];

@@ -18,6 +18,7 @@ import {
   isStructuredAnnualFeeWaiver,
   getCardData,
 } from "~/lib/cardsData";
+import { cardFxFeeLabel, cardFxNeedsReview, cardFeeNeedsReview } from "~/lib/cardFeeFacts";
 
 interface Props {
   /** Phase 2a.2: when set, the component resolves all inline props
@@ -25,13 +26,17 @@ interface Props {
    * `<FeeBlock card="emirates-nbd-skywards-infinite" />`. */
   card?: string;
   annualFee?: CardData["annualFee"];
-  fxFee?: number;
+  fxFee?: number | null;
   /** L2 `_provenance.fxFee` — when "needs-review" the fxFee line is
    * rendered as "—" instead of "0.00%" so an unverified zero can't be
    * mistaken for a confirmed zero (1 June 2026 audit follow-up to the
    * 2026-05-29 §10 ADCB FX kill-list amendment). When the component
    * is card-resolved this is read from the L2 directly. */
   fxFeeProvenance?: string;
+  provenance?: Record<string, string> | null;
+  fxFeeScope?: CardData["fxFeeScope"];
+  fxFeeVatTreatment?: CardData["fxFeeVatTreatment"];
+  fxFeeUpperBound?: CardData["fxFeeUpperBound"];
   waiver?: CardData["annualFeeWaiver"];
   /** Phase 2a.0 (2026-05-20): year-1 joining fee. Rendered as a small
    * line beneath the annual figure only when present AND ≠ annualFee.
@@ -45,6 +50,10 @@ const {
   annualFee: annualFeeProp,
   fxFee: fxFeeProp,
   fxFeeProvenance: fxFeeProvenanceProp,
+  provenance: provenanceProp,
+  fxFeeScope: fxFeeScopeProp,
+  fxFeeVatTreatment: fxFeeVatTreatmentProp,
+  fxFeeUpperBound: fxFeeUpperBoundProp,
   waiver: waiverProp,
   joiningFee: joiningFeeProp,
 } = Astro.props;
@@ -58,9 +67,14 @@ const annualFee = resolved?.annualFee ?? annualFeeProp;
 if (!annualFee) {
   throw new Error("FeeBlock: requires `card` or inline `annualFee` prop");
 }
-const fxFee = resolved?.fxFee ?? fxFeeProp;
+const fxFee = resolved ? resolved.fxFee : fxFeeProp;
 const fxFeeProvenance =
   resolved?._provenance?.fxFee ?? fxFeeProvenanceProp;
+const fxProvenance = resolved?._provenance ?? provenanceProp ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
+const fxPending = cardFxNeedsReview({ _provenance: fxProvenance });
+const fxFeeScope = resolved?.fxFeeScope ?? fxFeeScopeProp;
+const fxFeeVatTreatment = resolved?.fxFeeVatTreatment ?? fxFeeVatTreatmentProp;
+const fxFeeUpperBound = resolved?.fxFeeUpperBound ?? fxFeeUpperBoundProp;
 const waiver = resolved?.annualFeeWaiver ?? waiverProp;
 const joiningFee = resolved?.joiningFee ?? joiningFeeProp;
 
@@ -68,7 +82,11 @@ const joiningFee = resolved?.joiningFee ?? joiningFeeProp;
 // schema default so cards without an explicit policy render the
 // inclusive treatment.
 const vatPolicy = resolved?.vatPolicy ?? "inclusive";
-const showVatTag = annualFee.amount > 0;
+const feeEvidence = resolved ?? { annualFee, _provenance: provenanceProp ?? {} };
+const annualFeePending = cardFeeNeedsReview(feeEvidence, "annualFee");
+const joiningFeePending = cardFeeNeedsReview(feeEvidence, "joiningFee");
+const waiverPending = Object.entries(feeEvidence._provenance ?? {}).some(([key, state]) => state === "needs-review" && /^annualFeeWaiver(?:\.|$)/.test(key));
+const showVatTag = !annualFeePending && annualFee.amount > 0;
 const vatTagText =
   vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
 
@@ -93,7 +111,7 @@ function formatAED(amount: number): string {
 }
 
 const feeLabel =
-  annualFee.amount === 0
+  annualFeePending ? "Pending" : annualFee.amount === 0
     ? "Free"
     : formatAED(annualFee.amount);
 
@@ -101,7 +119,7 @@ const waiverString = annualFeeWaiverDisplay(
   waiver as StructuredAnnualFeeWaiver | string | null | undefined,
 );
 const showWaiver =
-  waiverString.length > 0 &&
+  !annualFeePending && !waiverPending && waiverString.length > 0 &&
   (isStructuredAnnualFeeWaiver(waiver) || typeof waiver === "string");
 
 // Phase 2a.0: only show the joining-fee line when the year-1 figure
@@ -109,7 +127,7 @@ const showWaiver =
 // Platinum is the inverse: year-1 525, year-2 262.50, so they differ;
 // dnata World is 1048.95 / 1048.95, so equal and suppressed).
 const showJoiningFee =
-  joiningFee !== undefined &&
+  !joiningFeePending && joiningFee !== undefined &&
   joiningFee !== null &&
   joiningFee.amount !== annualFee.amount;
 ---
@@ -118,6 +136,8 @@ const showJoiningFee =
   <div class="amt">{feeLabel}</div>
   {showVatTag && <div class="vat">{vatTagText}</div>}
   <div class="lbl">Annual fee</div>
+  {annualFeePending && <div class="joining">The standard annual fee is Pending; joining and other charges are not assumed to be zero.</div>}
+  {joiningFeePending && <div class="joining">Joining fee — confirmation pending</div>}
   {showJoiningFee && joiningFee && (
     <div class="joining">
       Joining fee {formatAED(joiningFee.amount)} (year 1{vatPolicy === "inclusive" ? ", incl. VAT" : ""})
@@ -128,10 +148,10 @@ const showJoiningFee =
       number, so the reader can't mistake an unverified zero for a
       confirmed zero. The 2026-05-29 §10 kill-list amendment surfaced
       exactly this failure mode on the ADCB FX-fee parse. */}
-  {fxFee !== undefined && fxFee !== null && fxFeeProvenance !== "needs-review" && (
-    <div class="fx">FX +{fxFee.toFixed(2)}%</div>
+  {fxFee !== undefined && !fxPending && (
+    <div class="fx">{fxFeeScope || fxFeeUpperBound || fxFee === null ? cardFxFeeLabel({ fxFee, fxFeeScope, fxFeeVatTreatment, fxFeeUpperBound, _provenance: fxProvenance }) : `FX +${fxFee.toFixed(2)}%`}</div>
   )}
-  {fxFeeProvenance === "needs-review" && (
+  {fxPending && (
     <div class="fx is-unverified">FX — confirmation pending</div>
   )}
   {showWaiver && <div class="waiver">{waiverString}</div>}

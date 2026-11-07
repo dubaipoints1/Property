@@ -1,4 +1,6 @@
 ---
+import { cardSalaryLabel } from "~/lib/cardEligibility";
+import { cardFeeNeedsReview, compareKnownAnnualFees } from "~/lib/cardFeeProvenance";
 // Perk facet pages — /cards/perks/<perk>/.
 //
 // `_features` is a typed discriminated union of fourteen perk types, and
@@ -42,7 +44,8 @@ interface Props {
 
 const { perk } = Astro.props;
 const cards = getCardsWithFeature(perk.feature).sort(
-  (a, b) => a.annualFee.amount - b.annualFee.amount,
+  (a, b) => compareKnownAnnualFees(cardFeeNeedsReview(a, "annualFee") ? null : a.annualFee.amount,
+    cardFeeNeedsReview(b, "annualFee") ? null : b.annualFee.amount),
 );
 const verifiedStamp = verifiedMonthStamp(cards);
 
@@ -63,13 +66,7 @@ const rows = await Promise.all(
       values: [
         detail,
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
-        c.eligibility.invitationOnly === true
-          ? "Invitation only"
-          : c._provenance?.eligibility === "needs-review"
-            ? "—"
-            : c.eligibility.minSalary > 0
-              ? `AED ${c.eligibility.minSalary.toLocaleString()}/mo`
-              : "No minimum",
+        cardSalaryLabel(c, { perMonth: true }),
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };

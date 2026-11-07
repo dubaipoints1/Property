@@ -17,6 +17,7 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import { collectionPageGraph, siteUrlFrom } from "~/lib/schema";
 import DealVisual from "~/components/deals/DealVisual.astro";
+import EditorialRail from "~/components/EditorialRail.astro";
 import { getCollection } from "astro:content";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 import { getStockEntry } from "~/lib/stockManifest";
@@ -61,7 +62,10 @@ const guides = (await getCollection("guides"))
   .sort((a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime());
 
 const featured = dealsWithBank[0];
-const others = dealsWithBank.slice(1);
+// The urgency rail replaces, rather than duplicates, those grid entries.
+// Both groups keep the source's recorded-expiry order.
+const endingSoonIds = new Set(endingSoon.map((d) => d.entry.id));
+const others = dealsWithBank.slice(1).filter((d) => !endingSoonIds.has(d.entry.id));
 
 // These explain using issuer offers; recency alone is not topic relevance.
 const dealGuideIds = ["uae-credit-card-eligibility-2026", "dubai-shopping-festival-2026"];
@@ -166,6 +170,27 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
             </a>
           )}
 
+          {endingSoon.length > 0 && (
+            <div data-deal-soon>
+              <EditorialRail id="deals-soon-h" heading="Also ending soon" description="Recorded end dates, with the same eligibility notes and codes as the full offer." class="dp-deals-offer-rail">
+                {endingSoon.map((d) => (
+                  <li class="dp-deal-rail-item" data-deal data-deal-soon-item {...dealAttrs(d)}>
+                    <a href={`/deals/${d.entry.id}/`} class="dp-deal-rail-card" aria-labelledby={`deal-${d.entry.id}`}>
+                      {d.hasArt && <span class="dp-deal-rail-art" data-deal-listing-art><DealVisual dealId={d.entry.id} title={d.entry.data.title} logo={d.entry.data.logo} merchant={d.entry.data.merchant} bankSlug={d.entry.data.bank?.id} bankName={d.bankName} coverSize="sm" class="intel-card-image" sizes="(max-width: 640px) min(82vw, 320px), 300px" /></span>}
+                      <div class="intel-card-body" data-deal-offer-facts>
+                        <span class="intel-card-cat">{d.entry.data.sector ? SECTOR_LABELS[d.entry.data.sector] : formatCategory(d.entry.data.category)} · {d.bankName}</span>
+                        <h3 id={`deal-${d.entry.id}`}>{d.entry.data.title}</h3>
+                        {d.entry.data.eligibilityNote && <p>{d.entry.data.eligibilityNote}</p>}
+                        <span class="deals-card-foot"><span class:list={["intel-card-meta deals-countdown", { "is-soon": 7 >= d.days }]}>{countdownText(d.days)}</span>{d.entry.data.promoCode && <span class="deals-code">Code {d.entry.data.promoCode}</span>}</span>
+                        <p class="intel-card-meta">Last checked <time datetime={d.entry.data.lastVerified.toISOString().slice(0, 10)}>{fmt(d.entry.data.lastVerified)}</time>.</p>
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </EditorialRail>
+            </div>
+          )}
+
           {others.length > 0 && (
             <ul class="intel-card-grid">
               {others.map((d) => {
@@ -205,21 +230,6 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     </div>
 
     <aside class="intel-aside">
-      {endingSoon.length > 0 && (
-        <section class="deals-soon" aria-labelledby="deals-soon-h" data-deal-soon>
-          <h2 id="deals-soon-h" class="deals-soon-h">Also ending soon</h2>
-          <ul>
-            {endingSoon.map((d) => (
-              <li {...dealAttrs(d)} data-deal-soon-item>
-                <a href={`/deals/${d.entry.id}/`}>
-                  <span class="deals-soon-who">{d.entry.data.merchant ? `${d.entry.data.merchant} · ${d.bankName}` : d.entry.data.title}</span>
-                  <span class="deals-soon-when">{countdownText(d.days)}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
       <section class="deals-related" aria-label="More ways to find offers">
         <form class="intel-search" action="/search/" method="get" role="search" aria-label="Sitewide search">
           <label for="deals-search-input">Search the site</label>
@@ -277,7 +287,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
     const none = document.querySelector<HTMLElement>("[data-deal-none]");
     const active = root.querySelector<HTMLElement>("[data-extra-filters]");
 
-    const apply = () => {
+    const apply = (resetRail = false) => {
       const issuer = issuerSel?.value ?? "";
       const sector = sectorSel?.value ?? "";
       const codeOnly = codeInput?.checked ?? false;
@@ -292,6 +302,12 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
       }
       for (const el of soonItems) el.hidden = !matches(el);
       if (soon) soon.hidden = soonItems.every((el) => el.hidden);
+      // A new filter is a new shortlist. Start at its first matching
+      // offer, while preserving normal back/forward scroll restoration.
+      if (resetRail) {
+        const track = soon?.querySelector<HTMLElement>("[data-editorial-track]");
+        if (track) track.scrollLeft = 0;
+      }
       if (active) {
         const n = Number(Boolean(issuer)) + Number(codeOnly);
         active.hidden = n === 0;
@@ -302,22 +318,31 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
       if (none) none.hidden = shown > 0;
     };
 
-    sectorSel?.addEventListener("change", apply);
-    codeInput?.addEventListener("change", apply);
-    issuerSel?.addEventListener("change", apply);
+    sectorSel?.addEventListener("change", () => apply(true));
+    codeInput?.addEventListener("change", () => apply(true));
+    issuerSel?.addEventListener("change", () => apply(true));
     document.querySelector("[data-filter-reset]")?.addEventListener("click", () => {
       if (sectorSel) sectorSel.value = "";
       if (codeInput) codeInput.checked = false;
       if (issuerSel) issuerSel.value = "";
-      apply();
+      apply(true);
       sectorSel?.focus();
     });
     apply();
-    window.addEventListener("pageshow", apply);
+    window.addEventListener("pageshow", () => apply());
   }
 </script>
 
 <style>
+  .dp-deal-rail-item { display: flex; }
+  .dp-deal-rail-card { display: flex; flex-direction: column; gap: 16px; inline-size: 100%; padding-block-end: 18px; border-block-end: 1px solid var(--line); color: inherit; text-decoration: none; }
+  .dp-deal-rail-card:hover h3 { color: var(--green); text-decoration: underline; text-underline-offset: .16em; }
+  .dp-deal-rail-card:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+  .dp-deal-rail-card h3 { margin: 0; color: var(--ink); font: 550 clamp(1.25rem, 2.2vw, 1.6rem)/1.15 var(--font-display); letter-spacing: -.02em; }
+  .dp-deal-rail-card p { margin: 0; color: var(--ink-soft); font-size: .875rem; line-height: 1.5; }
+  .dp-deal-rail-card .intel-card-body { display: grid; gap: 10px; }
+  .dp-deal-rail-art { display: grid; place-items: center; min-inline-size: 0; overflow: hidden; border: 1px solid var(--line-soft); border-radius: var(--dp-ui-radius); }
+  .dp-deal-rail-art :global(.intel-card-image) { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 1.8; object-fit: contain; }
   /* Inherits the .intel-* idiom from /guides/, /news/, /airlines/.
      Inlined here scoped to /deals/ for evolution independence; a
      shared layout component covers the four once they stabilise. */

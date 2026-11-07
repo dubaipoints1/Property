@@ -6,15 +6,21 @@ interface Props {
   slug: string;
   /** The static picker renders every card but activates only the chosen ones. */
   deferred?: boolean;
+  /** Identity surfaces give real art more room without cropping it. */
+  size?: "compact" | "identity";
 }
 
-const { slug, deferred = false } = Astro.props;
+const { slug, deferred = false, size = "compact" } = Astro.props;
 const art = getCardArt(slug);
 const srcset = art ? cardArtSrcset(slug, art) : undefined;
+// The manifest records issuer imagery, not a generic stock credit. Link
+// to the actual product page (or image source when no page is recorded).
+const creditUrl = art ? art.page ?? art.url : undefined;
+const creditLabel = creditUrl ? new URL(creditUrl).hostname.replace(/^www\./, "") : undefined;
 const image = art && {
   src: `/${art.file}`,
   srcset,
-  sizes: srcset ? "56px" : undefined,
+  sizes: srcset ? (size === "identity" ? "(max-width: 640px) 128px, 144px" : "56px") : undefined,
   width: art.width,
   height: art.height,
   alt: "",
@@ -25,8 +31,11 @@ const image = art && {
 ---
 
 {image && (
-  <span class="dp-compare-card-art">
-    {deferred ? <template data-compare-art-template><img {...image} /></template> : <img {...image} />}
+  <span class="dp-compare-card-art" data-size={size}>
+    <span class="dp-compare-card-imagebox">
+      {deferred ? <template data-compare-art-template><img {...image} /></template> : <img {...image} />}
+    </span>
+    {size === "identity" && creditUrl && <small class="dp-compare-card-credit">Card image: <a href={creditUrl}>{creditLabel}</a></small>}
   </span>
 )}
 
@@ -34,16 +43,35 @@ const image = art && {
   .dp-compare-card-art {
     display: none;
   }
-  .dp-compare-card-art:has(> img) {
+  .dp-compare-card-art:has(img) {
     display: block;
     flex: none;
     inline-size: 56px;
-    aspect-ratio: 16 / 10;
   }
+  .dp-compare-card-imagebox { display: block; inline-size: 100%; aspect-ratio: 16 / 10; }
+  .dp-compare-card-art[data-size="identity"]:has(img) {
+    inline-size: 144px;
+    max-inline-size: 100%;
+  }
+  .dp-compare-card-art[data-size="identity"] .dp-compare-card-imagebox {
+    /* One shared frame gives portrait and angled issuer faces useful room
+       without clipping, stretching or pretending their shapes are equal. */
+    aspect-ratio: 4 / 3;
+    padding: 6px;
+    border: 1px solid var(--line);
+    border-radius: var(--dp-ui-radius-small, 6px);
+    background: var(--shade-1);
+  }
+  .dp-compare-card-credit { display: block; margin-block-start: 5px; color: var(--ink-soft); font: 400 .6875rem/1.4 var(--font-ui); overflow-wrap: anywhere; }
+  .dp-compare-card-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .dp-compare-card-credit a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
   .dp-compare-card-art img {
     display: block;
     inline-size: 100%;
     block-size: 100%;
     object-fit: contain;
+  }
+  @media (max-width: 640px) {
+    .dp-compare-card-art[data-size="identity"]:has(img) { inline-size: 128px; }
   }
 </style>

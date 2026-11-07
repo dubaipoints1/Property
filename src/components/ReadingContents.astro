@@ -1,0 +1,33 @@
+---
+interface Props {
+  sections: { id: string; label: string }[];
+  label?: string;
+  variant?: "article" | "programme";
+}
+const { sections, label = "In this article", variant = "article" } = Astro.props;
+---
+
+<nav class:list={["dp-reading-contents", variant === "programme" ? "dp-jump-to-section dp-programme-contents" : "dp-toc-card dp-reading-toc"]} aria-label={variant === "programme" ? "Jump to section" : "Article contents"} data-reading-contents>
+  <details data-programme-contents={variant === "programme" ? true : undefined}>
+    <summary><span>{label}</span><span class="dp-reading-contents-chevron" aria-hidden="true">⌄</span></summary>
+    <ol>{sections.map(section => <li><a href={`#${section.id}`}>{section.label}</a></li>)}</ol>
+  </details>
+</nav>
+
+<style>
+  .dp-reading-contents { min-inline-size: 0; border-block: 1px solid var(--line); background: transparent; }
+  summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-block-size: 48px; color: var(--green); font: 650 .875rem/1.4 var(--font-ui); cursor: pointer; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  .dp-reading-contents-chevron { font-size: 1.2rem; }
+  details[open] .dp-reading-contents-chevron { transform: rotate(180deg); }
+  ol { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); margin: 0 0 12px; padding: 0; }
+  li { margin: 0; padding: 0; border-block-start: 1px solid var(--line-soft); }
+  a { display: flex; align-items: center; min-block-size: 44px; padding: 9px 12px; border-inline-start: 2px solid transparent; color: var(--ink-soft); font: 500 .8125rem/1.4 var(--font-ui); text-decoration: none; text-underline-offset: .18em; overflow-wrap: anywhere; }
+  a:hover { color: var(--green); text-decoration: underline; }
+  a[aria-current="location"] { color: var(--green); border-inline-start-color: var(--green); background: var(--paper); font-weight: 700; }
+  :is(summary, a):focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  .dp-programme-contents { margin: 0; padding-inline: 4px; }
+  @media (min-width: 1024px) {
+    .dp-programme-contents { max-block-size: calc(100dvh - var(--dp-sticky-header-height, 81px) - 40px); overflow-y: auto; padding-inline: 6px 8px; scrollbar-gutter: stable; scroll-padding-block: 12px; }
+  }
+</style>

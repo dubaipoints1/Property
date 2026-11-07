@@ -7,6 +7,7 @@ import {
   parseEarnBasis,
 } from "../../src/lib/earnBasis.ts";
 import { getAllCards } from "../../src/lib/cardsData.ts";
+import { hasUsableGenericEarnRate } from "../../src/lib/cardEarnModel.ts";
 
 /**
  * `earnRates` is a bare number and `earnUnit` is prose, so nothing in L2
@@ -98,6 +99,14 @@ test("every card in cards.json either parses or is a known exclusion", () => {
 
   const unparsed: string[] = [];
   for (const card of getAllCards()) {
+    // Deliberate T3 model: source-qualified display rows carry their own
+    // denominators. They must never manufacture a global denominator merely
+    // to satisfy this legacy all-spend model test.
+    if (card.earnRates.everythingElse === null && card.scopedEarnRates?.length) {
+      assert.equal(hasUsableGenericEarnRate(card), false, card.slug);
+      assert.equal(parseEarnBasis(card.earnUnit), null, card.slug);
+      continue;
+    }
     if (parseEarnBasis(card.earnUnit) === null) unparsed.push(card.slug);
   }
   assert.deepEqual(

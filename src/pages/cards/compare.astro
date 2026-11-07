@@ -13,8 +13,9 @@
 // hubs and finder render.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { getEntry } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
 import { getActiveCards, welcomeBonusDisplay } from "~/lib/cardsData";
+import { cardDifference } from "~/lib/cardDifference";
 import {
   formatEarnRate,
   topEarnEntry,
@@ -31,10 +32,24 @@ import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EligibilityChips from "~/components/cards/EligibilityChips.astro";
 import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
 import VerifiedStamp from "~/components/cards/VerifiedStamp.astro";
+import { cardHasUnresolvedTerms } from "~/lib/cardEligibility";
 
 const MAX_CARDS = 4;
 
 const allCards = getActiveCards();
+// Exact collection identities only: similar wording is not evidence of the
+// same reward currency. Ambiguous labels remain unknown for differences.
+const programmes = await getCollection("programs");
+const programmeLabels = new Map<string, string[]>();
+for (const programme of programmes) {
+  for (const label of new Set([programme.data.name, programme.data.currencyName])) {
+    programmeLabels.set(label, [...(programmeLabels.get(label) ?? []), programme.id]);
+  }
+}
+const differences = Object.fromEntries(allCards.map(card => {
+  const ids = programmeLabels.get(card.loyaltyProgram ?? "") ?? [];
+  return [card.slug, cardDifference(card, ids.length === 1 ? ids[0] : undefined)];
+}));
 
 // ── Selection ───────────────────────────────────────────────────────
 // This page used to read `Astro.url.searchParams.get("cards")` here and
@@ -88,9 +103,11 @@ const selectedSet = defaultSet;
 // (local-CATEGORY_LABELS leak of raw L2 keys like "partnerBrands" /
 // "online" / "utilities" / "everythingElse" to the reader).
 const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
-  const top = topEarnEntry(card.earnRates as Record<string, unknown>);
+  const top = topEarnEntry(card.earnRates as Record<string, unknown>, card._provenance);
   const r = card.earnRates;
-  const everythingElse = typeof r.everythingElse === "number" ? r.everythingElse : 0;
+  if (r.everythingElse === null || card.scopedEarnRates?.length || card._provenance?.earnRates === "needs-review" || card._provenance?.["earnRates.everythingElse"] === "needs-review")
+    return "No universal base rate confirmed — see the source-qualified reward rows.";
+  const everythingElse = r.everythingElse;
   const fmtRest = formatEarnRate(everythingElse, card.earnUnit, card.categories);
   if (!top || top.key === "everythingElse") {
     return `${fmtRest} all spend`;
@@ -147,7 +164,8 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
         </span>
       </summary>
       <form method="get" action="/cards/compare/" class="dp-compare-picker-form">
-        <fieldset>
+        <p id="dp-compare-selection" class="dp-compare-selection" role="status" aria-live="polite">{selectedSet.size} of {MAX_CARDS} selected. Choose cards, then update the comparison.</p>
+        <fieldset aria-describedby="dp-compare-selection">
           <legend class="sr-only">Select up to {MAX_CARDS} cards</legend>
           {bankGroups.map(([bankName, items]) => (
             <div class="dp-compare-picker-group">
@@ -172,7 +190,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
         </fieldset>
         <div class="dp-compare-picker-actions">
           <button type="submit" class="dp-ui-action dp-ui-primary">Update comparison</button>
-          <a href="/cards/compare/" class="dp-ui-action dp-ui-quiet">Reset to defaults</a>
+          <a href="/cards/compare/" class="dp-ui-action dp-ui-quiet" data-card-journey-reset>Reset to defaults</a>
           <span class="caveat">
             Select up to {MAX_CARDS} cards.
           </span>
@@ -190,7 +208,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
       None of the requested cards are in our database.
     </p>
     <p style="font-size: 14px; margin-top: 8px;">
-      <a href="/cards/compare/" style="color: var(--link);">
+      <a href="/cards/compare/" style="color: var(--link);" data-card-journey-reset>
         Reset to defaults →
       </a>
     </p>
@@ -199,6 +217,12 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   <div class="dp-compare-value-context">
     <CardValueScenario id="compare-card-value" compact />
   </div>
+
+  <div class="dp-compare-differences" data-card-differences hidden>
+    <button type="button" class="dp-ui-action dp-ui-secondary" data-differences-toggle aria-pressed="false">Show differences only</button>
+    <p data-differences-status role="status" aria-live="polite">All facts are shown. Unknown or conditional facts stay visible.</p>
+  </div>
+  <noscript><p class="dp-compare-nojs">This static comparison shows the default cards. Choosing other cards and differences-only mode require JavaScript. <a href="/cards/">Browse every card and its review →</a></p></noscript>
 
   <p class="dp-compare-overflow-hint">Scroll across to see more cards.</p>
 
@@ -233,47 +257,46 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
                 </h2>
                 <span class="network">{card.network}</span>
               </div>
-              <CompareCardArt slug={card.slug} deferred />
+              <CompareCardArt slug={card.slug} deferred size="identity" />
             </header>
 
-            <div class="dp-compare-col-section dp-compare-fee">
+            <div class="dp-compare-col-section dp-compare-fee" data-difference-section="fees">
+              <div class="dp-compare-row-label">Fees</div>
               <FeeBlock card={card.slug} />
             </div>
 
-            <div class="dp-compare-col-section dp-compare-eligibility">
+            <div class="dp-compare-col-section dp-compare-eligibility" data-difference-section="eligibility">
               <div class="dp-compare-row-label">Eligibility</div>
-              <EligibilityChips eligibility={card.eligibility} />
+              <EligibilityChips eligibility={card.eligibility} provenance={card._provenance} />
             </div>
 
-            <div class="dp-compare-col-section dp-compare-top">
+            <div class="dp-compare-col-section dp-compare-top" data-difference-section="top">
               <div class="dp-compare-row-label">Top category</div>
               <p class="line">{earnLine(card)}</p>
             </div>
 
-            <details class="dp-compare-reward-rates">
+            <details class="dp-compare-reward-rates" data-difference-section="rates">
               <summary>Earn rates<span class="sr-only"> for {card.name}</span></summary>
-              <EarnRateTable earnRates={card.earnRates} earnUnit={card.earnUnit} />
+              <EarnRateTable earnRates={card.earnRates} earnUnit={card.earnUnit} note={card._dataIssues?.earnRates} scopedEarnRates={card.scopedEarnRates} provenance={card._provenance} />
             </details>
 
             <CardValueLines card={card} slug={card.slug} />
 
-            {showWelcome && card.welcomeBonus && (
-              <div class="dp-compare-col-section dp-compare-welcome">
+              <div class="dp-compare-col-section dp-compare-welcome" data-difference-section="welcome">
                 <div class="dp-compare-row-label">Welcome offer</div>
-                <WelcomeBonusCallout
+                {showWelcome && card.welcomeBonus ? <WelcomeBonusCallout
                   welcomeBonus={card.welcomeBonus}
                   welcomeBonusDisplay={wbDisplay}
-                />
+                /> : <p class="line">Not published in our current record.</p>}
               </div>
-            )}
 
-            <div class="dp-compare-col-section dp-compare-programme">
+            <div class="dp-compare-col-section dp-compare-programme" data-difference-section="programme">
               <div class="dp-compare-row-label">Loyalty programme</div>
               <p class="line">{card.loyaltyProgram ?? "—"}</p>
             </div>
 
             <footer class="dp-compare-col-foot">
-              <VerifiedStamp lastVerified={card.lastVerified} />
+              <VerifiedStamp lastVerified={card.lastVerified} limited={cardHasUnresolvedTerms(card)} />
               <a href={`/cards/${card.slug}/`} class="dp-ui-action dp-ui-quiet">
                 Read review →
               </a>
@@ -309,82 +332,24 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   </div>
 </BaseLayout>
 
-<script is:inline define:vars={{ MAX_CARDS, defaultSlugs }}>
-  // Recovers the ?cards= selection this page could never render. See the
-  // note beside the frontmatter's selection block: the server read search
-  // params in a static build, so they were always empty and the picker's
-  // "Update comparison" button returned the same three cards every time.
-  (function () {
-    var grid = document.getElementById("dp-compare-grid");
-    var empty = document.getElementById("dp-compare-empty");
-    var countEl = document.getElementById("dp-compare-count");
-    var modeEl = document.getElementById("dp-compare-mode");
-    if (!grid || !empty || !countEl || !modeEl) return;
-
-    var cols = Array.prototype.slice.call(grid.querySelectorAll("[data-slug]"));
-    var known = Object.create(null);
-    cols.forEach(function (el) {
-      known[el.getAttribute("data-slug")] = el;
-    });
-
-    function requested() {
-      var raw = new URLSearchParams(window.location.search).getAll("cards");
-      // Accept both repeated ?cards=a&cards=b (what the form submits) and a
-      // single comma-joined value (what a hand-written link tends to use).
-      var slugs = [];
-      raw.forEach(function (v) {
-        String(v)
-          .split(",")
-          .forEach(function (part) {
-            var slug = part.trim();
-            // An unknown slug is dropped rather than emptying the page.
-            if (slug && known[slug] && slugs.indexOf(slug) < 0) slugs.push(slug);
-          });
-      });
-      return slugs.slice(0, MAX_CARDS);
-    }
-
-    function apply() {
-      var chosen = requested();
-      var isDefault = chosen.length === 0;
-      var show = isDefault ? defaultSlugs : chosen;
-
-      cols.forEach(function (el) {
-        el.hidden = show.indexOf(el.getAttribute("data-slug")) < 0;
-      });
-      // Keep the URL, visible comparison and keyboard order in sync.
-      grid.prepend.apply(grid, show.map(function (slug) { return known[slug]; }));
-      // An img inside a template is inert: the browser cannot fetch every
-      // card, or the default cards on a visit with an explicit selection.
-      show.forEach(function (slug) {
-        var template = known[slug].querySelector("[data-compare-art-template]");
-        if (!template) return;
-        var img = template.content.querySelector("img").cloneNode(true);
-        img.addEventListener("error", function () { img.remove(); }, { once: true });
-        template.replaceWith(img);
-      });
-
-      countEl.textContent = String(show.length);
-      modeEl.textContent = isDefault ? "top welcome-bonus cards" : "selected";
-      grid.dataset.visibleCount = String(show.length);
-
-      var none = show.length === 0;
-      empty.hidden = !none;
-      grid.hidden = none;
-
-      // The checkboxes are server-rendered against the defaults, so they need
-      // the same correction.
-      var boxes = document.querySelectorAll('.dp-compare-picker-form input[name="cards"]');
-      Array.prototype.forEach.call(boxes, function (box) {
-        box.checked = show.indexOf(box.value) >= 0;
-      });
-    }
-
-    apply();
-  })();
+<script is:inline type="application/json" id="compare-default-selection" set:html={JSON.stringify(defaultSlugs).replace(/</g, "\\u003c")}></script>
+<script is:inline type="application/json" id="card-difference-data" set:html={JSON.stringify(differences).replace(/</g, "\\u003c")}></script>
+<script>
+  import { initialiseCardComparison } from "~/scripts/cardComparison.mjs";
+  import { initialiseCardDifferences } from "~/scripts/cardDifferences";
+  const defaults = JSON.parse(document.getElementById("compare-default-selection")?.textContent || "[]");
+  initialiseCardComparison(defaults);
+  initialiseCardDifferences();
 </script>
 
 <style>
+  .dp-compare-differences, .dp-compare-nojs { width: min(var(--container-listing), 100%); padding: 0 32px; margin: 16px auto; }
+  .dp-compare-differences { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+  .dp-compare-differences[hidden], [data-difference-section][hidden] { display: none !important; }
+  .dp-compare-differences p, .dp-compare-nojs { font: 400 .8125rem/1.5 var(--font-ui); color: var(--ink-soft); }
+  .dp-compare-differences p { margin: 0; flex: 1 1 24ch; }
+  .dp-compare-differences button:disabled { cursor: not-allowed; color: var(--ink-soft); }
+  @media (max-width: 720px) { .dp-compare-differences, .dp-compare-nojs { padding-inline: 20px; } }
   .dp-compare-matchups {
     max-width: var(--container-listing);
     margin: 0 auto 40px;
@@ -546,13 +511,22 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     line-height: 1.4;
     color: var(--ink);
     cursor: pointer;
-    padding: 4px 0;
+    padding: 8px;
+    border: 1px solid transparent;
+    border-radius: var(--dp-ui-radius-small, 6px);
     min-block-size: var(--dp-ui-control, 44px);
   }
   .dp-compare-picker-group input {
-    accent-color: var(--ink);
+    accent-color: var(--green);
     flex-shrink: 0;
+    inline-size: 16px;
+    block-size: 16px;
+    margin: 0;
   }
+  .dp-compare-selection { margin: 0 0 12px; color: var(--ink-soft); font: 500 .8125rem/1.5 var(--font-ui); }
+  .dp-compare-picker-group label:has(input:checked) { background: var(--shade-1); border-color: var(--line); }
+  .dp-compare-picker-group label:has(input:focus-visible) { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-compare-picker-group label:has(input:disabled) { color: var(--ink-soft); cursor: not-allowed; }
   .dp-compare-picker-group label span { min-width: 0; overflow-wrap: anywhere; }
   .dp-compare-picker-actions {
     display: flex;
@@ -614,7 +588,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
   .dp-compare-col > .dp-compare-col-head {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: flex-start;
     gap: 12px;
     border: 0;
@@ -623,6 +597,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     border-start-start-radius: 7px;
     border-start-end-radius: 7px;
   }
+  .dp-compare-col-head :global(.dp-compare-card-art) { order: -1; }
   .dp-compare-identity {
     display: grid;
     min-width: 0;
@@ -741,20 +716,20 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   @supports (grid-template-rows: subgrid) {
     .dp-compare-grid { row-gap: 0; align-items: stretch; }
     .dp-compare-col {
-      grid-row: span 9;
+      grid-row: span var(--compare-rows, 9);
       grid-template-rows: subgrid;
       align-items: start;
     }
     .dp-compare-col > * { align-self: stretch; }
-    .dp-compare-col-head { grid-row: 1; }
-    .dp-compare-fee { grid-row: 2; }
-    .dp-compare-eligibility { grid-row: 3; }
-    .dp-compare-top { grid-row: 4; }
-    .dp-compare-reward-rates { grid-row: 5; }
-    .dp-compare-col > :global(.dp-card-value-lines) { grid-row: 6; }
-    .dp-compare-welcome { grid-row: 7; }
-    .dp-compare-programme { grid-row: 8; }
-    .dp-compare-col-foot { grid-row: 9; }
+    .dp-compare-col-head { grid-row: var(--compare-row-head, 1); }
+    .dp-compare-fee { grid-row: var(--compare-row-fees, 2); }
+    .dp-compare-eligibility { grid-row: var(--compare-row-eligibility, 3); }
+    .dp-compare-top { grid-row: var(--compare-row-top, 4); }
+    .dp-compare-reward-rates { grid-row: var(--compare-row-rates, 5); }
+    .dp-compare-col > :global(.dp-card-value-lines) { grid-row: var(--compare-row-value, 6); }
+    .dp-compare-welcome { grid-row: var(--compare-row-welcome, 7); }
+    .dp-compare-programme { grid-row: var(--compare-row-programme, 8); }
+    .dp-compare-col-foot { grid-row: var(--compare-row-foot, 9); }
   }
 
   @media (max-width: 840px) {

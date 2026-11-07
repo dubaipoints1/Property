@@ -1,4 +1,5 @@
 ---
+import { cardHasUnresolvedTerms, cardSalaryLabel } from "~/lib/cardEligibility";
 import BankHubLayout from "~/layouts/BankHubLayout.astro";
 import CardImage from "~/components/CardImage.astro";
 import { getCollection, getEntry, render } from "astro:content";
@@ -27,9 +28,10 @@ const topBonusAed = offers.length === 0
   ? undefined
   : Math.max(...offers.flatMap((o) => o.salaryBands.map((b) => b.rewardAmount)));
 
-const latestVerified = allCards.length === 0
+const fullyCheckedCards = allCards.filter(c => !cardHasUnresolvedTerms(c));
+const latestVerified = fullyCheckedCards.length === 0
   ? undefined
-  : new Date(Math.max(...allCards.map((c) => new Date(c.lastVerified).getTime())));
+  : new Date(Math.max(...fullyCheckedCards.map((c) => new Date(c.lastVerified).getTime())));
 
 // Pre-compute the per-card tile facts in the frontmatter (TS generics like
 // `as Record<string, unknown>` can't live inside an Astro template expression
@@ -37,18 +39,11 @@ const latestVerified = allCards.length === 0
 // facts (fee, salary bar, top earn rate) so the issuer line-up is scannable
 // without opening every review.
 const cardTiles = allCards.map((c) => {
-  const top = topEarnEntry(c.earnRates as Record<string, unknown>);
+  const top = topEarnEntry(c.earnRates as Record<string, unknown>, c._provenance);
   const feeLabel = annualFeeLabel(c);
   // Provenance-gated salary label — needs-review renders "Pending" so
   // the bank hub doesn't surface an unverified AED figure as confirmed.
-  const salaryLabel =
-    c.eligibility.invitationOnly === true
-      ? "By invitation"
-      : c._provenance?.eligibility === "needs-review"
-        ? "Pending"
-        : c.eligibility.minSalary > 0
-          ? `${formatAED(c.eligibility.minSalary)}/mo`
-          : "No minimum";
+  const salaryLabel = cardSalaryLabel(c, { perMonth: true });
   return {
     slug: c.slug,
     name: c.name,

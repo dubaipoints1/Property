@@ -1,0 +1,675 @@
+{
+  "version": 1,
+  "refreshMode": "manual-primary",
+  "cards": [
+    {
+      "slug": "hsbc-cash-plus",
+      "bank": "hsbc",
+      "productUrl": "https://www.hsbc.ae/credit-cards/products/cash-plus/",
+      "kfsUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/kfs-credit-cards.pdf",
+      "sourceFixtureIds": [
+        "hsbc-cash-plus",
+        "hsbc-card-kfs"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_bank-parsers.ts",
+        "export": "parseHsbcNewProduct",
+        "sha256": "efd6ce0cf4420a7e71b7184c0a070c4dff3eb74be4fa40a1944c9fbc0b332bd0",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-primary-card-fields.json",
+          "sha256": "44c37ef39727d372768b0883015da9a81ab49669770d8058fd76b5515e462025"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-hsbc-new-products.json",
+          "sha256": "51a8d89e9a2d8420eae42f222c16f354913e3487b3029165d820b92bf05473e2"
+        }
+      ]
+    },
+    {
+      "slug": "hsbc-skywards-infinite",
+      "bank": "hsbc",
+      "productUrl": "https://www.hsbc.ae/credit-cards/products/skywards-infinite/",
+      "kfsUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/kfs-credit-cards.pdf",
+      "sourceFixtureIds": [
+        "hsbc-skywards-infinite",
+        "hsbc-card-kfs"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_bank-parsers.ts",
+        "export": "parseHsbcNewProduct",
+        "sha256": "efd6ce0cf4420a7e71b7184c0a070c4dff3eb74be4fa40a1944c9fbc0b332bd0",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-primary-card-fields.json",
+          "sha256": "44c37ef39727d372768b0883015da9a81ab49669770d8058fd76b5515e462025"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-hsbc-new-products.json",
+          "sha256": "51a8d89e9a2d8420eae42f222c16f354913e3487b3029165d820b92bf05473e2"
+        }
+      ]
+    },
+    {
+      "slug": "hsbc-skywards-signature",
+      "bank": "hsbc",
+      "productUrl": "https://www.hsbc.ae/credit-cards/products/skywards-signature/",
+      "kfsUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/kfs-credit-cards.pdf",
+      "sourceFixtureIds": [
+        "hsbc-skywards-signature",
+        "hsbc-card-kfs"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_bank-parsers.ts",
+        "export": "parseHsbcNewProduct",
+        "sha256": "efd6ce0cf4420a7e71b7184c0a070c4dff3eb74be4fa40a1944c9fbc0b332bd0",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-primary-card-fields.json",
+          "sha256": "44c37ef39727d372768b0883015da9a81ab49669770d8058fd76b5515e462025"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-hsbc-new-products.json",
+          "sha256": "51a8d89e9a2d8420eae42f222c16f354913e3487b3029165d820b92bf05473e2"
+        }
+      ]
+    },
+    {
+      "slug": "adib-exceed-visa",
+      "bank": "adib",
+      "productUrl": "https://www.adib.com/en/pages/exceed-visa-covered-card.aspx",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "exceed-visa-covered-card.aspx",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31",
+        "adib-exceed-programme"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-etihad-guest-gold",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/etihad-guest-cards/adib-etihad-guest-visa-gold-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "adib-etihad-guest-visa-gold-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-etihad-guest-platinum",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/etihad-guest-cards/adib-etihad-guest-visa-platinum-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "adib-etihad-guest-visa-platinum-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-etihad-guest-infinite",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/etihad-guest-cards/adib-etihad-guest-visa-infinite-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "adib-etihad-guest-visa-infinite-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-smiles-visa-classic",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/smiles-covered-cards/adib-smiles-visa-classic-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "adib-smiles-visa-classic-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-smiles-visa-signature",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/smiles-covered-cards/adib-smiles-visa-signature-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "adib-smiles-visa-signature-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-share-visa-infinite",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/share-visa-cards/share-visa-infinite-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "share-visa-infinite-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-share-visa-platinum",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/share-visa-cards/share-visa-platinum-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "share-visa-platinum-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-booking-visa-signature",
+      "bank": "adib",
+      "productUrl": "https://www.adib.com/en/Pages/booking-signature-card.aspx",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "booking-signature-card.aspx",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31",
+        "adib-exceed-programme"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-skywards-visa-signature",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/emirates-skywards-cards/emirates-skywards-visa-signature-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "emirates-skywards-visa-signature-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-marriott-bonvoy-visa-signature",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/marriott-cards/marriott-bonvoy-visa-signature-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "marriott-bonvoy-visa-signature-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-marriott-bonvoy-visa-infinite",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/marriott-cards/marriott-bonvoy-visa-infinite-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "marriott-bonvoy-visa-infinite-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-aldar-visa-platinum",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/aldar-cards/aldar-visa-platinum-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "aldar-visa-platinum-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    },
+    {
+      "slug": "adib-aldar-visa-infinite",
+      "bank": "adib",
+      "productUrl": "https://www.adib.ae/en/personal/cards/aldar-cards/aldar-visa-infinite-card",
+      "kfsUrl": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "sourceFixtureIds": [
+        "aldar-visa-infinite-card",
+        "adib-kfs",
+        "adib-soc",
+        "adib-terms-v31"
+      ],
+      "parser": {
+        "module": "scripts/scrape/propose-adib-primary.ts",
+        "export": "parseAdibCanonicalCandidates",
+        "sha256": "71ed3a88decc40426cc3d48c71d4ea804312a8d47e92ed1b68f04a1f50b3eeeb",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_adib-primary.ts",
+            "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa"
+          },
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-primary.json",
+          "sha256": "16056cfe65555dfdeaa591d19627482228f4e1d186cb1a994e64d1861c5a3607"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-details.json",
+          "sha256": "7a919ee89d6faa29625175d1b8b6f20c3724a6d25fb70f0a6eb5ed66b2752cf6"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-adib-terms.json",
+          "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
+        }
+      ]
+    }
+  ]
+}

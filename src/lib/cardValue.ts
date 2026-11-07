@@ -2,6 +2,7 @@
 // are canonical L2 terms, not the Finder's cross-unit ranking heuristic.
 import { SPEND_PRESETS, presetTotal } from "../data/spendProfiles";
 import type { CardData } from "./cardsData";
+import { cardRewardModelIssue } from "./cardEarnModel";
 import {
   annualFeeWaiverDisplay,
   formatAED,
@@ -40,11 +41,6 @@ type CardValue = {
 // Account plans and statement-wide tiers in these L2 perks are not numeric
 // inputs to the model. Do not turn a plan's advertised rate or Liv's floor
 // into the reader's rate. Revisit only with typed plan/tier and cap terms.
-const unmodelledRewards = new Map<string, string>([
-  ["wio-credit", "Cashback depends on your Wio plan, its fee and a cap shared with My Money. The Standard plan earns none."],
-  ["liv-cashback", "Your monthly spend tier and credit-limit cap change the cashback. This example cannot calculate both."],
-  ["liv-cashback-plus", "Your monthly spend tier and credit-limit cap change the cashback. This example cannot calculate both."],
-]);
 
 /** Already-stored VAT convention; do not change the issuer figures in L2. */
 function feeWithVAT(amount: number, vatPolicy: CardData["vatPolicy"]): number {
@@ -69,7 +65,7 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
     "earnRates._caps.min_monthly_spend_to_qualify_aed"].some(pending);
   const supportedCaps = cash || (caps?.monthly_max_aed == null && caps?.per_category?.everythingElse == null);
   const priced = cash ? 1 : published;
-  let rewardIssue = unmodelledRewards.get(slug) ?? "";
+  let rewardIssue = cardRewardModelIssue(card, slug);
   let rate: number | null = null;
   if (rewardIssue) {
     // A typed base rate alone does not settle these cases.
@@ -116,6 +112,9 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
   if (joinPending) {
     firstFee = null;
     firstFeeIssue = "Confirm the joining fee with the issuer.";
+  } else if (waiverPending) {
+    firstFee = null;
+    firstFeeIssue = "Confirm the first-year annual fee and waiver conditions with the issuer.";
   } else if (assumesYearOneWaiver) {
     firstFee = feeWithVAT(joining ?? 0, card.vatPolicy);
     firstFeeIssue = "";

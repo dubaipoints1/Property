@@ -207,6 +207,24 @@ export function parsePercent(input: string): number | null {
   return Number.isFinite(n) ? n : null;
 }
 
+/** Strict numeric token for scoped issuer evidence. Unlike the legacy broad
+ * prose parser, this refuses malformed comma grouping and partial tokens.
+ * A missing/invalid number is null, never a zero fee or salary. */
+export const SOURCE_NUMBER = String.raw`(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?`;
+
+export function parseSourceNumber(token: string): number | null {
+  if (!new RegExp(`^${SOURCE_NUMBER}$`).test(token)) return null;
+  const value = Number(token.replaceAll(",", ""));
+  return Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+/** AED must be explicit in the already-scoped token. Currency icons are not
+ * silently interpreted here; they need separate issuer unit evidence. */
+export function parseSourceAED(token: string): number | null {
+  const match = token.match(new RegExp(`^AED[ \\t]*(${SOURCE_NUMBER})$`, "i"));
+  return match ? parseSourceNumber(match[1]) : null;
+}
+
 /**
  * Parse a UAE minimum monthly salary in AED.
  *

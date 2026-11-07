@@ -4,7 +4,8 @@
 # dispatching this workflow and reading the job log through the GitHub API.
 # Costs no Firecrawl credits. See scripts/ci/fetch-sources.mjs.
 #
-# Read-only: contents: read, no writes, no issues, no state. The URLs go
+# No repository writes or issues; optional evidence lives only in runner temp
+# and an explicitly requested seven-day artifact. The URLs go
 # through an environment variable, never interpolated into the script, and
 # anything that is not an https URL is refused.
 
@@ -17,6 +18,10 @@ on:
         description: "Space-separated https URLs to read (max 10)"
         type: string
         required: true
+      archive:
+        description: "Optional raw public-source evidence and full extracted text (no site-data writes)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -28,6 +33,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -42,4 +49,14 @@ jobs:
       - name: Read sources
         env:
           SOURCE_URLS: ${{ inputs.urls }}
+          SOURCE_ARCHIVE: ${{ inputs.archive && '1' || '0' }}
         run: node scripts/ci/fetch-sources.mjs
+
+      - name: Upload explicitly requested source evidence
+        if: ${{ always() && inputs.archive }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-source-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/dubaipoints-source-archive/
+          retention-days: 7
+          if-no-files-found: error

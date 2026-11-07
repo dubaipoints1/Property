@@ -38,6 +38,7 @@ import EarnRateTable from "./EarnRateTable.astro";
 import EligibilityChips from "./EligibilityChips.astro";
 import WelcomeBonusCallout from "./WelcomeBonusCallout.astro";
 import VerifiedStamp from "./VerifiedStamp.astro";
+import { cardHasUnresolvedTerms, cardSalaryLabel } from "~/lib/cardEligibility";
 import { isStale as isStaleAt } from "~/lib/verification";
 
 interface Props {
@@ -58,7 +59,7 @@ const bankName = bankEntry?.data.name ?? card.bank;
 // (audit finding, 1 June 2026 — the prior local topEarnRate + minimal
 // CATEGORY_LABELS table leaked raw L2 keys like "partnerBrands" and
 // "everythingElse" to readers because the local map omitted them).
-const top = topEarnEntry(card.earnRates as Record<string, unknown>);
+const top = topEarnEntry(card.earnRates as Record<string, unknown>, card._provenance);
 const earnLine = top
   ? `${formatEarnRate(top.value, card.earnUnit, card.categories)} ${CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key}`
   : null;
@@ -110,7 +111,7 @@ if (variant === "full") {
   if (!tagline && top) {
     const lbl = CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key;
     const feeStr =
-      card.annualFee.amount === 0
+      feeLabel.amount === "Pending" ? "annual fee pending" : card.annualFee.amount === 0
         ? "no annual fee"
         : `${feeLabel.amount} a year`;
     tagline = `${formatEarnRate(top.value, card.earnUnit, card.categories)} on ${lbl} — ${feeStr}.`;
@@ -155,6 +156,11 @@ if (variant === "full") {
       <FeeBlock
         annualFee={card.annualFee}
         fxFee={card.fxFee}
+        fxFeeScope={card.fxFeeScope}
+        fxFeeVatTreatment={card.fxFeeVatTreatment}
+        fxFeeUpperBound={card.fxFeeUpperBound}
+        fxFeeProvenance={card._provenance?.fxFee}
+        provenance={card._provenance}
         waiver={card.annualFeeWaiver}
         joiningFee={card.joiningFee}
       />
@@ -180,6 +186,9 @@ if (variant === "full") {
       <EarnRateTable
         earnRates={card.earnRates}
         earnUnit={card.earnUnit}
+        note={card._dataIssues?.earnRates}
+        scopedEarnRates={card.scopedEarnRates}
+        provenance={card._provenance}
       />
     </div>
   )}
@@ -202,13 +211,7 @@ if (variant === "full") {
       <div>
         <dt>Min salary</dt>
         <dd class={card._provenance?.eligibility === "needs-review" ? "is-unverified" : undefined}>
-          {card.eligibility.invitationOnly === true
-            ? "Invitation only"
-            : card._provenance?.eligibility === "needs-review"
-            ? "Pending"
-            : card.eligibility.minSalary > 0
-            ? `AED ${card.eligibility.minSalary.toLocaleString()}/mo`
-            : "No minimum"}
+          {cardSalaryLabel(card, { perMonth: true })}
         </dd>
       </div>
     </dl>
@@ -219,13 +222,13 @@ if (variant === "full") {
       <div class="lbl">Eligibility</div>
       <EligibilityChips
         eligibility={card.eligibility}
-        eligibilityProvenance={card._provenance?.eligibility}
+        provenance={card._provenance}
       />
     </div>
   )}
 
   <footer class="foot">
-    {showVerified && <VerifiedStamp lastVerified={card.lastVerified} />}
+    {showVerified && <VerifiedStamp lastVerified={card.lastVerified} limited={cardHasUnresolvedTerms(card)} />}
     <a class="cta" href={`/cards/${card.slug}/`}>
       Read review <span aria-hidden="true">→</span>
     </a>

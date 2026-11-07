@@ -1,0 +1,13 @@
+<nav class="dp-filter-tokens" data-card-filter-tokens aria-label="Applied card filters" hidden>
+  <p>Applied filters</p>
+  <ul data-filter-token-items></ul>
+  <a class="dp-ui-action dp-ui-quiet" href="/cards/finder/" data-clear-card-filters data-card-journey-reset>Clear filters, keep selection</a>
+</nav>
+<style>
+  .dp-filter-tokens { margin-block: 16px; }
+  .dp-filter-tokens[hidden] { display: none; }
+  p { margin: 0 0 6px; color: var(--ink-soft); font: 600 .75rem/1.5 var(--font-ui); }
+  ul { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
+  ul :global(a) { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--green); font: 500 .8125rem/1.4 var(--font-ui); overflow-wrap: anywhere; }
+  ul :global(a:focus-visible) { outline: 2px solid var(--green); outline-offset: 3px; }
+</style>

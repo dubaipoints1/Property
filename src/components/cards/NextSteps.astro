@@ -17,7 +17,7 @@ interface Props {
   bankSlug?: string;
   bankName?: string;
   earnUnit?: string;
-  minSalary?: number;
+  minSalary?: number | null;
   /** Slugs of the closest rivals, best first (the layout's related cards). */
   rivals: Array<{ slug: string; name: string }>;
 }
@@ -29,7 +29,7 @@ const compareHref = `/cards/compare/?cards=${[slug, ...compareWith.map((r) => r.
 
 const prefer = /cashback/i.test(earnUnit) ? "cashback" : /mile|avios/i.test(earnUnit) ? "miles" : "points";
 const finderParams = new URLSearchParams({ prefer });
-if (minSalary > 0) finderParams.set("salary", String(minSalary));
+if (typeof minSalary === "number" && minSalary > 0) finderParams.set("salary", String(minSalary));
 const finderHref = `/cards/finder/?${finderParams.toString()}`;
 
 const now = Date.now();
@@ -48,7 +48,7 @@ const items = [
   {
     href: finderHref,
     title: "Find your best card",
-    meta: `Ranked for your salary and spending${minSalary > 0 ? `, starting from ${formatAED(minSalary)} a month` : ""}`,
+    meta: `Ranked for your salary and spending${typeof minSalary === "number" && minSalary > 0 ? `, starting from ${formatAED(minSalary)} a month` : ""}`,
   },
   ...(liveOffers.length > 0 && bankName
     ? [{

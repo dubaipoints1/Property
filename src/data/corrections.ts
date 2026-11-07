@@ -37,6 +37,28 @@ export interface Correction {
 
 export const corrections: readonly Correction[] = [
   {
+    date: new Date("2026-11-07"),
+    title: "Residual comparison claims about salary floors and unrestricted returns",
+    cardsAffected: ["liv-cashback", "wio-credit", "adcb-365-cashback", "mashreq-cashback", "hsbc-live-plus"],
+    original:
+      'our curated Liv/Wio comparison still said both had no salary floor, despite the earlier salary corrections. Other comparison verdicts treated Liv as ungated, widened ADCB subscription rewards or implied unrestricted Mashreq returns.',
+    corrected:
+      'the comparison decks and verdicts now retain the account-plan, spend-tier, credit-limit and merchant-channel conditions. They no longer claim that either Liv or Wio has no salary floor, and they do not declare a return winner where the conditions are not modelled. The affected HSBC comparison also states that unresolved eligibility prevents a qualification recommendation. These are corrections to our copy, not newly announced issuer changes; the previously corrected card figures remain unchanged.',
+  },
+  {
+    date: new Date("2026-11-07"),
+    title: "Reward restrictions, alternative eligibility and unconfirmed fee bases",
+    cardsAffected: [
+      "mashreq-cashback", "hsbc-live-plus", "sc-platinum-x",
+      "adcb-365-cashback", "adcb-betaqti", "adcb-lulu-platinum",
+      "adcb-essential-cashback", "adcb-shukran", "adcb-talabat",
+    ],
+    original:
+      'we described <a href="/cards/mashreq-cashback/">Mashreq Cashback</a> as uncapped and supplied unrestricted return examples. Some ADCB reviews presented salary as the only qualifying route, and our ADCB subscription wording was broader than the eligible merchants. HSBC Live+ salary and interest claims and a Standard Chartered interest basis also lacked consistent source support; some FX labels did not distinguish issuer-only processing from total conversion cost.',
+    corrected:
+      'Mashreq limits eligible statement-cycle spending to the assigned credit limit; its unmodelled return examples are withdrawn, and conflicting general-spend wording is pending reconciliation. The captured ADCB product pages offer salary <em>or</em> an eligible-credit-limit route: the old numeric records are retained for audit but the qualification claims are Pending. The <a href="https://www.adcb.com/en/multimedia/pdfs/2026/june/home-digital-subscription-guide-en.pdf">ADCB eligibility guide</a> narrows subscriptions, reduced merchant categories and payment channels. HSBC Live+ conflicting salary/interest fields remain Pending; its issuer-processing fee is labelled with its VAT and separate possible scheme-charge basis. The <a href="/cards/sc-platinum-x/">Standard Chartered review</a> uses the source-published monthly retail rate without inferring an annual equivalent. Reviews, relevant guide examples and shared displays carry the limitations. These are corrections to our presentation, not newly announced bank changes or whole-card re-verification; unreviewed fields and original verification dates were not silently reset.',
+  },
+  {
     date: new Date("2026-11-05"),
     title: "Liv Cashback eligibility and Cashback+ fee VAT treatment",
     cardsAffected: ["liv-cashback", "liv-cashback-plus"],

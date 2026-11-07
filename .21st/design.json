@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "project": {
+    "name": "dubaipoints",
+    "productType": "UAE travel, cards and loyalty editorial publication with financial decision tools",
+    "stack": [
+      "astro",
+      "preact",
+      "tailwind-v4"
+    ]
+  },
+  "sources": {
+    "tokens": [
+      "src/styles/global.css",
+      "src/styles/runway-editorial.css",
+      "src/styles/runway-reading.css",
+      "src/styles/reader-flow.css"
+    ],
+    "components": [
+      "src/components",
+      "src/layouts"
+    ],
+    "assets": [
+      "public/images",
+      "src/assets"
+    ],
+    "instructions": [
+      "AGENTS.md",
+      "CLAUDE.md"
+    ]
+  },
+  "design": {
+    "colorMode": "light-dark",
+    "colors": {
+      "background": "var(--bg)",
+      "surface": "var(--paper)",
+      "text": "var(--ink)",
+      "secondaryText": "var(--ink-soft)",
+      "primary": "var(--green)",
+      "trust": "var(--gold-ink)",
+      "border": "var(--line)"
+    },
+    "typography": {
+      "display": "Newsreader Variable via --font-display",
+      "body": "Geist Variable via --font-ui"
+    },
+    "spacing": {
+      "gutter": "clamp(16px, 3vw, 32px)",
+      "readingMeasure": "680px prose with fluid gutters"
+    },
+    "radius": {
+      "control": "8px",
+      "small": "6px",
+      "panel": "12px",
+      "editorial": "mostly open, unboxed reading"
+    },
+    "shadows": {},
+    "motion": {
+      "existing": "Native WAAPI Tween/useFlip with reduced-motion support; homepage scroll-loaded reel",
+      "new": "Restrained feedback; no autoplay rails or hidden-until-animation body copy"
+    },
+    "density": "Open editorial reading with compact, explicit decision controls"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": [
+      "Native HTML links/buttons/inputs/select/details/table",
+      "Existing Astro components and Preact islands",
+      "House .dp-* CSS tokens"
+    ],
+    "patterns": [
+      "One contents system per article/programme",
+      "Image-led editorial discovery",
+      "Contained real issuer card art",
+      "Context-preserving Finder/review/Compare and salary journeys",
+      "Manual, keyboard-operable offer rails"
+    ]
+  },
+  "constraints": {
+    "must": [
+      "Keep the production homepage unchanged until owner selects a rendered direction; homepage redesign and animation are now permitted in private review prototypes",
+      "Preserve all financial data, calculation/ranking logic, URLs, sources and visible image credits until a separately reviewed correction is implemented",
+      "Light/dark, responsive, keyboard, touch, reduced-motion and no-JS fallbacks",
+      "Retain Salary Tracker one-band-or-all selection and independent multi-select offer filters",
+      "No production release before owner sees the light/dark previews",
+      "No secrets, paid provider generation or newsletter restoration"
+    ],
+    "avoid": [
+      "Blind React/shadcn/Motion/Radix dependency installation",
+      "Unselected palette/font swap in the delivered site; exploration is allowed but is not approval",
+      "Autoplay offer carousels, cursor effects and heavy 3D",
+      "Duplicate TOCs or inaccessible custom controls",
+      "Copying code with unresolved licence or demo imagery",
+      "Fabricated figures, testimonials, audience numbers or approval guarantees"
+    ]
+  },
+  "decisions": [
+    {
+      "date": "2026-11-06",
+      "decision": "Owner authorised loading optimisation first, then sourced card refresh/expansion, then native comparison tray, differences view, applied-filter summaries, mobile filters and optional guided Finder. Preserve selected Aperture/Cool Editorial identity and real data/provenance; test and show light/dark previews before normal protected release. Analytics timing and paid-refresh trigger changes require the separately requested owner choices; no gate waiver.",
+      "source": "Mostafa: Fix the loading speed first, refresh and expand the card coverage, then add those 21st improvements. Test everything before making it live."
+    },
+    {
+      "date": "2026-11-05",
+      "decision": "Owner directed implementation of the researched 21st shortlist. Adapt patterns in-house across templates; research report and catalogue are references, not source-copying clearance. Preserve approved Runway/Cool Editorial interiors, Newsreader/Geist and protected homepage. Stage for owner previews before release.",
+      "source": "Mostafa: Do it all; 21st resource research report in the current project conversation"
+    },
+    {
+      "date": "2026-11-06",
+      "decision": "Owner reopened the whole site, including homepage and animation, for review and prototype exploration. This supersedes the protected-homepage constraint for candidates, not for production delivery. No new palette, font or direction is selected and no redesign release is approved.",
+      "source": "Mostafa: Do a whole review. We can change if we want even the home page. Animation"
+    },
+    {
+      "date": "2026-11-06",
+      "decision": "Owner selected Journey Aperture and directed 'Ok merge it all'. Integrate only the selected homepage motion and release the pending native editorial/UI tranche after genuine Council, runtime, performance and exact-head CI gates. No unselected full-page composition or palette/type change; no waiver of blockers.",
+      "source": "Mostafa's selected-direction and explicit merge instructions in the project conversation"
+    }
+  ],
+  "evidence": [
+    {
+      "fact": "project.instructions",
+      "source": "AGENTS.md"
+    },
+    {
+      "fact": "project.instructions",
+      "source": "CLAUDE.md"
+    },
+    {
+      "fact": "project.stack:astro",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:tailwind-v4",
+      "source": "package.json"
+    }
+  ],
+  "activeExploration": {
+    "date": "2026-11-06",
+    "scope": "Homepage motion candidates only; owner likes the existing animated journey but asks whether 21st can improve it",
+    "directions": [
+      "Journey Aperture",
+      "Travel Mosaic",
+      "Cinema Cut"
+    ],
+    "selection": "Journey Aperture",
+    "selectedAt": "2026-11-06",
+    "selectionScope": "Owner selected the homepage motion direction for staging; not a palette, full-page composition or production-release approval",
+    "referenceBrief": ".council/briefs/2026-11-06-homepage-motion-options.md",
+    "release": "Merge authorised on 2026-11-06 subject to release gates; candidate integrated, not yet merged or live"
+  },
+  "generatedAt": "2026-11-05T18:21:02.992Z"
+}

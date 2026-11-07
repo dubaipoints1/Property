@@ -5,15 +5,14 @@ import CompareCardArt from "~/components/cards/CompareCardArt.astro";
 import FeeBlock from "~/components/cards/FeeBlock.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EligibilityChips from "~/components/cards/EligibilityChips.astro";
+import { cardHasUnresolvedTerms, cardSalaryLabel } from "~/lib/cardEligibility";
 import VerifiedStamp from "~/components/cards/VerifiedStamp.astro";
 import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
 import { welcomeBonusDisplay } from "~/lib/cardsData";
-import { formatAED } from "~/lib/cardsDataFormat";
 import { getEntry } from "astro:content";
 interface Props { card: CardData & { slug: string }; bankName: string; }
 const { card, bankName } = Astro.props;
 const bonus = card.welcomeBonus ? welcomeBonusDisplay(card.welcomeBonus) : "";
-const salaryPending = card._provenance?.eligibility === "needs-review" || card._provenance?.["eligibility.minSalary"] === "needs-review";
 const editorial = await getEntry("cards", card.slug);
 const tagline = editorial?.data.editorTake?.trim().replace(/\s+/g, " ").match(/^[^.!?]+[.!?](?:\s|$)/)?.[0]?.trim();
 ---
@@ -22,14 +21,18 @@ const tagline = editorial?.data.editorTake?.trim().replace(/\s+/g, " ").match(/^
     <div class="brand"><BankLogo slug={card.bank} name={bankName} size="sm" decorative /><span>{bankName}</span></div>
     <span class="network">{card.network}</span>
   </header>
-  <div class="identity"><h3><a href={`/cards/${card.slug}/`}>{card.name}</a></h3><CompareCardArt slug={card.slug} /></div>
+  <div class="identity"><h3><a href={`/cards/${card.slug}/`}>{card.name}</a></h3><CompareCardArt slug={card.slug} size="identity" /></div>
   {card.discontinuedForNewApplicants && <p class="dp-card-chip is-warn">No longer accepting applications</p>}
   <div class="dp-finder-key-facts">
     <FeeBlock card={card.slug} />
-    <dl><dt>Minimum monthly salary</dt><dd>{card.eligibility.invitationOnly ? "Invitation only" : salaryPending ? "Confirmation pending" : card.eligibility.minSalary > 0 ? formatAED(card.eligibility.minSalary) : "No minimum"}</dd></dl>
+    <dl><dt>Minimum monthly salary</dt><dd>{cardSalaryLabel(card, { pendingLabel: "Confirmation pending" })}</dd></dl>
   </div>
   <slot name="match-summary" />
   <div class="dp-finder-card-actions">
+    <label class="dp-finder-select" data-finder-select-control hidden>
+      <input type="checkbox" data-card-select={card.slug} aria-label={`Select ${card.name} to compare`} />
+      <span>Select to compare</span>
+    </label>
     <a class="dp-ui-action dp-ui-secondary" href={`/cards/${card.slug}/`}>Read review <span class="sr-only">of {card.name}</span> →</a>
     <a class="dp-ui-action dp-ui-quiet" href={`/cards/compare/?cards=${card.slug}`} data-finder-compare-card>Compare <span class="sr-only">{card.name}</span> →</a>
   </div>
@@ -39,30 +42,39 @@ const tagline = editorial?.data.editorTake?.trim().replace(/\s+/g, " ").match(/^
     {tagline && <p>{tagline}</p>}
     {bonus && card.welcomeBonus && <WelcomeBonusCallout welcomeBonus={card.welcomeBonus} welcomeBonusDisplay={bonus} />}
     <div class="dp-finder-detail-label">Earn rates</div>
-    <EarnRateTable earnRates={card.earnRates} earnUnit={card.earnUnit} />
+    <EarnRateTable earnRates={card.earnRates} earnUnit={card.earnUnit} note={card._dataIssues?.earnRates} scopedEarnRates={card.scopedEarnRates} provenance={card._provenance} />
     <div class="dp-finder-detail-label">Eligibility</div>
-    <EligibilityChips eligibility={card.eligibility} eligibilityProvenance={card._provenance?.eligibility} />
+    <EligibilityChips eligibility={card.eligibility} provenance={card._provenance} />
   </details>
-  <footer><VerifiedStamp lastVerified={card.lastVerified} /></footer>
+  <footer><VerifiedStamp lastVerified={card.lastVerified} limited={cardHasUnresolvedTerms(card)} /></footer>
 </article>
 <style>
-  .dp-finder-summary-card { min-width: 0; padding: clamp(16px, 2vw, 24px); display: grid; align-content: start; gap: 14px; background: var(--paper); border-block: 1px solid var(--line); font-family: var(--font-ui); }
+  .dp-finder-summary-card { min-width: 0; padding: clamp(16px, 2vw, 24px); display: grid; align-content: start; gap: 16px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--dp-ui-radius, 12px); font-family: var(--font-ui); }
   header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
   .brand { display: flex; align-items: center; gap: 8px; color: var(--green); font-size: .6875rem; font-weight: 650; }
   .network { color: var(--ink-soft); font-size: .6875rem; }
-  .identity { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .identity { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   h3 { margin: 0; min-width: 0; font: 600 clamp(1.25rem, 1.7vw, 1.5rem)/1.2 var(--font-display); letter-spacing: -.02em; text-wrap: balance; }
   h3 a { color: var(--ink); }
-  .dp-finder-key-facts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(100px, .8fr); gap: 12px; }
+  .dp-finder-key-facts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(100px, .8fr); gap: 12px; padding-block-start: 14px; border-block-start: 1px solid var(--line-soft); }
   .dp-finder-key-facts :global(.dp-fee-block) { margin: 0; }
   .dp-finder-key-facts :global(.dp-fee-block .amt) { font-size: 1.5rem; }
   dl { margin: 0; min-width: 0; padding-inline-start: 14px; border-inline-start: 1px solid var(--line-soft); }
   dt { color: var(--ink-soft); font-size: .6875rem; line-height: 1.4; }
   dd { margin: 5px 0 0; color: var(--ink); font-size: .9375rem; font-weight: 650; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
   .dp-finder-card-actions { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+  .dp-finder-select { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; color: var(--green); font: 600 .8125rem/1.4 var(--font-ui); cursor: pointer; }
+  .dp-finder-select[hidden] { display: none; }
+  .dp-finder-select:has(input:focus-visible) { outline: 2px solid var(--green); outline-offset: 2px; }
+  .dp-finder-select:has(input:disabled) { color: var(--ink-soft); cursor: not-allowed; }
   .dp-finder-card-details { border-block-start: 1px solid var(--line-soft); }
   .dp-finder-card-details > summary { min-height: 44px; align-content: center; cursor: pointer; color: var(--green); font: 600 .8125rem/1.4 var(--font-ui); padding-block: 10px; }
   .dp-finder-card-details > summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
   .dp-finder-detail-label { margin-block: 16px 8px; color: var(--ink-soft); font-size: .75rem; font-weight: 650; }
   footer { padding-block-start: 2px; }
+  .dp-finder-summary-card :is(a, summary):focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+  @media (max-width: 359.98px) {
+    .identity { align-items: start; }
+    .identity :global(.dp-compare-card-art[data-size="identity"]:has(img)) { inline-size: 80px; }
+  }
 </style>

@@ -19,9 +19,9 @@ const id = `dp-next-${heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0,
     <ul>
       {items.map((i) => (
         <li>
-          <a href={i.href}>
-            <span class="t">{i.title}</span>
-            <span class="m">{i.meta}</span>
+          <a href={i.href} class="dp-task-link">
+            <span class="copy"><span class="t">{i.title}</span><span class="m">{i.meta}</span></span>
+            <span class="dp-action-arrow" aria-hidden="true">→</span>
           </a>
         </li>
       ))}
@@ -49,15 +49,20 @@ const id = `dp-next-${heading.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0,
   .dp-next-steps ul { list-style: none; margin: 0; padding: 0; }
   .dp-next-steps li + li { border-top: 1px solid var(--line-soft); }
   .dp-next-steps a {
-    display: grid;
-    gap: 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
     padding: 12px 0;
     min-height: 44px;
     text-decoration: none;
     color: inherit;
+    border-radius: var(--dp-ui-radius, 8px);
+    overflow-wrap: anywhere;
   }
+  .dp-next-steps .copy { display: grid; min-width: 0; gap: 4px; }
   .dp-next-steps .t { font-weight: 600; color: var(--green); line-height: 1.35; }
-  .dp-next-steps .t::after { content: " →"; }
+  .dp-next-steps .dp-action-arrow { color: var(--green); font-size: 20px; }
   .dp-next-steps a:hover .t { text-decoration: underline; }
   .dp-next-steps a:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
   .dp-next-steps .m { font-family: var(--font-ui); font-size: 14px; color: var(--ink-soft); }
