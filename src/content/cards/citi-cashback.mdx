@@ -1,43 +1,39 @@
 ---
 slug: citi-cashback
 cons:
-- The 3% non-AED cashback is largely offset by Citi's 2.99% foreign-currency fee — close to a wash abroad
+- Foreign-currency cashback is not a precise net return; the full conversion and processing cost needs checking
 - 1% base rate is modest for everyday local spend
 - Lounge access only unlocks with non-AED spend
 - AED 8,000 minimum income
-- 42% APR — only worth holding if you clear the balance in full
+- 44.28% APR — only worth holding if you clear the balance in full
 pros:
-- Simple, uncapped cashback — 1% on everything, 2% on groceries, 3% on non-AED — with no minimum spend
+- Cashback on eligible purchases without a minimum-spend gate; assigned-credit-limit and transaction exclusions apply
 - No annual fee in year one, waived from year two at a low AED 9,000 annual spend
 - Cashback is credited automatically — nothing to track or redeem
 - 8 airport lounge visits a year via Mastercard Travel Pass
 - Small everyday extras — a Careem airport ride and monthly Talabat discount
-verifiedBy: DubaiPoints Editorial — verified against the Citi Cash Back product page and Citibank UAE fees & charges
-kicker: A simple, uncapped cashback card — 1% everywhere, 2% groceries, 3% abroad — but the 3% non-AED rate nearly cancels against Citi's 2.99% FX fee.
+verifiedBy: "DubaiPoints Editorial — partial source review; unresolved terms are identified in the review"
+kicker: Cashback without a minimum-spend gate, subject to the assigned credit limit and transaction exclusions. Check full overseas costs separately.
 tier: solid
-applyIf: You want simple, uncapped cashback (1%/2%/3%) with no minimum spend and occasional lounge access.
-skipIf: You spend heavily abroad expecting the 3% to pay off — Citi's 2.99% FX fee nearly cancels it out.
+applyIf: Your purchases fit the reward conditions and credit limit, and you have checked the separate benefit terms.
+skipIf: You expect the overseas cashback headline to guarantee a profit after conversion and processing costs.
 keyTakeaways:
-- Uncapped cashback with no minimum spend — 1% on all spend, 2% on groceries, 3% on non-AED
-- The 3% non-AED rate is nearly offset by Citi's 2.99% foreign-currency fee — close to a wash abroad
+- No minimum-spend gate; cashback remains subject to eligible transactions and the assigned credit limit
+- The overseas cashback headline is not an exact profit; full conversion and processing costs are not established here
 - No annual fee year one; AED 300 + VAT after, waived at AED 9,000 annual spend
 - 8 Mastercard Travel Pass lounge visits a year (subject to non-AED spend); minimum income AED 8,000
 editorTake: >-
-  Citi's Cash Back is the simplest card in this batch: a flat, uncapped 1% on
-  everything, 2% on groceries and 3% on non-AED spend, with no minimum spend and no
-  category caps up to your credit limit. That clarity is the appeal — cashback posts
-  automatically, with nothing to track or redeem. The headline 3% on international spend
-  looks strong until you read the fee schedule: Citi charges a 2.99% foreign-currency
-  fee, so the 3% cashback on non-AED purchases is very nearly a wash. Treat it as a clean
-  1–2% domestic cashback earner rather than a travel-spend winner. The fee structure is
-  reasonable — free in year one, waived after at a low AED 9,000 of annual spend — and
-  you get eight Mastercard Travel Pass lounge visits a year (gated behind a non-AED
-  purchase) plus small Careem and Talabat perks. At an AED 8,000 salary it's an easy,
-  low-thought keep for everyday spend; just don't take the international-cashback framing
-  at face value.
+  Citi Cash Back is a straightforward domestic cashback option without a
+  minimum-spend gate, subject to the assigned credit limit and exclusions.
+  Cashback posts automatically, while the annual-fee waiver and lifestyle
+  benefits have their own conditions. The overseas cashback headline is not a
+  precise profit: a published issuer processing margin does not establish the
+  full conversion cost. Compare the eligible domestic return and the benefits
+  you will use without assuming an exact overseas offset or break-even result.
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
+import CardDataIssues from "~/components/cards/CardDataIssues.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
@@ -56,10 +52,13 @@ import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
   { id: "watch-out-for", label: "Watch out for" },
 ]} />
 
-The Citi Cash Back is a no-frills cashback Mastercard: flat, uncapped rates with no
-minimum spend, credited automatically to your card.
+The Citi Cash Back is a cashback Mastercard without a minimum-spend gate.
+Eligible purchases, the assigned credit limit and transaction exclusions still
+determine what earns cashback, which is credited automatically to the card.
 
 <AtAGlance card="citi-cashback" />
+
+<CardDataIssues card="citi-cashback" />
 
 No annual fee in year one. From year two, the fee above applies unless you meet Citi’s annual-spend waiver. [Check the current Citi Cash Back terms on Citi’s website](https://www.citibank.ae/credit-cards/cashback/citi-cashback-credit-card).
 
@@ -75,7 +74,7 @@ No annual fee in year one. From year two, the fee above applies unless you meet 
     { kind: "Perk", label: "Careem ride + Talabat discount", sub: "Full utilisation: AED 84 ride + AED 168 Talabat/yr", aed: 252 },
   ]}
   profile="for a set-and-forget domestic spender who flies four trips and uses the Careem and Talabat perks"
-  assumes="The worked domestic-spend profile (AED 1,200 cashback), four-trip lounge use and full Careem/Talabat utilisation. The 3% non-AED rate nets ~AED 0 after Citi's 2.99% FX fee and is excluded. The AED 300 welcome credit is one-time and excluded from this steady-state view. Year one the AED 315 fee is waived (it waives from year two at AED 9,000 annual spend)."
+  assumes="The worked domestic-spend profile (AED 1,200 cashback), four-trip lounge use and full Careem/Talabat utilisation. Overseas returns are excluded because the full conversion cost is not established. The AED 300 welcome credit is one-time and excluded from this steady-state view. Year one the AED 315 fee is waived (it waives from year two at AED 9,000 annual spend)."
   note="Cashback credited automatically in AED; perk values are AED-direct. See the per-benefit breakdown below."
 />
 
@@ -88,12 +87,10 @@ Cashback is uncapped (up to your credit limit) with no minimum spend:
 <EarnRateTable card="citi-cashback" />
 
 <HotTip>
-Read the 3% non-AED rate alongside the fee schedule. Citi charges a **2.99%
-foreign-currency fee** on international spend — so the 3% cashback on non-AED purchases
-is **very nearly a wash** (you net roughly 0.01%). The card's real, durable value is the
-**1% on everything and 2% on groceries** domestically, with no caps and no minimum
-spend. Note cashback isn't earned on utility-bill payments made through Citi's own
-online, mobile or phone channels, or on spend above your credit limit.
+Read overseas cashback alongside the complete conversion and processing terms.
+A published issuer margin alone does not establish an exact all-in cost or net
+profit. Cashback is also excluded on amounts above the assigned credit limit and
+on utility-bill payments through Citi’s own online, mobile or phone channels.
 </HotTip>
 
 ## Fee summary
@@ -102,7 +99,7 @@ online, mobile or phone channels, or on spend above your credit limit.
 
 Our figures include VAT: Citi’s AED 300 base annual fee is AED 315 with 5% VAT, and
 it's free in year one and waived from year two if you spend at least AED 9,000 in the
-year. The fixed APR is 42% — relevant only if you carry a balance.
+year. The fixed retail/cash APR is 44.28% — relevant only if you carry a balance.
 
 ## Welcome offer breakdown
 
@@ -119,18 +116,15 @@ before counting on the credit.
 
 ## What you get — per-benefit value
 
-### Uncapped cashback on domestic spend
+### Cashback on eligible domestic spend
 
-1% everywhere plus 2% on groceries, no minimum spend. At AED 5,000/month of
-general spend (AED 50) and AED 2,500/month of groceries (AED 50):
-**Value to me: AED 1,200/year.** Scale it linearly to your own spend — there
-are no caps up to your credit limit.
+Use the source-qualified earning rows for your actual transactions. The assigned
+credit limit and exclusions prevent an unrestricted, linearly scaled annual-return
+estimate. No minimum-spend gate does not mean that every purchase earns cashback.
 
 ### 3% on non-AED spend
 
-Net of Citi's 2.99% foreign-currency fee, the margin is roughly 0.01%.
-**Value to me: ~AED 0/year** — genuinely. Don't route overseas spend here
-for the headline.
+The published international processing margin is not proof of an exact net overseas return. Check the full conversion and processing terms rather than subtracting one issuer percentage from the cashback headline.
 
 ### 8 lounge visits (Mastercard Travel Pass)
 
@@ -150,54 +144,48 @@ Statement credit advertised on Citi’s product page after AED 6,000 of qualifyi
 within 60 days. **Value in this example: AED 300 once**, if those terms apply and you
 meet them.
 
-**Total package:** ~AED 1,200 of cashback on the worked spend plus ~AED 800
-of four-trip lounge value and up to AED 252 of ride-and-delivery perks —
-roughly **AED 2,000–2,250 a year** against an AED 315 year-two fee
-(AED 300 + VAT). Use AED 0 only for year one or if you meet the ongoing
-annual-spend waiver.
+No combined annual package value is quoted while reward or benefit conditions
+remain unconfirmed. Check the current fee and waiver separately rather than
+assuming that advertised perks recover the cost.
 
 ## Key conditions to know
 
 <dl class="dp-conditions">
   <dt>No minimum spend</dt>
   <dd>Cashback is earned from the first dirham, with no caps up to your credit limit — unusually simple for a UAE cashback card.</dd>
-
   <dt>Excluded spend</dt>
   <dd>No cashback on amounts above your credit limit in a cycle, or on utility-bill payments through Citi online, mobile or phone channels.</dd>
-
   <dt>Lounge access</dt>
   <dd>8 visits a year to 1,200+ lounges via Mastercard Travel Pass, conditional on non-AED spend; further visits are charged.</dd>
-
   <dt>Everyday extras</dt>
   <dd>One complimentary Careem airport ride a year (up to AED 84) and 20% off Talabat (up to AED 14) once a month.</dd>
-
   <dt>Eligibility</dt>
-  <dd>Minimum income AED 8,000/month; age 21 or older; UAE resident.</dd>
+  <dd>Minimum income AED 8,000/month; age 18 or older; UAE resident.</dd>
 </dl>
+
 
 ## Watch out for
 
-- **The international-cashback mirage.** 3% on non-AED minus a 2.99% FX fee ≈ nothing —
-  don't pick this card for overseas spend on the strength of the 3% headline.
-- **Modest base rate.** 1% on general local spend trails category cards like ADIB's 4%
-  or HSBC Live+'s 6% dining — but those carry caps and conditions Citi doesn't.
+- The published international processing margin is not proof of an exact net overseas return. Check the full conversion and processing terms rather than subtracting one issuer percentage from the cashback headline.
+- **Different reward conditions.** Compare eligible categories, credit-limit restrictions and exclusions rather than contrasting isolated headline percentages.
 - **Lounge gating.** You need a non-AED purchase to unlock the lounge visits.
 - **Utility exclusion.** Paying DEWA/etc. through Citi's channels earns no cashback.
 
 ## Is it worth it?
 
-For someone who wants cashback without rules — no minimum spend, no caps, nothing to
-redeem — the Citi Cash Back is among the most straightforward cards in the UAE. The 1%
-everywhere / 2% groceries domestic earn is reliable, the fee is easily waived, and the
-lounge access and small perks round it out at a reasonable AED 8,000 salary bar.
+Consider it if automatic cashback on eligible purchases fits your needs and you
+can meet the fee-waiver conditions without extra spending. Confirm the assigned
+credit limit, exclusions, eligibility and benefit terms; this is not cashback
+without rules or a market-wide recommendation.
 
-Just calibrate expectations on the 3% non-AED rate: after the 2.99% FX fee it's close to
-break-even, so this is a domestic-cashback card, not a travel one. Heavy category
-spenders will out-earn it with a capped category card; set-and-forget spenders will
-appreciate that it just works.
+Calibrate expectations on overseas spending: the complete conversion cost needs
+checking before the cashback can be treated as a net return. Compare the eligible
+domestic reward with any category card you would actually use, including its caps
+and qualification conditions.
 
 ## Bottom line
 
-A clean, uncapped, no-minimum cashback card that's easy to live with. **Apply** if you
-value simplicity and steady 1–2% domestic cashback. **Skip** if you're chasing the 3%
-abroad — the FX fee cancels it — or want the highest headline category rates.
+A no-minimum-spend cashback card subject to the assigned credit limit and exclusions.
+**Consider it** for straightforward eligible domestic purchases. **Look elsewhere**
+if you need a guaranteed overseas profit or a higher category headline without
+checking its caps and conditions.

@@ -13,6 +13,7 @@
  * past it without being added here.
  */
 import type { CardFeature } from "~/lib/cardsData";
+import { getCardsWithFeature } from "../lib/cardsData";
 
 /** Minimum cards before a perk is worth a page of its own. */
 export const PERK_PAGE_MIN_CARDS = 8;
@@ -30,7 +31,8 @@ export interface PerkPage {
   detailColumn: string;
 }
 
-export const PERK_PAGES: readonly PerkPage[] = [
+/** Retained URL records also include held source-status/reference pages. */
+export const PERK_PAGE_RECORDS: readonly PerkPage[] = [
   {
     slug: "lounge-access",
     feature: "lounge_access",
@@ -56,3 +58,19 @@ export const PERK_PAGES: readonly PerkPage[] = [
     detailColumn: "Travel insurance",
   },
 ] as const;
+
+export function hasPerkComparisonCoverage(knownCards: number): boolean {
+  return Number.isInteger(knownCards) && knownCards >= PERK_PAGE_MIN_CARDS;
+}
+
+/** Discovery only publishes comparison facets with sufficient known coverage.
+ * A source hold does not delete its historical URL or invent a benefit absence. */
+export const PERK_PAGES: readonly PerkPage[] = PERK_PAGE_RECORDS.filter(perk =>
+  hasPerkComparisonCoverage(getCardsWithFeature(perk.feature).length));
+
+export function isHeldPerkReferenceRoute(url: string): boolean {
+  const pathname = new URL(url, "https://dubaipoints.ae").pathname;
+  const slug = pathname.match(/^\/cards\/perks\/([^/]+)\/?$/)?.[1];
+  return slug !== undefined && PERK_PAGE_RECORDS.some(perk => perk.slug === slug)
+    && !PERK_PAGES.some(perk => perk.slug === slug);
+}

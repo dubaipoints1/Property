@@ -12,6 +12,7 @@
 // card. Constraints are now quiet qualifiers.
 
 import type { CardData } from "~/lib/cardsData";
+import { eligibilityQualifiers, eligibilityFieldPending } from "~/lib/cardEligibility";
 
 interface Props {
   eligibility: CardData["eligibility"];
@@ -20,10 +21,13 @@ interface Props {
    * AED figure, so an unverified salary band can't be mistaken for a
    * confirmed one. Matches the FX provenance pattern from PR #210. */
   eligibilityProvenance?: string;
+  provenance?: Record<string, string> | null;
 }
 
-const { eligibility, eligibilityProvenance } = Astro.props;
-const isUnverified = eligibilityProvenance === "needs-review";
+const { eligibility, eligibilityProvenance, provenance } = Astro.props;
+const combinedProvenance = { ...provenance, ...(eligibilityProvenance ? { eligibility: eligibilityProvenance } : {}) };
+const groupPending = combinedProvenance.eligibility === "needs-review";
+const isUnverified = eligibilityFieldPending(combinedProvenance, "minSalary") || eligibility.minSalary === null;
 
 const aedFormatter = new Intl.NumberFormat("en-AE", {
   style: "currency",
@@ -31,31 +35,14 @@ const aedFormatter = new Intl.NumberFormat("en-AE", {
   maximumFractionDigits: 0,
 });
 
-const EMPLOYMENT_LABELS: Record<string, string> = {
-  salaried: "Salaried",
-  "self-employed": "Self-employed",
-  "business-owner": "Business owner",
-  any: "Any employment",
-};
 
 // Phase 2a.0 (2026-05-20): when the card is invitation-only, the salary
 // band is meaningless (the gate is AUM or a separate tier qualification).
 // Hide the primary dt/dd block and render a single "Invitation only"
 // qualifier instead. Retires the `minSalary: 250000` sentinel ENBD
 // Priority Banking / FAB World Elite used in Phase 1.
-const isInviteOnly = eligibility.invitationOnly === true;
-
-const qualifiers: string[] = [];
-if (isInviteOnly) qualifiers.push("Invitation only");
-if (eligibility.salaryTransferRequired) qualifiers.push("Salary transfer required");
-if (eligibility.residencyRequired) qualifiers.push("UAE residents");
-// Chairman ruling Q3 (2026-05-20): omit the chip when employmentTypes
-// includes "any" — "Any employment" reads as a constraint when it's
-// the absence of one. Only emit chips for actual restrictions.
-for (const t of eligibility.employmentTypes ?? []) {
-  if (t === "any") continue;
-  qualifiers.push(EMPLOYMENT_LABELS[t] ?? t);
-}
+const isInviteOnly = !eligibilityFieldPending(combinedProvenance, "invitationOnly") && eligibility.invitationOnly === true;
+const qualifiers = eligibilityQualifiers(eligibility, combinedProvenance);
 ---
 
 <div class="dp-eligibility">
@@ -66,7 +53,7 @@ for (const t of eligibility.employmentTypes ?? []) {
         {isUnverified ? (
           <>—<span class="per"> confirmation pending</span></>
         ) : (
-          <>{aedFormatter.format(eligibility.minSalary)}<span class="per">/mo</span></>
+          <>{eligibility.minSalary === null ? "Pending" : aedFormatter.format(eligibility.minSalary)}<span class="per">/mo</span></>
         )}
       </dd>
     </dl>
@@ -80,6 +67,7 @@ for (const t of eligibility.employmentTypes ?? []) {
       ))}
     </ul>
   )}
+  {groupPending && <p class="per">Eligibility conditions pending confirmation.</p>}
 </div>
 
 <style>

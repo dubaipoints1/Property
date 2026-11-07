@@ -1,7 +1,8 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import { readFileSync } from "node:fs";
-import { getAllCards } from "../../src/lib/cardsData.ts";
+import { getAllCards, CardDataSchema } from "../../src/lib/cardsData.ts";
+import { cardFieldHeld } from "../../src/lib/cardPublicFacts.ts";
 
 /**
  * Zod's `.object()` strips keys it does not declare, so an earn-rate
@@ -26,7 +27,8 @@ test("the schema declares every earn-rate category the data carries", () => {
   const dropped = new Map<string, string[]>();
   for (const card of getAllCards()) {
     const before = raw[card.slug].earnRates;
-    const after = card.earnRates as unknown as Record<string, unknown>;
+    // Schema stripping is different from an intentional public source hold.
+    const after = CardDataSchema.parse(raw[card.slug]).earnRates as unknown as Record<string, unknown>;
     for (const key of Object.keys(before)) {
       if (key === "_caps") continue;
       if (after[key] === undefined) {
@@ -54,12 +56,15 @@ test("the review table can label every category that survives", () => {
   assert.deepEqual(unlabelled.sort(), [], "no CATEGORY_LABELS entry for these");
 });
 
-test("partnerBrands actually reaches the cards that publish it", () => {
-  const withPartner = getAllCards().filter(
-    (c) => (c.earnRates as unknown as Record<string, unknown>).partnerBrands !== undefined,
-  );
-  assert.ok(
-    withPartner.length >= 20,
-    `expected the partner rate on 20+ cards, got ${withPartner.length}`,
-  );
+test("every canonical partner rate survives schema validation and only a source hold can withhold it publicly", () => {
+  const withPartner = Object.entries(raw).filter(([, card]) => card.earnRates.partnerBrands !== undefined);
+  assert.ok(withPartner.length > 0);
+  const visible = new Map(getAllCards().map(card => [card.slug, card]));
+  for (const [slug, source] of withPartner) {
+    assert.equal(CardDataSchema.parse(source).earnRates.partnerBrands, source.earnRates.partnerBrands, slug);
+    const card = visible.get(slug)!;
+    const held = card._provenance.earnRates === "needs-review" || cardFieldHeld(card, "earnUnit")
+      || cardFieldHeld(card, "earnRates._caps") || cardFieldHeld(card, "earnRates.partnerBrands");
+    assert.equal(card.earnRates.partnerBrands, held ? undefined : source.earnRates.partnerBrands, slug);
+  }
 });

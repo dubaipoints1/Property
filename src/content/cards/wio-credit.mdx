@@ -1,47 +1,28 @@
 ---
 slug: wio-credit
-verifiedBy: DubaiPoints Editorial — verified against the Wio Credit KFS v5 (August 2026) and Schedule of Fees Retail v8 (July 2026)
-kicker: The AED 0 annual fee is real but incomplete — cashback needs a non-Standard plan, so the price is the plan. Free with an AED 15,000 salary transfer; AED 49/month otherwise.
+verifiedBy: "DubaiPoints Editorial — partial source review; unresolved terms are identified in the review"
+kicker: "Cashback depends on your Wio plan and transaction type; the card fee is not the full account cost."
 tier: strong
-applyIf: You qualify for the free Salary plan (AED 15,000+ transfer) and want 2% flat cashback with no category tables.
-skipIf: You'd sit on the Standard plan — it earns no cashback — or you need a published salary bar before applying.
+applyIf: "You qualify for an appropriate Wio plan and understand the reduced categories and combined cashback cap."
+skipIf: "You would use the Standard Plan for cashback, or need a guaranteed app-based credit approval."
 keyTakeaways:
-- 2% flat cashback capped at AED 2,500/month — but only on the Salary, Plus or Family plan; Standard earns nothing
-- The real price is the plan — Salary free with AED 15,000+ transfer, otherwise Plus at AED 49/month (waived at AED 35,000)
-- Paying other banks' credit cards through Wio Credit earns 0.5% — no other UAE issuer pays you to settle a rival's bill
-- No published salary minimum for credit itself — approval is app-based, so our spec table shows "Pending"
+- "Standard Plan customers do not earn cashback"
+- "Government, real-estate and utilities have reduced rewards; DU is specifically named in the source"
+- "The combined Credit/MyMoney cap and account-plan cost matter"
 pros:
-- 2% flat on all purchases with no category tables — among the cleanest flat earns in the UAE once you're on a qualifying plan
-- AED 0 annual card fee — the Schedule of Fees has no annual-card-fee row at all
-- 0.5% cashback for paying other banks' credit cards through Wio Credit — unique in the UAE market
-- 2% FX fee, below the typical UAE 2.5–3.5% band
-- Salary-plan customers roll over at 2.29%/month (27.48% APR) instead of 3.25%/month (39% APR)
+- "General eligible purchases can earn cashback on a qualifying plan"
+- "The published credit facility supports payment of other banks’ cards, subject to additional conditions"
+- "The Salary Plan has a different rollover rate from other plans"
 cons:
-- Standard-plan customers earn no cashback — the effective price of the 2% is the plan subscription
-- The AED 2,500/month cashback cap includes "My Money" current-account transactions, not just card spend
-- Government, real-estate and utility payments earn 0.5%, not 2%
-- The other-bank-card mechanic has conditions — AED 5,000 minimum retail spend in the cycle, cap tied to your credit limit
-- No published salary minimum — eligibility is assessed in the app, so you cannot pre-check approval
-editorTake: >-
-  The honest price of Wio Credit is not the AED 0 annual fee — it is the
-  plan. Cashback is "not applicable to Standard Plan customers", so the
-  2% flat rate belongs to the Salary plan (free with an AED 15,000+
-  monthly salary transfer), the Plus plan (AED 49/month, waived at AED
-  35,000 in balances) or the Family plan. Price the plan into the card
-  and it is still a strong product: 2% on everything, capped at AED
-  2,500 a month, a 2% FX margin, and the market's only
-  pay-another-bank's-card mechanic — 0.5% cashback for settling a rival
-  issuer's bill through Wio Credit, subject to an AED 5,000
-  minimum retail spend in the cycle. Watch the demotions: government,
-  real-estate and utility payments earn 0.5%, not 2%, and quasi-cash is
-  excluded outright. The Salary plan also buys a cheaper roll-over rate
-  — 2.29%/month against 3.25% elsewhere — and Easy Cash's friendly
-  AED 1/day per AED 1,000 wording works out, by the fee schedule's own
-  figure, to 36.5% APR. The key facts statement sets a salary bar of
-  AED 7,000 a month, and approval is still decided in the app.
+- "No cashback on Standard Plan"
+- "Reduced categories and excluded quasi-cash prevent a universal all-spend promise"
+- "The monthly cap is shared with MyMoney transactions"
+- "The absence of an annual-card-fee row is not an explicit zero-fee guarantee"
+editorTake: "Wio Credit must be priced with its account plan. Standard Plan customers do not earn cashback; other plans have their own subscription or qualification conditions. General eligible purchases have a headline rate, but government, real-estate and utility payments are reduced and quasi-cash is excluded. The combined Credit/MyMoney cap and plan-specific rollover rate also matter. Check both the account plan and the credit facility before comparing annual value."
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
+import CardDataIssues from "~/components/cards/CardDataIssues.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
 import ProsCons from "~/components/cards/ProsCons.astro";
@@ -61,14 +42,11 @@ import JumpToSection from "~/components/cards/JumpToSection.astro";
   { id: "bottom-line", label: "Bottom line" },
 ]} />
 
-Wio Credit is the single credit facility of Wio Bank PJSC — a
-Mastercard World product from the UAE's standalone digital bank, and
-the only card in our tracker whose price tag sits on the *plan*, not
-the plastic. There is no annual card fee anywhere in Wio's Schedule of
-Fees. There is also no cashback unless you pay — or salary-transfer —
-your way onto a qualifying plan.
+The account plan is part of the cost of using this credit facility. Standard Plan customers do not earn cashback; other plans have separate fees or qualification conditions. The captured fee schedule does not show an annual-card-fee row, which is not itself an explicit zero-fee promise.
 
 <AtAGlance card="wio-credit" />
+
+<CardDataIssues card="wio-credit" />
 
 <GreatCardIf card="wio-credit" />
 
@@ -78,10 +56,7 @@ your way onto a qualifying plan.
 
 ## The plan is the price
 
-"AED 0 annual fee" is true and incomplete. The Key Fact Statement is
-explicit that cashback is **not applicable to Standard Plan
-customers**, so the 2% headline belongs only to Wio's paid or
-salary-qualified tiers:
+The account plan is part of the cost of using this credit facility. Standard Plan customers do not earn cashback; other plans have separate fees or qualification conditions. The captured fee schedule does not show an annual-card-fee row, which is not itself an explicit zero-fee promise.
 
 - **Salary plan — free**, with a minimum monthly salary transfer of
   **AED 15,000** (reducible for employees of Wio partner companies).
@@ -96,17 +71,14 @@ So the effective price of the earning card is either a salary
 transfer you may have been planning anyway, or AED 588 a year of Plus
 subscription — comparable to a mid-tier annual fee elsewhere, but
 buying the whole banking plan, not just the card. Do that arithmetic
-before comparing this card's "free" against a genuinely fee-free
-rival.
+before comparing the account-plan cost and the unresolved annual card fee
+with another product.
 
 ## Earn rates
 
 <EarnRateTable card="wio-credit" />
 
-The **2% is flat** — no category tables, no monthly spend tiers — and
-capped at **AED 2,500 of cashback per calendar month**, a ceiling that
-includes "My Money" current-account transactions, not just card spend.
-Cashback lands on the 1st of the following month.
+The headline rate applies to qualifying general retail, not every transaction. The KFS reduces named government, real-estate and utility categories, names DU specifically, and excludes quasi-cash. Plan eligibility and the combined Credit/MyMoney cap still apply.
 
 <HotTip label="Where 2% quietly becomes 0.5%">
 Government, real-estate and utility payments — including Easy Cash —
@@ -118,8 +90,8 @@ government fees, the blended rate will sit well below the headline.
 
 ## Paying other banks' cards
 
-The mechanic nobody else offers: settle **another UAE bank's credit
-card** through Wio Credit and earn **0.5% cashback** on the payment.
+Wio describes settling **another UAE bank's credit card** through Wio Credit
+and earning **0.5% cashback** on the payment.
 For a household carrying a high-fee card elsewhere, that is cashback
 on a bill you were paying anyway. The conditions, straight from the
 KFS: the 0.5% is bounded by **0.5% of your Wio Credit limit**, and the
@@ -131,12 +103,12 @@ Credit as a primary card, not a parking spot for other banks' bills.
 
 <FeeBlock card="wio-credit" />
 
-No annual card fee — the plan subscription is the price (see above).
-The **2% FX margin** is below the typical UAE 2.5–3.5% band. Interest
-is where the plan matters a second time: roll-over on Standard, Plus
+The captured tariff has no annual-card-fee row, but that absence is not an explicit zero-fee promise. Include the account-plan cost in your comparison.
+Check the **2% FX margin** alongside the complete conversion and processing
+costs. Interest is where the plan matters a second time: roll-over on Standard, Plus
 and Family is **3.25%/month (39% APR)**, cut to **2.29%/month (27.48%
-APR)** on the Salary plan — the cheapest roll-over rate in our
-tracker, for what that is worth on a balance you shouldn't carry.
+APR)** on the Salary plan. These are plan-specific charges, not a
+market-wide cheapest-rate ranking or a reason to carry a balance.
 Interest-free period runs up to 60 days, minimum payment is 5% or AED
 100, late payment is AED 199, card replacement AED 26.25.
 
@@ -145,9 +117,9 @@ Interest-free period runs up to 60 days, minimum payment is 5% or AED
 Easy Cash lets you borrow up to 50% of your credit limit at **AED 1
 per day per AED 1,000 borrowed**, for up to 90 days. The framing is
 friendly; the arithmetic is not small: Wio's own Schedule of Fees
-states the equivalent rate as **36.5% APR**. That is cheaper than many
-UAE cash-advance routes and the flat-dirham wording makes the cost
-easy to track — but it is a 36.5% APR product per the bank's own
+states the equivalent rate as **36.5% APR**. The flat-dirham wording does
+not establish an advantage over another borrowing product: it remains
+a 36.5% APR product per the bank's own
 figure, not a cheap loan. Easy Installments (3–48 months) are the
 planned-purchase alternative: AED 52.50 processing on the 3-month
 tenure, longer tenures free, at rates from 0% up to your roll-over
@@ -157,35 +129,19 @@ rate.
 
 <dl class="dp-conditions">
   <dt>Plan gate</dt>
-  <dd>Cashback requires the Salary, Plus or Family plan. Standard-plan
-  customers earn nothing. The plan subscription — or the AED 15,000
-  salary transfer — is the card's effective price.</dd>
-
+  <dd>Cashback requires the Salary, Plus or Family plan. Standard-plan customers earn nothing. The plan subscription — or the AED 15,000 salary transfer — is the card's effective price.</dd>
   <dt>One cap, broadly drawn</dt>
-  <dd>AED 2,500/month maximum cashback, counted across Wio Credit
-  purchases <em>and</em> "My Money" current-account transactions.</dd>
-
+  <dd>AED 2,500/month maximum cashback, counted across Wio Credit purchases <em>and</em> "My Money" current-account transactions.</dd>
   <dt>Rate demotions</dt>
-  <dd>Government, real-estate and utility payments (including Easy
-  Cash) earn 0.5%. Cash advances, quasi-cash and crypto are excluded
-  from cashback.</dd>
-
+  <dd>Government, real-estate and utility payments (including Easy Cash) earn 0.5%. Cash advances, quasi-cash and crypto are excluded from cashback.</dd>
   <dt>Other-bank-card payments</dt>
-  <dd>0.5% cashback, up to 0.5% of your Wio Credit limit, conditioned
-  on AED 5,000+ of retail transactions in the same cycle.</dd>
-
+  <dd>0.5% cashback, up to 0.5% of your Wio Credit limit, conditioned on AED 5,000+ of retail transactions in the same cycle.</dd>
   <dt>Salary-plan interest discount</dt>
-  <dd>Roll-over at 2.29%/month (27.48% APR) on the Salary plan versus
-  3.25%/month (39% APR) on every other plan. First month's roll-over
-  is waived; your applied rate is set out in your Offer.</dd>
-
+  <dd>Roll-over at 2.29%/month (27.48% APR) on the Salary plan versus 3.25%/month (39% APR) on every other plan. First month's roll-over is waived; your applied rate is set out in your Offer.</dd>
   <dt>Eligibility</dt>
-  <dd>The key facts statement (effective August 2026, re-read
-  3 November 2026) asks for a <strong>monthly salary of AED 7,000 or
-  above</strong>, ages 21 to 65, UAE residency and employment, and at
-  least 3 months in your job. Approval is still subject to Wio's own
-  credit assessment in the app.</dd>
+  <dd>The key facts statement (effective August 2026, re-read 3 November 2026) asks for a <strong>monthly salary of AED 7,000 or above</strong>, ages 21 to 65, UAE residency and employment, and at least 3 months in your job. Approval is still subject to Wio's own credit assessment in the app.</dd>
 </dl>
+
 
 ## Watch out for
 
@@ -203,11 +159,9 @@ rate.
 
 ## Bottom line
 
-For the AED 15,000+ earner willing to move their salary, Wio Credit is
-close to a free 2%-on-everything card with the market's lowest
-roll-over rate and a genuinely unique other-bank-card mechanic.
+Wio Credit’s recurring value depends on the qualifying account plan, reduced
+categories, actual fee terms and your use of the other-bank-card facility.
 **Apply** if you qualify for the Salary plan — or if AED 49/month of
 Plus is already worth it to you for the banking. **Skip** if you would
 sit on the Standard plan, if your spend is dominated by the 0.5%
-categories, or if you want a published salary bar and a pre-checkable
-approval rather than an app-assessed decision.
+categories, or if you need guaranteed approval rather than an app-assessed decision.

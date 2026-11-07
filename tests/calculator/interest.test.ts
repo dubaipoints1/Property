@@ -11,6 +11,7 @@ import {
   median,
 } from "../../src/lib/interestPayoff.ts";
 import { getActiveCards } from "../../src/lib/cardsData.ts";
+import { readFileSync } from "node:fs";
 
 test("a fixed payment clears a balance in the closed-form number of months", () => {
   // n = -ln(1 - rB/P) / ln(1 + r) = 12.07 for B 10,000, r 3%, P 1,000 → 13 months.
@@ -56,8 +57,14 @@ test("the minimum-payment regex reads every rule L2 publishes", () => {
   assert.equal(parseMinPaymentRule("see KFS"), null);
   assert.equal(parseMinPaymentRule(undefined), null);
   for (const c of getActiveCards()) {
+    if (Object.entries(c._provenance).some(([key, state]) => state === "needs-review" && (key === "minPayment" || key.startsWith("minPayment.")))) {
+      assert.equal(c.minPayment, "Pending source review");
+      assert.equal(parseMinPaymentRule(c.minPayment), null);
+      continue;
+    }
     if (c.minPayment) assert.ok(parseMinPaymentRule(c.minPayment), `${c.slug}: "${c.minPayment}" did not parse`);
   }
+  assert.match(readFileSync("src/pages/calculator/interest.astro", "utf8"), /withRule = all\.filter\(\(c\) => parseMinPaymentRule\(c\.minPayment\) !== null\)\.length/);
 });
 
 test("defaults are the median rate and the modal rule, with the counts the page prints", () => {

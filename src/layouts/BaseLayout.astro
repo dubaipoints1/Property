@@ -5,18 +5,25 @@
 import "@fontsource-variable/newsreader/wght.css";
 import "@fontsource-variable/newsreader/wght-italic.css";
 import "@fontsource-variable/geist/wght.css";
-import newsreaderLatin from "@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url";
-import geistLatin from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
+// Identical existing variable faces/axes, with the original fonts retained
+// above as Unicode fallback. Normal preloads match each route's CSS URLs.
+import "~/styles/font-delivery.css";
+import { newsreaderLatinSubset, geistLatinSubset, newsreaderItalicHomeSubset, newsreaderNormalHomeSubset } from "~/lib/fontDelivery";
 import "~/styles/global.css";
 import "~/styles/editorial-utility.css";
+// Emitted as a separate, cacheable asset. The postbuild delivery pass swaps
+// only the homepage's full-site bundle at its existing cascade position.
+import homeGlobalCss from "~/styles/home-global.css?url&no-inline";
 import runwayEditorialCss from "~/styles/runway-editorial.css?url&no-inline";
 import runwayDiscoveryCss from "~/styles/runway-discovery.css?url&no-inline";
 import runwayReadingCss from "~/styles/runway-reading.css?url&no-inline";
 import readerFlowCss from "~/styles/reader-flow.css?url&no-inline";
+import editorialSystemCss from "~/styles/editorial-system.css?url&no-inline";
 import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
 import SchemaJsonLd from "~/components/seo/SchemaJsonLd.astro";
 import { shouldLoadGoogleTag } from "~/lib/googleTag.mjs";
+import { googleTagBootstrapSource } from "~/lib/deferredGoogleTag.mjs";
 
 interface Props {
   title: string;
@@ -32,6 +39,8 @@ interface Props {
    * BreadcrumbList) injected before the default WebSite + Organization graph.
    * Layout components compose the right shape and hand it through. */
   schema?: unknown;
+  /** Exclude the complete document, including shared chrome, from Pagefind. */
+  excludeFromSearch?: boolean;
 }
 
 const {
@@ -42,11 +51,13 @@ const {
   ogImage,
   ogType = "website",
   schema,
+  excludeFromSearch = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 // Keep the approved homepage design and deferred reel outside the rollout.
 const runwayInterior = Astro.url.pathname !== "/";
+const newsreaderNormalPreload = runwayInterior ? newsreaderLatinSubset : newsreaderNormalHomeSubset;
 const runwayDiscovery = /^\/(?:airlines|banks|cards|deals|guides|hotels|topics|news(?:\/(?:airlines|banking|hotels))?)\/$/.test(Astro.url.pathname);
 const siteName = "DubaiPoints";
 const siteUrl = Astro.site?.toString().replace(/\/$/, "") ?? "https://dubaipoints.ae";
@@ -100,16 +111,10 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
   <head>
     <meta charset="utf-8" />
     {googleTagEnabled && (
-      <>
-        <!-- Google tag (gtag.js) — owner's existing Google Analytics property. -->
-        <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-VS2RL6KX46"></script>
-        <script is:inline>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-VS2RL6KX46');
-        </script>
-      </>
+      // Same GA4 property/configuration. The hash-approved scheduler starts
+      // after a fixed nominal 3s navigation buffer, never an early load event.
+      // No scroll requirement, account-setting change or additional telemetry.
+      <script is:inline set:html={googleTagBootstrapSource}></script>
     )}
 <!-- Theme initialization — MUST run before any styles to prevent flash -->
   <script is:inline>
@@ -124,6 +129,7 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
   {runwayDiscovery && <link rel="stylesheet" href={runwayDiscoveryCss} />}
   {runwayInterior && <link rel="stylesheet" href={runwayReadingCss} />}
   {runwayInterior && <link rel="stylesheet" href={readerFlowCss} />}
+  {runwayInterior && <link rel="stylesheet" href={editorialSystemCss} />}
 
   <!-- Logo fallback (BankLogo / ProgrammeLogo). Replaces 3,400+ inline
        onerror attributes, which no CSP hash or nonce can allow. `error`
@@ -187,15 +193,19 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Self-hosted fonts: preload the two Latin faces used above the fold. -->
+    <!-- Two normal faces, route-matched; only the homepage preloads italic. -->
     {!systemTypography && (
       <>
-        <link rel="preload" href={newsreaderLatin} as="font" type="font/woff2" crossorigin />
-        <link rel="preload" href={geistLatin} as="font" type="font/woff2" crossorigin />
+        <link rel="preload" href={newsreaderNormalPreload} as="font" type="font/woff2" crossorigin />
+        <link rel="preload" href={geistLatinSubset} as="font" type="font/woff2" crossorigin />
+        {/* The selected homepage heading uses real italic above the fold.
+            Discover the unchanged face here, not after the blocking CSS. */}
+        {!runwayInterior && <link rel="preload" href={newsreaderItalicHomeSubset} as="font" type="font/woff2" crossorigin />}
       </>
     )}
     {schema && <SchemaJsonLd schema={schema} />}
     <SchemaJsonLd schema={defaultGraph} />
+    {!runwayInterior && <meta name="dp-home-style-asset" content={homeGlobalCss} />}
 
     {
       import.meta.env.PROD && cfBeaconToken && (
@@ -208,7 +218,7 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
       )
     }
   </head>
-  <body class:list={["dp-body", { "dp-system-typography": systemTypography }]}>
+  <body class:list={["dp-body", { "dp-system-typography": systemTypography }]} data-pagefind-ignore={excludeFromSearch ? "all" : undefined}>
     <a class="dp-skip-link dp-ui-action dp-ui-primary" href="#main-content" data-pagefind-ignore>Skip to content</a>
     <Header />
     <main id="main-content" tabindex="-1" class={fullWidth ? "dp-main is-full" : "dp-main"}>

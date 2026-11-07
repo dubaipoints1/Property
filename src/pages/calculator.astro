@@ -12,6 +12,8 @@ import RewardsCalculator from "~/components/islands/RewardsCalculator";
 import { getActiveCards } from "~/lib/cardsData";
 import { PLACEHOLDER_AED_PER_UNIT } from "~/components/islands/RewardsCalculator";
 import { VALUATION_SLUG_BY_LOYALTY_PROGRAM, dpValueFils } from "~/lib/valuations";
+import { hasUsableGenericEarnRate } from "~/lib/cardEarnModel";
+import { calculatorCardPayload } from "~/lib/calculatorCardPayload";
 
 // The currencies this publication has published a baseline for, read from
 // the same rows /valuations/ renders so the two can never disagree.
@@ -21,7 +23,9 @@ const publishedRates = Object.entries(VALUATION_SLUG_BY_LOYALTY_PROGRAM)
   .sort((a, b) => a.programme.localeCompare(b.programme));
 
 const cards = getActiveCards();
-const cardCount = cards.length;
+const calculatorCards = calculatorCardPayload(cards);
+const cardCount = cards.filter(hasUsableGenericEarnRate).length;
+const unmodelledCount = cards.length - cardCount;
 const lastUpdated = new Date().toLocaleDateString("en-GB", {
   day: "numeric",
   month: "long",
@@ -44,7 +48,7 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
         Estimate monthly rewards in AED from your spending and each card’s published earn rates.
       </p>
       <p class="dp-article-meta">
-        <strong>{cardCount}</strong> cards ranked
+        <strong>{cardCount}</strong> cards with a usable general-spend model
         <span class="sep">·</span> Last updated {lastUpdated}
         <span class="sep">·</span>
         <a href="#methodology">Methodology</a>
@@ -53,7 +57,8 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
       </p>
     </header>
 
-    <RewardsCalculator client:load cards={cards} />
+    <RewardsCalculator client:load cards={calculatorCards} />
+    {unmodelledCount > 0 && <p class="dp-card-note">{unmodelledCount} other source profiles are not return-ranked here because their base rate, reward limits, plan or merchant/channel conditions are not fully modelled. They remain available in the <a href="/cards/">card directory</a>; unknown is not a zero return.</p>}
 
     <section id="methodology" class="dp-article-section">
       <h2>Methodology</h2>
@@ -76,9 +81,9 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
         for the category. Categories the card does not bonus fall
         through to its base "everything else" rate. Utilities and
         telecom bills use the card's own utilities rate where it
-        publishes one — twelve cards do, and ten of them pay less there
-        than their base rate — and fall through to the base rate
-        otherwise.
+        publishes a confirmed one, and fall through to the base rate otherwise.
+        Products with held rates or unmodelled qualifying conditions are not
+        return-ranked.
       </p>
 
       <h3>Start from a profile</h3>
@@ -97,7 +102,7 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
         (<code>earnRates._caps</code>) — a monthly maximum, a
         per-category ceiling, or both — the calculator applies them to
         the month and the tile says the figure is the capped one.
-        Thirteen cards carry typed caps. Points and miles cards are not
+        Held cap terms are not treated as confirmed inputs. Points and miles cards are not
         clamped: their caps are stated in dirhams and their reward is
         not, so there is no honest conversion. A card that needs a
         minimum monthly spend before it earns anything is flagged when
@@ -200,15 +205,18 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
       <p>
         The default view shows monthly reward AED and annual fee
         separately. Toggle the "show net of annual fee" checkbox to
-        subtract the monthly fee accrual (<code>annualFee / 12</code>)
-        from the reward and re-rank. A fee-free card with a modest
+        subtract the known VAT-inclusive annual fee divided by twelve
+        from the reward and re-rank. Records with held annual-fee or VAT
+        terms are not net-ranked; their gross reward may still be shown.
+        A fee-free card with a modest
         earn rate often beats a premium card once the fee lands.
       </p>
 
       <h3>Verification dates</h3>
       <p>
-        Every ranked card carries its <code>lastVerified</code> date.
-        Cards verified more than 90 days ago get a "data drift risk"
+        Every ranked card carries its source-record date. Unresolved terms
+        are labelled as pending rather than fully verified.
+        Source records older than 90 days get a "data drift risk"
         chip — we do not hide them, but we tell you the figures may
         have moved.
       </p>

@@ -47,6 +47,22 @@ export function stockSrcset(entry: StockEntry, delivery?: StockDelivery): string
   return parts.sort((a, b) => a.width - b.width).map((part) => `${part.src} ${part.width}w`).join(", ");
 }
 
+/** Build-only AVIF enhancement; existing WebP/JPEG delivery is unchanged.
+ * The optional 1365w copy is original-sized only, never an invented upscale.
+ * Keep the candidate widths/eligibility in step with compact-assets.mjs. */
+export function stockAvifSrcset(entry: StockEntry, delivery?: "feature"): string | undefined {
+  if (delivery !== "feature") return undefined;
+  const dir = path.posix.dirname(entry.file);
+  if ((dir !== "images/stock" && dir !== "images/ai") || !/^[a-z0-9-]+$/.test(entry.slug)
+    || !Number.isInteger(entry.width) || entry.width <= 0
+    || !new RegExp(`^${entry.slug}\\.(?:jpe?g|png|webp|avif)$`).test(path.posix.basename(entry.file))) return undefined;
+  const widths = [400, 800, 960, 1200].filter(width => width <= entry.width);
+  if (entry.width === 1365) widths.push(entry.width);
+  return widths.length
+    ? widths.map(width => `/${dir}/compact/${entry.slug}-${width}.avif ${width}w`).join(", ")
+    : undefined;
+}
+
 /** PNG delivery copy for a modest logo slot, leaving the approved original as src. */
 export function compactLogoSrcset(src: string): string | undefined {
   const match = /^\/logos\/(partners|banks)\/([a-z0-9-]+)\.png$/.exec(src);
@@ -87,10 +103,19 @@ export const LISTING_SIZES = {
 // in scripts/images/make-thumbs.mjs.
 const CARD_ART_THUMB = 360;
 
-/** `srcset` for a card-art entry, or undefined when no derivative exists. */
-export function cardArtSrcset(slug: string, art: { file: string; width: number }): string | undefined {
+/** Same approved artwork: modest row thumb, optional feature copy, original. */
+export function cardArtSrcset(slug: string, art: { file: string; width: number }, delivery?: "feature"): string | undefined {
   if (art.width <= CARD_ART_THUMB) return undefined;
-  const rel = `${path.posix.dirname(art.file)}/thumb/${slug}.webp`;
-  if (!existsSync(path.join(PUBLIC, rel))) return undefined;
-  return `/${rel} ${CARD_ART_THUMB}w, /${art.file} ${art.width}w`;
+  const dir = path.posix.dirname(art.file);
+  const rel = `${dir}/thumb/${slug}.webp`;
+  const parts: { src: string; width: number }[] = [];
+  if (existsSync(path.join(PUBLIC, rel))) parts.push({ src: `/${rel}`, width: CARD_ART_THUMB });
+  // Build-only, source-validated by compact-assets. Dev and all existing
+  // callers retain their committed thumb/original delivery unchanged.
+  if (delivery === "feature" && dir === "images/cards" && /^[a-z0-9-]+$/.test(slug) && art.width > 720) {
+    parts.push({ src: `/${dir}/compact/${slug}-720.webp`, width: 720 });
+  }
+  if (!parts.length) return undefined;
+  parts.push({ src: `/${art.file}`, width: art.width });
+  return parts.map(part => `${part.src} ${part.width}w`).join(", ");
 }

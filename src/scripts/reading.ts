@@ -1,60 +1,71 @@
-// Reading aids for guides and articles (7 Oct 2026).
-//
-// The UX review of 7 October 2026 asked for calm over spectacle: GSAP,
-// Lenis smooth scroll, word-by-word headings, magnetic buttons, card tilt
-// and count-ups were removed. What stays is what helps a reader: a thin
-// gold progress bar along the top of an article, and the "In this guide"
-// list marking the section on screen. Plain DOM, no library.
-const body = document.querySelector<HTMLElement>(".dp-article-body");
+// One native controller for article and programme reading aids. A section
+// remains current between headings; there is no second observer or smooth
+// scrolling dependency. Anchors and native details work without JavaScript.
+import { currentReadingSection } from "../lib/editorialNavigation";
 
-if (body) {
-  // Reading progress. Runs under reduced motion too: it moves only as the
-  // reader scrolls, it does not animate on its own.
-  const bar = document.createElement("div");
+const body = document.querySelector<HTMLElement>(".dp-article-body");
+const bar = body ? document.createElement("div") : undefined;
+if (bar) {
   bar.className = "dp-read-progress";
   bar.setAttribute("aria-hidden", "true");
   document.body.appendChild(bar);
-  let ticking = false;
-  const paint = () => {
-    ticking = false;
-    const r = body.getBoundingClientRect();
-    const total = r.height - window.innerHeight * 0.8;
-    const done = Math.min(1, Math.max(0, (window.innerHeight * 0.2 - r.top) / Math.max(total, 1)));
-    bar.style.transform = `scaleX(${done})`;
-  };
-  const onScroll = () => {
-    if (!ticking) { ticking = true; requestAnimationFrame(paint); }
-  };
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll, { passive: true });
-  paint();
+}
 
-  // Table of contents: mark the section currently on screen.
-  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>(".dp-toc-card a[href^='#']"));
-  const targets = links
-    .map((a) => document.getElementById(decodeURIComponent(a.getAttribute("href")!.slice(1))))
-    .filter((t): t is HTMLElement => t != null);
-  if (targets.length && "IntersectionObserver" in window) {
-    const setCurrent = (id: string) =>
-      links.forEach((a) => {
-        const on = a.getAttribute("href") === `#${id}`;
-        a.parentElement?.classList.toggle("is-current", on);
-        if (on) a.setAttribute("aria-current", "location");
-        else a.removeAttribute("aria-current");
-      });
-    const visible = new Set<string>();
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) {
-          if (e.isIntersecting) visible.add(e.target.id);
-          else visible.delete(e.target.id);
-        }
-        // The first heading in document order inside the reading band.
-        const current = targets.find((t) => visible.has(t.id));
-        if (current) setCurrent(current.id);
-      },
-      { rootMargin: "-20% 0px -55% 0px" },
-    );
-    targets.forEach((t) => io.observe(t));
+const contents = [...document.querySelectorAll<HTMLElement>("[data-reading-contents], .dp-toc-card")].map((nav) => {
+  const entries = [...nav.querySelectorAll<HTMLAnchorElement>("a[href^='#']")].flatMap((link) => {
+    let id: string;
+    try { id = decodeURIComponent(link.hash.slice(1)); } catch { return []; }
+    const target = document.getElementById(id);
+    return target ? [{ link, target }] : [];
+  });
+  return { nav, entries, current: -1 };
+});
+
+const desktop = window.matchMedia("(min-width: 1024px)");
+for (const { nav } of contents) {
+  const details = nav.querySelector("details");
+  if (!details) continue;
+  const syncDisclosure = () => {
+    if (!desktop.matches && details.contains(document.activeElement)) details.querySelector("summary")?.focus();
+    details.open = desktop.matches;
+  };
+  syncDisclosure();
+  desktop.addEventListener("change", syncDisclosure);
+}
+
+let ticking = false;
+const paint = () => {
+  ticking = false;
+  if (body && bar) {
+    const rect = body.getBoundingClientRect();
+    const total = rect.height - window.innerHeight * .8;
+    const done = Math.min(1, Math.max(0, (window.innerHeight * .2 - rect.top) / Math.max(total, 1)));
+    bar.style.transform = `scaleX(${done})`;
   }
+  const stickyHeight = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dp-sticky-header-height")) || 81;
+  const readingLine = Math.max(stickyHeight + 24, window.innerHeight * .2);
+  for (const state of contents) {
+    const current = currentReadingSection(state.entries.map(({ target }) => target.getBoundingClientRect().top), readingLine);
+    if (current === state.current) continue;
+    state.current = current;
+    state.entries.forEach(({ link }, index) => {
+      const active = index === current;
+      link.parentElement?.classList.toggle("is-current", active);
+      if (active) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    });
+  }
+};
+const queuePaint = () => {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(paint);
+};
+if (body || contents.length) {
+  window.addEventListener("scroll", queuePaint, { passive: true });
+  window.addEventListener("resize", queuePaint, { passive: true });
+  window.addEventListener("hashchange", queuePaint);
+  window.addEventListener("pageshow", queuePaint);
+  document.fonts?.ready.then(queuePaint);
+  paint();
 }

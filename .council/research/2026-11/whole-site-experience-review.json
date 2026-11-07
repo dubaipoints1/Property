@@ -1,0 +1,2445 @@
+{
+  "scope": {
+    "asOf": "2026-11-06",
+    "baseSha": "d4a4f9494e3ef6f9cd929d440160a80f316b14ff",
+    "sourceSha": "d4a4f9494e3ef6f9cd929d440160a80f316b14ff",
+    "sourceReferenceRefresh": {
+      "asOf": "2026-11-06",
+      "files": ["src/pages/index.astro"],
+      "reason": "Homepage hero extraction moved source lines. Homepage references below now identify the current staged source; sourceSha and the rendered observations retain their original audit baseline. No finding is marked fixed by this address refresh."
+    },
+    "productionSha": "651fb0506cc03f5821e0d28659043c57eee76062",
+    "previewBase": "https://b56c0664.dubaipoints.pages.dev",
+    "routeCount": 322,
+    "familyCount": 19,
+    "renderedRoutes": 28,
+    "renderedStates": 112,
+    "method": "Complete static route inventory and page-family source review; 28 representative routes measured at phone/desktop in both themes, plus selected screenshot and interaction inspection.",
+    "ownerScope": "Homepage is open to review/prototype redesign and animation; no production redesign or release approval.",
+    "limits": [
+      "Not 322 bespoke pixel or full-journey reviews.",
+      "Desktop Chrome is not certification of physical iPhone Safari.",
+      "First-fold measurements do not certify lazy offscreen imagery.",
+      "Runtime no-JavaScript/reduced-motion changes, browser zoom and CLS remain outside this measured pass.",
+      "No analytics, conversion or revenue improvement is established.",
+      "Private options are not a production release."
+    ]
+  },
+  "familyPlans": {
+    "homepage": {
+      "label": "Publication front door",
+      "count": 1,
+      "role": "Publication front door",
+      "plan": "Bring reporting forward; concise arrival, three task doors, offers/travel shelves, then trust.",
+      "phase": "2"
+    },
+    "editorial-directory": {
+      "label": "News and guide discovery",
+      "count": 6,
+      "role": "News and guide discovery",
+      "plan": "Distinct feature beside a chronological feed, uniform media, honest category controls.",
+      "phase": "2"
+    },
+    "editorial-article": {
+      "label": "News, deals and guides",
+      "count": 146,
+      "role": "News, deals and guides",
+      "plan": "Answer, key facts, relevant visuals near the claim, one contents control, evidence, next task.",
+      "phase": "3"
+    },
+    "programme-directory": {
+      "label": "Airlines and hotels",
+      "count": 2,
+      "role": "Airlines and hotels",
+      "plan": "Distinct hero/listing media; clear earn/spend/transfer routes.",
+      "phase": "3"
+    },
+    "programme-guide": {
+      "label": "Loyalty programme reference",
+      "count": 10,
+      "role": "Loyalty programme reference",
+      "plan": "Preserve recent programme-flow improvements; refine visual rhythm and programme-specific tool journeys.",
+      "phase": "3"
+    },
+    "card-discovery": {
+      "label": "Card directories and categories",
+      "count": 14,
+      "role": "Card directories and categories",
+      "plan": "Compact filters, readable card art, consistent eligibility/fee hierarchy and comparison basis.",
+      "phase": "3"
+    },
+    "card-decision-tool": {
+      "label": "Finder and Compare",
+      "count": 2,
+      "role": "Finder and Compare",
+      "plan": "Preserve existing scenario hand-offs and mobile two-column contract; improve hierarchy and scenario-change disclosure.",
+      "phase": "3"
+    },
+    "card-review": {
+      "label": "Individual card reviews",
+      "count": 58,
+      "role": "Individual card reviews",
+      "plan": "Balance contained issuer art with verdict, eligibility, fees, provenance and onward comparison.",
+      "phase": "3"
+    },
+    "card-matchup": {
+      "label": "Pairwise card comparisons",
+      "count": 10,
+      "role": "Pairwise card comparisons",
+      "plan": "Real card images and comparable facts before trade-offs; no unsupported winner badges.",
+      "phase": "3"
+    },
+    "bank-directory": {
+      "label": "Bank discovery",
+      "count": 1,
+      "role": "Bank discovery",
+      "plan": "Reduce empty logo space; useful bank/offer entry points and scoped search.",
+      "phase": "3"
+    },
+    "bank-hub": {
+      "label": "Bank reference pages",
+      "count": 15,
+      "role": "Bank reference pages",
+      "plan": "Reader tasks first; consistent licensed identity and offer/product evidence.",
+      "phase": "3"
+    },
+    "salary-tracker": {
+      "label": "Salary offer discovery",
+      "count": 6,
+      "role": "Salary offer discovery",
+      "plan": "Compact filters and relevant results, consistent card art, retained eligibility/context.",
+      "phase": "3"
+    },
+    "salary-offer": {
+      "label": "Salary offer detail",
+      "count": 15,
+      "role": "Salary offer detail",
+      "plan": "Who qualifies, required steps, deadlines and reward timing before supporting evidence.",
+      "phase": "3"
+    },
+    "salary-history": {
+      "label": "Salary offer history",
+      "count": 15,
+      "role": "Salary offer history",
+      "plan": "Link snapshots to detail/source/current offer where available; distinguish archived terms.",
+      "phase": "1"
+    },
+    "salary-calculator": {
+      "label": "Salary reward calculation",
+      "count": 1,
+      "role": "Salary reward calculation",
+      "plan": "Ready/no-JavaScript states and clear assumptions; no salary telemetry.",
+      "phase": "1"
+    },
+    "reference-tool": {
+      "label": "Rewards and finance tools",
+      "count": 6,
+      "role": "Rewards and finance tools",
+      "plan": "Verify reset/bounds/readiness and explain scenario changes; never animate financial figures.",
+      "phase": "1"
+    },
+    "topic-directory": {
+      "label": "Best-of and topics",
+      "count": 2,
+      "role": "Best-of and topics",
+      "plan": "Purposeful route to a decision or reference task rather than generic tiles.",
+      "phase": "3"
+    },
+    "trust-reference": {
+      "label": "About, standards and policy",
+      "count": 10,
+      "role": "About, standards and policy",
+      "plan": "Clear freshness meanings, long-form navigation, privacy controls and subtle About surprise.",
+      "phase": "3"
+    },
+    "recovery": {
+      "label": "Search and not-found",
+      "count": 2,
+      "role": "Search and not-found",
+      "plan": "Useful recovery destinations, responsive controls and preserved crawl rules.",
+      "phase": "3"
+    }
+  },
+  "routes": [
+    {
+      "route": "/404.html",
+      "family": "recovery",
+      "title": "Page not found | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/about/",
+      "family": "trust-reference",
+      "title": "Why DubaiPoints exists | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/airlines/air-arabia-airrewards/",
+      "family": "programme-guide",
+      "title": "Air Arabia AirRewards — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/airlines/etihad-guest/",
+      "family": "programme-guide",
+      "title": "Etihad Guest — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/airlines/",
+      "family": "programme-directory",
+      "title": "UAE airlines & loyalty programmes | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/airlines/qatar-privilege-club/",
+      "family": "programme-guide",
+      "title": "Qatar Privilege Club — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/airlines/saudia-alfursan/",
+      "family": "programme-guide",
+      "title": "Saudia AlFursan — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/airlines/skywards/",
+      "family": "programme-guide",
+      "title": "Emirates Skywards — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/banks/adcb/",
+      "family": "bank-hub",
+      "title": "Abu Dhabi Commercial Bank — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/banks/adib/",
+      "family": "bank-hub",
+      "title": "Abu Dhabi Islamic Bank — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/al-hilal/",
+      "family": "bank-hub",
+      "title": "Al Hilal Bank — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/cbd/",
+      "family": "bank-hub",
+      "title": "Commercial Bank of Dubai — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/citi/",
+      "family": "bank-hub",
+      "title": "Citibank — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/dib/",
+      "family": "bank-hub",
+      "title": "Dubai Islamic Bank — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/emirates-islamic/",
+      "family": "bank-hub",
+      "title": "Emirates Islamic — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/emirates-nbd/",
+      "family": "bank-hub",
+      "title": "Emirates NBD — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/fab/",
+      "family": "bank-hub",
+      "title": "First Abu Dhabi Bank — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/hsbc/",
+      "family": "bank-hub",
+      "title": "HSBC — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/",
+      "family": "bank-directory",
+      "title": "UAE banks directory | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/banks/liv/",
+      "family": "bank-hub",
+      "title": "Liv — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/mashreq/",
+      "family": "bank-hub",
+      "title": "Mashreq — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/rakbank/",
+      "family": "bank-hub",
+      "title": "RAKBANK — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/standard-chartered/",
+      "family": "bank-hub",
+      "title": "Standard Chartered — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/banks/wio/",
+      "family": "bank-hub",
+      "title": "Wio Bank — UAE cards, salary transfer & reviews | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/best-of/",
+      "family": "topic-directory",
+      "title": "Best-of roundups | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/calculator/cash-or-miles/",
+      "family": "reference-tool",
+      "title": "Cash or Miles? UAE flight calculator | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/calculator/",
+      "family": "reference-tool",
+      "title": "UAE credit-card spend-ROI calculator | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/calculator/interest/",
+      "family": "reference-tool",
+      "title": "UAE credit-card interest & payoff calculator | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/cards/adcb-365-cashback/",
+      "family": "card-review",
+      "title": "ADCB 365 Cashback Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-betaqti/",
+      "family": "card-review",
+      "title": "ADCB Betaqti Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-essential-cashback/",
+      "family": "card-review",
+      "title": "ADCB Essential Cashback Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-lulu-platinum/",
+      "family": "card-review",
+      "title": "ADCB LuLu Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-lulu-titanium-gold/",
+      "family": "card-review",
+      "title": "ADCB LuLu Titanium Gold Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-shukran/",
+      "family": "card-review",
+      "title": "ADCB Shukran Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-talabat/",
+      "family": "card-review",
+      "title": "ADCB Talabat Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-touchpoints-infinite/",
+      "family": "card-review",
+      "title": "ADCB TouchPoints Infinite Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-touchpoints-platinum/",
+      "family": "card-review",
+      "title": "ADCB TouchPoints Platinum Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-touchpoints-titanium-gold/",
+      "family": "card-review",
+      "title": "ADCB TouchPoints Titanium Gold Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adcb-traveller/",
+      "family": "card-review",
+      "title": "ADCB Traveller Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/adib-cashback-visa/",
+      "family": "card-review",
+      "title": "ADIB Cashback Visa Covered Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/cashback/",
+      "family": "card-discovery",
+      "title": "Best UAE cashback credit cards (November 2026) | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/cards/cbd-one/",
+      "family": "card-review",
+      "title": "CBD One Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/citi-cashback/",
+      "family": "card-review",
+      "title": "Citi Cash Back Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/emirates-nbd-etihad-guest-inspire-vs-fab-etihad-guest-infinite/",
+      "family": "card-matchup",
+      "title": "Emirates NBD Etihad Guest Visa Inspire vs FAB Etihad Guest Infinite | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/emirates-nbd-marriott-bonvoy-world-vs-emirates-nbd-marriott-bonvoy-world-elite/",
+      "family": "card-matchup",
+      "title": "Emirates NBD Marriott Bonvoy World Mastercard vs Emirates NBD Marriott Bonvoy World Elite Mastercard | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/emirates-nbd-noon-one-vs-mashreq-cashback/",
+      "family": "card-matchup",
+      "title": "Emirates NBD Noon One Visa vs Mashreq Cashback Credit Card | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/emirates-nbd-share-visa-signature-vs-emirates-nbd-share-visa-infinite/",
+      "family": "card-matchup",
+      "title": "Emirates NBD SHARE Visa Signature vs Emirates NBD SHARE Visa Infinite | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/emirates-nbd-skywards-signature-vs-emirates-nbd-skywards-infinite/",
+      "family": "card-matchup",
+      "title": "Emirates NBD Skywards Signature vs Emirates NBD Skywards Infinite | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/emirates-nbd-voyager-world-vs-adcb-traveller/",
+      "family": "card-matchup",
+      "title": "Emirates NBD Voyager World Credit Card vs ADCB Traveller Credit Card | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/fab-cashback-vs-citi-cashback/",
+      "family": "card-matchup",
+      "title": "FAB Cashback Card vs Citi Cash Back Credit Card | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/hsbc-live-plus-vs-emirates-islamic-switch-cashback/",
+      "family": "card-matchup",
+      "title": "HSBC Live+ Credit Card vs Emirates Islamic Switch Cashback Credit Card | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/",
+      "family": "card-decision-tool",
+      "title": "Compare UAE credit cards side-by-side | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/cards/compare/liv-cashback-vs-adcb-365-cashback/",
+      "family": "card-matchup",
+      "title": "Liv Cashback Credit Card vs ADCB 365 Cashback Credit Card | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/compare/liv-cashback-vs-wio-credit/",
+      "family": "card-matchup",
+      "title": "Liv Cashback Credit Card vs Wio Credit (Mastercard World) | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/cards/dib-consumer-cashback/",
+      "family": "card-review",
+      "title": "DIB Consumer Cashback Reward Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-islamic-switch-cashback/",
+      "family": "card-review",
+      "title": "Emirates Islamic Switch Cashback Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-darna-select-visa/",
+      "family": "card-review",
+      "title": "Emirates NBD Darna Select Visa review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-darna-visa-infinite/",
+      "family": "card-review",
+      "title": "Emirates NBD Darna Visa Infinite review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-darna-visa-signature/",
+      "family": "card-review",
+      "title": "Emirates NBD Darna Visa Signature review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-diners-club/",
+      "family": "card-review",
+      "title": "Emirates NBD Diners Club Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-dnata-platinum/",
+      "family": "card-review",
+      "title": "Emirates NBD dnata Platinum Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-dnata-world/",
+      "family": "card-review",
+      "title": "Emirates NBD dnata World Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-duo/",
+      "family": "card-review",
+      "title": "Emirates NBD Duo Credit Cards review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-etihad-guest-elevate/",
+      "family": "card-review",
+      "title": "Emirates NBD Etihad Guest Visa Elevate review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-etihad-guest-inspire/",
+      "family": "card-review",
+      "title": "Emirates NBD Etihad Guest Visa Inspire review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-go4it-gold/",
+      "family": "card-review",
+      "title": "Emirates NBD Go4it Gold review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-go4it-platinum/",
+      "family": "card-review",
+      "title": "Emirates NBD Go4it Platinum review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-lulu-247-platinum/",
+      "family": "card-review",
+      "title": "Emirates NBD LuLu 247 Platinum review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-lulu-247-titanium/",
+      "family": "card-review",
+      "title": "Emirates NBD LuLu 247 Titanium review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-manchester-united/",
+      "family": "card-review",
+      "title": "Emirates NBD Manchester United Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-marriott-bonvoy-world-elite/",
+      "family": "card-review",
+      "title": "Emirates NBD Marriott Bonvoy World Elite Mastercard review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-marriott-bonvoy-world/",
+      "family": "card-review",
+      "title": "Emirates NBD Marriott Bonvoy World Mastercard review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-mastercard-platinum/",
+      "family": "card-review",
+      "title": "Emirates NBD Mastercard Platinum review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-noon-one/",
+      "family": "card-review",
+      "title": "Emirates NBD Noon One Visa review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-priority-banking-visa-infinite/",
+      "family": "card-review",
+      "title": "Emirates NBD Priority Banking Visa Infinite review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-share-visa-infinite/",
+      "family": "card-review",
+      "title": "Emirates NBD SHARE Visa Infinite review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-share-visa-signature/",
+      "family": "card-review",
+      "title": "Emirates NBD SHARE Visa Signature review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-skywards-infinite/",
+      "family": "card-review",
+      "title": "Emirates NBD Skywards Infinite review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-skywards-signature/",
+      "family": "card-review",
+      "title": "Emirates NBD Skywards Signature review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-u-by-emaar-family/",
+      "family": "card-review",
+      "title": "Emirates NBD U by Emaar Family review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-u-by-emaar-infinite-emiratis/",
+      "family": "card-review",
+      "title": "Emirates NBD U by Emaar Infinite (for Emiratis) review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-u-by-emaar-infinite/",
+      "family": "card-review",
+      "title": "Emirates NBD U by Emaar Infinite review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-visa-flexi/",
+      "family": "card-review",
+      "title": "Emirates NBD Visa Flexi review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-visa-infinite/",
+      "family": "card-review",
+      "title": "Emirates NBD Visa Infinite review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-visa-platinum/",
+      "family": "card-review",
+      "title": "Emirates NBD Visa Platinum review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-voyager-world/",
+      "family": "card-review",
+      "title": "Emirates NBD Voyager World Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/emirates-nbd-webshopper/",
+      "family": "card-review",
+      "title": "Emirates NBD WebShopper Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/fab-cashback/",
+      "family": "card-review",
+      "title": "FAB Cashback Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/fab-elite/",
+      "family": "card-review",
+      "title": "FAB Elite Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/fab-etihad-guest-infinite/",
+      "family": "card-review",
+      "title": "FAB Etihad Guest Infinite review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/fab-world-elite/",
+      "family": "card-review",
+      "title": "FAB World Elite Mastercard review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/fees/",
+      "family": "card-discovery",
+      "title": "UAE credit-card fee index (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/finder/",
+      "family": "card-decision-tool",
+      "title": "Find your UAE credit card | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/cards/hsbc-live-plus/",
+      "family": "card-review",
+      "title": "HSBC Live+ Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/",
+      "family": "card-discovery",
+      "title": "The best UAE credit cards (November 2026) | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/cards/islamic/",
+      "family": "card-discovery",
+      "title": "Sharia-compliant UAE credit cards | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/liv-cashback-plus/",
+      "family": "card-review",
+      "title": "Liv Cashback+ Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/cards/liv-cashback/",
+      "family": "card-review",
+      "title": "Liv Cashback Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/mashreq-cashback/",
+      "family": "card-review",
+      "title": "Mashreq Cashback Credit Card review (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/miles/",
+      "family": "card-discovery",
+      "title": "Best UAE miles credit cards (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/perks/golf/",
+      "family": "card-discovery",
+      "title": "UAE credit cards with golf benefits (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/perks/lounge-access/",
+      "family": "card-discovery",
+      "title": "UAE credit cards with airport lounge access (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/perks/travel-insurance/",
+      "family": "card-discovery",
+      "title": "UAE credit cards with travel insurance (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/rakbank-world/",
+      "family": "card-review",
+      "title": "RAKBANK World Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/salary/12000/",
+      "family": "card-discovery",
+      "title": "Best UAE credit cards at AED 12,000 salary (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/salary/20000/",
+      "family": "card-discovery",
+      "title": "Best UAE credit cards at AED 20,000 salary (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/salary/30000/",
+      "family": "card-discovery",
+      "title": "Best UAE credit cards at AED 30,000 salary (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/salary/5000/",
+      "family": "card-discovery",
+      "title": "Best UAE credit cards at AED 5,000 salary (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/salary/8000/",
+      "family": "card-discovery",
+      "title": "Best UAE credit cards at AED 8,000 salary (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/salary/",
+      "family": "card-discovery",
+      "title": "UAE credit cards by salary | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/sc-platinum-x/",
+      "family": "card-review",
+      "title": "Standard Chartered Platinum X Credit Card review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/cards/wio-credit/",
+      "family": "card-review",
+      "title": "Wio Credit (Mastercard World) review (November 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/corrections/",
+      "family": "trust-reference",
+      "title": "Corrections log | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/adib-careem-food-30pct/",
+      "family": "editorial-article",
+      "title": "Careem Food — 30% off up to AED 50 with an ADIB Visa Covered Card, to 5 January 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/adib-lulu-thursdays-20pct/",
+      "family": "editorial-article",
+      "title": "Lulu online — 20% off up to AED 50 every Thursday with an ADIB Visa Covered Card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/citi-dnata-travel-5pct-citibank/",
+      "family": "editorial-article",
+      "title": "dnata Travel — extra 5% off selected hotel packages with code CITIBANK, book by 15 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/citi-dubai-parks-15pct/",
+      "family": "editorial-article",
+      "title": "Dubai Parks and Resorts — 15% off with a Citi card, to 30 June 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/citi-fnp-15pct-citi15/",
+      "family": "editorial-article",
+      "title": "fnp.ae — 15% off flowers and gifts with a Citi card, to 31 March 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/citi-makemytrip-10pct-plus-10pct-wallet/",
+      "family": "editorial-article",
+      "title": "MakeMyTrip — 10% off plus 10% back on hotels and flights with a Citi card, to 30 June 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/citi-nrtc-fresh-10pct/",
+      "family": "editorial-article",
+      "title": "NRTC Fresh — 10% off online grocery orders of AED 80 or more with a Citi card, to 31 March 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/citi-reel-cinemas-bogo-ultima-prestige/",
+      "family": "editorial-article",
+      "title": "Reel Cinemas — buy one, get one free plus 20% off food with a Citi Ultima or Prestige card, to 31 December 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/citi-styli-20pct/",
+      "family": "editorial-article",
+      "title": "Styli — 20% off full price, 10% off sale with a Citi card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/dib-air-arabia-20pct-ultimate/",
+      "family": "editorial-article",
+      "title": "Air Arabia — 20% off Ultimate and 10% off Value fares with a DIB Visa Covered Card, book by 15 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/dib-choix-intercontinental-20pct/",
+      "family": "editorial-article",
+      "title": "Choix, InterContinental Dubai Festival City — 20% off à la carte, afternoon tea and cakes with a DIB Covered Card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/dib-dr-nutrition-app-dib15/",
+      "family": "editorial-article",
+      "title": "Dr. Nutrition app — up to 20% off by product line with a DIB Covered Card, to 31 August 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/dib-mann-marzi-15pct/",
+      "family": "editorial-article",
+      "title": "Mann Marzi Restaurant — 15% off the bill with a DIB Covered Card or Johara Debit Card, to 30 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/emirates-islamic-air-arabia-eib-book-by-15-november/",
+      "family": "editorial-article",
+      "title": "Air Arabia — 20% off Ultimate and 10% off Value fares with an Emirates Islamic Visa credit card, code EIB, book by 15 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/emirates-islamic-careem-dineout-weekend-aed40/",
+      "family": "editorial-article",
+      "title": "Careem DineOut — AED 40 off a weekend bill of AED 200+ with an Emirates Islamic Visa card, to 29 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/emirates-islamic-carrefour-weekend-aed50/",
+      "family": "editorial-article",
+      "title": "Carrefour online — up to AED 50 off every weekend with an Emirates Islamic Visa card, to 29 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/emirates-islamic-emirates-holidays-10000-skywards-miles-17-december/",
+      "family": "editorial-article",
+      "title": "Emirates Holidays — 10,000 bonus Skywards Miles on a AED 20,000 package with an Emirates Islamic card, book by 17 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/emirates-islamic-etihad-guest-welcome-oct-2026/",
+      "family": "editorial-article",
+      "title": "Emirates Islamic Etihad Guest cards — up to 200,000 bonus Miles, apply by 31 October | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/emirates-islamic-noon-gift-card-welcome-31-december/",
+      "family": "editorial-article",
+      "title": "Emirates Islamic credit cards — noon gift card of up to AED 1,000 for new cardholders, apply by 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/emirates-islamic-sharaf-dg-10pct-8-november/",
+      "family": "editorial-article",
+      "title": "Sharaf DG — 10% off up to AED 300 on home appliances and electronics with an Emirates Islamic Visa card, to 8 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/emirates-islamic-switch-cashback-welcome-aed500/",
+      "family": "editorial-article",
+      "title": "Emirates Islamic Switch Cashback — AED 500 welcome bonus on AED 15,000 spend in 60 days, offer to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/enbd-republiks-gym-20pct/",
+      "family": "editorial-article",
+      "title": "StudioRepublik and FitRepublik — 20% off membership with selected Emirates NBD credit cards, to 10 July 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/enbd-right-bite-20pct-meal-plans/",
+      "family": "editorial-article",
+      "title": "Right Bite — 20% off 20, 40 and 60-day meal plans with an Emirates NBD card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/enbd-skywards-welcome-q2-2026/",
+      "family": "editorial-article",
+      "title": "ENBD Skywards Infinite — up to 100k miles welcome bonus (Q2 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/enbd-tripcom-mastercard-20pct/",
+      "family": "editorial-article",
+      "title": "Trip.com — up to 20% off flights and hotels with an Emirates NBD Mastercard, to 31 March 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/enbd-urban-company-noon-5pct/",
+      "family": "editorial-article",
+      "title": "Urban Company on noon — 5% back in credits with the Emirates NBD noon One card, through 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/enbd-yas-island-parks-30pct/",
+      "family": "editorial-article",
+      "title": "Yas Island theme parks — 30% off one-day tickets online with an Emirates NBD card, to 21 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/enbd-zuvees-15pct-flowers/",
+      "family": "editorial-article",
+      "title": "Zuvees — 15% off flower arrangements with an Emirates NBD Infinite, Signature or World Elite card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/etihad-fare-sale-july-2026/",
+      "family": "editorial-article",
+      "title": "Etihad fare sale — round-trip Economy from AED 1,050 ex-Abu Dhabi, book by 31 July | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/etihad-last-chance-summer-2026/",
+      "family": "editorial-article",
+      "title": "Etihad 'Last chance for summer' — round-trip Economy from AED 1,840 ex-Abu Dhabi, book by 15 August | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/fab-800carguru-7pct-cashback/",
+      "family": "editorial-article",
+      "title": "800CarGuru — 7% cashback up to AED 500 on car servicing with FAB Mastercard cards, through 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/fab-amazon-10pct-monthly/",
+      "family": "editorial-article",
+      "title": "Amazon.ae — 10% off once a month with a FAB Mastercard, through 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/fab-amazon-now-weekend-25pct/",
+      "family": "editorial-article",
+      "title": "Amazon now — 25% off up to AED 60 every weekend with a FAB Mastercard, through 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/fab-binsina-3pct-cashback/",
+      "family": "editorial-article",
+      "title": "BinSina Pharmacy — 3% cashback up to AED 50 with FAB Mastercard cards, through 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/fab-grandiose-10pct-instore-cashback/",
+      "family": "editorial-article",
+      "title": "Grandiose — 10% cashback in store, 4% online, with FAB Mastercard cards, through 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/fab-lulu-20pct-online/",
+      "family": "editorial-article",
+      "title": "Lulu Hypermarket online — 20% off up to AED 75 with a FAB Mastercard, through 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/fab-noon-10pct-monthly/",
+      "family": "editorial-article",
+      "title": "noon.com — 10% off up to AED 50 once a month with a FAB Mastercard, through 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/fab-salary-cashback-2026/",
+      "family": "editorial-article",
+      "title": "FAB salary transfer — up to AED 9,000 cashback over 12 months, no lock-in, runs to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/fab-zed-ride-cashback/",
+      "family": "editorial-article",
+      "title": "Zed rides — 4% cashback on the first booking, 2% after, with FAB Mastercard cards, through 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/hsbc-advance-750-cashback/",
+      "family": "editorial-article",
+      "title": "HSBC Advance — AED 750 cashback for opening the account in-app, by 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/hsbc-careem-plus-12-months-free/",
+      "family": "editorial-article",
+      "title": "Careem Plus — 12 months free with an HSBC credit card in Dubai or Abu Dhabi, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/hsbc-farfetch-visa-26visame/",
+      "family": "editorial-article",
+      "title": "Farfetch — save up to AED 500 with an HSBC Visa card and code 26VISAME, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/hsbc-zomato-gold-12-months-free/",
+      "family": "editorial-article",
+      "title": "Zomato Gold — 12 months of dining membership free with any HSBC card, register by 29 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/",
+      "family": "editorial-directory",
+      "title": "Current UAE bank & card deals | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/deals/mashreq-cinepolis-50pct-tickets/",
+      "family": "editorial-article",
+      "title": "Cinepolis — 50% off up to eight tickets a month with a Mashreq Cashback or Platinum Plus card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/rakbank-careem-food-25pct-rak25/",
+      "family": "editorial-article",
+      "title": "Careem Food and Quik — 25% off up to AED 30, twice a month, with a RAKBANK credit card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/rakbank-igp-20pct-rak20/",
+      "family": "editorial-article",
+      "title": "IGP gifts — flat 20% off up to AED 100 with a RAKBANK card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/rakbank-lulu-sundays-15pct/",
+      "family": "editorial-article",
+      "title": "LuLu online — 15% off up to AED 50 every Sunday with a RAKBANK credit card, to 27 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/rakbank-noon-15pct-rak50/",
+      "family": "editorial-article",
+      "title": "noon — 15% off up to AED 50 once a month with a RAKBANK credit card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/rakbank-talabat-25pct-rak30/",
+      "family": "editorial-article",
+      "title": "talabat — 25% off up to AED 30, twice a month, with a RAKBANK credit card, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/deals/sc-journey-duty-free-10pct-cashback/",
+      "family": "editorial-article",
+      "title": "UAE airport duty-free — 10% cashback up to AED 100 a statement with a Standard Chartered Journey card, to 31 January 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/editorial-policy/how-we-score/",
+      "family": "trust-reference",
+      "title": "How we score | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/editorial-policy/",
+      "family": "trust-reference",
+      "title": "Editorial policy | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/glossary/",
+      "family": "trust-reference",
+      "title": "Glossary | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/aecb-credit-report-walkthrough/",
+      "family": "editorial-article",
+      "title": "AECB credit report: how to pull and read yours (2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-cashback-cards-uae-2026/",
+      "family": "editorial-article",
+      "title": "Best cashback credit cards in the UAE — 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-dining-cards-uae-2026/",
+      "family": "editorial-article",
+      "title": "Best UAE credit cards for dining — 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-entry-level-cards-2026/",
+      "family": "editorial-article",
+      "title": "Best entry-level cards in the UAE (AED 5,000–8,000 salary) — 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-fuel-cards-uae-2026/",
+      "family": "editorial-article",
+      "title": "Best UAE credit cards for fuel — 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-grocery-cards-uae-2026/",
+      "family": "editorial-article",
+      "title": "Best UAE credit cards for groceries and supermarkets — 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-lounge-access-cards-uae-2026/",
+      "family": "editorial-article",
+      "title": "Best UAE credit cards with airport lounge access — 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-no-annual-fee-cards-uae-2026/",
+      "family": "editorial-article",
+      "title": "Best no-annual-fee credit cards in the UAE — 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-premium-cards-2026/",
+      "family": "editorial-article",
+      "title": "Best premium cards in the UAE (AED 30,000+ salary) — 2026 | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/guides/best-skywards-cards-uae-2026/",
+      "family": "editorial-article",
+      "title": "Best UAE credit cards for Emirates Skywards Miles — 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-uae-cards-hotel-points-2026/",
+      "family": "editorial-article",
+      "title": "Best UAE credit cards for hotel points — 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/best-uae-points-programmes-premium-cabin-2026/",
+      "family": "editorial-article",
+      "title": "Best UAE points programmes for premium-cabin redemption (2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/choosing-first-uae-bank/",
+      "family": "editorial-article",
+      "title": "Choosing your first UAE bank (2026): a decision framework | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/dubai-brunch-on-credit-card-discounts/",
+      "family": "editorial-article",
+      "title": "Dubai brunch on credit-card discounts: the Friday/Saturday playbook | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/dubai-shopping-festival-2026/",
+      "family": "editorial-article",
+      "title": "Dubai Shopping Festival 2026: the card-stacking playbook | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/expat-starter-avoid-mistakes/",
+      "family": "editorial-article",
+      "title": "The mistakes UAE expats make in their first year (and how to avoid them) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/expat-starter-banking-basics/",
+      "family": "editorial-article",
+      "title": "UAE banking basics for expats (2026): salary transfer, accounts, AECB | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/expat-starter-car-costs/",
+      "family": "editorial-article",
+      "title": "What a car actually costs in the UAE (2026): Salik, fuel, renewal, and the cards that pay you back | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/expat-starter-first-credit-card/",
+      "family": "editorial-article",
+      "title": "Choosing your first UAE credit card (2026): an expat's guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/expat-starter-points-101/",
+      "family": "editorial-article",
+      "title": "Points 101: what UAE airmiles and rewards currencies are actually worth (2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/expat-starter/",
+      "family": "editorial-article",
+      "title": "The UAE Expat Starter Guide (2026): credit cards, banking, points and the mistakes to avoid | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/golden-visa-cards/",
+      "family": "editorial-article",
+      "title": "Golden Visa and premium UAE credit cards (2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/",
+      "family": "editorial-directory",
+      "title": "UAE points, miles & banking guides | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/guides/paint-protection-film-dubai/",
+      "family": "editorial-article",
+      "title": "Paint protection film in Dubai (2026): hand-cut vs pre-cut, what the warranty actually covers, and who we'd use | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/pay-rent-credit-card-uae-2026/",
+      "family": "editorial-article",
+      "title": "Paying rent by credit card in the UAE (2026): every option, what it really costs, and the catches | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/ramadan-iftars-on-points/",
+      "family": "editorial-article",
+      "title": "Ramadan iftars on points: hotel buffets, bank-card 2-for-1s, and the AED maths | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/salary-transfer-mechanics-2026/",
+      "family": "editorial-article",
+      "title": "How UAE salary transfer actually works (2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/skywards-business-class-redemptions-2026/",
+      "family": "editorial-article",
+      "title": "Skywards business-class redemptions from Dubai: the 2026 playbook | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/uae-airport-lounges-card-access-2026/",
+      "family": "editorial-article",
+      "title": "Which UAE cards get you into lounges at DXB, AUH and SHJ | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/uae-corporate-tax-overview/",
+      "family": "editorial-article",
+      "title": "UAE corporate tax: an overview for residents (2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/uae-credit-card-eligibility-2026/",
+      "family": "editorial-article",
+      "title": "UAE credit card eligibility — 2026 guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/guides/uae-transfer-ratios-2026/",
+      "family": "editorial-article",
+      "title": "UAE bank-points-to-airline-miles transfer ratios — 2026 guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/hotels/accor-all/",
+      "family": "programme-guide",
+      "title": "Accor ALL — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/hotels/hilton-honors/",
+      "family": "programme-guide",
+      "title": "Hilton Honors — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/hotels/ihg-one-rewards/",
+      "family": "programme-guide",
+      "title": "IHG One Rewards — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/hotels/",
+      "family": "programme-directory",
+      "title": "Hotel loyalty programmes for UAE residents | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/hotels/marriott-bonvoy/",
+      "family": "programme-guide",
+      "title": "Marriott Bonvoy — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/hotels/world-of-hyatt/",
+      "family": "programme-guide",
+      "title": "World of Hyatt — UAE earn, redeem, transfer guide | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/how-we-make-money/",
+      "family": "trust-reference",
+      "title": "How we make money | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/",
+      "family": "homepage",
+      "title": "DubaiPoints — UAE miles, deals and banking, AED-first",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/news/abu-dhabi-hotels-emirati-hospitality-standards-2027/",
+      "family": "editorial-article",
+      "title": "Abu Dhabi hotels to adopt Emirati hospitality standards from early 2027, Gulf News reports | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/adcb-365-cashback-earn-table-rebalance-2026/",
+      "family": "editorial-article",
+      "title": "ADCB rebalances the 365 Cashback earn table: groceries cut to 3%, fuel up to 5%, subscriptions added | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/adcb-essential-cashback-welcome-bonus-cut-aed-300/",
+      "family": "editorial-article",
+      "title": "ADCB cuts the Essential Cashback welcome bonus from AED 350 to AED 300 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/adib-marriott-bonvoy-cards-launch-uae/",
+      "family": "editorial-article",
+      "title": "ADIB launches Marriott Bonvoy cards — 200,000 points, AED 2,500 fee | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/air-arabia-ras-al-khaimah-kozhikode-daily-resumes/",
+      "family": "editorial-article",
+      "title": "Air Arabia brings back daily Ras Al Khaimah–Kozhikode flights from 16 October | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/air-arabia-sharjah-amman-city-airport-four-weekly-15-november/",
+      "family": "editorial-article",
+      "title": "Air Arabia adds Sharjah to Amman City Airport, four flights a week from 15 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/airlines/",
+      "family": "editorial-directory",
+      "title": "UAE airline & miles news | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/al-hilal-15000-salary-campaign-quietly-ended/",
+      "family": "editorial-article",
+      "title": "Al Hilal's 'up to AED 15,000' salary campaign ended 4 August — the page still ranks #1 and reads as live | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/al-hilal-etihad-guest-card-page-still-live-after-deactivation/",
+      "family": "editorial-article",
+      "title": "Al Hilal deactivated its Etihad Guest cards on 30 November 2025 — the Infinite page still offers 60,000 Miles to apply | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/all-accor-double-points-uae-hotels-book-by-13-december/",
+      "family": "editorial-article",
+      "title": "ALL Accor doubles points at 46 UAE hotels, and on dining, for bookings made by 13 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/all-accor-triple-points-uae-hotels-book-by-25-october/",
+      "family": "editorial-article",
+      "title": "ALL Accor triples points at 96 UAE hotels, for bookings made by 25 October | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/banking/",
+      "family": "editorial-directory",
+      "title": "UAE banking & card news | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/cash-or-miles-emirates-three-quotes/",
+      "family": "editorial-article",
+      "title": "Cash or Miles? Compare three Emirates prices, not two | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/news/cash-or-miles-etihad-abu-dhabi-muscat/",
+      "family": "editorial-article",
+      "title": "Cash or Miles? Abu Dhabi to Muscat on Etihad | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/cash-or-miles-uae-flight-break-even/",
+      "family": "editorial-article",
+      "title": "Cash or Miles? Two UAE flights, two break-even examples | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/citi-cashback-joining-bonus-doubles-aed-300/",
+      "family": "editorial-article",
+      "title": "Citi doubles the Cash Back card's joining bonus to AED 300 — same AED 6,000 spend condition | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/citi-welcome-ladder-aed-300-to-1500-runs-to-31-january-2027/",
+      "family": "editorial-article",
+      "title": "Citi's welcome ladder runs to 31 January 2027 — AED 300 to AED 1,500, and only the two entry cards come out ahead in year one | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/dib-consumer-cashback-grocery-school-fee-caps-cut-10-october/",
+      "family": "editorial-article",
+      "title": "DIB cuts the grocery and school-fee cashback caps on its Consumer Cashback cards | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/dubaipoints-newsroom-launch/",
+      "family": "editorial-article",
+      "title": "The DubaiPoints news desk is open | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-a350-premium-economy-hanoi-ho-chi-minh-city-durban/",
+      "family": "editorial-article",
+      "title": "Emirates puts the A350, and Premium Economy, on every Dubai–Vietnam flight by 1 December, and on Durban from March | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-a350-premium-economy-privacy-screen-seat/",
+      "family": "editorial-article",
+      "title": "Emirates puts an electric privacy screen in A350 Premium Economy | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-islamic-banded-salary-cashback-30-september/",
+      "family": "editorial-article",
+      "title": "Emirates Islamic pays banded salary-transfer cashback to 30 September — unless you've banked with ENBD lately | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-islamic-emarati-covered-card-aed-1000-welcome-cashback-31-october/",
+      "family": "editorial-article",
+      "title": "Emirates Islamic's Emarati card pays AED 1,000 cashback, now extended to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-islamic-switch-welcome-extended-30-september/",
+      "family": "editorial-article",
+      "title": "Emirates Islamic extends the Switch Cashback welcome offer to 30 September | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-launches-daily-dubai-helsinki-a350/",
+      "family": "editorial-article",
+      "title": "Emirates launches daily Dubai–Helsinki on the A350 — the UAE's only year-round direct link to Finland | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-nbd-new-account-air-arabia-return-ticket-31-december/",
+      "family": "editorial-article",
+      "title": "Emirates NBD: open an account in the app, deposit AED 50,000, get an Air Arabia return ticket — to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-nbd-salary-transfer-cashback-up-to-aed-6000-24-december/",
+      "family": "editorial-article",
+      "title": "Emirates NBD's new salary-transfer offer: AED 1,500 to AED 6,000 cashback, to 24 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-skywards-double-miles-hotels-car-rental-accor-bonus-30-november/",
+      "family": "editorial-article",
+      "title": "Skywards pays double Miles on IHG, Booking.com and car hire, and 25% extra on ALL Accor transfers, to 30 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-skywards-mile-a-minute-dubai-book-by-5-november/",
+      "family": "editorial-article",
+      "title": "Emirates brings back Mile-a-Minute: up to 7,200 Skywards Miles for visitors to Dubai, but UAE residents are excluded | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/emirates-skywards-season-of-rewards-2026/",
+      "family": "editorial-article",
+      "title": "Emirates Skywards opens 'Season of Rewards': Cash+Miles doubles, bonus tier miles through August | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/enbd-bonus-interest-salary-transfer-explained/",
+      "family": "editorial-article",
+      "title": "ENBD's bonus-interest salary transfer: 5% to 6% on AED 25,000 for six months, explained in AED | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/etihad-abu-dhabi-red-sea-twice-weekly-from-25-october/",
+      "family": "editorial-article",
+      "title": "Etihad now flies Abu Dhabi to Saudi Arabia's Red Sea coast, twice weekly from 25 October | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/etihad-fare-sale-book-by-31-july-2026/",
+      "family": "editorial-article",
+      "title": "Etihad fare sale closes 31 July 2026 — and its Miles prices value an Etihad Guest Mile at a flat 2.94 fils | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/etihad-guest-points-exchange-bonus-up-to-40-percent-31-october/",
+      "family": "editorial-article",
+      "title": "Etihad Guest pays up to 40% bonus Miles on transfers from UAE banks and Accor until 31 October | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/etihad-miles-rate-holds-2-94-fils-second-sale/",
+      "family": "editorial-article",
+      "title": "Etihad's Miles-as-cash rate is a constant, not a promotion: 2.94 fils across two consecutive sales | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/fab-cashback-free-holiday-offer-closes-30-september/",
+      "family": "editorial-article",
+      "title": "FAB's free-holiday offer closes 30 September — first 300 get Paris | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/flydubai-dubai-budapest-daily-from-25-october/",
+      "family": "editorial-article",
+      "title": "flydubai's Dubai–Budapest goes daily from 25 October | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/flydubai-dubai-pokhara-daily-from-23-september/",
+      "family": "editorial-article",
+      "title": "flydubai now flies Dubai–Pokhara daily, from AED 1,950 return | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/flydubai-dubai-skopje-three-weekly-from-1-april-2027/",
+      "family": "editorial-article",
+      "title": "flydubai brings back Dubai–Skopje from 1 April 2027, three flights a week | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/flydubai-interline-air-india-uzbekistan-airways/",
+      "family": "editorial-article",
+      "title": "flydubai adds Air India and Uzbekistan Airways interline tickets | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/hilton-honors-buy-points-120-percent-bonus-21-november/",
+      "family": "editorial-article",
+      "title": "Hilton Honors sells points with a 120% bonus to 21 November. At about 1.7 fils a point, it is only for a specific stay | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/hilton-honors-more-points-to-play-uae-hotels-31-december/",
+      "family": "editorial-article",
+      "title": "Hilton Honors pays 3,000 bonus points a stay at 16 UAE hotels, 1,000 at the rest, to 31 December | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/hotels/",
+      "family": "editorial-directory",
+      "title": "UAE hotel & loyalty news | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/ihg-garner-hotels-uae-dubai-al-jaddaf-ras-al-khaimah/",
+      "family": "editorial-article",
+      "title": "IHG brings Garner Hotels to the UAE: Dubai Al Jaddaf and Ras Al Khaimah, expected in 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/ihg-one-rewards-choice-points-promo-ends-31-august/",
+      "family": "editorial-article",
+      "title": "IHG's pick-your-points promotion ends 31 August — nine days to register, and which option you pick is night-count arithmetic | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/",
+      "family": "editorial-directory",
+      "title": "UAE points, miles & banking news | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/news/marriott-bonvoy-4500-bonus-points-register-by-13-november/",
+      "family": "editorial-article",
+      "title": "Marriott Bonvoy pays up to 4,500 bonus points a stay worldwide. Register by 13 November, stay by 22 November | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/marriott-bonvoy-skywards-5000-points-one-stay/",
+      "family": "editorial-article",
+      "title": "Marriott Bonvoy is paying 5,000 points for one stay under the Skywards partnership — register before you check in | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/marriott-bonvoy-upgrade-list-app-beta-not-yet-uae/",
+      "family": "editorial-article",
+      "title": "Marriott Bonvoy's app will show your place in the upgrade queue — in the US and Canada first, not the UAE | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/mashreq-aura-credit-cards-launch-alshaya/",
+      "family": "editorial-article",
+      "title": "Mashreq launches three Aura cards with Alshaya: up to 5% on groceries, paid in Aura Points | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/mashreq-cashback-category-rate-cut-13-june-2026/",
+      "family": "editorial-article",
+      "title": "Mashreq Cashback rate cut: fuel, utilities, government and telecom fall to 0.15% on 13 June 2026 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/may-2026-welcome-cycles-end-31-may/",
+      "family": "editorial-article",
+      "title": "May 2026 welcome cycles end at FAB, RAKBANK, HSBC and Emirates Islamic — what changed, what to watch for | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/minor-hotels-double-avios-iberia-club-31-october/",
+      "family": "editorial-article",
+      "title": "Minor Hotels stays earn double Avios to 31 October, Head for Points reports — but not at UAE Anantaras | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/my-emirates-pass-winter-2026-boarding-pass-discounts-31-march/",
+      "family": "editorial-article",
+      "title": "My Emirates Pass is back for winter: an Emirates boarding pass into Dubai unlocks UAE discounts until 31 March 2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/qatar-airways-a321lr-business-suites-qsuite-next-gen-2027/",
+      "family": "editorial-article",
+      "title": "Qatar Airways' A321LR will carry doored business suites from January; Qsuite Next Gen moves to the A350 for mid-2027 | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/qatar-avios-transfer-bonus-uae-banks-31-october/",
+      "family": "editorial-article",
+      "title": "Qatar Privilege Club pays up to 35% bonus Avios on transfers from Emirates NBD, DIB, HSBC and Mashreq until 31 October | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/qatar-privilege-club-my-list-booking-avios-for-others/",
+      "family": "editorial-article",
+      "title": "Booking Qatar Avios awards for someone else: the My List rules | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/qatar-privilege-deals-avios-book-by-14-september/",
+      "family": "editorial-article",
+      "title": "Qatar's Privilege Deals cut Avios prices — book by 14 September | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/qatar-privilege-deals-october-sharjah-book-by-14-october/",
+      "family": "editorial-article",
+      "title": "Qatar's October Privilege Deals put Sharjah on the list — book by 14 October | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/rakbank-salary-cash-reward-closes-31-august/",
+      "family": "editorial-article",
+      "title": "RAKBANK's AED 4,000 salary-transfer cash reward closes 31 August — the first salary has to land by then | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/skywards-miles-expiry-birthday-month-rule-ends-2027/",
+      "family": "editorial-article",
+      "title": "Emirates drops the birthday-month rule on Skywards Miles expiry | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/skywards-season-of-rewards-final-week-31-august/",
+      "family": "editorial-article",
+      "title": "Skywards' Season of Rewards ends 31 August — and you must fly by then, not just book | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/skywards-summer-redemption-push-dss-5-million-miles/",
+      "family": "editorial-article",
+      "title": "Skywards' summer redemption push runs to 30 September — and its DSS raffle offers 5 million Miles to 30 August | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/uae-card-change-log-citi-cash-back-application-route/",
+      "family": "editorial-article",
+      "title": "UAE Card Change Log: Citi Cash Back has two separate spend tests | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/uae-card-change-log-liv-eligibility-vat-correction/",
+      "family": "editorial-article",
+      "title": "UAE Card Change Log: correcting our Liv salary and fee figures | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/uae-salary-switch-payout-calendar/",
+      "family": "editorial-article",
+      "title": "UAE Salary Switch Scorecard: when does the reward become spendable? | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/uae-salary-switch-scorecard/",
+      "family": "editorial-article",
+      "title": "UAE Salary Switch Scorecard: three offers on an AED 20,000 salary | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/world-of-hyatt-3000-bonus-points-every-three-nights-15-december/",
+      "family": "editorial-article",
+      "title": "World of Hyatt: 3,000 bonus points for every three nights to 15 December — register first | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/news/world-of-hyatt-new-hotels-double-points-25000-cap/",
+      "family": "editorial-article",
+      "title": "World of Hyatt swaps its new-hotel bonus for double points, capped at 25,000 a stay — award nights no longer count | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/partnership/",
+      "family": "trust-reference",
+      "title": "Partnerships and affiliates | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/press/",
+      "family": "trust-reference",
+      "title": "Press & media inquiries | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/adcb/",
+      "family": "salary-offer",
+      "title": "Abu Dhabi Commercial Bank salary transfer offer | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/adib/",
+      "family": "salary-offer",
+      "title": "Abu Dhabi Islamic Bank salary transfer offer | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/aed-15000-to-30000/",
+      "family": "salary-tracker",
+      "title": "Salary transfer offers (AED 15,000 to under 30,000) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/aed-30000-to-50000/",
+      "family": "salary-tracker",
+      "title": "Salary transfer offers (AED 30,000 to under 50,000) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/aed-5000-to-8000/",
+      "family": "salary-tracker",
+      "title": "Salary transfer offers (AED 5,000 to under 8,000) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/aed-50000-plus/",
+      "family": "salary-tracker",
+      "title": "Salary transfer offers (AED 50,000+) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/aed-8000-to-15000/",
+      "family": "salary-tracker",
+      "title": "Salary transfer offers (AED 8,000 to under 15,000) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/al-hilal/",
+      "family": "salary-offer",
+      "title": "Al Hilal Bank salary transfer offer | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/calculator/",
+      "family": "salary-calculator",
+      "title": "UAE salary transfer calculator | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/salary-transfer/cbd/",
+      "family": "salary-offer",
+      "title": "Commercial Bank of Dubai salary transfer offer | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/citi/",
+      "family": "salary-offer",
+      "title": "Citibank salary transfer offer | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/dib/",
+      "family": "salary-offer",
+      "title": "Dubai Islamic Bank salary transfer offer (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/emirates-islamic/",
+      "family": "salary-offer",
+      "title": "Emirates Islamic salary transfer offer (October 2026) | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/salary-transfer/emirates-nbd/",
+      "family": "salary-offer",
+      "title": "Emirates NBD salary transfer offer (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/fab/",
+      "family": "salary-offer",
+      "title": "First Abu Dhabi Bank salary transfer offer (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/adcb/",
+      "family": "salary-history",
+      "title": "Abu Dhabi Commercial Bank salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/adib/",
+      "family": "salary-history",
+      "title": "Abu Dhabi Islamic Bank salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/al-hilal/",
+      "family": "salary-history",
+      "title": "Al Hilal Bank salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/cbd/",
+      "family": "salary-history",
+      "title": "Commercial Bank of Dubai salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/citi/",
+      "family": "salary-history",
+      "title": "Citibank salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/dib/",
+      "family": "salary-history",
+      "title": "Dubai Islamic Bank salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/emirates-islamic/",
+      "family": "salary-history",
+      "title": "Emirates Islamic salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/salary-transfer/history/emirates-nbd/",
+      "family": "salary-history",
+      "title": "Emirates NBD salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/fab/",
+      "family": "salary-history",
+      "title": "First Abu Dhabi Bank salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/hsbc/",
+      "family": "salary-history",
+      "title": "HSBC salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/liv/",
+      "family": "salary-history",
+      "title": "Liv salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/mashreq/",
+      "family": "salary-history",
+      "title": "Mashreq salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/rakbank/",
+      "family": "salary-history",
+      "title": "RAKBANK salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/standard-chartered/",
+      "family": "salary-history",
+      "title": "Standard Chartered salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/history/wio/",
+      "family": "salary-history",
+      "title": "Wio Bank salary transfer offer history | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/hsbc/",
+      "family": "salary-offer",
+      "title": "HSBC salary transfer offer (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/",
+      "family": "salary-tracker",
+      "title": "UAE salary transfer offers — current tracker | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/salary-transfer/liv/",
+      "family": "salary-offer",
+      "title": "Liv salary transfer offer | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/mashreq/",
+      "family": "salary-offer",
+      "title": "Mashreq salary transfer offer (October 2026) | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/rakbank/",
+      "family": "salary-offer",
+      "title": "RAKBANK salary transfer offer | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/standard-chartered/",
+      "family": "salary-offer",
+      "title": "Standard Chartered salary transfer offer | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/salary-transfer/wio/",
+      "family": "salary-offer",
+      "title": "Wio Bank salary transfer offer | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/search/",
+      "family": "recovery",
+      "title": "Search | DubaiPoints",
+      "renderedRepresentative": true
+    },
+    {
+      "route": "/team/",
+      "family": "trust-reference",
+      "title": "The team | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/tip/",
+      "family": "trust-reference",
+      "title": "Submit a tip | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/topics/",
+      "family": "topic-directory",
+      "title": "All topics | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/transfer-finder/",
+      "family": "reference-tool",
+      "title": "UAE Transfer Finder: bank and hotel points to airline miles | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/valuations/",
+      "family": "reference-tool",
+      "title": "UAE points & miles valuations | DubaiPoints",
+      "renderedRepresentative": false
+    },
+    {
+      "route": "/valuations/methodology/",
+      "family": "reference-tool",
+      "title": "AED valuations methodology | DubaiPoints",
+      "renderedRepresentative": false
+    }
+  ],
+  "findings": [
+    {
+      "id": "F01",
+      "priority": "P1",
+      "title": "Homepage travel ranking mixes incompatible earn-rate units",
+      "evidenceType": "proven-source",
+      "observation": "The travel shortlist sorts raw travel earn rates despite source comments noting per-AED, per-AED-10 and per-USD units. Hidden figures do not make the ranking comparable.",
+      "recommendation": "Remove the ranking claim or use approved deterministic normalisation with explicit assumptions.",
+      "sources": [
+        {
+          "file": "src/pages/index.astro",
+          "line": 99
+        },
+        {
+          "file": "src/pages/index.astro",
+          "line": 180
+        }
+      ]
+    },
+    {
+      "id": "F02",
+      "priority": "P1",
+      "title": "Calculator readiness, reset and bounds need a functional pass",
+      "evidenceType": "source-and-browser-reproduced",
+      "observation": "Local Chrome reproduced the documented 3.49% default changing to 3.25% after choosing DIB and then Use the default. An input of 21 exceeded the field's maximum of 20 (HTML validity false) but still updated the result. Source also shows uneven readiness/no-JavaScript treatment; no arithmetic accuracy claim is made by this reset/bounds test.",
+      "recommendation": "Define default versus custom behaviour, enforce bounds in state/computation and add consistent no-JavaScript/readiness states.",
+      "sources": [
+        {
+          "file": "src/components/islands/InterestPayoffCalculator.tsx",
+          "line": 86
+        },
+        {
+          "file": "src/components/islands/InterestPayoffCalculator.tsx",
+          "line": 136
+        },
+        {
+          "file": "src/components/islands/InterestPayoffCalculator.tsx",
+          "line": 156
+        }
+      ]
+    },
+    {
+      "id": "F03",
+      "priority": "P1",
+      "title": "Offer freshness wording exceeds static delivery guarantees",
+      "evidenceType": "proven-source",
+      "observation": "Deal filtering uses build-time Date.now(). The weekly expiry monitor opens/updates issues, not a redeployment. This does not prove an expired offer is currently visible; it cannot guarantee 'live on the day you visit'.",
+      "recommendation": "Agree expiry-day/timezone handling and safe rebuild/runtime expiry treatment; match copy to actual verification.",
+      "sources": [
+        {
+          "file": "astro.config.mjs",
+          "line": 13
+        },
+        {
+          "file": "src/pages/deals/index.astro",
+          "line": 27
+        },
+        {
+          "file": "src/pages/deals/index.astro",
+          "line": 110
+        },
+        {
+          "file": ".github/workflows/deal-expiry.yml",
+          "line": 52
+        }
+      ]
+    },
+    {
+      "id": "F04",
+      "priority": "P1",
+      "title": "Analytics needs a privacy-safe reporting contract",
+      "evidenceType": "risk-not-confirmed",
+      "observation": "The standard GA tag is present; review-only preparation is separate. No monthly human-only unique-user result or sensitive-data leak is demonstrated by this review. Owner left Google's account settings unchanged.",
+      "recommendation": "Do not change account settings without approval. Review route/action allowlists and URL sanitisation before adding events; never transmit salary, spend or free text. Known-bot exclusion is not proof every remaining visitor is human.",
+      "sources": [
+        {
+          "file": "src/layouts/BaseLayout.astro",
+          "line": 103
+        },
+        {
+          "file": "src/lib/analyticsReview.ts",
+          "line": 1
+        }
+      ]
+    },
+    {
+      "id": "F05",
+      "priority": "P2",
+      "title": "Homepage reporting arrives late in ordinary scrolling",
+      "evidenceType": "rendered-observation",
+      "observation": "At 390×844 live, Fresh from the desk begins around 6,414px down, versus Tools around 2,024px. Direct shortcuts exist. Its publication hierarchy is a design judgement, not a broken-access claim.",
+      "recommendation": "Test reporting immediately after a concise arrival, then task doors, offers and travel coverage. Preserve native scrolling.",
+      "sources": [
+        {
+          "file": "src/pages/index.astro",
+          "line": 373
+        },
+        {
+          "file": "src/pages/index.astro",
+          "line": 499
+        }
+      ]
+    },
+    {
+      "id": "F06",
+      "priority": "P2",
+      "title": "Reading layouts stack text before visual evidence",
+      "evidenceType": "proven-source",
+      "observation": "Article routes provide photos after prose/sources. Several text-led heading layers precede the body; some breadcrumbs repeat News. These are not missing-image findings.",
+      "recommendation": "Lead with the answer/key facts; position relevant imagery or data near the section it helps, keeping full sources and one contents control.",
+      "sources": [
+        {
+          "file": "src/pages/news/[slug].astro",
+          "line": 24
+        },
+        {
+          "file": "src/pages/guides/[slug].astro",
+          "line": 38
+        },
+        {
+          "file": "src/layouts/ArticleLayout.astro",
+          "line": 233
+        }
+      ]
+    },
+    {
+      "id": "F07",
+      "priority": "P2",
+      "title": "Images need defined roles, not one universal size",
+      "evidenceType": "rendered-observation",
+      "observation": "Hotels repeats the featured photograph in its first listing. Compact News geometry is corrected in the held preview. Liv portrait art is approximately 174×281px at 390px and contained, not stretched; its visual balance is a judgement.",
+      "recommendation": "Define feature/listing/product/evidence media roles, separate credit tracks and avoid adjacent duplicate photography.",
+      "sources": [
+        {
+          "file": "src/pages/hotels/index.astro",
+          "line": 1
+        },
+        {
+          "file": "src/components/NewsListingVisual.astro",
+          "line": 1
+        }
+      ]
+    },
+    {
+      "id": "F08",
+      "priority": "P2",
+      "title": "Some discovery labels overstate their actual scope",
+      "evidenceType": "proven-source",
+      "observation": "Guide topic controls navigate rather than filter. Bank search submits to general site search. Deal filter state is not shareable.",
+      "recommendation": "Use honest Explore labels or genuine scoped filters; retain selected views in privacy-safe URLs where useful.",
+      "sources": [
+        {
+          "file": "src/pages/guides/index.astro",
+          "line": 45
+        },
+        {
+          "file": "src/pages/banks/index.astro",
+          "line": 58
+        },
+        {
+          "file": "src/pages/deals/index.astro",
+          "line": 277
+        }
+      ]
+    },
+    {
+      "id": "F09",
+      "priority": "P2",
+      "title": "Archive and expanded-calculator transitions lose context",
+      "evidenceType": "proven-source",
+      "observation": "Salary history receives dates/headlines/bands but no detail/source/current-offer link. CardValueScenario links to bare /calculator/. Existing Finder/Compare and salary context fixes must not be duplicated or described as absent.",
+      "recommendation": "Link archived evidence where available; explain estimate-basis changes or hand off only justified totals without inventing category allocations.",
+      "sources": [
+        {
+          "file": "src/layouts/SalaryTransferHistoryLayout.astro",
+          "line": 11
+        },
+        {
+          "file": "src/pages/salary-transfer/history/[bank].astro",
+          "line": 24
+        },
+        {
+          "file": "src/components/cards/CardValueScenario.astro",
+          "line": 79
+        }
+      ]
+    },
+    {
+      "id": "F10",
+      "priority": "P2",
+      "title": "Long-form navigation should converge on the current pattern",
+      "evidenceType": "proven-source",
+      "observation": "Card jump navigation and reading contents differ; long trust-policy layouts lack equivalent contents. Recent programme navigation fixes are already present.",
+      "recommendation": "Extend one accessible current-section pattern where useful, without adding a competing menu.",
+      "sources": [
+        {
+          "file": "src/components/cards/JumpToSection.astro",
+          "line": 30
+        },
+        {
+          "file": "src/scripts/reading.ts",
+          "line": 14
+        },
+        {
+          "file": "src/layouts/TrustPageLayout.astro",
+          "line": 95
+        }
+      ]
+    },
+    {
+      "id": "F11",
+      "priority": "P2",
+      "title": "Motion must react to live preference changes",
+      "evidenceType": "proven-source",
+      "observation": "The unchanged below-hero homepage script samples prefers-reduced-motion on initialisation. CSS alone may leave reveal states or animation work on a live preference change. The extracted Aperture controller has a change listener; this finding remains about the below-hero motion, not a claim that the new hero resolves it. Runtime-change testing is pending.",
+      "recommendation": "Cancel observers/RAF/seeking and reveal final states immediately. No gallery autoplay, scroll lock or animated financial values.",
+      "sources": [
+        {
+          "file": "src/pages/index.astro",
+          "line": 638
+        },
+        {
+          "file": "src/pages/index.astro",
+          "line": 647
+        },
+        {
+          "file": "src/pages/index.astro",
+          "line": 998
+        }
+      ]
+    },
+    {
+      "id": "F12",
+      "priority": "P3",
+      "title": "Navigation taxonomy needs small completeness fixes",
+      "evidenceType": "proven-source",
+      "observation": "Interest calculator is available in mobile Tools but not desktop/footer equivalent. Home directory omits News and Hotels.",
+      "recommendation": "Align task-based navigation and parent journeys rather than adding more top-level choices.",
+      "sources": [
+        {
+          "file": "src/components/Header.astro",
+          "line": 109
+        },
+        {
+          "file": "src/pages/index.astro",
+          "line": 342
+        },
+        {
+          "file": "src/components/Footer.astro",
+          "line": 33
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "title": "Editorial Image Hero",
+      "url": "https://21st.dev/@felipemenezes098/components/hero-07",
+      "use": "Image-led arrival and offset headline",
+      "licence": "MIT displayed; exact source and dependency check before copying."
+    },
+    {
+      "title": "Index List Image Gallery",
+      "url": "https://21st.dev/@kedhareswer/components/index-list-carousel",
+      "use": "Numbered briefing, separate direct links and previews, inline mobile media",
+      "licence": "MIT displayed; listing accessibility/performance claims unverified."
+    },
+    {
+      "title": "Directional Menu",
+      "url": "https://21st.dev/@hyperiux/components/directional-menu",
+      "use": "Stable frame with restrained panel transitions",
+      "licence": "MIT displayed; native adaptation, no GSAP installation approved."
+    },
+    {
+      "title": "Split Hero Image Cards",
+      "url": "https://21st.dev/@felipemenezes098/components/hero-08",
+      "use": "Two photographic task doors without invented social proof",
+      "licence": "MIT displayed; remove demo metrics/avatars."
+    },
+    {
+      "title": "Sketch Tabs",
+      "url": "https://21st.dev/@kanchanasw/components/tabs",
+      "use": "Quiet travelling selection rule, not full doodle theme",
+      "licence": "MIT link displayed; source/dependencies still need verification."
+    },
+    {
+      "title": "Appica TOC",
+      "url": "https://21st.dev/@appica-dev/components/toc",
+      "use": "Quiet current-section marker reusing current navigation",
+      "licence": "Upstream MIT licence read; integration QA still needed."
+    },
+    {
+      "title": "Minimal Two-Column Footer",
+      "url": "https://21st.dev/@ln-dev7/components/footer-17",
+      "use": "Useful onward navigation, no giant wordmark",
+      "licence": "MIT displayed; inspiration, not deployed source."
+    },
+    {
+      "title": "Material Design 3 Button",
+      "url": "https://21st.dev/@jahed/components/material-design-3-button",
+      "use": "Press/disabled/loading state reference",
+      "licence": "No item licence observed; not cleared for copying."
+    },
+    {
+      "title": "Tilted Grid Hero",
+      "url": "https://21st.dev/@ruixen.ui/components/tilted-grid-hero",
+      "use": "Bounded still/manual challenger only",
+      "licence": "MIT displayed; continuous movement rejected for default publication."
+    },
+    {
+      "title": "Tumble Deck",
+      "url": "https://21st.dev/@kedhareswer/components/tumble-deck-showcase",
+      "use": "Optional manual editorial shelf, never fee comparison",
+      "licence": "MIT displayed; page-scroll behaviour not certified."
+    },
+    {
+      "title": "Product Rail",
+      "url": "https://21st.dev/@dhxwhy/components/product-rail-gallery",
+      "use": "Browsing rhythm only, not garment-hanger metaphor",
+      "licence": "MIT displayed earlier; no source copied."
+    },
+    {
+      "title": "Chapter Scrubber",
+      "url": "https://21st.dev/@ruixen.ui/components/chapter-scrubber",
+      "use": "Optional chapter feedback, not sole navigation",
+      "licence": "MIT displayed; example onSelect callback is a no-op."
+    }
+  ],
+  "directions": [
+    {
+      "id": "editorial-atlas",
+      "name": "Editorial Atlas",
+      "idea": "Photographic newsroom, numbered briefing and compact task doors; calm reading and tools.",
+      "fit": "Recommended balance of authority, freshness, imagery and utility."
+    },
+    {
+      "id": "runway-journal",
+      "name": "Runway Journal",
+      "idea": "Panoramic travel arrival, ordinary scroll chapters, then quiet reading and tools.",
+      "fit": "Strong travel-first identity with a larger opening."
+    },
+    {
+      "id": "decision-desk",
+      "name": "Decision Desk",
+      "idea": "Task-led editorial desk, manual disclosures and real card art.",
+      "fit": "Strongest high-intent card/salary entry; less of a daily newsroom."
+    }
+  ]
+}

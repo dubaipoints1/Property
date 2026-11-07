@@ -5,6 +5,7 @@
 // Page head uses the design-handoff narrow pagehead chrome.
 
 import BaseLayout from "./BaseLayout.astro";
+import CompareCardArt from "~/components/cards/CompareCardArt.astro";
 
 interface Row {
   cardName: string;
@@ -24,6 +25,10 @@ interface Props {
 }
 
 const { title, heading, description, columns, rows } = Astro.props;
+const displayRows = rows.map((row) => ({
+  ...row,
+  cardSlug: row.href.match(/^\/cards\/([^/]+)\/$/)?.[1],
+}));
 ---
 
 <BaseLayout title={title} description={description} fullWidth>
@@ -34,8 +39,10 @@ const { title, heading, description, columns, rows } = Astro.props;
   </header>
 
   <article class="dp-cmp-body">
-    <div class="dp-compare-wrap">
+    <p class="dp-compare-scroll-hint">Scroll across the table to compare every column.</p>
+    <div class="dp-compare-wrap" tabindex="0" role="region" aria-label={`${heading ?? title} comparison table`}>
       <table class="dp-compare-table" role="table">
+        <caption class="sr-only">{heading ?? title}</caption>
         <thead role="rowgroup">
           <tr role="row">
             <th scope="col" role="columnheader">Card</th>
@@ -43,11 +50,13 @@ const { title, heading, description, columns, rows } = Astro.props;
           </tr>
         </thead>
         <tbody role="rowgroup">
-          {rows.map((r) => (
+          {displayRows.map((r) => (
             <tr role="row">
               <th scope="row" role="rowheader" class="dp-compare-card">
-                <a href={r.href}>{r.cardName}</a>
-                <span class="dp-compare-bank">{r.bankName}</span>
+                <div class="dp-compare-card-identity">
+                  {r.cardSlug && <CompareCardArt slug={r.cardSlug} />}
+                  <div><a href={r.href}>{r.cardName}</a><span class="dp-compare-bank">{r.bankName}</span></div>
+                </div>
               </th>
               {r.values.map((v, i) => (
                 <td role="cell">
@@ -80,6 +89,11 @@ const { title, heading, description, columns, rows } = Astro.props;
     border-radius: 12px;
     background: var(--paper);
   }
+  .dp-compare-wrap:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+  .dp-compare-scroll-hint { margin: 0 0 10px; color: var(--ink-soft); font: 400 .8125rem/1.5 var(--font-ui); }
+  .dp-compare-card-identity { display: flex; align-items: center; gap: 12px; min-inline-size: 0; }
+  .dp-compare-card-identity > div { min-inline-size: 0; }
+  .dp-compare-card a:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
   .dp-compare-table {
     width: 100%;
     min-width: 760px;
@@ -149,6 +163,7 @@ const { title, heading, description, columns, rows } = Astro.props;
      supply compact visual labels separately. */
   @media (max-width: 824px) {
     .dp-cmp-body { padding-block: 20px 60px; }
+    .dp-compare-scroll-hint { display: none; }
     .dp-compare-wrap {
       overflow: visible;
       border: 0;

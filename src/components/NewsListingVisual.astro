@@ -18,16 +18,21 @@ const card = id === "uae-card-change-log-citi-cash-back-application-route"
 const desk = id === "uae-salary-switch-scorecard"
   ? getStockEntry("guide-salary-transfer-mechanics-2026") : undefined;
 const kind = diagram ? "cash-or-miles" : quote ? "cash-or-miles-quote" : card ? "issuer-card" : desk ? "salary-scorecard" : undefined;
+const hasVisual = Boolean(livCorrectionArt || photo || kind);
+// One slot contract for every compact visual. The credit gets its own
+// reserved track below the frame, never part of the card's fitting area.
+const compactSizes = "clamp(88px, 24vw, 128px)";
 const photoSizes = featured
   ? "(max-width: 640px) calc(100vw - 32px), (max-width: 819px) calc(100vw - 48px), (max-width: 1600px) min(calc(56vw - 36px), 630px), 800px"
-  : compact ? "clamp(68px, 12vw, 128px)" : LISTING_SIZES.tile;
+  : compact ? compactSizes : LISTING_SIZES.tile;
 ---
 
+{hasVisual && <span class:list={["dp-news-visual", { "is-compact": compact }]}>
 {livCorrectionArt ? (
   <span class:list={["dp-news-issuer-art", { "is-compact": compact }]} data-news-issuer-art="liv">
     <img src={`/${livCorrectionArt.file}`} alt="" width={livCorrectionArt.width} height={livCorrectionArt.height}
       loading={featured ? "eager" : "lazy"} decoding="async" />
-    <span>Card image: Liv</span>
+    {!compact && <span>Card image: Liv</span>}
   </span>
 ) : photo ? (
   <span class:list={["dp-news-photo", { "is-compact": compact }]}>
@@ -64,13 +69,26 @@ const photoSizes = featured
     )}
     {card && <img src={`/${card.file}`} alt="" width={card.width} height={card.height}
       loading={featured ? "eager" : "lazy"} decoding="async" />}
-    {desk && <img src={`/${desk.file}`} srcset={stockSrcset(desk, import.meta.env.PROD ? "compact" : undefined)} sizes={compact ? "clamp(68px, 12vw, 128px)" : "144px"} alt=""
+    {desk && <img src={`/${desk.file}`} srcset={stockSrcset(desk, import.meta.env.PROD ? "compact" : undefined)} sizes={compact ? compactSizes : "144px"} alt=""
       width={desk.width} height={desk.height} loading={featured ? "eager" : "lazy"} decoding="async"
       data-stock-slug={desk.slug} data-stock-source={desk.source} />}
   </span>
 )}
+{compact && <span class="dp-news-visual-credit" aria-hidden={livCorrectionArt ? undefined : "true"}>{livCorrectionArt ? "Card image: Liv" : ""}</span>}
+</span>}
 
 <style>
+  .dp-news-visual { display: contents; }
+  .dp-news-visual.is-compact {
+    display: grid;
+    flex: 0 0 auto;
+    inline-size: clamp(88px, 24vw, 128px);
+    grid-template-rows: auto minmax(1.2em, auto);
+    gap: 4px;
+    color: var(--ink-soft);
+    font: 500 .6875rem/1.2 var(--font-ui);
+  }
+  .dp-news-visual-credit { display: block; overflow-wrap: anywhere; }
   .dp-news-issuer-art {
     display: grid;
     grid-template: minmax(0, 1fr) auto / minmax(0, 1fr);
@@ -93,22 +111,20 @@ const photoSizes = featured
   }
   .dp-news-issuer-art > span { font: 500 .75rem/1.2 var(--font-ui); }
   .dp-news-issuer-art.is-compact {
-    flex: 0 0 auto;
-    inline-size: clamp(88px, 14vw, 128px);
-    block-size: 88px;
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     padding: 6px;
-    gap: 4px;
-    border: 1px solid var(--line);
-    border-radius: var(--dp-ui-radius, 8px);
+    gap: 0;
   }
   .dp-news-photo { display: block; }
-  .dp-news-photo.is-compact,
-  .dp-news-preview.is-compact {
+  .dp-news-visual.is-compact > :first-child {
     display: grid;
-    flex: 0 0 auto;
-    inline-size: clamp(68px, 12vw, 128px);
+    place-items: center;
+    inline-size: 100%;
     block-size: auto;
-    aspect-ratio: 1.5;
+    min-inline-size: 0;
+    min-block-size: 0;
+    aspect-ratio: 3 / 2;
+    box-sizing: border-box;
     overflow: hidden;
     border: 1px solid var(--line);
     border-radius: var(--dp-ui-radius, 8px);
@@ -116,10 +132,10 @@ const photoSizes = featured
   .dp-news-photo.is-compact :global(img) {
     display: block;
     inline-size: 100%;
-    block-size: auto;
-    aspect-ratio: 1.5;
+    block-size: 100%;
     object-fit: cover;
   }
+  .dp-news-photo.is-compact :global(.dp-ai-figure) { inline-size: 100%; block-size: 100%; min-block-size: 0; }
   .dp-news-photo.is-compact :global(.dp-ai-label) {
     font-size: 10px;
     padding: 14px 4px 3px;
@@ -139,5 +155,6 @@ const photoSizes = featured
   .dp-news-preview img { display: block; max-inline-size: 100%; inline-size: 144px; block-size: 80px; object-fit: contain; }
   [data-news-preview="salary-scorecard"] img { object-fit: cover; border-radius: 8px; }
   .dp-news-preview.is-compact { padding: 4px; }
-  .dp-news-preview.is-compact :is(svg, img) { display: block; width: 100%; height: auto; max-block-size: 64px; }
+  .dp-news-preview.is-compact :is(svg, img) { display: block; width: 100%; height: 100%; min-height: 0; max-block-size: none; }
+  [data-news-preview="salary-scorecard"].is-compact { padding: 0; }
 </style>

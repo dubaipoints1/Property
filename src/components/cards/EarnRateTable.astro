@@ -10,7 +10,8 @@
 
 import type { CardData } from "~/lib/cardsData";
 import { getCardData } from "~/lib/cardsData";
-import { formatEarnRate, formatEarnValue, earnIsPercentage } from "~/lib/cardsDataFormat";
+import { formatEarnRate, formatEarnValue, earnIsPercentage, earnRateFieldPending } from "~/lib/cardsDataFormat";
+import { formatScopedEarnRate } from "~/lib/cardEarnModel";
 
 interface Props {
   /** Phase 2a.2: when set, the component resolves earnRates + earnUnit
@@ -18,12 +19,19 @@ interface Props {
   card?: string;
   earnRates?: CardData["earnRates"];
   earnUnit?: string;
+  /** Issuer conditions, never an invented rate or a calculation input. */
+  note?: string;
+  scopedEarnRates?: CardData["scopedEarnRates"];
+  provenance?: CardData["_provenance"];
 }
 
 const {
   card,
   earnRates: earnRatesProp,
   earnUnit: earnUnitProp,
+  note,
+  scopedEarnRates: scopedEarnRatesProp,
+  provenance: provenanceProp,
 } = Astro.props;
 
 const resolved = card ? getCardData(card) : undefined;
@@ -36,6 +44,7 @@ if (!earnRates) {
   throw new Error("EarnRateTable: requires `card` or inline `earnRates` prop");
 }
 const earnUnit = resolved?.earnUnit ?? earnUnitProp;
+const provenance = resolved?._provenance ?? provenanceProp;
 
 const CATEGORY_LABELS: Record<string, string> = {
   // Phase 2a.2 (2026-05-20): `partnerBrands` rendered as the first row so the
@@ -50,6 +59,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   travel: "Travel",
   fuel: "Fuel",
   entertainment: "Entertainment",
+  digitalEntertainment: "Home digital entertainment subscriptions",
+  aiSubscriptions: "Eligible AI subscriptions",
   online: "Online",
   international: "International spend",
   utilities: "Utilities",
@@ -76,23 +87,23 @@ const CATEGORY_LABELS: Record<string, string> = {
 
 // Pull every numeric category, preserving definition order from
 // CATEGORY_LABELS for deterministic rendering.
-const allEntries: Array<{ key: string; label: string; value: number }> = [];
+const allEntries: Array<{ key: string; label: string; value: number | null }> = [];
 for (const key of Object.keys(CATEGORY_LABELS)) {
   const v = (earnRates as Record<string, unknown>)[key];
-  if (typeof v === "number") {
-    allEntries.push({ key, label: CATEGORY_LABELS[key], value: v });
+  if ((typeof v === "number" && Number.isFinite(v)) || (key === "everythingElse" && v === null)) {
+    allEntries.push({ key, label: CATEGORY_LABELS[key], value: earnRateFieldPending(provenance, key) ? null : v });
   }
 }
 
 // "Everything else" pulled out for the collapsed single-line case.
 const onlyEverythingElse =
-  allEntries.length === 1 && allEntries[0]?.key === "everythingElse";
+  allEntries.length === 1 && allEntries[0]?.key === "everythingElse" && allEntries[0].value !== null;
 
 // Stage 5.5 UX Fix #3: precompute the top earn-rate row server-side so
 // the reader's eye lands on "Dining 5×" in one glance instead of
 // reading every row. `everythingElse` cannot be the top (it's the base
 // rate by definition); ties are broken by category-definition order.
-const candidateEntries = allEntries.filter((e) => e.key !== "everythingElse");
+const candidateEntries = allEntries.filter((e): e is typeof e & { value: number } => e.key !== "everythingElse" && e.value !== null);
 const topKey = candidateEntries.length > 0
   ? candidateEntries.reduce((a, b) => (b.value > a.value ? b : a)).key
   : null;
@@ -114,27 +125,46 @@ const displayUnit = isPct
     : "cashback"
   : unitLabel;
 const cats = resolved?.categories;
+const conditionNote = resolved?._dataIssues?.earnRates ?? note;
+const scopedEarnRates = resolved?.scopedEarnRates ?? scopedEarnRatesProp;
+const scopedPending = (key: string) => Object.entries(provenance ?? {}).some(([field, state]) => state === "needs-review"
+  && (field === "scopedEarnRates" || field === `scopedEarnRates.${key}` || field.startsWith(`scopedEarnRates.${key}.`)));
 ---
 
-{onlyEverythingElse && allEntries[0] ? (
+{scopedEarnRates?.length ? (
+  <dl class="dp-earn-table is-scoped" aria-label="Source-qualified reward rates, not a universal all-spend return">
+    {scopedEarnRates.map(row => (
+      <div class="row">
+        <dt>{row.label}<span class="scope">{row.scope}</span></dt>
+        <dd>{scopedPending(row.key) ? "Pending" : formatScopedEarnRate(row)}<span class="scope">{scopedPending(row.key) ? "Source scope requires confirmation" : row.bound === "upper" ? "Advertised upper bound" : "Source-stated qualifying rate"}</span></dd>
+      </div>
+    ))}
+  </dl>
+) : onlyEverythingElse && allEntries[0] && allEntries[0].value !== null ? (
   <div class="dp-earn-collapsed">
     <span class="rate">{formatEarnValue(allEntries[0].value, earnUnit, cats)}</span>
     <span class="unit">{displayUnit}</span>
   </div>
 ) : (
-  <dl class="dp-earn-table">
+  allEntries.length ? <dl class="dp-earn-table">
     {allEntries.map(({ key, label, value }) => (
       <div
         class={`row${key === "everythingElse" ? " is-default" : ""}${key === topKey ? " is-top" : ""}`}
       >
         <dt>{label}</dt>
-        <dd>{formatEarnRate(value, earnUnit, cats)}</dd>
+        <dd>{value === null ? "Pending" : formatEarnRate(value, earnUnit, cats)}</dd>
       </div>
     ))}
-  </dl>
+  </dl> : <p class="dp-earn-note">No universal base earn rate is confirmed.</p>
 )}
+{conditionNote && <p class="dp-earn-note">{conditionNote}</p>}
 
 <style>
+  .dp-earn-note { color: var(--ink-soft); font: .8125rem/1.6 var(--font-ui); margin-block: -20px 24px; }
+  .is-scoped .row { grid-template-columns: minmax(0, 1fr) minmax(100px, .85fr); align-items: start; }
+  .is-scoped :is(dt, dd) { min-width: 0; overflow-wrap: anywhere; }
+  .is-scoped dd { text-align: right; }
+  .is-scoped .scope { display: block; margin-top: 6px; color: var(--ink-soft); font: .75rem/1.5 var(--font-ui); }
   .dp-earn-collapsed {
     display: flex;
     align-items: baseline;

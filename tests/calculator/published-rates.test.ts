@@ -96,9 +96,12 @@ test("no card returns more than its total spend — the 100x class of bug", () =
   );
 });
 
-test("a Skywards card's AED figure is its miles times the published 2 fils", () => {
-  const card = cards().find((c) => c.slug === "emirates-nbd-skywards-infinite");
-  assert.ok(card, "expected emirates-nbd-skywards-infinite in the active set");
+test("confirmed synthetic Skywards rates use the published 2 fils; the live scoped profile is unranked", () => {
+  const live = cards().find((c) => c.slug === "emirates-nbd-skywards-infinite")!;
+  assert.ok(live);
+  assert.deepEqual(rankCards([live], SPEND, { netOfFee: false }), []);
+  const card: CardForCalc = { ...live, slug: "synthetic-skywards", earnRates: { everythingElse: 1, dining: 2, utilities: 0.3 },
+    earnUnit: "Skywards Miles per USD 1 spent", scopedEarnRates: undefined, _provenance: {}, _dataIssues: {} };
   const ranked = rankCards([card], SPEND, { netOfFee: false, now: new Date("2026-09-10") });
   const r = ranked[0];
 
@@ -122,12 +125,12 @@ test("a Skywards card's AED figure is its miles times the published 2 fils", () 
   assert.ok(Math.abs(r.monthlyRewardAED - expectedMiles * 0.02) < 0.01);
 });
 
-test("a card's own utilities rate is used, not its base rate", () => {
-  // Twelve cards publish a utilities rate and ten of them set it below base
-  // precisely because utility spend earns less. The calculator pinned that
-  // category to base and over-credited them.
-  const card = cards().find((c) => c.slug === "emirates-nbd-marriott-bonvoy-world-elite");
-  assert.ok(card, "expected the Bonvoy World Elite card in the active set");
+test("a confirmed synthetic utilities rate is used, while live scoped Bonvoy stays unranked", () => {
+  const live = cards().find((c) => c.slug === "emirates-nbd-marriott-bonvoy-world-elite")!;
+  assert.ok(live);
+  assert.deepEqual(rankCards([live], SPEND, { netOfFee: false }), []);
+  const card: CardForCalc = { ...live, slug: "synthetic-bonvoy", earnRates: { everythingElse: 3, utilities: 0.3 },
+    earnUnit: "Marriott Bonvoy Points per USD 1 spent", scopedEarnRates: undefined, _provenance: {}, _dataIssues: {} };
   const utilities = (card.earnRates as unknown as Record<string, number>).utilities;
   assert.ok(utilities != null && utilities < card.earnRates.everythingElse);
 

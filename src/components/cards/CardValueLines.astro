@@ -25,10 +25,10 @@ const listedFee = (fee: number | null) => fee == null ? "Confirm with issuer" : 
       </dd>
     </div>
     <div>
-      <dt>Each year after</dt>
+      <dt>Standard renewal</dt>
       <dd>
         <span data-card-value-later>{formatCardValue(later)}</span>
-        {terms.hasConditionalRenewalWaiver && <small>Before any renewal waiver</small>}
+        {terms.laterFee != null && <small>Before any renewal waiver</small>}
       </dd>
     </div>
   </dl>

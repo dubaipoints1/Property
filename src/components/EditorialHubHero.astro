@@ -1,0 +1,79 @@
+---
+// In-house editorial composition using the publication's licensed assets.
+// The secondary photograph is desktop-only in both layout AND delivery:
+// its <picture> source has a media condition, so phones fetch only the lead.
+import StockImage from "./StockImage.astro";
+import ImageCredit from "./ImageCredit.astro";
+import { getStockEntry } from "../lib/stockManifest";
+import { stockSrcset } from "../lib/stockDerivatives";
+
+interface Feature { slug: string; title: string; href: string; headingId?: string; eyebrow?: string; description?: string; caption?: string; }
+interface Props { primary?: Feature; secondary?: Feature; }
+const { primary, secondary } = Astro.props;
+const primaryEntry = primary && getStockEntry(primary.slug);
+const secondaryEntry = secondary && getStockEntry(secondary.slug);
+// A real photograph must exist. This component never manufactures a cover
+// or displays a brand illustration where the reader expects a photograph.
+const main = primaryEntry && primaryEntry.source !== "ai-generated" ? primary : undefined;
+const supporting = main && secondaryEntry && secondaryEntry.source !== "ai-generated" ? secondary : undefined;
+const secondarySrcset = supporting && secondaryEntry ? stockSrcset(secondaryEntry, import.meta.env.PROD ? "feature" : undefined) ?? `/${secondaryEntry.file}` : undefined;
+const transparentPixel = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+---
+
+<div class:list={["dp-editorial-hero", { "has-photograph": Boolean(main), "has-secondary": Boolean(supporting) }]}>
+  <div class="dp-editorial-hero-copy"><slot /></div>
+  {main && (
+    <div class="dp-editorial-hero-media">
+      <figure class="dp-editorial-hero-main">
+        <a href={main.href} aria-label={main.title} class="dp-editorial-hero-image-link">
+          <StockImage slug={main.slug} class="dp-editorial-hero-image" delivery="feature" sizes="(max-width: 799px) calc(100vw - 32px), (max-width: 1199px) 42vw, 520px" loading="eager" />
+        </a>
+        <figcaption>
+          {main.eyebrow && <span class="dp-editorial-hero-kicker">{main.eyebrow}</span>}
+          <h2 id={main.headingId}><a href={main.href}>{main.title} <span aria-hidden="true">↗</span></a></h2>
+          {main.description && <p>{main.description}</p>}
+          {main.caption && <p class="dp-editorial-hero-caption">{main.caption}</p>}
+          <ImageCredit slug={main.slug} />
+        </figcaption>
+      </figure>
+      {supporting && secondaryEntry && (
+        <figure class="dp-editorial-hero-secondary">
+          <a href={supporting.href} aria-label={supporting.title} class="dp-editorial-hero-image-link">
+            <picture>
+              <source media="(min-width: 800px)" srcset={secondarySrcset} sizes="(max-width: 1199px) 19vw, 240px" />
+              <img src={transparentPixel} alt={secondaryEntry.alt} width={secondaryEntry.width} height={secondaryEntry.height} class="dp-editorial-hero-image" loading="lazy" decoding="async" data-stock-slug={secondaryEntry.slug} data-stock-source={secondaryEntry.source} />
+            </picture>
+          </a>
+          <figcaption><a class="dp-editorial-hero-secondary-title" href={supporting.href}>{supporting.title} <span aria-hidden="true">↗</span></a>{supporting.caption && <p class="dp-editorial-hero-caption">{supporting.caption}</p>}<ImageCredit slug={supporting.slug} /></figcaption>
+        </figure>
+      )}
+    </div>
+  )}
+</div>
+
+<style>
+  .dp-editorial-hero { display: grid; gap: clamp(24px, 4vw, 56px); align-items: center; min-inline-size: 0; }
+  .dp-editorial-hero-copy, .dp-editorial-hero-media { min-inline-size: 0; }
+  .dp-editorial-hero-media { display: grid; align-items: end; gap: 16px; }
+  figure { min-inline-size: 0; margin: 0; }
+  .dp-editorial-hero-image-link { display: block; border-radius: var(--dp-ui-radius, 12px); overflow: hidden; background: var(--line-soft); }
+  .dp-editorial-hero-image-link :global(.dp-editorial-hero-image) { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 1.65; object-fit: cover; }
+  figcaption { padding-block-start: 12px; }
+  h2 { margin: 4px 0 6px; color: var(--ink); font: 550 clamp(1.5rem, 2.5vw, 2.1rem)/1.1 var(--font-display); letter-spacing: -.02em; }
+  h2 a, .dp-editorial-hero-secondary-title { color: var(--ink); text-decoration: none; text-underline-offset: .18em; }
+  h2 a:hover, .dp-editorial-hero-secondary-title:hover { color: var(--green); text-decoration: underline; }
+  figcaption p { margin: 0; color: var(--ink-soft); font-size: .8125rem; line-height: 1.45; }
+  .dp-editorial-hero-kicker { color: var(--green); font: 700 .6875rem/1.4 var(--font-ui); letter-spacing: .12em; text-transform: uppercase; }
+  .dp-editorial-hero-caption { margin-block-start: 6px; }
+  figcaption :global(.dp-image-credit) { margin-block-start: 8px; font-size: .6875rem; line-height: 1.4; }
+  .dp-editorial-hero-secondary { display: none; }
+  a:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
+  @media (min-width: 800px) {
+    .has-photograph { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+    .has-secondary .dp-editorial-hero-media { grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); }
+    .dp-editorial-hero-secondary { display: block; padding-block-end: clamp(0px, 2vw, 28px); }
+    .dp-editorial-hero-secondary :global(.dp-editorial-hero-image) { aspect-ratio: .85; }
+    .dp-editorial-hero-main .dp-editorial-hero-image-link :global(.dp-editorial-hero-image) { aspect-ratio: 1.05; }
+    .dp-editorial-hero-secondary-title { display: inline-flex; align-items: center; gap: 8px; min-block-size: 44px; font: 600 .875rem/1.3 var(--font-ui); }
+  }
+</style>

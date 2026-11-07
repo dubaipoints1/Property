@@ -5,6 +5,10 @@ reference for `dubaipoints.ae`. The top half is governance; the bottom
 half is the technical operating manual. Both are load-bearing for any
 Claude Code instance — or human contributor — working in this repo.
 
+Current news-volume ruling: the 7 November 2026 amendment below removes
+the older numerical weekly ceilings. Source, scope and publication gates
+remain; earlier cadence figures are retained as historical rulings.
+
 ---
 
 # Part I — Council Charter
@@ -1102,6 +1106,35 @@ that prevents executing on that policy from a web session.
   changing one.
 
 ## Amendments
+
+### 2026-11-07 — No numerical weekly news ceiling; quality and publication gates remain
+
+On Chairman direction in the DubaiPoints implementation/research chat,
+responding to the proposed five-airline/three-hotel weekly pilot:
+"There should be no limit."
+
+There is no fixed numerical weekly ceiling on airline or hotel news.
+This supersedes the 27 July cadence limits retained in the 27 September
+and 1 October rulings, and rejects the proposed replacement pilot ceiling.
+It is permission to cover more useful news, not a minimum-volume quota.
+
+Every story still needs full source reading, original wording and a useful
+UAE angle; named attribution and explicit unconfirmed points remain governed
+by the 27 September ruling. Card/guide/salary facts retain their primary,
+deterministic numeric standards. Desk/currency ownership, Fact-Checker,
+Standards, Council and Chairman publication gates remain. The 1 October
+incident/safety/security exclusion, including related disruptions, remains.
+
+No automatic article publication, provider spend, paid-monitor activation,
+new worker/account access or newsletter is authorised by removing the cap.
+The existing twice-daily bounded discovery schedule is unchanged. Defer
+material that cannot be checked properly; do not lower the standard to
+increase throughput or promise a breaking-news service without evidence.
+
+Source: Mostafa's explicit response on 7 November 2026. This ruling does
+not approve the unfinished release or waive its checks.
+
+— Chairman, 7 November 2026.
 
 ### 2026-10-20 — Real brands in pictures: logos and liveries, not generic stand-ins
 

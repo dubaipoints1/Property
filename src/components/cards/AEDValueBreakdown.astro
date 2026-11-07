@@ -18,6 +18,7 @@
 // fill are functional chart colours (cf. the existing --positive/--negative
 // used by ProsCons), not brand chrome.
 import { getCardData } from "~/lib/cardsData";
+import { cardValueBreakdownTotals } from "~/lib/cardValueBreakdown";
 
 export interface ValueItem {
   /** Short category tag shown in the legend: "Earn" | "Bonus" | "Perk". */
@@ -64,14 +65,8 @@ const cardData = slug ? getCardData(slug) : undefined;
 if (slug && !cardData) throw new Error(`AEDValueBreakdown: unknown card slug "${slug}"`);
 
 const name = cardName ?? cardData?.name ?? "This card";
-const fee = annualFee ?? cardData?.annualFee.amount ?? 0;
-
 const gross = items.reduce((sum, it) => sum + it.aed, 0);
-const net = gross - fee;
-const hasFee = fee > 0;
-
-// Bar weight includes the fee segment so the deduction is to scale.
-const barTotal = gross + fee;
+const breakdown = cardValueBreakdownTotals(gross, cardData, annualFee, items.map(item => item.kind));
 // A segment narrower than ~12% of the bar hides its inline label; the
 // legend below is the canonical text equivalent.
 const TIGHT = 0.12;
@@ -89,16 +84,19 @@ const rampOf = (i: number) => RAMP[Math.min(i, RAMP.length - 1)];
 const aed = (n: number) =>
   `AED ${new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(Math.abs(n))}`;
 
-const netIsCost = net < 0;
+const netIsCost = breakdown.known && breakdown.net < 0;
 
 // Full text equivalent for the bar's single aria-label.
-const barAria = [
+const barAria = breakdown.known ? [
   ...items.map((it) => `${it.label} ${aed(it.aed)}.`),
-  ...(hasFee ? [`Less annual fee ${aed(fee)}.`] : ["Free for life, no annual fee."]),
-  `${netIsCost ? "Net annual cost" : "Net annual value"} ${aed(net)}.`,
-].join(" ");
+  ...(breakdown.hasFee ? [`Less annual fee ${aed(breakdown.fee)}, including VAT.`] : ["No annual fee listed."]),
+  `${netIsCost ? "Net annual cost" : "Net annual value"} ${aed(breakdown.net)}.`,
+].join(" ") : "Annual fee pending; no net annual value is estimated.";
 ---
 
+{!breakdown.known ? (
+  <aside class="dp-card-note" aria-label="Value estimate pending">Value estimate pending. The required fee, reward or benefit terms are not confirmed for this calculation. No net annual value is estimated, and an unknown amount is not assumed to be zero.</aside>
+) : (
 <article class="dpvb" aria-labelledby="dpvb-net-heading">
   <div class="dpvb-eyebrow">
     <span class="dot"></span>
@@ -111,16 +109,16 @@ const barAria = [
   <div class="dpvb-bluf">
     <div class="dpvb-bluf-label">
       What this card returns in a year,
-      {hasFee ? (
-        <Fragment><strong>net of its {aed(fee)} annual fee</strong> — {profile}.</Fragment>
+      {breakdown.hasFee ? (
+        <Fragment><strong>net of its {aed(breakdown.fee)} annual fee including VAT</strong> — {profile}.</Fragment>
       ) : (
-        <Fragment><strong>free for life</strong> — {profile}.</Fragment>
+        <Fragment><strong>with no listed annual fee</strong> — {profile}.</Fragment>
       )}
     </div>
     <div class="dpvb-net" class:list={{ "is-cost": netIsCost }}>
       <div>
         <span class="unit">AED</span><span class="value" id="dpvb-net-heading">
-          {new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(Math.abs(net))}
+          {new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(Math.abs(breakdown.net))}
         </span>
       </div>
       <div class="suffix">{netIsCost ? "Net annual cost" : "Net annual value"}</div>
@@ -137,7 +135,7 @@ const barAria = [
     <div class="dpvb-bar" role="img" aria-label={`Stacked bar. ${barAria}`}>
       {
         items.map((it, i) => {
-          const tight = it.aed / barTotal < TIGHT;
+          const tight = it.aed / breakdown.barTotal < TIGHT;
           return (
             <div
               class="dpvb-seg"
@@ -152,14 +150,14 @@ const barAria = [
         })
       }
       {
-        hasFee && (
+        breakdown.hasFee && (
           <div
             class="dpvb-seg is-fee"
-            class:list={{ "is-tight": fee / barTotal < TIGHT }}
-            style={`flex-grow:${fee}`}
-            aria-label={`Less annual fee, ${aed(fee)}`}
+            class:list={{ "is-tight": breakdown.fee / breakdown.barTotal < TIGHT }}
+            style={`flex-grow:${breakdown.fee}`}
+            aria-label={`Less annual fee including VAT, ${aed(breakdown.fee)}`}
           >
-            <span class="s-val">{aed(fee)}</span>
+            <span class="s-val">{aed(breakdown.fee)}</span>
             <span class="s-lab">Annual fee</span>
           </div>
         )
@@ -169,7 +167,7 @@ const barAria = [
 
   <div class="dpvb-axis">
     <span>AED 0</span>
-    <span class="net-tick">{netIsCost ? "Net cost" : "Net retained"} · {aed(net)}</span>
+    <span class="net-tick">{netIsCost ? "Net cost" : "Net retained"} · {aed(breakdown.net)}</span>
     <span>{aed(gross)} gross</span>
   </div>
 
@@ -188,20 +186,20 @@ const barAria = [
         </li>
       ))
     }
-    <li class:list={{ "is-fee": hasFee }}>
-      <span class="swatch" style={`background:${hasFee ? "var(--dpvb-fee)" : "var(--dpvb-line)"}`}></span>
+    <li class:list={{ "is-fee": breakdown.hasFee }}>
+      <span class="swatch" style={`background:${breakdown.hasFee ? "var(--dpvb-fee)" : "var(--dpvb-line)"}`}></span>
       <span class="kind">Fee</span>
       <span class="label">
         Annual fee
-        {!hasFee && <span class="sub">Free for life</span>}
+        <span class="sub">{breakdown.hasFee ? "Including VAT, before any waiver" : "No annual fee listed"}</span>
       </span>
-      <span class="amount">{aed(fee)}</span>
+      <span class="amount">{aed(breakdown.fee)}</span>
     </li>
     <li class="is-net" class:list={{ "is-cost": netIsCost }}>
       <span class="swatch" style="background:var(--dpvb-navy)"></span>
       <span class="kind"></span>
       <span class="label">{netIsCost ? "Net annual cost" : "Net annual value"}</span>
-      <span class="amount">{aed(net)}</span>
+      <span class="amount">{aed(breakdown.net)}</span>
     </li>
   </ul>
 
@@ -221,6 +219,7 @@ const barAria = [
     }
   </div>
 </article>
+)}
 
 <style>
   .dpvb {

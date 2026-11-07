@@ -3,15 +3,15 @@ slug: sc-platinum-x
 cons:
 - Cashback only on online, foreign-currency and mobile-wallet channels — regular in-store swipes earn nothing
 - The 10% rate needs AED 15,000+ total monthly spend; most users earn 3-5%
-- Foreign-currency cashback is largely offset by the up-to-2.99% FX fee
+- Foreign-currency returns need the full issuer and scheme-processing cost checked
 - Per-channel caps (AED 400 / 400 / 200) limit total cashback to about AED 1,000/month
-- 44.28% APR and AED 525 fee from year two
+- Carrying a balance can outweigh the cashback; confirm finance charges before applying
 pros:
-- Up to 10% cashback on online, foreign-currency and mobile-wallet spend — the highest headline rate among UAE cashback cards
+- Up to 10% cashback on qualifying online, foreign-currency and mobile-wallet spend, subject to tiers and caps
 - Unlimited complimentary access to 20+ local and international airport lounges via Mastercard
 - Low AED 5,000 minimum income; first year fee-free
 - Cleartrip and Expedia travel discounts
-verifiedBy: DubaiPoints Editorial — verified against the Standard Chartered Platinum X product page and SC Service & Price Guide (Jan 2026)
+verifiedBy: "DubaiPoints Editorial — partial source review; unresolved terms are identified in the review"
 kicker: Up to 10% cashback — but only on online, foreign-currency and mobile-wallet spend, tiered by total monthly spend, with regular in-store swipes earning nothing.
 tier: niche
 applyIf: Most of your spend is online, abroad or via mobile wallet and you clear AED 7,500+ a month.
@@ -20,20 +20,21 @@ keyTakeaways:
 - Cashback only on online, foreign-currency and mobile-wallet spend — regular in-store swipes earn 0%
 - Tiered by total monthly spend — 3% from AED 2,500, 5% from AED 7,500, 10% from AED 15,000
 - Per-channel caps (AED 400 / 400 / 200) cap total cashback near AED 1,000/month
-- Foreign-currency cashback is offset by the up-to-2.99% FX fee; min income AED 5,000, year one fee-free
+- Overseas net returns are not established from an issuer FX upper bound; min income AED 5,000, year one fee-free
 editorTake: >-
-  Standard Chartered's Platinum X carries the highest cashback headline in this set — up
-  to 10% — but it's the most conditional card here, and the conditions matter more than
-  the number. Cashback is earned only on three channels: AED online spend, non-AED
+  Standard Chartered's Platinum X advertises up to 10% cashback, but its qualifying
+  channels, spending tiers and caps matter more than the headline. Cashback is earned
+  only on three channels: AED online spend, non-AED
   foreign-currency spend, and AED mobile-wallet (Apple/Samsung/Google Pay) taps. A
   regular chip-and-PIN or contactless swipe of the physical card earns nothing. On top
   of that, the rate is tiered by total monthly spend — 3% from AED 2,500, 5% from AED
   7,500, and the headline 10% only above AED 15,000 — and each channel is capped (AED 400
   online, AED 400 foreign-currency, AED 200 mobile-wallet), so the most you bank is about
   AED 1,000 a month. Two further catches: the 10% on foreign-currency spend is
-  substantially offset by SC's up-to-2.99% FX fee, and the published finance charge
-  differs between SC's product page (3.45%/month) and its Service & Price Guide (3.69%),
-  which we've flagged. For a high spender who routes everything through mobile wallet and
+  subject to issuer and additional scheme-processing charges, and the published finance charge
+  is now recorded from the product-specific retail monthly rate. An annual rate has not
+  been corroborated for this product and is not inferred from the monthly figure.
+  For a high spender who routes everything through mobile wallet and
   online it can pay well; for a typical swipe-in-store shopper it earns little. Treat it
   as a specialist online/mobile-wallet card, not a general cashback card.
 ---
@@ -47,6 +48,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
 import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
+import CardDataIssues from "~/components/cards/CardDataIssues.astro";
 
 <JumpToSection sections={[
   { id: "cashback", label: "Cashback" },
@@ -61,6 +63,8 @@ you spend each month.
 
 <AtAGlance card="sc-platinum-x" />
 
+<CardDataIssues card="sc-platinum-x" />
+
 <GreatCardIf card="sc-platinum-x" />
 
 <EditorVerdict card="sc-platinum-x" />
@@ -72,7 +76,7 @@ you spend each month.
     { kind: "Perk", label: "Unlimited lounge access (20+ lounges)", sub: "4 flown trips at AED 200 walk-in equivalent", aed: 800 },
   ]}
   profile="for a middle-tier spender (AED 7,500–15,000/mo) routing spend online and through the mobile wallet"
-  assumes="The worked middle-tier profile (5% rate, AED 300/mo channel cashback) plus four-trip lounge use. Foreign-currency cashback is an open AED 0–3,400 range fully tier-dependent and largely offset by the up-to-2.99% FX fee, so it is excluded. An in-store physical-card swiper earns AED 0 of cashback. Year one the AED 525 fee is waived (SC waives it on meeting its minimum annual spend)."
+  assumes="The worked middle-tier profile (5% rate, AED 300/mo channel cashback) plus four-trip lounge use. Foreign-currency returns are excluded because an issuer upper bound and separate scheme processing do not establish an exact net return. An in-store physical-card swiper earns AED 0 of cashback. The current product confirms the first-year fee waiver; an ongoing spend waiver is not corroborated."
   note="Cashback pays in direct AED; perk values are AED-direct. See the per-benefit breakdown below."
 />
 
@@ -80,8 +84,7 @@ you spend each month.
 
 ## Cashback
 
-The earn-rate table shows the headline (top-tier) rates our comparison engine can map.
-The real structure is more conditional — read the note carefully:
+The issuer uses monthly-spend tiers and separate channel caps. A top-tier headline is not a universal comparison rate; the source-qualified tier schedule and unresolved model conditions control any return estimate.
 
 <EarnRateTable card="sc-platinum-x" />
 
@@ -90,29 +93,29 @@ Two rules define this card. **Channel:** cashback is earned only on **AED online
 non-AED foreign-currency spend, and AED mobile-wallet (Apple/Samsung/Google Pay) taps** —
 a normal in-store swipe of the physical card earns **nothing**. **Tier:** the rate steps
 up with your total monthly spend — **0% under AED 2,500, 3% from AED 2,500, 5% from AED
-7,500, and 10% only from AED 15,000**. Each channel is capped (AED 400 online, AED 400
+7,500, and 10% only from AED 15,000**. At the top tier each channel is capped (AED 400 online, AED 400
 foreign-currency, AED 200 mobile-wallet), so the most you bank is roughly **AED 1,000 a
-month**. And the 10% on foreign-currency spend is largely cancelled by SC's up-to-2.99%
-FX fee.
+month**. Complete foreign-currency costs must be checked separately; an issuer
+upper bound plus additional scheme processing does not establish an exact net return.
 </HotTip>
 
 ## Fee summary
 
 <FeeBlock card="sc-platinum-x" />
 
-The card is free in year one, then AED 525 (waived on meeting SC's minimum annual spend).
+The card is free in year one, then AED 525 (any ongoing waiver requires current product-specific confirmation).
 The foreign-currency fee is up to 2.99%, and the cash-advance fee is 3.15% (min AED 105).
-One inconsistency worth noting: SC's product page lists the retail finance charge at
-3.45%/month, while its January 2026 Service & Price Guide lists 3.69%/month (44.28% APR)
-— we've recorded the Guide figure and flagged the field. As with any cashback card, clear
-the balance in full.
+The retail monthly finance charge is recorded from the current product-specific fee
+block. The captured shared price guide did not establish this product's annual rate,
+so that figure is withheld rather than calculated from the monthly charge. As with any
+cashback card, clear the balance in full.
 
 ## What you get — per-benefit value
 
 ### Channel cashback (online / foreign-currency / mobile wallet)
 
 Worked at the middle tier: AED 8,000 of total monthly spend (5% rate), of
-which AED 4,000 online (AED 200, inside the AED 400 cap) and AED 2,000 by
+which AED 4,000 online (AED 200, within the applicable channel cap) and AED 2,000 by
 mobile wallet (AED 100, inside the AED 200 cap): AED 300/month.
 **Value to me: ~AED 3,600/year** on that profile. At the top tier —
 AED 15,000+ of monthly spend with all three channel caps maxed — the ceiling
@@ -121,11 +124,10 @@ regardless of spend.
 
 ### Foreign-currency cashback
 
-The headline nets against the up-to-2.99% FX fee. At the 10% tier, maxing
-the AED 400 monthly cap takes AED 4,000 of non-AED spend whose FX fee is
-~AED 120 — net ~AED 280/month, **~AED 3,360/year**. At the 3% tier the FX
-fee consumes nearly all of it. **Value to me: AED 0–3,400/year**, entirely
-tier-dependent.
+Foreign-currency cashback depends on the spend tier and channel cap. The issuer
+publishes an FX upper bound and says scheme processing is additional. That does
+not establish an exact all-in fee, so no precise net overseas profit or break-even
+claim is included in this review.
 
 ### Unlimited lounge access (20+ lounges)
 
@@ -136,8 +138,8 @@ travel.
 
 **Total package:** ~AED 3,600 of channel cashback at the worked middle tier
 plus ~AED 800 of lounge value is roughly **AED 4,400/year** against the
-AED 525 year-two fee (year one free; SC waives it on meeting its minimum
-annual spend). The maths holds only if your spend genuinely lives online
+AED 525 standard annual fee (the current product confirms the first-year waiver;
+an ongoing spend waiver is not established). The maths holds only if your spend genuinely lives online
 and in the mobile wallet — for a physical-card spender the package is the
 lounge access and nothing else.
 
@@ -146,39 +148,37 @@ lounge access and nothing else.
 <dl class="dp-conditions">
   <dt>Qualifying channels</dt>
   <dd>AED online, non-AED foreign currency, and AED mobile-wallet spend only. In-store physical-card swipes and contactless taps (not via a mobile wallet) earn no cashback.</dd>
-
   <dt>Spend tiers</dt>
   <dd>Cashback rate is set by total monthly spend across the card: 0% below AED 2,500, then 3% / 5% / 10% at AED 2,500 / 7,500 / 15,000.</dd>
-
   <dt>Caps</dt>
   <dd>AED 400/month online, AED 400/month foreign currency, AED 200/month mobile wallet — about AED 1,000 total.</dd>
-
   <dt>Lounge access</dt>
   <dd>Unlimited complimentary access to 20+ local and international lounges via Mastercard — a smaller network than the 1,000+ Visa Airport Companion lists, but uncapped.</dd>
-
   <dt>Eligibility</dt>
   <dd>Minimum income AED 5,000; age 21-60; UAE resident.</dd>
 </dl>
+
 
 ## Watch out for
 
 - **The swipe trap.** If you mostly tap or insert the physical card in shops, this card
   earns nothing — its cashback lives entirely online, abroad, and in the mobile wallet.
 - **The 10% mirage.** 10% only kicks in above AED 15,000 of monthly spend; below that
-  you're on 3-5%, and the foreign-currency slice is offset by the FX fee.
+  lower tiers apply. Foreign-currency cashback is not an exact net profit after all fees.
 - **Caps.** ~AED 1,000/month total ceiling across the three channels.
-- **Fee discrepancy.** Budget for the higher 3.69%/month finance charge until SC's
-  sources agree.
+- **Finance charges.** The fee block uses the current product-specific retail
+  monthly charge; no unsupported annual figure is inferred from it.
 
 ## Is it worth it?
 
 For a heavy spender whose purchases run through online checkouts, foreign-currency
 transactions and mobile-wallet taps — and who clears AED 7,500-15,000+ a month — the
-Platinum X can return more than any flat cashback card here, plus uncapped lounge access
-for a low AED 5,000 salary bar.
+Platinum X offers channel-specific cashback, subject to the applicable tiers and caps.
+Check its lounge conditions and published eligibility separately; this is not a
+market-wide return ranking.
 
 For everyone else it underwhelms: a typical in-store swiper earns nothing, the 10% needs
-heavy spend, and the foreign-currency cashback is a near-wash after the FX fee. It's a
+heavy spend, and the full cost of foreign-currency spending needs checking. It's a
 specialist card, not a default one.
 
 ## Bottom line

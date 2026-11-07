@@ -43,7 +43,7 @@ const options: CardRateOption[] = await Promise.all(
   }),
 );
 
-const withRule = all.filter((c) => c.minPayment).length;
+const withRule = all.filter((c) => parseMinPaymentRule(c.minPayment) !== null).length;
 ---
 
 <BaseLayout

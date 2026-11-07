@@ -82,12 +82,18 @@ test("Liv prose no longer claims missing salary or duplicates the old pre-VAT fe
     assert.doesNotMatch(text, /no\s+(?:published\s+)?(?:minimum salary|salary minimum|salary gate)|publishes no salary minimum|does not\s+state one/i);
     assert.doesNotMatch(text, /AED[ -]700|AED 175 late fee|AED 25 card replacement/);
   }
-  for (const file of ["src/content/guides/best-lounge-access-cards-uae-2026.mdx", "src/content/guides/best-no-annual-fee-cards-uae-2026.mdx", "src/content/guides/uae-credit-card-eligibility-2026.mdx"]) {
-    assert.match(readFileSync(file, "utf8"), /<CardSalaryMinimum card="liv-cashback"/);
-  }
-  for (const file of ["src/content/guides/best-cashback-cards-uae-2026.mdx", "src/content/guides/best-skywards-cards-uae-2026.mdx"]) {
+  for (const file of ["src/content/guides/best-lounge-access-cards-uae-2026.mdx", "src/content/guides/best-no-annual-fee-cards-uae-2026.mdx", "src/content/guides/uae-credit-card-eligibility-2026.mdx", "src/content/guides/best-cashback-cards-uae-2026.mdx", "src/content/guides/best-skywards-cards-uae-2026.mdx"]) {
     const text = readFileSync(file, "utf8");
-    assert.match(text, /<CardFeeAmount card="liv-cashback-plus"/);
+    // The refreshed guides no longer maintain a parallel Liv price/salary
+    // table. Their comparisons consume canonical card records instead.
+    assert.match(text, /import CardComparison from "~\/components\/cards\/CardComparison\.astro"/);
+    const comparisons = [...text.matchAll(/<CardComparison cards=\{\[([^\]]+)\]\}/g)];
+    assert.ok(comparisons.length > 0, file);
+    for (const comparison of comparisons) {
+      const slugs = [...comparison[1].matchAll(/"([^"]+)"/g)].map((match) => match[1]);
+      assert.equal(slugs.length, 2, "the canonical comparison component requires exactly two cards");
+      for (const slug of slugs) assert.ok(getCardData(slug), `unknown comparison card ${slug}`);
+    }
     assert.doesNotMatch(text, /Liv Cashback\+[^\n]*AED 700|after the AED 700 fee|AED 6,500 after/);
   }
 });

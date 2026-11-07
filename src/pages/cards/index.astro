@@ -1,4 +1,5 @@
 ---
+import { cardHasUnresolvedTerms } from "~/lib/cardEligibility";
 // Cards index — Phase F (May 2026 mockup-fidelity rebuild).
 // Reference: Replit Canvas mockup, page 02 (Credit Cards).
 //
@@ -38,7 +39,7 @@ import {
   FEATURE_CHIP_LABELS,
   annualFeeLabel,
 } from "~/lib/cardsData";
-import { compareByWelcomeValue, formatEarnRate } from "~/lib/cardsDataFormat";
+import { compareByWelcomeValue, formatEarnRate, earnRateFieldPending, cardFeatureNeedsReview } from "~/lib/cardsDataFormat";
 
 const cards = await Promise.all(
   getActiveCards()
@@ -84,6 +85,7 @@ function topEarnRate(card: typeof cards[number]["card"]): string | null {
   // Highest numeric value across categories; descriptive label paired.
   let best: { label: string; value: number } | null = null;
   for (const [label, raw] of entries) {
+    if (earnRateFieldPending(card._provenance, label)) continue;
     const value = typeof raw === "number" ? raw : (raw as { rate?: number } | null)?.rate;
     if (typeof value === "number" && (!best || value > best.value)) {
       best = { label, value };
@@ -102,6 +104,7 @@ function topEarnRate(card: typeof cards[number]["card"]): string | null {
 // free-text `perks[]`. Free-text fallback clips at the last whole word
 // inside 18 chars so the chip never reads "Complimentary unlimited D…".
 function perkChips(card: typeof cards[number]["card"]): string[] {
+  if (cardFeatureNeedsReview(card)) return ["Benefits pending"];
   const seen = new Set<string>();
   const out: string[] = [];
   for (const f of (card._features ?? []) as Array<{ type: string }>) {
@@ -149,9 +152,10 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
       <div class="crumb">DubaiPoints / Cards</div>
       <h1>The best UAE credit cards.</h1>
       <p>
-        We've reviewed the active UAE cards we cover against primary issuer
-        sources. Browse the picks, compare welcome
-        bonuses and earn rates, then open any card for the full verdict.
+        Browse our primary-source card profiles, compare the recorded fees and
+        reward units, then open each review for its conditions and source notes.
+        Partial profiles show which terms still need confirmation; coverage is
+        not an approval guarantee or a claim that every field is verified.
       </p>
       <p class="cards-pagehead-snapshot">
         <strong>{cardsTracked()}</strong> cards
@@ -160,7 +164,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
         {verifiedStamp && (
           <>
             <span class="sep">·</span>
-            verified through <strong>{verifiedStamp}</strong>
+            latest source-record month <strong>{verifiedStamp}</strong>
           </>
         )}
         <span class="sep">·</span>
@@ -289,7 +293,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
               </div>
               <div class="cards-row-cta">
                 <span class="cards-row-cta-pill">Read review →</span>
-                <span class="cards-row-verified">Verified {fmt(f.card.lastVerified)}</span>
+                <span class="cards-row-verified">{cardHasUnresolvedTerms(f.card) ? `Source record ${fmt(f.card.lastVerified)} — terms pending` : `Verified ${fmt(f.card.lastVerified)}`}</span>
               </div>
             </a>
           </li>

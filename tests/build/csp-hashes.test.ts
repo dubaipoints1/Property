@@ -90,6 +90,14 @@ test("form-action is 'self' only: no form posts off-site since the newsletter wa
   assert.doesNotMatch(p, /buttondown/i);
 });
 
+test("blob URLs are allowed only for owned media, not scripts or the default policy", () => {
+  for (const googleTagEnabled of [false, true]) {
+    const directives = buildPolicy([], { googleTagEnabled }).split("; ");
+    assert.equal(directives.find((d: string) => d.startsWith("media-src ")), "media-src 'self' blob:");
+    assert.deepEqual(directives.filter((d: string) => d.includes("blob:")), ["media-src 'self' blob:"]);
+  }
+});
+
 test("GA sources are absent by default and add only GA4 script/measurement origins when enabled", () => {
   assert.doesNotMatch(buildPolicy([]), /google|doubleclick/);
   const enabled = buildPolicy([], { googleTagEnabled: true });

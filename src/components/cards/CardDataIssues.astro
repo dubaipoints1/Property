@@ -1,0 +1,8 @@
+---
+import { getCardData } from "~/lib/cardsData";
+interface Props { card: string }
+const data = getCardData(Astro.props.card);
+if (!data) throw new Error(`CardDataIssues: unknown card ${Astro.props.card}`);
+const issues = Object.entries(data._dataIssues ?? {});
+---
+{(issues.length > 0 || data.refreshMode === "manual-primary") && <aside class="dp-note" aria-label="Source notes"><p><strong>Source notes</strong></p>{data.refreshMode === "manual-primary" && <p>This profile is maintained through manual primary-source reviews, not an automatic refresh feed. Check the source-record date and pending terms before applying.</p>}<ul>{issues.map(([field, note]) => <li>{note}{data._fieldEvidence?.[field]?.[0]?.sourceUrl && <> <a href={data._fieldEvidence[field][0].sourceUrl}>Issuer source</a>.</>}</li>)}</ul></aside>}

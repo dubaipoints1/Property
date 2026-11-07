@@ -1,4 +1,6 @@
 ---
+import { cardSalaryLabel } from "~/lib/cardEligibility";
+import { cardFeeNeedsReview, compareKnownAnnualFees } from "~/lib/cardFeeProvenance";
 // Perk facet pages — /cards/perks/<perk>/.
 //
 // `_features` is a typed discriminated union of fourteen perk types, and
@@ -16,6 +18,7 @@
 // already are. Raising the set means checking the counts again, which
 // tests/cards/perk-pages.test.ts does on every run.
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
+import BaseLayout from "~/layouts/BaseLayout.astro";
 import { getEntry } from "astro:content";
 import {
   getCardsWithFeature,
@@ -27,10 +30,10 @@ import {
   loungeDisplay,
   loungeFeatureOf,
 } from "~/lib/cardsDataFormat";
-import { PERK_PAGES, type PerkPage } from "~/data/perkPages";
+import { PERK_PAGE_RECORDS, hasPerkComparisonCoverage, type PerkPage } from "~/data/perkPages";
 
 export async function getStaticPaths() {
-  return PERK_PAGES.map((perk) => ({
+  return PERK_PAGE_RECORDS.map((perk) => ({
     params: { perk: perk.slug },
     props: { perk },
   }));
@@ -42,9 +45,11 @@ interface Props {
 
 const { perk } = Astro.props;
 const cards = getCardsWithFeature(perk.feature).sort(
-  (a, b) => a.annualFee.amount - b.annualFee.amount,
+  (a, b) => compareKnownAnnualFees(cardFeeNeedsReview(a, "annualFee") ? null : a.annualFee.amount,
+    cardFeeNeedsReview(b, "annualFee") ? null : b.annualFee.amount),
 );
 const verifiedStamp = verifiedMonthStamp(cards);
+const comparisonEligible = hasPerkComparisonCoverage(cards.length);
 
 const rows = await Promise.all(
   cards.map(async (c) => {
@@ -63,13 +68,7 @@ const rows = await Promise.all(
       values: [
         detail,
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
-        c.eligibility.invitationOnly === true
-          ? "Invitation only"
-          : c._provenance?.eligibility === "needs-review"
-            ? "—"
-            : c.eligibility.minSalary > 0
-              ? `AED ${c.eligibility.minSalary.toLocaleString()}/mo`
-              : "No minimum",
+        cardSalaryLabel(c, { perMonth: true }),
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };
@@ -77,10 +76,30 @@ const rows = await Promise.all(
 );
 ---
 
-<ComparisonTableLayout
+{comparisonEligible ? <ComparisonTableLayout
   title={`${perk.heading}${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
   heading={`${perk.heading}${verifiedStamp ? ` (${verifiedStamp})` : ""}`}
   description={perk.description}
   columns={[perk.detailColumn, "Annual fee", "Min salary", "Welcome bonus"]}
   rows={rows}
-/>
+/> : <BaseLayout
+  title={`${perk.heading} — source status | DubaiPoints`}
+  description="A retained benefit-source reference. Verified benefit coverage is currently insufficient for a comparison; unknown terms are not evidence of no benefit."
+  fullWidth
+  excludeFromSearch
+>
+  <meta slot="head" name="robots" content="noindex,follow" />
+  <article class="dp-article" data-pagefind-ignore>
+    <header class="dp-article-head">
+      <div class="crumb"><a href="/cards/">Cards</a> / Benefit source status</div>
+      <h1>{perk.heading}: source status</h1>
+      <p>Verified benefit coverage is currently insufficient for a comparison. This URL is retained as a source-status reference, not a ranking or a complete benefit catalogue.</p>
+    </header>
+    <section class="dp-prose">
+      <p>{cards.length} currently available card profiles have a confirmed {perk.detailColumn.toLowerCase()} record in our data. Other benefit conditions are still under review. Incomplete coverage does not mean those cards have no benefit.</p>
+      <h2>Known source profiles</h2>
+      <ul>{cards.map(card => <li><a href={`/cards/${card.slug}/`}>{card.name}</a></li>)}</ul>
+      <p>Read the individual source notes and issuer conditions. For broader discovery, use the <a href="/cards/finder/">card Finder</a> or <a href="/cards/">card directory</a>.</p>
+    </section>
+  </article>
+</BaseLayout>}

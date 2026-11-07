@@ -1,5 +1,6 @@
 // Content ↔ image coverage — every rendered content entry should have a
-// manifest image behind its resolved slug (conventional unless overridden
+// stock image or the dedicated, source-recorded issuer card face behind its
+// resolved slug (conventional unless overridden
 // by the programme image selection).
 //
 // StockImage degrades silently to a generated SVG Cover when a slug is
@@ -42,6 +43,21 @@ const manifestEntries: Array<{ slug: string; file: string; source_id?: string; s
   ? manifest
   : (manifest.images ?? manifest.entries);
 const slugs = new Set(manifestEntries.map((e) => e.slug));
+// The 9 October issuer-card-art amendment uses a separate provenance
+// manifest; do not demand a duplicate stock row for the same real card.
+const cardArt: Record<string, { file: string; url: string; page: string | null; width: number; height: number }> = JSON.parse(
+  readFileSync(`${root}/data/card-art/manifest.json`, "utf8"),
+);
+function hasIssuerArt(id: string): boolean {
+  const art = cardArt[id];
+  if (!art) return false;
+  assert.equal(art.file, `images/cards/${id}.webp`, `${id}: card-art path must identify this card`);
+  assert.ok(existsSync(`${root}/public/${art.file}`), `${id}: issuer art file is missing`);
+  assert.ok(art.width > 0 && art.height > 0, `${id}: issuer art dimensions are missing`);
+  assert.equal(new URL(art.url).protocol, "https:", `${id}: image source must be recorded`);
+  if (art.page) assert.equal(new URL(art.page).protocol, "https:", `${id}: product source must be HTTPS`);
+  return true;
+}
 
 const contentIds = (dir: string): string[] =>
   readdirSync(`${root}/src/content/${dir}`)
@@ -60,12 +76,13 @@ const surfaces: Array<[string, string[]]> = [
   ],
 ];
 
-test("every content entry has a stock-manifest image (or a recorded exception)", () => {
+test("every content entry has a stock image, real issuer card art or a recorded exception", () => {
   const missing: string[] = [];
   for (const [prefix, ids] of surfaces) {
     for (const id of ids) {
       const slug = prefix === "programme-" ? programmeImage(id).slug : `${prefix}${id}`;
-      if (!slugs.has(slug) && !(slug in ALLOWED_MISSING)) missing.push(slug);
+      const issuerImage = prefix === "card-" && hasIssuerArt(id);
+      if (!slugs.has(slug) && !issuerImage && !(slug in ALLOWED_MISSING)) missing.push(slug);
     }
   }
   assert.deepEqual(

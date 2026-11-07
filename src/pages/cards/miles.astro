@@ -1,4 +1,5 @@
 ---
+import { cardFxFeeLabel } from "~/lib/cardFeeFacts";
 import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import ComparisonTableLayout from "~/layouts/ComparisonTableLayout.astro";
 import { getEntry } from "astro:content";
@@ -23,8 +24,9 @@ const rows = await Promise.all(
       href: `/cards/${c.slug}/`,
       values: [
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
-        c._provenance?.fxFee === "needs-review" ? "—" : `${c.fxFee}%`,
-        formatEarnRate(c.earnRates.everythingElse ?? 0, c.earnUnit, c.categories),
+        cardFxFeeLabel(c),
+        c.earnRates.everythingElse === null || c.scopedEarnRates?.length || c._provenance?.["earnRates.everythingElse"] === "needs-review"
+          ? "Pending — see scoped rewards" : formatEarnRate(c.earnRates.everythingElse, c.earnUnit, c.categories),
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };

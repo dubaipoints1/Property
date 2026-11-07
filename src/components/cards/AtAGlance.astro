@@ -14,6 +14,8 @@
 // Tier A #1 (top-of-article fact-tile strip — UP + TPG pattern).
 
 import { getCardData } from "~/lib/cardsData";
+import { cardSalaryLabel } from "~/lib/cardEligibility";
+import { cardFeeNeedsReview } from "~/lib/cardFeeFacts";
 import {
   topEarnEntry,
   CATEGORY_LABELS_FOR_TOP,
@@ -31,14 +33,13 @@ if (!card) throw new Error(`AtAGlance: unknown card slug "${slug}"`);
 
 const annualFeeAmount = card.annualFee.amount;
 const minSalary = card.eligibility.minSalary;
-const invitationOnly = card.eligibility.invitationOnly === true;
 // L2 `_provenance.eligibility` — when "needs-review" the min-salary tile
 // renders "Pending" rather than a bare AED figure so an unverified band
 // can't be mistaken for a confirmed one. Matches the FX provenance
 // pattern threaded through CardReviewLayout in PR #210.
 const eligibilityProvenance = card._provenance?.eligibility;
-const isEligibilityUnverified = eligibilityProvenance === "needs-review";
-const top = topEarnEntry(card.earnRates as Record<string, unknown>);
+const isEligibilityUnverified = eligibilityProvenance === "needs-review" || card._provenance?.["eligibility.minSalary"] === "needs-review" || minSalary === null;
+const top = topEarnEntry(card.earnRates as Record<string, unknown>, card._provenance);
 
 // welcomeBonus is a union: structured object | bifurcated (with/without
 // salary transfer) | legacy string | null. The tile renders only when
@@ -62,25 +63,16 @@ if (wb && typeof wb === "object") {
 }
 
 const annualFeeLabel =
-  annualFeeAmount === 0 ? "Free" : formatAED(annualFeeAmount);
+  cardFeeNeedsReview(card, "annualFee") ? "Pending" : annualFeeAmount === 0 ? "Free" : formatAED(annualFeeAmount);
 
 // Phase 2a.2.3 (2026-05-20) — VAT qualifier on the annual fee tile.
 const vatPolicy = card.vatPolicy ?? "inclusive";
-const showVatQual = annualFeeAmount > 0;
+const showVatQual = !cardFeeNeedsReview(card, "annualFee") && annualFeeAmount > 0;
 const vatQualText =
   vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
 
 const minSalaryEyebrow = "Min salary";
-let minSalaryLabel: string;
-if (invitationOnly) {
-  minSalaryLabel = "Invitation only";
-} else if (isEligibilityUnverified) {
-  minSalaryLabel = "Pending";
-} else if (minSalary === 0) {
-  minSalaryLabel = "No minimum";
-} else {
-  minSalaryLabel = `${formatAED(minSalary)}/mo`;
-}
+const minSalaryLabel = cardSalaryLabel(card, { perMonth: true });
 
 const UNIT_LABELS: Record<string, string> = {
   skywards_miles: "Skywards Miles",

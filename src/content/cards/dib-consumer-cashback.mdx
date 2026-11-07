@@ -11,7 +11,7 @@ pros:
 - Sharia-compliant, with takaful travel and medical cover up to US$100,000 and roadside assistance
 - Low AED 5,000 minimum salary
 - First year free under a limited-time offer
-verifiedBy: DubaiPoints Editorial — verified against the DIB Consumer Cashback Reward Card product page and DIB Schedule of Charges
+verifiedBy: "DubaiPoints Editorial — partial source review; unresolved terms are identified in the review"
 kicker: A Sharia-compliant card aimed squarely at UAE household bills — 3% on groceries, fuel, utilities and school fees, but nothing on general spend.
 tier: niche
 applyIf: You spend heavily on UAE bills — groceries, fuel, school fees, utilities — and want Sharia-compliant cashback.
@@ -39,6 +39,7 @@ editorTake: >-
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
+import CardDataIssues from "~/components/cards/CardDataIssues.astro";
 import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
 import ProsCons from "~/components/cards/ProsCons.astro";
@@ -60,6 +61,8 @@ on a fixed set of UAE household categories — and nothing outside them.
 
 <AtAGlance card="dib-consumer-cashback" />
 
+<CardDataIssues card="dib-consumer-cashback" />
+
 <GreatCardIf card="dib-consumer-cashback" />
 
 <EditorVerdict card="dib-consumer-cashback" />
@@ -67,10 +70,10 @@ on a fixed set of UAE household categories — and nothing outside them.
 <AEDValueBreakdown
   card="dib-consumer-cashback"
   items={[
-    { kind: "Earn", label: "3% on the household-bills bundle", sub: "Bills household clearing the AED 3,000 gate: AED 2,500 grocery + AED 500 fuel + AED 800 utilities/telecom/mo", aed: 1370 },
+    { kind: "Earn", label: "3% on the household-bills bundle", sub: "Illustrative eligible UAE purchases outside excluded bank channels; qualifying gate and caps apply each cycle", aed: 1368 },
   ]}
   profile="for a bills-led household clearing the AED 3,000 cycle gate (no school fees in this scenario)"
-  assumes="The bills-household profile worked in the per-benefit section (AED 114/mo cashback). A school-fees household is the best case at up to AED 3,600/yr — not modelled here. Takaful cover and roadside assistance pay only when called and are excluded. The card earns nothing off-list."
+  assumes="The bills-household profile worked in the per-benefit section (AED 114/mo cashback). School fees are excluded from this scenario; the current school-fees cap must be applied separately. Takaful cover and roadside assistance pay only when called and are excluded. The card earns nothing off-list."
   note="Cashback pays in direct AED. See the per-benefit breakdown below."
 />
 
@@ -98,23 +101,20 @@ channels are excluded.
 
 <FeeBlock card="dib-consumer-cashback" />
 
-The card is free in the first year under a limited-time offer; thereafter the annual fee
-is **AED 210** (AED 200 + VAT, effective 10 May 2025 — the older Schedule of Charges
-still lists AED 157.50). As a Sharia-compliant card it carries a monthly **profit rate**
-of up to 3.25% under a Salam structure, and foreign-currency transactions carry a 3.70%
-fee — high, and a reason to keep this card for domestic spend.
+The current specific cards schedule states a monthly Salam upper bound that differs from the older Wajaha document used previously. The finance-rate field remains pending; do not treat the previously recorded percentage as a current exact rate. The fee block above distinguishes confirmed costs from unresolved terms.
 
 ## What you get — per-benefit value
 
 ### 3% cashback on the household-bills bundle
 
-Worked at a bills-led household clearing the AED 3,000 gate: AED 2,500
+Illustration only, assuming eligible UAE purchases outside excluded bank bill-payment
+channels and the qualifying gate is met in every statement cycle: AED 2,500
 supermarkets (AED 75), AED 500 fuel (AED 15, inside the AED 100 cap) and
 AED 800 of utilities and telecom (AED 24) a month is AED 114/month.
-**Value to me: ~AED 1,370/year** on that profile. A school-fees household is
-the best case: since 10 October 2026 the school-fees cap is AED 200, which 3%
-reaches at about AED 6,667/month of fees — **AED 2,400/year** from school fees
-alone (it was AED 3,600 under the old AED 300 cap).
+That is **AED 1,368 gross over twelve identical cycles**, before card fees.
+This worked example is not an unrestricted annual-return estimate. School fees
+have a separate cap and are excluded from this scenario. The generic calculator
+is held until every relevant bill category and channel restriction is represented.
 
 ### Takaful travel cover and roadside assistance
 
@@ -123,30 +123,26 @@ twice-a-year roadside assistance.
 **Value to me: AED 0 most years** — both pay only when called on, and we
 don't price insurance as an annual figure.
 
-**Total package:** ~AED 1,370/year of cashback on the bills profile — or up
-to ~AED 3,600 with school fees in play — against the AED 210 year-two fee.
-The fee is recovered in under two months of qualifying spend; the card just
-has to be held alongside a general-spend earner, because everything
-off-list earns nothing.
+Compare the separately confirmed fee and any applicable waiver against rewards
+you could actually earn. This review does not promise an annual package value or
+a fee-recovery period. Listed categories, caps, eligibility and payment-channel
+exclusions still apply.
 
 ## Key conditions to know
 
 <dl class="dp-conditions">
   <dt>Minimum spend</dt>
   <dd>Since 10 May 2025, AED 3,000 of retail purchases per statement cycle is required before any cashback is earned.</dd>
-
   <dt>Caps</dt>
   <dd>Per-category monthly caps (AED 300 / 200 / 100 / 25 depending on category; groceries and school fees AED 200 since 10 October 2026) under a AED 1,000 total monthly ceiling. Cashback is on UAE transactions only.</dd>
-
   <dt>Excluded spend</dt>
   <dd>Anything outside the listed categories earns nothing, as do utility and government bills paid through DIB's own platforms.</dd>
-
   <dt>Travel cover</dt>
   <dd>Travel and medical cover up to US$100,000 via Watania takaful for the cardholder, spouse and up to four children under 18, when flights are booked on the card.</dd>
-
   <dt>Eligibility</dt>
   <dd>Minimum monthly salary AED 5,000; UAE residency required.</dd>
 </dl>
+
 
 ## Watch out for
 
