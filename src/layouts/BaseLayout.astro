@@ -189,7 +189,7 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Self-hosted fonts: preload the two Latin faces used above the fold. -->
+    <!-- Two shared normal faces; the homepage alone also needs real italic. -->
     {!systemTypography && (
       <>
         <link rel="preload" href={newsreaderLatinSubset} as="font" type="font/woff2" crossorigin />

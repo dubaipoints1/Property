@@ -4,6 +4,35 @@ tier: T3
 status: implementation-phase-1
 ---
 
+## Exact-head validation correction — 2026-11-07
+
+Pushed loading/research head a94e4f38f2fe9a0024989320bb3b9b8a9fe22d3d to
+the draft PR #519; auto-merge remains off and production/main unchanged.
+Executed Linux validation found one stale integration assertion: the former
+two-preload test counted the newly conditional home-only italic as a third
+site-wide face. The implementation already retains two shared normal faces
+and limits italic to the homepage. The test now asserts those distinct
+conditions and forbids a shared-interior italic preload; seven focused font
+checks pass. This is a test correction, not a waived CI failure. Fresh
+exact-head full CI remains required.
+
+Two current fixed-buffer local mobile reports score98 with zero blocking
+time and100 accessibility/best practices/SEO; the third repeat is in progress.
+The audit finishes before the nominal three-second Google deadline, so the
+absence of a vendor request in its short trace is NOT proof of vendor cost,
+analytics delivery or production/canonical acceptance. The private server
+uses actual generated CSP and Brotli, not Cloudflare's edge configuration,
+and has no local Cloudflare beacon token. Report these limits separately.
+
+Independent news review reproduced alert-acknowledgement, comment/CDATA
+parsing and manual-live-ref defects. The implementation has fixed them and
+reports31 focused passes; independent re-review and a non-mutating runner
+preview remain pending. No news worker activation or automatic publication.
+
+Card source work remains uncommitted and under independent field review;
+candidate counts are not published coverage. Five competitor reports and
+their bounded coverage limits are recorded in the combined gap analysis.
+
 # Ordered implementation — 2026-11-06
 
 Owner authorises loading speed, card refresh/expansion, then five native

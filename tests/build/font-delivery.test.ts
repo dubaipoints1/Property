@@ -176,7 +176,7 @@ test("existing production font-notice artefacts contain the complete exact suppl
   }
 });
 
-test("the shared integration keeps original fallback faces, family tokens and only two normal preloads", () => {
+test("the shared integration keeps fallback faces, two shared normal preloads and one home-only italic preload", () => {
   const layout = readFileSync(path.join(root, "src/layouts/BaseLayout.astro"), "utf8");
   const module = readFileSync(path.join(root, "src/lib/fontDelivery.ts"), "utf8");
   const subsetImport = layout.indexOf('import "~/styles/font-delivery.css";');
@@ -189,7 +189,11 @@ test("the shared integration keeps original fallback faces, family tokens and on
     assert.ok(module.includes(`../assets/fonts/${file}?url`));
     assert.ok(layout.includes(`href={${name}} as="font" type="font/woff2" crossorigin`));
   }
-  assert.equal([...layout.matchAll(/rel="preload"[^>]+as="font"/g)].length, 2);
-  assert.doesNotMatch(module, /italic.*woff2\?url/);
+  const fontPreloads = [...layout.matchAll(/<link rel="preload"[^>]+as="font"[^>]*\/>/g)].map(match => match[0]);
+  assert.equal(fontPreloads.length, 3);
+  assert.equal(fontPreloads.filter(link => /href=\{(?:newsreaderLatinSubset|geistLatinSubset)\}/.test(link)).length, 2);
+  assert.match(layout, /\{!runwayInterior && <link rel="preload" href=\{newsreaderItalicHomeSubset\} as="font" type="font\/woff2" crossorigin \/>\}/);
+  assert.match(module, /newsreader-latin-wght-italic-home\.woff2\?url/);
+  assert.doesNotMatch(module, /newsreader-latin-wght-italic-site\.woff2\?url/);
   assert.doesNotMatch(layout, /@fontsource-variable\/.+woff2\?url/);
 });
