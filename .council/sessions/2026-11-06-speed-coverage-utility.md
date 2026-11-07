@@ -210,3 +210,92 @@ Continue optimisation and source-backed data/UI stages only within authority;
 do not merge on the advisory green job. This handoff is a local records-only
 follow-up; it does not invalidate the separate exact functional-head evidence
 and is not itself a fresh hosted performance certification.
+
+## 2026-11-07 — Owner choices resolved; next loading candidate
+
+Mostafa explicitly approved both pending controls, then repeated the order:
+finish the card refresh/expansion and native 21st utilities, test before live.
+The existing GA4 ID/configuration and strict Cloudflare production-main gate
+remain. Its self-contained hashed scheduler uses a nominal navigation-relative
+three-second initial-load buffer, without scrolling; browser suspension/
+throttling cannot be overridden. Early load/paint events do not shorten it.
+Duplicate, error, ordinary exit and BFCache paths have focused tests. No new
+Google account, consent, Enhanced Measurement or tracking-event change.
+Only scrape.yml's push trigger is removed; manual, quarterly and existing
+monitor-targeted refreshes remain. No paid provider/provisioning activation.
+
+Next loading candidate: same-axis homepage italic subset17,072B versus the
+shared52,572B face, retaining all shared/original fallbacks and OFL notices.
+The explicit semantic homepage corpus includes lower headings, tool numbers,
+closing heading and statistics. Real HarfBuzz/table proof compares2,259strings/
+20,807glyphs at the recorded weights/features; exact regeneration/check passes.
+This is not a new font, static instance or universal rasterisation proof.
+
+Three complete adjacent compiled home stylesheets are joined, in their exact
+cascade order, into one cached99,310B asset. No pruning, asynchronous CSS,
+script-dependent styling or interior rewrite. Unknown link semantics,
+non-adjacent head nodes, unsafe paths/URLs, import/charset/namespace semantics
+and fingerprint mismatches fail closed. Independent technical review by
+release_technical_review found mixed-case stylesheet detection and namespace
+gaps; root corrected both and regression tests reproduce their rejection.
+The earlier route/inline APIs remain separately tested as history.
+
+Root's interim production-like local build executes322routes and22,698resolved
+internal links. Actual compiled GA bytes differ in formatting/comments from
+source; structural TypeScript AST comparison is equal, actual generated CSP
+hash is present, no eager Google script is emitted. Compiled home has exactly
+one cached style and three matching normal/italic preloads; bundle re-run is
+byte-idempotent. A private localhost server applies the actual built CSP and
+Brotli compression for testing without a production deployment. Root observes
+one dynamic Google script without scrolling, no console errors, unchanged
+opening, light/dark and390px geometry, and absent initial video source; a
+trusted PageDown activates the existing720px reel after asynchronous loading.
+No production-tag performance or final release pass is yet claimed.
+
+Subsequent source work is separate from this loading commit:128HTTP source
+attempts/111readable, with failures retained, plus root's normal public-browser
+ADCB catalogue and11product captures. All36browser files are byte/hash-bound
+and explicitly labelled rendered DOM/snapshot, NOT HTTP response bodies.
+Source readability is not financial acceptance. Source-scoped SC/HSBC field
+corrections and nullable salary/FX modelling are in a separate working tranche,
+with independent review and full consumer tests still required before release.
+No blanket verification-date advance or inflated coverage count is authorised.
+
+The five native utility implementations are staged separately. Independent
+utility reviewer utility_independent_qa has already identified null salary
+mislabelled as no minimum, a no-results reset losing reader context, and
+overbroad comparison-link rewriting; bounded fixes/regressions are in progress.
+Do not substitute the implementer's test count for independent rendered QA.
+
+New owner research scope assigns one dedicated reviewer to each of
+LoyaltyLobby, Head for Points, The Points Guy, Visit Dubai and YallaCompare
+(both supplied Yalla URLs together). Reports distinguish observed link/page
+families from historical/index-only/blocked/unexamined coverage. Normal public
+Chrome reads supplement the web extractor where accessible, without logins,
+CAPTCHAs, proxy/header changes or financial form submissions. No exhaustive
+historical-archive or private-member-area claim. Existing capabilities and the
+14October newsletter removal are protected; the27September secondary-news
+attribution amendment, current cadence ceiling and commercial firewall apply.
+
+SkyNet owner-approval update raw-read-back verified with unchanged identities,
+MIME, parents, full history and Claude QA. Status109,919B/495LF/SHA256
+d9db7c714aa72294234197aeadc9c18b3e75816f9f20eafbf1be46529ab42a1a;
+decisions80,852B/463LF/SHA256
+a09591d7336bedc0d404c95da733494ff489101e13268edd20578655a332d0a4.
+Later research/implementation state remains to be reconciled at the next
+records update. Main remains651fb05; no merge or production change.
+
+### Interim real-tag measurement and stricter buffer
+
+The first actual-GA local compressed/CSP run scores98, LCP2,260ms, CLS0.022,
+TBT17ms, but transfer proxy371.6KiB FAILS200. It is not a passing release.
+Its earlier load+two-frames path starts Google at166.991ms, response completes
+658.111ms, adding180,961B to the historical modelled-LCP proxy. No video is
+requested. Raw `/private/tmp/dubaipoints-implementation.UQUeSa/ga-csp-brotli-mobile-01.json`.
+Root therefore tightens the already-approved window into the fixed nominal
+3,000ms buffer above. No scroll gate, exit backfill, account/consent change or
+new event; possible short-visit loss stays explicit. aperture_production_build
+implements the narrower timer/lifecycle contract; root reproduces27focused
+analytics/CSP tests. New fixed-buffer build succeeds with325routes/22,939links,
+including the separately staged three HSBC profiles, but it has not yet been
+measured. The score/proxy and hosted/production-tag limits remain open.

@@ -8,7 +8,7 @@ import "@fontsource-variable/geist/wght.css";
 // Identical existing variable faces/axes, with the original fonts retained
 // above as Unicode fallback. The two normal preloads match these CSS URLs.
 import "~/styles/font-delivery.css";
-import { newsreaderLatinSubset, geistLatinSubset } from "~/lib/fontDelivery";
+import { newsreaderLatinSubset, geistLatinSubset, newsreaderItalicHomeSubset } from "~/lib/fontDelivery";
 import "~/styles/global.css";
 import "~/styles/editorial-utility.css";
 // Emitted as a separate, cacheable asset. The postbuild delivery pass swaps
@@ -23,6 +23,7 @@ import Header from "~/components/Header.astro";
 import Footer from "~/components/Footer.astro";
 import SchemaJsonLd from "~/components/seo/SchemaJsonLd.astro";
 import { shouldLoadGoogleTag } from "~/lib/googleTag.mjs";
+import { googleTagBootstrapSource } from "~/lib/deferredGoogleTag.mjs";
 
 interface Props {
   title: string;
@@ -106,16 +107,10 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
   <head>
     <meta charset="utf-8" />
     {googleTagEnabled && (
-      <>
-        <!-- Google tag (gtag.js) — owner's existing Google Analytics property. -->
-        <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-VS2RL6KX46"></script>
-        <script is:inline>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-VS2RL6KX46');
-        </script>
-      </>
+      // Same GA4 property/configuration. The hash-approved scheduler starts
+      // after a fixed nominal 3s navigation buffer, never an early load event.
+      // No scroll requirement, account-setting change or additional telemetry.
+      <script is:inline set:html={googleTagBootstrapSource}></script>
     )}
 <!-- Theme initialization — MUST run before any styles to prevent flash -->
   <script is:inline>
@@ -199,6 +194,9 @@ const googleTagEnabled = shouldLoadGoogleTag({ production: import.meta.env.PROD,
       <>
         <link rel="preload" href={newsreaderLatinSubset} as="font" type="font/woff2" crossorigin />
         <link rel="preload" href={geistLatinSubset} as="font" type="font/woff2" crossorigin />
+        {/* The selected homepage heading uses real italic above the fold.
+            Discover the unchanged face here, not after the blocking CSS. */}
+        {!runwayInterior && <link rel="preload" href={newsreaderItalicHomeSubset} as="font" type="font/woff2" crossorigin />}
       </>
     )}
     {schema && <SchemaJsonLd schema={schema} />}

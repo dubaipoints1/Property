@@ -43,6 +43,7 @@ test("the smaller shared normal-face preloads match delivery CSS while original 
     assert.ok(baseLayout.includes(`href={${exported}} as="font" type="font/woff2" crossorigin`));
   }
   assert.ok(!baseLayout.includes(`/files/${latinFilename}?url`), "do not preload both original and subset");
-  assert.equal([...baseLayout.matchAll(/rel="preload"[^>]+as="font"/g)].length, 2);
+  assert.equal([...baseLayout.matchAll(/rel="preload"[^>]+as="font"/g)].length, 3);
+  assert.match(baseLayout, /!runwayInterior && <link rel="preload" href=\{newsreaderItalicHomeSubset\}/);
   assert.ok(!baseLayout.includes("newsreader-latin-opsz-normal.woff2"));
 });

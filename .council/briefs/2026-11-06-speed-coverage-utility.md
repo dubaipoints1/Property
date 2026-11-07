@@ -27,6 +27,12 @@ Work is on `codex/speed-coverage-utility`, based on held PR #518 head
 252c836 and rebased on main 651fb05. Original shared checkout is untouched.
 Earlier release histories and rejected experiments remain intact.
 
+2026-11-07 owner clarification: “Yes to both. Do it, then finish the card
+refresh and expansion and the 21st improvements. Test everything before
+making it live.” This approves the disclosed bounded analytics delay and
+removal of only the merge-triggered paid full-bank scrape. No acceptance
+gate or separate paid-provider/provisioning approval is waived.
+
 1. Loading-path implementation and measured acceptance first.
 2. Reconcile/reverify existing card data and add qualified new products.
 3. Implement the selected native 21st-inspired utilities.
@@ -64,9 +70,11 @@ no recent human activity. No fee/rate/salary may be LLM-extracted.
 - Separate scroll-video data/seek budget from initial load. Retain source-
   absent initial state, actual-scroll initiation, reduced-motion and static
   fallbacks. No new footage, paid generation or browser scroll hijacking.
-- Analytics stays unchanged pending the owner's explicit timing choice.
-  Proposed after-critical-content load, maximum three-second delay, still
-  without requiring scroll; very short-visit measurement trade-off disclosed.
+- Analytics retains the same ID/configuration and production-main gate, with
+  approved bounded deferral implemented as a nominal three-second
+  navigation-relative initial-load buffer, without requiring scroll. Early
+  load/paint events do not shorten it. Very-short-visit
+  measurement trade-off was disclosed and explicitly accepted on 2026-11-07.
   No Google account, consent or other service-setting change inferred.
 
 ## Card scope and cost gate
@@ -83,11 +91,12 @@ issuers, then missing brands using product, KFS, fee and reward terms. No
 invented values, inflated duplicate counts or unlicensed imagery. No arbitrary
 market-total promise; declare captured/reviewed/blocked coverage explicitly.
 
-Current scraper/config edits trigger a paid full-bank run on merge. Do not
-activate it or paid Firecrawl/monitor provisioning without authority. Owner
-has been asked whether to remove only that merge-triggered paid run while
-retaining manual/monitor/scheduled refreshes. Until answered, source prep is
-free and those controls are unchanged.
+Remove only the push/merge-triggered paid full-bank scrape, explicitly
+approved on 2026-11-07; retain manual/monitor/quarterly scheduled refreshes.
+Do not activate paid Firecrawl calls or live monitor provisioning without
+separate authority. Source preparation uses the bounded free public reader.
+Desired URL configuration is not proof of live monitor coverage: provisioning
+is a separate manual workflow; bank-level scrape scope may still increase.
 
 ## Utility UI scope
 

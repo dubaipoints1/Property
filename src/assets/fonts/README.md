@@ -81,3 +81,25 @@ Lighthouse score. Actual rendered before/after and hosted mobile performance
 checks remain separate release gates. CI's Node guards check the recorded
 source/output/licence hashes and integration contract without requiring a
 Python/font tool installation on every build.
+
+## Homepage-only italic delivery
+
+`home-italic.manifest.json` and `newsreader-latin-wght-italic-home.woff2` add
+a route-specific semantic italic repertoire without changing the above shared
+faces. `scripts/fonts/subset-home-italic.py` uses the same reviewed toolchain,
+flags, source notice, complete wght200–800 axis and real table/shaping proof.
+It parses all explicit homepage italic uses, including lower headings, the
+whole closing heading, tool numbers and word statistics; digits are retained
+for changing counts. Regenerate/check it after the final homepage build:
+
+```sh
+/path/to/private/venv/bin/python scripts/fonts/subset-home-italic.py --hb-shape /path/to/hb-shape
+/path/to/private/venv/bin/python scripts/fonts/subset-home-italic.py --hb-shape /path/to/hb-shape --check
+```
+
+The generated exact cmap is declared only by the homepage's route stylesheet,
+after the shared faces, and its matching URL alone is preloaded on `/`.
+Interiors still use the shared italic on demand; unseen characters fall back
+to shared/original fonts. The semantic selector list is explicit, not a CSS
+coverage optimiser: a new italic selector requires review. This proof is
+bounded by its recorded corpus/weights/features, not universal raster parity.

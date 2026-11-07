@@ -128,6 +128,7 @@ function checkCss(css) {
   // closing an HTML raw-text element. These patterns are absent in the
   // current Vite output; an upstream change must receive deliberate review.
   if (/@import\b/i.test(css)) throw Error("Compiled homepage CSS must not contain @import");
+  if (/@namespace\b/i.test(css)) throw Error("Compiled homepage CSS must not contain @namespace");
   if (/sourceMappingURL/i.test(css)) throw Error("Compiled homepage CSS must not contain sourceMappingURL");
   if (/<\/style\b|<\/?script\b/i.test(css)) throw Error("Unsafe HTML/script text in compiled homepage CSS");
   const urls = [...css.matchAll(/\burl\(\s*(?:"((?:\\.|[^"\\])*)"|'((?:\\.|[^'\\])*)'|([^()'"\s]*))\s*\)/gi)];
@@ -338,11 +339,122 @@ export async function routeHomeStyles(distDir) {
   return result;
 }
 
+/** Join complete, adjacent homepage stylesheets in their existing order.
+ * No selectors/rules are removed or moved across a script/style/other node.
+ * Relative/external URL and unknown link semantics fail closed above.
+ */
+function isBundleStyleLink(tag) {
+  const rel = attributes(tag, "link").get("rel");
+  if (typeof rel !== "string" || !rel.toLowerCase().split(/\s+/).includes("stylesheet")) return false;
+  // Detect every case-insensitive stylesheet link, then fail closed on
+  // unreviewed semantics; never silently leave one outside the bundle.
+  if (rel !== "stylesheet") throw Error("Unsupported homepage stylesheet rel semantics before bundling");
+  return true;
+}
+
+export function transformHomeStyleBundle(html, readCss) {
+  const parts = splitHead(html);
+  const links = [...parts.head.matchAll(ROUTE_TOKEN)]
+    .filter(match => /^<link\b/i.test(match[0]))
+    .filter(match => isBundleStyleLink(match[0]));
+  if (!links.length) throw Error("Missing complete homepage stylesheets");
+  const marked = links.filter(match => attributes(match[0], "link").has("data-dp-home-bundle"));
+  if (marked.length) {
+    if (marked.length !== 1 || links.length !== 1) throw Error("Ambiguous homepage CSS bundle");
+    const attrs = attributes(marked[0][0], "link");
+    if (attrs.size !== 5 || attrs.get("data-dp-home-bundle") !== "complete-v1"
+      || attrs.get("data-dp-home-style") !== ROUTE_MARKER) throw Error("Invalid homepage CSS bundle marker");
+    const href = safeAssetHref(attrs.get("href"));
+    const css = readCss(href);
+    checkCss(css);
+    if (attrs.get("data-dp-css-sha256") !== hash(css)) throw Error("Homepage CSS bundle fingerprint mismatch");
+    return { html, href, css, sha256: hash(css), cssBytes: byteLength(css), combinedCount: 0, sources: [] };
+  }
+  if (links.length < 2) throw Error("Expected multiple complete homepage stylesheets before bundling");
+  const sources = [];
+  let routeCount = 0;
+  for (let index = 0; index < links.length; index++) {
+    const match = links[index];
+    const attrs = attributes(match[0], "link");
+    if (attrs.has("data-dp-home-style")) {
+      if (attrs.size !== 4 || attrs.get("data-dp-home-style") !== ROUTE_MARKER) throw Error("Invalid route CSS before bundling");
+      routeCount++;
+    } else if (attrs.size !== 2) throw Error("Unsupported homepage stylesheet semantics before bundling");
+    const href = safeAssetHref(attrs.get("href"));
+    const css = readCss(href);
+    checkCss(css);
+    if (/@charset\b/i.test(css)) throw Error("CSS charset semantics require review before bundling");
+    if (attrs.has("data-dp-css-sha256") && attrs.get("data-dp-css-sha256") !== hash(css)) throw Error("Route CSS fingerprint mismatch before bundling");
+    if (index) {
+      const previous = links[index - 1];
+      if (parts.head.slice(previous.index + previous[0].length, match.index).trim()) {
+        throw Error("Homepage stylesheets are not adjacent; never move CSS across another head node");
+      }
+    }
+    sources.push({ href, css, bytes: byteLength(css), sha256: hash(css) });
+  }
+  if (routeCount !== 1) throw Error("Expected one verified explicit homepage route stylesheet");
+  const css = sources.map(source => source.css).join("\n");
+  const sha256 = hash(css);
+  const href = `/_astro/home-delivery.${sha256.slice(0, 20)}.css`;
+  const tag = `<link rel="stylesheet" href="${href}" data-dp-home-style="${ROUTE_MARKER}" data-dp-home-bundle="complete-v1" data-dp-css-sha256="${sha256}">`;
+  const first = links[0];
+  const last = links.at(-1);
+  const head = parts.head.slice(0, first.index) + tag + parts.head.slice(last.index + last[0].length);
+  return { html: parts.before + head + parts.after, href, css, sha256,
+    cssBytes: byteLength(css), combinedCount: links.length,
+    sources: sources.map(({ css: _css, ...source }) => source) };
+}
+
+export async function bundleHomeStyles(distDir) {
+  const root = await realpath(path.resolve(distDir));
+  const indexPath = path.join(root, "index.html");
+  const astroRoot = path.join(root, "_astro");
+  for (const file of [indexPath, astroRoot]) {
+    const info = await lstat(file);
+    if (info.isSymbolicLink() || await realpath(file) !== file) throw Error("Bundle paths must not be symlinks");
+    if (file === indexPath ? !info.isFile() : !info.isDirectory()) throw Error("Invalid homepage bundle path");
+  }
+  const decode = bytes => new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  const html = decode(await readFile(indexPath));
+  const cssByHref = new Map();
+  for (const match of splitHead(html).head.matchAll(ROUTE_TOKEN)) {
+    if (!/^<link\b/i.test(match[0])) continue;
+    if (!isBundleStyleLink(match[0])) continue;
+    const attrs = attributes(match[0], "link");
+    const href = safeAssetHref(attrs.get("href"));
+    const file = path.join(astroRoot, path.posix.basename(href));
+    const info = await lstat(file);
+    if (!info.isFile() || info.isSymbolicLink() || await realpath(file) !== file) throw Error("Unsafe bundle source asset");
+    cssByHref.set(href, decode(await readFile(file)));
+  }
+  const result = transformHomeStyleBundle(html, href => cssByHref.get(href));
+  if (result.html !== html) {
+    const destination = path.join(astroRoot, path.posix.basename(result.href));
+    try { await writeFile(destination, result.css, { encoding: "utf8", flag: "wx" }); }
+    catch (error) {
+      if (error.code !== "EEXIST") throw error;
+      const info = await lstat(destination);
+      if (!info.isFile() || info.isSymbolicLink() || await realpath(destination) !== destination
+        || decode(await readFile(destination)) !== result.css) throw Error("Existing bundle destination is unsafe or differs");
+    }
+    await writeFile(indexPath, result.html, "utf8");
+  }
+  return result;
+}
+
 const isMain = process.argv[1]
   ? import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href
   : false;
 if (isMain) {
   const dist = fileURLToPath(new URL("../../dist/", import.meta.url));
-  const result = await routeHomeStyles(dist);
-  console.log(`[home-style-delivery] ${result.replacedCount} stylesheet replaced in place by cached ${result.href}; CSS ${result.originalBytes ?? "unchanged"} → ${result.cssBytes} B; sha256 ${result.sha256}`);
+  const html = await readFile(path.join(dist, "index.html"), "utf8");
+  const bundled = [...splitHead(html).head.matchAll(ROUTE_TOKEN)].some(match => /^<link\b/i.test(match[0])
+    && attributes(match[0], "link").has("data-dp-home-bundle"));
+  if (!bundled) {
+    const route = await routeHomeStyles(dist);
+    console.log(`[home-style-delivery] explicit shared route CSS ${route.originalBytes ?? "unchanged"} → ${route.cssBytes} B`);
+  }
+  const result = await bundleHomeStyles(dist);
+  console.log(`[home-style-delivery] ${result.combinedCount} complete adjacent stylesheets → cached ${result.href}; ${result.cssBytes} B; sha256 ${result.sha256}`);
 }

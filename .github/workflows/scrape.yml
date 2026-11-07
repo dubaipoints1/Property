@@ -1,8 +1,8 @@
 # Quarterly card-data sweep — the safety net beneath the monitors.
 #
-# Runs on the 1st of Jan/Apr/Jul/Oct at 23:00 UTC, on workflow_dispatch
-# (with optional single-bank override), and on any direct edit to this
-# file, scraper code, or a per-bank URL config (path-scoped push trigger).
+# Runs on the 1st of Jan/Apr/Jul/Oct at 23:00 UTC and workflow_dispatch
+# (manual or monitor-targeted, with the existing bank override). Publishing
+# site/code changes must not implicitly start a paid full-registry scrape.
 #
 # Cadence rationale (revised 2026-08): this used to run monthly and was
 # the ONLY thing that ever noticed a bank changing its fees — which is
@@ -47,14 +47,6 @@ on:
         required: false
         default: "all"
         type: string
-  push:
-    branches:
-      - main
-    paths:
-      - .github/workflows/scrape.yml
-      - scripts/scrape/**.ts
-      - scripts/scrape/banks/*.urls.json
-      - scripts/scrape/banks.registry.json
 
 jobs:
   refresh:
@@ -78,8 +70,8 @@ jobs:
         id: banks
         run: |
           # Honour the workflow_dispatch input when present; otherwise scrape every
-          # bank in the registry. The cron and push triggers always pass through
-          # the empty default and scrape all.
+          # bank in the registry. The cron passes through the empty default
+          # and scrapes all; manual/monitor dispatch keeps its bank override.
           INPUT="${{ github.event.inputs.bank }}"
           if [ -z "$INPUT" ] || [ "$INPUT" = "all" ]; then
             BANKS=$(node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync("scripts/scrape/banks.registry.json","utf8")).banks.join(" "))')

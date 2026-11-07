@@ -1,0 +1,446 @@
+{
+  "version": 1,
+  "purpose": "Homepage-only semantic italic subset; shared and original variable faces retained as Unicode fallback",
+  "family": "Newsreader Variable",
+  "style": "italic",
+  "source": "node_modules/@fontsource-variable/newsreader/files/newsreader-latin-wght-italic.woff2",
+  "sourceVersion": "5.3.0",
+  "sourceSha256": "48bc8861b9b2ca9300747cad4fd6a3b4ac3028d364df00bd1b72097baa75e509",
+  "sourceBytes": 64520,
+  "file": "newsreader-latin-wght-italic-home.woff2",
+  "sha256": "47537ca235a30e5665f924ecef5c4ff99279799da21884b18d6303d51c0b013d",
+  "bytes": 17072,
+  "licence": {
+    "spdx": "OFL-1.1",
+    "file": "newsreader-OFL.txt",
+    "sha256": "26028ec4e13b650065fa525a09532176f8a668b76ff849ea01c564a7480f91e7",
+    "reservedFontNamesDeclaredInSuppliedNotice": false
+  },
+  "tools": {
+    "fontTools": "4.68.0",
+    "brotli": "1.2.1",
+    "harfBuzz": "hb-shape (HarfBuzz) 14.2.1"
+  },
+  "subsetFlags": [
+    "--flavor=woff2",
+    "--layout-features=*",
+    "--layout-scripts=*",
+    "--hinting",
+    "--glyph-names",
+    "--name-IDs=*",
+    "--name-languages=*",
+    "--name-legacy",
+    "--notdef-glyph",
+    "--notdef-outline",
+    "--recommended-glyphs",
+    "--legacy-cmap",
+    "--symbol-cmap",
+    "--passthrough-tables",
+    "--drop-tables=",
+    "--legacy-kern",
+    "--no-recalc-timestamp",
+    "--no-recalc-bounds",
+    "--no-harfbuzz-repacker"
+  ],
+  "corpus": {
+    "texts": [
+      "0 1 2 3 4 5 6 7 8 9",
+      "00 01 02 03 04 05 06 07 08 09",
+      "01",
+      "0123456789",
+      "02",
+      "03",
+      "04",
+      "1,234.56",
+      "AED",
+      "Every figure dated, sourced and",
+      "Pay less.",
+      "Three to start.",
+      "a tool.",
+      "in dirhams.",
+      "on DubaiPoints.",
+      "optimising for?",
+      "right now.",
+      "the desk."
+    ],
+    "textSha256": "3141668841f495c46036e84ab04db33b2edc3f8f9604f25bd523bc516dabfb16",
+    "inputCodepoints": [
+      32,
+      44,
+      46,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      63,
+      65,
+      68,
+      69,
+      80,
+      84,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      121
+    ]
+  },
+  "invariants": {
+    "axesEqual": true,
+    "nameRecordsEqual": true,
+    "namedInstancesEqual": true,
+    "horizontalMetricsEqual": true,
+    "lineMetricsEqual": true,
+    "hintingBytecodeEqual": true,
+    "globalHintingTablesEqual": true,
+    "cmapEqual": true,
+    "sourceAxes": [
+      [
+        "wght",
+        200.0,
+        400.0,
+        800.0,
+        0,
+        256
+      ]
+    ],
+    "outputAxes": [
+      [
+        "wght",
+        200.0,
+        400.0,
+        800.0,
+        0,
+        256
+      ]
+    ],
+    "sourceGlyphs": 262,
+    "outputGlyphs": 59,
+    "codepoints": [
+      32,
+      44,
+      46,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      63,
+      65,
+      68,
+      69,
+      80,
+      84,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      121
+    ],
+    "unicodeRange": "U+0020,U+002C,U+002E,U+0030-0039,U+003F,U+0041,U+0044-0045,U+0050,U+0054,U+0061-0069,U+006B-0070,U+0072-0077,U+0079",
+    "closureAddedCodepoints": [],
+    "outlineWeights": [
+      200,
+      300,
+      400,
+      450,
+      500,
+      600,
+      700,
+      800
+    ],
+    "outlineGlyphWeightPairs": 472,
+    "outlinesAndVariableAdvancesEqual": true,
+    "layoutTablesRetained": {
+      "GSUB": true,
+      "GPOS": true,
+      "GDEF": true
+    }
+  },
+  "shaping": {
+    "engine": "HarfBuzz OpenType shaper/font funcs, Latin/en, UPEM units",
+    "compared": "Glyph identity (GID normalised by name), clusters, x/y advances, x/y offsets and glyph extents; source and subset SFNT converted losslessly from delivery WOFF2",
+    "cases": [
+      {
+        "corpus": "all-supported-body-ui",
+        "weight": 400,
+        "features": "default",
+        "strings": 19,
+        "glyphs": 279
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 200,
+        "features": "default",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 200,
+        "features": "kern-ligatures-off",
+        "strings": 70,
+        "glyphs": 652
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 200,
+        "features": "layout-on-tabular",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 200,
+        "features": "proportional-oldstyle",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 300,
+        "features": "default",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 300,
+        "features": "kern-ligatures-off",
+        "strings": 70,
+        "glyphs": 652
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 300,
+        "features": "layout-on-tabular",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 300,
+        "features": "proportional-oldstyle",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 400,
+        "features": "default",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 400,
+        "features": "kern-ligatures-off",
+        "strings": 70,
+        "glyphs": 652
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 400,
+        "features": "layout-on-tabular",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 400,
+        "features": "proportional-oldstyle",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 450,
+        "features": "default",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 450,
+        "features": "kern-ligatures-off",
+        "strings": 70,
+        "glyphs": 652
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 450,
+        "features": "layout-on-tabular",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 450,
+        "features": "proportional-oldstyle",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 500,
+        "features": "default",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 500,
+        "features": "kern-ligatures-off",
+        "strings": 70,
+        "glyphs": 652
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 500,
+        "features": "layout-on-tabular",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 500,
+        "features": "proportional-oldstyle",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 600,
+        "features": "default",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 600,
+        "features": "kern-ligatures-off",
+        "strings": 70,
+        "glyphs": 652
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 600,
+        "features": "layout-on-tabular",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 600,
+        "features": "proportional-oldstyle",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 700,
+        "features": "default",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 700,
+        "features": "kern-ligatures-off",
+        "strings": 70,
+        "glyphs": 652
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 700,
+        "features": "layout-on-tabular",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 700,
+        "features": "proportional-oldstyle",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 800,
+        "features": "default",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 800,
+        "features": "kern-ligatures-off",
+        "strings": 70,
+        "glyphs": 652
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 800,
+        "features": "layout-on-tabular",
+        "strings": 70,
+        "glyphs": 638
+      },
+      {
+        "corpus": "every-page-representatives-and-layout-fixtures",
+        "weight": 800,
+        "features": "proportional-oldstyle",
+        "strings": 70,
+        "glyphs": 638
+      }
+    ],
+    "allEqual": true,
+    "stringsCompared": 2259,
+    "glyphsCompared": 20807,
+    "limits": "Complete supported deduplicated text corpus at wght=400; representative strings from every page at listed weights/features. Not proof for every possible string/feature/continuous weight or browser rasteriser. Original faces remain fallback for all other codepoints."
+  }
+}
