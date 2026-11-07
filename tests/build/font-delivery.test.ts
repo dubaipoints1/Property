@@ -106,8 +106,8 @@ test("real shaping proof covers the full site plus every-page weighted kerning/l
   assert.ok(manifest.corpus.htmlPages >= 322);
   // The refreshed financial prose removes obsolete repetitions. Pin the
   // reviewed complete corpus, not the former prose-volume minimum.
-  assert.equal(manifest.corpus.htmlTextNodesDeduplicated, 14242);
-  assert.equal(manifest.corpus.htmlTextSha256, "06b55a1c8f0e20d25ce6c007780dfbce48c879c75bdc649cbe50554b39a8e125");
+  assert.equal(manifest.corpus.htmlTextNodesDeduplicated, 14193);
+  assert.equal(manifest.corpus.htmlTextSha256, "11c389e3eff81f0d1b806421bb81e0a7aeea81ebcc7c81262b4e1f4fa6c74e1a");
   assert.ok(manifest.corpus.sourceUiFiles > 100);
   assert.ok(manifest.corpus.representativeStrings > 300, "shared headers/footers are intentionally deduplicated");
   assert.equal(manifest.corpus.representativePageCoverage, manifest.corpus.htmlPages);

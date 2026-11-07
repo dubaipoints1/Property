@@ -103,6 +103,30 @@ known subset.
 
 ## Evidence location and limits
 
+### Dependent bank-hub copy — 8 November 2026
+
+A later compiled check of the DIB bank hub found old finance and campaign
+wording outside the original card/guide prose set. All 15 bank-hub sources
+therefore received a finite dependency read. Twelve hubs withdraw stale fixed
+fees, rates, transfer requirements, currency-value assumptions, promotional
+absence conclusions or unsupported universal missed-payment reporting deadlines.
+Current profile and dated campaign links remain; historical campaign wording
+does not become a current offer. No replacement typed financial number or card
+record is introduced. This is not whole-bank or account-tariff recertification.
+
+The independent ADCB reviewer checked the actual amended copy and closed every
+finite finding. Root separately read all 12 diffs. A final narrow Wio check
+removes the undifferentiated SCA clause: the captured bank footer and KFS support
+the retained Central Bank licensing wording, without establishing which entity
+the generic marketing regulator wording concerns. Al Hilal's unverified fees
+remain explicit and no Al Hilal card profile is added.
+
+Final bank-hub source aggregate, sorted relative-path:SHA256 lines plus LF:
+`f89be825057eebfb3c720fff676e72de3e6d8c8fbee7673b781fdcd650b30503`.
+The original 66 card/guide aggregate and canonical cards identity above remain
+unchanged. Three source regressions guard the withdrawn held claims, campaign
+boundaries and unsupported reporting deadline; rendered/build checks are separate.
+
 Private complete captures, packets and mechanical read-backs:
 `/private/tmp/dubaipoints-final-release.2GwIlh`,
 `/private/tmp/dubaipoints-enbd-refresh.xBpHrP`,

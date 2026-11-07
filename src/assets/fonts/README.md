@@ -6,14 +6,15 @@ Renewed against the complete 339-page production-like build, including the
 existing public production Cloudflare beacon configuration and the unchanged
 Google-property loader. This is local artefact evidence, not hosted acceptance.
 The current compiled tree has SHA-256
-`61552804ffeb6a34c7a43ea3cecfc4061053727ce078b490aff75a5f71bb2c86`.
-The source/UI corpus has 14,242 deduplicated HTML text nodes, 158 UI files and
+`5bba5a4b7b94096c1ab53c04c25fad6e0cfda54cb05bb582e68d77e012fb6968`.
+The source/UI corpus has 14,193 deduplicated HTML text nodes, 158 UI files and
 1,017 representative page windows. The compiled homepage is 83,059 B, SHA-256
-`021de0c6a77b944b8cf21e4757db3abbdf90b7d6054542d06ddfc6b210f8c49e`;
+`fd0aa0a496966f8763dc987fb08ec0a24a82daf61ab1e7d13b1ad591c5d2684a`;
 its normal-face corpus has 297 strings. This renewal includes the homepage
-fact-grid wrapping and DIB model-hold fixes; all five font binaries and both
-supplied OFL notices remain byte-identical to the reviewed final8 candidate
-outputs.
+fact-grid wrapping, DIB model-hold, owned-media blob loader and bank-profile
+copy corrections. All five font binaries and both supplied OFL notices remain
+byte-identical to the previously reviewed binaries; final10 records bind them
+to the current compiled output.
 
 Four delivery binaries and both OFL notices remain unchanged. The regenerated
 homepage-normal subset is35,452B rather than35,584B: the current homepage no
@@ -22,7 +23,7 @@ shared/original fallback still supplies it. The exact CSS range is updated;
 names, full variable axis, metrics, outlines, hinting and layout remain equal.
 Independent Technical review inspected the candidate against the original font
 and licence. Final proof records10,632normal-home string cases/260,056glyphs;
-shared Newsreader normal/italic each27,073/4,100,693, Geist30,308/4,850,110.
+shared Newsreader normal/italic each27,024/4,092,963, Geist30,259/4,842,366.
 All recorded shaping comparisons agree. No new typeface or family is introduced.
 The132B reduction is a file-byte observation, not a claimed network uplift.
 

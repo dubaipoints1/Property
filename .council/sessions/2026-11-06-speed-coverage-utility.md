@@ -604,3 +604,80 @@ identity, not a smaller sampling contract.
 Fresh check remains zero errors/warnings across 218 files. The final full local
 suite now executes 1,025 tests: 1,024 pass, the same one macOS Bash 3 failure,
 zero skips/cancellations. Exact-head Linux CI and performance remain open.
+
+## Final dependency and hosted-media corrections — 2026-11-08
+
+Commit 315395e genuinely passes push and PR Linux validation with all 1,025
+tests executed, zero failures/skips/cancellations (runs 42413525038 and
+42413528039). Its Cloudflare preview is deployment
+55fc78af-072d-4120-a0bb-d02fb325696b. These are pre-correction results, not
+evidence for the later head. Both hosted mobile audits score 97; preview SEO
+is 69 solely because preview indexing is deliberately blocked. Three matched
+local production-tag audits score 98 and 185.56 KiB initial-load proxy. These
+measurements are superseded for acceptance by the later media-loader change.
+
+Extended no-scroll mobile/desktop network captures confirm the existing Google
+script starts at 3,003/3,004 ms and a collection request returns 204. Full captured
+transfer is 382,496 bytes (373.53 KiB), including the 180,847-byte Google script.
+This is not an all-page 200 KiB claim. The mobile native capture is 412 by 823;
+its pre-Google request set differs from the Lighthouse trace due to responsive
+and lazy image selection. No video request occurs without scrolling. The local
+Cloudflare collector has a localhost-port CORS limitation; this is not a CSP
+failure or proof of production ingestion.
+
+The late DIB hub read finds duplicate finance/campaign wording outside the
+original 76-page prose review. All 15 bank-hub sources are then independently
+cross-read; twelve withdraw stale fixed claims, broad programme inferences or
+unsupported universal missed-payment deadlines. No replacement numeric record
+or date is introduced. Root reads all twelve diffs. The final Wio entity check
+retains only the bank-specific Central Bank licensing statement supported by
+its captured footer/KFS. Final hub-source aggregate:
+`f89be825057eebfb3c720fff676e72de3e6d8c8fbee7673b781fdcd650b30503`.
+The fact-check report records these boundaries; three regressions pass.
+
+Hosted native video QA identifies a real delivery defect: Range bytes=0- gets
+200/full file, without Accept-Ranges/Content-Range; the fully buffered video
+reports an empty usable seek range and remains at its first frame. Native
+Media events and a sanitised HAR preserve the failure. The encoded MP4s have
+valid fast-start metadata, quarter-second keyframes and distinct decoded frames.
+Cloudflare's current static-assets limitation documents this delivery behaviour;
+the Pages observation, not an inference from the Workers product name, is the
+direct evidence here.
+
+The scoped correction fetches only the same selected owned MP4 after the existing
+trusted-input plus changed-in-hero-scroll gate, then attaches a locally seekable
+blob URL. There is one fetch, no simultaneous original video download, no new
+provider, footage, autoplay, initial request or design change. Abort/generation
+guards discard stale responses; reset, pagehide and errors release owned URLs.
+CSP permits blob only for media, not scripts/default/connect. Independent Finder
+review and root review approve the four-file change; 29 focused tests execute
+deferred-body, reset/BFCache, cancellation, failure and URL-ownership cases.
+Trade-off: the complete selected existing 3.51/8.59/13.25 MB file must arrive
+before first seeking, only after scroll; the poster remains complete meanwhile.
+
+Final10 local native QA confirms source absent initially, then blob source,
+decoded range through 10.166667 seconds and actual forward/reverse positions
+4.194499 → 6.996358 → 4.899108. It is not merely a CSS/readiness assertion.
+New dist: `5bba5a4b7b94096c1ab53c04c25fad6e0cfda54cb05bb582e68d77e012fb6968`.
+Exact delta from 615528 is twelve bank HTML pages, home HTML, the hero script,
+the six-character media CSP addition and derived Pagefind files; all other
+CSS/fonts/images/videos/assets are byte-identical. All thirteen changed routes
+pass a fresh 78-state both-theme/three-width sweep. Prior unchanged routes retain
+their exact compiled evidence; no old changed-route state is relabelled fresh.
+
+Three font generators pass direct integrated --check again. Root independently
+rehashes all ten generated font/proof/licence files against integrated files:
+exact match, all five font binaries/notices unchanged. Current complete corpus
+is 14,193 deduplicated nodes across 339 pages/1,017 representative windows,
+SHA-256 `11c389e3eff81f0d1b806421bb81e0a7aeea81ebcc7c81262b4e1f4fa6c74e1a`.
+Home HTML remains 83,059 bytes, SHA-256
+`fd0aa0a496966f8763dc987fb08ec0a24a82daf61ab1e7d13b1ad591c5d2684a`.
+Fresh Astro check has zero errors/warnings across 218 files. Full local suite
+executes 1,035 tests: 1,034 pass, only the unchanged macOS Bash 3 failure,
+zero skips/cancellations. Genuine successful exact-head Linux CI, corrected
+hosted media/runtime, renewed performance and substantive final Council remain
+open. Main is still 651fb05; PR #519 remains draft. Production is unchanged.
+
+SkyNet's fresh guard download fails before mutation. Controlled verification
+therefore pauses Drive writes; renewed retry authority has been requested.
+No record-update success is claimed, and no silent retry/fallback occurs.

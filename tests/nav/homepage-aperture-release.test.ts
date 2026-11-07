@@ -35,7 +35,9 @@ test("video has no initial network source, autoplay or independent play path", (
   assert.match(video, /tabindex="-1"/);
   assert.equal((controller.match(/video\.src\s*=/g) ?? []).length, 1);
   assert.doesNotMatch(controller, /\.play\(|setInterval\(|window\.scrollTo\(|document\.body\.style|style\.overflow\s*=/);
-  assert.doesNotMatch(controller, /gtag\(|localStorage|sessionStorage|fetch\(/);
+  assert.doesNotMatch(controller, /gtag\(|localStorage|sessionStorage/);
+  assert.match(controller, /window\.fetch\(source, \{ signal: request\.signal, credentials: "same-origin", redirect: "error" \}\)/);
+  assert.match(controller, /video\.src = mediaURL/);
 });
 
 test("static-first composition keeps copy and links outside the animated media frame", () => {
@@ -73,7 +75,7 @@ class FixtureElement {
   }
 }
 
-function withFixture(run: (state: any) => void) {
+function withFixture(run: (state: any) => void | Promise<void>) {
   const saved = new Map<string, PropertyDescriptor | undefined>();
   const install = (name: string, value: unknown) => {
     saved.set(name, Object.getOwnPropertyDescriptor(globalThis, name));
@@ -86,6 +88,14 @@ function withFixture(run: (state: any) => void) {
   win.innerWidth = 1440;
   win.innerHeight = 900;
   win.scrollY = 0;
+  const requests: { source: string; options: RequestInit }[] = [];
+  const createdURLs: string[] = [], revokedURLs: string[] = [];
+  let fetchMedia = async () => ({ ok: true, blob: async () => new Blob(["owned MP4 fixture"], { type: "video/mp4" }) });
+  win.fetch = (source: string, options: RequestInit) => { requests.push({ source, options }); return fetchMedia(); };
+  win.URL = {
+    createObjectURL: () => { const url = `blob:owned-fixture-${createdURLs.length + 1}`; createdURLs.push(url); return url; },
+    revokeObjectURL: (url: string) => revokedURLs.push(url),
+  };
   let nextRaf = 0;
   const frames = new Map<number, () => void>();
   win.requestAnimationFrame = (callback: () => void) => { frames.set(++nextRaf, callback); return nextRaf; };
@@ -141,16 +151,25 @@ function withFixture(run: (state: any) => void) {
   install("window", win);
   install("document", doc);
   install("getComputedStyle", () => ({ paddingTop: "24px", paddingBottom: "24px", direction: "ltr" }));
-  try { run({ win, doc, root, stage, copy, foot, frame, video, reduced, connection, frames, fire, flush }); }
-  finally {
+  const restore = () => {
     for (const [name, descriptor] of saved) {
       if (descriptor) Object.defineProperty(globalThis, name, descriptor);
       else Reflect.deleteProperty(globalThis, name);
     }
+  };
+  const settle = async () => { for (let i = 0; i < 5; i++) await Promise.resolve(); flush(); };
+  try {
+    const result = run({ win, doc, root, stage, copy, foot, frame, video, reduced, connection, frames, fire, flush,
+      requests, createdURLs, revokedURLs, settle, setFetch: (implementation: typeof fetchMedia) => { fetchMedia = implementation; } });
+    if (result) return result.finally(restore);
+    restore();
+  } catch (error) {
+    restore();
+    throw error;
   }
 }
 
-test("executed controller leaves src absent at init and attaches only after intent plus changed in-hero scroll", () => withFixture(s => {
+test("executed controller leaves src absent at init and attaches only after intent plus changed in-hero scroll", () => withFixture(async s => {
   initialiseHomeJourney();
   s.flush();
   assert.equal(s.video.src, undefined);
@@ -163,8 +182,11 @@ test("executed controller leaves src absent at init and attaches only after inte
   assert.equal(s.video.src, undefined, "intent alone is insufficient");
   s.win.scrollY = 100;
   s.fire(s.win, "scroll");
-  s.flush();
-  assert.equal(s.video.src, "/videos/hero-journey-scrub.mp4");
+  assert.equal(s.video.src, undefined, "the original URL is never assigned to the media element");
+  await s.settle();
+  assert.equal(s.requests.length, 1);
+  assert.equal(s.requests[0].source, "/videos/hero-journey-scrub.mp4");
+  assert.equal(s.video.src, "blob:owned-fixture-1");
   assert.equal(s.video.loads, 1);
   assert.ok(s.video.currentTime > 0);
   assert.equal(s.video.paused, true);
@@ -183,27 +205,28 @@ test("executed click, hash, history, resize, pageshow and blur paths revoke earl
   });
 });
 
-test("executed focused-link keyboard and mocked scrollbar delivery support native input paths", () => {
-  for (const mode of ["keyboard", "gutter"]) withFixture(s => {
+test("executed focused-link keyboard and mocked scrollbar delivery support native input paths", async () => {
+  for (const mode of ["keyboard", "gutter"]) await withFixture(async s => {
     initialiseHomeJourney();
     if (mode === "keyboard") s.fire(s.win, "keydown", { key: "PageDown" });
     else s.fire(s.win, "pointerdown", { clientX: 1430, pointerType: "mouse", buttons: 1 });
     assert.equal(s.video.src, undefined);
     s.win.scrollY = 100;
     s.fire(s.win, "scroll");
-    s.flush();
-    assert.equal(s.video.src, "/videos/hero-journey-scrub.mp4");
+    await s.settle();
+    assert.equal(s.requests[0].source, "/videos/hero-journey-scrub.mp4");
+    assert.equal(s.video.src, "blob:owned-fixture-1");
   });
   // Real browser event delivery from a native scrollbar is deliberately not
   // represented by this mock and remains a separate runtime test.
 });
 
-test("executed reduction, short-height and hidden/offscreen guards stop enhancement work", () => withFixture(s => {
+test("executed reduction, short-height and hidden/offscreen guards stop enhancement work", () => withFixture(async s => {
   initialiseHomeJourney();
   s.fire(s.win, "wheel");
   s.win.scrollY = 100;
   s.fire(s.win, "scroll");
-  s.flush();
+  await s.settle();
   assert.ok(s.video.src);
   s.reduced.matches = true;
   s.fire(s.reduced, "change");
@@ -236,7 +259,7 @@ test("executed reduction, short-height and hidden/offscreen guards stop enhancem
   assert.equal(s.video.src, undefined);
 }));
 
-test("data-saving preference uses the complete static hero and releases an attached reel", () => withFixture(s => {
+test("data-saving preference uses the complete static hero and releases an attached reel", () => withFixture(async s => {
   s.connection.saveData = true;
   initialiseHomeJourney();
   assert.equal(s.root.classes.has("is-enhanced"), false);
@@ -254,6 +277,7 @@ test("data-saving preference uses the complete static hero and releases an attac
   s.fire(s.win, "wheel");
   s.win.scrollY = 200;
   s.fire(s.win, "scroll");
+  await s.settle();
   assert.ok(s.video.src);
   s.connection.saveData = true;
   s.fire(s.connection, "change");
@@ -262,12 +286,113 @@ test("data-saving preference uses the complete static hero and releases an attac
   assert.equal(s.frames.size, 0);
 }));
 
-test("browsers without Network Information keep the ordinary scroll gate", () => withFixture(s => {
+test("browsers without Network Information keep the ordinary scroll gate", () => withFixture(async s => {
   s.win.navigator = {};
   initialiseHomeJourney();
   assert.equal(s.video.src, undefined);
   s.fire(s.win, "wheel");
   s.win.scrollY = 100;
   s.fire(s.win, "scroll");
+  await s.settle();
   assert.ok(s.video.src);
 }));
+
+test("a pending owned fetch is single-flight and does not attach before the complete blob", () => withFixture(async s => {
+  let finishBody!: (blob: Blob) => void;
+  s.setFetch(async () => ({ ok: true, blob: () => new Promise<Blob>(resolve => { finishBody = resolve; }) }));
+  initialiseHomeJourney(); s.flush();
+  assert.equal(s.requests.length, 0);
+  s.fire(s.win, "wheel"); s.win.scrollY = 100; s.fire(s.win, "scroll");
+  await s.settle();
+  for (const y of [150, 200, 250]) { s.fire(s.win, "wheel"); s.win.scrollY = y; s.fire(s.win, "scroll"); }
+  assert.equal(s.requests.length, 1);
+  assert.equal(s.video.src, undefined); assert.equal(s.video.loads, 0);
+  assert.equal(s.frame.classes.has("is-ready"), false);
+  finishBody(new Blob(["complete MP4"], { type: "video/mp4" })); await s.settle();
+  assert.equal(s.video.src, "blob:owned-fixture-1"); assert.equal(s.video.loads, 1);
+  assert.equal(s.requests[0].options.redirect, "error");
+  assert.equal(s.requests[0].options.credentials, "same-origin");
+  s.fire(s.win, "wheel"); s.win.scrollY = 300; s.fire(s.win, "scroll"); await s.settle();
+  assert.equal(s.requests.length, 1, "the video does not redownload the original URL");
+}));
+
+test("pagehide aborts pending data and BFCache restoration requires fresh input; stale responses cannot win", () => withFixture(async s => {
+  let finishOld!: (response: unknown) => void;
+  const old = new Promise(resolve => { finishOld = resolve; });
+  s.setFetch(() => old);
+  initialiseHomeJourney(); s.fire(s.win, "wheel"); s.win.scrollY = 100; s.fire(s.win, "scroll");
+  assert.equal(s.requests.length, 1);
+  s.fire(s.win, "pagehide", { persisted: true });
+  assert.equal(s.requests[0].options.signal.aborted, true);
+  s.fire(s.win, "pageshow", { persisted: true }); s.flush();
+  assert.equal(s.requests.length, 1, "restoration alone does not fetch");
+  s.setFetch(async () => ({ ok: true, blob: async () => new Blob(["new generation"], { type: "video/mp4" }) }));
+  s.fire(s.win, "wheel"); s.win.scrollY = 200; s.fire(s.win, "scroll"); await s.settle();
+  const fresh = s.video.src;
+  let staleBodyRead = false;
+  finishOld({ ok: true, blob: async () => { staleBodyRead = true; return new Blob(["stale"], { type: "video/mp4" }); } });
+  await s.settle();
+  assert.equal(staleBodyRead, false); assert.equal(s.video.src, fresh);
+  assert.deepEqual(s.createdURLs, ["blob:owned-fixture-1"]);
+  s.fire(s.win, "pagehide"); assert.equal(s.video.src, undefined);
+  assert.deepEqual(s.revokedURLs, [fresh]);
+  s.fire(s.win, "pagehide"); assert.deepEqual(s.revokedURLs, [fresh], "repeated cleanup does not revoke another owner");
+}));
+
+test("a body completing after reset is discarded before URL creation", () => withFixture(async s => {
+  let finishBody!: (blob: Blob) => void;
+  s.setFetch(async () => ({ ok: true, blob: () => new Promise<Blob>(resolve => { finishBody = resolve; }) }));
+  initialiseHomeJourney(); s.fire(s.win, "wheel"); s.win.scrollY = 100; s.fire(s.win, "scroll"); await s.settle();
+  s.fire(s.win, "pageshow");
+  finishBody(new Blob(["late body"], { type: "video/mp4" })); await s.settle();
+  assert.equal(s.requests[0].options.signal.aborted, true);
+  assert.equal(s.video.src, undefined); assert.deepEqual(s.createdURLs, []);
+}));
+
+test("reduction, data saving, hiding and leaving the hero abort a pending fetch", async () => {
+  for (const mode of ["reduced", "save-data", "hidden", "offscreen"]) await withFixture(async s => {
+    let finish!: (response: unknown) => void;
+    s.setFetch(() => new Promise(resolve => { finish = resolve; }));
+    initialiseHomeJourney(); s.fire(s.win, "wheel"); s.win.scrollY = 100; s.fire(s.win, "scroll");
+    if (mode === "reduced") { s.reduced.matches = true; s.fire(s.reduced, "change"); }
+    if (mode === "save-data") { s.connection.saveData = true; s.fire(s.connection, "change"); }
+    if (mode === "hidden") { s.doc.hidden = true; s.fire(s.doc, "visibilitychange"); }
+    if (mode === "offscreen") { s.win.scrollY = 3000; s.fire(s.win, "scroll"); }
+    assert.equal(s.requests[0].options.signal.aborted, true, mode);
+    finish({ ok: true, blob: async () => new Blob(["late"], { type: "video/mp4" }) }); await s.settle();
+    assert.equal(s.video.src, undefined); assert.deepEqual(s.createdURLs, []);
+  });
+});
+
+test("fetch, HTTP, body and MIME failures keep the poster without automatic retries", async () => {
+  for (const mode of ["network", "http", "body", "empty", "html"]) await withFixture(async s => {
+    s.setFetch(async () => {
+      if (mode === "network") throw new Error("fixture network failure");
+      return { ok: mode !== "http", blob: async () => {
+        if (mode === "body") throw new Error("fixture body failure");
+        return new Blob(mode === "empty" ? [] : ["fixture"], { type: mode === "html" ? "text/html" : "video/mp4" });
+      } };
+    });
+    initialiseHomeJourney(); s.fire(s.win, "wheel"); s.win.scrollY = 100; s.fire(s.win, "scroll"); await s.settle();
+    assert.equal(s.video.src, undefined, mode); assert.equal(s.frame.classes.has("is-ready"), false);
+    assert.deepEqual(s.createdURLs, []);
+    s.fire(s.win, "wheel"); s.win.scrollY = 200; s.fire(s.win, "scroll"); await s.settle();
+    assert.equal(s.requests.length, 1, mode);
+  });
+});
+
+test("only the three owned responsive files can be fetched and only blob URLs reach video src", async () => {
+  for (const [width, source] of [[390, "/videos/hero-journey-scrub-720.mp4"], [1440, "/videos/hero-journey-scrub.mp4"], [1920, "/videos/hero-journey-scrub-2560.mp4"]]) await withFixture(async s => {
+    s.win.innerWidth = width;
+    initialiseHomeJourney(); s.fire(s.win, "wheel"); s.win.scrollY = 100; s.fire(s.win, "scroll"); await s.settle();
+    assert.equal(s.requests.length, 1); assert.equal(s.requests[0].source, source);
+    assert.match(s.video.src, /^blob:/);
+    s.fire(s.video, "error"); assert.equal(s.video.src, undefined);
+    assert.deepEqual(s.revokedURLs, ["blob:owned-fixture-1"]);
+  });
+  await withFixture(async s => {
+    s.video.dataset.src = "https://unapproved.example/movie.mp4";
+    initialiseHomeJourney(); s.fire(s.win, "wheel"); s.win.scrollY = 100; s.fire(s.win, "scroll"); await s.settle();
+    assert.equal(s.requests.length, 0); assert.equal(s.video.src, undefined);
+  });
+});

@@ -146,7 +146,9 @@ export function buildPolicy(hashes, { googleTagEnabled = false } = {}) {
     ["img-src", ["'self'", "data:", "https:"]],
     ["font-src", ["'self'", "data:"]],
     ["connect-src", ["'self'", ...THIRD_PARTY.connectSrc, ...google.connectSrc]],
-    ["media-src", ["'self'"]],
+    // Owned scroll-triggered MP4s are fetched once, then seeked locally.
+    // Blob URLs are permitted for media only, never scripts/default sources.
+    ["media-src", ["'self'", "blob:"]],
     ["frame-src", ["'none'"]],
     ["frame-ancestors", ["'none'"]],
     ["base-uri", ["'self'"]],

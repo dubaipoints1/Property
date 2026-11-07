@@ -25,6 +25,10 @@ export function initialiseHomeJourney() {
   let intentAt = -Infinity;
   let desiredProgress = 0;
   let attached = false;
+  let pending = false;
+  let generation = 0;
+  let mediaRequest: AbortController | null = null;
+  let mediaURL: string | null = null;
   let enhancement = false;
   let failed = false;
   let scrollbarDragging = false;
@@ -41,11 +45,59 @@ export function initialiseHomeJourney() {
   const clearIntent = () => { intentAt = -Infinity; scrollbarDragging = false; };
   const cancelFrame = () => { if (raf) window.cancelAnimationFrame(raf); raf = 0; };
   const detach = () => {
+    generation++;
+    mediaRequest?.abort();
+    mediaRequest = null;
+    pending = false;
     video.pause();
     frame.classList.remove("is-ready");
     if (attached) { video.removeAttribute("src"); video.load(); }
     attached = false;
+    if (mediaURL) { window.URL.revokeObjectURL(mediaURL); mediaURL = null; }
     failed = false;
+  };
+  const ownedMedia = new Set([
+    "/videos/hero-journey-scrub-720.mp4",
+    "/videos/hero-journey-scrub.mp4",
+    "/videos/hero-journey-scrub-2560.mp4",
+  ]);
+  // The static host returns the complete MP4 even for a Range request. A
+  // single complete same-origin fetch becomes a locally seekable media blob;
+  // the video element must never also download the original URL.
+  const loadMedia = async (source: string) => {
+    if (pending || attached || failed) return;
+    if (!ownedMedia.has(source) || typeof window.fetch !== "function"
+      || typeof window.URL?.createObjectURL !== "function" || typeof window.URL?.revokeObjectURL !== "function"
+      || typeof AbortController !== "function") {
+      failed = true;
+      return;
+    }
+    const requestGeneration = ++generation;
+    const request = new AbortController();
+    mediaRequest = request;
+    pending = true;
+    try {
+      const response = await window.fetch(source, { signal: request.signal, credentials: "same-origin", redirect: "error" });
+      if (requestGeneration !== generation || request.signal.aborted) return;
+      if (!response.ok) throw new Error("Journey media unavailable");
+      const blob = await response.blob();
+      if (requestGeneration !== generation || request.signal.aborted) return;
+      if (!enhancement || document.hidden || !withinHero() || reduced.matches || connection?.saveData === true) return;
+      if (!blob.size || blob.type.split(";", 1)[0].trim() !== "video/mp4") throw new Error("Journey media is not an MP4");
+      mediaURL = window.URL.createObjectURL(blob);
+      attached = true;
+      video.preload = "auto";
+      video.src = mediaURL;
+      video.load();
+      queue();
+    } catch {
+      if (requestGeneration !== generation || request.signal.aborted) return;
+      detach();
+      failed = true;
+      cancelFrame();
+    } finally {
+      if (requestGeneration === generation) { pending = false; mediaRequest = null; }
+    }
   };
   // Called after finite scroll/data/seek events, never an idle animation loop.
   const seek = () => {
@@ -145,25 +197,26 @@ export function initialiseHomeJourney() {
   window.addEventListener("hashchange", () => { clearIntent(); queue(); });
   window.addEventListener("popstate", () => { clearIntent(); previousY = window.scrollY; queue(); });
   window.addEventListener("pageshow", () => { reset(); previousY = window.scrollY; measure(); });
+  window.addEventListener("pagehide", reset);
   window.addEventListener("scroll", () => {
     const changed = Math.abs(window.scrollY - previousY) > .5;
     previousY = window.scrollY;
     if (!enhancement) return;
     const p = progress();
-    if (!attached && !failed && changed && (scrollbarDragging || performance.now() - intentAt < 900)
+    if (!attached && !pending && !failed && changed && (scrollbarDragging || performance.now() - intentAt < 900)
       && withinHero() && p > 0 && p < .96 && !document.hidden) {
       const source = window.innerWidth <= 899 ? video.dataset.srcSmall
         : window.innerWidth >= 1600 ? video.dataset.srcLarge : video.dataset.src;
-      if (source) { attached = true; video.preload = "auto"; video.src = source; video.load(); }
+      if (source) void loadMedia(source);
     }
-    if (!withinHero()) { video.pause(); cancelFrame(); return; }
+    if (!withinHero()) { if (pending) detach(); video.pause(); cancelFrame(); return; }
     queue();
   }, { passive: true });
   video.addEventListener("loadeddata", () => { if (attached && enhancement) queue(); });
   video.addEventListener("seeked", () => {
     if (attached && !failed && enhancement && !document.hidden && withinHero()) { frame.classList.add("is-ready"); queue(); }
   });
-  video.addEventListener("error", () => { failed = true; frame.classList.remove("is-ready"); video.pause(); cancelFrame(); });
+  video.addEventListener("error", () => { detach(); failed = true; cancelFrame(); });
   reduced.addEventListener("change", measure);
   connection?.addEventListener?.("change", measure);
   window.addEventListener("resize", () => { clearIntent(); measure(); }, { passive: true });
@@ -171,6 +224,7 @@ export function initialiseHomeJourney() {
     clearIntent();
     cancelFrame();
     video.pause();
+    if (document.hidden && pending) detach();
     if (!document.hidden) measure();
   });
   measure();
