@@ -39,6 +39,38 @@ Owner authorises loading speed, card refresh/expansion, then five native
 21st-inspired utilities, with testing before release. Brief:
 `.council/briefs/2026-11-06-speed-coverage-utility.md`.
 
+## Later owner news-volume ruling — 2026-11-07
+
+Mostafa rejects the proposed5/3weekly pilot ceiling: "There should be no
+limit." Current Charter and both active desk instructions now remove fixed
+numerical news ceilings while preserving every source/scope/publication
+gate. The new digest reflects that ruling;32 focused tests pass. This is
+not automatic article publication, paid activation or release acceptance.
+Policy brief: `.council/briefs/2026-11-07-news-no-ceiling.md`.
+
+Exact pushed head3de665f5341457ab49c01b08f80f848e42a19bfa passes executed
+Linux check/build/all833 tests (zero fail/skip/cancel). The Cloudflare preview
+is https://10d1c0a1.dubaipoints.pages.dev/ . One clean hosted mobile report
+scores95, LCP2704ms, CLS0.022, TBT0 and196.8KiB transfer proxy, meeting the
+historical95/200 initial budget in that single observation. It is not a
+repeated median or production-tag acceptance: preview has no external
+analytics requests. SEO69 is the expected preview x-robots-tag:noindex,
+not a production-indexing finding. The local fixed-buffer three-run series
+is98/98/99 with194.7KiB each, but its short traces finish before Google
+starts. Fresh normal browser at scrollTop0 has0initial vendor tags and
+one later exact-property tag, no new scroll and no video source/errors.
+
+News preview42368975485 actually runs3de665f, reads7/7feeds and retains
+21unread leads against its frozen test seed—not21new canonical stories.
+Restore-state, issue-posting and save-state steps are skipped. The observed
+automation-state ref remains6b6bbe8f65350ded15f94a218cd881f24c9ef821
+before/after. No new feed/provider/article activation or publication.
+
+The attempted later SkyNet record update stopped on a complete-download
+receive failure before any write. No retry/fallback/partial Drive mutation.
+Local records retain this boundary; earlier Drive entries are not described
+as already updated with this later policy or implementation checkpoint.
+
 New owned branch `codex/speed-coverage-utility` starts at 252c836, based on
 current main 651fb05. Original shared checkout and held PR #518 remain
 unchanged. Full CLAUDE blob is unchanged from the authority already read.

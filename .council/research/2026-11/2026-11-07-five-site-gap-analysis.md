@@ -143,9 +143,10 @@ The27September Charter amendment permits fully read secondary news with
 named inline attribution, own wording and UAE angle, with primary sources
 preferred when readable. It does not relax primary deterministic extraction
 for cards, guides or salary data. RSS headlines alone are not a verified
-fact base. The current2–3 airline/1–2 hotel weekly ceiling remains until a
-specific owner ruling changes it; the news agent will prepare a capacity/SLA
-proposal rather than silently raise it.
+fact base. Later on7November the Chairman explicitly ruled "There should
+be no limit": the numerical weekly ceilings are removed, not replaced by
+a pilot cap. Source/editorial/publication gates remain, as recorded in the
+dated Charter amendment. Capacity/SLA proposals are not guaranteed throughput.
 
 ## Acceptance and measurement
 

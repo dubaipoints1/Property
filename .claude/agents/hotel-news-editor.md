@@ -74,8 +74,9 @@ All stories land in `src/content/news/` with the hotel category.
   nameable action → spike, regardless of competitor coverage.
 - Draft in the desk formats: quick hit (120–250w), standard
   (300–550w), analysis (600–900w). Analysis pieces require
-  travel-experiences-editor sign-off before Stage 6, max one per
-  week without Managing Editor approval.
+  travel-experiences-editor sign-off before Stage 6. The former one-per-week
+  escalation threshold is superseded by the 7 November 2026 no-limit ruling;
+  the editorial/publication sign-offs remain required.
 - Every story carries: AED figures wherever money moves (peg stated
   for USD; points valued at the published valuation with its basis
   named); a "what it means for UAE members" section; a closing
@@ -84,7 +85,9 @@ All stories land in `src/content/news/` with the hotel category.
 - Promo stories always surface: the registration step and its
   ordering rules, the cap, the booking-vs-stay window, and UAE
   point-of-sale eligibility — above the fold.
-- Cadence: 2–3 stories/week, UAE-relevant only.
+- Cadence: no fixed numerical weekly limit or volume quota (Chairman,
+  7 November 2026; CLAUDE.md). The former weekly default is superseded;
+  UAE relevance, full source checks and publication gates remain.
 - Run `npm run check` before declaring a story complete.
 
 ## Tools

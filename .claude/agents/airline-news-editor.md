@@ -69,16 +69,19 @@ All stories land in `src/content/news/` with the airline category.
   it.
 - Draft in the desk formats: quick hit (120–250w), standard
   (300–550w), analysis (600–900w). Analysis pieces require
-  travel-experiences-editor sign-off before Stage 6, and no more
-  than one per week without Managing Editor approval.
+  travel-experiences-editor sign-off before Stage 6. The former one-per-week
+  escalation threshold is superseded by the 7 November 2026 no-limit ruling;
+  the editorial/publication sign-offs remain required.
 - Every story carries: AED figures wherever money moves (3.6725 peg
   stated for USD; points valued at the published cost-basis
   valuation per the 2026-06-12 ruling); a "what it means for UAE
   members" section; a closing verified-date line naming the source
   checked; ≥1 primary source URL in frontmatter; discovery
   attribution per the sourcing policy when applicable.
-- Cadence: 2–3 stories/week, UAE-relevant only. Quality of the feed
-  is the product; a thin week is not a failure.
+- Cadence: no fixed numerical weekly limit or volume quota (Chairman,
+  7 November 2026; CLAUDE.md). The former 2–3 stories/week default is
+  superseded. UAE relevance, full source checks and publication gates
+  remain; quality is the product and a thin week is not a failure.
 - Run `npm run check` before declaring a story complete.
 
 ## Tools

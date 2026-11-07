@@ -7,6 +7,20 @@ re-review pass; real-runner preview and release pending. Proposed cadence/SLA ch
 are NOT ratified policy. No article, feed activation, monitor provisioning,
 paid call, newsletter, account, new worker or publication is authorised here.
 
+## Later owner ruling — no numerical news ceiling
+
+On7November2026 the Chairman answered the proposed volume pilot:
+"There should be no limit." The dated Charter amendment now removes the
+prior2–3airline/1–2hotel weekly ceiling and rejects a replacement5/3pilot
+cap. Quality, full-source reading, original UAE relevance and all existing
+publication gates remain. No volume quota, automatic publication, paid
+activation or additional account/worker permission follows from this ruling.
+
+The earlier pilot proposal below is retained as decision history, not
+current policy. The useful next step is uncapped, quality-led editorial
+triage, with recorded dispositions and actual capacity/turnaround measures;
+the suggested SLAs below remain proposals, not promises.
+
 ## Current state, not an absent automation claim
 
 The free news monitor already polls seven feeds twice daily at 05:07 and
@@ -23,7 +37,8 @@ automation-state; the main-branch state file is a frozen migration seed.
 
 Authority: CLAUDE.md, 27 July, 27 September and 1 October 2026 amendments;
 `.council/02_workflow.md`; `.council/briefs/2026-10-14-newsletter-removed.md`.
-The binding weekly ceiling remains 2–3 airline and 1–2 hotel stories.
+Before the later7November ruling, the weekly ceiling was2–3airline and
+1–2hotel stories; those historical limits are now superseded.
 Secondary news facts may be used after full reading, with named inline
 attribution, primary-first sourcing when readable, original wording and an
 explicit statement of what the issuer has not confirmed. Cards, guides,
@@ -132,7 +147,7 @@ as recorded in each report. No competitor figure becomes DubaiPoints data.
 Private review sources are the five reports under
 `/private/tmp/dubaipoints-competitor-{headforpoints,loyaltylobby,thepointsguy,visitdubai,yallacompare}/report.md`.
 
-## Proposed expansion — needs owner ruling, not silently enabled
+## Original expansion proposal — volume pilot superseded by the later ruling
 
 1. **Accept reliable intake first.** Run the feature-ref preview, inspect
    actual per-feed outcomes, dates and rejection counts, then independently
