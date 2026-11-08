@@ -6,7 +6,7 @@ topic: Reliable monitoring, complete card maintenance coverage and three unpubli
 convened: 2026-11-08
 participants: root, monitor_reliability, card_coverage, article_briefs
 deliverable-shape: full-implementation
-status: open
+status: reviewed-pending-release
 ---
 
 # Council session: monitoring reliability and source coverage
@@ -84,5 +84,11 @@ choice is inferred from this task.
 
 ## Evidence and review
 
-Pending implementation, exact-head tests and actual independent review. Green
-advisory Council CI is not substantive sign-off. No live claim at this stage.
+Implementation and independent review are complete; see the single synthesis.
+Source candidate `3bdfbedd` has genuine Linux validation: 1,084 tests, no
+failures/skips. Real-API preview 42491187415 returned health warnings rather
+than falsely green polling: four latest monitor checks are credit-skipped.
+No queries failed and no history window saturated; issue/state/scrape side
+effects were suppressed. Final-head checks and normal deployment remain
+pending. Green advisory Council CI is not substantive sign-off; external
+collection is not yet certified recovered.

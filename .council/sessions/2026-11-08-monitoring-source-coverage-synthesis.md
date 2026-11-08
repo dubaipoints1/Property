@@ -70,8 +70,16 @@ indexed and 23,690 internal links resolved. Research/API-key guard passes.
 The complete local suite has 1,083 passes and one inherited macOS Bash 3
 empty-array failure after updating the existing hand-off shape test. It is not waived: the
 unmodified automation-state integration must genuinely pass on Linux CI.
-Exact-head remote CI, read-only monitor preview, normal merge and production
-deployment remain pending at this recorded preparation stage.
+Source candidate `3bdfbedd` subsequently passed genuine Linux run42491211753:
+all1,084 tests, zero failures/skips; source guard, check and build executed.
+Real-API preview42491187415 read existing state and all configured histories,
+then correctly returned unhealthy: four latest checks remain credit-skipped,
+with21 diagnostic entries including historical failures. No list/detail
+request failed and no100-check window saturated. The preview delivered no
+issues, saved no state and dispatched no scrape; its helper and diagnostic
+retention steps succeeded. This validates observability, NOT fresh collection
+or recovery. Final-head checks, normal merge and production deployment remain
+release gates. No source content/dates or provider state were changed.
 
 ## Decision questions for the user
 

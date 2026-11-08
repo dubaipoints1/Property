@@ -7,7 +7,7 @@ research-status: pass
 seo-status: pass
 draft-status: complete
 factcheck-status: pass
-tech-status: pending
+tech-status: passed
 chairman-status: approved
 target-publish: 2026-11-08
 sources-required: 0
@@ -57,3 +57,12 @@ scrape activation, paid monitor/cadence/target expansion or new UI runtime.
    unchanged except where an explicitly reviewed repair is necessary.
 
 Session: `.council/sessions/2026-11-08-monitoring-source-coverage.md`.
+
+Tech pass, 8 November: source candidate `3bdfbedd` passed genuine Linux CI
+run 42491211753, including all 1,084 tests with no failures/skips, source guard,
+check and full build. Local check/build also pass (seven existing hints).
+Read-only real-API preview 42491187415 successfully exercised the repaired
+reader/delivery path and correctly reported unhealthy external history:
+four latest monitor checks remain credit-skipped. It made no issues, state
+save or paid dispatch. Collection recovery is NOT certified by this tech pass.
+Final-head checks and normal production deployment remain release gates.
