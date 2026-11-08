@@ -56,6 +56,10 @@ jobs:
       - name: Research capture and API key guard
         run: node scripts/ci/check-research-secrets.mjs
 
+      - name: Offline all-card source routing and evidence pins
+        # Structural source coverage, never a network or paid freshness claim.
+        run: npm run check:card-sources
+
       - name: astro check
         run: npm run check
 

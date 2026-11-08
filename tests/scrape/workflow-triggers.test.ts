@@ -22,7 +22,10 @@ test("existing quarterly backstop, manual bank override and scrape job remain in
 
 test("monitor still dispatches the existing targeted scrape bank input", () => {
   const monitor = read("monitor.yml");
-  assert.match(monitor, /name: Dispatch targeted scrape for changed banks/);
-  assert.match(monitor, /if: steps\.poll\.outputs\.banks != ''/);
-  assert.match(monitor, /gh workflow run scrape\.yml -f bank="\$BANKS"/);
+  const delivery = readFileSync(new URL('../../scripts/ci/deliver-monitor.mjs', import.meta.url), 'utf8');
+  // Dispatch moved into the tested delivery transaction: still the same bank
+  // input, now only after alerts, never on an unsafe preview or lost hand-off.
+  assert.match(monitor, /MONITOR_BANKS: \$\{\{ steps\.poll\.outputs\.banks \}\}/);
+  assert.match(monitor, /run: node scripts\/ci\/deliver-monitor\.mjs/);
+  assert.match(delivery, /if \(banks\.length\) run\('gh', \['workflow', 'run', 'scrape\.yml', '--ref', 'main', '-f', `bank=\$\{banks\.join\(' '\)\}`\]\)/);
 });
