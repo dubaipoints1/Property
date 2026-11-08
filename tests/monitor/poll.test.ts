@@ -16,7 +16,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { mkdtempSync, mkdirSync, writeFileSync, readdirSync, readFileSync, rmSync } from "node:fs";
+import {
+  mkdtempSync,
+  mkdirSync,
+  writeFileSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { execFile } from "node:child_process";
@@ -25,15 +32,27 @@ import { fileURLToPath } from "node:url";
 
 const run = promisify(execFile);
 
-const REPO = path.resolve(fileURLToPath(new URL(".", import.meta.url)), "..", "..");
+const REPO = path.resolve(
+  fileURLToPath(new URL(".", import.meta.url)),
+  "..",
+  "..",
+);
 const MONITOR_ID = "019fd16a-85e3-77fc-aed3-759fc1b3714a";
-const ADCB_URL = "https://www.adcb.com/en/personal/cards/credit-cards/essential-cashback-credit-card.aspx";
+const ADCB_URL =
+  "https://www.adcb.com/en/personal/cards/credit-cards/essential-cashback-credit-card.aspx";
 
 const PARTIAL_CHECK = {
   id: "01a0740f-a656-70ee-8331-68a65f14cd70",
   status: "partial",
   actualCredits: 97,
-  summary: { totalPages: 55, same: 12, changed: 2, new: 0, removed: 0, error: 1 },
+  summary: {
+    totalPages: 55,
+    same: 12,
+    changed: 2,
+    new: 0,
+    removed: 0,
+    error: 1,
+  },
 };
 
 const CHANGED_PAGES = [
@@ -43,14 +62,21 @@ const CHANGED_PAGES = [
     judgment: {
       meaningful: true,
       confidence: "high",
-      reason: "The welcome bonus for the ADCB Essential Cashback Credit Card decreased from AED 300 to AED 250.",
+      reason:
+        "The welcome bonus for the ADCB Essential Cashback Credit Card decreased from AED 300 to AED 250.",
     },
-    diff: { text: "-- Enjoy a welcome bonus of up to _AED_ 300\n++ Enjoy a welcome bonus of up to _AED_ 250" },
+    diff: {
+      text: "-- Enjoy a welcome bonus of up to _AED_ 300\n++ Enjoy a welcome bonus of up to _AED_ 250",
+    },
   },
   {
     url: "https://www.adcb.com/en/personal/cards/credit-cards/traveller-credit-card.aspx",
     status: "changed",
-    judgment: { meaningful: false, confidence: "high", reason: "reCAPTCHA widget only." },
+    judgment: {
+      meaningful: false,
+      confidence: "high",
+      reason: "reCAPTCHA widget only.",
+    },
     diff: { text: "-reCAPTCHA" },
   },
 ];
@@ -61,8 +87,12 @@ async function runPoller() {
     if (req.url?.includes("/checks/")) {
       // Honour the limit the poller asked for, so a too-small one truncates
       // here exactly as the real API would.
-      const limit = Number(new URL(req.url, "http://x").searchParams.get("limit") ?? 0);
-      res.end(JSON.stringify({ data: { pages: CHANGED_PAGES.slice(0, limit) } }));
+      const limit = Number(
+        new URL(req.url, "http://x").searchParams.get("limit") ?? 0,
+      );
+      res.end(
+        JSON.stringify({ data: { pages: CHANGED_PAGES.slice(0, limit) } }),
+      );
     } else if (req.url?.includes("/checks")) {
       // Filter by `status` exactly as the real API does, and this is the
       // load-bearing line of the whole fixture. The first version of this
@@ -73,8 +103,17 @@ async function runPoller() {
       // takes one value — still returned nothing new. A fake that answers
       // requests the real service would refuse proves nothing.
       const status = new URL(req.url, "http://x").searchParams.get("status");
-      const match = status === null ? status === "completed" : status === PARTIAL_CHECK.status;
+      const match =
+        status === null
+          ? status === "completed"
+          : status === PARTIAL_CHECK.status;
       res.end(JSON.stringify({ data: match ? [PARTIAL_CHECK] : [] }));
+    } else if (req.url === `/${MONITOR_ID}`) {
+      res.end(
+        JSON.stringify({
+          data: { status: "active", targets: [{ urls: [ADCB_URL] }] },
+        }),
+      );
     } else {
       res.statusCode = 404;
       res.end("{}");
@@ -95,35 +134,52 @@ async function runPoller() {
     // Already baselined, so this check is treated as a real change set.
     writeFileSync(
       path.join(cwd, "data/monitor/state.json"),
-      JSON.stringify({ seenChecks: {}, baselined: { "product-pages": true }, creditsReported: {} }),
+      JSON.stringify({
+        seenChecks: {},
+        baselined: { "product-pages": true },
+        creditsReported: {},
+      }),
     );
     writeFileSync(
       path.join(cwd, "scripts/scrape/banks/adcb.urls.json"),
-      JSON.stringify([{ slug: "adcb-essential-cashback", urls: { product: ADCB_URL } }]),
+      JSON.stringify([
+        { slug: "adcb-essential-cashback", urls: { product: ADCB_URL } },
+      ]),
     );
     for (const f of ["offers.registry.json", "salary-transfer.registry.json"]) {
-      writeFileSync(path.join(cwd, "scripts/monitor", f), JSON.stringify({ banks: [] }));
+      writeFileSync(
+        path.join(cwd, "scripts/monitor", f),
+        JSON.stringify({ banks: [] }),
+      );
     }
 
     // execFile, not execFileSync: the stand-in API is served by this same
     // event loop, so a synchronous child would deadlock waiting on a
     // server that cannot answer until the child exits.
-    const { stdout } = await run(process.execPath, [path.join(REPO, "scripts/monitor/poll.mjs")], {
-      cwd,
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        FIRECRAWL_API_KEY: "test-key-not-a-real-credential",
-        MONITOR_API_BASE: `http://127.0.0.1:${port}`,
-        GITHUB_OUTPUT: "",
+    const { stdout } = await run(
+      process.execPath,
+      [path.join(REPO, "scripts/monitor/poll.mjs")],
+      {
+        cwd,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          FIRECRAWL_API_KEY: "test-key-not-a-real-credential",
+          MONITOR_API_BASE: `http://127.0.0.1:${port}`,
+          GITHUB_OUTPUT: "",
+        },
       },
-    });
+    ).catch((error) => error); // partial collection deliberately exits unhealthy
 
     const digestDir = path.join(cwd, ".council/monitoring");
-    const digests = readdirSync(digestDir).filter((f) => f.startsWith("card-change-"));
+    const digests = readdirSync(digestDir).filter((f) =>
+      f.startsWith("card-change-"),
+    );
     return {
       stdout,
-      digest: digests.length ? readFileSync(path.join(digestDir, digests[0]), "utf8") : "",
+      digest: digests.length
+        ? readFileSync(path.join(digestDir, digests[0]), "utf8")
+        : "",
     };
   } finally {
     rmSync(cwd, { recursive: true, force: true });

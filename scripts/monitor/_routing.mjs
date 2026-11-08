@@ -10,7 +10,8 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 
 export const OFFERS_REGISTRY = "scripts/monitor/offers.registry.json";
-export const SALARY_TRANSFER_REGISTRY = "scripts/monitor/salary-transfer.registry.json";
+export const SALARY_TRANSFER_REGISTRY =
+  "scripts/monitor/salary-transfer.registry.json";
 
 /**
  * Monitors whose changes justify re-running the deterministic scraper.
@@ -33,7 +34,11 @@ export const AUTO_SCRAPE = new Set(["fee-docs", "product-pages"]);
  * promotions in front of the business-realestate editor and in no desk's
  * queue.
  */
-export const NEWS = new Set(["press-rooms", "press-rooms-weekly", "programme-offers"]);
+export const NEWS = new Set([
+  "press-rooms",
+  "press-rooms-weekly",
+  "programme-offers",
+]);
 
 /** Monitors routed to the salary-transfer digest rather than the card one. */
 export const SALARY_TRANSFER = new Set(["salary-transfer"]);
@@ -116,7 +121,34 @@ export function isReadableCheck(check) {
  * is no default to rely on.
  */
 export function checkListQueries(limit = 10) {
-  return [...READABLE_CHECK_STATUSES].map((status) => `?status=${status}&limit=${limit}`);
+  return [...READABLE_CHECK_STATUSES].map(
+    (status) => `?status=${status}&limit=${limit}`,
+  );
+}
+
+/**
+ * Health is a separate view from readable results. The API accepts `failed`
+ * as a filter, but can reject `skipped_no_credits`; discover skipped and
+ * unknown statuses through the unfiltered list instead of inventing filters.
+ * Keep the explicit readable queries above: unfiltered can omit partials.
+ */
+export function healthListQueries(limit = 100) {
+  return [`?status=failed&limit=${limit}`, `?limit=${limit}`];
+}
+
+export const IN_PROGRESS_CHECK_STATUSES = new Set([
+  "pending",
+  "queued",
+  "running",
+]);
+
+/** A poll attempt (or even a completed empty check) is not collection. */
+export function isSuccessfulCollection(check) {
+  return (
+    check?.status === "completed" &&
+    check?.summary?.totalPages > 0 &&
+    (check?.summary?.error ?? 0) === 0
+  );
 }
 
 /**
@@ -202,8 +234,12 @@ export function coverageGapsFor(check, pagesReturned) {
 export function readCardUrls(banksDir = "scripts/scrape/banks") {
   const kfs = new Set();
   const product = new Set();
-  for (const file of readdirSync(banksDir).filter((f) => f.endsWith(".urls.json"))) {
-    for (const card of JSON.parse(readFileSync(`${banksDir}/${file}`, "utf8"))) {
+  for (const file of readdirSync(banksDir).filter((f) =>
+    f.endsWith(".urls.json"),
+  )) {
+    for (const card of JSON.parse(
+      readFileSync(`${banksDir}/${file}`, "utf8"),
+    )) {
       const u = card?.urls ?? {};
       if (u.kfs) kfs.add(u.kfs);
       if (u.product) product.add(u.product);
@@ -335,7 +371,10 @@ export const MONITOR_CRONS = {
  */
 export function cronSlots(cron) {
   const [, hour, dom, , dow] = cron.split(/\s+/);
-  const days = dom !== "*" || dow === "*" ? [0, 1, 2, 3, 4, 5, 6] : dow.split(",").map(Number);
+  const days =
+    dom !== "*" || dow === "*"
+      ? [0, 1, 2, 3, 4, 5, 6]
+      : dow.split(",").map(Number);
   return new Set(days.map((d) => `${d}:${Number(hour)}`));
 }
 

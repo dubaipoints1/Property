@@ -4,10 +4,10 @@
 # Firecrawl does the watching on its own schedule. This job reads what it
 # found, writes a digest, opens an issue, and — for fee-document and
 # product-page changes — dispatches the EXISTING deterministic scraper for
-# just the affected bank.
+# just the affected bank. A preview never dispatches a scrape.
 #
 # That last step is the point of the whole thing: instead of sweeping all
-# 12 banks quarterly and hoping, we scrape the one bank that actually
+# configured banks quarterly and hoping, we scrape the one bank that actually
 # changed, the day it changes. The scrape, the PR and the Chairman merge
 # gate are all unchanged.
 #
@@ -34,6 +34,11 @@ on:
     # Off-minute per the scheduling hygiene used by news-monitor.
     - cron: "23 4 * * *"
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Preview dispatched ref: no issues, state save or scraper hand-off"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -47,87 +52,68 @@ concurrency:
 jobs:
   poll:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          # Feature refs are preview-only. Existing schedules/live dispatch use main.
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && github.ref || 'refs/heads/main' }}
 
       - uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
 
-      # State only — NOT .council/monitoring/. The issue steps below use
-      # `git status` to tell a digest written by THIS run from ones
-      # already in history; restoring old digests into the working tree
-      # would make every past digest look freshly written.
+      # Restore state only. The poll emits exact fresh paths and this run's
+      # marker; neither old history nor mtime chooses a human alert.
       - name: Restore automation state
+        # restore can bootstrap a branch; a preview must never call it.
+        if: github.event_name != 'workflow_dispatch' || !inputs.dry_run
         run: bash scripts/ci/automation-state.sh restore data/monitor
+
+      - name: Read existing state for preview
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run
+        # Unlike restore, these reads cannot bootstrap or push a state branch.
+        # Use the real latest IDs/cursor, not the frozen migration seed on main.
+        run: |
+          git fetch origin refs/heads/automation-state
+          git restore --source=FETCH_HEAD -- data/monitor
 
       - name: Poll monitor results
         id: poll
         env:
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          MONITOR_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
         run: node scripts/monitor/poll.mjs
 
-      - name: Open card-change issue
-        if: hashFiles('.council/monitoring/card-change-*.md') != ''
+      - name: Deliver alerts and acknowledge pending state
+        # Health failures still reach a human. A failed delivery or required
+        # bank dispatch is red and cannot advance canonical remote seen-state.
+        if: always() && steps.poll.outputs.health_written == github.run_id
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          # A missing label must never cost us the alert. Until 22 September
-          # 2026 this read `|| echo "issue creation failed"`, the `card-change`
-          # label did not exist, and so every run since the workflow shipped
-          # failed at the label step, swallowed the error and reported green.
-          # 42 digests accumulated on the automation-state branch and no human
-          # was ever told — including nine offers findings over 18-22 September,
-          # four of them the Emirates Islamic page dropping the very welcome
-          # bonus we publish.
-          #
-          # Same ladder the deal-expiry, link-audit and news-expiry workflows
-          # already used: try with the label, fall back to an unlabelled issue
-          # so the finding still reaches someone, and only then fail — loudly,
-          # because a digest nobody reads is the failure this whole pipeline
-          # exists to prevent. That ladder now lives in post-digest.sh, which
-          # first appends to the label's open issue so a day of runs is one
-          # thread, not four new issues (26 September 2026).
-          latest=$(ls -t .council/monitoring/card-change-*.md | head -1)
-          # only raise an issue for a digest created in this run
-          if [ -n "$(git status --porcelain "$latest")" ]; then
-            bash scripts/ci/post-digest.sh card-change \
-              "Card change signals: $(basename "$latest" .md | sed 's/card-change-//')" "$latest"
-          fi
+          MONITOR_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && 'true' || 'false' }}
+          MONITOR_HEALTH_RUN: ${{ steps.poll.outputs.health_written }}
+          MONITOR_STATE_RUN: ${{ steps.poll.outputs.state_written }}
+          MONITOR_HEALTH_PATH: ${{ steps.poll.outputs.health_path }}
+          MONITOR_STATE_PATH: ${{ steps.poll.outputs.state_path }}
+          MONITOR_CARD_DIGEST: ${{ steps.poll.outputs.card_digest_path }}
+          MONITOR_SALARY_DIGEST: ${{ steps.poll.outputs.salary_digest_path }}
+          MONITOR_NEWS_DIGEST: ${{ steps.poll.outputs.news_digest_path }}
+          MONITOR_HEALTH_DIGEST: ${{ steps.poll.outputs.health_digest_path }}
+          MONITOR_BANKS: ${{ steps.poll.outputs.banks }}
+        run: node scripts/ci/deliver-monitor.mjs
 
-      - name: Open news digest issue
-        if: hashFiles('.council/monitoring/digest-*.md') != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          latest=$(ls -t .council/monitoring/digest-*.md | head -1)
-          if [ -n "$(git status --porcelain "$latest")" ]; then
-            bash scripts/ci/post-digest.sh news-digest \
-              "News digest: $(basename "$latest" .md | sed 's/digest-//')" "$latest"
-          fi
-
-      - name: Dispatch targeted scrape for changed banks
-        if: steps.poll.outputs.banks != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          # ONE dispatch carrying every changed bank, not one run each.
-          # scrape.yml's `bank` input is already space-separated — it does
-          # `BANKS="$INPUT"` and then `for BANK in $BANKS`, so a list has
-          # always worked. Dispatching per bank meant the 15 September poll
-          # opened four scrape runs and four pull requests, all editing
-          # src/data/cards.json, all carrying the same unrelated
-          # re-serialised line, and therefore all conflicting with each
-          # other the moment one merged. One run, one PR, one review.
-          BANKS="${{ steps.poll.outputs.banks }}"
-          echo "Dispatching one scrape for: $BANKS"
-          gh workflow run scrape.yml -f bank="$BANKS" \
-            || echo "dispatch failed for: $BANKS"
-
-      - name: Save digests + state to automation-state
-        run: |
-          bash scripts/ci/automation-state.sh save \
-            "monitor: change signals ($(date -u +%Y-%m-%d\ %H:%M) UTC)" \
-            .council/monitoring data/monitor
+      - name: Retain monitor diagnostics
+        if: always() && steps.poll.outputs.health_written == github.run_id
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitor-health-${{ github.run_id }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            data/monitor/health.json
+            data/monitor/state.pending.json
+            ${{ steps.poll.outputs.card_digest_path }}
+            ${{ steps.poll.outputs.salary_digest_path }}
+            ${{ steps.poll.outputs.news_digest_path }}
+            ${{ steps.poll.outputs.health_digest_path }}
