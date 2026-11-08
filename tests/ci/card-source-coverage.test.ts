@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { gzipSync, gunzipSync } from 'node:zlib';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { auditCardSourceCoverage, loadCoverageInputs, publicHttpsProblem, renderCoverageMarkdown, MAINTENANCE_OWNER } from '../../scripts/ci/check-card-source-coverage.mjs';
@@ -21,8 +22,9 @@ test('real catalogue: all 75 slugs, including closed and unconfirmed profiles, h
   assert.deepEqual(report.rows.map((row: { slug: string }) => row.slug).sort(), Object.keys(input.cards).sort());
   assert.deepEqual(report.summary, {
     cards: 75, banks: 14, activeScrapers: 14, configuredScraperRoutes: 58, manualPrimaryRoutes: 17,
-    routeDocumentGaps: 32, routeProductInventoryDifferences: 1, canonicalDocumentCandidates: 75, overdueSourceRecords: 0,
-    cardsWithPendingFields: 75, errors: 0, warnings: 33,
+    configuredDocumentGaps: 32, routeDocumentGaps: 0, manualDocumentRoutes: 33, uniqueManualDocuments: 5,
+    manualDocumentNumericHolds: 3, routeProductInventoryDifferences: 1, canonicalDocumentCandidates: 75, overdueSourceRecords: 0,
+    cardsWithPendingFields: 75, errors: 0, warnings: 1,
   });
   assert.equal(report.rows.find((row: { slug: string }) => row.slug === 'emirates-nbd-manchester-united')?.applicationState, 'closed-to-new-applicants');
   assert.equal(report.rows.find((row: { slug: string }) => row.slug === 'fab-world-elite')?.applicationState, 'availability-unconfirmed');
@@ -159,6 +161,8 @@ test('missing dedicated document routes are warnings, not a claim that canonical
   assert.equal(enbd.route?.documentUrl, null);
   assert.ok(enbd.declaredDocumentUrls.length);
   assert.deepEqual(enbd.structuralErrors, []);
+  assert.equal(enbd.manualDocuments?.documentsReady, true);
+  assert.equal(enbd.manualDocuments?.mode, 'manual-primary-documents');
   assert.ok(enbd.pendingFields.length);
   const manual = report.rows.find((row: { slug: string }) => row.slug === 'hsbc-cash-plus')!;
   assert.equal(manual.route?.activeRegistry, null);
@@ -168,4 +172,45 @@ test('missing dedicated document routes are warnings, not a claim that canonical
   assert.equal(hsbc.route?.productInCanonicalSources, false);
   assert.ok(report.warnings.some((item: { code: string; slug: string }) => item.code === 'route-product-inventory-differs' && item.slug === 'hsbc-live-plus'));
   assert.deepEqual(hsbc.structuralErrors, [], 'inventory differences do not prove a dead URL');
+});
+
+test('manual document coverage needs known-bank capture receipts and pinned curated excerpts; paid gaps remain explicit', () => {
+  const pending = fresh(); pending.documentRegistry.documents[0].capture = null;
+  const pendingReport = audit(pending);
+  assert.equal(pendingReport.summary.routeDocumentGaps, 31);
+  assert.equal(pendingReport.summary.configuredDocumentGaps, 32);
+  assert.ok(pendingReport.warnings.some((item: { code: string }) => item.code === 'manual-document-capture-pending'));
+  const unknown = fresh(); unknown.documentRegistry.cards[0].slug = 'unknown-card';
+  assert.ok(hasError(audit(unknown), 'document-route-card'));
+  const wrong = fresh(); wrong.documentRegistry.cards[0].bank = 'adib';
+  assert.ok(hasError(audit(wrong), 'document-registry'));
+  const duplicate = fresh(); duplicate.documentRegistry.documents.push({ ...duplicate.documentRegistry.documents[0] });
+  assert.ok(hasError(audit(duplicate), 'document-registry'));
+  const drift = fresh();
+  const file = drift.documentRegistry.documents[0].capture.path;
+  drift.files.set(file, Buffer.concat([drift.files.get(file)!, Buffer.from('\nhash drift')]));
+  assert.ok(hasError(audit(drift), 'pin-hash'));
+  const parser = fresh(); parser.documentRegistry.documents[0].parser.sha256 = '0'.repeat(64);
+  assert.ok(hasError(audit(parser), 'pin-hash'));
+  const role = fresh(); role.documentRegistry.documents[0].role = 'shared-fees-and-vat';
+  assert.ok(hasError(audit(role), 'document-registry'));
+  for (const change of [
+    (source: any) => { source.fixtureIsCompleteSource = true; },
+    (source: any) => { source.sourceTextSha256 = source.fixtureTextSha256; },
+    (source: any) => { source.captureReceipt.complete = false; },
+  ]) {
+    const invalid = fresh();
+    const fixturePath = invalid.documentRegistry.documents[0].capture.path;
+    const envelope = JSON.parse(invalid.files.get(fixturePath)!.toString('utf8'));
+    const content = JSON.parse(gunzipSync(Buffer.from(envelope.data, 'base64')).toString('utf8'));
+    change(content.sources[0]);
+    const decoded = Buffer.from(JSON.stringify(content));
+    envelope.decodedBytes = decoded.length; envelope.decodedSha256 = sha(decoded);
+    envelope.data = gzipSync(decoded).toString('base64');
+    const changed = Buffer.from(JSON.stringify(envelope));
+    invalid.files.set(fixturePath, changed);
+    for (const doc of invalid.documentRegistry.documents) doc.capture.sha256 = sha(changed);
+    assert.ok(hasError(audit(invalid), 'document-capture'), 'receipt/excerpt semantics survive renewed outer pins');
+  }
+  assert.ok(audit().rows.filter((row: { manualDocuments: { numericPolicy: string } | null }) => row.manualDocuments?.numericPolicy === 'source-only-manual-hold').every((row: { manualDocuments: { hold: string } }) => !!row.manualDocuments.hold));
 });

@@ -136,6 +136,245 @@ export function healthListQueries(limit = 100) {
   return [`?status=failed&limit=${limit}`, `?limit=${limit}`];
 }
 
+/**
+ * Raw /checks supports offset, but returns no pagination metadata (verified
+ * against distinct offset 0/1/2 results on 8 November 2026). A full page
+ * therefore means read the next page, not a permanent saturation failure.
+ * Preserve useful summaries on read failure, but never certify completion.
+ */
+export async function readCheckHistory(
+  fetchPage,
+  { limit = 100, maxChecks = 1000, status = null } = {},
+) {
+  const checks = [],
+    seen = new Set();
+  let requests = 0;
+  try {
+    if (
+      !Number.isSafeInteger(limit) ||
+      limit < 1 ||
+      !Number.isSafeInteger(maxChecks) ||
+      maxChecks < limit
+    )
+      throw new Error("Invalid history read bounds");
+    for (let offset = 0; offset <= maxChecks; offset += limit) {
+      const response = await fetchPage(limit, offset);
+      requests += 1;
+      if (response?.success === false)
+        throw new Error("Unsuccessful check-list response");
+      const page = response?.data ?? response?.checks;
+      if (!Array.isArray(page) || page.length > limit)
+        throw new Error("Malformed or oversized check-list page");
+      if (
+        page.some(
+          (check) =>
+            !check ||
+            typeof check.id !== "string" ||
+            !check.id ||
+            typeof check.status !== "string" ||
+            !check.status ||
+            (status && check.status !== status),
+        )
+      )
+        throw new Error("Malformed or status-mismatched check summary");
+      if (
+        page.some((check) => seen.has(check.id)) ||
+        new Set(page.map((check) => check.id)).size !== page.length
+      )
+        throw new Error(
+          "Repeated check ID; pagination may have shifted or offset was ignored",
+        );
+      if (checks.length + page.length > maxChecks)
+        throw new Error(`History exceeds ${maxChecks}-check safety bound`);
+      for (const check of page) {
+        checks.push(check);
+        seen.add(check.id);
+      }
+      if (page.length < limit)
+        return { checks, complete: true, error: null, requests };
+    }
+    throw new Error(`History exceeds ${maxChecks}-check safety bound`);
+  } catch (error) {
+    return {
+      checks,
+      complete: false,
+      error: String(error).slice(0, 200),
+      requests,
+    };
+  }
+}
+
+/**
+ * Detail reads use the proven skip parameter. Never fetch the provider's
+ * `next` URL: real responses contain an internal-service URL. Construct
+ * each request against the caller's already trusted public API endpoint.
+ */
+export async function readChangedPages(
+  fetchPage,
+  { limit = 100, maxResults = 1000, expected = 0 } = {},
+) {
+  const pages = [],
+    seen = new Set();
+  let requests = 0;
+  try {
+    if (
+      !Number.isSafeInteger(limit) ||
+      limit < 1 ||
+      !Number.isSafeInteger(maxResults) ||
+      maxResults < limit
+    )
+      throw new Error("Invalid detail read bounds");
+    for (let skip = 0; skip <= maxResults;) {
+      const response = await fetchPage(limit, skip);
+      requests += 1;
+      if (response?.success === false)
+        throw new Error("Unsuccessful check-detail response");
+      const page = response?.data?.pages ?? response?.pages;
+      if (
+        !Array.isArray(page) ||
+        page.length > limit ||
+        page.some((item) => typeof item?.url !== "string" || !item.url)
+      )
+        throw new Error("Malformed or oversized changed-page response");
+      const ids = page.map((item) => item.id ?? item.url);
+      if (ids.some((id) => seen.has(id)) || new Set(ids).size !== ids.length)
+        throw new Error(
+          "Repeated changed-page identity; skip may have been ignored",
+        );
+      if (pages.length + page.length > maxResults)
+        throw new Error(`Detail exceeds ${maxResults}-page safety bound`);
+      for (let index = 0; index < page.length; index += 1) {
+        pages.push(page[index]);
+        seen.add(ids[index]);
+      }
+      if (!page.length || (page.length < limit && pages.length >= expected))
+        return { pages, complete: true, error: null, requests };
+      skip += page.length;
+    }
+    throw new Error(`Detail exceeds ${maxResults}-page safety bound`);
+  } catch (error) {
+    return {
+      pages,
+      complete: false,
+      error: String(error).slice(0, 200),
+      requests,
+    };
+  }
+}
+
+/** Prune expired IDs only after complete history enumeration, never by age/order. */
+export function retainedAcknowledgements(seen, checks, complete) {
+  if (!complete) return [...seen];
+  const acknowledged = new Set(seen);
+  return checks
+    .filter((check) => acknowledged.has(check.id))
+    .map((check) => check.id);
+}
+
+/** Only the live fleet's verified UTC cron shapes, not a general cron parser. */
+export function latestDueSlot(schedule, asOf) {
+  const now = Date.parse(asOf);
+  if (!Number.isFinite(now))
+    throw new Error("Invalid collection reference time");
+  if (schedule?.timezone !== "UTC" || typeof schedule?.cron !== "string")
+    throw new Error("Live UTC cron is unavailable");
+  const fields = schedule.cron.trim().split(/\s+/);
+  const [minute, hour, dom, month, dow] = fields;
+  if (
+    fields.length !== 5 ||
+    !/^\d{1,2}$/.test(minute) ||
+    !/^\d{1,2}$/.test(hour) ||
+    Number(minute) > 59 ||
+    Number(hour) > 23 ||
+    month !== "*" ||
+    !/^(?:\*|\d{1,2}(?:,\d{1,2})*)$/.test(dom) ||
+    !/^(?:\*|[0-6](?:,[0-6])*)$/.test(dow) ||
+    (dom !== "*" && dow !== "*")
+  )
+    throw new Error("Unsupported live UTC cron shape");
+  const dates = dom === "*" ? null : dom.split(",").map(Number);
+  if (dates?.some((day) => day < 1 || day > 31))
+    throw new Error("Invalid cron month day");
+  const weekdays = dow === "*" ? null : dow.split(",").map(Number);
+  const midnight = new Date(now);
+  midnight.setUTCHours(0, 0, 0, 0);
+  for (let back = 0; back <= 366; back += 1) {
+    const candidate = new Date(midnight.getTime() - back * 86400000);
+    candidate.setUTCHours(Number(hour), Number(minute), 0, 0);
+    if (
+      candidate.getTime() <= now &&
+      (!dates || dates.includes(candidate.getUTCDate())) &&
+      (!weekdays || weekdays.includes(candidate.getUTCDay()))
+    )
+      return candidate.toISOString();
+  }
+  throw new Error("No due slot within supported one-year inspection");
+}
+
+/** Collection freshness only; never field verification or a new timing SLA. */
+export function collectionFreshness(definition, checks, asOf) {
+  const base = {
+    asOf,
+    schedule: definition?.schedule ?? null,
+    nextRunAt: definition?.nextRunAt ?? null,
+    lastRunAt: definition?.lastRunAt ?? null,
+    currentCheckId: definition?.currentCheckId ?? null,
+    latestDueSlot: null,
+  };
+  try {
+    const due = latestDueSlot(definition?.schedule, asOf);
+    base.latestDueSlot = due;
+    const now = Date.parse(asOf),
+      slot = Date.parse(due);
+    const latest = [...checks].sort(newestFirst)[0];
+    if (!latest)
+      return {
+        ...base,
+        state: "missed-slot",
+        reason: "No check is visible for the latest scheduled slot",
+      };
+    const observed = checkTime(latest);
+    if (!observed || observed > now)
+      return {
+        ...base,
+        state: "schedule-unverifiable",
+        reason:
+          "Latest check has a missing, invalid or future scheduled timestamp",
+      };
+    if (observed < slot)
+      return {
+        ...base,
+        state: "missed-slot",
+        reason:
+          "Latest observed check predates the latest due slot; no new collection is claimed",
+      };
+    if (IN_PROGRESS_CHECK_STATUSES.has(latest.status))
+      return {
+        ...base,
+        state: "in-progress",
+        reason: "The current scheduled check has not finished collecting",
+      };
+    if (isSuccessfulCollection(latest))
+      return {
+        ...base,
+        state: "current-complete",
+        reason:
+          "A completed non-empty error-free check covers the latest due slot; not whole-card verification",
+      };
+    return {
+      ...base,
+      state: "failed",
+      reason: `The latest due collection has status ${latest.status} or incomplete page coverage`,
+    };
+  } catch (error) {
+    return {
+      ...base,
+      state: "schedule-unverifiable",
+      reason: String(error).slice(0, 160),
+    };
+  }
+}
+
 export const IN_PROGRESS_CHECK_STATUSES = new Set([
   "pending",
   "queued",

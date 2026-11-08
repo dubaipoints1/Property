@@ -1,0 +1,453 @@
+{
+  "version": 1,
+  "mode": "manual-primary-documents",
+  "owner": "business-realestate-editor",
+  "paidConfigChangesEnabled": false,
+  "paidMonitorChangesEnabled": false,
+  "scope": "Offline document maintenance only. No fetcher, paid scraper or monitor imports this registry. A route is not financial-field acceptance or a freshness promise.",
+  "documents": [
+    {
+      "id": "enbd-kfs",
+      "bank": "emirates-nbd",
+      "role": "consolidated-kfs",
+      "url": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+      "parser": {
+        "module": "scripts/scrape/_enbd-refresh.ts",
+        "export": "parseEnbdKfsFees",
+        "sha256": "0288604d4cabdce685bac6f78f73c8da083485b00381615d8e105f70a0db2d8c",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "capture": {
+        "path": "tests/scrape/fixtures/2026-11-bank-document-recovery.json",
+        "sha256": "deb7054ebf66ede931208aee03a3c01ea9988cb4b184a064e1410ad51908734b",
+        "sourceId": "enbd-kfs",
+        "captureRun": "https://github.com/dubaipoints1/Property/actions/runs/42496136382",
+        "scope": "Reviewed complete-capture receipt plus curated byte-masked factual excerpt. Full original body/text remain private; CI validates receipt/excerpt, not full-source rereading or financial acceptance."
+      }
+    },
+    {
+      "id": "enbd-fees",
+      "bank": "emirates-nbd",
+      "role": "shared-fees-and-vat",
+      "url": "https://www.emiratesnbd.com/-/media/enbd/files/credit-cards/emiratesnbd_credit_card_fees_charges.pdf",
+      "parser": null,
+      "capture": {
+        "path": "tests/scrape/fixtures/2026-11-bank-document-recovery.json",
+        "sha256": "deb7054ebf66ede931208aee03a3c01ea9988cb4b184a064e1410ad51908734b",
+        "sourceId": "enbd-fees",
+        "captureRun": "https://github.com/dubaipoints1/Property/actions/runs/42496136382",
+        "scope": "Reviewed complete-capture receipt plus curated byte-masked factual excerpt. Full original body/text remain private; CI validates receipt/excerpt, not full-source rereading or financial acceptance."
+      }
+    },
+    {
+      "id": "adib-kfs",
+      "bank": "adib",
+      "role": "consolidated-kfs",
+      "url": "https://www.adib.ae/-/media/project/adib/adibsite/docs/kfs/cards/adib-covered-cards-kfs.pdf",
+      "parser": {
+        "module": "scripts/scrape/_adib-primary.ts",
+        "export": "parseAdibKfs",
+        "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "capture": {
+        "path": "tests/scrape/fixtures/2026-11-bank-document-recovery.json",
+        "sha256": "deb7054ebf66ede931208aee03a3c01ea9988cb4b184a064e1410ad51908734b",
+        "sourceId": "adib-kfs",
+        "captureRun": "https://github.com/dubaipoints1/Property/actions/runs/42496136382",
+        "scope": "Reviewed complete-capture receipt plus curated byte-masked factual excerpt. Full original body/text remain private; CI validates receipt/excerpt, not full-source rereading or financial acceptance."
+      }
+    },
+    {
+      "id": "adib-fees",
+      "bank": "adib",
+      "role": "shared-fees-and-vat",
+      "url": "https://www.adib.ae/-/media/Project/ADIB/ADIBSite/docs/Personal/cards/ADIB-Covered-Cards-Schedule-of-Charges-and-Fees.pdf",
+      "parser": {
+        "module": "scripts/scrape/_adib-primary.ts",
+        "export": "parseAdibSchedule",
+        "sha256": "35a8fc59f974dad9269cb939f00057256f75e5af367541c82611529e0f343ffa",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "capture": {
+        "path": "tests/scrape/fixtures/2026-11-bank-document-recovery.json",
+        "sha256": "deb7054ebf66ede931208aee03a3c01ea9988cb4b184a064e1410ad51908734b",
+        "sourceId": "adib-fees",
+        "captureRun": "https://github.com/dubaipoints1/Property/actions/runs/42496136382",
+        "scope": "Reviewed complete-capture receipt plus curated byte-masked factual excerpt. Full original body/text remain private; CI validates receipt/excerpt, not full-source rereading or financial acceptance."
+      }
+    },
+    {
+      "id": "hsbc-kfs",
+      "bank": "hsbc",
+      "role": "named-product-kfs",
+      "url": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/kfs-credit-cards.pdf",
+      "parser": {
+        "module": "scripts/scrape/_bank-parsers.ts",
+        "export": "parseHsbcCardKfs",
+        "sha256": "efd6ce0cf4420a7e71b7184c0a070c4dff3eb74be4fa40a1944c9fbc0b332bd0",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "f91f2f0b3736d36bb5ac24556470c89beddaef40a6cd7cd805df07d8d36d0bf4"
+          }
+        ]
+      },
+      "capture": {
+        "path": "tests/scrape/fixtures/2026-11-bank-document-recovery.json",
+        "sha256": "deb7054ebf66ede931208aee03a3c01ea9988cb4b184a064e1410ad51908734b",
+        "sourceId": "hsbc-kfs",
+        "captureRun": "https://github.com/dubaipoints1/Property/actions/runs/42496136382",
+        "scope": "Reviewed complete-capture receipt plus curated byte-masked factual excerpt. Full original body/text remain private; CI validates receipt/excerpt, not full-source rereading or financial acceptance."
+      }
+    }
+  ],
+  "cards": [
+    {
+      "slug": "emirates-nbd-darna-select-visa",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-darna-visa-infinite",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-darna-visa-signature",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-diners-club",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "source-only-manual-hold",
+      "hold": "Generic Platinum/Titanium columns do not identify Diners Club; named product evidence required."
+    },
+    {
+      "slug": "emirates-nbd-dnata-platinum",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-dnata-world",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-duo",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-etihad-guest-elevate",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-etihad-guest-inspire",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-go4it-gold",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-go4it-platinum",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-lulu-247-platinum",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-lulu-247-titanium",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-manchester-united",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-marriott-bonvoy-world",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-marriott-bonvoy-world-elite",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-mastercard-platinum",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "source-only-manual-hold",
+      "hold": "Generic Platinum column does not prove the Mastercard-specific product tier."
+    },
+    {
+      "slug": "emirates-nbd-noon-one",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-priority-banking-visa-infinite",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-share-visa-infinite",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-share-visa-signature",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-skywards-infinite",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-skywards-signature",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-u-by-emaar-family",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-u-by-emaar-infinite",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-u-by-emaar-infinite-emiratis",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "source-only-manual-hold",
+      "hold": "UBE Infinite column does not independently identify the Emirati-specific variant."
+    },
+    {
+      "slug": "emirates-nbd-visa-flexi",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-visa-infinite",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-visa-platinum",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-voyager-world",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "emirates-nbd-webshopper",
+      "bank": "emirates-nbd",
+      "documentIds": [
+        "enbd-kfs",
+        "enbd-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "adib-cashback-visa",
+      "bank": "adib",
+      "documentIds": [
+        "adib-kfs",
+        "adib-fees"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    },
+    {
+      "slug": "hsbc-live-plus",
+      "bank": "hsbc",
+      "documentIds": [
+        "hsbc-kfs"
+      ],
+      "numericPolicy": "named-columns-review-only"
+    }
+  ],
+  "stagedProposals": [
+    {
+      "slug": "hsbc-live-plus",
+      "status": "fresh-response-observed-preferred-source-staged",
+      "configuredProductUrl": "https://www.hsbc.ae/credit-cards/compare/live-plus-credit-card",
+      "candidateProductUrl": "https://www.hsbc.ae/credit-cards/products/live-plus/",
+      "configuredDocumentUrl": "https://www.hsbc.ae/credit-cards/credit-card-charges-and-how-to-avoid-them/",
+      "candidateDocumentUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/kfs-credit-cards.pdf",
+      "effect": "Proposal only: no paid URL config, target, source date or field change.",
+      "freshEvidence": [
+        {
+          "requestedUrl": "https://www.hsbc.ae/credit-cards/products/live-plus/",
+          "finalUrl": "https://www.hsbc.ae/credit-cards/products/live-plus/",
+          "status": 200,
+          "capturedAt": "2026-11-08T15:42:32.151Z",
+          "bodySha256": "f662b8d19bcafff4c855219a0cbf187b1385ce89e184acde571fa939efd4732c",
+          "textSha256": "c54f9abf04374b43f37d05c17fc88f1255dce0ef53c585282d9f4e0723e1efa6",
+          "canonical": "<link rel=\"canonical\" href=\"https://www.hsbc.ae/credit-cards/products/live-plus/\"/>"
+        },
+        {
+          "requestedUrl": "https://www.hsbc.ae/credit-cards/compare/live-plus-credit-card",
+          "finalUrl": "https://www.hsbc.ae/credit-cards/compare/live-plus-credit-card/",
+          "status": 200,
+          "capturedAt": "2026-11-08T15:42:33.209Z",
+          "bodySha256": "5829e0bde075b733b0dab0c2dce884bfecf727b3c3810597f5e7d1185832bcac",
+          "textSha256": "811d641cd70cbebd9c17a1c9bf6e2a48f958338f619220cda0cd8bcfb0bb6208",
+          "canonical": "<link rel=\"canonical\" href=\"https://www.hsbc.ae/credit-cards/compare/live-plus-credit-card/\"/>"
+        }
+      ],
+      "finding": "Old comparison page is reachable with its own canonical, not dead or an alias to the product page. The full product page is the preferred product source. Actual KFS is manual-only; paid config/targets remain unchanged."
+    }
+  ]
+}

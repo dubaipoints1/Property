@@ -51,10 +51,13 @@ import {
   isReadableCheck,
   checkListQueries,
   healthListQueries,
+  readCheckHistory,
+  readChangedPages,
+  retainedAcknowledgements,
+  collectionFreshness,
   IN_PROGRESS_CHECK_STATUSES,
   isSuccessfulCollection,
   newestFirst,
-  pageFetchLimit,
   coverageGapsFor,
   readCardUrls,
   readRegistryUrls,
@@ -76,13 +79,18 @@ const BANKS_DIR = "scripts/scrape/banks";
 const DRY_RUN = process.env.MONITOR_DRY_RUN === "true";
 const RUN_ID = String(process.env.GITHUB_RUN_ID || "local");
 const LIST_LIMIT = 100;
+const HISTORY_CAP = 1000;
+const DETAIL_CAP = 1000;
 const attemptedAt = new Date().toISOString();
 const health = {
   runId: RUN_ID,
   attemptedAt,
+  asOf: attemptedAt,
   dryRun: DRY_RUN,
   healthy: true,
   inspectedWindowPerQuery: LIST_LIMIT,
+  maxHistoryPerQuery: HISTORY_CAP,
+  maxDetailPagesPerCheck: DETAIL_CAP,
   scope:
     "Free reads of existing checks only; no new collection, provisioning or card verification.",
   monitors: {},
@@ -150,6 +158,12 @@ function expectedUrls() {
 }
 
 try {
+  if (process.env.MONITOR_AS_OF) {
+    const reference = Date.parse(process.env.MONITOR_AS_OF);
+    if (!Number.isFinite(reference))
+      throw new Error("Invalid MONITOR_AS_OF diagnostic reference time");
+    health.asOf = new Date(reference).toISOString();
+  }
   if (!KEY)
     throw new Error("FIRECRAWL_API_KEY unset — monitoring did not run.");
   if (!existsSync(MONITORS_PATH))
@@ -212,6 +226,8 @@ try {
     }
     const monitorId = encodeURIComponent(mon.id);
     let monitorComplete = true;
+    let historyComplete = true;
+    let definition = null;
 
     // Is this monitor still watching everything the repo says it should?
     // Reading a monitor definition costs no credits. A URL in the config but
@@ -223,7 +239,7 @@ try {
         const def = await api(`/${monitorId}`);
         if (!Array.isArray((def?.data ?? def)?.targets))
           throw new Error("Monitor definition has no targets array.");
-        const definition = def?.data ?? def;
+        definition = def?.data ?? def;
         if (definition.status && definition.status !== "active") {
           fault(
             key,
@@ -270,35 +286,27 @@ try {
       ...healthListQueries(LIST_LIMIT),
     ]) {
       try {
-        const res = await api(`/${monitorId}/checks${query}`);
-        const got = res?.data ?? res?.checks ?? [];
-        if (!Array.isArray(got)) throw new Error("Check list is not an array.");
         const requestedStatus = new URLSearchParams(query).get("status");
-        if (
-          got.some(
-            (c) =>
-              !c?.id ||
-              !c?.status ||
-              (requestedStatus && c.status !== requestedStatus),
-          )
-        ) {
-          throw new Error(
-            "Check list contains malformed or status-mismatched entries.",
-          );
-        }
-        counts.push(`${requestedStatus ?? "health"}=${got.length}`);
-        for (const c of got) byId.set(c.id, c);
-        if (got.length >= LIST_LIMIT) {
-          fault(
-            key,
-            "check_window_full",
-            `The ${requestedStatus ?? "unfiltered health"} list filled the bounded ${LIST_LIMIT}-check window; older checks may be unread. No new check on this monitor will be acknowledged.`,
-          );
-          monitorComplete = false;
-        }
+        const result = await readCheckHistory(
+          (limit, offset) =>
+            api(
+              `/${monitorId}/checks?${requestedStatus ? `status=${requestedStatus}&` : ""}limit=${limit}&offset=${offset}`,
+            ),
+          {
+            limit: LIST_LIMIT,
+            maxChecks: HISTORY_CAP,
+            status: requestedStatus,
+          },
+        );
+        counts.push(
+          `${requestedStatus ?? "health"}=${result.checks.length} (${result.requests} page reads)`,
+        );
+        for (const c of result.checks) byId.set(c.id, c);
+        if (!result.complete) throw new Error(result.error);
       } catch (e) {
         fault(key, "check_list_failed", `${query}: ${String(e).slice(0, 140)}`);
         monitorComplete = false;
+        historyComplete = false;
       }
     }
     const checks = [...byId.values()].sort(newestFirst);
@@ -309,6 +317,20 @@ try {
     // request was wrong. The counts make the difference visible.
     console.log(`[${key}] listed ${counts.join(" ")} → ${byId.size} unique`);
     monitorHealth.listComplete = monitorComplete;
+    monitorHealth.historyComplete = historyComplete;
+    monitorHealth.collection = collectionFreshness(
+      definition,
+      checks,
+      health.asOf,
+    );
+    if (monitorHealth.collection.state !== "current-complete") {
+      fault(
+        key,
+        `collection_${monitorHealth.collection.state.replaceAll("-", "_")}`,
+        monitorHealth.collection.reason,
+        checks[0]?.id,
+      );
+    }
     monitorHealth.latestObservedCheck = checks[0]
       ? {
           id: checks[0].id,
@@ -383,6 +405,11 @@ try {
     );
     monitorHealth.newChecks = fresh.length;
     if (!fresh.length) {
+      state.seenChecks[key] = retainedAcknowledgements(
+        seen,
+        checks,
+        historyComplete,
+      );
       console.log(`[${key}] no new checks — no new collection claimed`);
       pollingComplete &&= monitorComplete;
       continue;
@@ -436,19 +463,20 @@ try {
         continue;
       }
 
-      let pages;
-      try {
-        const detail = await api(
-          `/${monitorId}/checks/${encodeURIComponent(check.id)}?status=changed&limit=${pageFetchLimit(check)}`,
-        );
-        pages = detail?.data?.pages ?? detail?.pages ?? [];
-        if (
-          !Array.isArray(pages) ||
-          pages.some((page) => typeof page?.url !== "string" || !page.url)
-        ) {
-          throw new Error("Changed page response is malformed.");
-        }
-      } catch (e) {
+      const detail = await readChangedPages(
+        (limit, skip) =>
+          api(
+            `/${monitorId}/checks/${encodeURIComponent(check.id)}?status=changed&limit=${limit}&skip=${skip}`,
+          ),
+        {
+          limit: LIST_LIMIT,
+          maxResults: DETAIL_CAP,
+          expected: check?.summary?.changed ?? 0,
+        },
+      );
+      const pages = detail.pages;
+      if (!detail.complete) {
+        const e = detail.error;
         console.error(
           `[${key}] check detail failed: ${String(e).slice(0, 140)}`,
         );
@@ -461,7 +489,6 @@ try {
         });
         fault(key, "detail_read_failed", String(e).slice(0, 140), check.id);
         monitorComplete = false;
-        continue;
       }
 
       // Report what this check could not see. An unread page is not a
@@ -470,6 +497,18 @@ try {
       const changedPages = pages.filter(
         (page) => !page.error && (!page.status || page.status === "changed"),
       );
+      if (
+        Number.isSafeInteger(check?.summary?.changed) &&
+        changedPages.length > check.summary.changed
+      ) {
+        fault(
+          key,
+          "detail_count_mismatch",
+          "The detail returned more changed pages than the check summary; useful evidence is retained without acknowledgement or paid hand-off.",
+          check.id,
+        );
+        monitorComplete = false;
+      }
       if (changedPages.length !== pages.length) {
         fault(
           key,
@@ -529,7 +568,11 @@ try {
       }
     }
 
-    if (seen.length > 500) seen.splice(0, seen.length - 500);
+    state.seenChecks[key] = retainedAcknowledgements(
+      seen,
+      checks,
+      historyComplete,
+    );
     if (baselineRead) state.baselined[key] = true;
     pollingComplete &&= monitorComplete;
   }
@@ -688,6 +731,8 @@ if (health.errors.length) {
   const lines = [
     `# Monitor health — ${attemptedAt}`,
     "",
+    `Collection reference time: ${health.asOf}. Poll attempt time remains ${attemptedAt}.`,
+    "",
     "Health warning, not a new collection or verified card update. Reading existing check results is free.",
     "No monitor was created, executed, activated or reconfigured by this poll.",
     "",
@@ -707,10 +752,14 @@ if (health.errors.length) {
     lines.push(
       `- **${key}**: latest observed ${observed ? `${observed.status} (${observed.scheduledFor ?? "time unavailable"})` : "unavailable"}; latest known successful collection ${successful ? `${successful.scheduledFor ?? "time unavailable"} (${successful.totalPages} pages)` : "unavailable"}.`,
     );
+    if (observation.collection)
+      lines.push(
+        `  Collection state: ${observation.collection.state}; latest due slot ${observation.collection.latestDueSlot ?? "unverifiable"}; next scheduled run ${observation.collection.nextRunAt ?? "unavailable"}. No new grace period or field-verification promise is implied.`,
+      );
   }
   lines.push(
     "",
-    `Historical success is not current freshness. Each status query is bounded to ${LIST_LIMIT} checks; a full window is an explicit recovery gap, not exhaustive coverage.`,
+    `Historical success is not current freshness. Status history uses verified offset pagination (${LIST_LIMIT} per request, ${HISTORY_CAP} per query); detail uses verified skip pagination (${DETAIL_CAP} changed pages per check). Missing pages, repeated identities or safety-cap exhaustion are explicit recovery gaps. Provider next URLs are never fetched.`,
     "",
     "Owner: technical-lead; source/credit recovery requires explicit review. A credit warning is a historical check result, not the current account balance.",
     "",
