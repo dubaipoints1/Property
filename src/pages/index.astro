@@ -10,7 +10,7 @@
 //   Tools    four numbered hairline rows
 //   Cards    three typographic card faces + four L2 facts each
 //   Live     salary-transfer offers and deals, hairline lists
-//   Latest   newest news and guides, type only, no thumbnails
+//   Latest   six publication-dated news stories, then separate updated guides
 //   Strategy goal-ranked cards (shared .dp-strategy, unboxed)
 //   Start    everything on the site, hairline grid
 //   Close    night band: how we work + where to follow new offers, into the footer
@@ -22,6 +22,8 @@
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import PressStrip from "~/components/PressStrip.astro";
 import HomeJourneyHero from "~/components/HomeJourneyHero.astro";
+import NewsListingVisual from "~/components/NewsListingVisual.astro";
+import { selectHomeNews, selectHomeGuides, newsDeskLabel, newsCategoryLabel } from "~/lib/homeNews";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
 import { cardFxFeeLabel } from "~/lib/cardFeeFacts";
@@ -63,33 +65,10 @@ const fmtShort = (d: Date) =>
 // that actually carry dates.
 
 
-const guidesSorted = [...allGuides].sort(
-  (a, b) => b.data.updatedAt.getTime() - a.data.updatedAt.getTime(),
-);
-const newsSorted = [...allNews].sort(
-  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
-);
-// Latest (8 Oct 2026 homepage rebuild): the three newest news posts and
-// guides, by their own dates, as a type-led list with no thumbnails.
-type LatestItem = { href: string; category: string; title: string; excerpt: string; date: Date };
-const latest: LatestItem[] = [
-  ...newsSorted.slice(0, 3).map((n) => ({
-    href: `/news/${n.id}/`,
-    category: "News",
-    title: n.data.title,
-    excerpt: n.data.description,
-    date: n.data.publishedAt,
-  })),
-  ...guidesSorted.slice(0, 3).map((g) => ({
-    href: `/guides/${g.id}/`,
-    category: "Guide",
-    title: g.data.title,
-    excerpt: g.data.description,
-    date: g.data.updatedAt,
-  })),
-]
-  .sort((x, y) => y.date.getTime() - x.date.getTime())
-  .slice(0, 3);
+// News and evergreen guide updates have separate editions. A guide re-check
+// must not hide a genuinely newer news story or masquerade as new reporting.
+const latestNews = selectHomeNews(allNews);
+const latestGuides = selectHomeGuides(allGuides);
 const fmtLong = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
@@ -496,27 +475,59 @@ const DIRECTORY = [
     </section>
   )}
 
-  <!-- ── Latest: type-led list, no thumbnails ─────────────────────── -->
+  <!-- ── News: six publication-dated stories, independent of guide updates ── -->
   <section class="hp-sec" id="latest" data-hp-anim aria-labelledby="hp-latest-h">
     <div class="hp-sec-head">
       <div>
-        <p class="hp-kicker">Latest</p>
-        <h2 id="hp-latest-h">Fresh from <em>the desk.</em></h2>
+        <p class="hp-kicker">From the news desk</p>
+        <h2 id="hp-latest-h">Latest <em>news.</em></h2>
       </div>
       <a href="/news/" class="hp-more">All news →</a>
     </div>
-    <ul class="hp-latest">
-      {latest.map((item, i) => (
+    <nav class="hp-news-desks" aria-label="Browse news desks">
+      <a href="/news/airlines/">Airlines &amp; miles →</a>
+      <a href="/news/hotels/">Hotels &amp; points →</a>
+      <a href="/news/banking/">Banking &amp; cards →</a>
+    </nav>
+    <ul class="hp-latest hp-news" data-home-news>
+      {latestNews.map((post, i) => (
         <li style={`--i:${i}`}>
-          <a href={item.href}>
-            <span class="meta"><span class="cat">{item.category}</span> <span>{fmtLong(item.date)}</span></span>
-            <h3>{item.title}</h3>
-            <p>{item.excerpt}</p>
+          <a href={`/news/${post.id}/`}>
+            <div class="hp-news-copy">
+              <span class="meta"><span class="cat">{newsDeskLabel(post.data.beat)}</span><span>{newsCategoryLabel(post.data.category)}</span></span>
+              <time datetime={post.data.publishedAt.toISOString().slice(0, 10)}>{fmtLong(post.data.publishedAt)}</time>
+              <h3>{post.data.title}</h3>
+              <p>{post.data.description}</p>
+            </div>
+            <NewsListingVisual id={post.id} compact />
           </a>
         </li>
       ))}
     </ul>
+    {latestNews.length === 0 && <p>No news stories have been published yet. <a href="/news/">Visit the news desk →</a></p>}
   </section>
+
+  <!-- ── Guides: evergreen reading, with its own explicit review dates ── -->
+  {latestGuides.length > 0 && <section class="hp-sec hp-guide-section" id="home-guides" data-hp-anim aria-labelledby="hp-guides-h">
+    <div class="hp-sec-head">
+      <div>
+        <p class="hp-kicker">Evergreen reading</p>
+        <h2 id="hp-guides-h">Useful <em>guides.</em></h2>
+      </div>
+      <a href="/guides/" class="hp-more">All guides →</a>
+    </div>
+    <ul class="hp-latest hp-guides" data-home-guides>
+      {latestGuides.map((guide, i) => (
+        <li style={`--i:${i}`}>
+          <a href={`/guides/${guide.id}/`}>
+            <span class="meta"><span class="cat">Guide</span><time datetime={guide.data.updatedAt.toISOString().slice(0, 10)}>Updated {fmtLong(guide.data.updatedAt)}</time></span>
+            <h3>{guide.data.title}</h3>
+            <p>{guide.data.description}</p>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>}
 
   <!-- ── Strategy: goal-ranked, no-JS radio tabs (unchanged logic) ─── -->
   <section class="dp-strategy hp-strategy" data-hp-anim aria-label="Build your points strategy">
@@ -810,18 +821,27 @@ const DIRECTORY = [
   .hp-rows .what strong { color: var(--ink); }
   .hp-rows .when { font-size: 12.5px; color: var(--muted); }
 
-  /* Latest: type-led. */
+  /* News and guides: separate editions, shared editorial rhythm. */
   .hp-latest li { border-top: 1px solid var(--line); }
   .hp-latest li:last-child { border-bottom: 1px solid var(--line); }
   .hp-latest a { display: block; padding: 24px 0; }
-  .hp-latest .meta { display: flex; gap: 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-  .hp-latest .cat { color: var(--gold-ink); }
+  .hp-latest .meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .hp-latest .cat { color: var(--green); }
   .hp-latest h3 { margin: 10px 0 0; font-family: var(--font-display); font-weight: 500; font-size: 23px; line-height: 1.2; letter-spacing: -0.01em; color: var(--ink); text-wrap: pretty; }
   .hp-latest a:hover h3 { color: var(--green); }
   .hp-latest p {
     margin: 10px 0 0; font-size: 15px; line-height: 1.5; color: var(--muted);
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
+  .hp-news-desks { display: flex; flex-wrap: wrap; gap: 10px 24px; margin: -6px 0 22px; }
+  .hp-news-desks a { display: inline-flex; align-items: center; min-block-size: 44px; padding: 6px 0; color: var(--green); font-size: 14px; text-decoration: none; }
+  .hp-news-desks a:hover { text-decoration: underline; text-underline-offset: .2em; }
+  #latest .hp-more, .hp-guide-section .hp-more { display: inline-flex; align-items: center; min-block-size: 44px; }
+  .hp-news a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: clamp(12px, 2vw, 24px); }
+  .hp-news-copy { min-width: 0; }
+  .hp-news time { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .hp-news h3 { margin-top: 9px; font-size: clamp(21px, 2.2vw, 26px); }
+  .hp-guide-section { border-top: 1px solid var(--line); }
 
   /* Strategy: the shared panel, unboxed and on paper. */
   .hp-strategy { border-bottom: 0; border-top: 1px solid var(--line); }
@@ -888,9 +908,11 @@ const DIRECTORY = [
     .hp-tools p { grid-column: 1 / 3; max-width: 26ch; }
     .hp-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
     .hp-live { grid-template-columns: 1fr 1fr; gap: 64px; }
-    .hp-latest { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 0 48px; }
-    .hp-latest li, .hp-latest li:last-child { border-bottom: 0; }
-    .hp-latest li:first-child h3 { font-size: 32px; }
+    .hp-news { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
+    .hp-news li { min-width: 0; }
+    .hp-news li:nth-last-child(-n + 2) { border-bottom: 1px solid var(--line); }
+    .hp-guides { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 48px; }
+    .hp-guides li, .hp-guides li:last-child { border-bottom: 0; }
     .hp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 48px; }
     .hp-close { padding: 128px 48px 96px; }
     .hp-stats { grid-template-columns: repeat(4, 1fr); }

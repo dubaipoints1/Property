@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "daily-news-etihad-damascus-daily",
+      "topic": "Upcoming Etihad Damascus daily schedule: check the intended departure, not an old announcement",
+      "desk": "airline",
+      "format": "quick-hit",
+      "owner": "airline-news-editor",
+      "nextAction": "Obtain contributor/COI and article-stage acceptances, recheck the schedule before 14 November, then seek article-specific Chairman clearance; do not publish this draft automatically.",
+      "stage": "draft",
+      "brief": ".council/briefs/2026-11-09-daily-news-etihad-damascus-daily.md",
+      "draft": ".council/drafts/2026-11/daily-news-etihad-damascus-daily.mdx",
+      "discoveredAt": "2026-11-09",
+      "disposition": { "status": "commissioned", "reason": "Actionable upcoming frequency reminder; explicitly an October announcement with a future start, not a freshly announced route or live inventory check." },
+      "sources": [{ "url": "https://www.etihadhub.com/en-ae/news/etihad-goes-to-from-damascus-daily", "role": "primary", "readStatus": "read", "claimsStatus": "checked", "evidencePath": ".council/research/2026-11/2026-11-09-daily-news-first-shift.md" }],
+      "holds": [],
+      "coi": { "status": "pending", "record": null },
+      "review": { "reviewer": "Codex monitor_reliability delegate (independent of draft author card_coverage)", "record": ".council/research/2026-11/2026-11-09-daily-news-independent-review.md" }
+    },
+    {
+      "id": "daily-news-accor-regional-sale-conditions",
+      "topic": "Accor sale: check the UAE regional rate's cancellation and payment conditions",
+      "desk": "hotel",
+      "format": "quick-hit",
+      "owner": "hotel-news-editor",
+      "nextAction": "Obtain contributor/COI and article-stage acceptances, recheck the public regional terms, then seek article-specific Chairman clearance; do not resolve offer conflicts or invent savings.",
+      "stage": "draft",
+      "brief": ".council/briefs/2026-11-09-daily-news-accor-regional-sale-conditions.md",
+      "draft": ".council/drafts/2026-11/daily-news-accor-regional-sale-conditions.mdx",
+      "discoveredAt": "2026-11-09",
+      "disposition": { "status": "commissioned", "reason": "A narrow regional-conditions alert is supported without copying worldwide discount claims, assuming all UAE properties participate or creating a matched-price comparison." },
+      "sources": [{ "url": "https://all.accor.com/a/en/offers/meapac/hotel-escape-sale.html", "role": "primary", "readStatus": "read", "claimsStatus": "checked", "evidencePath": ".council/research/2026-11/2026-11-09-daily-news-first-shift.md" }],
+      "holds": [],
+      "coi": { "status": "pending", "record": null },
+      "review": { "reviewer": "Codex monitor_reliability delegate (independent of draft author card_coverage)", "record": ".council/research/2026-11/2026-11-09-daily-news-independent-review.md" }
+    },
+    {
+      "id": "daily-news-ja-hatta-deadline",
+      "topic": "JA Hatta deadline listing with incomplete underlying booking terms",
+      "desk": "hotel",
+      "format": "quick-hit",
+      "owner": "hotel-news-editor",
+      "nextAction": "Read matching public rate conditions, or seek an explicit narrower listing-alert commission and fresh independent review; keep the draft unpublished meanwhile.",
+      "stage": "held",
+      "brief": ".council/briefs/2026-11-09-daily-news-ja-hatta-deadline.md",
+      "draft": ".council/drafts/2026-11/daily-news-ja-hatta-deadline.mdx",
+      "discoveredAt": "2026-11-09",
+      "disposition": { "status": "held", "reason": "Official deadline listing is readable but material rate conditions and eligibility are not established." },
+      "sources": [{ "url": "https://www.ghadiscovery.com/ja-resorts-hotels/ja-hatta-fort-hotel/stay-offers/double-11", "role": "primary", "readStatus": "read", "claimsStatus": "unverified", "evidencePath": ".council/research/2026-11/2026-11-09-daily-news-first-shift.md" }],
+      "holds": ["Payment/deposit, cancellation, blackouts, included charges, room/rate inventory, membership conditions and comparison base remain unestablished; no verified saving."],
+      "coi": { "status": "pending", "record": null },
+      "review": { "reviewer": "Codex monitor_reliability delegate (independent of draft author card_coverage)", "record": ".council/research/2026-11/2026-11-09-daily-news-independent-review.md" }
+    },
+    {
+      "id": "emirates-holidays-thailand-pass-november-triage",
+      "topic": "Emirates Holidays Thailand Pass October release",
+      "desk": "airline",
+      "format": "quick-hit",
+      "owner": "airline-news-editor",
+      "nextAction": "Reconsider only if a genuinely new UAE reader action and readable current package/pass conditions emerge; do not present an old release as newly announced.",
+      "stage": "passed-over",
+      "brief": null,
+      "draft": null,
+      "discoveredAt": "2026-11-09",
+      "disposition": { "status": "passed-over", "reason": "The 6 October release was not fresh merely because discovered now; the linked destination returned a shell rather than usable current pass/rate terms." },
+      "sources": [
+        { "url": "https://www.emirates.com/media-centre/emirates-holidays-unveils-thailand-pass-unlocking-exclusive-perks-and-savings-for-holidaymakers/", "role": "primary", "readStatus": "read", "claimsStatus": "unverified", "evidencePath": ".council/research/2026-11/2026-11-09-daily-news-first-shift.md" },
+        { "url": "https://www.emiratesholidays.com/destination/asia/thailand", "role": "primary", "readStatus": "unread", "claimsStatus": "unverified", "evidencePath": ".council/research/2026-11/2026-11-09-daily-news-first-shift.md" }
+      ],
+      "holds": [],
+      "coi": { "status": "pending", "record": null }
+    }
+  ]
+}
