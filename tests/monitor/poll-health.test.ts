@@ -64,6 +64,10 @@ type Options = {
   failDefinition?: boolean;
   failDetail?: string;
   failDetailId?: string;
+  ignoreOffset?: boolean;
+  detailPageSize?: number;
+  nextHint?: string;
+  schedule?: unknown;
 };
 
 async function poll(
@@ -94,17 +98,23 @@ async function poll(
         res.end("{}");
         return;
       }
-      const pages = url.pathname.endsWith(GOOD.id)
-        ? []
-        : (options.pages ?? PAGES);
+      const requestedId = decodeURIComponent(url.pathname.split("/").pop()!);
+      const summary = checks.find((check) => check.id === requestedId)?.summary;
+      const pages = options.pages ?? (summary?.changed === 0 ? [] : PAGES);
+      const skip = Number(url.searchParams.get("skip") ?? 0);
+      const pageSize =
+        options.detailPageSize ?? Number(url.searchParams.get("limit"));
       res.end(
         JSON.stringify({
+          success: true,
           data: {
             pages:
               options.failDetail === "malformed"
                 ? {}
-                : pages.slice(0, Number(url.searchParams.get("limit"))),
+                : pages.slice(skip, skip + pageSize),
+            ...(options.nextHint ? { next: options.nextHint } : {}),
           },
+          ...(options.nextHint ? { next: options.nextHint } : {}),
         }),
       );
     } else if (url.pathname.endsWith("/checks")) {
@@ -121,19 +131,32 @@ async function poll(
         return;
       }
       // Preserve the real API quirk: unfiltered history can omit partials.
+      const offset = options.ignoreOffset
+        ? 0
+        : Number(url.searchParams.get("offset") ?? 0);
+      const selected = checks.filter((check) =>
+        status ? check.status === status : check.status !== "partial",
+      );
       res.end(
         JSON.stringify({
-          data: checks
-            .filter((check) =>
-              status ? check.status === status : check.status !== "partial",
-            )
-            .slice(0, Number(url.searchParams.get("limit"))),
+          success: true,
+          data: selected.slice(
+            offset,
+            offset + Number(url.searchParams.get("limit")),
+          ),
         }),
       );
     } else if (url.pathname === "/monitor-id" && !options.failDefinition) {
       res.end(
         JSON.stringify({
-          data: { status: "active", targets: [{ urls: [SOURCE] }] },
+          data: {
+            status: "active",
+            targets: [{ urls: [SOURCE] }],
+            schedule: options.schedule ?? {
+              cron: monitor === "product-pages" ? "0 9 1,15 * *" : "0 12 * * *",
+              timezone: "UTC",
+            },
+          },
         }),
       );
     } else {
@@ -212,6 +235,7 @@ async function poll(
               FIRECRAWL_API_KEY: options.key ?? "fake-local-key",
               MONITOR_API_BASE: `http://127.0.0.1:${port}`,
               MONITOR_DRY_RUN: String(options.dryRun ?? false),
+              MONITOR_AS_OF: "2026-11-08T15:00:00.000Z",
               GITHUB_RUN_ID: "fixture-run",
               GITHUB_OUTPUT: outputPath,
             },
@@ -443,17 +467,18 @@ test("no checks or completed zero-page checks cannot certify collection", async 
   }
 });
 
-test("100-check bound reads beyond ten but exposes saturation and suppresses acknowledgement/bank hand-off", async () => {
+test("verified offset pagination reads beyond100 and acknowledges the complete retained history", async () => {
   const many = Array.from({ length: 101 }, (_, i) => ({
     ...GOOD,
     id: `check-${i}`,
   }));
   const result = await poll({ checks: many });
-  assert.equal(result.code, 1);
-  assert.match(digest(result, "monitor-health-"), /check_window_full/);
+  assert.equal(result.code, 0);
+  assert.equal(result.health.healthy, true);
   assert.equal(result.health.inspectedWindowPerQuery, 100);
-  assert.equal(result.health.monitors["product-pages"].newChecks, 100);
-  assert.deepEqual(result.pending.seenChecks["product-pages"], [GOOD.id]);
+  assert.equal(result.health.monitors["product-pages"].newChecks, 101);
+  assert.equal(result.pending.seenChecks["product-pages"].length, 101);
+  assert.ok(result.calls.some((call) => call.includes("offset=100")));
   assert.equal(result.output.banks, "");
 });
 
@@ -506,4 +531,47 @@ test("earlier acknowledged change retains bank hand-off when a later detail fail
   assert.ok(result.pending.seenChecks["product-pages"].includes(newer.id));
   assert.ok(!result.pending.seenChecks["product-pages"].includes(PARTIAL.id));
   assert.equal(result.output.banks, "adcb");
+});
+
+test("ignored offset remains unhealthy and cannot acknowledge an incomplete history", async () => {
+  const many = Array.from({ length: 101 }, (_, index) => ({
+    ...GOOD,
+    id: `repeat-${index}`,
+  }));
+  const result = await poll({ checks: many, ignoreOffset: true });
+  assert.equal(result.code, 1);
+  assert.match(digest(result, "monitor-health-"), /Repeated check ID/);
+  assert.deepEqual(result.pending.seenChecks["product-pages"], [GOOD.id]);
+  assert.equal(result.output.banks, "");
+});
+
+test("actual poller uses verified skip without fetching provider internal or arbitrary foreign next", async () => {
+  for (const nextHint of [
+    "http://app-service.firecrawl:3002/v2/monitor/monitor-id/checks/new-partial?skip=1&limit=1&status=changed",
+    "https://attacker.invalid/credential-trap",
+  ]) {
+    const result = await poll({ detailPageSize: 1, nextHint });
+    assert.match(digest(result, "card-change-"), /AED 250/);
+    assert.ok(result.pending.seenChecks["product-pages"].includes(PARTIAL.id));
+    assert.ok(result.calls.some((call) => call.includes("skip=1")));
+    assert.ok(
+      result.calls.every(
+        (call) => !call.includes("app-service") && !call.includes("attacker"),
+      ),
+    );
+  }
+});
+
+test("old successful history cannot hide a missed live scheduled collection", async () => {
+  const result = await poll({
+    checks: [GOOD],
+    schedule: { cron: "0 12 * * *", timezone: "UTC" },
+  });
+  assert.equal(result.code, 1);
+  assert.equal(
+    result.health.monitors["product-pages"].collection.state,
+    "missed-slot",
+  );
+  assert.match(digest(result, "monitor-health-"), /collection_missed_slot/);
+  assert.equal(result.pending.lastPolled, "2026-11-01T00:00:00.000Z");
 });

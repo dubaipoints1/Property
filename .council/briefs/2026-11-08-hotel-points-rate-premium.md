@@ -28,7 +28,7 @@ already explains an advertised promotion. This article must add matched,
 timestamped rate evidence and an incremental-cost decision, not repeat its
 dates or conclude that more points make booking direct cheaper.
 
-The promotion and rates have not been freshly checked for this commission.
+At commissioning on 8 November, the promotion and rates had not been freshly checked.
 Publication on the target date is conditional on evidence, current availability
 and approval. If the offer has closed or materially changed, rescope or hold.
 
@@ -73,7 +73,7 @@ set against the separately stated value assumption for extra points. Separate
 all direct-only rewards from the narrower promotional uplift; do not count
 the same reward twice. Unknown benefits and flexibility stay unpriced.
 
-### Acquisition starting points — external sources UNREAD for this brief
+### Acquisition starting points — unread at commissioning on 8 November
 
 - [Accor promotion and conditions](https://all.accor.com/a/en/loyalty-program/promotions-offers/meapac-bonus-points-offer.html).
 - [Accor participating-property PDF](https://all.accor.com/a/content/dam/all/hubs/meapac/offers-campaigns/2026/2026-10/2x-stay---dine/2X_Stay_dine_Hotellist.pdf).
@@ -82,7 +82,7 @@ the same reward twice. Unknown benefits and flexibility stay unpriced.
 
 The existing article records a 31 October source reading for its own report.
 It is a discovery lead, not fresh verification or evidence of a rate premium.
-No primary offer, rate or points figure is newly confirmed by this brief.
+This commissioning record did not newly confirm a primary offer, rate or points figure.
 
 ## Reader flow and existing interaction
 
@@ -182,5 +182,41 @@ publication; a dated quote is not a live price feed.
 Prepared 8 November 2026 by `article_briefs` for Managing Editor handoff.
 Head of Research commission is specified above; acceptance and delivery are
 pending. No external sources were read or rates collected for this brief.
-The owner's authority covers preparation only; every article stage and
-Chairman publication approval remain pending. This is not self-sign-off.
+The commissioning-stage authority covered preparation only; every article stage and
+Chairman publication approval remained pending. This was not self-sign-off.
+
+## 9 November research and held-draft handoff
+
+The owner subsequently authorised a bounded paid research tranche. This desk
+used the existing Firecrawl connection for one plain search and four URL
+attempts, with no provider, account, booking or monitor action. Known receipts
+total five gross credits and a one-credit search-feedback refund. The Expedia
+attempt failed without a cost receipt: that call's charge is unknown, not
+assumed zero. Paid execution stopped; no retry or proxy escalation.
+
+Current public promotion conditions and the relevant membership earning and
+redemption sections were read. The source-specific deterministic parser in
+scripts/scrape/_hotel-promotion.ts reproduces candidate terms from both
+private returned markdown and minimal sanitised fixture excerpts. Nine focused
+tests pass. These are research candidates with pending independent acceptance,
+not a publication approval or a complete legal/source certificate.
+
+The direct property page did not return a final requested-date price; its
+booking links used different default stay parameters. The separate Expedia
+URL failed. No matched all-in price, room/rate eligibility or cancellation
+comparison was established. Do not label the hotel sold out or either route
+cheaper. The participation PDF is not a quote.
+
+A complete practical method draft is prepared at
+.council/drafts/2026-11/hotel-points-rate-premium.mdx, **held outside
+production content**. It explicitly names the missing comparison and does not
+supply an invented total, points estimate, FX rate or saving. The existing
+converter has no Accor selection; no converter or valuation-model change was
+made. All six frontmatter approval statuses remain pending. This does not
+complete the commissioned matched-rate article or permit publication.
+
+Next: independent parser/source review, then obtain a genuinely matched public
+quote packet or seek an explicit re-commission to a method-only guide.
+Research, section, SEO, Fact-Check, Standards, Tech and Chairman publication
+decisions remain open. Full evidence, receipts and the error are private;
+the dossier records the bounded source and failure record.
