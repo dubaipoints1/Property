@@ -560,7 +560,7 @@ export const CardDataSchema = z.object({
     capturedAt: z.string().datetime(),
     sourceTextSha256: z.string().regex(/^[a-f0-9]{64}$/),
     sourceBodySha256: z.string().regex(/^[a-f0-9]{64}$/).nullable(),
-    sourceRepresentation: z.enum(["http-decoded-response-body", "visible-main-dom-and-accessibility-snapshot"]).default("http-decoded-response-body"),
+    sourceRepresentation: z.enum(["http-decoded-response-body", "visible-main-dom-and-accessibility-snapshot", "pdftotext-layout"]).default("http-decoded-response-body"),
     captureMethod: z.enum(["public-http-reader", "normal-public-browser-ui"]).default("public-http-reader"),
     sourceSnapshotSha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
     sourceScope: z.string().optional(),
@@ -574,8 +574,11 @@ export const CardDataSchema = z.object({
   }).refine(v => v.lastLine >= v.firstLine, "source evidence lines must be ordered")
     .refine(v => v.sourceRepresentation === "visible-main-dom-and-accessibility-snapshot"
       ? v.sourceBodySha256 === null && v.captureMethod === "normal-public-browser-ui" && v.sourceSnapshotSha256 !== undefined
+      : v.sourceRepresentation === "pdftotext-layout"
+      ? v.sourceBodySha256 !== null && v.captureMethod === "public-http-reader" && v.sourceSnapshotSha256 === undefined
+        && (v.sourceExtraction === undefined || v.sourceExtraction === "pdftotext-layout")
       : v.sourceBodySha256 !== null,
-      "Rendered DOM evidence requires a snapshot hash and must not claim HTTP body bytes"))).optional(),
+      "DOM evidence requires a snapshot without HTTP bytes; PDF text requires a retained body hash and public HTTP capture without a DOM snapshot"))).optional(),
   /** Visible unresolved source conflicts, not a machine guess at resolution. */
   _dataIssues: z.record(z.string(), z.string().min(1)).optional(),
   _lastScraped: z.string().nullable().default(null),

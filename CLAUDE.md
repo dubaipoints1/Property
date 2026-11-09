@@ -1107,6 +1107,19 @@ that prevents executing on that policy from a web session.
 
 ## Amendments
 
+### 2026-11-09 — Exclude Syria-related coverage
+
+The Chairman directed in-session: "i dont want to mention anything about
+syria so scrap that", in response to the proposed Etihad Damascus article.
+Withdraw that candidate and exclude Syria-related coverage from active
+commissioning and publication. Keep the private disposition/history for
+audit; do not revive it automatically under a daily shift or a wider
+"do it all" direction. Any later reopening requires explicit Chairman
+direction. This does not approve the separate Accor draft or waive other
+source, contributor, Council and release gates.
+
+— Chairman direction in-session, 9 November 2026.
+
 ### 2026-11-07 — No numerical weekly news ceiling; quality and publication gates remain
 
 On Chairman direction in the DubaiPoints implementation/research chat,

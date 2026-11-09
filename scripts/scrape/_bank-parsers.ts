@@ -8,7 +8,7 @@ export interface PrimaryCardSource {
   capturedAt: string;
   sourceTextSha256: string;
   sourceBodySha256: string | null;
-  sourceRepresentation?: "http-decoded-response-body" | "visible-main-dom-and-accessibility-snapshot";
+  sourceRepresentation?: "http-decoded-response-body" | "visible-main-dom-and-accessibility-snapshot" | "pdftotext-layout";
   captureMethod?: "public-http-reader" | "normal-public-browser-ui";
   sourceSnapshotSha256?: string;
   sourceScope?: string;
@@ -27,7 +27,7 @@ export interface BankFieldEvidence {
   capturedAt: string;
   sourceTextSha256: string;
   sourceBodySha256: string | null;
-  sourceRepresentation: "http-decoded-response-body" | "visible-main-dom-and-accessibility-snapshot";
+  sourceRepresentation: "http-decoded-response-body" | "visible-main-dom-and-accessibility-snapshot" | "pdftotext-layout";
   captureMethod: "public-http-reader" | "normal-public-browser-ui";
   sourceSnapshotSha256?: string;
   sourceScope?: string;
@@ -41,8 +41,12 @@ function valid(source: PrimaryCardSource, host: string, pathname: RegExp): boole
   try {
     const url = new URL(source.url);
     const dom = source.sourceRepresentation === "visible-main-dom-and-accessibility-snapshot";
+    const pdf = source.sourceRepresentation === "pdftotext-layout";
     const representationValid = dom
       ? source.sourceBodySha256 === null && source.captureMethod === "normal-public-browser-ui" && /^[a-f0-9]{64}$/.test(source.sourceSnapshotSha256 ?? "") && !!source.sourceScope
+      : pdf
+      ? typeof source.sourceBodySha256 === "string" && /^[a-f0-9]{64}$/.test(source.sourceBodySha256)
+        && source.captureMethod === "public-http-reader" && source.sourceSnapshotSha256 === undefined
       : typeof source.sourceBodySha256 === "string" && /^[a-f0-9]{64}$/.test(source.sourceBodySha256);
     return url.protocol === "https:" && url.hostname === host && pathname.test(url.pathname)
       && Number.isInteger(source.firstLine) && source.firstLine > 0

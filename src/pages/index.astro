@@ -761,6 +761,9 @@ const DIRECTORY = [
   .hp-sec h2 em, .hp-strategy h2 em { font-style: italic; font-weight: 400; color: var(--green); }
   .hp-sec-sub { margin: 0; font-size: 16px; line-height: 1.55; color: var(--muted); max-width: 44ch; }
   .hp-more {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--dp-ui-control);
     align-self: flex-start;
     font-size: 14px; font-weight: 600; color: var(--green); text-decoration: none;
     border-bottom: 1px solid var(--gold); padding-bottom: 3px;
@@ -836,7 +839,6 @@ const DIRECTORY = [
   .hp-news-desks { display: flex; flex-wrap: wrap; gap: 10px 24px; margin: -6px 0 22px; }
   .hp-news-desks a { display: inline-flex; align-items: center; min-block-size: 44px; padding: 6px 0; color: var(--green); font-size: 14px; text-decoration: none; }
   .hp-news-desks a:hover { text-decoration: underline; text-underline-offset: .2em; }
-  #latest .hp-more, .hp-guide-section .hp-more { display: inline-flex; align-items: center; min-block-size: 44px; }
   .hp-news a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: clamp(12px, 2vw, 24px); }
   .hp-news-copy { min-width: 0; }
   .hp-news time { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
@@ -877,7 +879,7 @@ const DIRECTORY = [
   .hp-stats dd.is-word { font-style: italic; color: var(--gold-lift); }
   .hp-stats dt { margin-top: 8px; font-size: 13px; line-height: 1.4; color: #93a5b3; }
   .hp-close-links { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 56px 0 0; padding-top: 24px; border-top: 1px solid rgba(233, 237, 240, 0.12); font-size: 14px; }
-  .hp-close-links a { color: #e9edf0; text-decoration: none; border-bottom: 1px solid rgba(217, 164, 65, 0.5); padding-bottom: 2px; }
+  .hp-close-links a { display: inline-flex; align-items: center; min-block-size: var(--dp-ui-control); color: #e9edf0; text-decoration: none; border-bottom: 1px solid rgba(217, 164, 65, 0.5); padding-bottom: 2px; }
   .hp-close-links a:hover { color: var(--gold-lift); }
   .hp-brief { display: grid; gap: 24px; margin-top: 64px; padding-top: 40px; border-top: 1px solid rgba(233, 237, 240, 0.12); }
   .hp-brief h3 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 3vw, 34px); line-height: 1.15; color: #fff; }

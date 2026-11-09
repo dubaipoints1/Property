@@ -69,6 +69,14 @@ test("save never deletes state files written by another run", () => {
     writeFileSync(join(a, "data/monitor/state.json"), '{"v":1}\n');
     save(a, "run a", ".council/monitoring", "data/monitor");
 
+    // The first save must be a true orphan under the system Bash too
+    // (macOS 3.2 fails empty-array expansion with set -u). It must not
+    // accidentally adopt main as a parent or move the caller's branch/index.
+    git(a, "fetch", "-q", "origin", "automation-state");
+    assert.equal(git(a, "rev-list", "--parents", "-n", "1", "origin/automation-state").split(" ").length, 1);
+    assert.equal(git(a, "branch", "--show-current"), "main");
+    assert.equal(git(a, "diff", "--cached", "--name-only"), "");
+
     // Run B: a fresh clone of main — no digest-a in its working tree —
     // writes digest-b and state v2, saves the same directories.
     const b = join(root, "b");
@@ -92,6 +100,8 @@ test("save never deletes state files written by another run", () => {
       git(b, "show", "origin/automation-state:data/monitor/state.json"),
       '{"v":2}',
     );
+    assert.equal(git(b, "rev-list", "--parents", "-n", "1", "origin/automation-state").split(" ").length, 2,
+      "subsequent saves must retain exactly one previous state parent");
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
