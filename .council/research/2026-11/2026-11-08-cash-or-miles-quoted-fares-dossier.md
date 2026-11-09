@@ -1,5 +1,11 @@
 # Research dossier: cash-or-miles-quoted-fares
 
+Current state — 9 November 2026: **matched-quotation hold continues**. Bounded
+paid research returned a public reward entry form and route advertising, not
+a matched flight packet. Root's separate public-browser attempt configured the
+case but could not read the subsequent results. The dated record below preserves this distinction;
+no public article, numerical quotation payload or calculation has been made.
+
 Prepared 8 November 2026 by `article_briefs` for Airline News, with mandatory
 Travel & Experiences countersign before Fact-Check. **Research/quote-feasibility
 hold; no current flight quotation captured or full article drafted.**
@@ -130,3 +136,103 @@ format, then `travel-experiences-editor` countersigns before Stage 6 /
 Fact-Check. Independent SEO, Fact-Check, Standards, Technical/Council and
 Chairman publication approval remain pending. This partial dossier does not
 silently complete any brief stage or authorise publication.
+
+## 9 November 2026 — bounded public-page research; browser result pending
+
+`monitor_reliability`, acting first as Head-of-Research delegate, accepted an
+exclusive allocation of at most eleven existing Firecrawl credits: two plain
+web searches and seven deduplicated basic fresh markdown reads. No provider,
+automatic search-result scraping, highlights, enhanced proxy, retry, fallback,
+purchase or monitor action was used. The live tool schemas were inspected.
+All page reads requested markdown only, `maxAge: 0`, `proxy: basic` and
+`domainTools: false`, without a session profile or browser interaction.
+
+Research case, not an observed flight: Etihad Abu Dhabi (AUH)–Bahrain (BAH),
+24 November 2026, one-way, one adult, Economy. No actual flight or fare family
+has yet been selected from current public booking results.
+
+### What the returned material establishes
+
+1. A plain official-domain search found the
+   [Etihad AUH–BAH route page](https://www.etihad.com/en-ae/flights/flights-from-abu-dhabi-to-bahrain).
+   The search result was an excerpt, not a full source or dated booking result.
+2. The fresh
+   [public miles entry page](https://www.etihad.com/en-ae/etihadguest/spend-miles/fly-with-miles)
+   was HTTP 200 with a public origin/destination/date/passenger search form and
+   explanatory programme copy. It supplied no selected itinerary, dated reward
+   availability, miles amount, all-in cash payment or applicable ticket rules.
+   Its calculator link is explanatory, not availability evidence.
+3. The fresh route page was HTTP 200 but returned advertised round-trip/from
+   fares, default search dates and a warning that displayed fares may no longer
+   be available. Those are not the commissioned one-way selected-flight quote.
+   The returned text also contained a blocked client subframe diagnostic,
+   `ERR_BLOCKED_BY_CLIENT`. No extension/security setting was changed and no
+   bypass, retry or alternative paid access path was attempted.
+
+The paid channel stopped at that content error, as directed. This is a bounded
+API-channel finding, **not** proof that Etihad's public browser flow is unusable
+or that a login is universally required. Root separately checked the ordinary
+visible public form without account or security-control changes; its precise
+result is recorded below, not inferred from the API response.
+
+### Receipts, costs and retained evidence
+
+All full tool responses remain outside the repository in the private
+`research-flight` directory of the owned article-release workspace. Only
+sanitised request identities, costs and source URLs are recorded here.
+
+| Operation | Request / feedback ID | Gross charge | Confirmed refund |
+| --- | --- | ---: | ---: |
+| Plain web search, no automatic page reads | `01a1be86-fb9a-708b-ae31-05cacb7a35c2` | 2 credits | — |
+| Search quality feedback | `01a1be87-69cb-7667-a015-441e97788dbe` | 0 | 1 credit |
+| Basic fresh public reward-entry read | `01a1be87-f167-77fb-9ca8-dccff83391c0` | 1 credit | — |
+| Reward-entry quality feedback | `01a1be88-91f0-71c4-adad-2213dd4b6f94` | 0 | 1 credit |
+| Basic fresh public cash-route read | `01a1be88-c124-7129-9a53-ac2ef0d0d676` | 1 credit | — |
+| Cash-route quality feedback | `01a1be89-72ba-73ce-9554-16c9ffbf62d6` | 0 | 1 credit |
+
+Receipt fields were `creditsUsed` for the search and `metadata.creditsUsed`
+for each page read. Gross use is four credits; three feedback refunds were
+confirmed, for a net one credit. One search and five page reads remain unused;
+refunds do not enlarge the original gross allowance. The ledger was recorded
+at `2026-11-09T04:20:41Z`; that is a research-accounting observation time, not a
+quote timestamp or a claim that the booking results were checked then.
+
+### Remaining editorial holds
+
+No matched cash/reward quotation, actual flight number, selected fare family,
+all-in mandatory payment, exact baggage allowance, change/refund/no-show or
+redeposit conditions has been obtained by this delegate. Current full airline
+terms were not refreshed after the stop condition. No route teaser is accepted
+as a financial input and no financial-source parser or model was changed.
+The old Muscat evidence/parser is not reused for the Bahrain case.
+
+The complete held draft lives at
+`.council/drafts/2026-11/cash-or-miles-quoted-fares.mdx`, outside the public
+content collections. Its quote table, numerical result and conclusion remain
+explicitly held. This is the same commissioned real-quotation analysis, not
+another generic-method article approved for publication. Research and draft
+stage completion, independent Travel countersign, Fact-Check, Standards, Tech,
+Council and Chairman article approval remain pending.
+
+### 9 November 2026 — root's separate public-browser outcome; final hold
+
+Root reports that ordinary Chrome allowed selecting One way, AUH, Bahrain
+(BAH), one adult, Economy and 24 November 2026. Search navigated the same tab
+to the observed public `https://digital.etihad.com/book/search` endpoint with
+the editorial search inputs `B_LOCATION=AUH`, `E_LOCATION=BAH`, `TRIP_TYPE=O`,
+`CABIN=E`, `TRAVELERS=ADT`, `DATE_1=202611240000` and `FLOW=REVENUE`.
+These are publicly entered case inputs, not a quoted result or private
+booking/session identifier. `FLOW=REVENUE` describes the reached cash-search
+flow; it must not be labelled a reward result.
+
+Subsequent accessibility/DOM reads timed out. No selected-flight result, cash
+total or reward quotation could be read. No login, CAPTCHA, security-setting
+change, account access, booking or hold was used. This observation supports
+neither a claim of universally inaccessible public booking nor a claim that
+the comparison was completed. It is root's browser observation; this delegate
+does not invent a DOM capture, fare, flight number or precise quote timestamp.
+
+Paid research remains stopped. The held draft/dossier are frozen for handoff;
+the acceptance criteria still require the genuinely matched quote packet,
+current applicable terms and reviewed deterministic numerical extraction.
+The commissioned comparison and its publication decision remain held.

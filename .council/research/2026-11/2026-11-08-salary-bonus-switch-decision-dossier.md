@@ -157,3 +157,155 @@ assigned editor then drafts against those specific captures. Independent SEO,
 Fact-Check, Standards, Technical/Council and Chairman article approval remain
 pending. This file advances evidence preparation only; it does not silently
 advance the brief's pending publication stages or approve further spend.
+
+## 2026-11-09 — Fresh HTML, cost ledger and qualitative draft scope
+
+Root delegated Head-of-Research work for this salary article after the owner
+approved up to thirty existing Firecrawl credits across the three articles.
+Salary allocation: at most two plain searches and six deduplicated basic
+fresh page reads, ten credits maximum. This desk used **three reads, no
+searches: three confirmed credits**. Unused allocation is not permission for
+automatic further work or another provider.
+
+Every call used conversation ID
+`11827994-ceed-8ad7-b02f-9f1a7916a33b`, the salary-research objective,
+`formats: ["markdown"]`, `maxAge: 0`, `proxy: "basic"`,
+`domainTools: false`, `onlyMainContent: false`, `toolDetail: "full"`.
+No JSON/LLM financial extraction, highlights, provider, enhanced proxy,
+interaction, autonomous agent/crawl, retry or fallback was used. Current tool
+schemas were inspected before execution. Each result was non-error, HTTP 200,
+with basic proxy and explicit `metadata.creditsUsed: 1`; no charge was inferred
+from the shared account balance. Call-level receipts were reported to root.
+
+### Private evidence and receipt identity
+
+Full tool results and returned markdown are retained privately under
+`/private/tmp/dubaipoints-article-release.OptQkX/research-salary/`.
+These are Firecrawl-returned markdown and metadata, **not raw HTTP bodies**.
+The markdown files have a terminal LF added for storage; the hashes below
+identify those saved UTF-8 files. Recorded time is local receipt-recording
+time in UTC, not an issuer publication timestamp or a browser-timezone claim.
+The full serialized tool result is retained beside each markdown file.
+
+| Source | Scrape ID | Recorded UTC | Actual credits | Saved markdown identity |
+| --- | --- | --- | --- | --- |
+| S4: EI current salary campaign, same official URL as this brief's pin | `01a1be86-00e8-7019-810b-a2da996cdeb7` | `2026-11-09T04:17:28.808Z` | 1 | `01-ei-campaign.markdown.md`; 94001 bytes; SHA-256 `4635906c1f785eeef089a01f293dab584c06b819f3a3ccfb976897f87d11a0f0` |
+| S5: [EI account tariff](https://www.emiratesislamic.ae/en/soc/accounts) | `01a1be86-fc74-70b2-b75c-7cb8764dcf92` | `2026-11-09T04:18:19.073Z` | 1 | `02-ei-accounts-tariff.markdown.md`; 94345 bytes; SHA-256 `124752f67a03899bc0a86ee759a70e1b2898d3cb81a790a5edcef64107972dfe` |
+| S6: [FAB current campaign landing](https://www.bankfab.com/en-ae/personal/promotions/20-percent-cashback-on-salary-transfers) | `01a1be87-9153-758f-ac6a-40da6d4a5c86` | `2026-11-09T04:19:02.044Z` | 1 | `03-fab-campaign.markdown.md`; 17721 bytes; SHA-256 `1868175925d78f82c60fe9050473bd4d95079c0d342854a3a24e74648e1a0df5` |
+
+Full result files: `01-ei-campaign-full-result.json`,
+`02-ei-accounts-tariff-full-result.json`, `03-fab-campaign-full-result.json`.
+The entire returned content is preserved; the complete substantive campaign/
+tariff sections were read. Navigation/marketing boilerplate was not treated as
+campaign evidence. No provider omission was filled from an LLM assumption.
+
+### Current source-to-candidate-draft map
+
+| Candidate section | Source scope | Claim allowed; limit |
+| --- | --- | --- |
+| Relationship, enrolment and account exclusions | S4 lines 1164–1188 | Existing/new account versus group-wide salary relationship; enrolment; named account and Personal Finance exclusions. No salary band, duration or reward amount typed. |
+| Account reward versus optional Covered Card | S4 lines 1190–1207 and separate reward-table headings | Separate eligibility/spend conditions, not an automatic combined reward. No source table copied into article. |
+| Retention/disqualification | S4 lines 1209–1211 | Conditional reversal/disqualification exists; exact elapsed periods deliberately not reproduced without a parser payload. |
+| FAB Save versus Spend and incremental balance | S2 §§3–5, text lines 13–26 and 44–66; S6 lines 104–141 | Distinct routes; card only for Spend; month-end increment rather than unchanged balance; both routes do not increase reward. No percentage or amount typed. |
+| FAB payment/missed month/closure | S2 lines 68–84 | Monthly conditional earning/payment, no retrospective missed-month reward, unpaid reward forfeiture on closure. No exact payment window or cap typed. |
+| EI fee exception and VAT basis | S5 lines 1166–1180 and 1293–1295 | Salary-transfer exception to fall-below charge; other services separately priced; tariff's VAT-inclusive wording. No disputed KFS field or tariff amount accepted. |
+| DIB different bundle decision and uncertainty | S3 definitions/§2.1, plus §§3.4 and 4.13 | Card/finance condition and separate valuation reversal; do not claim an existing product qualifies, new enrolment is open or finance is cheaper. |
+
+S6's simplified illustrative amounts do not match all S2 exact-rate/rounding
+examples. S2 expressly gives its terms priority over marketing. The article
+therefore reproduces neither illustration as a new numerical result and
+directs readers to the governing campaign terms. S6 also displays savings
+products outside S2's eligible current-account list; do not infer campaign
+eligibility from the surrounding product catalogue.
+
+S6 links the exact Personal Banking Fees PDF at
+`https://www.bankfab.com/-/media/fab-uds/personal/charges-and-fees/fees-and-charges-first-abu-dhabi-bank.pdf?view=1`.
+Root was asked to use the existing free PDF reader if a full account-cost
+comparison is commissioned. This desk did not spend its HTML allocation on a
+multi-page PDF, invent an account tariff or claim that linked-but-unread
+document was checked.
+
+### Revised scope and outstanding gates
+
+`src/content/guides/salary-bonus-switch-decision.mdx` is a useful qualitative
+candidate: decide the route → identify commitments → separate bundled products
+→ price actual services → separate qualification/payment/retention → use the
+existing calculator and native payroll checklist. It introduces no financial
+numeric, timeline model, valuation or canonical source-date change.
+
+This is **not completion of the originally proposed quantitative comparison**.
+Full applicable costs, conflicting EI KFS fields, DIB existing/new-product
+ambiguity/live enrolment, and reviewed deterministic amount/period payloads
+remain held. The quantitative comparison is not replaced with invented values,
+zero unknown costs or a guaranteed net-benefit verdict. Current S4/S5 resolve
+the earlier missing-HTML gap only for the qualitative claims mapped above.
+
+No top-ten SERP scan has been performed; SEO remains independent/pending.
+The editor is the research author too and does not independently fact-check
+or approve its own draft. Fact-Check, Standards, Technical/Council and Chairman
+publication gates remain pending. No article publication, commit or merge is
+performed by this desk. Root must approve the actual publication candidate,
+not treat paid-retrieval permission as content approval.
+
+## 2026-11-09 — Independent Fact-Check findings and publication hold
+
+The independent reviewer held publication against the original quantitative
+commission. The qualitative prose is prepared work, not an approved replacement
+for the reward/cost comparison. The complete corrected candidate now lives at
+`.council/drafts/2026-11/salary-bonus-switch-decision.mdx`; the candidate was
+removed from `src/content/guides/` so it cannot publish in a production merge.
+Earlier candidate paths and scope descriptions above are retained as history,
+not present publication authority.
+
+**S3 correction:** the earlier prose-only row describing a Home Finance fee
+reversal as distinct from a joining bonus, and the source map's reference to a
+separate reversal, overstate the distinction. S3 §2.1(g), lines 230–234,
+expressly says that the Home Finance joining bonus shown in the table is
+illustrative and takes the form of a reversal based on the actual valuation
+fee charged. Do not add it as an extra fixed payment to that table entry.
+The private candidate now states this correctly without typing a fee or cap.
+
+**Method correction:** the private candidate now limits its application/payout
+statement to this source-based research. It makes no universal assertion about
+contributors' prior personal benefits or bank holdings. Actual contributor COI
+confirmation remains pending and cannot be inferred from that method note.
+
+Original numerical comparison, complete applicable cost evidence,
+source-specific deterministic parsing, EI bilingual and DIB product/entry
+clarification, current SEO work, final independent Fact-Check/Standards/Tech
+and Chairman publication approval remain incomplete or held. No completed
+article, public route, source-value/model/date promotion or publication
+approval is claimed. Salary retrieval remains three confirmed credits; this
+correction used no external call or further spend.
+
+## 2026-11-09 — Additional free FAB fee-source capture available
+
+Root supplied [public-source reader run 42561213809](https://github.com/dubaipoints1/Property/actions/runs/42561213809),
+attempt 1, for the exact Personal Banking Fees PDF linked by S6:
+`https://www.bankfab.com/-/media/fab-uds/personal/charges-and-fees/fees-and-charges-first-abu-dhabi-bank.pdf?view=1`.
+Private artifact directory:
+`/private/tmp/dubaipoints-article-release.OptQkX/fab-fees/public-source-evidence-42561213809-1/`.
+
+The manifest records HTTP 200, identical requested/final URLs, PDF content,
+complete transport/extraction and `reviewRequired: true`, with no incomplete
+reasons. Fetch completed at `2026-11-09T04:20:23.909Z`; manifest creation was
+`2026-11-09T04:20:23.919Z`. Root verified the complete capture. This desk
+independently re-read the manifest and recomputed the following file identities:
+
+- Body: `01-99862624c2f43f71.response.pdf`, 89638 bytes; SHA-256
+  `f46721b13d97628c8e5c10bad7620af463a3ab64da90f10d49a4d2f33bb1fa09`.
+- Extracted text: `01-99862624c2f43f71.text.txt`, 75884 bytes; SHA-256
+  `7bf597e0807ce08b0b33097090f8c45b84330932423a0a21f3971a7992e71135`.
+
+This is HTTP-decoded response-body evidence and a separate complete extracted
+text file, not compressed wire bytes. The reader used the same source-reader
+and extraction-bundle hashes recorded for S1–S3 above. No full PDF or full text
+is copied into the repository. This additional source used the existing free
+reader, not another Firecrawl debit; salary paid research remains three
+confirmed credits.
+
+The tariff is now available for later complete reading and scoped,
+source-specific deterministic mapping. Its availability does not establish
+which product/package or fee applies to a chosen applicant, accept any
+financial amount, complete the numerical comparison or resolve EI bilingual,
+DIB product/entry, SEO, COI or article-publication holds.

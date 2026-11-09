@@ -2,9 +2,9 @@
 slug: salary-bonus-switch-decision
 vertical: business-realestate
 assigned-editor: business-realestate-editor
-research-status: pending
+research-status: in-progress
 seo-status: pending
-draft-status: pending
+draft-status: in-progress
 factcheck-status: pending
 tech-status: pending
 chairman-status: pending
@@ -174,3 +174,60 @@ pending. No external source was read for this commission and no article was
 drafted. The owner's authority covers brief preparation, not article approval.
 All article stage statuses remain pending; no specialist or Chairman sign-off
 is claimed by this file.
+
+## 2026-11-09 — Authorised research and qualitative candidate draft
+
+Mostafa approved use of up to thirty existing Firecrawl credits for the three
+articles and asked for the reviewed release to merge. Root allocated this
+salary commission at most two plain searches and six basic fresh markdown
+reads, a ten-credit maximum. This specific authority supersedes this brief's
+earlier preparation-only/no-paid-research perimeter; it does not waive any
+review, field-provenance or publication gate.
+
+The salary delegate used three fresh basic page reads, each receipted at one
+credit, and no search, provider, retry or add-on: three confirmed credits.
+The dossier records the exact configuration, source IDs, private full evidence,
+necessary claim anchors and remaining holds.
+
+Candidate MDX is prepared at
+`src/content/guides/salary-bonus-switch-decision.mdx`. It is a qualitative
+decision guide, not the original proposed numerical/net-return comparison:
+no new reward, fee, salary threshold, processing-duration amount or bank ranking
+is inserted. Financial numerics remain held until source-specific deterministic
+parsing and review. The EI bilingual/table and DIB product/availability holds
+remain; applicable full product costs are not assumed zero.
+
+Source-backed drafting is in progress for independent review. SEO has not been
+marked complete from an unperformed SERP scan, and Fact-Check/Tech/Chairman
+statuses remain pending. The guides collection has no draft-route filter:
+including the MDX in a build generates a route, so it must not merge into
+production without the article's final reviews and publication approval.
+
+## 2026-11-09 — Independent review hold and private preservation
+
+Council Fact-Check held this candidate against the original commission's
+acceptance criteria. The owner has not accepted a narrower qualitative guide
+as completion of the numerical reward/cost comparison. Research and drafting
+therefore remain in progress; SEO, final Fact-Check, Standards, Technical,
+conflict-of-interest clearance and Chairman publication approval are not
+complete. The earlier target date is planning, not a publication record.
+
+The complete qualitative candidate is preserved at
+`.council/drafts/2026-11/salary-bonus-switch-decision.mdx`, outside every
+publishing collection. Its former public-collection file was removed, so a
+merge of this preparation work does not publish this article. The retained
+draft dates are metadata only. No source field, verification date, calculator
+model or financial amount was promoted.
+
+Two substantive review findings were corrected in the private candidate:
+DIB's Home Finance joining-bonus table entry is an illustrative reversal of
+the actual valuation fee, not an additional payment separate from that entry;
+and the research method states only that this work did not test an application
+or verify a payout, not an assertion about every contributor's personal
+history or benefits. These corrections do not close independent Fact-Check
+or the missing COI confirmation.
+
+Completion still requires current applicable cost evidence, deterministic
+source-bound amount/period payloads and a reviewed numerical comparison.
+The EI bilingual discrepancies and DIB product/entry uncertainties remain
+unresolved. No further paid retrieval is authorised by this status update.

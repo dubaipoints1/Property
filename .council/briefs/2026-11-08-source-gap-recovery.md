@@ -9,7 +9,7 @@ draft-status: in-progress
 factcheck-status: pending
 tech-status: pending
 chairman-status: approved
-target-publish: 2026-11-08
+target-publish: 2026-11-09
 sources-required: 0
 ---
 
@@ -57,7 +57,29 @@ searches (2 credits each) and twenty fresh basic page reads (1 credit each),
 30 credits maximum, only as needed. No JSON/question/highlight add-ons, enhanced
 proxy, autonomous agent/crawl, paid Alexandria provider, purchase, forced monitor
 check or recurring paid expansion. PDFs use existing no-Firecrawl-cost reader.
-This package remains pending the user's explicit approval before execution.
+This package was pending on 8 November. Mostafa's 9 November reply, "Yes and
+then merge", approves that exact bounded configuration and protected release
+of passing scope, not automatic acceptance or publication of incomplete articles.
 Shared account balance is not a per-task usage ledger or spending authority.
 
 Session: `.council/sessions/2026-11-08-source-gap-recovery.md`.
+
+## 2026-11-09 resumption and publication disposition
+
+Maintenance is a separable release: the existing source/monitor changes,
+research-only Accor parsing helper and its tests, documented source receipts
+and three held drafts. The complete draft candidates are retained under
+`.council/drafts/2026-11/`, never the public content collections. None of the
+three article briefs has completed publication approval. Missing current
+cost/applicability clarification, matched hotel/flight quotations, independent
+SEO and contributor disclosure checks remain real holds, not waived stages.
+
+Research used 12 receipt-confirmed gross credits and received four confirmed
+feedback refunds. One failed Expedia basic read returned no charge receipt;
+its actual cost is unknown, not zero. All paid work stopped. No balance delta
+is used to price that failure, no automatic retry/provider or paid monitor is
+authorised, and unused allocation is not spent simply to exhaust the cap.
+
+Final maintenance review and executed exact-head CI must be recorded after
+completion in the 9 November release receipt. Chairman direction approves that passing maintenance
+scope only; the three uncompleted comparisons remain unpublished.

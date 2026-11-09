@@ -194,3 +194,32 @@ Head of Research commission is specified above; acceptance and delivery are
 pending. No external source/flight quote has been read for this commission.
 Owner authority covers brief preparation, not article publication. All article
 stage statuses remain pending; no author self-approval or Chairman sign-off.
+
+### 9 November 2026 — commission accepted; quotation hold preserved
+
+`monitor_reliability` accepted the Head-of-Research delegate and subsequent
+Airline News drafting role, not an independent approval role. The bounded
+plain-search/basic-markdown attempt used four gross Firecrawl credits with
+three confirmed feedback refunds (net one). It stopped at a blocked subframe
+diagnostic after obtaining an empty public reward entry form and advertised
+round-trip route fares, not matched one-way quotations. Full responses remain
+private; the dossier records receipts and narrow evidence limits.
+
+Root's separate ordinary public-browser feasibility check is pending. The
+API-channel limitation must not be broadened into a universal login/access
+finding. No further paid calls, retry, fallback or booking action is underway.
+
+A complete **held, non-public** draft is prepared at
+`.council/drafts/2026-11/cash-or-miles-quoted-fares.mdx`. The required quote table,
+matched fare conditions, calculation and conclusion are explicitly held; this
+does not rescope the commission into a public generic-method article. No
+`src/content/news/` route was created. Research/draft completion and all
+independent review/publication statuses remain pending.
+
+Subsequent browser outcome, recorded 9 November: root could configure the
+ordinary public form for the commissioned case and reach a public cash-search
+URL. Subsequent DOM/accessibility reads timed out, leaving no selected-flight
+cash total or reward result. No login, CAPTCHA, security change, account,
+booking or hold was used. The dossier records exact non-private search inputs
+and the limitation. The draft remains held; paid research is stopped. This
+does not establish a reward quote or a universally inaccessible public flow.

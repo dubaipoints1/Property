@@ -1,6 +1,10 @@
 # Article research: configuration and cost approval
 
-Prepared 2026-11-08. Status: user approval pending; no paid retrieval executed.
+Prepared 2026-11-08. Updated 2026-11-09: Mostafa replied "Yes and then merge"
+to the exact 30-credit package. This approves only the bounded calls below;
+merge/publication remains conditional on evidence, substantive Council review
+and genuine executed checks. Initial pending status is retained in the history
+below. Actual calls and receipts are recorded in the individual dossiers.
 
 ## First research package
 
@@ -20,7 +24,47 @@ https://docs.firecrawl.dev/features/search and
 https://docs.firecrawl.dev/features/scrape . Account balances and billing
 receipts remain private; other-client or scheduled usage is not attributed
 to this task. Free discovery is not provider execution; all paid authority
-above remains pending.
+above was pending on 8 November and is now approved within the stated cap.
+
+### 2026-11-09 allocation — no shared-budget race
+
+| Research delegate | Plain searches, maximum | Fresh basic reads, maximum | Credit ceiling |
+|---|---|---|---|
+| article_briefs: salary | 2 | 6 | 10 |
+| card_coverage: hotel | 1 | 7 | 9 |
+| monitor_reliability: flight | 2 | 7 | 11 |
+| Total | 5 | 20 | 30 |
+
+Root does not execute additional paid calls. Delegates report each receipt
+and stop on ambiguous/missing charges or changed unit price. Unused capacity
+does not authorise another configuration, paid provider, automatic retry,
+forced monitor, new target/cadence or credit purchase. The private shared
+account balance is not a task-cost ledger. Free balance/monitor reads and
+catalogue discovery are separate from paid research execution.
+
+### 2026-11-09 execution checkpoint — paid work stopped
+
+| Desk | Searches | Successful basic reads | Confirmed gross | Confirmed refunds | Confirmed net |
+|---|---|---|---|---|---|
+| Salary | 0 | 3 | 3 | 0 | 3 |
+| Hotel | 1 | 3 | 5 | 1 | 4 |
+| Flight | 1 | 2 | 4 | 3 | 1 |
+| Total with receipts | 2 | 8 | 12 | 4 | 8 |
+
+Hotel attempted one additional basic Expedia read. It returned
+SCRAPE_ALL_ENGINES_FAILED/status 500 with no scrape ID or charge receipt.
+Its actual charge is **unknown**, not included as zero in the totals above.
+All paid work stopped on that failure; no retry, proxy escalation or provider
+was executed. The original one-credit basic-read quote is not a substitute
+for a missing billing receipt. Individual dossiers retain the call IDs,
+source roles and outcome limitations. No shared-balance subtraction is used.
+
+The paid reads produced useful primary terms, not the complete commissioned
+comparisons: no matched hotel rate packet or cash/reward flight quote exists;
+the salary numerical/cost comparison remains held. Three complete narrative
+candidates with explicit evidence/result holds stay outside public content.
+The added Accor helper is deterministic research-only preparation, with no
+runtime import, automatic acceptance, FX conversion or valuation change.
 
 ## Sources and research defaults
 
