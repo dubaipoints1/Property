@@ -1,8 +1,8 @@
 // Issuer card art (9 Oct 2026). data/card-art/manifest.json is written by
 // scripts/images/fetch-card-art.mjs in Actions; every entry is an image
 // taken from the issuer's own website, with its source recorded. A card
-// with no entry renders the typographic card face instead — never a
-// substitute picture.
+// with no entry remains unavailable: surfaces may show a clear missing-art
+// disclosure or omit the image, but must never invent a substitute card face.
 import manifest from "../../data/card-art/manifest.json";
 
 export type CardArt = {

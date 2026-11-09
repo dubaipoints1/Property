@@ -136,13 +136,6 @@ const rated = cards
       slug: c.slug,
       name: c.name,
       bankName,
-      // The tile prints the product name without the issuer it already
-      // names above it ("FAB Etihad Guest Infinite" -> "Etihad Guest Infinite").
-      shortName: [bankName, c.bank.toUpperCase()].reduce(
-        (n, prefix) => (n.toLowerCase().startsWith(`${prefix.toLowerCase()} `) ? n.slice(prefix.length + 1) : n),
-        c.name,
-      ),
-      network: c.network,
       art: getCardArt(c.slug),
       tier: TIER_LABEL[tierOf.get(c.slug) as string] ?? "",
       fee: annualFeeLabel(c),
@@ -399,7 +392,7 @@ const DIRECTORY = [
     </ol>
   </section>
 
-  <!-- ── Cards we rate: typographic tiles, L2 figures only ────────── -->
+  <!-- ── Cards we rate: issuer artwork or an explicit missing-image panel ── -->
   {rated.length > 0 && (
     <section class="hp-sec" data-hp-anim aria-labelledby="hp-cards-h">
       <div class="hp-sec-head">
@@ -412,7 +405,7 @@ const DIRECTORY = [
       <ul class="hp-cards">
         {rated.map((c, i) => (
           <li style={`--i:${i}`}>
-            <a href={`/cards/${c.slug}/`} class="hp-card" data-tilt>
+            <a href={`/cards/${c.slug}/`} class="hp-card" data-tilt={c.art ? true : undefined}>
               {c.art ? (
                 <span class="hp-tile is-art">
                   <img
@@ -427,10 +420,9 @@ const DIRECTORY = [
                   />
                 </span>
               ) : (
-                <span class={`hp-tile tone-${i % 3}`} aria-hidden="true">
-                  <span class="bank">{c.bankName}</span>
-                  <span class="cname">{c.shortName}</span>
-                  <span class="foot"><span class="chip"></span><span>{c.network}</span></span>
+                <span class="hp-tile is-missing" data-home-card-image="unavailable">
+                  <span class="hp-missing-label">Issuer card image unavailable</span>
+                  <span class="hp-missing-hint">Read the card review →</span>
                 </span>
               )}
               <span class="hp-card-meta">
@@ -777,34 +769,21 @@ const DIRECTORY = [
   .hp-tools .ar { grid-row: 1; grid-column: 3; text-align: right; color: var(--green); }
   .hp-tools a:hover h3 { color: var(--green); }
 
-  /* Cards we rate: a typographic card face, then the four facts. */
+  /* Cards we rate: equal image slots preserve unlike physical card shapes. */
   .hp-cards { display: grid; gap: 56px; }
   .hp-cards > li, .hp-card { min-inline-size: 0; }
   .hp-card { display: block; }
   .hp-tile {
-    aspect-ratio: 1.586; border-radius: 14px; padding: 20px 22px;
-    display: flex; flex-direction: column; justify-content: space-between;
-    color: #fff; max-width: 420px;
-    background:
-      radial-gradient(120% 90% at 100% 0%, rgba(217, 164, 65, 0.18), rgba(217, 164, 65, 0) 55%),
-      linear-gradient(150deg, #2a4b63, #1f3a4d 50%, #152b3b);
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 28px 40px -28px rgba(19, 35, 47, 0.55);
+    aspect-ratio: 1.586; border-radius: 14px; padding: 0;
+    display: grid; grid-template-rows: minmax(0, 1fr); place-items: center;
+    width: 100%; max-width: 420px; min-width: 0; box-sizing: border-box;
+    background: none; box-shadow: none;
     transition: transform 0.2s var(--dp-ease-hover, ease);
   }
-  .hp-tile.tone-1 {
-    background:
-      radial-gradient(120% 90% at 0% 100%, rgba(217, 164, 65, 0.16), rgba(217, 164, 65, 0) 55%),
-      linear-gradient(160deg, #18303f, #0f1f2c);
-  }
-  .hp-tile.tone-2 { background: linear-gradient(140deg, #d9a441, #b8842a 70%, #9c6f22); color: #13232f; }
   .hp-card:hover .hp-tile { transform: translateY(-3px); }
-  .hp-tile .bank { font-size: 10.5px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-lift); }
-  .hp-tile .cname { font-family: var(--font-display); font-size: 27px; line-height: 1.05; letter-spacing: -0.01em; font-weight: 500; max-width: 12ch; }
-  .hp-tile .foot { display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6); }
-  .hp-tile .chip { width: 34px; height: 26px; border-radius: 5px; border: 1px solid rgba(217, 164, 65, 0.55); background: linear-gradient(135deg, rgba(217, 164, 65, 0.28), rgba(217, 164, 65, 0.06)); }
-  .hp-tile.tone-2 .bank { color: #13232f; }
-  .hp-tile.tone-2 .foot { color: rgba(19, 35, 47, 0.7); }
-  .hp-tile.tone-2 .chip { border-color: rgba(19, 35, 47, 0.4); background: linear-gradient(135deg, rgba(19, 35, 47, 0.18), rgba(19, 35, 47, 0.04)); }
+  .hp-tile.is-missing { display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 24px; border: 1px dashed var(--line); background: var(--shade-1); color: var(--muted); text-align: center; }
+  .hp-missing-label { font-size: 16px; font-weight: 600; }
+  .hp-missing-hint { font-size: 14px; }
   .hp-card-meta { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 22px; }
   .hp-card-meta h3 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.01em; color: var(--ink); }
   .hp-card:hover .hp-card-meta h3 { color: var(--green); }
@@ -998,7 +977,6 @@ const DIRECTORY = [
     30% { opacity: 1; }
     100% { opacity: 0; transform: translateX(60%); }
   }
-  .hp-tile .chip { position: relative; overflow: hidden; }
 
   /* Small hover details. */
   .hp-tools .ar, .hp-more { transition: transform 0.25s var(--ease), color 0.2s; }
@@ -1012,13 +990,16 @@ const DIRECTORY = [
     .hp-card:hover .hp-tile { transform: none; }
   }
 
-  /* Issuer card art: the picture is the card, so no painted face behind it. */
+  /* Contain, never stretch/crop a portrait issuer card into a landscape one. */
   .hp-tile.is-art {
     padding: 0; background: none; box-shadow: none; border-radius: 14px;
-    display: block; aspect-ratio: auto;
+    display: grid; aspect-ratio: 1.586;
   }
   .hp-tile.is-art img {
-    display: block; width: 100%; height: auto; border-radius: 14px;
+    display: block; width: 100%; height: 100%; min-width: 0; min-height: 0;
+    max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 0;
   }
   .hp-card:hover .hp-tile.is-art { box-shadow: none; }
+  .hp-card:hover .hp-tile.is-missing { transform: none; box-shadow: none; }
+  .hp-tile.is-missing::after { display: none; }
 </style>
