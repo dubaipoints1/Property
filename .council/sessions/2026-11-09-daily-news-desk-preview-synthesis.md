@@ -53,3 +53,12 @@ remain open. Exact-head Linux validation must be observed in the PR;
 specialist source/runtime findings have passed only within their recorded
 scopes. No production change or automatic news operation
 is claimed by this synthesis.
+
+## Subsequent owner decision — 2026-11-09
+
+After the previews, Mostafa directed "Ok merge it all". Feature release is
+approved for PR525's reviewed scope, subject to genuine final-head checks,
+normal protected merge and production verification. This supersedes the
+preview-release question above, not the independent daily-run activation
+choice, article-level gates, source holds or paid-work stop. No production
+success is claimed before its deployment and rendered verification.

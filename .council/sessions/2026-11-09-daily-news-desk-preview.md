@@ -91,3 +91,18 @@ Dubai has been proposed to the owner, not activated. The owner must see
 light/dark previews and clear the feature release. These choices cannot
 waive each article's evidence, contributor/COI or Chairman gates, authorise
 paid source collection or create an autonomous publishing service.
+
+## Subsequent release direction — 2026-11-09
+
+Mostafa answered **"Ok merge it all"** after the preview hand-off. The
+feature's owner-preview/Chairman release gate is therefore approved within
+PR525's directed scope under the 6 August amendment. All 1,152 Linux tests
+passed at 39caccc with real install/guards/check/build/tests steps; final
+documentation-only head must pass again before merge. The independent
+source/runtime reviews above still describe the same production source.
+
+No article acceptance/COI/Chairman status or queue disposition is changed;
+all six unpublished candidates remain outside public collections. Daily
+09:30 app-run activation and paid tools are not part of this merge. The
+session remains open for exact final-head CI, normal protected merge and
+production verification; neither approval nor a branch preview is deployment.

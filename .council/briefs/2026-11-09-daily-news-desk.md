@@ -9,8 +9,8 @@ draft-status: complete
 factcheck-status: complete
 ux-status: complete
 standards-status: complete
-tech-status: pending
-chairman-status: pending
+tech-status: complete
+chairman-status: approved
 target-publish: 2026-11-09
 sources-required: 1
 ---
@@ -80,8 +80,27 @@ not a promise of daily publication, audience growth or affiliate income.
 Candidate source/mechanism/UI review and local QA are recorded in
 `.council/sessions/2026-11-09-daily-news-desk-preview.md` and its synthesis.
 These completed feature cells do not advance any article's acceptance.
-Final-head Linux CI/Technical and owner preview/Chairman release remain
-pending until their actual outcomes are observed; no production claim.
+The candidate-stage Linux CI/Technical and owner-preview gates were pending
+at preparation. The release approval below supersedes that state without
+advancing any article's acceptance.
+
+## Release approval — 2026-11-09
+
+Mostafa directed **"Ok merge it all"** after receiving the light/dark
+screenshots, actual Cloudflare preview and scoped review hand-off. Under the
+6 August in-session approval amendment this is Stage 7 approval for PR525's
+reviewed news presentation, commissioning SOP/queue/report and unpublished
+draft files. All 1,152 tests passed with no skips at reviewed head
+`39caccca79d2153de00068e6de18d7d9885edb0a` in executed Linux validation
+42596516886/42596508874; local/runtime and independent Council reviews remain
+as recorded. Only these release records change after that reviewed head.
+
+Technical must observe successful executed final-head validation and a
+Council parser run against the approved block before a normal protected
+merge, then verify the exact production deployment and rendered site.
+Approval is not a live-deployment claim. No admin bypass, automatic article
+publication, paid research/media, background-run activation or waiver of
+the six held/unaccepted article candidates is authorised.
 
 ## Sources
 
