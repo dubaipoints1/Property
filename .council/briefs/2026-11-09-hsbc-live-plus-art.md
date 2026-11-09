@@ -4,10 +4,10 @@ tier: T2
 vertical: business-realestate
 assigned-editor: business-realestate-editor
 research-status: complete
-seo-status: pending
-draft-status: in-progress
-factcheck-status: pending
-tech-status: pending
+seo-status: complete
+draft-status: complete
+factcheck-status: complete
+tech-status: complete
 chairman-status: approved
 target-publish: 2026-11-09
 sources-required: 1
@@ -64,3 +64,49 @@ stays private. The issuer credit remains visible where the artwork leads.
 
 Costs: no paid Firecrawl/media/provider action. Prior article research remains
 stopped; its unknown failed-read charge and all publication holds are unchanged.
+
+## Scoped T2 review and QA — 2026-11-09
+
+- Pipeline: existing fetch-card-art run 42574929245 executed successfully and
+  wrote only the HSBC asset and its manifest entry in bot commit 267b9e5.
+  WebP is 228 × 361, 8,550 bytes; SHA-256
+  75c0baff03386642f8643ae93dc5e5ceb891c8cfe62f70bcec298ca8c3787d94.
+  card_coverage independently reproduced identical bytes from the issuer JPEG
+  with the unchanged pipeline. Complete portrait face preserved by trim/resize.
+- Section/source identity and Standards: card_coverage approved the actual
+  rendering, source trail, retained lifestyle-image rejection and neutral copy.
+  monitor_reliability independently approved Technical, Standards and UX-source
+  checks. These are agents applying role lenses, not distinct human reviewers.
+- Six new AST/asset/mutation regressions pass without skips. They pin the real
+  asset and explicitly disclose that source checks are not browser proof.
+- Root rendered both genuine-art and a disposable missing-art build: 26 local
+  Chrome cases each, including 320/390/440/768/1440/1920 widths, light/dark
+  preferences, JavaScript enabled/disabled, normal/reduced motion. The genuine
+  portrait decodes, keeps contain geometry in equal bounded slots and has
+  descriptive alt/visible issuer credit. Missing state visibly says unavailable,
+  has no image/chip/network/tilt/sheen, and keeps its review link. No horizontal
+  overflow or page errors in these cases. No-JS checks establish visibility in
+  the site's fallback theme, not an unimplemented no-JS theme switch.
+- Root inspected mobile/desktop light/dark screenshots. This is viewport
+  emulation, not physical-iPhone Safari certification. The disposable resolver
+  hook was removed before the final build/commit; no public test-only toggle.
+- Existing render probe: homepage, Live+ review, Finder and Compare completed
+  with zero image/link/focus/menu/motion/overflow or runtime/network errors.
+  Homepage and Live+ review had no axe violations. Finder/Compare reported nine
+  existing-source contrast nodes; 112 small-target findings occur across the
+  four routes. These are outside the changed image markup and remain audit
+  findings, not a whole-site accessibility pass. No unrelated UI correction.
+- Astro check: zero errors/warnings, seven hints. Build: 338 indexed pages and
+  all 23,760 internal links resolved. Local full suite: 1,123/1,124 pass with
+  zero skips; sole inherited macOS Bash 3 automation-state.sh array failure.
+  Restricted local sockets caused extra failures in the sandbox-only attempt;
+  allowing local mock sockets removed those. Genuine executed Linux exact-head
+  validation must pass every test before protected merge; neither case is waived.
+- SEO scope: unchanged route/canonical/title, no new indexable route. Financial
+  data, dates, hero/video loading, analytics, workflows and dependencies unchanged.
+- Chairman: approved only this owner-directed correction after these scoped
+  reviews and successful protected release gates; no article/spend expansion.
+
+The optional 21st deterministic CLI is not installed on this host. The 21st
+UI-review checklist was applied through source, mutation and actual-render
+checks above; no CLI result or catalogue component installation is claimed.
