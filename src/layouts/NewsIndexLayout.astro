@@ -12,6 +12,7 @@ import NewsListingVisual from "~/components/NewsListingVisual.astro";
 import NewsStoryRow from "~/components/NewsStoryRow.astro";
 import { stagePhoto } from "~/lib/stage";
 import { getCollection } from "astro:content";
+import { partitionNewsEdition, newsDeskLabel } from "~/lib/homeNews";
 
 interface Props {
   /** <title> for the page. */
@@ -40,30 +41,18 @@ const guides = (await getCollection("guides")).sort(
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
-// Never pull an old story forward just because it has a photograph. If
-// the newest story already has one, the feature is also the newest item.
-const featured = posts.slice(0, 6).find((post) =>
-  !post.data.textLed && (post.data.beat === "airline" || post.data.beat === "hotel") && stagePhoto(`news-${post.id}`),
-);
-const featureIsLatest = featured?.id === posts[0]?.id;
-const remaining = posts.filter((post) => post.id !== featured?.id);
-// Keep a useful current edition visible. Native closed details keeps the
-// rest of the archive and its links accessible without initially fetching
-// dozens of lazy images on a compact mobile feed.
-const editionSize = 8;
-const latest = remaining.slice(0, featured ? 2 : editionSize);
-// Give two desks a place in the briefing when stories share the newest
-// date. This never moves an older item ahead of a newer one.
-const first = latest[0];
-if (activeDesk === "all" && featured && first && latest[1]?.data.beat === first.data.beat) {
-  const sameDayFromAnotherDesk = remaining.find((post) =>
-    post.data.beat !== first.data.beat && post.data.publishedAt.getTime() === first.data.publishedAt.getTime(),
-  );
-  if (sameDayFromAnotherDesk) latest[1] = sameDayFromAnotherDesk;
-}
-const afterLatest = remaining.filter((post) => !latest.some((item) => item.id === post.id));
-const more = featured ? afterLatest.slice(0, editionSize - 3) : [];
-const archive = afterLatest.slice(more.length);
+const edition = partitionNewsEdition(posts);
+// A photograph can change the newest story's treatment, never its order.
+// Older image-led stories stay in their chronological place.
+const first = edition.current[0];
+const featured = first && !first.data.textLed && (first.data.beat === "airline" || first.data.beat === "hotel") && stagePhoto(`news-${first.id}`) ? first : undefined;
+const featureIsLatest = Boolean(featured);
+const latest = featured ? edition.current.slice(1, 3) : edition.current;
+const more = featured ? edition.current.slice(3) : [];
+const { earlier, archive } = edition;
+const olderCount = earlier.length + archive.length;
+const oldest = archive.at(-1) ?? earlier.at(-1);
+const newestOlder = earlier[0] ?? archive[0];
 
 // Desk tabs — every href is a real filtered route (no fictional facets).
 const tabs: Array<{ label: string; href: string; key: Props["activeDesk"] }> = [
@@ -174,33 +163,28 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
             </section>
           )}
 
-          {!featureIsLatest && featured && (
-            <a href={`/news/${featured.id}/`} class="intel-featured" data-news-feature>
-              <NewsListingVisual id={featured.id} featured />
-              <div class="intel-featured-body">
-                <span class="intel-featured-top">
-                  <span class="intel-featured-eyebrow">Photo feature · {formatCategory(featured.data.category)}</span>
-                  <time class="intel-date" datetime={featured.data.publishedAt.toISOString()}>{fmt(featured.data.publishedAt)}</time>
-                </span>
-                <h2>{featured.data.title}</h2>
-                <p>{featured.data.description}</p>
-              </div>
-            </a>
-          )}
-
           {more.length > 0 && (
             <section class="dp-news-more" aria-labelledby="news-more-heading">
               <h2 class="dp-news-section-heading" id="news-more-heading">More recent stories</h2>
               <ol>{more.map((post) => <NewsStoryRow post={post} />)}</ol>
             </section>
           )}
-          {archive.length > 0 && (
-            <details class="dp-news-archive" data-news-archive>
-              <summary class="dp-ui-action dp-ui-secondary"><span class="dp-news-archive-closed">Browse older news</span><span class="dp-news-archive-open">Older news is open</span> <span>({archive.length} {archive.length === 1 ? "story" : "stories"})</span></summary>
-              <div class="dp-news-archive-range"><p>Recorded publication dates: <time datetime={archive[archive.length - 1].data.publishedAt.toISOString()}>{fmt(archive[archive.length - 1].data.publishedAt)}</time> to <time datetime={archive[0].data.publishedAt.toISOString()}>{fmt(archive[0].data.publishedAt)}</time>. Newest first.</p><a class="dp-ui-action dp-ui-quiet" href="#news-edition-top">Back to current edition ↑</a></div>
-              <ol>{archive.map((post) => <NewsStoryRow post={post} />)}</ol>
-              <a class="dp-ui-action dp-ui-secondary" href="#news-edition-top">Back to current edition ↑</a>
-            </details>
+          {olderCount > 0 && oldest && newestOlder && (
+            <section class="dp-news-history" aria-labelledby="news-history-heading" data-news-history>
+              <div class="dp-news-history-heading"><h2 id="news-history-heading">Earlier reporting</h2><span>{olderCount} {olderCount === 1 ? "story" : "stories"}</span></div>
+              <p class="dp-news-history-intro">The reporting continues beyond this edition. These stories were published from <time datetime={oldest.data.publishedAt.toISOString().slice(0, 10)}>{fmt(oldest.data.publishedAt)}</time> to <time datetime={newestOlder.data.publishedAt.toISOString().slice(0, 10)}>{fmt(newestOlder.data.publishedAt)}</time>; dates are original publication dates.</p>
+              <ol class="dp-news-history-preview" data-news-earlier>
+                {earlier.map((post) => (
+                  <li><a href={`/news/${post.id}/`}><span class="dp-news-history-meta"><span>{newsDeskLabel(post.data.beat)} · {formatCategory(post.data.category)}</span><time datetime={post.data.publishedAt.toISOString().slice(0, 10)}>{fmt(post.data.publishedAt)}</time></span><h3>{post.data.title}</h3></a></li>
+                ))}
+              </ol>
+              {archive.length > 0 && <details class="dp-news-archive" data-news-archive>
+                <summary class="dp-ui-action dp-ui-secondary"><span class="dp-news-archive-closed">Open the full archive</span><span class="dp-news-archive-open">Full archive is open</span> <span>({archive.length} more {archive.length === 1 ? "story" : "stories"})</span></summary>
+                <div class="dp-news-archive-range"><p>Recorded publication dates: <time datetime={archive[archive.length - 1].data.publishedAt.toISOString()}>{fmt(archive[archive.length - 1].data.publishedAt)}</time> to <time datetime={archive[0].data.publishedAt.toISOString()}>{fmt(archive[0].data.publishedAt)}</time>. Newest first.</p><a class="dp-ui-action dp-ui-quiet" href="#news-edition-top">Back to current edition ↑</a></div>
+                <ol>{archive.map((post) => <NewsStoryRow post={post} />)}</ol>
+                <a class="dp-ui-action dp-ui-secondary" href="#news-edition-top">Back to current edition ↑</a>
+              </details>}
+            </section>
           )}
         </>
       )}
@@ -325,6 +309,19 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   }
   .intel-featured:hover h2 { color: var(--green); text-decoration: underline; text-underline-offset: .15em; }
   .intel-featured p { margin: 0; color: var(--ink-soft); font-size: .9375rem; line-height: 1.5; }
+  .dp-news-history { border-block-start: 2px solid var(--line); padding-block-start: clamp(22px, 3vw, 32px); }
+  .dp-news-history-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; }
+  .dp-news-history-heading h2 { margin: 0; color: var(--ink); font: 550 clamp(1.5rem, 3vw, 2rem)/1.1 var(--font-display); }
+  .dp-news-history-heading > span { color: var(--ink-soft); font-size: .8125rem; font-variant-numeric: tabular-nums; }
+  .dp-news-history-intro { max-width: 68ch; margin: 12px 0 18px; color: var(--ink-soft); font-size: .875rem; line-height: 1.5; }
+  .dp-news-history-preview { list-style: none; margin: 0 0 22px; padding: 0; }
+  .dp-news-history-preview li { border-block-start: 1px solid var(--line); }
+  .dp-news-history-preview a { display: block; padding-block: 16px; color: inherit; text-decoration: none; }
+  .dp-news-history-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; color: var(--ink-soft); font: 550 .75rem/1.4 var(--font-ui); }
+  .dp-news-history-meta > span { color: var(--green); }
+  .dp-news-history-preview h3 { margin: 6px 0 0; color: var(--ink); font: 550 clamp(1.125rem, 2vw, 1.375rem)/1.2 var(--font-display); text-wrap: pretty; }
+  .dp-news-history-preview a:hover h3 { color: var(--green); text-decoration: underline; text-underline-offset: .15em; }
+  .dp-news-history-preview a:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
   .dp-news-archive ol { list-style: none; margin: 10px 0 0; padding: 0; }
   .dp-news-archive > summary { display: list-item; width: fit-content; list-style-position: inside; padding-inline: 12px; align-content: center; }
   .dp-news-archive > summary span { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
@@ -336,7 +333,7 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   @media (min-width: 820px) {
     .intel-main.has-feature { grid-template-columns: minmax(0, 1fr) minmax(0, 1.28fr); align-items: start; }
     .intel-main.feature-is-latest { grid-template-columns: minmax(0, 1.28fr) minmax(0, 1fr); }
-    .dp-news-more, .dp-news-archive { grid-column: 1 / -1; }
+    .dp-news-more, .dp-news-history { grid-column: 1 / -1; }
   }
   @media (max-width: 640px) {
     .intel-tabs { gap: 6px; }

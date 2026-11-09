@@ -15,6 +15,7 @@
     "astro": "astro",
     "check": "astro check",
     "check:card-sources": "node scripts/ci/check-card-source-coverage.mjs",
+    "newsroom:report": "node scripts/newsroom/report.mjs",
     "test": "node --import tsx --test tests/**/*.test.ts",
     "scrape:fab": "tsx scripts/scrape/fab.ts",
     "scrape:enbd": "tsx scripts/scrape/enbd.ts",
