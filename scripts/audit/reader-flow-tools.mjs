@@ -23,7 +23,10 @@ try {
   const review=await first.getByRole('link',{name:/^Read review/}).getAttribute('href');
   const reviewUrl=new URL(review,server.baseUrl);
   for(const [k,v] of [['salary','15000'],['prefer','cashback'],['spend','groceries'],['cv_spend','12345'],['via','finder']]) assert.equal(reviewUrl.searchParams.get(k),v);
-  assert.ok(reviewUrl.searchParams.get('cards').includes(slug));
+  // Reading a review is not a deliberate comparison selection. Only the
+  // comparison destination may suggest cards when no boxes were selected.
+  assert.equal(reviewUrl.searchParams.has('cards'),false);
+  assert.equal(await page.locator('[data-card-selection-tray]').isVisible(),false);
   const brief=first.locator('.dp-finder-card-details');
   assert.equal(await brief.getAttribute('open'),null);
   await brief.locator(':scope > summary').press('Enter');
@@ -49,6 +52,46 @@ try {
   await go(returnFinder);
   assert.equal(await page.locator('#finder-form input[name=salary]').inputValue(),'15000');
   console.log(colorScheme,'Finder → review → same-profile Compare → same-filter Finder; disclosure/resize passed');
+
+  await go('/cards/finder/?salary=15000&prefer=cashback&spend=groceries&cv_spend=12345');
+  await page.waitForFunction(()=>document.querySelector('[data-card-selection-tray]')?.dataset.selectionReady==='true');
+  const picks=page.locator('#finder-grid > .dp-finder-tile:not([hidden])');
+  const selected=[];
+  for(const tile of [picks.nth(1),picks.first()]) {
+    selected.push(await tile.getAttribute('data-slug'));
+    await tile.locator('[data-card-select]').check();
+  }
+  assert.equal(new URL(page.url()).searchParams.get('cards'),selected.join(','));
+  const explicitReview=await picks.first().getByRole('link',{name:/^Read review/}).getAttribute('href');
+  assert.equal(new URL(explicitReview,server.baseUrl).searchParams.get('cards'),selected.join(','));
+  await go(explicitReview);
+  const curated=page.locator('.dp-utility-actions').getByRole('link',{name:'Compare cards',exact:true});
+  const curatedBase=new URL(await curated.getAttribute('data-card-journey-base'),server.baseUrl);
+  const curatedTarget=new URL(await curated.getAttribute('href'),server.baseUrl);
+  assert.equal(curatedTarget.searchParams.get('cards'),curatedBase.searchParams.get('cards')??selected.join(','));
+  assert.equal(curatedTarget.searchParams.get('cv_spend'),'12345');
+  // A review's explicitly curated alternatives remain its own destination;
+  // the review's back link and Finder tray retain the reader-owned selection.
+  const explicitBack=await page.locator('[data-card-journey-back]').getAttribute('href');
+  assert.equal(new URL(explicitBack,server.baseUrl).searchParams.get('cards'),selected.join(','));
+  await go(explicitBack);
+  await page.waitForFunction(()=>document.querySelector('[data-card-selection-tray]')?.dataset.selectionReady==='true');
+  const explicitCompare=await page.locator('[data-selection-compare]').getAttribute('href');
+  assert.equal(new URL(explicitCompare,server.baseUrl).searchParams.get('cards'),selected.join(','));
+  await go(explicitCompare);
+  await page.waitForFunction(()=>document.querySelector('[data-card-value-spend]').value==='12345');
+  assert.deepEqual(await page.locator('.dp-compare-col[data-slug]:not([hidden])').evaluateAll(nodes=>nodes.sort((a,b)=>Number(a.style.order)-Number(b.style.order)).map(node=>node.dataset.slug)),selected);
+  await go(await page.locator('[data-card-journey-back]').getAttribute('href'));
+  await page.waitForFunction(()=>document.querySelector('[data-card-selection-tray]')?.dataset.selectionReady==='true');
+  assert.equal(await page.locator('[data-card-select]:checked').count(),2);
+  await page.locator('[data-selection-clear]').click();
+  assert.equal(new URL(page.url()).searchParams.has('cards'),false);
+  assert.equal(await page.locator('[data-card-selection-tray]').isVisible(),false);
+  assert.equal(await page.locator('#finder-form input[name=salary]').inputValue(),'15000');
+  assert.equal(await page.locator('[data-card-value-spend]').inputValue(),'12345');
+  const clearedReview=await picks.first().getByRole('link',{name:/^Read review/}).getAttribute('href');
+  assert.equal(new URL(clearedReview,server.baseUrl).searchParams.has('cards'),false);
+  console.log(colorScheme,'Explicit selection order survives review/back/tray/Compare/return; curated review alternatives stay explicit; clear removes only selection');
 
   await go('/salary-transfer/?st_band=aed-15000-to-30000&st_cash=true&st_sort=expiry');
   await page.waitForFunction(()=>document.querySelector('.dpst-band[aria-pressed=true]'));
@@ -87,7 +130,8 @@ try {
   await go(returnTracker);
   await page.waitForFunction(()=>document.querySelector('.dpst-band[aria-pressed=true]'));
   assert.match(await page.locator('.dpst-band[aria-pressed=true]').innerText(),/15k/);
-  assert.equal(await page.locator('.dpst-chip').filter({hasText:'Cash only'}).getAttribute('aria-pressed'),'true');
+  if(await page.locator('.dpst-options').getAttribute('open')===null) await page.locator('.dpst-options > summary').press('Enter');
+  assert.equal(await page.getByRole('checkbox',{name:'Cash only',exact:true}).isChecked(),true);
   assert.ok(await page.locator('.dpst-cards .dpst-card.is-open').count());
   console.log(colorScheme,'Tracker → offer → band-only calculator → exact salary → offer → restored tracker passed');
   for (const search of ['?st_cash=true', '?st_salary=invalid']) {

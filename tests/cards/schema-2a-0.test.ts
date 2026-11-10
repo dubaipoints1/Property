@@ -266,6 +266,9 @@ test("schema-2a-0: refreshed joining-fee inventory retains every recorded field"
   // verified against the live product page + May 2026 KFS (both agree).
   // 10th added 2026-08-22: liv-cashback-plus AED 700 joining fee, per the
   // Liv charges page (waived with an active Liv Max subscription).
+  // 2026-11-09: seven explicit named Free joining cells accepted from the
+  // retained 08/2026 ENBD KFS. Exact parser/source pins have separate tests;
+  // no standard renewal tariff replaces an existing promotional waiver.
   const slugs = Object.entries(cards)
     .filter(([, c]) => (c as { joiningFee?: unknown }).joiningFee !== undefined)
     .map(([s]) => s);
@@ -275,6 +278,9 @@ test("schema-2a-0: refreshed joining-fee inventory retains every recorded field"
     "emirates-nbd-marriott-bonvoy-world-elite", "emirates-nbd-share-visa-infinite", "emirates-nbd-skywards-infinite",
     "emirates-nbd-skywards-signature", "emirates-nbd-u-by-emaar-infinite", "emirates-nbd-visa-infinite",
     "emirates-nbd-webshopper", "liv-cashback-plus",
+    "emirates-nbd-darna-select-visa", "emirates-nbd-lulu-247-titanium", "emirates-nbd-noon-one",
+    "emirates-nbd-priority-banking-visa-infinite", "emirates-nbd-share-visa-signature",
+    "emirates-nbd-u-by-emaar-family", "emirates-nbd-voyager-world",
   ].sort());
 });
 

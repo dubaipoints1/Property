@@ -16432,10 +16432,11 @@
       "welcomeBonus": "editor-corrected",
       "eligibility.salaryTransferRequired": "needs-review",
       "scopedEarnRates.other": "needs-review",
-      "scopedEarnRates.europe": "needs-review"
+      "scopedEarnRates.europe": "needs-review",
+      "joiningFee": "editor-confirmed"
     },
     "_lastScraped": "2026-11-01",
-    "_lastReviewed": "2026-11-07",
+    "_lastReviewed": "2026-11-09",
     "bank": "emirates-nbd",
     "name": "Emirates NBD Darna Select Visa",
     "network": "Visa",
@@ -16814,6 +16815,27 @@
           "rawText": "16 August 2024 – 28 February 2026 (“Promotion                       .)\"‫ (\"فترة العرض‬2026 ‫ فبراير‬28 - 2024 ‫ أغسطس‬16\nPeriod",
           "rawTextSha256": "a9f76d0a7c6597fd7b2da6a6a065f7e4d9495baff237e22229ab266a0dd0c6e2"
         }
+      ],
+      "joiningFee": [
+        {
+          "parserId": "enbd/parseEnbdKfsFees/08-2026",
+          "productScope": "Darna Select; joining fee; zero-based column 3; literal Free",
+          "unit": "AED",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+          "capturedAt": "2026-11-08T15:42:28.252Z",
+          "sourceTextSha256": "2a59c7a950a88e2568381753ab6fc3cf40ca4791ab5ab549f44a39ce613fbc30",
+          "sourceBodySha256": "32a0c9a99210039fa0f9a49fb6437d5465a3e97d0cee4c1962a4b37db42bf241",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceStartByte": 1509,
+          "sourceEndByte": 1995,
+          "firstLine": 15,
+          "lastLine": 16,
+          "rawText": "                           UBE Signature        Visa Flexi   Lulu 247 Platinum       Darna Select      Lulu 247 Titanium       noon One          Duo      dnata Platinum         Platinum      Go4it Platinum        Go4it Gold       SHARE Platinum\n                                 525               735               525                  Free                Free                Free           840             525                735            208.95              103.95                Free",
+          "rawTextSha256": "6f3031a4ea0678a99a024d9cec99b4c048ff385141f2825fb64645d9ea58d119"
+        }
       ]
     },
     "fxFeeVatTreatment": "inclusive",
@@ -16883,6 +16905,10 @@
       "eligibility": "The product-specific salary minimum is separately evidenced where published. The reviewed product, KFS and shared credit-card terms do not establish a universal salary-transfer rule or transfer-related clawback. Confirm application-specific conditions; unknown does not mean not required.",
       "earnRates": "Headline Aldar rewards exclude Aldar properties and education. Non-Aldar grocery, fast food, insurance/car dealerships, listed bills and EU/UK spend have source-stated reduced rates. Named native-unit rows and monthly caps replace an unconditional all-spend estimate. The English and Arabic columns of the linked Darna terms disagree on Select’s non-Aldar general-spend and EU/UK rows. Those two rows remain Pending; no language is treated as automatically prevailing. The other named rows are separately scoped.",
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
+    },
+    "joiningFee": {
+      "amount": 0,
+      "currency": "AED"
     }
   },
   "emirates-nbd-darna-visa-infinite": {
@@ -21972,10 +21998,11 @@
       "perks": "editor-corrected",
       "_features": "needs-review",
       "partnerBrands": "needs-review",
-      "eligibility.salaryTransferRequired": "needs-review"
+      "eligibility.salaryTransferRequired": "needs-review",
+      "joiningFee": "editor-confirmed"
     },
     "_lastScraped": "2026-11-01",
-    "_lastReviewed": "2026-11-07",
+    "_lastReviewed": "2026-11-09",
     "_scraped_freetext": {
       "annualFeeWaiver": "Free for life — no annual fee.",
       "perks": [
@@ -22351,6 +22378,27 @@
           "rawText": "the value of one (1) LuLu Point is equal to one (1)\n   UAE Dirham.",
           "rawTextSha256": "1fdafa700d3a48f3de1acf3fe84afb197a754fb60ebac3577fc374c24bbe32b0"
         }
+      ],
+      "joiningFee": [
+        {
+          "parserId": "enbd/parseEnbdKfsFees/08-2026",
+          "productScope": "Lulu 247 Titanium; joining fee; zero-based column 4; literal Free",
+          "unit": "AED",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+          "capturedAt": "2026-11-08T15:42:28.252Z",
+          "sourceTextSha256": "2a59c7a950a88e2568381753ab6fc3cf40ca4791ab5ab549f44a39ce613fbc30",
+          "sourceBodySha256": "32a0c9a99210039fa0f9a49fb6437d5465a3e97d0cee4c1962a4b37db42bf241",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceStartByte": 1509,
+          "sourceEndByte": 1995,
+          "firstLine": 15,
+          "lastLine": 16,
+          "rawText": "                           UBE Signature        Visa Flexi   Lulu 247 Platinum       Darna Select      Lulu 247 Titanium       noon One          Duo      dnata Platinum         Platinum      Go4it Platinum        Go4it Gold       SHARE Platinum\n                                 525               735               525                  Free                Free                Free           840             525                735            208.95              103.95                Free",
+          "rawTextSha256": "6f3031a4ea0678a99a024d9cec99b4c048ff385141f2825fb64645d9ea58d119"
+        }
       ]
     },
     "fxFeeVatTreatment": "inclusive",
@@ -22397,6 +22445,10 @@
       "earnRates": "LuLu-only headline rate, source-stated reduced categories, card-limit/billing-cycle caps and exclusions apply. English/Arabic reduced-category figures disagree in the linked terms, so disputed reduced rates are not presented as confirmed.",
       "_features": "Some previously listed benefit allowances, operators or locations have not been confirmed by the reviewed current terms. Read the individual benefits and conditions in this profile; unconfirmed allowances are not used for benefit matching.",
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
+    },
+    "joiningFee": {
+      "amount": 0,
+      "currency": "AED"
     }
   },
   "emirates-nbd-manchester-united": {
@@ -23925,10 +23977,11 @@
       "lastVerified": "scraped",
       "sources": "editor-confirmed",
       "partnerBrands": "needs-review",
-      "eligibility.salaryTransferRequired": "needs-review"
+      "eligibility.salaryTransferRequired": "needs-review",
+      "joiningFee": "editor-confirmed"
     },
     "_lastScraped": "2026-11-01",
-    "_lastReviewed": "2026-11-07",
+    "_lastReviewed": "2026-11-09",
     "bank": "emirates-nbd",
     "name": "Emirates NBD Noon One Visa",
     "network": "Visa",
@@ -24461,6 +24514,27 @@
           "rawText": "16 August 2024 – 28 February 2026 (“Promotion                       .)\"‫ (\"فترة العرض‬2026 ‫ فبراير‬28 - 2024 ‫ أغسطس‬16\nPeriod",
           "rawTextSha256": "a9f76d0a7c6597fd7b2da6a6a065f7e4d9495baff237e22229ab266a0dd0c6e2"
         }
+      ],
+      "joiningFee": [
+        {
+          "parserId": "enbd/parseEnbdKfsFees/08-2026",
+          "productScope": "noon One; joining fee; zero-based column 5; literal Free",
+          "unit": "AED",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+          "capturedAt": "2026-11-08T15:42:28.252Z",
+          "sourceTextSha256": "2a59c7a950a88e2568381753ab6fc3cf40ca4791ab5ab549f44a39ce613fbc30",
+          "sourceBodySha256": "32a0c9a99210039fa0f9a49fb6437d5465a3e97d0cee4c1962a4b37db42bf241",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceStartByte": 1509,
+          "sourceEndByte": 1995,
+          "firstLine": 15,
+          "lastLine": 16,
+          "rawText": "                           UBE Signature        Visa Flexi   Lulu 247 Platinum       Darna Select      Lulu 247 Titanium       noon One          Duo      dnata Platinum         Platinum      Go4it Platinum        Go4it Gold       SHARE Platinum\n                                 525               735               525                  Free                Free                Free           840             525                735            208.95              103.95                Free",
+          "rawTextSha256": "6f3031a4ea0678a99a024d9cec99b4c048ff385141f2825fb64645d9ea58d119"
+        }
       ]
     },
     "fxFeeVatTreatment": "inclusive",
@@ -24523,6 +24597,10 @@
     "_dataIssues": {
       "eligibility": "The product-specific salary minimum is separately evidenced where published. The reviewed product, KFS and shared credit-card terms do not establish a universal salary-transfer rule or transfer-related clawback. Confirm application-specific conditions; unknown does not mean not required.",
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
+    },
+    "joiningFee": {
+      "amount": 0,
+      "currency": "AED"
     }
   },
   "emirates-nbd-priority-banking-visa-infinite": {
@@ -24543,10 +24621,11 @@
       "partnerBrands": "needs-review",
       "annualFeeWaiver": "editor-corrected",
       "eligibility.invitationOnly": "editor-corrected",
-      "eligibility.salaryTransferRequired": "needs-review"
+      "eligibility.salaryTransferRequired": "needs-review",
+      "joiningFee": "editor-confirmed"
     },
     "_lastScraped": "2026-09-13",
-    "_lastReviewed": "2026-11-07",
+    "_lastReviewed": "2026-11-09",
     "bank": "emirates-nbd",
     "name": "Emirates NBD Priority Banking Visa Infinite",
     "network": "Visa",
@@ -24943,6 +25022,27 @@
           "rawText": "- 1% Plus points for Supermarkets and groceries, insurance, car dealerships, fuel, utility Payments, real estate, charity, education, quick service restaurant (fast-food restaurant), transit, government services, telecommunication transactions & spends originating in European Union (EU) countries.",
           "rawTextSha256": "0084b7cb258ef83334335b33afbcac29be51d7ce0d4f0e1191f3f7f7b8125128"
         }
+      ],
+      "joiningFee": [
+        {
+          "parserId": "enbd/parseEnbdKfsFees/08-2026",
+          "productScope": "Priority Banking Infinite; joining fee; zero-based column 0; literal Free",
+          "unit": "AED",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+          "capturedAt": "2026-11-08T15:42:28.252Z",
+          "sourceTextSha256": "2a59c7a950a88e2568381753ab6fc3cf40ca4791ab5ab549f44a39ce613fbc30",
+          "sourceBodySha256": "32a0c9a99210039fa0f9a49fb6437d5465a3e97d0cee4c1962a4b37db42bf241",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceStartByte": 1025,
+          "sourceEndByte": 1507,
+          "firstLine": 12,
+          "lastLine": 13,
+          "rawText": "         Joining           Priority Banking Infinite Voyager World Elite Voyager World Etihad Guest Limitless/Elevate dnata World Skywards Signature SHARE Signature                                        Etihad Guest Inspire Darna Signature\n         Fee (AED)                     Free                   2,098.95                  Free                         2,625                  1,048.95             1,573.95                   Free                     1,575                    315",
+          "rawTextSha256": "d804b94bb459ef5ce7018574b6fded66745e63ba81d9905440ba2459add73fed"
+        }
       ]
     },
     "fxFeeScope": "issuer-fx-charges-only",
@@ -24989,6 +25089,10 @@
       "eligibility": "The product-specific salary minimum is separately evidenced where published. The reviewed product, KFS and shared credit-card terms do not establish a universal salary-transfer rule or transfer-related clawback. Confirm application-specific conditions; unknown does not mean not required.",
       "earnRates": "Native Plus Points and source-stated percentage rows are not unconditional cash returns. Cashback redemption is AED 0.75 per point, while selected non-cash redemptions are AED 1. Per-statement caps and exclusions apply.",
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
+    },
+    "joiningFee": {
+      "amount": 0,
+      "currency": "AED"
     }
   },
   "emirates-nbd-share-visa-infinite": {
@@ -25759,10 +25863,11 @@
       "perks": "editor-confirmed",
       "_features": "needs-review",
       "partnerBrands": "needs-review",
-      "eligibility.salaryTransferRequired": "needs-review"
+      "eligibility.salaryTransferRequired": "needs-review",
+      "joiningFee": "editor-confirmed"
     },
     "_lastScraped": "2026-11-01",
-    "_lastReviewed": "2026-11-07",
+    "_lastReviewed": "2026-11-09",
     "_scraped_freetext": {
       "welcomeBonus": "Welcome bonus of 5,000 SHARE Points equal to AED 500 [Get your Card instantly](https://apply",
       "annualFeeWaiver": "Free for life — no annual or joining fee.",
@@ -26226,6 +26331,27 @@
           "rawText": "16 August 2024 – 31 May 2026 (“Promotion‬‬           ‫من ‪ 16‬أغسطس ‪ 2024‬إلى ‪ 31‬مايو ‪\"( 2026‬فترة العرض‬\n‫‪Period",
           "rawTextSha256": "86be5789309b47482d002ef3579b517b1332e527e8610ba7617c72410832e782"
         }
+      ],
+      "joiningFee": [
+        {
+          "parserId": "enbd/parseEnbdKfsFees/08-2026",
+          "productScope": "SHARE Signature; joining fee; zero-based column 6; literal Free",
+          "unit": "AED",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+          "capturedAt": "2026-11-08T15:42:28.252Z",
+          "sourceTextSha256": "2a59c7a950a88e2568381753ab6fc3cf40ca4791ab5ab549f44a39ce613fbc30",
+          "sourceBodySha256": "32a0c9a99210039fa0f9a49fb6437d5465a3e97d0cee4c1962a4b37db42bf241",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceStartByte": 1025,
+          "sourceEndByte": 1507,
+          "firstLine": 12,
+          "lastLine": 13,
+          "rawText": "         Joining           Priority Banking Infinite Voyager World Elite Voyager World Etihad Guest Limitless/Elevate dnata World Skywards Signature SHARE Signature                                        Etihad Guest Inspire Darna Signature\n         Fee (AED)                     Free                   2,098.95                  Free                         2,625                  1,048.95             1,573.95                   Free                     1,575                    315",
+          "rawTextSha256": "d804b94bb459ef5ce7018574b6fded66745e63ba81d9905440ba2459add73fed"
+        }
       ]
     },
     "fxFeeVatTreatment": "inclusive",
@@ -26280,6 +26406,10 @@
       "eligibility": "The product-specific salary minimum is separately evidenced where published. The reviewed product, KFS and shared credit-card terms do not establish a universal salary-transfer rule or transfer-related clawback. Confirm application-specific conditions; unknown does not mean not required.",
       "_features": "Some previously listed benefit allowances, operators or locations have not been confirmed by the reviewed current terms. Read the individual benefits and conditions in this profile; unconfirmed allowances are not used for benefit matching.",
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
+    },
+    "joiningFee": {
+      "amount": 0,
+      "currency": "AED"
     }
   },
   "emirates-nbd-skywards-infinite": {
@@ -27430,10 +27560,11 @@
       "lastVerified": "scraped",
       "sources": "editor-confirmed",
       "partnerBrands": "needs-review",
-      "eligibility.salaryTransferRequired": "needs-review"
+      "eligibility.salaryTransferRequired": "needs-review",
+      "joiningFee": "editor-confirmed"
     },
     "_lastScraped": "2026-11-01",
-    "_lastReviewed": "2026-11-07",
+    "_lastReviewed": "2026-11-09",
     "bank": "emirates-nbd",
     "name": "Emirates NBD U by Emaar Family",
     "network": "Visa",
@@ -27687,6 +27818,27 @@
           "rawText": "- 1% for all spends",
           "rawTextSha256": "382165984b1ab2f352b669c3b1a1c1afc2255b7da049839707e887a5bd6c95cc"
         }
+      ],
+      "joiningFee": [
+        {
+          "parserId": "enbd/parseEnbdKfsFees/08-2026",
+          "productScope": "UBE Family; joining fee; zero-based column 0; literal Free",
+          "unit": "AED",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+          "capturedAt": "2026-11-08T15:42:28.252Z",
+          "sourceTextSha256": "2a59c7a950a88e2568381753ab6fc3cf40ca4791ab5ab549f44a39ce613fbc30",
+          "sourceBodySha256": "32a0c9a99210039fa0f9a49fb6437d5465a3e97d0cee4c1962a4b37db42bf241",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceStartByte": 1997,
+          "sourceEndByte": 2308,
+          "firstLine": 18,
+          "lastLine": 19,
+          "rawText": "                            UBE Family        Titanium       Man United        Business Rewards          Business Card       Webshopper         Chairman Card\n                               Free             420             262.50                 1,575                 787.50              52.50              8,000",
+          "rawTextSha256": "db66b956cc51490f12f1d947b73707138dd38b5b7350994930373fcc43dd506a"
+        }
       ]
     },
     "fxFeeVatTreatment": "inclusive",
@@ -27713,6 +27865,10 @@
     "_dataIssues": {
       "eligibility": "The product-specific salary minimum is separately evidenced where published. The reviewed product, KFS and shared credit-card terms do not establish a universal salary-transfer rule or transfer-related clawback. Confirm application-specific conditions; unknown does not mean not required.",
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
+    },
+    "joiningFee": {
+      "amount": 0,
+      "currency": "AED"
     }
   },
   "emirates-nbd-u-by-emaar-infinite": {
@@ -29731,10 +29887,11 @@
       "lastVerified": "scraped",
       "sources": "editor-confirmed",
       "partnerBrands": "needs-review",
-      "eligibility.salaryTransferRequired": "needs-review"
+      "eligibility.salaryTransferRequired": "needs-review",
+      "joiningFee": "editor-confirmed"
     },
     "_lastScraped": "2026-11-01",
-    "_lastReviewed": "2026-11-07",
+    "_lastReviewed": "2026-11-09",
     "bank": "emirates-nbd",
     "name": "Emirates NBD Voyager World Credit Card",
     "network": "Mastercard",
@@ -30277,6 +30434,27 @@
           "rawText": "Rewards Capping per‬‬\n                                        ‫‪Up to 200,000 Voyager Miles‬‬          ‫‪Up to 100,000 Voyager Miles",
           "rawTextSha256": "78b90f742e1bbe65647e9defdb9a780f0ead68a20615f79579e7cb1af9d595a0"
         }
+      ],
+      "joiningFee": [
+        {
+          "parserId": "enbd/parseEnbdKfsFees/08-2026",
+          "productScope": "Voyager World; joining fee; zero-based column 2; literal Free",
+          "unit": "AED",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+          "capturedAt": "2026-11-08T15:42:28.252Z",
+          "sourceTextSha256": "2a59c7a950a88e2568381753ab6fc3cf40ca4791ab5ab549f44a39ce613fbc30",
+          "sourceBodySha256": "32a0c9a99210039fa0f9a49fb6437d5465a3e97d0cee4c1962a4b37db42bf241",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceStartByte": 1025,
+          "sourceEndByte": 1507,
+          "firstLine": 12,
+          "lastLine": 13,
+          "rawText": "         Joining           Priority Banking Infinite Voyager World Elite Voyager World Etihad Guest Limitless/Elevate dnata World Skywards Signature SHARE Signature                                        Etihad Guest Inspire Darna Signature\n         Fee (AED)                     Free                   2,098.95                  Free                         2,625                  1,048.95             1,573.95                   Free                     1,575                    315",
+          "rawTextSha256": "d804b94bb459ef5ce7018574b6fded66745e63ba81d9905440ba2459add73fed"
+        }
       ]
     },
     "fxFeeVatTreatment": "inclusive",
@@ -30323,6 +30501,10 @@
       "earnRates": "Native miles-per-AED units are confirmed. Reduced categories/EU-UK earn 25% or 10% of base; native per-statement cap applies. No unconditional all-spend or total annual return is calculated.",
       "_features": "Some previously listed benefit allowances, operators or locations have not been confirmed by the reviewed current terms. Read the individual benefits and conditions in this profile; unconfirmed allowances are not used for benefit matching.",
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
+    },
+    "joiningFee": {
+      "amount": 0,
+      "currency": "AED"
     }
   },
   "emirates-nbd-webshopper": {

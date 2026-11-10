@@ -112,7 +112,10 @@ export function reviewBankDocumentSources(registry: DocumentRegistry, captures: 
       }
     } else if (!holds.length && route.bank === 'hsbc') {
       const hsbc = source('hsbc-kfs');
-      const selected = hsbc && route.slug === 'hsbc-live-plus' ? parseHsbcCardKfs(hsbc, route.slug) : [];
+      // The retained HTTP body is a PDF; parser lines refer to the separate
+      // pdftotext-layout text, never an HTML/decoded-response-body string.
+      const selected = hsbc && route.slug === 'hsbc-live-plus' ? parseHsbcCardKfs({ ...hsbc,
+        sourceRepresentation: 'pdftotext-layout', captureMethod: 'public-http-reader' }, route.slug) : [];
       if (!selected.length) holds.push('Named HSBC Live+ KFS section absent or changed');
       else observations.push(...selected);
     }

@@ -7,6 +7,40 @@ Authority remains CLAUDE.md (including the 27 September sourcing and
 airline/hotel desk mandates. The Managing Editor owns the shift; agent role
 files do not run themselves.
 
+## Operating activation — 2026-11-09
+
+The preparation-only description above is retained as history. After Mostafa
+directed **"ok do it all"** in response to the six operating priorities,
+one local chat task, **DubaiPoints daily news desk**
+(`dubaipoints-daily-news-desk`), was created ACTIVE through the app for
+09:30 each day in the owner's Asia/Dubai context. Its saved prompt and active
+state were read back. The existing preflight was manually exercised and
+actual RSS/monitor outcomes inspected before scheduling.
+
+The task returns to this chat to triage, prepare source-bounded drafts and
+identify review decisions. It does not publish, merge, approve its own work,
+spend provider credits, send outreach or activate new feeds/monitors. Its
+prompt preserves the existing queue/dispositions, earlier evidence holds,
+contributor/COI and article-specific acceptance gates. Repeated runs should
+not produce duplicate drafts or no-op PRs. The old PR323 deployment task
+remains PAUSED and is not reused.
+
+After the owner's no-email clarification the saved task was narrowed further:
+scheduled shifts return local drafts/findings here only. They must not push
+branches, open/close GitHub issues or PRs, email, call, message or submit forms.
+No sender-identity request remains active. Separately directed interactive
+engineering releases retain their own Council/CI/preview gates; the task
+does not acquire that authority merely because it is scheduled.
+
+This is local scheduled work: the computer must be on, the desktop app
+running and the project/source access available. It is not a cloud-hosted
+24/7 editor, guaranteed daily story output or a production-publication
+schedule. Review early runs in the app. No paid-monitor collection recovery
+is implied by activating a free drafting/review hand-off.
+
+[Official app scheduling documentation](https://learn.chatgpt.com/docs/automations?surface=app),
+read 2026-11-09; original read-only command and first-shift evidence below.
+
 ## Before each staffed shift
 
 Run `node scripts/newsroom/report.mjs` from the repository root. Optional
@@ -39,7 +73,9 @@ This tool does not make those external checks or declare their recovery.
    hold, burn or check? Distinguish a fresh change from evergreen explanation,
    duplicate reporting and a claim with no established UAE applicability.
    Incident/safety/security stories and their associated disruptions remain
-   excluded. Escalate uncertain scope; no volume quota or numerical ceiling.
+   excluded. Syria-related coverage is also excluded by the owner's
+   9 November ruling; the withdrawn Etihad candidate must not be revived.
+   Escalate uncertain scope; no volume quota or numerical ceiling.
 3. Commission a **quick hit (120–250 words)**, **standard (300–550 words)** or
    **analysis (600–900 words)** according to the question. Short does not mean
    unverified. Analysis needs Travel & Experiences countersign before factual
@@ -82,6 +118,10 @@ queue's `ready` label or an unrelated maintenance approval.
 `.council/newsroom/queue.json` records the first shift's two draft commissions,
 one held candidate and one passed-over lead. The earlier held quantitative
 commissions retain their own briefs; they are not silently rescoped here.
+Later on 9 November the owner withdrew Etihad and excluded Syria-related
+coverage: current disposition is one commissioned Accor draft, JA held and
+two passed-over leads (including withdrawn Etihad). The first-shift counts
+above are historical, not an instruction to resume the withdrawn article.
 Human-reviewed edits are deliberate, not ingestion. Its version-1 shape is
 `{ "schemaVersion": 1, "items": [...] }`.
 Each item uses these fields; unsupported fields/stages fail the preflight:

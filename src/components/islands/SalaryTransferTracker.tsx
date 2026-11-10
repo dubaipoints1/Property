@@ -1,5 +1,6 @@
 import { Fragment } from "preact";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { installTrackerResponsiveFocus } from "../../scripts/trackerResponsiveFocus.mjs";
 import { salaryJourneyHref, salaryJourneyParams, salaryJourneyState, type SalaryJourneyState } from "../../lib/readerJourneyState";
 import {
   type SalaryBand,
@@ -152,6 +153,10 @@ function BankIdentity({ offer, journey }: { offer: SalaryTransferOffer; journey:
 }
 
 export default function SalaryTransferTracker({ offers, scope, cardPaths, timelines }: Props) {
+  const trackerRoot = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (trackerRoot.current) return installTrackerResponsiveFocus(trackerRoot.current);
+  }, []);
   // band: index into BANDS, or null = all bands (kept for our thin live
   // data, where defaulting to one band could hide offers).
   const [band, setBand] = useState<number | null>(null);
@@ -330,7 +335,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
   };
 
   return (
-    <section class="dpst dpst-responsive" aria-label="UAE salary-transfer offer tracker">
+    <section ref={trackerRoot} class="dpst dpst-responsive" aria-label="UAE salary-transfer offer tracker">
       {/* CONTROLS */}
       <div class="dpst-controls">
         {!scope && <>
@@ -555,7 +560,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                         <td colSpan={6}>
                           <div class="dpst-detail">
                             <div class="dpst-detail-inner">
-                              <Detail o={o} />
+                              {isOpen && <Detail o={o} />}
                             </div>
                           </div>
                         </td>
@@ -611,7 +616,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                   </button>
                   <div class="dpst-card-detail" id={`dpst-mobile-${o.id}`} hidden={!isOpen}>
                     <div class="dpst-card-detail-inner">
-                      <Detail o={o} />
+                      {isOpen && <Detail o={o} />}
                     </div>
                   </div>
                 </div>

@@ -103,6 +103,29 @@ test("a review's curated comparison and editorial matchup remain their own desti
   assert.equal(new URL(generic.href, "https://dubaipoints.ae").searchParams.get("cards"), "b,a");
 });
 
+test("reading a Finder review never manufactures an explicit comparison selection", () => {
+  const review = new Link("/cards/a/", false, false, "a");
+  const quick = new Link("/cards/compare/?cards=a", false, true, "a");
+  runJourney("/cards/finder/", "?salary=15000&prefer=cashback&cv_spend=12345", [review, quick], ["a", "b"]);
+  const target = new URL(review.href, "https://dubaipoints.ae");
+  assert.equal(target.searchParams.has("cards"), false);
+  assert.equal(target.searchParams.get("via"), "finder");
+  assert.equal(target.searchParams.get("cv_spend"), "12345");
+  assert.equal(new URL(quick.href, "https://dubaipoints.ae").searchParams.get("cards"), "a,b");
+});
+
+test("explicit Finder selections follow the reader's order into reviews and disappear when cleared", () => {
+  const review = new Link("/cards/a/", false, false, "a");
+  const { location, handlers } = runJourney("/cards/finder/", "?cards=b,a&salary=15000&cv_spend=12345", [review], ["a", "b"]);
+  assert.equal(new URL(review.href, "https://dubaipoints.ae").searchParams.get("cards"), "b,a");
+  location.search = "?salary=15000&cv_spend=12345";
+  handlers.get("dp:card-selection")!();
+  const cleared = new URL(review.href, "https://dubaipoints.ae");
+  assert.equal(cleared.searchParams.has("cards"), false);
+  assert.equal(cleared.searchParams.get("salary"), "15000");
+  assert.equal(cleared.searchParams.get("cv_spend"), "12345");
+});
+
 test("the actual results event refreshes quick Compare suggestions after ranking and popstate", () => {
   const ranker = readFileSync("src/scripts/cardFinder.mjs", "utf8");
   assert.match(ranker, /document\.dispatchEvent\?\.\(new CustomEvent\("dp:card-results"/);

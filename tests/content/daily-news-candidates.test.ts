@@ -40,3 +40,18 @@ test('a maintenance Chairman approval cannot waive daily article UX or Standards
     assert.equal(mutated['chairman-status'] === 'approved' && stages.every(key => mutated[key] === 'complete'), false);
   }
 });
+
+test('the owner-withdrawn subject stays outside publication and active commissioning', () => {
+  const queue = JSON.parse(readFileSync('.council/newsroom/queue.json', 'utf8'));
+  const withdrawn = queue.items.find((item: { id: string }) => item.id === 'daily-news-etihad-damascus-daily');
+  assert.equal(withdrawn.stage, 'passed-over');
+  assert.equal(withdrawn.disposition.status, 'passed-over');
+  assert.match(withdrawn.disposition.reason, /Owner withdrew/);
+  const brief = doc(readFileSync('.council/briefs/2026-11-09-daily-news-etihad-damascus-daily.md', 'utf8'));
+  assert.equal(brief.data['chairman-status'], 'rejected');
+  assert.match(readFileSync('CLAUDE.md', 'utf8'), /2026-11-09 — Exclude Syria-related coverage/);
+  for (const entry of entries) {
+    assert.doesNotMatch(readFileSync(entry.file, 'utf8'), /\b(?:Syria|Syrian|Damascus)\b/i,
+      `Owner-excluded subject in public source: ${entry.file}`);
+  }
+});

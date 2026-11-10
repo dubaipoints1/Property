@@ -98,6 +98,9 @@ const COLUMNS = [
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
   .dp-footer-wordmark {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--dp-ui-control);
     font-family: var(--font-display);
     font-weight: 500;
     font-size: 24px;
@@ -124,7 +127,8 @@ const COLUMNS = [
   .dp-footer-col a {
     display: inline-flex;
     align-items: center;
-    min-block-size: 32px;
+    min-block-size: var(--dp-ui-control);
+    min-inline-size: var(--dp-ui-control);
     padding: 3px 0;
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.82);
@@ -143,13 +147,19 @@ const COLUMNS = [
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.68);
   }
-  .dp-footer-bottom a { color: rgba(255, 255, 255, 0.82); overflow-wrap: anywhere; text-decoration: underline; }
+  .dp-footer-bottom a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--dp-ui-control);
+    color: rgba(255, 255, 255, 0.82);
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+  }
 
   @media (max-width: 900px) {
     .dp-footer { padding-bottom: 64px; }
     .dp-footer-top { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .dp-footer-brand { grid-column: 1 / -1; }
-    .dp-footer-col a { min-block-size: var(--dp-ui-control); }
     .dp-footer-bottom { flex-direction: column; align-items: flex-start; }
   }
 </style>

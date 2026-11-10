@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { gunzipSync } from 'node:zlib';
 import { validateDocumentRegistry, validateRawDocument, reviewBankDocumentSources, type DocumentRegistry, type RawDocumentCapture } from '../../scripts/scrape/_bank-document-review.ts';
+import { parseHsbcCardKfs, type PrimaryCardSource } from '../../scripts/scrape/_bank-parsers.ts';
 
 const registry = (): DocumentRegistry => JSON.parse(readFileSync('scripts/scrape/bank-document-routes.registry.json', 'utf8'));
 const sha = (bytes: string | Uint8Array) => createHash('sha256').update(bytes).digest('hex');
@@ -92,6 +93,42 @@ test('missing/duplicate/wrong-bank/missing-VAT documents fail closed without net
   assert.ok(validateDocumentRegistry(extraUrl).some(error => error.includes('Unrecognised')));
   const role = registry(); role.documents[0].role = 'shared-fees-and-vat';
   assert.ok(validateDocumentRegistry(role).some(error => error.includes('role')));
+});
+
+test('HSBC PDF text representation is explicit on all four observations, with hashes and values unchanged', () => {
+  const captures = harnessCaptures();
+  const hsbcCapture = captures.find(capture => capture.requestedUrl.endsWith('/kfs-credit-cards.pdf'))!;
+  const result = reviewBankDocumentSources(registry(), captures);
+  const observations = result.cards.find(card => card.slug === 'hsbc-live-plus')!.observations as Array<{
+    field: string; value: number; sourceRepresentation: string; captureMethod: string;
+    sourceBodySha256: string; sourceTextSha256: string; capturedAt: string;
+  }>;
+  assert.deepEqual(observations.map(o => [o.field, o.value]), [
+    ['annualFee.amount', 313.95], ['eligibility.minSalary', 10000], ['fxFee', 2.1], ['interestRate.annual', 44.28],
+  ]);
+  for (const observation of observations) {
+    assert.equal(observation.sourceRepresentation, 'pdftotext-layout');
+    assert.equal(observation.captureMethod, 'public-http-reader');
+    assert.equal(observation.sourceBodySha256, hsbcCapture.bodySha256);
+    assert.equal(observation.sourceTextSha256, hsbcCapture.textSha256);
+    assert.equal(observation.capturedAt, hsbcCapture.fetchedAt);
+  }
+});
+
+test('explicit PDF representation does not accept absent body identity or contradictory DOM capture metadata', () => {
+  const capture = harnessCaptures().find(capture => capture.requestedUrl.endsWith('/kfs-credit-cards.pdf'))!;
+  const source: PrimaryCardSource = { url: capture.requestedUrl, capturedAt: capture.fetchedAt,
+    text: capture.text, sourceTextSha256: capture.textSha256, fixtureTextSha256: capture.textSha256,
+    sourceBodySha256: capture.bodySha256, sourceRepresentation: 'pdftotext-layout',
+    captureMethod: 'public-http-reader', firstLine: 1 };
+  assert.equal(parseHsbcCardKfs(source, 'hsbc-live-plus').length, 4);
+  for (const invalid of [
+    { ...source, sourceBodySha256: null },
+    { ...source, sourceBodySha256: 'not-a-sha256' },
+    { ...source, captureMethod: 'normal-public-browser-ui' as const },
+    { ...source, sourceSnapshotSha256: sha('unrelated DOM snapshot') },
+    { ...source, text: source.text + '\nchanged' },
+  ]) assert.deepEqual(parseHsbcCardKfs(invalid, 'hsbc-live-plus'), []);
 });
 
 test('complete raw PDF/text identity is required: an HTTP badge, excerpt or Firecrawl markdown is not enough', () => {

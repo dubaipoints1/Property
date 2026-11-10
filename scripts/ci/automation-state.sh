@@ -55,7 +55,7 @@ branch_exists() {
 # new commit id. Skips paths missing from the working tree.
 build_commit() {
   local base="$1" msg="$2"; shift 2
-  local tmp_index tree parent_args=()
+  local tmp_index tree
   tmp_index="$(mktemp)"
   # Subshell so GIT_INDEX_FILE never leaks to the caller's git.
   tree=$(
@@ -87,9 +87,12 @@ build_commit() {
       echo ""  # no change
       return 0
     fi
-    parent_args=(-p "$base")
+    git commit-tree -p "$base" -m "$msg" "$tree"
+  else
+    # Bash 3.2 treats an empty array expansion as unbound under set -u.
+    # Spell out the orphan case instead of weakening strict mode.
+    git commit-tree -m "$msg" "$tree"
   fi
-  git commit-tree "${parent_args[@]}" -m "$msg" "$tree"
 }
 
 bootstrap() {
