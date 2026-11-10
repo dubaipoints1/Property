@@ -141,3 +141,16 @@ The owner instruction covers this maintenance candidate only. Preserve all
 unresolved card/source, collection, privacy/access, physical-device and
 article contributor/final-copy gates. Source gaps are not verified merely
 by the merged endpoint change. No outreach or paid calls are authorised.
+
+### Concurrent merge observation, not retroactive gate evidence
+
+GitHub records loginYazco1 merging PR530 fromf87d28e to mainc8e309c at
+16:02:29UTC on10November. Root did not perform that merge. The pre-merge
+Council run42850488864 still captured Chairman pending and rejected it;
+its advisory green did not establish the required approved-body pass.
+These approval-record edits and the later PR body update were written after
+that merge. They do not retrospectively repair the missing executed gate.
+Main validation42850599571 succeeded; hosting checkcf96cb99 reports success.
+Production environment/aliases and canonical runtime require separate root
+verification. See the10November measurement/merge-observation record for
+the actual chronology. Every follow-on release retains the full live gates.

@@ -14,6 +14,13 @@ normal protected merge and exact production/canonical verification remain.
 This does not accept any private article, fill any unknown financial field,
 authorise spend/outreach or reverse the owner's analytics-setting choice.
 
+Subsequent observation: PR530 was merged concurrently by loginYazco1 at
+16:02:29UTC, before these approval records were pushed. The actual pre-merge
+Council parser still rejected pending; no retroactive approved-gate claim
+is made. Mainc8e309c passed post-merge validation. Hosting checksuccess is
+not independent Production/alias/canonical verification. See the10November
+merge-observation record; root did not execute the concurrent merge.
+
 ## What changed and why
 
 Source accuracy leads scale: accept only seven explicit ENBD joining-fee
