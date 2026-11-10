@@ -62,7 +62,7 @@ export async function firecrawlFetch(url: string): Promise<FetchedSource> {
   }
 
   try {
-    const res = await fetch("https://api.firecrawl.dev/v1/scrape", {
+    const res = await fetch("https://api.firecrawl.dev/v2/scrape", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -72,6 +72,7 @@ export async function firecrawlFetch(url: string): Promise<FetchedSource> {
         url,
         formats: ["markdown", "html"],
         onlyMainContent: true,
+        maxAge: 0, // v2 serves up to 2-day-old cached pages by default; a stale page could hide an offer or T&C change.
       }),
     });
     if (!res.ok) {
