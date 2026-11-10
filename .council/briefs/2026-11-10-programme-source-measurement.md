@@ -3,12 +3,12 @@ slug: programme-source-measurement
 tier: T3
 vertical: travel-experiences
 assigned-editor: managing-editor
-research-status: pending
-seo-status: pending
+research-status: complete
+seo-status: complete
 draft-status: complete
-factcheck-status: pending
-ux-status: pending
-standards-status: pending
+factcheck-status: complete
+ux-status: complete
+standards-status: complete
 tech-status: pending
 chairman-status: pending
 target-publish: 2026-11-10

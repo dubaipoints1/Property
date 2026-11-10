@@ -75,6 +75,66 @@ performance gain is claimed. Obtain clean comparable and/or actual hosting
 preview mobile evidence, investigate regressions and complete Technical
 approval before protected merge. Branch preview is not production.
 
+### Later clean and hosted measurements — 16:51 UTC checkpoint
+
+The clean actual-main local baseline repeats90/90 across three runs per
+route, uncompressed and above the byte budget. Actual Cloudflare branch
+preview95af517a gives Skywards90/92/91 (median91, medianLCP2706ms,
+187.7KBabove-fold) and Hyatt95/88/88 (median88, medianLCP3149ms,
+194.3KBabove-fold). CLS0; accessibility/best-practices100. These are
+retained failures, not a95+ clearance or field-speed measurement. Preview
+SEO69 is not yet diagnosed and is not asserted to be a production defect.
+
+Read-only Technical diagnosis finds both existing hero images already
+eager/high-priority/discoverable. Seven stylesheets block rendering; the
+largest full-site bundle is124,993raw/26,288transferredbytes. Estimated
+600–750ms render-blocking savings are an optimisation hypothesis, not a
+verified gain. A disposable exact-CSS delivery comparison is underway;
+production source, release approval and merge remain held meanwhile.
+
+### Exact-style hosted experiment candidate — later checkpoint
+
+Added a ten-route-only postbuild delivery helper for a hosted comparison.
+It reuses the existing fail-closed exact-CSS validator, substitutes each
+complete stylesheet at its own original cascade position and retains all
+rules, asset URLs, fonts, body markup and executable scripts. No asynchronous
+style loader or new dependency. All ten route/asset identities, symlinks,
+UTF-8 and drift checks complete before writes; input failure fails build.
+The existing homepage transform's API/output remain unchanged. Root tightened
+literal identity checks after independent review: comment/script examples
+and duplicate canonicals cannot stand in for the actual route identity.
+
+The disposable compressed A/B records99median for both routes in both
+variants, with simulatedLCP2104/2103→1951ms, not a field-speed promise.
+Inlining adds roughly31KBcompressedHTML and loses shared stylesheet caching;
+the modest cold-visit benefit alone does not clear the hosted HOLD.
+The older local Hyatt HTML lacked the two late explicit news relationships,
+whereas the identified hosted preview includes them. Thus that A/B describes
+its exact older local content only, not final-content visual equality.
+
+A fresh final-content build now includes those relationships. Check passes
+0errors/0warnings/7hints; full suite1,221pass/0fail/skip. The first full-suite
+attempt lacked local-server permission and failed29EPERM tests; it was not
+waived, and the permitted complete rerun passed. Build/Pagefind338pages;
+23,695internal links resolve,70fewer than priorCI because seven stylesheet
+links on each of ten routes become inline styles, not lost reader links.
+New45test focused delivery/home/CSP suite passes; independent source review
+is recorded separately, with final identity-hardening read-back still due.
+
+Fresh programme-hub audit again passes160resize/theme states and20scoped
+expanded axe states (contrast incompletes retained); existing programme-flow
+audit passes140states. Current mobile closed heights755pxSkywards/538pxHyatt.
+New Hyatt light-mobile/dark-desktop screenshots show genuine published
+coverage and were supplied to the owner. Actual compiled homepage index is
+byte-identical to its pre-style-change baseline. Exact hosted-variant
+performance, independent final review and release approval remain pending.
+
+Subsequent independent identity read-back bycard10_source_repair passes
+all45focusedtests after the five new comment/script/duplicate negatives.
+Final full suite again passes1,221/0fail/skip; rebuilt338indexedpages and
+23,695internal links pass. Homepage actual byte comparison still passes.
+This clears source/code review, not the hosted speed or Chairman gates.
+
 ## External and publication holds
 
 Actual10November monitoring supersedes the morning no-run snapshot: today
@@ -91,6 +151,31 @@ remain unchanged by owner choice. Search Console property/access uncertain;
 no verification or new permission inferred. Project-record retry permission
 was requested; no new Drive write yet. All private article contributor/COI/
 copy gates, incident/Syria exclusions and no-outreach remain.
+
+### Later external-state verification — 16:51 UTC checkpoint
+
+The signed-out observation above is superseded after Mostafa confirmed
+sign-in. Authenticated Chrome independently verifies Cloudflare Production /
+main / c8e309c1e5069da689b637b69125476dfd291c0e / success, deployment
+cf96cb99-08c6-4391-aea6-326b822034ae, displayed20:04Dubai10November with
+both dubaipoints.ae and www.dubaipoints.ae aliases. This verifies the earlier
+PR530 deployment only; PR534's new hubs are preview-only, not live.
+
+Mostafa also explicitly authorised one fresh verified attempt to update
+DubaiPoints' status/decision records, preserving Claude QA and history.
+Complete raw index/README/status/decisions have been fetched and compared
+with the earlier complete copies; no Drive write yet. Final record content
+will state the actual release outcome, not a promised merge.
+
+GitHub main is stillc8e309c and PR534 is draft at ea97cd3e. Exact-head
+validation42856823750 genuinely executes and passes1,213tests with0fail/
+skip, check/build successful and23,765resolvedinternal links (the local
+build above had23,769; retain each environment's actual receipt). Council
+42856823964 is advisory green but its executed parser rejects pending;
+this is not approval. WioPR533 closed16:08:53UTC without merge; no data
+acceptance inferred. Monitoring/RSS actual runs remain42818765529 and
+42824186681, with the same two credit-held collections and three delivered
+unread discovery leads. No forced collection or publication was initiated.
 
 ## Release procedure
 

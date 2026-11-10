@@ -61,3 +61,36 @@ Result: **64 pass, 0 fail, 0 skipped**. `bash -n scripts/ci/post-digest.sh` and 
 | `tests/analytics/readiness.test.ts` | `b196c140f18abc4b071c50821b337222b23707e05d4a2193ad693ead1f8819be` |
 
 Role conclusions: **Technical pass after edits; Standards pass; Growth/Analytics pass for readiness/limits only; Managing Editor pass for bounded operational controls.** Root still owns full combined tests/rendering, independent review of my own age candidate, exact-head Council/Chairman and protected release/deployment verification. No approval can be inferred for a later changed implementation without reviewing its delta.
+
+## Later independent review: programme-only exact CSS delivery
+
+Reviewer: the same `card10_source_repair` delegate; implementation author is root, not this reviewer. Verdict: **source/code Technical pass within the tested contract; performance release HOLD is not lifted**. This review made no implementation edit, push, account change or browser certification.
+
+Read the new `scripts/build/programme-style-delivery.mjs`, the actual shared-transform diff in `home-style-delivery.mjs`, the package postbuild change and all eight new tests. The shared helper refactor adds only a private scope parameter and two public wrappers: the historical homepage transform retains its `home` marker, while programme output uses its own marker. The existing active homepage routing/bundling CLI is unchanged. The new runner explicitly lists ten programme routes, verifies each route's expected canonical/hub marker, decodes HTML/CSS with fatal UTF-8 handling and validates all routes/assets before its write loop. A further exact-byte drift re-read precedes that loop. Individual I/O write failure is still a build failure, not a claim of an atomic multi-file transaction.
+
+The pure transform reuses the existing strict CSS/link validator. Exact CSS remains at each original cascade position, including stylesheets separated by scripts; root-absolute/data resource URLs retain their base. Unknown link attributes, traversal/external/relative resources, imports, image-set, escaped functions and raw HTML terminators fail closed rather than being guessed or rewritten. Per-style fingerprints support deterministic idempotence and detect inline tampering. Body bytes, executable-script inventory, shared asset bytes, homepage and unlisted outputs are preserved by the focused fixture checks. Regular-file/realpath checks reject symlinked programme ancestors, HTML, CSS, `_astro` and direct dist links. Missing/unsafe/non-UTF-8 later inputs leave earlier route files unchanged in the tested preflight cases.
+
+The canonical/hub identity preflight is intentionally literal-presence recognition of known Astro output, not a general HTML DOM identity validator; an expected string embedded in a comment/script is outside its demonstrated identity guarantee. I flagged that hardening consideration to root. Final actual rendered canonical/hub verification remains root's responsibility; do not describe these source guards as a universal HTML security parser.
+
+Postbuild runs programme delivery after the separate homepage pass and before Pagefind, CSP and internal-link validation, retaining every existing gate. I independently ran:
+
+`node --import tsx --test tests/build/programme-style-delivery.test.ts tests/build/home-style-delivery.test.ts tests/build/home-style-route.test.ts tests/build/home-style-bundle.test.ts tests/build/csp-hashes.test.ts`
+
+Result: **45 pass, zero failures/skips**, including all eight new programme tests and homepage/CSP regressions. An actual diff read shows no change in homepage source, BaseLayout, existing CSP policy, headers or Google tag/settings wiring for this optimisation.
+
+Trade-off: inlining removes external stylesheet request dependencies but repeats CSS in each HTML response and gives up separate stylesheet cache reuse on these routes. It does not purge selectors or reduce the CSS rule payload. Any speed improvement is still an experiment until comparable rendered/hosted measurements and the required budget pass; the earlier 88–95 samples and above-fold budget failures are not erased by this code review. No 95+ performance, whole-site accessibility, physical-iPhone or live-deployment claim follows from these tests.
+
+| Later reviewed file | SHA-256 |
+|---|---|
+| `scripts/build/programme-style-delivery.mjs` | `4ea1e44ae0bf0ccd757acd0559bc873e934ca24830e3b04c792f1b71742777ca` |
+| `scripts/build/home-style-delivery.mjs` | `17b7ea7064828b7c9e5a55d852ea1aec3dc7d540bbdbd2d0926c7e6f83063ebb` |
+| `tests/build/programme-style-delivery.test.ts` | `a04c2fcfb87d198cfc74e90fc98a76b4884fd3af6172c5877ce10640abdcfaf9` |
+| `package.json` | `97e883b5601d8b0428ee30d1788ccbd6ac4268f9de70a09cd267f95e83b6cca4` |
+
+### Superseding identity hardening read-back
+
+Root subsequently replaced the literal-presence identity check described above with token-aware checking that consumes HTML comments and complete raw script/style elements before considering actual link/section tags. I independently read the revised helper and its five added negative variants: expected canonical only inside a comment or script, duplicate actual canonicals, and expected programme section only inside a comment or script. The helper now requires exactly one actual canonical token with the exact expected route and exactly one actual section carrying that route's programme identifier. The earlier comment/script-spoofing hardening consideration is therefore **resolved for these explicit generated-output cases**, not left open or silently omitted. This remains a bounded generated-Astro HTML check, not a universal browser parser.
+
+I re-ran the same five-file focused suite after that change: **45 tests passed, zero failures/skips**, including the eight programme tests with all five new identity negatives and the homepage/CSP regressions. No implementation edits or Chrome launch by this reviewer. **Source/code PASS is reaffirmed; comparable hosted performance/budget evidence, final combined Council and exact-head release/production checks remain pending and are not waived.** The cache/HTML-size trade-off and previous failed lab observations remain as recorded above. Root's separately reported compiled-homepage byte comparison is not represented as my own browser observation.
+
+Updated frozen identities, superseding the two corresponding rows above: `scripts/build/programme-style-delivery.mjs` SHA-256 `c0c36e0694bbe810a30c4b66161eb61f7d894b765be7fe2ced341899370b40e8`; `tests/build/programme-style-delivery.test.ts` SHA-256 `150618a5ffabd3fad54a648f38409332234c66061c5c168a639daa4d48ab5434`. Shared home helper and package hashes remain unchanged from the preceding table.

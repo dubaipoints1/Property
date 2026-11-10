@@ -155,8 +155,10 @@ function splitHead(html) {
  * Every stylesheet is validated before a result is returned. Existing
  * verified markers make a second run a no-op, without reading CSS again.
  */
-export function transformHomepageStyles(html, readCss) {
+function transformCompiledStyles(html, readCss, scope) {
   const parts = splitHead(html);
+  const marker = `data-dp-${scope}-css`;
+  const markerPattern = new RegExp(`\\b${marker}\\s*=`, "i");
   const styles = [];
   let inlinedCount = 0;
   const head = parts.head.replace(TOKEN, token => {
@@ -168,12 +170,12 @@ export function transformHomepageStyles(html, readCss) {
       const sha256 = hash(css);
       styles.push({ href, bytes: byteLength(css), sha256 });
       inlinedCount += 1;
-      return `<style data-dp-home-css="${href}" data-dp-css-sha256="${sha256}">${css}</style>`;
+      return `<style ${marker}="${href}" data-dp-css-sha256="${sha256}">${css}</style>`;
     }
-    if (/^<style\b/i.test(token) && /\bdata-dp-home-css\s*=/i.test(token)) {
+    if (/^<style\b/i.test(token) && markerPattern.test(token)) {
       const attrs = attributes(token, "style");
       if (attrs.size !== 2 || !attrs.has("data-dp-css-sha256")) throw Error("Unsupported homepage inline CSS marker");
-      const href = safeAssetHref(attrs.get("data-dp-home-css"));
+      const href = safeAssetHref(attrs.get(marker));
       const css = token.slice(token.indexOf(">") + 1, token.lastIndexOf("</"));
       checkCss(css);
       const sha256 = hash(css);
@@ -193,6 +195,17 @@ export function transformHomepageStyles(html, readCss) {
     htmlBytesAfter: byteLength(transformed),
     fingerprint: hash(styles.map(style => `${style.href}\0${style.sha256}\n`).join("")),
   };
+}
+
+// Keep the historical homepage transform's public contract and output exact.
+export function transformHomepageStyles(html, readCss) {
+  return transformCompiledStyles(html, readCss, "home");
+}
+
+// The programme runner supplies its own explicit route/identity preflight.
+// Share the same fail-closed CSS validator; do not maintain a weaker copy.
+export function transformProgrammeStyles(html, readCss) {
+  return transformCompiledStyles(html, readCss, "programme");
 }
 
 /** Only dist/index.html is writable; all reads and checks precede one write. */
