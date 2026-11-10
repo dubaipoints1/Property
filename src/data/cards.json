@@ -32280,6 +32280,8 @@
       "earnUnit": "editor-confirmed",
       "welcomeBonus": "editor-confirmed-null",
       "eligibility": "needs-review",
+      "eligibility.minAge": "editor-corrected",
+      "eligibility.maxAge": "editor-corrected",
       "_features": "editor-confirmed",
       "applyUrl": "editor-confirmed",
       "kfsUrl": "editor-confirmed",
@@ -32288,7 +32290,7 @@
       "partnerBrands": "needs-review"
     },
     "_lastScraped": "2026-09-17",
-    "_lastReviewed": "2026-11-07",
+    "_lastReviewed": "2026-11-10",
     "bank": "hsbc",
     "name": "HSBC Live+ Credit Card",
     "network": "Visa",
@@ -32343,7 +32345,8 @@
         "salaried",
         "self-employed"
       ],
-      "minAge": 21,
+      "minAge": 18,
+      "maxAge": 65,
       "invitationOnly": false
     },
     "perks": [
@@ -32403,6 +32406,42 @@
     },
     "fxFeeScope": "issuer-processing-only",
     "_fieldEvidence": {
+      "eligibility.minAge": [
+        {
+          "parserId": "hsbc/live-plus-product-age/v1",
+          "productScope": "HSBC Live+ Credit Card; product eligibility age only",
+          "unit": "years",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/live-plus/",
+          "capturedAt": "2026-11-10T16:04:11.507Z",
+          "sourceTextSha256": "271f5438d346fe6ec8aa8950f4b32eee52dcc517c6f99be58e650d397b97a3c0",
+          "sourceBodySha256": "970c20a769e1c7f6a5cdb46b36d2a9db2516de102a74808d351cf6ba7e9f8240",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 165,
+          "lastLine": 165,
+          "rawText": "- Be aged between 18 and 65",
+          "rawTextSha256": "fe886f2b6ba70d74e948e99ab0b94d2fedf928f83666397f85bf23c5b305a48b"
+        }
+      ],
+      "eligibility.maxAge": [
+        {
+          "parserId": "hsbc/live-plus-product-age/v1",
+          "productScope": "HSBC Live+ Credit Card; product eligibility age only",
+          "unit": "years",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/live-plus/",
+          "capturedAt": "2026-11-10T16:04:11.507Z",
+          "sourceTextSha256": "271f5438d346fe6ec8aa8950f4b32eee52dcc517c6f99be58e650d397b97a3c0",
+          "sourceBodySha256": "970c20a769e1c7f6a5cdb46b36d2a9db2516de102a74808d351cf6ba7e9f8240",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 165,
+          "lastLine": 165,
+          "rawText": "- Be aged between 18 and 65",
+          "rawTextSha256": "fe886f2b6ba70d74e948e99ab0b94d2fedf928f83666397f85bf23c5b305a48b"
+        }
+      ],
       "fxFee": [
         {
           "parserId": "hsbc/kfs-shared-fx-inclusive/v1",
@@ -32470,7 +32509,7 @@
       "eligibility": "Existing pending salary and uncorroborated monthly-rate holds remain. KFS annual rate cannot by itself establish monthly rate; salary conflict remains unresolved.",
       "interestRate": "Existing pending salary and uncorroborated monthly-rate holds remain. KFS annual rate cannot by itself establish monthly rate; salary conflict remains unresolved.",
       "earnRates": "Stored global minimum-spend cap wrongly suppresses base cashback below the accelerated gate. Entertainment cap also missing; reconcile exact separate caps against KFS.",
-      "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
+      "reviewScope": "Product-page minimum and maximum age only were reviewed on 10 November 2026. Other selected primary-source fields retain their 7 November review and unresolved holds. The earlier source-record and scrape dates have not been advanced; this is not a new whole-card verification. Confirm pending costs, qualification, rewards or benefits before applying."
     }
   },
   "liv-cashback": {

@@ -27,6 +27,7 @@ const { sections, label = "In this article", variant = "article" } = Astro.props
   a[aria-current="location"] { color: var(--green); border-inline-start-color: var(--green); background: var(--paper); font-weight: 700; }
   :is(summary, a):focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
   .dp-programme-contents { margin: 0; padding-inline: 4px; }
+  .dp-programme-contents a { scroll-margin-block: 8px; }
   @media (min-width: 1024px) {
     .dp-programme-contents { max-block-size: calc(100dvh - var(--dp-sticky-header-height, 81px) - 40px); overflow-y: auto; padding-inline: 6px 8px; scrollbar-gutter: stable; scroll-padding-block: 12px; }
   }

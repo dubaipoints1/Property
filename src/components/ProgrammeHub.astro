@@ -1,0 +1,104 @@
+---
+import { getCollection } from "astro:content";
+import { selectProgrammeHub } from "~/lib/programmeHub";
+import NewsStoryRow from "~/components/NewsStoryRow.astro";
+
+interface Props {
+  programme: string;
+  name: string;
+  section: "airlines" | "hotels";
+  transferHref: string | null;
+  hasCalculator: boolean;
+  hasCards: boolean;
+}
+const { programme, name, section, transferHref, hasCalculator, hasCards } = Astro.props;
+const [news, guides, deals] = await Promise.all([getCollection("news"), getCollection("guides"), getCollection("deals")]);
+const coverage = selectProgrammeHub(programme, { news, guides, deals });
+const fmt = (date: Date) => date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const desk = section === "hotels" ? "hotels" : "airlines";
+const actions = [
+  ...(hasCalculator ? [{ href: "#programme-calculator", title: "Cash or points?", detail: "Compare your own fare and reward quote." }] : []),
+  ...(transferHref ? [{ href: transferHref, title: "Find transfer routes", detail: "Check the documented routes and their conditions." }] : []),
+  ...(hasCards ? [{ href: "#programme-cards", title: "Explore UAE earning cards", detail: "Read the product terms before choosing a card." }] : []),
+];
+const [latest, ...earlier] = coverage.news;
+const hasMore = earlier.length > 0 || coverage.guides.length > 0 || coverage.deals.length > 0;
+---
+
+<section class="dp-programme-hub" id="programme-hub" aria-labelledby="programme-hub-heading" data-programme-hub={programme}>
+  <div class="dp-programme-hub-head">
+    <div><p class="dp-programme-hub-kicker">Your programme desk</p><h2 id="programme-hub-heading">Explore {name}</h2></div>
+    <a href="#programme-guide" class="dp-ui-action dp-ui-secondary">Go to the full guide <span aria-hidden="true">↓</span></a>
+  </div>
+  {actions.length > 0 && <nav class="dp-programme-actions" aria-label={`${name} reader tasks`}>
+    {actions.map(action => <a href={action.href}><span>{action.title}</span><small>{action.detail}</small><span class="arrow" aria-hidden="true">→</span></a>)}
+  </nav>}
+
+  <div class="dp-programme-desk">
+    <section class="dp-programme-reporting" aria-labelledby="programme-reporting-heading">
+      <h3 id="programme-reporting-heading">Latest coverage</h3>
+      <p class="dp-programme-note">Original publication dates are retained. Check current terms before acting.</p>
+      {latest ? <ul class="dp-programme-news"><NewsStoryRow post={latest} /></ul>
+        : <p class="dp-programme-empty">No current programme-specific report is listed. The full guide is below.</p>}
+      <a class="dp-programme-more" href={`/news/${desk}/`}>More {section === "hotels" ? "hotel" : "airline"} news <span aria-hidden="true">→</span></a>
+    </section>
+    {hasMore && <details class="dp-programme-more-coverage" data-programme-more>
+      <summary><span>More from this programme</span><small>{earlier.length} earlier reports · {coverage.guides.length} guides · {coverage.deals.length} listed offers</small></summary>
+      <div class="dp-programme-desk-grid">
+      {earlier.length > 0 && <section aria-labelledby="programme-earlier-heading"><h3 id="programme-earlier-heading">Earlier coverage</h3><ul class="dp-programme-news">{earlier.map(post => <NewsStoryRow post={post} />)}</ul></section>}
+      <div class="dp-programme-side">
+      <section aria-labelledby="programme-reading-heading">
+        <h3 id="programme-reading-heading">Plan your next step</h3>
+        {coverage.guides.length > 0 ? <ul class="dp-programme-reading">{coverage.guides.map(guide => <li><a href={`/guides/${guide.id}/`}><span>{guide.data.title}</span><small>Guide updated <time datetime={guide.data.updatedAt.toISOString().slice(0, 10)}>{fmt(guide.data.updatedAt)}</time></small></a></li>)}</ul>
+          : <p class="dp-programme-empty">Start with the programme guide below, then compare the <a href="/valuations/methodology/">points-valuation method</a>.</p>}
+      </section>
+      <section aria-labelledby="programme-offers-heading">
+        <h3 id="programme-offers-heading">Programme offers</h3>
+        {coverage.deals.length > 0 ? <ul class="dp-programme-reading" data-programme-live-offers>{coverage.deals.map(deal => <li><a href={`/deals/${deal.id}/`}><span>{deal.data.title}</span><small>Listed expiry <time datetime={deal.data.expiresOn.toISOString().slice(0, 10)}>{fmt(deal.data.expiresOn)}</time></small></a></li>)}</ul>
+          : <p class="dp-programme-empty">No current programme offer is listed here. This does not mean no offers exist.</p>}
+        <a class="dp-programme-more" href="/deals/">Browse all deals <span aria-hidden="true">→</span></a>
+      </section>
+      </div>
+      </div>
+    </details>}
+  </div>
+</section>
+
+<style>
+  .dp-programme-hub { max-inline-size: var(--container-listing); margin: 0 auto; padding: 24px clamp(16px, 3vw, 32px) 8px; scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px); }
+  .dp-programme-hub-head { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-block-end: 20px; }
+  .dp-programme-hub-kicker { margin: 0 0 8px; color: var(--green); font: 650 .75rem/1.4 var(--font-ui); letter-spacing: .1em; text-transform: uppercase; }
+  .dp-programme-hub h2 { margin: 0; color: var(--ink); font: 550 clamp(1.6rem, 3.2vw, 2.25rem)/1.12 var(--font-display); letter-spacing: -.025em; text-wrap: balance; }
+  .dp-programme-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0 24px; border-block: 1px solid var(--line); margin-block-end: 24px; }
+  .dp-programme-actions a { position: relative; display: grid; gap: 6px; align-content: start; min-inline-size: 0; min-block-size: 76px; padding: 16px 24px 16px 0; color: var(--ink); text-decoration: none; }
+  .dp-programme-actions a > span:first-child { color: var(--green); font: 650 .9375rem/1.35 var(--font-ui); }
+  .dp-programme-actions small { color: var(--ink-soft); font: 400 .8125rem/1.5 var(--font-ui); }
+  .dp-programme-actions .arrow { position: absolute; inset-inline-end: 0; inset-block-start: 16px; color: var(--green); }
+  .dp-programme-desk { padding-block-end: 24px; border-block-end: 1px solid var(--line); }
+  .dp-programme-reporting { max-inline-size: 760px; }
+  .dp-programme-more-coverage { margin-block-start: 12px; border-block-start: 1px solid var(--line); }
+  .dp-programme-more-coverage summary { min-block-size: 44px; padding-block: 14px; cursor: pointer; color: var(--green); font: 650 .9375rem/1.4 var(--font-ui); }
+  .dp-programme-more-coverage summary small { display: block; margin-block-start: 4px; color: var(--ink-soft); font: 400 .8125rem/1.4 var(--font-ui); }
+  .dp-programme-desk-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); padding-block: 16px; }
+  .dp-programme-desk-grid > .dp-programme-side:only-child { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dp-programme-desk-grid > *, .dp-programme-side { min-inline-size: 0; }
+  .dp-programme-hub h3 { margin: 0 0 10px; color: var(--ink); font: 600 1.25rem/1.2 var(--font-display); }
+  .dp-programme-note, .dp-programme-empty { margin: 0 0 10px; color: var(--ink-soft); font: 400 .875rem/1.6 var(--font-ui); }
+  .dp-programme-news, .dp-programme-reading { list-style: none; padding: 0; margin: 0; }
+  .dp-programme-side { display: grid; align-content: start; gap: 28px; }
+  .dp-programme-reading li + li { border-block-start: 1px solid var(--line); }
+  .dp-programme-reading a { display: grid; gap: 5px; min-block-size: 44px; padding-block: 12px; color: var(--ink); text-decoration: none; }
+  .dp-programme-reading span { font: 550 1.0625rem/1.3 var(--font-display); text-wrap: pretty; }
+  .dp-programme-reading small { color: var(--ink-soft); font: 500 .75rem/1.4 var(--font-ui); }
+  .dp-programme-more { display: inline-flex; align-items: center; gap: 8px; min-block-size: 44px; color: var(--green); font: 650 .875rem/1.4 var(--font-ui); }
+  .dp-programme-hub :is(a, summary):focus-visible { outline: 2px solid var(--green); outline-offset: 4px; border-radius: 3px; }
+  .dp-programme-hub a:hover { text-decoration: underline; text-underline-offset: .18em; }
+  @media (max-width: 759px) { .dp-programme-desk-grid { grid-template-columns: minmax(0, 1fr); } .dp-programme-side { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; } }
+  @media (max-width: 479px) {
+    .dp-programme-side, .dp-programme-desk-grid > .dp-programme-side:only-child { grid-template-columns: minmax(0, 1fr); }
+    .dp-programme-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+    .dp-programme-actions a { min-block-size: 44px; padding-inline-end: 0; }
+    .dp-programme-actions a:nth-child(n + 3) { border-block-start: 1px solid var(--line-soft); }
+    .dp-programme-actions .arrow { display: none; }
+  }
+</style>
