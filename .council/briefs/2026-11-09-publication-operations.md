@@ -10,7 +10,9 @@ factcheck-status: complete
 ux-status: complete
 standards-status: complete
 tech-status: complete
-chairman-status: pending
+chairman-status: approved
+chairman-date: 2026-11-10
+chairman-note: Owner explicitly directed finishing the pending release and merging/live only after testing and Council sign-off; scoped maintenance approval under the 6 August amendment, not article acceptance or paid/account changes.
 target-publish: 2026-11-09
 sources-required: 1
 ---
@@ -27,10 +29,13 @@ operating scope under the 6 August amendment. It is not article publication
 clearance, new paid retrieval, commercial outreach or permission to invent
 missing owner declarations and reader observations.
 
-Implementation direction is approved; the frontmatter Chairman cell refers
-to release of this final candidate and remains pending. Owner light/dark
-previews have been provided. This tranche will be staged as a draft PR,
-not merged under the earlier article or PR525 approval.
+Implementation direction was approved on 9 November; release was initially
+pending. On 10 November Mostafa explicitly directed: "Finish the pending
+release ... Test everything and get Council sign-off before merging and
+making it live." This supplies scoped conditional release approval under
+the 6 August amendment, after the actual Council and technical passes.
+Owner light/dark previews were previously supplied. Article-specific
+acceptance, paid work and account/privacy changes remain separate.
 
 Fresh SkyNet index, project README, status and decisions were read first.
 PR525 is already verified live at main `4cd884a`. The stale shared checkout
@@ -117,3 +122,22 @@ local implementation review; exact-head CI, owner release approval and
 production verification remain separate. No article publication, outreach or
 paid recovery is cleared. A final SkyNet decisions read failed; controlled
 record updates stopped with zero writes, without retry or fallback.
+
+## Release direction and exact-head delta review — 2026-11-10
+
+Delegate `release10_exact_head_review`, independent of the maintenance
+authors, inspected exact remote head f87d28e06ee9931a7583aa8b7c13338952bc1fdd
+against both parents and the prior review records. The merge brings only
+main's already-reviewed Firecrawl v2/fresh-fetch correction and matching
+dependency pins; no additional UI, card-value or article changes.
+Both exact-head validation runs actually completed install, source guards,
+check, build and all 1,189 tests with zero failures/skips. The advisory
+Council job ran but rejected the old pending Chairman cell; it is not
+approval. The updated body must be evaluated successfully, and these
+record-only edits require fresh exact-head checks before normal protected
+merge. No hosting or live claim is made by this approval record.
+
+The owner instruction covers this maintenance candidate only. Preserve all
+unresolved card/source, collection, privacy/access, physical-device and
+article contributor/final-copy gates. Source gaps are not verified merely
+by the merged endpoint change. No outreach or paid calls are authorised.

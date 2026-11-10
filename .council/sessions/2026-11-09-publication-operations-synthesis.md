@@ -2,6 +2,18 @@
 
 Date: 2026-11-09. State: implemented local candidate, not merged or live.
 
+## Superseding release direction — 2026-11-10
+
+Mostafa explicitly directed completion of the pending release, testing and
+Council sign-off before merge/live. After `release10_exact_head_review`'s
+independent PASS on exact f87d28e and the genuine 1,189-test CI passes, the
+feature brief records this conditional approval under the 6 August ruling.
+Earlier pending-release statements below are historical. Current-body
+Council evaluation and record-only final-head checks must still succeed;
+normal protected merge and exact production/canonical verification remain.
+This does not accept any private article, fill any unknown financial field,
+authorise spend/outreach or reverse the owner's analytics-setting choice.
+
 ## What changed and why
 
 Source accuracy leads scale: accept only seven explicit ENBD joining-fee
