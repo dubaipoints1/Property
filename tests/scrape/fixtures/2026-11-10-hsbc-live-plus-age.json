@@ -1,0 +1,29 @@
+{
+  "purpose": "Contiguous factual eligibility excerpt and complete HTML capture receipt; not a whole-card verification",
+  "receipt": {
+    "requestedUrl": "https://www.hsbc.ae/credit-cards/products/live-plus/",
+    "finalUrl": "https://www.hsbc.ae/credit-cards/products/live-plus/",
+    "status": 200,
+    "type": "text/html;charset=utf-8",
+    "transportComplete": true,
+    "extractionComplete": true,
+    "complete": true,
+    "fetchedAt": "2026-11-10T16:04:11.507Z",
+    "sourceReader": "fetch-sources/archive-v1",
+    "sourceReaderSha256": "37248dc27478edc6fe148367208e24ebac3106fad9cf6e70ffaf256920cdaa51",
+    "bodyBytes": 240907,
+    "textBytes": 10496,
+    "privateArchive": "dubaipoints-source-archive/manifest.json; complete bodies and full text retained outside Git"
+  },
+  "source": {
+    "url": "https://www.hsbc.ae/credit-cards/products/live-plus/",
+    "capturedAt": "2026-11-10T16:04:11.507Z",
+    "sourceTextSha256": "271f5438d346fe6ec8aa8950f4b32eee52dcc517c6f99be58e650d397b97a3c0",
+    "sourceBodySha256": "970c20a769e1c7f6a5cdb46b36d2a9db2516de102a74808d351cf6ba7e9f8240",
+    "sourceRepresentation": "http-decoded-response-body",
+    "captureMethod": "public-http-reader",
+    "firstLine": 158,
+    "fixtureTextSha256": "361344130a49867f58750aa269a55c30b0c2357d05df60a5664fc71e70784230",
+    "text": "###\nWho can apply?\n\nYou don't need an HSBC bank account to apply for a Live+ Credit Card, but you'll need to:\n\n- Earn a monthly income starting from ⃃5,000[@eligibility-subject-to-change] for employees of approved companies, or ⃃12,500 for all other applicants\n\n- Be aged between 18 and 65\n\n- Live in the UAE\n\n###\nFees and rates"
+  }
+}

@@ -11,6 +11,7 @@ import UtilityPageHead from "~/components/UtilityPageHead.astro";
 import ImageCredit from "~/components/ImageCredit.astro";
 import StockImage from "~/components/StockImage.astro";
 import ProgrammeContents from "~/components/ProgrammeContents.astro";
+import ProgrammeHub from "~/components/ProgrammeHub.astro";
 import { getStockEntry } from "~/lib/stockManifest";
 import { programmeImage } from "~/lib/programmes";
 import { transferDestinations, transferOrigins } from "~/lib/transferFinder";
@@ -86,6 +87,7 @@ const menuLabels: Record<string, string> = {
   "best-sweet-spot-redemptions": "Sweet spots",
 };
 const contents = headings.filter(heading => heading.depth === 2).map(heading => ({ id: heading.slug, label: menuLabels[heading.slug] ?? heading.text }));
+if (slug) contents.unshift({ id: "programme-hub", label: "News, guides & offers" });
 const insertAfter = (test: RegExp, item: { id: string; label: string }) => {
   const index = contents.findIndex(section => test.test(section.id));
   if (index >= 0) contents.splice(index + 1, 0, item);
@@ -178,7 +180,9 @@ const schema = {
     </dl>
   </UtilityPageHead>
 
-  <div class="dp-prog-grid">
+  {slug && <ProgrammeHub programme={slug} name={programName} section={section} transferHref={transferHref} hasCalculator={hasEmbeddedCalculator} hasCards={relatedCards.length > 0} />}
+
+  <div class="dp-prog-grid" id="programme-guide">
     <aside class="dp-prog-aside" aria-label="Programme quick reference">
       <ProgrammeContents sections={contents} />
     </aside>
@@ -194,6 +198,7 @@ const schema = {
   .dp-prog-grid {
     --programme-frame: 760px;
     --programme-gutter: clamp(16px, 3vw, 32px);
+    scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px);
   }
   .dp-prog-figure { margin: 0; max-inline-size: 100%; }
   .dp-prog-figure :global(.dp-prog-image) {
