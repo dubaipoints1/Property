@@ -9,8 +9,8 @@ draft-status: complete
 factcheck-status: complete
 ux-status: complete
 standards-status: complete
-tech-status: pending
-chairman-status: pending
+tech-status: complete
+chairman-status: approved
 target-publish: 2026-11-10
 sources-required: 1
 ---
@@ -24,6 +24,21 @@ and conditional feature-release direction under the6August amendment, not
 article final-copy/contributor acceptance, provider spend or permission to
 invent unknown data. The feature Chairman cell remains pending until the
 actual reviews and tests below are complete.
+
+## Conditional feature clearance fulfilled — final release-record checkpoint
+
+Mostafa's10November direction expressly authorises this feature release
+after tests and actual Council. Under the6August in-session feature ruling,
+record Stage7approval for this bounded programme/source/operating/readiness
+scope only, now that independent source/UX/Technical/Standards/SEO/Growth/
+Section/Managing reviews and actual hosted speed evidence have passed.
+No AI delegate is inventing an additional human decision or accepting any
+article copy/COI/byline. Owner received light/dark programme previews;
+homepage remains unchanged. Technical/source reviewed production head is
+a30c5a9a036a062ed8c8b48c370f0a5bef9b56ff. Only release/review records change
+after it. Still require genuinely executed exact final-head validation and
+accepting current-body Council parser before ordinary protected merge;
+this approval record is not yet a merge, deployment or production QA.
 
 ## Authority and concurrency
 

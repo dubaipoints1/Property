@@ -336,3 +336,168 @@ Post-review snapshot SHA-256:
 Only this report changed during this delta review. Measurement recusal,
 other delegates' source/monitor ownership and all prior manual/device,
 article and no-contact/no-paid limitations remain.
+
+## Superseding exact-style delivery and actual hosted Technical result — 2026-11-10
+
+**The specific hosted programme performance HOLD is resolved for tested
+candidate `a30c5a9a036a062ed8c8b48c370f0a5bef9b56ff`.** This section supersedes
+the earlier pending performance disposition; it does not remove the earlier
+failed measurements or certify production, every route's performance,
+Chairman approval, owner acceptance or exact-head release gates.
+
+### Independent production-source review and execution
+
+Read the complete new `scripts/build/programme-style-delivery.mjs`, shared
+pure-transform refactor, postbuild ordering and new tests. No blocking
+source defect identified. The runner is restricted to ten explicit
+programme routes, requires one actual canonical and matching programme
+hub identity, consumes comments/raw-text before identity matching, rejects
+invalid UTF-8, symlinked HTML/ancestors/assets/dist and paths outside the
+real build, and detects input drift before beginning writes. All ten route
+transformations and asset validations complete before any output write.
+An output I/O failure still fails the build; this is not an atomic rollback
+guarantee against a concurrently hostile process.
+
+The shared validator preserves every complete compiled stylesheet at its
+original cascade position. It rejects unsupported stylesheet attributes,
+imports, namespace declarations, relative/external URL bases, unsafe raw
+HTML, source maps and unreviewed escaped CSS syntax. Fonts, colour rules,
+images, scripts, content and reusable CSS assets are not rewritten or
+purged. The homepage's public helper contract is retained. Pagefind, CSP
+and internal-link gates remain after delivery in the normal build chain.
+
+Independently executed the eight new programme tests plus the eighteen
+inherited homepage-delivery tests: **26 pass, zero failure or skipped**.
+These include exact reverse/cascade/body/script equality, idempotence,
+marker tamper, final-route identity failure before earlier writes, comment/
+script/duplicate canonical traps, missing/invalid assets and symlinked
+ancestors. Independently read fresh compiled output for all ten programmes:
+each has exactly seven inline blocks, each byte-for-byte equal to its
+corresponding retained compiled CSS asset and correct SHA-256 marker.
+Root separately reports the fresh full suite of 1,221 passes, 338-page
+build and 160 hub plus 140 reader-flow states; those are supplied execution
+receipts, not a second independent full-suite/browser run by this reviewer.
+
+### Actual hosted candidate and all six mobile runs
+
+Root's authenticated Cloudflare inspection identified successful preview
+deployment `57b1c153-cbf4-492f-ba9b-7a36a0a72108` for the exact candidate,
+with actual URL `https://57b1c153.dubaipoints.pages.dev`. The GitHub hosting
+check was still stale-pending when inspected; that pending badge was not
+invented into a success. This reviewer independently read the actual
+returned preview pages and ran the unchanged registered Lighthouse sampler
+against that URL, after root finished its browser inspection and stopped
+competing browser/build/CPU work.
+
+Command parameters: the two reference routes, `--presets mobile --runs 3
+--assert`, unchanged mobile performance minimum 95 and initial-transfer
+maximum 200 KiB. Lighthouse 13.4.1, Chrome 157.0.0.0, default simulated
+mobile configuration. Six navigations completed in 51.2 seconds; receipt
+generated `2026-11-10T17:13:24.721Z`; exit status **0**. No run was discarded.
+
+| Route / run | Performance | Simulated FCP / LCP / Speed Index | TBT | CLS |
+|---|---:|---|---:|---:|
+| Skywards 1 | 96 | 1,140 / 1,860 / 2,935 ms | 183 ms | 0.001164 |
+| Skywards 2 | 95 | 1,618 / 2,285 / 4,455 ms | 7 ms | 0 |
+| Skywards 3 | 99 | 1,567 / 2,116 / 1,567 ms | 0 ms | 0 |
+| Hyatt 1 | 97 | 1,479 / 2,501 / 2,020 ms | 15 ms | 0.000530 |
+| Hyatt 2 | 97 | 1,445 / 2,503 / 1,445 ms | 10 ms | 0.000530 |
+| Hyatt 3 | 98 | 1,434 / 2,363 / 1,434 ms | 0 ms | 0 |
+
+All six individual performance scores meet 95. Median performance is
+**96 Skywards / 97 Hyatt**, compared with preserved earlier hosted baseline
+90/92/91 (median 91) and 95/88/88 (median 88). This is a source-isolated
+before/after hosted comparison, not randomised field evidence: hostnames,
+network timings and test times differ. It does not establish a future
+user's score or a site-wide traffic/conversion benefit.
+
+The registered summary selects the middle run **by performance score**;
+its associated LCP is 1,860 ms for Skywards and 2,503 ms for Hyatt, not the
+median of the three LCP numbers. Their mathematical median LCP values are
+2,116 and 2,501 ms. Selected initial-transfer proxies are **118 / 181 KiB**;
+all full-request transfer totals are also below 200 KiB (Skywards about
+174.6 KiB, Hyatt about 181.0 KiB). The smaller 118 KiB proxy excludes
+resources finishing after the selected LCP; it is not a literal first-screen
+asset census. Every LCP node remains the existing programme hero image.
+No failed network request was reported. Accessibility and best-practices
+categories score 100 in all six runs; this is not whole-site WCAG proof.
+
+Seven CSS fetches per route are removed; total observed requests are nine
+Skywards/eight Hyatt. Exact inline styles add around 31 KiB of compressed
+HTML compared with separate documents, and repeat those bytes rather than
+reusing warm shared-CSS cache across programme visits. This trade-off is
+retained, not claimed away by the cold-load lab result. No font/hero/palette
+or tracking setting was changed to obtain the score.
+
+The delayed-paint anomaly is not fully eliminated: Skywards run 2 still has
+observed FCP/LCP 2,694 ms despite load at 1,236 ms. Other observed LCPs were
+1,858/495 ms for Skywards and 1,121/593/366 ms for Hyatt. Therefore this review
+does not assert a proven cause or cure for every earlier delayed-paint
+state. Passing the declared hosted lab gate is the bounded conclusion.
+
+### Hosted content/CSS identity and the earlier stale local Hyatt build
+
+After the speed run, independently fetched both actual baseline and
+candidate pages plus all seven baseline CSS assets. For both routes:
+
+- candidate body bytes equal the actual hosted baseline and fresh local
+  built body;
+- the seven inline CSS blocks equal the actual baseline's complete CSS
+  bytes, SHA-256 pins and original stylesheet order;
+- replacing only the programme inline blocks with their original link
+  tags reproduces the **entire hosted baseline HTML exactly**.
+
+Skywards body is 81,946 bytes, SHA-256
+`857b161ec8ca9facd0b53750a920efdceb63cd4fc947a04273a8cdc85f6d52b4`.
+Hyatt body is 68,777 bytes, SHA-256
+`69d2d4ad24793eb2673a8d7381bd0341c5ecffcfcbe2b794d5617b0d1b080b0f`.
+The two existing Hyatt news joins are present in this final-content build.
+
+The earlier disposable local A/B used an older built Hyatt page with an
+empty latest-news state (81,378-byte full HTML versus actual baseline's
+86,953). It was mechanically valid for those two disposable copies but
+**not final-head Hyatt QA or hosted evidence**. It was not used to clear
+this HOLD. The fresh hosted/body equality above closes that identity gap.
+Earlier failed hosted measurements remain under their original directory.
+
+### Preview SEO 69 — diagnosed, not a production indexing failure
+
+Direct HTTP reads confirm both preview hosts send `X-Robots-Tag: noindex`.
+For both routes and all three new runs, the only weighted failing SEO
+audit is `is-crawlable`, naming exactly `x-robots-tag: noindex`; all other
+weighted SEO audits pass. Both hosts retain their correct canonical URLs
+on `https://dubaipoints.ae/` and a CSP header. The preview-only noindex
+explains 69; production indexing/header validation remains part of the
+post-merge canonical-domain check and is not certified by a preview.
+
+### Result, receipts and remaining release boundary
+
+**Technical Lead scoped PASS for the reviewed exact-style implementation
+and actual hosted reference-route performance gate at a30c5a9.** Earlier
+hub/source/editorial/UX conclusions retain their stated manual contrast,
+physical-device and real-reader limitations. This is one AI delegate's
+substantive review, not human sign-off. Measurement-tool recusal continues.
+
+Owner preview/acceptance where required, genuine final Council/Chairman
+approval, executed exact-head PR validation, normal protected merge and
+actual production deployment/QA remain root-owned, separate gates. A green
+advisory Council parser is not substituted for any substantive approval.
+No publication, merge, deployment, paid call, outreach or account setting
+change was performed by this reviewer.
+
+Fresh receipt files are under `audit-output/lighthouse-hosted-programme-inline/`:
+
+- `lighthouse.scores.json`: `5ad2a7761276fbc459818b151129a6f89092923b444cc6b02f28f33688647474`;
+- `identity-receipt.json`: `a0aa0e4bdeb2707036fb38df5b23b9093a86b01a3b49ae10991e6a9c9688a98b`;
+- Skywards runs 1/2/3: `643449c35ab0195acc47c4c09c4ca7bb6c75664acfe5f429878aa8af1eb0332a`,
+  `de311dc2b592983572d8df63bb7f029755d2ee3e06f66e95b4f0f844dac11d1e`,
+  `f15d732a401361d2d0b2a68b1505602cb17f22f6897cefbd83d50567698b6c8c`;
+- Hyatt runs 1/2/3: `45409025fa2a0091d55f01c97e8dc9010c7192c64b4873e88383d8e7ab0c4e86`,
+  `10f76671e151cbe5ca24790cf059239e5a40b8d729ffe1aee9e080f6b1485ba8`,
+  `e4159896178bb7644f1ad1ce11dd514436f2bc82cee19410980a388c923362a6`.
+
+Reviewed source pins:
+
+- programme runner: `c0c36e0694bbe810a30c4b66161eb61f7d894b765be7fe2ced341899370b40e8`;
+- shared/home helper: `17b7ea7064828b7c9e5a55d852ea1aec3dc7d540bbdbd2d0926c7e6f83063ebb`;
+- new programme tests: `150618a5ffabd3fad54a648f38409332234c66061c5c168a639daa4d48ab5434`.

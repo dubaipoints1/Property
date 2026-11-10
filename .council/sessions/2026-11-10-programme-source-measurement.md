@@ -1,6 +1,6 @@
 # Council session — programme, source and measurement follow-on
 
-Date: 2026-11-10. State: local candidate; draft preview intended, not live.
+Date: 2026-11-10. State: reviewed preview; final release gates due, not live.
 Owner directed the scope and conditional release after tests and Council.
 The current base mainc8e309c contains the concurrently merged PR530; its
 actual gate chronology is retained separately, not rewritten as compliant.
@@ -184,3 +184,47 @@ checks genuinely execute successfully, every T3 review is complete and the
 current-body Council parser accepts actual Chairman approval. Use ordinary
 protected exact-head merge, never admin bypass. Then independently verify
 actual production and canonical hub/card behaviour before saying live.
+
+## Superseding final hosted review and bounded feature approval
+
+The earlier performance HOLD is closed for the reviewed exacta30c5a9
+production source, not erased. Actual identified Cloudflare preview
+57b1c153-cbf4-492f-ba9b-7a36a0a72108 succeeded with that exact commit;
+authenticated dashboard independently confirms Preview environment, source
+branch/SHA and actual URLhttps://57b1c153.dubaipoints.pages.dev. Its GitHub
+hosting status lagged; dashboard success, not a stale badge, established it.
+
+Independent Technical reviewerrelease10_exact_head_review ran the unchanged
+registered hosted mobile sampler, three runs per route, assertions95/200KiB:
+Skywards96/95/99,Hyatt97/97/98; medians96/97, all individual scores≥95.
+The chosen-run initial-transfer proxies118/181KiB and every full-request
+total are below200KiB. These are lab measurements, not field or whole-site
+speed certification; one delayed-paint state, smallCLS≤0.0012, a183msTBT
+outlier and inline HTML/shared-cache trade-offs remain explicit. Earlier
+"medianLCP" labels describe the chosen median-performance report, not a
+mathematical median of LCP. The independent report gives both correctly.
+
+Both actual hosted route bodies equal their earlier hosted baseline and
+fresh local build. Independently reversing only the seven inline CSS blocks
+reproduces the entire original hosted HTML; complete CSS order/bytes match
+all actual assets. The earlier stale-local-Hyatt gap is thus resolved for
+final hosted content. Preview SEO69 is solely its actual noindex header;
+production indexing remains a post-merge check, not presumed.
+
+Root's connected Chrome independently verifies actual hosted Skywards
+desktop Cards menu opens/Escape dismisses;390px light programme disclosure
+opens/closes and full-guide anchor reaches exactly one target; actual Hyatt
+390pxlight and1440pxdark show correct reporting/real hero, seven inline
+styles, original canonical and no measured document overflow. Original
+dark preference restored and viewport override reset. These are bounded
+Chrome observations, not physical Safari. Light/dark previews were supplied.
+
+Record Mostafa's expressly conditional10November feature-release direction
+as Stage7approved now the substantive conditions pass, under the current
+in-session feature amendment. Independent named AI reviewers are not human
+signatures; no article contributor/COI/final-copy/byline or new spend/account/
+outreach authority is inferred. Technical and Chairman feature cells are
+complete/approved; exact final-head executed validation and a genuinely
+accepting current-body Council parser remain mandatory before normal merge.
+Only release/review records follow reviewed production heada30c5a9. Actual
+production deployment and canonical verification remain separate later gates.
