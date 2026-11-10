@@ -31,6 +31,8 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Deliberately text-led: the worked comparisons are the visual focus and no image should imply that the hypothetical flights were priced or booked.",
   "news-cash-or-miles-etihad-abu-dhabi-muscat":
     "Deliberately text-led: the dated, parsed pricing evidence is the focus; the listing uses an original route pictogram, not a photo implying first-hand travel.",
+  "news-emirates-islamic-barca-cashback-card-free-for-life-up-to-4-percent":
+    "Deliberately text-led: the issuer's offer page is the evidence. No clean issuer card art is published for this card yet, and a football or stadium photo would imply club imagery we do not hold.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
