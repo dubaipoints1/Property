@@ -63,6 +63,14 @@ const GUIDE_JOURNEYS: Readonly<Record<string, EditorialJourney>> = {
     actions: [{ href: "/banks/", label: "Browse UAE bank coverage", kind: "directory" }],
     guides: ["choosing-first-uae-bank", "salary-transfer-mechanics-2026"],
   },
+  "expat-starter-first-credit-card": {
+    actions: [
+      { href: "/cards/finder/", label: "Shortlist cards by salary and spending", kind: "tool" },
+      { href: "/cards/fees/", label: "Check annual fees and first-year waivers", kind: "directory" },
+      { href: "/cards/compare/", label: "Open the side-by-side comparison", kind: "tool" },
+    ],
+    guides: ["uae-credit-card-eligibility-2026", "aecb-credit-report-walkthrough"],
+  },
   "uae-transfer-ratios-2026": {
     actions: [{ href: "/transfer-finder/", label: "Find a bank-points transfer route", kind: "tool" }],
     guides: ["expat-starter-points-101"],
