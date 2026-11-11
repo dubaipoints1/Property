@@ -208,6 +208,11 @@ export function transformProgrammeStyles(html, readCss) {
   return transformCompiledStyles(html, readCss, "programme");
 }
 
+// The first-card guide has its own exact route and identity preflight.
+export function transformFirstCardStyles(html, readCss) {
+  return transformCompiledStyles(html, readCss, "first-card");
+}
+
 /** Only dist/index.html is writable; all reads and checks precede one write. */
 export async function inlineHomeStyles(distDir) {
   const root = await realpath(path.resolve(distDir));
