@@ -213,6 +213,15 @@ export function transformFirstCardStyles(html, readCss) {
   return transformCompiledStyles(html, readCss, "first-card");
 }
 
+// The Expat Starter runner supplies its own exact route and identity preflight.
+export function transformExpatStarterStyles(html, readCss) {
+  // The shared transformer is for a flat, generated head, not inert markup.
+  if (/<(?:template|noscript)\b/i.test(splitHead(html).head)) {
+    throw Error("Expat Starter head contains unsupported inert markup");
+  }
+  return transformCompiledStyles(html, readCss, "expat-starter");
+}
+
 /** Only dist/index.html is writable; all reads and checks precede one write. */
 export async function inlineHomeStyles(distDir) {
   const root = await realpath(path.resolve(distDir));
