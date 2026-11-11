@@ -219,7 +219,47 @@ export function transformExpatStarterStyles(html, readCss) {
   if (/<(?:template|noscript)\b/i.test(splitHead(html).head)) {
     throw Error("Expat Starter head contains unsupported inert markup");
   }
-  return transformCompiledStyles(html, readCss, "expat-starter");
+  const result = transformCompiledStyles(html, readCss, "expat-starter");
+  const parts = splitHead(result.html);
+  const fontLink = /^<link rel="preload" href="(\/_astro\/[A-Za-z0-9_.-]+\.woff2)" as="font" type="font\/woff2" crossorigin>$/;
+  const expectedNames = ["newsreader-latin-wght-normal-site", "geist-latin-wght-normal-site", "newsreader-latin-wght-italic-site"];
+  const styles = [...parts.head.matchAll(TOKEN)].map(match => match[0])
+    .filter(token => token.startsWith("<style data-dp-expat-starter-css="));
+  const fonts = expectedNames.map(name => {
+    const pattern = new RegExp(`url\\(["']?(\\/_astro\\/${name}\\.[A-Za-z0-9_-]+\\.woff2)["']?\\)`, "g");
+    const urls = [...new Set(styles.flatMap(style => [...style.matchAll(pattern)].map(match => match[1])))];
+    if (urls.length !== 1) throw Error(`Expat Starter compiled font identity mismatch: ${name}`);
+    return urls[0];
+  });
+  const firstStyle = styles[0];
+  const seen = [];
+  let inserted = false;
+  const head = parts.head.replace(TOKEN, token => {
+    const font = fontLink.exec(token);
+    if (font) {
+      seen.push(font[1]);
+      return "";
+    }
+    if (/^<link\b/i.test(token)) {
+      const attrs = attributes(token, "link");
+      if (attrs.get("rel") === "preload" && attrs.get("as") === "font") {
+        throw Error("Expat Starter font preload identity mismatch");
+      }
+    }
+    if (!inserted && token === firstStyle) {
+      inserted = true;
+      return fonts.map(href => `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin>`).join("") + token;
+    }
+    return token;
+  });
+  // Only the two existing normals, or all three on an idempotent second run.
+  const expected = result.inlinedCount ? fonts.slice(0, 2) : fonts;
+  if (!inserted || seen.length !== expected.length || !seen.every((href, i) => href === expected[i])) {
+    throw Error("Expat Starter font preload identity mismatch");
+  }
+  result.html = parts.before + head + parts.after;
+  result.htmlBytesAfter = byteLength(result.html);
+  return result;
 }
 
 /** Only dist/index.html is writable; all reads and checks precede one write. */

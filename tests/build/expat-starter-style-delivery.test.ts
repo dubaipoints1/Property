@@ -11,9 +11,15 @@ const canonical = `<link rel="canonical" href="https://dubaipoints.ae${route}">`
 const article = '<article class="dp-reading-shell" data-astro-cid-guide>';
 const link = (href: string) => `<link rel="stylesheet" href="${href}">`;
 const hrefs = ["/_astro/reading.css", "/_astro/layout.css"];
-const css = ['@font-face{font-family:Guide;src:url("/_astro/guide.woff2")}', ".dp-reading-shell{color:var(--ink)}"];
+const fontHrefs = ["newsreader-latin-wght-normal-site", "geist-latin-wght-normal-site", "newsreader-latin-wght-italic-site"]
+  .map(name => `/_astro/${name}.test.woff2`);
+const fontLink = (href: string) => `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin>`;
+const originalFonts = fontHrefs.slice(0, 2).map(fontLink).join("");
+const prioritisedFonts = fontHrefs.map(fontLink).join("");
+const css = [fontHrefs.map(href => `@font-face{font-family:Guide;src:url(${href})}`).join(""),
+  ".dp-reading-shell{color:var(--ink)}"];
 const inline = "<style>.dp-next-links{display:grid}</style>";
-const html = `<!doctype html><html><head>${canonical}${link(hrefs[0])}<link rel="preload" href="/_astro/guide.woff2" as="font" crossorigin>${inline}<script>window.theme="light";</script>${link(hrefs[1])}</head><body>${article}<h1>Expat Starter</h1><a href="/guides/expat-starter-first-credit-card/">First card</a></article></body></html>`;
+const html = `<!doctype html><html><head>${canonical}${link(hrefs[0])}${originalFonts}${inline}<script>window.theme="light";</script>${link(hrefs[1])}</head><body>${article}<h1>Expat Starter</h1><a href="/guides/expat-starter-first-credit-card/">First card</a></article></body></html>`;
 const marker = /<style data-dp-expat-starter-css="([^"]+)" data-dp-css-sha256="([a-f0-9]{64})">([\s\S]*?)<\/style>/g;
 
 async function fixture(fn: (dist: string, guide: string, assets: string[]) => Promise<void>) {
@@ -45,11 +51,24 @@ test("only the exact Expat Starter route is rewritten, preserving every cascade 
   assert.equal(report.inlinedCount, hrefs.length);
   assert.deepEqual([...after.matchAll(marker)].map(([, href, sha, text]) => [href, sha, text]),
     hrefs.map((href, i) => [href, createHash("sha256").update(css[i]).digest("hex"), css[i]]));
-  assert.equal(after.replace(marker, (_, href) => link(href)), html);
+  assert.equal(after.replace(marker, (_, href) => link(href)),
+    html.replace(link(hrefs[0]) + originalFonts, prioritisedFonts + link(hrefs[0])));
   assert.deepEqual(await Promise.all(other.map(file => readFile(path.join(dist, file), "utf8"))), other.map(() => html));
   assert.deepEqual(await Promise.all(assets.map(file => readFile(file, "utf8"))), css);
   assert.equal((await inlineExpatStarterStyles(dist))[0].inlinedCount, 0);
   assert.equal(await readFile(guide, "utf8"), after);
+}));
+
+test("an unfamiliar or duplicate preload fails before any output is rewritten", async () => fixture(async (dist, guide) => {
+  for (const input of [
+    html.replace(originalFonts, ""),
+    html.replace(originalFonts, originalFonts + fontLink(fontHrefs[2])),
+    html.replace(fontLink(fontHrefs[0]), fontLink("/_astro/unexpected.test.woff2")),
+  ]) {
+    await writeFile(guide, input);
+    await assert.rejects(inlineExpatStarterStyles(dist), /font preload identity mismatch/);
+    assert.equal(await readFile(guide, "utf8"), input);
+  }
 }));
 
 test("wrong or inert guide identity and inert head markup fail without output changes", async () => fixture(async (dist, guide) => {
