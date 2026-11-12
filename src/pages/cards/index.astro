@@ -32,6 +32,8 @@ import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import { cardsTracked, banksCovered } from "~/lib/trustFacts";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import CardImage from "~/components/CardImage.astro";
+import CardsIndexDeferredArt from "~/components/CardsIndexDeferredArt.astro";
+import { getCardArt } from "~/lib/cardArt";
 import { getEntry } from "astro:content";
 import {
   getActiveCards,
@@ -179,24 +181,42 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
 
   <!-- ── 2. Top Picks ─────────────────────────────────────────────────── -->
   {topPicks.length > 0 && (
-    <section class="cards-top-picks">
+    <section class="cards-top-picks" aria-labelledby="cards-top-picks-title" data-top-picks>
       <div class="cards-section-head">
         <span class="cards-section-eyebrow">Top picks this month</span>
-        <h2>The two cards we'd open first.</h2>
+        <h2 id="cards-top-picks-title">The two cards we'd open first.</h2>
       </div>
-      <div class="cards-top-grid">
-        {topPicks.map((f) => {
+      {topPicks.length > 1 && (
+        <div class="cards-top-controls" data-top-picks-controls>
+          <span class="cards-top-position" data-top-picks-position role="status" aria-atomic="true">Swipe to see both cards</span>
+          <div class="cards-top-arrows" role="group" aria-label="Top picks controls">
+            <button type="button" data-top-picks-prev aria-controls="cards-top-picks-rail" aria-label="Previous card">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="m14 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button type="button" data-top-picks-next aria-controls="cards-top-picks-rail" aria-label="Next card">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="m10 6 6 6-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      )}
+      <div class="cards-top-grid" id="cards-top-picks-rail" data-top-picks-rail data-multiple={topPicks.length > 1 ? "" : undefined}>
+        {topPicks.map((f, index) => {
           const fee = annualFeeLabel(f.card);
+          const artProps = {
+            cardSlug: f.card.slug,
+            cardName: f.card.name,
+            bankName: f.bankName,
+            coverSize: "med" as const,
+            class: "cards-top-card-image",
+            sizes: "(max-width: 720px) 70vw, (max-width: 1080px) 38vw, 420px",
+          };
           return (
           <article class="cards-top-card">
-            <CardImage
-              cardSlug={f.card.slug}
-              cardName={f.card.name}
-              bankName={f.bankName}
-              coverSize="med"
-              class="cards-top-card-image"
-              sizes="(max-width: 640px) 70vw, (max-width: 960px) 540px, 420px"
-            />
+            {getCardArt(f.card.slug) ? (
+              index === 0 ? <CardImage {...artProps} /> : (
+                <div class="cards-top-image-slot" data-cards-art="pick"><CardsIndexDeferredArt {...artProps} /></div>
+              )
+            ) : <p class="cards-top-art-unavailable">Issuer card image not available.</p>}
             <div class="cards-top-card-body">
               <span class="cards-top-card-bank">{f.bankName}</span>
               <h3>{f.card.name}</h3>
@@ -248,8 +268,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
         return (
           <li class="cards-row">
             <a href={`/cards/${f.card.slug}/`} class="cards-row-link">
-              <div class="cards-row-art">
-                <CardImage
+              <div class="cards-row-art" data-cards-art="row">
+                <CardsIndexDeferredArt
                   cardSlug={f.card.slug}
                   cardName={f.card.name}
                   bankName={f.bankName}
@@ -325,6 +345,91 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   </section>
 </BaseLayout>
 
+<script>
+  // Keep the existing artwork and no-script fallback, but do not let
+  // native lazy-loading fetch a screenful of catalogue rows early.
+  const artSlots = document.querySelectorAll<HTMLElement>("[data-cards-art]");
+  const revealArt = (slot: Element | null) => {
+    const template = slot?.querySelector<HTMLTemplateElement>("template[data-cards-art-template]");
+    if (template) template.replaceWith(template.content.cloneNode(true));
+  };
+  if ("IntersectionObserver" in window) {
+    const onVisible: IntersectionObserverCallback = (entries, observer) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting || entry.intersectionRatio < observer.thresholds[0]) continue;
+        revealArt(entry.target);
+        observer.unobserve(entry.target);
+      }
+    };
+    const rows = new IntersectionObserver(onVisible, { rootMargin: "64px 0px" });
+    // The thin preview of the next mobile card should not download its
+    // art. On desktop, both full card panels load as they enter view.
+    const picks = new IntersectionObserver(onVisible, { rootMargin: "64px 0px", threshold: 0.4 });
+    artSlots.forEach(slot => (slot.dataset.cardsArt === "pick" ? picks : rows).observe(slot));
+  } else {
+    artSlots.forEach(revealArt);
+  }
+
+  const section = document.querySelector<HTMLElement>("[data-top-picks]");
+  const rail = section?.querySelector<HTMLElement>("[data-top-picks-rail][data-multiple]");
+  const controls = section?.querySelector<HTMLElement>("[data-top-picks-controls]");
+  const previous = controls?.querySelector<HTMLButtonElement>("[data-top-picks-prev]");
+  const next = controls?.querySelector<HTMLButtonElement>("[data-top-picks-next]");
+  const position = controls?.querySelector<HTMLElement>("[data-top-picks-position]");
+  if (section && rail && controls && previous && next && position) {
+    const slides = Array.from(rail.children).filter((node): node is HTMLElement => node instanceof HTMLElement);
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let active = 0;
+    const scrollable = () => rail.scrollWidth - rail.clientWidth > 2;
+    const update = () => {
+      const enabled = scrollable();
+      controls.toggleAttribute("data-controls-ready", enabled);
+      rail.toggleAttribute("data-rail-ready", enabled);
+      if (!enabled) return;
+      // With a small neighbour visible, the nearer card centre is the
+      // selected card at either end. No timers or automatic movement.
+      const edge = rail.getBoundingClientRect();
+      const centre = edge.left + edge.width / 2;
+      active = slides.reduce((best, slide, index) => {
+        const distance = (item: HTMLElement) => {
+          const rect = item.getBoundingClientRect();
+          return Math.abs(rect.left + rect.width / 2 - centre);
+        };
+        return distance(slide) < distance(slides[best]) ? index : best;
+      }, 0);
+      const label = "Card " + (active + 1) + " of " + slides.length;
+      if (position.textContent !== label) position.textContent = label;
+      previous.setAttribute("aria-disabled", String(active === 0));
+      next.setAttribute("aria-disabled", String(active === slides.length - 1));
+      slides.forEach((slide, index) => slide.toggleAttribute("data-current", index === active));
+    };
+    const go = (index: number) => {
+      if (!scrollable() || index < 0 || index >= slides.length) return;
+      revealArt(slides[index].querySelector("[data-cards-art]"));
+      const edge = rail.getBoundingClientRect();
+      const target = slides[index].getBoundingClientRect();
+      const delta = index === slides.length - 1 ? target.right - edge.right : target.left - edge.left;
+      rail.scrollTo({ left: rail.scrollLeft + delta, behavior: reduced.matches ? "instant" : "smooth" });
+    };
+    previous.addEventListener("click", () => go(active - 1));
+    next.addEventListener("click", () => go(active + 1));
+    controls.addEventListener("keydown", (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || !scrollable()) return;
+      const key = event.key;
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(key)) return;
+      event.preventDefault();
+      go(key === "Home" ? 0 : key === "End" ? slides.length - 1 : active + (key === "ArrowLeft" ? -1 : 1));
+    });
+    rail.addEventListener("scroll", update, { passive: true });
+    rail.addEventListener("focusin", (event) => {
+      if (event.target instanceof Element) revealArt(event.target.closest("article")?.querySelector("[data-cards-art]") ?? null);
+    });
+    window.addEventListener("resize", update, { passive: true });
+    window.addEventListener("pageshow", update);
+    update();
+  }
+</script>
+
 <style>
   /* ── Page header ─────────────────────────────────────────────────── */
   .cards-pagehead-actions { display: flex; flex-wrap: wrap; gap: var(--dp-ui-gap, 8px); margin-block-start: 16px; }
@@ -388,9 +493,36 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   }
   .cards-top-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
   }
+  .cards-top-grid:not([data-multiple]) { grid-template-columns: minmax(0, 1fr); }
+  .cards-top-controls { display: none; }
+  .cards-top-position {
+    color: var(--ink-soft);
+    font: 600 13px / 1.4 var(--font-ui);
+    font-variant-numeric: tabular-nums;
+  }
+  .cards-top-arrows { display: flex; gap: 8px; }
+  .cards-top-arrows button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+  }
+  .cards-top-arrows button:not([aria-disabled="true"]):hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .cards-top-arrows button[aria-disabled="true"] { color: var(--muted); cursor: default; }
+  .cards-top-arrows button:focus-visible,
+  .cards-top-card-cta:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
   .cards-top-card {
     display: grid;
     grid-template-rows: auto 1fr;
@@ -398,21 +530,27 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     border: 1px solid var(--line);
     border-radius: 18px;
     overflow: hidden;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-  }
-  .cards-top-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--ink-soft);
-    box-shadow: 0 18px 36px -20px rgba(15, 31, 46, 0.22);
   }
   .cards-top-card :global(.cards-top-card-image) {
     width: 100%; aspect-ratio: 16 / 9;
     object-fit: cover; display: block;
     border-bottom: 1px solid var(--line);
   }
-  .cards-top-card :global(svg.dp-cover) {
-    width: 100%; display: block;
+  .cards-top-image-slot {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--shade-1);
+  }
+  .cards-top-image-slot:has(> template) { border-bottom: 1px solid var(--line); }
+  .cards-top-art-unavailable {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 9;
+    margin: 0;
+    padding: 16px;
     border-bottom: 1px solid var(--line);
+    background: var(--shade-1);
+    color: var(--ink-soft);
   }
   .cards-top-card-body {
     padding: 22px 24px 24px;
@@ -471,6 +609,47 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     transition: background 0.15s ease;
   }
   .cards-top-card-cta:hover { background: var(--green); }
+  @media (prefers-reduced-motion: no-preference) {
+    .cards-top-card :global(.cards-top-card-image img[data-card-art]) {
+      transition: transform 320ms ease-out;
+    }
+  }
+  @media (min-width: 721px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .cards-top-card:is(:hover, :focus-within) :global(.cards-top-card-image img[data-card-art]) {
+      transform: perspective(900px) rotateY(-5deg) scale(1.035);
+    }
+  }
+  @media (max-width: 720px) {
+    .cards-top-picks .cards-section-head { margin-block-end: 14px; }
+    .cards-top-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-block-end: 10px;
+    }
+    .cards-top-controls:not([data-controls-ready]) .cards-top-arrows { visibility: hidden; }
+    .cards-top-grid[data-multiple] {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: calc(100% - 28px);
+      gap: 12px;
+      max-inline-size: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+    }
+    .cards-top-grid[data-multiple] .cards-top-card { scroll-snap-align: start; }
+    .cards-top-grid[data-multiple] .cards-top-card:last-child { scroll-snap-align: end; }
+    .cards-top-card-body { padding: 16px; }
+    .cards-top-card-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .cards-top-card-cta { height: 44px; }
+    @media (prefers-reduced-motion: no-preference) {
+      .cards-top-grid[data-rail-ready] .cards-top-card:not([data-current]) :global(.cards-top-card-image img[data-card-art]) {
+        transform: perspective(900px) rotateY(-8deg) scale(.96);
+      }
+    }
+  }
 
   /* ── Compare section ────────────────────────────────────────────── */
   .cards-compare-section {
@@ -756,7 +935,6 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
 
   /* ── Responsive ─────────────────────────────────────────────────── */
   @media (max-width: 960px) {
-    .cards-top-grid { grid-template-columns: 1fr; }
     .cards-compare-head {
       grid-template-columns: 1fr;
       align-items: start;
