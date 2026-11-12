@@ -213,6 +213,14 @@ export function transformFirstCardStyles(html, readCss) {
   return transformCompiledStyles(html, readCss, "first-card");
 }
 
+// My Family is text-led: preserve the original typography and resource hints.
+export function transformMyFamilyStyles(html, readCss) {
+  if (/<(?:template|noscript)\b/i.test(splitHead(html).head)) {
+    throw Error("My Family head contains unsupported inert markup");
+  }
+  return transformCompiledStyles(html, readCss, "my-family");
+}
+
 // Cards keeps the exact stylesheet order and the two existing normal
 // font hints. Move those hints before the CSS bytes so the document
 // preload scanner can discover them immediately.
