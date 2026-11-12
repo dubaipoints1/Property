@@ -1,0 +1,10 @@
+---
+import type { ComponentProps } from "astro/types";
+import CardImage from "./CardImage.astro";
+
+type Props = ComponentProps<typeof CardImage>;
+const props = Astro.props;
+---
+
+<template data-cards-art-template><CardImage {...props} /></template>
+<noscript><CardImage {...props} /></noscript>

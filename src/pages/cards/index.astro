@@ -32,6 +32,7 @@ import { verifiedMonthStamp } from "~/lib/cardsDataFormat";
 import { cardsTracked, banksCovered } from "~/lib/trustFacts";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import CardImage from "~/components/CardImage.astro";
+import CardsIndexDeferredArt from "~/components/CardsIndexDeferredArt.astro";
 import { getCardArt } from "~/lib/cardArt";
 import { getEntry } from "astro:content";
 import {
@@ -199,18 +200,23 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
         </div>
       )}
       <div class="cards-top-grid" id="cards-top-picks-rail" data-top-picks-rail data-multiple={topPicks.length > 1 ? "" : undefined}>
-        {topPicks.map((f) => {
+        {topPicks.map((f, index) => {
           const fee = annualFeeLabel(f.card);
+          const artProps = {
+            cardSlug: f.card.slug,
+            cardName: f.card.name,
+            bankName: f.bankName,
+            coverSize: "med" as const,
+            class: "cards-top-card-image",
+            sizes: "(max-width: 720px) 70vw, (max-width: 1080px) 38vw, 420px",
+          };
           return (
           <article class="cards-top-card">
-            {getCardArt(f.card.slug) ? <CardImage
-              cardSlug={f.card.slug}
-              cardName={f.card.name}
-              bankName={f.bankName}
-              coverSize="med"
-              class="cards-top-card-image"
-              sizes="(max-width: 720px) 70vw, (max-width: 1080px) 38vw, 420px"
-            /> : <p class="cards-top-art-unavailable">Issuer card image not available.</p>}
+            {getCardArt(f.card.slug) ? (
+              index === 0 ? <CardImage {...artProps} /> : (
+                <div class="cards-top-image-slot" data-cards-art="pick"><CardsIndexDeferredArt {...artProps} /></div>
+              )
+            ) : <p class="cards-top-art-unavailable">Issuer card image not available.</p>}
             <div class="cards-top-card-body">
               <span class="cards-top-card-bank">{f.bankName}</span>
               <h3>{f.card.name}</h3>
@@ -262,8 +268,8 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
         return (
           <li class="cards-row">
             <a href={`/cards/${f.card.slug}/`} class="cards-row-link">
-              <div class="cards-row-art">
-                <CardImage
+              <div class="cards-row-art" data-cards-art="row">
+                <CardsIndexDeferredArt
                   cardSlug={f.card.slug}
                   cardName={f.card.name}
                   bankName={f.bankName}
@@ -340,6 +346,30 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
 </BaseLayout>
 
 <script>
+  // Keep the existing artwork and no-script fallback, but do not let
+  // native lazy-loading fetch a screenful of catalogue rows early.
+  const artSlots = document.querySelectorAll<HTMLElement>("[data-cards-art]");
+  const revealArt = (slot: Element | null) => {
+    const template = slot?.querySelector<HTMLTemplateElement>("template[data-cards-art-template]");
+    if (template) template.replaceWith(template.content.cloneNode(true));
+  };
+  if ("IntersectionObserver" in window) {
+    const onVisible: IntersectionObserverCallback = (entries, observer) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting || entry.intersectionRatio < observer.thresholds[0]) continue;
+        revealArt(entry.target);
+        observer.unobserve(entry.target);
+      }
+    };
+    const rows = new IntersectionObserver(onVisible, { rootMargin: "64px 0px" });
+    // The thin preview of the next mobile card should not download its
+    // art. On desktop, both full card panels load as they enter view.
+    const picks = new IntersectionObserver(onVisible, { rootMargin: "64px 0px", threshold: 0.4 });
+    artSlots.forEach(slot => (slot.dataset.cardsArt === "pick" ? picks : rows).observe(slot));
+  } else {
+    artSlots.forEach(revealArt);
+  }
+
   const section = document.querySelector<HTMLElement>("[data-top-picks]");
   const rail = section?.querySelector<HTMLElement>("[data-top-picks-rail][data-multiple]");
   const controls = section?.querySelector<HTMLElement>("[data-top-picks-controls]");
@@ -375,6 +405,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     };
     const go = (index: number) => {
       if (!scrollable() || index < 0 || index >= slides.length) return;
+      revealArt(slides[index].querySelector("[data-cards-art]"));
       const edge = rail.getBoundingClientRect();
       const target = slides[index].getBoundingClientRect();
       const delta = index === slides.length - 1 ? target.right - edge.right : target.left - edge.left;
@@ -390,6 +421,9 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
       go(key === "Home" ? 0 : key === "End" ? slides.length - 1 : active + (key === "ArrowLeft" ? -1 : 1));
     });
     rail.addEventListener("scroll", update, { passive: true });
+    rail.addEventListener("focusin", (event) => {
+      if (event.target instanceof Element) revealArt(event.target.closest("article")?.querySelector("[data-cards-art]") ?? null);
+    });
     window.addEventListener("resize", update, { passive: true });
     window.addEventListener("pageshow", update);
     update();
@@ -502,6 +536,12 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     object-fit: cover; display: block;
     border-bottom: 1px solid var(--line);
   }
+  .cards-top-image-slot {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--shade-1);
+  }
+  .cards-top-image-slot:has(> template) { border-bottom: 1px solid var(--line); }
   .cards-top-art-unavailable {
     display: grid;
     place-items: center;
