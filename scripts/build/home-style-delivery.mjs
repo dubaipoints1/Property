@@ -213,6 +213,43 @@ export function transformFirstCardStyles(html, readCss) {
   return transformCompiledStyles(html, readCss, "first-card");
 }
 
+// Cards keeps the exact stylesheet order and the two existing normal
+// font hints. Move those hints before the CSS bytes so the document
+// preload scanner can discover them immediately.
+export function transformCardsStyles(html, readCss) {
+  if (/<(?:template|noscript)\b/i.test(splitHead(html).head)) {
+    throw Error("Cards head contains unsupported inert markup");
+  }
+  const result = transformCompiledStyles(html, readCss, "cards");
+  const parts = splitHead(result.html);
+  const tokens = [...parts.head.matchAll(TOKEN)].map(match => match[0]);
+  const styles = tokens.filter(token => token.startsWith("<style data-dp-cards-css="));
+  const fontLink = /^<link rel="preload" href="(\/_astro\/(?:newsreader|geist)-latin-wght-normal-site\.[A-Za-z0-9_-]+\.woff2)" as="font" type="font\/woff2" crossorigin>$/;
+  const hints = tokens.filter(token => {
+    if (!/^<link\b/i.test(token)) return false;
+    const attrs = attributes(token, "link");
+    return attrs.get("rel") === "preload" && attrs.get("as") === "font";
+  });
+  const fonts = hints.map(token => fontLink.exec(token)?.[1]);
+  if (fonts.length !== 2 || !fonts[0]?.includes("/newsreader-") || !fonts[1]?.includes("/geist-") ||
+      !fonts.every(href => styles.some(style => style.includes(href)))) {
+    throw Error("Cards font preload identity mismatch");
+  }
+  let inserted = false;
+  const head = parts.head.replace(TOKEN, token => {
+    if (hints.includes(token)) return "";
+    if (!inserted && token === styles[0]) {
+      inserted = true;
+      return hints.join("") + token;
+    }
+    return token;
+  });
+  if (!inserted) throw Error("Cards inline styles not found");
+  result.html = parts.before + head + parts.after;
+  result.htmlBytesAfter = byteLength(result.html);
+  return result;
+}
+
 // The Expat Starter runner supplies its own exact route and identity preflight.
 export function transformExpatStarterStyles(html, readCss) {
   // The shared transformer is for a flat, generated head, not inert markup.
