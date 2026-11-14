@@ -22,7 +22,7 @@ import { getCollection } from "astro:content";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 import { getStockEntry } from "~/lib/stockManifest";
 
-import { getLiveDeals, daysLeft, ENDING_SOON_DAYS, SECTOR_LABELS } from "~/lib/deals";
+import { getLiveDeals, daysLeft, ENDING_SOON_DAYS, SECTOR_LABELS, usesRecordedExpiryLabel } from "~/lib/deals";
 
 const todayMs = Date.now();
 
@@ -181,7 +181,14 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                         <span class="intel-card-cat">{d.entry.data.sector ? SECTOR_LABELS[d.entry.data.sector] : formatCategory(d.entry.data.category)} · {d.bankName}</span>
                         <h3 id={`deal-${d.entry.id}`}>{d.entry.data.title}</h3>
                         {d.entry.data.eligibilityNote && <p>{d.entry.data.eligibilityNote}</p>}
-                        <span class="deals-card-foot"><span class:list={["intel-card-meta deals-countdown", { "is-soon": 7 >= d.days }]}>{countdownText(d.days)}</span>{d.entry.data.promoCode && <span class="deals-code">Code {d.entry.data.promoCode}</span>}</span>
+                        <span class="deals-card-foot">
+                          {usesRecordedExpiryLabel(d.entry.id) ? (
+                            <time class:list={["intel-card-meta deals-countdown", { "is-soon": 7 >= d.days }]} datetime={d.entry.data.expiresOn.toISOString().slice(0, 10)}>Recorded expiry {fmt(d.entry.data.expiresOn)}</time>
+                          ) : (
+                            <span class:list={["intel-card-meta deals-countdown", { "is-soon": 7 >= d.days }]}>{countdownText(d.days)}</span>
+                          )}
+                          {d.entry.data.promoCode && <span class="deals-code">Code {d.entry.data.promoCode}</span>}
+                        </span>
                         <p class="intel-card-meta">Last checked <time datetime={d.entry.data.lastVerified.toISOString().slice(0, 10)}>{fmt(d.entry.data.lastVerified)}</time>.</p>
                       </div>
                     </a>
@@ -204,9 +211,13 @@ const schema = collectionPageGraph({ siteUrl, path: "/deals/", name: "UAE bank &
                         <h2 id={`deal-${d.entry.id}`}>{d.entry.data.title}</h2>
                         {d.entry.data.eligibilityNote && <p>{d.entry.data.eligibilityNote}</p>}
                         <span class="deals-card-foot">
-                          <span class:list={["intel-card-meta deals-countdown", { "is-soon": 7 >= d.days }]}>
-                            {ENDING_SOON_DAYS >= d.days ? countdownText(d.days) : `Recorded expiry ${fmt(d.entry.data.expiresOn)}`}
-                          </span>
+                          {usesRecordedExpiryLabel(d.entry.id) ? (
+                            <time class:list={["intel-card-meta deals-countdown", { "is-soon": 7 >= d.days }]} datetime={d.entry.data.expiresOn.toISOString().slice(0, 10)}>Recorded expiry {fmt(d.entry.data.expiresOn)}</time>
+                          ) : (
+                            <span class:list={["intel-card-meta deals-countdown", { "is-soon": 7 >= d.days }]}>
+                              {ENDING_SOON_DAYS >= d.days ? countdownText(d.days) : `Recorded expiry ${fmt(d.entry.data.expiresOn)}`}
+                            </span>
+                          )}
                           {d.entry.data.promoCode && <span class="deals-code">Code {d.entry.data.promoCode}</span>}
                         </span>
                         <p class="intel-card-meta">Last checked <time datetime={d.entry.data.lastVerified.toISOString().slice(0, 10)}>{fmt(d.entry.data.lastVerified)}</time>.</p>

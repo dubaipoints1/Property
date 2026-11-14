@@ -4,7 +4,7 @@
 // plainly and sends the reader to the deal for the eligible-card list.
 // Renders nothing when the bank has no live deal.
 
-import { getLiveDeals, daysLeft } from "~/lib/deals";
+import { getLiveDeals, daysLeft, usesRecordedExpiryLabel } from "~/lib/deals";
 
 interface Props {
   bankSlug: string;
@@ -26,7 +26,11 @@ const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: 
           <a href={`/deals/${d.id}/`}>
             <span class="t">{d.data.title}</span>
             <span class="m">
-              {14 >= daysLeft(d) ? `Ends in ${daysLeft(d)} days` : `Ends ${fmt(d.data.expiresOn)}`}
+              {usesRecordedExpiryLabel(d.id) ? (
+                <time datetime={d.data.expiresOn.toISOString().slice(0, 10)}>Recorded expiry {fmt(d.data.expiresOn)}</time>
+              ) : (
+                14 >= daysLeft(d) ? `Ends in ${daysLeft(d)} days` : `Ends ${fmt(d.data.expiresOn)}`
+              )}
               {d.data.promoCode && <> · Code <strong>{d.data.promoCode}</strong></>}
             </span>
           </a>
