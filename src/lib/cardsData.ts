@@ -425,6 +425,8 @@ export const CardDataSchema = z.object({
     amount: z.number().nonnegative(),
     currency: z.literal("AED").default("AED"),
   }),
+  /** A published baseline, not an unconditional first-year charge. */
+  standardFeeConditions: z.enum(["waiver-terms", "introductory-offer-unconfirmed", "renewal-only"]).optional(),
   /**
    * Either the structured object (preferred), a legacy free-text string,
    * or null (no waiver path). Pages render the structured form when
@@ -480,6 +482,7 @@ export const CardDataSchema = z.object({
     minSalary: z.number().nonnegative().nullable(),
     /** Published income floor only; not a salary filter or eligibility decision. */
     publishedMinMonthlyIncome: z.number().positive().optional(),
+    publishedIncomeBasis: z.enum(["salary", "salaried-applicants"]).optional(),
     /** null = not confirmed; never silently coerced to "not required". */
     salaryTransferRequired: z.boolean().nullable(),
     residencyRequired: z.boolean().nullable(),
@@ -602,7 +605,12 @@ export const CardDataSchema = z.object({
     "Every scoped earning row needs its own source evidence")
   .refine(c => c.eligibility.publishedMinMonthlyIncome === undefined ||
     (c.eligibility.minSalary === null && (c._fieldEvidence?.["eligibility.publishedMinMonthlyIncome"]?.length ?? 0) > 0),
-    "Published income floors require exact source evidence and stay separate from salary matching");
+    "Published income floors require exact source evidence and stay separate from salary matching")
+  .refine(c => c.eligibility.publishedIncomeBasis === undefined || c.eligibility.publishedMinMonthlyIncome !== undefined,
+    "A published income basis cannot exist without a sourced amount")
+  .refine(c => c.standardFeeConditions === undefined ||
+    (c.refreshMode === "manual-primary" && (c._fieldEvidence?.annualFee?.length ?? 0) > 0),
+    "A conditional standard fee requires scoped primary evidence");
 
 export type CardData = z.infer<typeof CardDataSchema>;
 export type CardFeature = z.infer<typeof Feature>;

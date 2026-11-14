@@ -72,7 +72,9 @@ const vatQualText =
   vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
 
 const publishedIncome = card.eligibility.publishedMinMonthlyIncome;
-const minSalaryEyebrow = publishedIncome === undefined ? "Min salary" : "Published minimum income";
+const minSalaryEyebrow = publishedIncome === undefined ? "Min salary" :
+  card.eligibility.publishedIncomeBasis === "salary" ? "Published minimum salary" :
+  card.eligibility.publishedIncomeBasis === "salaried-applicants" ? "Published salary (salaried)" : "Published minimum income";
 const minSalaryLabel = publishedIncome === undefined ? cardSalaryLabel(card, { perMonth: true }) : `${formatAED(publishedIncome)}/mo`;
 
 const UNIT_LABELS: Record<string, string> = {
@@ -121,7 +123,7 @@ const tileCount =
 
 <dl class:list={["dp-at-a-glance", `is-${tileCount}-tiles`]} aria-label="Card at a glance">
   <div class="tile">
-    <dt class="eyebrow">Annual fee</dt>
+    <dt class="eyebrow">{card.standardFeeConditions ? "Standard annual fee" : "Annual fee"}</dt>
     <dd class="value">
       {recurringFee.amount}
       {recurringFee.qual && <span class="qual">{recurringFee.qual}</span>}

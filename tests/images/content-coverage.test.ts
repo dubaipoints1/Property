@@ -26,6 +26,9 @@ const ALLOWED_MISSING: Record<string, string> = {
   ...Object.fromEntries(["noon", "platinum-plus", "solitaire"].map(
     product => [`card-mashreq-${product}`, "Text-led partial source profile; issuer art was checked only to identify the network and is not republished."],
   )),
+  ...Object.fromEntries(["fab-adnoc-rewards", "fab-gems-world", "fab-travel"].map(
+    slug => [`card-${slug}`, "Text-led scoped issuer source profiles; no approved art republished."],
+  )),
   ...Object.fromEntries(["simplicity", "rewards", "premier", "prestige", "ultima"].map(
     product => [`card-citi-${product}`, "Text-led source profile; no issuer card art has an approved licence record. Do not substitute synthetic card art."],
   )),

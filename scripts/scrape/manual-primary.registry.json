@@ -897,6 +897,107 @@
           "sha256": "4de4435f70e66c5b12de3dfe4bd61d61c29a73f2f65c0f2f8a6658fbe2a25945"
         }
       ]
+    },
+    {
+      "slug": "fab-adnoc-rewards",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-adnoc-rewards-credit-card",
+      "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+      "sourceFixtureIds": [
+        "fab-adnoc-identity",
+        "fab-adnoc-salary",
+        "fab-adnoc-fee",
+        "fab-adnoc-apply",
+        "fab-adnoc-network",
+        "fab-fee-schedule",
+        "fab-kfs-disclosure",
+        "fab-adnoc-waiver"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-expansion.ts",
+        "export": "parseFabExpansion",
+        "sha256": "d70a7709a5f76be4007bbb9cf11fc7e517ab7d00264d0690eeb8163a093dbb98",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-new-cards.json",
+          "sha256": "461a8aa4982c1c2830ef320d4d7517148ab9e2bd3806061e6ccb45d096b3225d"
+        }
+      ]
+    },
+    {
+      "slug": "fab-gems-world",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/gems-world",
+      "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+      "sourceFixtureIds": [
+        "fab-gems-identity",
+        "fab-gems-salary",
+        "fab-gems-fee",
+        "fab-gems-apply",
+        "fab-gems-network",
+        "fab-fee-schedule",
+        "fab-kfs-disclosure",
+        "fab-gems-waiver",
+        "fab-gems-waiver-product"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-expansion.ts",
+        "export": "parseFabExpansion",
+        "sha256": "d70a7709a5f76be4007bbb9cf11fc7e517ab7d00264d0690eeb8163a093dbb98",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-new-cards.json",
+          "sha256": "461a8aa4982c1c2830ef320d4d7517148ab9e2bd3806061e6ccb45d096b3225d"
+        }
+      ]
+    },
+    {
+      "slug": "fab-travel",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-travel-credit-card",
+      "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+      "sourceFixtureIds": [
+        "fab-travel-identity",
+        "fab-travel-salary",
+        "fab-travel-fee",
+        "fab-travel-apply",
+        "fab-travel-network",
+        "fab-fee-schedule",
+        "fab-kfs-disclosure",
+        "fab-travel-fx",
+        "fab-travel-fx-product"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-expansion.ts",
+        "export": "parseFabExpansion",
+        "sha256": "d70a7709a5f76be4007bbb9cf11fc7e517ab7d00264d0690eeb8163a093dbb98",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-new-cards.json",
+          "sha256": "461a8aa4982c1c2830ef320d4d7517148ab9e2bd3806061e6ccb45d096b3225d"
+        }
+      ]
     }
   ]
 }
