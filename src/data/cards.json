@@ -31421,6 +31421,377 @@
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
     }
   },
+  "fab-adnoc-rewards": {
+    "bank": "fab",
+    "name": "FAB ADNOC Rewards Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "co-brand",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 315,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": "Standard fee applies in the first year. From the second year, qualifying retail spend of at least AED 48,000 in the previous twelve months before the card anniversary may waive it. FAB and ADNOC employees have a separate exemption.",
+    "standardFeeConditions": "waiver-terms",
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedIncomeBasis": "salary",
+      "publishedMinMonthlyIncome": 5000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-adnoc-rewards-credit-card",
+    "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/fab-adnoc-rewards-credit-card",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/terms-and-conditions-consolidated/fab-reward-programmes/adnoc-rewards-terms-and-conditions-en.pdf?view=1"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "annualFeeWaiver": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "fab/product-schedule-and-supplements/v1",
+          "productScope": "FAB ADNOC Rewards Credit Card",
+          "unit": "AED product-page headline; gross amount cross-checked against Schedule",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-adnoc-rewards-credit-card",
+          "capturedAt": "2026-11-14T12:10:10Z",
+          "sourceBodySha256": "27ae8c9aebddb8f38cc1cfa9e3b39740e830513f4848789ecd57854bb89525f3",
+          "sourceTextSha256": "27ae8c9aebddb8f38cc1cfa9e3b39740e830513f4848789ecd57854bb89525f3",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "captureMethod": "public-http-reader",
+          "firstLine": 640,
+          "lastLine": 640,
+          "sourceStartByte": 51034,
+          "sourceEndByte": 51142,
+          "rawText": "<h2 class=\"infographic-heading\"> 300</h2><div class=\"global-rich-text infographic-text\"><p>Annual Fee</p>",
+          "rawTextSha256": "2bc1f785357f1f9cdf46c5cefe408e22c70aaaf1ca41182028cc938d442a2de5"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/product-schedule-and-supplements/v1",
+          "productScope": "FAB ADNOC Rewards Credit Card",
+          "unit": "AED monthly published salary floor; does not establish full eligibility",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-adnoc-rewards-credit-card",
+          "capturedAt": "2026-11-14T12:10:10Z",
+          "sourceBodySha256": "27ae8c9aebddb8f38cc1cfa9e3b39740e830513f4848789ecd57854bb89525f3",
+          "sourceTextSha256": "27ae8c9aebddb8f38cc1cfa9e3b39740e830513f4848789ecd57854bb89525f3",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "captureMethod": "public-http-reader",
+          "firstLine": 640,
+          "lastLine": 640,
+          "sourceStartByte": 50833,
+          "sourceEndByte": 50955,
+          "rawText": "<h2 class=\"infographic-heading\"> 5,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "accfee2aac510d38e9cf0ab55e3608b932b0817fa393b81a1d2e130a9ac9f7b7"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "The named FAB product page, standard membership fee and monthly salary floor were checked. This is not a full review.",
+      "annualFeeWaiver": "Standard fee applies in the first year. From the second year, qualifying retail spend of at least AED 48,000 in the previous twelve months before the card anniversary may waive it. FAB and ADNOC employees have a separate exemption.",
+      "eligibility": "The published salary floor does not establish approval, required documents, residency or salary-transfer conditions.",
+      "fxFee": "This profile does not quote a total foreign-currency cost. Check issuer and scheme charges, and any currency conversion separately.",
+      "earnRates": "No all-spend rate or return is estimated. Check the exact spending categories, caps and exclusions in FAB's terms."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
+  "fab-gems-world": {
+    "bank": "fab",
+    "name": "FAB GEMS World Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "co-brand",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 418.95,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": "FAB describes first-year relief for eligible new-to-bank customers, not all applicants. The standard fee may be waived after AED 24,000 or more in non-education spending in the previous year. School fees do not count towards that test.",
+    "standardFeeConditions": "waiver-terms",
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedIncomeBasis": "salary",
+      "publishedMinMonthlyIncome": 8000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/gems-world",
+    "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/gems-world",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/terms-and-conditions-consolidated/card-specific/fab-gems-world-credit-card-faqs_en.pdf?view=1"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "annualFeeWaiver": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "fab/product-schedule-and-supplements/v1",
+          "productScope": "FAB GEMS World Credit Card",
+          "unit": "AED product-page headline; gross amount cross-checked against Schedule",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/gems-world",
+          "capturedAt": "2026-11-14T12:10:12Z",
+          "sourceBodySha256": "b216a7ebc6bfb31d02925e121f3a47789d0ee8610dd98511394611c2f789ff25",
+          "sourceTextSha256": "b216a7ebc6bfb31d02925e121f3a47789d0ee8610dd98511394611c2f789ff25",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "captureMethod": "public-http-reader",
+          "firstLine": 647,
+          "lastLine": 647,
+          "sourceStartByte": 50497,
+          "sourceEndByte": 50608,
+          "rawText": "<h2 class=\"infographic-heading\"> 399</h2><div class=\"global-rich-text infographic-text\"><p>Annual Fees**</p>",
+          "rawTextSha256": "5284d46beba9cb163bffb1c96fc49f3d3a7bc3349e6ebd7eaa0824727ce78760"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/product-schedule-and-supplements/v1",
+          "productScope": "FAB GEMS World Credit Card",
+          "unit": "AED monthly published salary floor; does not establish full eligibility",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/gems-world",
+          "capturedAt": "2026-11-14T12:10:12Z",
+          "sourceBodySha256": "b216a7ebc6bfb31d02925e121f3a47789d0ee8610dd98511394611c2f789ff25",
+          "sourceTextSha256": "b216a7ebc6bfb31d02925e121f3a47789d0ee8610dd98511394611c2f789ff25",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "captureMethod": "public-http-reader",
+          "firstLine": 647,
+          "lastLine": 647,
+          "sourceStartByte": 50296,
+          "sourceEndByte": 50418,
+          "rawText": "<h2 class=\"infographic-heading\"> 8,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "b14390fedcad5eff197c203eeb73755e2018ebbe6f120ec13b845b2d585b5b6d"
+        }
+      ],
+      "annualFeeWaiver": [
+        {
+          "parserId": "fab/product-schedule-and-supplements/v1",
+          "productScope": "FAB GEMS World Credit Card",
+          "unit": "AED prior-year non-educational spending only; FAQ covers new-to-bank first-year offer separately",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/gems-world",
+          "capturedAt": "2026-11-14T12:10:12Z",
+          "sourceBodySha256": "b216a7ebc6bfb31d02925e121f3a47789d0ee8610dd98511394611c2f789ff25",
+          "sourceTextSha256": "b216a7ebc6bfb31d02925e121f3a47789d0ee8610dd98511394611c2f789ff25",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "captureMethod": "public-http-reader",
+          "firstLine": 648,
+          "lastLine": 648,
+          "sourceStartByte": 50609,
+          "sourceEndByte": 50734,
+          "rawText": "<p><small>**Enjoy no annual fee if you spend  24,000 or more on non-educational spending in the previous year.</small></p>",
+          "rawTextSha256": "c0a7a630af592d63f6ef13a182f7a620ff9c042fe5a1c252aac4ad459143f142"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "The named FAB product page, standard membership fee and monthly salary floor were checked. This is not a full review.",
+      "annualFeeWaiver": "FAB describes first-year relief for eligible new-to-bank customers, not all applicants. The standard fee may be waived after AED 24,000 or more in non-education spending in the previous year. School fees do not count towards that test.",
+      "eligibility": "The published salary floor does not establish approval, required documents, residency or salary-transfer conditions.",
+      "fxFee": "This profile does not quote a total foreign-currency cost. Check issuer and scheme charges, and any currency conversion separately.",
+      "earnRates": "No all-spend rate or return is estimated. Check the exact spending categories, caps and exclusions in FAB's terms."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
+  "fab-travel": {
+    "bank": "fab",
+    "name": "FAB Travel Card",
+    "network": "Mastercard",
+    "categories": [
+      "travel",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 1575,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedIncomeBasis": "salary",
+      "publishedMinMonthlyIncome": 20000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-travel-credit-card",
+    "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/fab-travel-credit-card",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "annualFeeWaiver": "needs-review",
+      "joiningFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "fab/product-schedule-and-supplements/v1",
+          "productScope": "FAB Travel Card",
+          "unit": "AED product-page headline; gross amount cross-checked against Schedule",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-travel-credit-card",
+          "capturedAt": "2026-11-14T12:10:14Z",
+          "sourceBodySha256": "05cd7532039f127919ca12bbb5dce14916ade47974d199c5bf8b5b99318c5343",
+          "sourceTextSha256": "05cd7532039f127919ca12bbb5dce14916ade47974d199c5bf8b5b99318c5343",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1089,
+          "lastLine": 1089,
+          "sourceStartByte": 66860,
+          "sourceEndByte": 66971,
+          "rawText": "<h2 class=\"infographic-heading\"> 1,500</h2><div class=\"global-rich-text infographic-text\"><p>Annual Fees</p>",
+          "rawTextSha256": "a905bb63cfec45f08f38fd07912d194a7dfd552bc8cfcab28c127f9c28982d99"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/product-schedule-and-supplements/v1",
+          "productScope": "FAB Travel Card",
+          "unit": "AED monthly published salary floor; does not establish full eligibility",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-travel-credit-card",
+          "capturedAt": "2026-11-14T12:10:14Z",
+          "sourceBodySha256": "05cd7532039f127919ca12bbb5dce14916ade47974d199c5bf8b5b99318c5343",
+          "sourceTextSha256": "05cd7532039f127919ca12bbb5dce14916ade47974d199c5bf8b5b99318c5343",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1089,
+          "lastLine": 1089,
+          "sourceStartByte": 66664,
+          "sourceEndByte": 66787,
+          "rawText": "<h2 class=\"infographic-heading\"> 20,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "2ac424c49227a7a140225809cb0244abb503b366dc94bb487eb45f37b6fdac09"
+        }
+      ],
+      "fxFee": [
+        {
+          "parserId": "fab/product-schedule-and-supplements/v1",
+          "productScope": "FAB Travel Card",
+          "unit": "Issuer and scheme international-transaction charges, not merchant conversion or the total transaction cost",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-travel-credit-card",
+          "capturedAt": "2026-11-14T12:10:14Z",
+          "sourceBodySha256": "05cd7532039f127919ca12bbb5dce14916ade47974d199c5bf8b5b99318c5343",
+          "sourceTextSha256": "05cd7532039f127919ca12bbb5dce14916ade47974d199c5bf8b5b99318c5343",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1089,
+          "lastLine": 1089,
+          "sourceStartByte": 62403,
+          "sourceEndByte": 62561,
+          "rawText": "<p>Pay no international transaction fees and no hidden scheme or bank charges when using your FAB Travel Card abroad or online in foreign currency spends.</p>",
+          "rawTextSha256": "b89eacb14fa14260099fe36c71165d348512cd94a1873e742ca5dee5e0221daa"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "The named FAB product page, standard membership fee and monthly salary floor were checked. This is not a full review.",
+      "eligibility": "The published salary floor does not establish approval, required documents, residency or salary-transfer conditions.",
+      "fxFee": "FAB’s Key Facts Statement excludes issuer and scheme international-transaction charges for this Travel card. This is not a claim of universal zero cost: merchant conversion and other transaction charges are separate. A total cost is not modelled.",
+      "earnRates": "No all-spend rate or return is estimated. Check the exact spending categories, caps and exclusions in FAB's terms."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
   "fab-cashback": {
     "kfsUrl": "https://apply.bankfab.com/-/media/fabgroup/home/personal/key-facts-statements/fab-consolidated-credit-cards.pdf",
     "earnUnit": "% cashback (paid as FAB Rewards)",

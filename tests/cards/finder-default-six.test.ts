@@ -28,7 +28,7 @@ function defaultSix(): string[] {
     .map((card) => ({
       slug: card.slug,
       score: finderEvidence(card).fallbackPending ? null : card.earnRates.everythingElse ?? null,
-      annualFee: finderEvidence(card).annualFeePending ? null : card.annualFee.amount,
+      annualFee: finderEvidence(card).annualFeePending || card.standardFeeConditions ? null : card.annualFee.amount,
     }))
     .sort((a, b) => a.score === null || b.score === null
       ? a.score === b.score ? compareKnownAnnualFees(a.annualFee, b.annualFee) : a.score === null ? 1 : -1
@@ -66,7 +66,7 @@ function renderFinder(search: string, fixtures = getActiveCards()) {
   const cards = fixtures.map((card) => ({
     slug: card.slug,
     network: card.network,
-    annualFee: finderEvidence(card).annualFeePending ? null : card.annualFee.amount,
+    annualFee: finderEvidence(card).annualFeePending || card.standardFeeConditions ? null : card.annualFee.amount,
     minSalary: card.eligibility.minSalary,
     eligibleForSalaryFilter: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary),
     salaryTransferRequired: card.eligibility.salaryTransferRequired,
@@ -273,7 +273,7 @@ test("unknown annual fees cannot match fee buckets or win the cheaper-fee tie-br
   assert.equal(renderFinder("?fee=free", [confirmedZero]).tiles.length, 1);
   assert.equal(renderFinder("", [known, confirmedZero]).tiles[0].slug, confirmedZero.slug);
   for (const tile of renderFinder("?fee=free").tiles) assert.equal(cardFeeNeedsReview(getCardData(tile.slug)!, "annualFee"), false);
-  assert.equal((SOURCE.match(/annualFee: evidence\.annualFeePending \? null : card\.annualFee\.amount/g) ?? []).length, 2, "Both serialized and SSR fee inputs must use the guard");
+  assert.equal((SOURCE.match(/annualFee: evidence\.annualFeePending \|\| card\.standardFeeConditions \? null : card\.annualFee\.amount/g) ?? []).length, 2, "Both serialized and SSR fee inputs must use the guard");
 });
 test("unknown required eligibility flags never qualify under an active salary filter", () => {
   const citi = getActiveCards().find(c => c.slug === "citi-cashback")!;

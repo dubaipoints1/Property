@@ -197,7 +197,9 @@ const relatedDescriptor = (c: CardData) =>
   welcomeBonusHeadline(c.welcomeBonus) ||
   (cardFeeNeedsReview(c, "annualFee") ? "Annual fee pending" : c.annualFee.amount === 0
     ? "No annual fee"
-    : `${formatAED(c.annualFee.amount)} annual fee`);
+    : c.standardFeeConditions
+      ? `${annualFeeLabel(c).amount} standard annual fee · ${annualFeeLabel(c).qual}`
+      : `${formatAED(c.annualFee.amount)} annual fee`);
 const relatedCards = getActiveCards()
   .filter((c) => c.slug !== slug)
   .map((c) => {
@@ -217,9 +219,13 @@ const relatedCards = getActiveCards()
 const compareHref = slug ? `/cards/compare/?cards=${[slug, ...relatedCards.slice(0, 2).map((c) => c.slug)].join(",")}` : "/cards/compare/";
 const cardData = slug ? getCardData(slug) : undefined;
 const publishedIncome = cardData?.eligibility.publishedMinMonthlyIncome;
-// This issuer batch is the measured surface; do not change eager/lazy
+// These issuer batches are the measured surfaces; do not change eager/lazy
 // behaviour on unrelated card profiles or the main card artwork.
-const deferRelatedArt = slug === "mashreq-noon" || slug === "mashreq-platinum-plus" || slug === "mashreq-solitaire";
+const deferRelatedArt = slug === "mashreq-noon" || slug === "mashreq-platinum-plus" || slug === "mashreq-solitaire"
+  || slug === "fab-adnoc-rewards" || slug === "fab-gems-world" || slug === "fab-travel";
+const incomeLabel = cardData?.eligibility.publishedIncomeBasis === "salary" ? "Published minimum monthly salary"
+  : cardData?.eligibility.publishedIncomeBasis === "salaried-applicants" ? "Minimum monthly salary (salaried applicants)"
+  : "Published minimum monthly income";
 const availabilityUnconfirmed = cardData?.applicationAvailability === "unconfirmed";
 const applicationUnavailable = availabilityUnconfirmed || cardData?.discontinuedForNewApplicants !== undefined;
 const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
@@ -346,12 +352,12 @@ const schema = {
       <h1>{heading ?? title}</h1>
       <dl class="dp-card-summary-facts">
         <div>
-          <dt>Annual fee</dt>
+          <dt>{cardData?.standardFeeConditions ? "Standard annual fee" : "Annual fee"}</dt>
           <dd>{recurringFee.amount}</dd>
           {(recurringFee.qual || vatQualifier) && <dd class="detail">{[recurringFee.qual, vatQualifier].filter(Boolean).join(" · ")}</dd>}
         </div>
         <div>
-          <dt>{publishedIncome === undefined ? "Minimum monthly salary" : "Published minimum monthly income"}</dt>
+          <dt>{publishedIncome === undefined ? "Minimum monthly salary" : incomeLabel}</dt>
           <dd class={publishedIncome === undefined && eligibilityProvenance === "needs-review" ? "is-unverified" : ""}>
             {publishedIncome !== undefined ? formatAED(publishedIncome)
               : eligibilityProvenance === "needs-review"

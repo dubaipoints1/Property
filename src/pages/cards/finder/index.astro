@@ -62,7 +62,7 @@ const cardIndex = cardsWithBanks.map(({ card, evidence }) => ({
   name: card.name,
   bank: card.bank,
   network: card.network,
-  annualFee: evidence.annualFeePending ? null : card.annualFee.amount,
+  annualFee: evidence.annualFeePending || card.standardFeeConditions ? null : card.annualFee.amount,
   minSalary: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary) ? card.eligibility.minSalary : null,
   eligibleForSalaryFilter: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary),
   salaryTransferRequired: card._provenance?.eligibility === "needs-review" || card._provenance?.["eligibility.salaryTransferRequired"] === "needs-review" ? null : card.eligibility.salaryTransferRequired,
@@ -125,7 +125,7 @@ const defaultTopSlugs = defaultCandidates
   .map(({ card, evidence }) => ({
     slug: card.slug,
     score: evidence.fallbackPending ? null : card.earnRates.everythingElse ?? null,
-    annualFee: evidence.annualFeePending ? null : card.annualFee.amount,
+    annualFee: evidence.annualFeePending || card.standardFeeConditions ? null : card.annualFee.amount,
   }))
   .sort((a, b) => a.score === null || b.score === null
     ? a.score === b.score ? compareKnownAnnualFees(a.annualFee, b.annualFee) : a.score === null ? 1 : -1

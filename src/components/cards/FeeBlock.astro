@@ -135,7 +135,7 @@ const showJoiningFee =
 <div class="dp-fee-block">
   <div class="amt">{feeLabel}</div>
   {showVatTag && <div class="vat">{vatTagText}</div>}
-  <div class="lbl">Annual fee</div>
+  <div class="lbl">{resolved?.standardFeeConditions ? "Standard annual fee" : "Annual fee"}</div>
   {annualFeePending && <div class="joining">The standard annual fee is Pending; joining and other charges are not assumed to be zero.</div>}
   {joiningFeePending && <div class="joining">Joining fee — confirmation pending</div>}
   {showJoiningFee && joiningFee && (

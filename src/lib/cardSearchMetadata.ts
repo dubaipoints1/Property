@@ -11,11 +11,13 @@ export function cardSearchMetadata(card: CardData) {
   const top = topEarnEntry(card.earnRates as Record<string, unknown>, card._provenance);
   const topLabel = top ? CATEGORY_LABELS_FOR_TOP[top.key] ?? top.key : null;
   const qualification = partial ? annualFeeLabel(card).qual : null;
+  const qualifier = qualification === "year 2+" ? " from year two"
+    : qualification ? ` · ${qualification}` : "";
   return {
     kind: partial ? "source profile" : "review",
     description: [
       `${card.name} ${partial ? "partial source profile" : "review"}`,
-      `Standard annual fee: ${cardFeeAmountLabel(card)}${qualification ? " from year two" : ""}`,
+      `Standard annual fee: ${cardFeeAmountLabel(card)}${qualifier}`,
       limited ? "Terms pending; read source notes" : `Minimum salary: ${cardSalaryLabel(card)}`,
       !limited && top && topLabel ? `${formatEarnRate(top.value, card.earnUnit, card.categories)} ${topLabel}` : null,
     ].filter(Boolean).join(" · "),

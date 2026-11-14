@@ -392,6 +392,7 @@ export interface CardForAnnualFee {
   annualFee: { amount: number };
   joiningFee?: { amount: number } | null;
   annualFeeWaiver?: unknown;
+  standardFeeConditions?: "waiver-terms" | "introductory-offer-unconfirmed" | "renewal-only";
   _provenance?: Record<string, string> | null;
 }
 
@@ -440,6 +441,9 @@ export function annualFeeLabel(card: CardForAnnualFee): {
   if (cardFeeNeedsReview(card, "annualFee")) return { amount: "Pending", qual: null };
   const amount =
     card.annualFee.amount === 0 ? "Free" : formatAED(card.annualFee.amount);
+  if (card.standardFeeConditions === "renewal-only") return { amount, qual: "year 2+; initial terms pending" };
+  if (card.standardFeeConditions === "introductory-offer-unconfirmed") return { amount, qual: "first-year offer pending" };
+  if (card.standardFeeConditions === "waiver-terms") return { amount, qual: "waiver terms apply" };
   const jf = card.joiningFee?.amount;
   if (!cardFeeNeedsReview(card, "joiningFee") && typeof jf === "number" && jf > card.annualFee.amount) {
     return { amount, qual: "year 2+" };
@@ -463,6 +467,7 @@ export interface CardForComparison {
   name: string;
   annualFee: { amount: number };
   joiningFee?: { amount: number } | null;
+  standardFeeConditions?: CardForAnnualFee["standardFeeConditions"];
   eligibility: { minSalary: number | null; invitationOnly?: boolean };
   _provenance?: Record<string, string> | null;
   earnRates: Record<string, number | unknown | undefined>;
@@ -768,14 +773,19 @@ export function cardComparisonRows(
     const rFee = right.annualFee.amount;
     const lPending = cardFeeNeedsReview(left, "annualFee");
     const rPending = cardFeeNeedsReview(right, "annualFee");
+    const scopedFee = (card: CardForComparison, pending: boolean) => {
+      if (pending) return "Pending";
+      const { amount, qual } = annualFeeLabel(card);
+      return card.standardFeeConditions && qual ? `${amount} · ${qual}` : amount;
+    };
     rows.push({
       key: "annualFee",
       label: "Annual fee (year 2+)",
       mobileLabel: "Annual fee",
       subtext: "year 2+",
-      leftValue: lPending ? "Pending" : lFee === 0 ? "Free" : formatAED(lFee),
-      rightValue: rPending ? "Pending" : rFee === 0 ? "Free" : formatAED(rFee),
-      winner: lPending || rPending ? "none" : lowerWins(lFee, rFee),
+      leftValue: scopedFee(left, lPending),
+      rightValue: scopedFee(right, rPending),
+      winner: lPending || rPending || left.standardFeeConditions || right.standardFeeConditions ? "none" : lowerWins(lFee, rFee),
     });
   }
 
