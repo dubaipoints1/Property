@@ -33342,6 +33342,299 @@
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
     }
   },
+  "mashreq-noon": {
+    "bank": "mashreq",
+    "name": "Mashreq noon Credit Card",
+    "network": "Visa",
+    "categories": [
+      "shopping",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.mashreq.com/uae/neo/cards/credit-cards/noon-credit-card/",
+    "kfsUrl": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.mashreq.com/uae/neo/cards/credit-cards/noon-credit-card/",
+      "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/mashreq-cards-soc-latest.ashx",
+      "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+      "https://www.mashreq.com/-/jssmedia/Images/UAE/neo/Products/cards/noon-vip-credit-card.ashx?h=220&iar=0&w=360&hash=00CD2DAE091E183CBD8C9B02BF121A05"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "mashreq/product-and-schedule/v1",
+          "productScope": "Mashreq noon Credit Card",
+          "unit": "AED annual primary membership fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.mashreq.com/uae/neo/cards/credit-cards/noon-credit-card/",
+          "capturedAt": "2026-11-14T12:08:33Z",
+          "sourceBodySha256": "aefa18a924d7a25e52fd84a57ba2fe84e55e51f22235b3fe37ddbd7e8eec90ba",
+          "sourceTextSha256": "aefa18a924d7a25e52fd84a57ba2fe84e55e51f22235b3fe37ddbd7e8eec90ba",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 102,
+          "lastLine": 102,
+          "sourceStartByte": 167764,
+          "sourceEndByte": 167845,
+          "rawText": ">Annual fee</h6><div class=\"ui-text ui-text-body4 pt-2 is-richtext\">Free for life",
+          "rawTextSha256": "c97cf8391e92facb87eb1cf662e1d7bbe961b76a5edfd9d782dd87137d5a610f"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "The named product and annual membership fee were checked. Eligibility, other charges, promotions and the rewards model were not fully reconciled.",
+      "eligibility": "The sources checked here do not establish a product-specific income floor or an approval pathway. Check with Mashreq before applying.",
+      "earnRates": "The issuer credits rewards as noon credits. Do not treat them as cash or assume all purchases qualify.",
+      "fxFee": "Foreign-currency and conversion charges are not modelled in this profile."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-14"
+  },
+  "mashreq-platinum-plus": {
+    "bank": "mashreq",
+    "name": "Mashreq Platinum Plus Credit Card",
+    "network": "Visa",
+    "categories": [
+      "travel",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 313.95,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 5000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/platinum-plus-credit-card/",
+    "kfsUrl": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.mashreq.com/en/uae/neo/cards/credit-cards/platinum-plus-credit-card/",
+      "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/mashreq-cards-soc-latest.ashx",
+      "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+      "https://www.mashreq.com/-/jssmedia/Images/UAE/neo/Products/cards/neo-cards/platinum-plus/platinum-plus-card-100x60.ashx?h=60&iar=0&w=100&hash=8418EBEFD3CA8CEB6A6505F50FD744AC"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "mashreq/product-and-schedule/v1",
+          "productScope": "Mashreq Platinum Plus Credit Card",
+          "unit": "AED before VAT, plus stated statutory VAT",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/platinum-plus-credit-card/",
+          "capturedAt": "2026-11-14T12:08:34Z",
+          "sourceBodySha256": "aeadae459d5b5445fd2ca6d1f583f734c20c0e7ca5ee68f3b4694eee6ee78d66",
+          "sourceTextSha256": "aeadae459d5b5445fd2ca6d1f583f734c20c0e7ca5ee68f3b4694eee6ee78d66",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 125,
+          "lastLine": 125,
+          "sourceStartByte": 166556,
+          "sourceEndByte": 166643,
+          "rawText": ">Annual Fee</h6><div class=\"ui-text ui-text-body4 pt-2 is-richtext\">Primary 299+ 5% VAT",
+          "rawTextSha256": "82c1d0a04402d7ad464f7892bdfabb9b748f081ddb572eecbb76d27a805718e8"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "mashreq/product-and-schedule/v1",
+          "productScope": "Mashreq Platinum Plus Credit Card",
+          "unit": "AED monthly published income",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/platinum-plus-credit-card/",
+          "capturedAt": "2026-11-14T12:08:34Z",
+          "sourceBodySha256": "aeadae459d5b5445fd2ca6d1f583f734c20c0e7ca5ee68f3b4694eee6ee78d66",
+          "sourceTextSha256": "aeadae459d5b5445fd2ca6d1f583f734c20c0e7ca5ee68f3b4694eee6ee78d66",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 127,
+          "lastLine": 127,
+          "sourceStartByte": 184489,
+          "sourceEndByte": 184549,
+          "rawText": ">Your monthly income should be a minimum of AED 5,000.</div>",
+          "rawTextSha256": "9efb7af369ae26e2d550c08a719da73dcd99fb724575a1dd416f88ef823ab967"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "The named product and annual membership fee were checked. Eligibility, other charges, promotions and the rewards model were not fully reconciled.",
+      "eligibility": "The published income floor does not establish salary-transfer, employment, residency or lending approval conditions.",
+      "earnRates": "The issuer uses Mashreq Vantage points. Do not treat a points multiplier as cash or assume redemptions have a fixed value.",
+      "fxFee": "Foreign-currency and conversion charges are not modelled in this profile."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-14"
+  },
+  "mashreq-solitaire": {
+    "bank": "mashreq",
+    "name": "Mashreq Solitaire Credit Card",
+    "network": "Visa",
+    "categories": [
+      "travel",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 1575,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 25000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/solitaire-credit-card",
+    "kfsUrl": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.mashreq.com/en/uae/neo/cards/credit-cards/solitaire-credit-card",
+      "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/mashreq-cards-soc-latest.ashx",
+      "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+      "https://www.mashreq.com/-/jssmedia/Images/UAE/neo/Products/cards/Visa-Solitaire.ashx?h=60&iar=0&w=100&hash=2A0A1D0815FA2C87EB60D10FB1D64B5B"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "mashreq/product-and-schedule/v1",
+          "productScope": "Mashreq Solitaire Credit Card",
+          "unit": "AED before VAT, plus stated statutory VAT",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/solitaire-credit-card",
+          "capturedAt": "2026-11-14T12:08:35Z",
+          "sourceBodySha256": "776b3612c5dfb2422287cf9ab6acea6116e8db9bf24b103fba94c4d528c9398e",
+          "sourceTextSha256": "776b3612c5dfb2422287cf9ab6acea6116e8db9bf24b103fba94c4d528c9398e",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 111,
+          "lastLine": 111,
+          "sourceStartByte": 173412,
+          "sourceEndByte": 173544,
+          "rawText": ">Annual Fee</h6><div class=\"ui-text ui-text-body4 pt-2 is-richtext\"><p>Primary: AED 1,500 +5% VAT Supplementary: AED 600 +5% VAT</p>",
+          "rawTextSha256": "5e9bf80f4988a685f5d38b9bd1fb0dc7c58db0546254e7454fd70d1d323a04c2"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "mashreq/product-and-schedule/v1",
+          "productScope": "Mashreq Solitaire Credit Card",
+          "unit": "AED monthly published income",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/solitaire-credit-card",
+          "capturedAt": "2026-11-14T12:08:35Z",
+          "sourceBodySha256": "776b3612c5dfb2422287cf9ab6acea6116e8db9bf24b103fba94c4d528c9398e",
+          "sourceTextSha256": "776b3612c5dfb2422287cf9ab6acea6116e8db9bf24b103fba94c4d528c9398e",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 132,
+          "lastLine": 132,
+          "sourceStartByte": 231004,
+          "sourceEndByte": 231065,
+          "rawText": ">Your monthly income should be a minimum of AED 25,000.</div>",
+          "rawTextSha256": "6a10aade57578c10f156f2b60561bde5a408622b3097b7990ba9e4476363500f"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "The named product and annual membership fee were checked. Eligibility, other charges, promotions and the rewards model were not fully reconciled.",
+      "eligibility": "The published income floor does not establish salary-transfer, employment, residency or lending approval conditions.",
+      "earnRates": "The issuer uses Mashreq Vantage points. Do not treat a points multiplier as cash or assume redemptions have a fixed value.",
+      "fxFee": "Foreign-currency and conversion charges are not modelled in this profile."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-14"
+  },
   "mashreq-cashback": {
     "_provenance": {
       "bank": "editor-confirmed",

@@ -1,0 +1,82 @@
+{
+  "sources": [
+    {
+      "id": "mashreq-noon-fee",
+      "url": "https://www.mashreq.com/uae/neo/cards/credit-cards/noon-credit-card/",
+      "capturedAt": "2026-11-14T12:08:33Z",
+      "sourceBodySha256": "aefa18a924d7a25e52fd84a57ba2fe84e55e51f22235b3fe37ddbd7e8eec90ba",
+      "text": ">Annual fee</h6><div class=\"ui-text ui-text-body4 pt-2 is-richtext\">Free for life",
+      "fixtureTextSha256": "c97cf8391e92facb87eb1cf662e1d7bbe961b76a5edfd9d782dd87137d5a610f",
+      "representation": "contiguous issuer HTML excerpt",
+      "sourceStartByte": 167764,
+      "firstLine": 102
+    },
+    {
+      "id": "mashreq-platinum-plus-fee",
+      "url": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/platinum-plus-credit-card/",
+      "capturedAt": "2026-11-14T12:08:34Z",
+      "sourceBodySha256": "aeadae459d5b5445fd2ca6d1f583f734c20c0e7ca5ee68f3b4694eee6ee78d66",
+      "text": ">Annual Fee</h6><div class=\"ui-text ui-text-body4 pt-2 is-richtext\">Primary 299+ 5% VAT",
+      "fixtureTextSha256": "82c1d0a04402d7ad464f7892bdfabb9b748f081ddb572eecbb76d27a805718e8",
+      "representation": "contiguous issuer HTML excerpt",
+      "sourceStartByte": 166556,
+      "firstLine": 125
+    },
+    {
+      "id": "mashreq-platinum-plus-income",
+      "url": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/platinum-plus-credit-card/",
+      "capturedAt": "2026-11-14T12:08:34Z",
+      "sourceBodySha256": "aeadae459d5b5445fd2ca6d1f583f734c20c0e7ca5ee68f3b4694eee6ee78d66",
+      "text": ">Your monthly income should be a minimum of AED 5,000.</div>",
+      "fixtureTextSha256": "9efb7af369ae26e2d550c08a719da73dcd99fb724575a1dd416f88ef823ab967",
+      "representation": "contiguous issuer HTML excerpt",
+      "sourceStartByte": 184489,
+      "firstLine": 127
+    },
+    {
+      "id": "mashreq-solitaire-fee",
+      "url": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/solitaire-credit-card",
+      "capturedAt": "2026-11-14T12:08:35Z",
+      "sourceBodySha256": "776b3612c5dfb2422287cf9ab6acea6116e8db9bf24b103fba94c4d528c9398e",
+      "text": ">Annual Fee</h6><div class=\"ui-text ui-text-body4 pt-2 is-richtext\"><p>Primary: AED 1,500 +5% VAT Supplementary: AED 600 +5% VAT</p>",
+      "fixtureTextSha256": "5e9bf80f4988a685f5d38b9bd1fb0dc7c58db0546254e7454fd70d1d323a04c2",
+      "representation": "contiguous issuer HTML excerpt",
+      "sourceStartByte": 173412,
+      "firstLine": 111
+    },
+    {
+      "id": "mashreq-solitaire-income",
+      "url": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/solitaire-credit-card",
+      "capturedAt": "2026-11-14T12:08:35Z",
+      "sourceBodySha256": "776b3612c5dfb2422287cf9ab6acea6116e8db9bf24b103fba94c4d528c9398e",
+      "text": ">Your monthly income should be a minimum of AED 25,000.</div>",
+      "fixtureTextSha256": "6a10aade57578c10f156f2b60561bde5a408622b3097b7990ba9e4476363500f",
+      "representation": "contiguous issuer HTML excerpt",
+      "sourceStartByte": 231004,
+      "firstLine": 132
+    },
+    {
+      "id": "mashreq-fee-schedule",
+      "url": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/mashreq-cards-soc-latest.ashx",
+      "capturedAt": "2026-11-14T12:08:36Z",
+      "sourceBodySha256": "126c1fa530a9e4b0866238fe7d820bcd2e417cf97709f4a987b68ed49cc97eeb",
+      "text": "Disclaimer: With effect from January 2019, all fees and charges mentoned below are inclusive of 5% Value Added Tax unless stated not applicable in the bank SOC’s as per taxaton regulatons.\nCharges (in D) | noon | Platinum Plus Card | Solitaire Card\nPrincipal Annual Fee | Free for life | D 313.95 | D 1575",
+      "fixtureTextSha256": "41ef1d1480c509d9918ee15fca8733a796bdefb577e0ac0e8106d2bdda94d9fe",
+      "representation": "named issuer PDF table cells via pdfplumber",
+      "page": 1
+    },
+    {
+      "id": "mashreq-kfs",
+      "url": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+      "capturedAt": "2026-11-14T12:08:36Z",
+      "sourceBodySha256": "7b5268e18f2afea9e051f3bc7986f3d93c15c4b35aa2650f47816c42ff342aee",
+      "text": "KFS_Cards_09 2026 | Annual fee (primary) | recurring (VAT inclusive)\nnoon | p2 | noon | Free for life\nSolitaire Card | p1 | eriatiloS | 1,575\nPlatinum Plus Card | p1 | munitalP | 313.95",
+      "fixtureTextSha256": "f589e36d36889d31df8cb0d86c46e669a9579010f5edd000d1a73de566bc6a9c",
+      "representation": "named issuer PDF table cells via pdfplumber",
+      "pages": [
+        1,
+        2
+      ]
+    }
+  ]
+}

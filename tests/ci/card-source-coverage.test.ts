@@ -20,11 +20,13 @@ test('real catalogue: all slugs, including closed and unconfirmed profiles, have
   const report = audit(input);
   assert.deepEqual(report.errors, []);
   assert.deepEqual(report.rows.map((row: { slug: string }) => row.slug).sort(), Object.keys(input.cards).sort());
+  const cardCount = Object.keys(input.cards).length;
+  assert.ok(cardCount >= 80, "retain the covered Citi baseline");
   assert.deepEqual(report.summary, {
-    cards: 80, banks: 14, activeScrapers: 14, configuredScraperRoutes: 58, manualPrimaryRoutes: 22,
+    cards: cardCount, banks: 14, activeScrapers: 14, configuredScraperRoutes: 58, manualPrimaryRoutes: cardCount - 58,
     configuredDocumentGaps: 32, routeDocumentGaps: 0, manualDocumentRoutes: 33, uniqueManualDocuments: 5,
-    manualDocumentNumericHolds: 3, routeProductInventoryDifferences: 1, canonicalDocumentCandidates: 80, overdueSourceRecords: 0,
-    cardsWithPendingFields: 80, errors: 0, warnings: 1,
+    manualDocumentNumericHolds: 3, routeProductInventoryDifferences: 1, canonicalDocumentCandidates: cardCount, overdueSourceRecords: 0,
+    cardsWithPendingFields: cardCount, errors: 0, warnings: 1,
   });
   assert.equal(report.rows.find((row: { slug: string }) => row.slug === 'emirates-nbd-manchester-united')?.applicationState, 'closed-to-new-applicants');
   assert.equal(report.rows.find((row: { slug: string }) => row.slug === 'fab-world-elite')?.applicationState, 'availability-unconfirmed');

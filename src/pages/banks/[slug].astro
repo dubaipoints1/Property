@@ -58,8 +58,8 @@ const cardTiles = allCards.map((c) => {
 ---
 
 <BankHubLayout
-  title={`${bank.data.name} — UAE cards, salary transfer & reviews | DubaiPoints`}
-  description={`${bank.data.name} hub: ${allCards.length} credit-card reviews, current salary-transfer offer, reward-currency notes and customer-service details. AED-first.`}
+  title={`${bank.data.name} — UAE card profiles & salary transfer | DubaiPoints`}
+  description={`${bank.data.name} hub: ${allCards.length} card profiles, ${offers.length ? "tracked salary-transfer offers" : "salary-transfer information"}, reward-currency notes and customer-service details.`}
   bankName={bank.data.name}
   slug={bank.id}
   cardCount={allCards.length}
