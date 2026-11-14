@@ -670,6 +670,147 @@
           "sha256": "6e99d8ab837356597c2e76c054367856b789af7ffdfa705b14e42fb4430f579c"
         }
       ]
+    },
+    {
+      "slug": "citi-premier",
+      "bank": "citi",
+      "productUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+      "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "sourceFixtureIds": [
+        "product-premier",
+        "citi-kfs-fees-salary",
+        "citi-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_citi-expansion.ts",
+        "export": "parseCitiActiveProduct",
+        "sha256": "dfc5af9a73a5d279fe3dd787a02af7e60b97a7fc8a149a626f8d900fc938942c",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-citi-new-cards.json",
+          "sha256": "6d8600a122c3349e3137ce80a0842a360be29cf42a8132a6fc5d62fa89c0c333"
+        }
+      ]
+    },
+    {
+      "slug": "citi-prestige",
+      "bank": "citi",
+      "productUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+      "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "sourceFixtureIds": [
+        "product-prestige",
+        "citi-kfs-fees-salary",
+        "citi-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_citi-expansion.ts",
+        "export": "parseCitiActiveProduct",
+        "sha256": "dfc5af9a73a5d279fe3dd787a02af7e60b97a7fc8a149a626f8d900fc938942c",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-citi-new-cards.json",
+          "sha256": "6d8600a122c3349e3137ce80a0842a360be29cf42a8132a6fc5d62fa89c0c333"
+        }
+      ]
+    },
+    {
+      "slug": "citi-rewards",
+      "bank": "citi",
+      "productUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+      "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "sourceFixtureIds": [
+        "product-rewards",
+        "citi-kfs-fees-salary",
+        "citi-vat",
+        "citi-rewards-waiver"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_citi-expansion.ts",
+        "export": "parseCitiActiveProduct",
+        "sha256": "dfc5af9a73a5d279fe3dd787a02af7e60b97a7fc8a149a626f8d900fc938942c",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-citi-new-cards.json",
+          "sha256": "6d8600a122c3349e3137ce80a0842a360be29cf42a8132a6fc5d62fa89c0c333"
+        }
+      ]
+    },
+    {
+      "slug": "citi-simplicity",
+      "bank": "citi",
+      "productUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+      "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "sourceFixtureIds": [
+        "product-simplicity",
+        "citi-kfs-fees-salary",
+        "citi-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_citi-expansion.ts",
+        "export": "parseCitiActiveProduct",
+        "sha256": "dfc5af9a73a5d279fe3dd787a02af7e60b97a7fc8a149a626f8d900fc938942c",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-citi-new-cards.json",
+          "sha256": "6d8600a122c3349e3137ce80a0842a360be29cf42a8132a6fc5d62fa89c0c333"
+        }
+      ]
+    },
+    {
+      "slug": "citi-ultima",
+      "bank": "citi",
+      "productUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+      "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "sourceFixtureIds": [
+        "product-ultima",
+        "citi-kfs-fees-salary",
+        "citi-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_citi-expansion.ts",
+        "export": "parseCitiActiveProduct",
+        "sha256": "dfc5af9a73a5d279fe3dd787a02af7e60b97a7fc8a149a626f8d900fc938942c",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-citi-new-cards.json",
+          "sha256": "6d8600a122c3349e3137ce80a0842a360be29cf42a8132a6fc5d62fa89c0c333"
+        }
+      ]
     }
   ]
 }

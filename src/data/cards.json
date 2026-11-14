@@ -16128,6 +16128,639 @@
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
     }
   },
+  "citi-premier": {
+    "bank": "citi",
+    "name": "Citi Premier Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "travel",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 787.5,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 15000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.citibank.ae/credit-cards/rewards/citi-premier-credit-card",
+    "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.citibank.ae/credit-cards/rewards/citi-premier-credit-card",
+      "https://www.citibank.ae/credit-cards/multiplecards",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/fees-and-charges.pdf",
+      "https://www.citibank.ae/credit-cards/safety-and-security/purchase-protection"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Premier",
+          "unit": "AED before VAT",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1668,
+          "lastLine": 1669,
+          "sourceStartByte": 63945,
+          "sourceEndByte": 63992,
+          "rawText": "<small>Annual fee</small><br />\r\n<b>AED 750</b>",
+          "rawTextSha256": "5aa6b028c05e99154744148e73bc86db3ebb1b72933573a26bc89680ddae469b"
+        },
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Premier",
+          "unit": "percent VAT on published fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 2644,
+          "lastLine": 2644,
+          "sourceStartByte": 96592,
+          "sourceEndByte": 96665,
+          "rawText": "<p>5% Value Added Tax (VAT) applicable over and above the annual fee.</p>",
+          "rawTextSha256": "abe032f6cbb01af78da04321caa01dcb3696908b71d33fa7279734ce1f2a30ab"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Premier",
+          "unit": "AED monthly",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1673,
+          "lastLine": 1674,
+          "sourceStartByte": 64094,
+          "sourceEndByte": 64156,
+          "rawText": "<small>Minimum Monthly Income</small><br />\r\n<b>AED 15,000</b>",
+          "rawTextSha256": "464001b978489a7527f43d4e374cc62c26ccaf052d1b71149a085da925640401"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Application route, listed fee and minimum income were checked against Citi sources. Other terms were not fully reconciled.",
+      "eligibility": "Citi publishes a UAE national or resident requirement and a verifiable monthly income threshold. Salary transfer and income documentation conditions are not confirmed for matching.",
+      "fxFee": "This profile does not quote a total foreign-currency cost. Check Citi’s current issuer margin and any separate conversion charges before foreign spending.",
+      "earnRates": "Do not use marketing headlines or partner perks as an all-spend earn rate. Redemption value and spending exclusions need separate verification."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
+  "citi-prestige": {
+    "bank": "citi",
+    "name": "Citi Prestige Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "travel",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 1575,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 30000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.citibank.ae/credit-cards/rewards/citi-prestige-credit-card",
+    "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.citibank.ae/credit-cards/rewards/citi-prestige-credit-card",
+      "https://www.citibank.ae/credit-cards/multiplecards",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/fees-and-charges.pdf",
+      "https://www.citibank.ae/credit-cards/safety-and-security/purchase-protection"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Prestige",
+          "unit": "AED before VAT",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1431,
+          "lastLine": 1432,
+          "sourceStartByte": 57328,
+          "sourceEndByte": 57376,
+          "rawText": "<small>Annual fee</small><br />\n<b>AED 1,500</b>",
+          "rawTextSha256": "a169287876f4d15aa4ccf2f339a0dedef84e9d17e0d18125ae0b143289d5031a"
+        },
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Prestige",
+          "unit": "percent VAT on published fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 2644,
+          "lastLine": 2644,
+          "sourceStartByte": 96592,
+          "sourceEndByte": 96665,
+          "rawText": "<p>5% Value Added Tax (VAT) applicable over and above the annual fee.</p>",
+          "rawTextSha256": "abe032f6cbb01af78da04321caa01dcb3696908b71d33fa7279734ce1f2a30ab"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Prestige",
+          "unit": "AED monthly",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1436,
+          "lastLine": 1437,
+          "sourceStartByte": 57478,
+          "sourceEndByte": 57539,
+          "rawText": "<small>Minimum Monthly Income</small><br />\n<b>AED 30,000</b>",
+          "rawTextSha256": "daa9ddc7e0f009c1a86e778b56364afff2172c3eb1b38cc25dc9bb1e9bee1268"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Application route, listed fee and minimum income were checked against Citi sources. Other terms were not fully reconciled.",
+      "eligibility": "Citi publishes a UAE national or resident requirement and a verifiable monthly income threshold. Salary transfer and income documentation conditions are not confirmed for matching.",
+      "fxFee": "This profile does not quote a total foreign-currency cost. Check Citi’s current issuer margin and any separate conversion charges before foreign spending.",
+      "earnRates": "Do not use marketing headlines or partner perks as an all-spend earn rate. Redemption value and spending exclusions need separate verification."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
+  "citi-rewards": {
+    "bank": "citi",
+    "name": "Citi Rewards Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 315,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": 9000,
+      "threshold_period": "annual"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 8000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.citibank.ae/credit-cards/rewards/citi-rewards-credit-card",
+    "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.citibank.ae/credit-cards/rewards/citi-rewards-credit-card",
+      "https://www.citibank.ae/credit-cards/multiplecards",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/fees-and-charges.pdf",
+      "https://www.citibank.ae/credit-cards/compare"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "annualFeeWaiver": "editor-confirmed",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Rewards",
+          "unit": "AED before VAT",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1844,
+          "lastLine": 1845,
+          "sourceStartByte": 69702,
+          "sourceEndByte": 69749,
+          "rawText": "<small>Annual fee</small><br />\n<b>AED 300*</b>",
+          "rawTextSha256": "d72f487504c14d7e30536f825e02dedf5e9ddf55e805678f9ff44b87268d21db"
+        },
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Rewards",
+          "unit": "percent VAT on published fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 2644,
+          "lastLine": 2644,
+          "sourceStartByte": 96592,
+          "sourceEndByte": 96665,
+          "rawText": "<p>5% Value Added Tax (VAT) applicable over and above the annual fee.</p>",
+          "rawTextSha256": "abe032f6cbb01af78da04321caa01dcb3696908b71d33fa7279734ce1f2a30ab"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Rewards",
+          "unit": "AED monthly",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1849,
+          "lastLine": 1850,
+          "sourceStartByte": 69851,
+          "sourceEndByte": 69911,
+          "rawText": "<small>Minimum Monthly Income</small><br />\n<b>AED 8,000</b>",
+          "rawTextSha256": "7a93b377bbc9130e5ce2ca83f0db47ce9329917bb85964e8dc40506b1e9968ff"
+        }
+      ],
+      "annualFeeWaiver": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Rewards",
+          "unit": "AED annual card spend",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 2646,
+          "lastLine": 2646,
+          "sourceStartByte": 96907,
+          "sourceEndByte": 97144,
+          "rawText": "<p>*No annual fee in year 1. From year 2 onwards annual fee is waived unless a minimum annual spend of AED 9,000 is not met, in which case an annual fee of AED 300 applies (applicable for Citi Cash Back and Citi Rewards Credit Card).</p>",
+          "rawTextSha256": "fd613f2b5c62b231ca67804bb1cbfd9167bce760e06587e0d2c5b13db4cfc0f7"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Application route, listed fee and minimum income were checked against Citi sources. Other terms were not fully reconciled.",
+      "eligibility": "Citi publishes a UAE national or resident requirement and a verifiable monthly income threshold. Salary transfer and income documentation conditions are not confirmed for matching.",
+      "fxFee": "This profile does not quote a total foreign-currency cost. Check Citi’s current issuer margin and any separate conversion charges before foreign spending.",
+      "earnRates": "Do not use marketing headlines or partner perks as an all-spend earn rate. Redemption value and spending exclusions need separate verification."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
+  "citi-simplicity": {
+    "bank": "citi",
+    "name": "Citi Simplicity Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 5000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.citibank.ae/credit-cards/no-annual-fee/citi-simplicity-credit-card",
+    "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.citibank.ae/credit-cards/no-annual-fee/citi-simplicity-credit-card",
+      "https://www.citibank.ae/credit-cards/multiplecards",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/fees-and-charges.pdf",
+      "https://www.citibank.ae/credit-cards/compare"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "earnRates": "editor-confirmed-null",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Simplicity",
+          "unit": "AED before VAT",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 2305,
+          "lastLine": 2306,
+          "sourceStartByte": 83171,
+          "sourceEndByte": 83216,
+          "rawText": "<small>Annual fee</small><br />\r\n<b>AED 0</b>",
+          "rawTextSha256": "8b1e3ed4eccf202f93c69fcb8807aa2a9154ba5261bcf90db3c8efd508b5d283"
+        },
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Simplicity",
+          "unit": "percent VAT on published fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 2644,
+          "lastLine": 2644,
+          "sourceStartByte": 96592,
+          "sourceEndByte": 96665,
+          "rawText": "<p>5% Value Added Tax (VAT) applicable over and above the annual fee.</p>",
+          "rawTextSha256": "abe032f6cbb01af78da04321caa01dcb3696908b71d33fa7279734ce1f2a30ab"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Simplicity",
+          "unit": "AED monthly",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 2310,
+          "lastLine": 2311,
+          "sourceStartByte": 83318,
+          "sourceEndByte": 83379,
+          "rawText": "<small>Minimum Monthly Income</small><br />\r\n<b>AED 5,000</b>",
+          "rawTextSha256": "c240d2b96918d495bc0e8d30fafef1e25b47dea64c70e1a09346ed55ea855471"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Application route, listed fee and minimum income were checked against Citi sources. Other terms were not fully reconciled.",
+      "eligibility": "Citi publishes a UAE national or resident requirement and a verifiable monthly income threshold. Salary transfer and income documentation conditions are not confirmed for matching.",
+      "fxFee": "This profile does not quote a total foreign-currency cost. Check Citi’s current issuer margin and any separate conversion charges before foreign spending."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
+  "citi-ultima": {
+    "bank": "citi",
+    "name": "Citi Ultima Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "travel",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 3150,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 36750,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.citibank.ae/credit-cards/travel/citi-ultima-credit-card",
+    "kfsUrl": "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.citibank.ae/credit-cards/travel/citi-ultima-credit-card",
+      "https://www.citibank.ae/credit-cards/multiplecards",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/kfs-cards.pdf",
+      "https://www.citibank.ae/content/dam/cgcpc/ae/prelogin/www-citibank-ae/doc/pdf/fees-and-charges.pdf",
+      "https://www.citibank.ae/credit-cards/safety-and-security/purchase-protection"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Ultima",
+          "unit": "AED before VAT",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1254,
+          "lastLine": 1255,
+          "sourceStartByte": 51202,
+          "sourceEndByte": 51251,
+          "rawText": "<small>Annual fee</small></p>\n<p><b>AED 3,000</b>",
+          "rawTextSha256": "b945467428441af9726964dcf1584cf99f43b86398df9c28604fc4411b22daac"
+        },
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Ultima",
+          "unit": "percent VAT on published fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 2644,
+          "lastLine": 2644,
+          "sourceStartByte": 96592,
+          "sourceEndByte": 96665,
+          "rawText": "<p>5% Value Added Tax (VAT) applicable over and above the annual fee.</p>",
+          "rawTextSha256": "abe032f6cbb01af78da04321caa01dcb3696908b71d33fa7279734ce1f2a30ab"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "citi/application-index-and-kfs/v1",
+          "productScope": "Citi Ultima",
+          "unit": "AED monthly",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.citibank.ae/credit-cards/multiplecards",
+          "capturedAt": "2026-11-14T11:11:53Z",
+          "sourceTextSha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceBodySha256": "9ddc307e5fa6a5db40e18b2e171ba2ab4db6b690bd299299d326b7ca40044565",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "firstLine": 1260,
+          "lastLine": 1261,
+          "sourceStartByte": 51358,
+          "sourceEndByte": 51419,
+          "rawText": "<small>Minimum Monthly Income</small><br />\n<b>AED 36,750</b>",
+          "rawTextSha256": "47f2aa81041909f0a81206ff7bb4a2ff9ca6da79a1159709cae1f6468efb2073"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Application route, listed fee and minimum income were checked against Citi sources. Other terms were not fully reconciled.",
+      "eligibility": "Citi publishes a UAE national or resident requirement and a verifiable monthly income threshold. Salary transfer and income documentation conditions are not confirmed for matching.",
+      "fxFee": "This profile does not quote a total foreign-currency cost. Check Citi’s current issuer margin and any separate conversion charges before foreign spending.",
+      "earnRates": "Do not use marketing headlines or partner perks as an all-spend earn rate. Redemption value and spending exclusions need separate verification."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
   "dib-consumer-cashback": {
     "_provenance": {
       "bank": "editor-confirmed",

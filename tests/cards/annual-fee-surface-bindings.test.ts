@@ -33,17 +33,18 @@ test("dependency-free guard is the unchanged FeeFacts export; trusted inline and
 });
 
 test("actual AtAGlance and FeeBlock fee expressions render Pending and suppress precise VAT tags for held source facts", () => {
-  const glance = new Function("card", "annualFeeAmount", "formatAED", "cardFeeNeedsReview", `return (${expression("src/components/cards/AtAGlance.astro", "annualFeeLabel")});`);
+  const glance = new Function("card", "annualFeeLabel", `return (${expression("src/components/cards/AtAGlance.astro", "recurringFee")});`);
   const block = new Function("annualFeePending", "annualFee", "formatAED", `return (${expression("src/components/cards/FeeBlock.astro", "feeLabel")});`);
   const select = new Function("resolved", "annualFee", "provenanceProp", `return (${expression("src/components/cards/FeeBlock.astro", "feeEvidence")});`);
   const cards = [source, ...["annualFee", "annualFee.amount", "vatPolicy"].map(field => ({ ...base, _provenance: { ...base._provenance, [field]: "needs-review" } }))];
   for (const card of cards) {
-    assert.equal(glance(card, card.annualFee.amount, formatAED, cardFeeNeedsReview), "Pending");
+    assert.deepEqual(glance(card, annualFeeLabel), { amount: "Pending", qual: null });
     const inline = select(undefined, card.annualFee, card._provenance);
     assert.equal(cardFeeNeedsReview(inline, "annualFee"), true);
     assert.equal(block(cardFeeNeedsReview(inline, "annualFee"), card.annualFee, formatAED), "Pending");
   }
   assert.match(read("src/components/cards/AtAGlance.astro"), /showVatQual = !cardFeeNeedsReview\(card, "annualFee"\)/);
+  assert.match(read("src/components/cards/AtAGlance.astro"), /recurringFee\.qual &&/);
   assert.match(read("src/components/cards/FeeBlock.astro"), /showVatTag = !annualFeePending/);
   assert.match(read("src/components/cards/FeeBlock.astro"), /joining and other charges are not assumed to be zero/);
   assert.match(read("src/components/cards/SpecCard.astro"), /provenance=\{card\._provenance\}/);
@@ -53,14 +54,17 @@ test("actual Product graph omits held or unavailable Offers, retaining product i
   const text = read("src/layouts/CardReviewLayout.astro");
   const object = text.match(/const schema = (\{[\s\S]*?\n\});\n---/)?.[1];
   assert.ok(object);
-  const factory = new Function("cardName", "bankName", "category", "description", "canonicalUrl", "slug", "score", "bankSlug", "siteUrl", "annualFeePending", "annualFee", "applicationUnavailable", `return (${object});`);
+  const factory = new Function("cardName", "bankName", "category", "description", "canonicalUrl", "slug", "score", "bankSlug", "siteUrl", "singleFeeOffer", "annualFee", `return (${object});`);
+  const singleOffer = new Function("annualFeePending", "applicationUnavailable", "cardData", "recurringFee", `return (${expression("src/layouts/CardReviewLayout.astro", "singleFeeOffer")});`);
   for (const pending of [true, false]) for (const unavailable of [true, false]) {
-    const graph = factory("Example card", "Example issuer", "Cards", "Source-qualified description", "https://example.test/cards/example/", "example", undefined, "example-bank", "https://example.test", pending, 0, unavailable)["@graph"];
+    const graph = factory("Example card", "Example issuer", "Cards", "Source-qualified description", "https://example.test/cards/example/", "example", undefined, "example-bank", "https://example.test", singleOffer(pending, unavailable, null, { qual: null }), 0)["@graph"];
     assert.equal(graph[0].name, "Example card"); assert.equal(graph[0].description, "Source-qualified description");
     assert.equal(graph[0].sku, "example"); assert.equal(graph[1]["@type"], "BreadcrumbList");
     if (pending || unavailable) assert.equal(graph[0].offers, undefined);
     else assert.equal(graph[0].offers.price, 0, "a separately known zero fee is not deleted");
   }
+  assert.equal(singleOffer(false, false, { refreshMode: "manual-primary" }, { qual: "year 2+" }), false);
+  assert.equal(singleOffer(false, false, { refreshMode: "manual-primary" }, { qual: null }), true);
   assert.match(text, /annualFeePending = cardData \? cardFeeNeedsReview\(cardData, "annualFee"\)/);
   assert.match(text, /applicationUnavailable = availabilityUnconfirmed \|\| cardData\?\.discontinuedForNewApplicants !== undefined/);
   assert.match(text, /vatQualifier = !annualFeePending/);

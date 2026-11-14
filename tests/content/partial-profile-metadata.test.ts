@@ -7,7 +7,7 @@ import { cardHasUnresolvedTerms } from "../../src/lib/cardEligibility";
 
 test("partial card search/Product copy retains scope and standard-fee VAT qualifications", () => {
   const cards = getAllCards().filter(card => card.refreshMode === "manual-primary");
-  assert.equal(cards.length, 17);
+  assert.equal(cards.length, 22);
   for (const card of cards) {
     const meta = cardSearchMetadata(card);
     assert.equal(meta.kind, "source profile", card.slug);
@@ -18,6 +18,7 @@ test("partial card search/Product copy retains scope and standard-fee VAT qualif
     if (card.annualFee.amount > 0) assert.match(meta.description, /including VAT|\+ 5% VAT/);
   }
   assert.match(cardSearchMetadata(getCardData("citi-cashback")!).description, /including VAT/);
+  assert.match(cardSearchMetadata(getCardData("citi-rewards")!).description, /including VAT from year two/);
   const route = readFileSync("src/pages/cards/[slug].astro", "utf8");
   assert.match(route, /const cardDescription = searchMetadata\.description;/);
   assert.match(route, /description=\{cardDescription\}/);

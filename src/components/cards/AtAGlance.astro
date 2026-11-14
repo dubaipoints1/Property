@@ -17,6 +17,7 @@ import { getCardData } from "~/lib/cardsData";
 import { cardSalaryLabel } from "~/lib/cardEligibility";
 import { cardFeeNeedsReview } from "~/lib/cardFeeFacts";
 import {
+  annualFeeLabel,
   topEarnEntry,
   CATEGORY_LABELS_FOR_TOP,
   formatAED,
@@ -62,8 +63,7 @@ if (wb && typeof wb === "object") {
   }
 }
 
-const annualFeeLabel =
-  cardFeeNeedsReview(card, "annualFee") ? "Pending" : annualFeeAmount === 0 ? "Free" : formatAED(annualFeeAmount);
+const recurringFee = annualFeeLabel(card);
 
 // Phase 2a.2.3 (2026-05-20) — VAT qualifier on the annual fee tile.
 const vatPolicy = card.vatPolicy ?? "inclusive";
@@ -71,8 +71,9 @@ const showVatQual = !cardFeeNeedsReview(card, "annualFee") && annualFeeAmount > 
 const vatQualText =
   vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
 
-const minSalaryEyebrow = "Min salary";
-const minSalaryLabel = cardSalaryLabel(card, { perMonth: true });
+const publishedIncome = card.eligibility.publishedMinMonthlyIncome;
+const minSalaryEyebrow = publishedIncome === undefined ? "Min salary" : "Published minimum income";
+const minSalaryLabel = publishedIncome === undefined ? cardSalaryLabel(card, { perMonth: true }) : `${formatAED(publishedIncome)}/mo`;
 
 const UNIT_LABELS: Record<string, string> = {
   skywards_miles: "Skywards Miles",
@@ -122,13 +123,14 @@ const tileCount =
   <div class="tile">
     <dt class="eyebrow">Annual fee</dt>
     <dd class="value">
-      {annualFeeLabel}
+      {recurringFee.amount}
+      {recurringFee.qual && <span class="qual">{recurringFee.qual}</span>}
       {showVatQual && <span class="qual">{vatQualText}</span>}
     </dd>
   </div>
   <div class="tile">
     <dt class="eyebrow">{minSalaryEyebrow}</dt>
-    <dd class={`value${isEligibilityUnverified ? " is-unverified" : ""}`}>{minSalaryLabel}</dd>
+    <dd class={`value${publishedIncome === undefined && isEligibilityUnverified ? " is-unverified" : ""}`}>{minSalaryLabel}</dd>
   </div>
   {top && (
     <div class="tile">
