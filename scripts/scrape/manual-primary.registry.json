@@ -1063,6 +1063,80 @@
           "sha256": "24c9750af87cdde508f585ecb763fbd42efa4adddfbe5bffd00d58d772a550d3"
         }
       ]
+    },
+    {
+      "slug": "rakbank-red",
+      "bank": "rakbank",
+      "productUrl": "https://www.rakbank.ae/en/cards/credit-cards/red-credit-card",
+      "kfsUrl": "https://www.rakbank.ae/globalassets/rakbank/all-pdfs/001---key-fact-statements/bilingual/kfs012-red-credit-card.pdf",
+      "sourceFixtureIds": [
+        "catalogue-red-name",
+        "catalogue-red-income",
+        "catalogue-red-apply",
+        "product-red",
+        "product-red-apply",
+        "product-red-fee",
+        "kfs-red-name",
+        "kfs-red-income",
+        "kfs-red-fee",
+        "fees-vat",
+        "fees-header",
+        "fees-primary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_rakbank-expansion.ts",
+        "export": "parseRakbankActiveProduct",
+        "sha256": "1ec3848a964070979e16d4b958d783db681270b68424d7103531e23279a26c5c",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-rakbank-expansion.json",
+          "sha256": "6809db7f484b8bdb299c536defb4b0bf3d4fae71c14cab81351e4afab15cde6a"
+        }
+      ]
+    },
+    {
+      "slug": "rakbank-titanium",
+      "bank": "rakbank",
+      "productUrl": "https://www.rakbank.ae/en/cards/credit-cards/titanium-credit-card",
+      "kfsUrl": "https://www.rakbank.ae/globalassets/rakbank/all-pdfs/001---key-fact-statements/bilingual/kfs011-titanium-credit-card.pdf",
+      "sourceFixtureIds": [
+        "catalogue-titanium-name",
+        "catalogue-titanium-income",
+        "catalogue-titanium-apply",
+        "product-titanium",
+        "product-titanium-apply",
+        "product-titanium-fee",
+        "kfs-titanium-name",
+        "kfs-titanium-income",
+        "kfs-titanium-fee",
+        "fees-vat",
+        "fees-header",
+        "fees-primary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_rakbank-expansion.ts",
+        "export": "parseRakbankActiveProduct",
+        "sha256": "1ec3848a964070979e16d4b958d783db681270b68424d7103531e23279a26c5c",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-rakbank-expansion.json",
+          "sha256": "6809db7f484b8bdb299c536defb4b0bf3d4fae71c14cab81351e4afab15cde6a"
+        }
+      ]
     }
   ]
 }

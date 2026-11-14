@@ -25,6 +25,8 @@ const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
   "card-dib-consumer-cashback-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-dib-shams-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
+  "card-rakbank-red": "Text-led scope; issuer card art was used as source evidence only, not republished.",
+  "card-rakbank-titanium": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   ...Object.fromEntries(["noon", "platinum-plus", "solitaire"].map(
     product => [`card-mashreq-${product}`, "Text-led partial source profile; issuer art was checked only to identify the network and is not republished."],
   )),

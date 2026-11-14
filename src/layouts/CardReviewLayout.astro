@@ -223,7 +223,8 @@ const publishedIncome = cardData?.eligibility.publishedMinMonthlyIncome;
 // behaviour on unrelated card profiles or the main card artwork.
 const deferRelatedArt = slug === "mashreq-noon" || slug === "mashreq-platinum-plus" || slug === "mashreq-solitaire"
   || slug === "fab-adnoc-rewards" || slug === "fab-gems-world" || slug === "fab-travel"
-  || slug === "dib-consumer-cashback-platinum" || slug === "dib-shams-platinum";
+  || slug === "dib-consumer-cashback-platinum" || slug === "dib-shams-platinum"
+  || slug === "rakbank-red" || slug === "rakbank-titanium";
 const incomeLabel = cardData?.eligibility.publishedIncomeBasis === "salary" ? "Published minimum monthly salary"
   : cardData?.eligibility.publishedIncomeBasis === "salaried-applicants" ? "Minimum monthly salary (salaried applicants)"
   : "Published minimum monthly income";
