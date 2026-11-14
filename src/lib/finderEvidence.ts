@@ -21,6 +21,8 @@ export function finderEvidence(card: CardData & { slug?: string }) {
   const annualFeePending = cardFeeNeedsReview(card, "annualFee");
   const fee = annualFeePending
     ? "Annual fee: confirmation pending."
+    : card.standardFeeConditions === "renewal-only"
+      ? `Standard renewal fee from year two: ${priced(card.annualFee.amount)}; first-year terms pending.`
     : card.annualFee.amount === 0
       ? "No listed annual fee."
       : `Listed annual fee: ${priced(card.annualFee.amount)} before any waiver.`;

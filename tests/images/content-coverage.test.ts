@@ -25,6 +25,9 @@ const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
   "card-dib-consumer-cashback-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-dib-shams-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
+  "card-dib-prime-platinum": "Text-led scope; issuer card art was used only to identify the network, not republished.",
+  "card-dib-shams-signature": "Text-led scope; issuer card art was used only to identify the network, not republished.",
+  "card-dib-shams-infinite": "Text-led scope; issuer card art was used only to identify the network, not republished.",
   "card-rakbank-red": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-rakbank-titanium": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   ...Object.fromEntries(["noon", "platinum-plus", "solitaire"].map(
