@@ -8,23 +8,23 @@ import { auditCardSourceCoverage, loadCoverageInputs, publicHttpsProblem, render
 import { NINETY_DAYS_MS, isStale } from '../../src/lib/verification.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const AS_OF = '2026-11-08';
+const AS_OF = '2026-11-14';
 const sha = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
 const fresh = () => loadCoverageInputs(ROOT);
 const audit = (input = fresh(), asOf = AS_OF) => auditCardSourceCoverage(input, { asOf });
 const hasError = (report: ReturnType<typeof audit>, code: string) => report.errors.some((item: { code: string }) => item.code === code);
 
-test('real catalogue: all 75 slugs, including closed and unconfirmed profiles, have one explicit route', () => {
+test('real catalogue: all slugs, including closed and unconfirmed profiles, have one explicit route', () => {
   const input = fresh();
   const before = sha(JSON.stringify(input.cards));
   const report = audit(input);
   assert.deepEqual(report.errors, []);
   assert.deepEqual(report.rows.map((row: { slug: string }) => row.slug).sort(), Object.keys(input.cards).sort());
   assert.deepEqual(report.summary, {
-    cards: 75, banks: 14, activeScrapers: 14, configuredScraperRoutes: 58, manualPrimaryRoutes: 17,
+    cards: 80, banks: 14, activeScrapers: 14, configuredScraperRoutes: 58, manualPrimaryRoutes: 22,
     configuredDocumentGaps: 32, routeDocumentGaps: 0, manualDocumentRoutes: 33, uniqueManualDocuments: 5,
-    manualDocumentNumericHolds: 3, routeProductInventoryDifferences: 1, canonicalDocumentCandidates: 75, overdueSourceRecords: 0,
-    cardsWithPendingFields: 75, errors: 0, warnings: 1,
+    manualDocumentNumericHolds: 3, routeProductInventoryDifferences: 1, canonicalDocumentCandidates: 80, overdueSourceRecords: 0,
+    cardsWithPendingFields: 80, errors: 0, warnings: 1,
   });
   assert.equal(report.rows.find((row: { slug: string }) => row.slug === 'emirates-nbd-manchester-united')?.applicationState, 'closed-to-new-applicants');
   assert.equal(report.rows.find((row: { slug: string }) => row.slug === 'fab-world-elite')?.applicationState, 'availability-unconfirmed');
@@ -137,13 +137,14 @@ test('decoded compressed fixtures retain expansion-size and decoded-hash checks'
 test('age threshold matches the existing strict 90-day rule; selected review date cannot reset it', () => {
   const input = fresh();
   input.cards['hsbc-cash-plus'].lastVerified = '2026-08-10';
-  input.cards['hsbc-cash-plus']._lastReviewed = AS_OF;
-  const boundary = audit(input);
+  const fixtureBoundary = '2026-11-08';
+  input.cards['hsbc-cash-plus']._lastReviewed = fixtureBoundary;
+  const boundary = audit(input, fixtureBoundary);
   const row = boundary.rows.find((item: { slug: string }) => item.slug === 'hsbc-cash-plus')!;
   assert.equal(boundary.reviewThresholdDays * 24 * 60 * 60 * 1000, NINETY_DAYS_MS);
-  assert.equal(row.reviewThreshold, AS_OF);
+  assert.equal(row.reviewThreshold, fixtureBoundary);
   assert.equal(row.sourceRecordAgeDays, 90);
-  assert.equal(row.overdue, isStale('2026-08-10', new Date(AS_OF)));
+  assert.equal(row.overdue, isStale('2026-08-10', new Date(fixtureBoundary)));
   assert.equal(row.overdue, false);
   const later = audit(input, '2026-11-09');
   assert.equal(later.rows.find((item: { slug: string }) => item.slug === 'hsbc-cash-plus')?.overdue, true);

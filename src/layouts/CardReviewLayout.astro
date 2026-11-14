@@ -216,12 +216,15 @@ const relatedCards = getActiveCards()
   .map(({ c }) => c);
 const compareHref = slug ? `/cards/compare/?cards=${[slug, ...relatedCards.slice(0, 2).map((c) => c.slug)].join(",")}` : "/cards/compare/";
 const cardData = slug ? getCardData(slug) : undefined;
+const publishedIncome = cardData?.eligibility.publishedMinMonthlyIncome;
 const availabilityUnconfirmed = cardData?.applicationAvailability === "unconfirmed";
 const applicationUnavailable = availabilityUnconfirmed || cardData?.discontinuedForNewApplicants !== undefined;
 const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
 const fxPending = cardFxNeedsReview({ _provenance: fxProvenance });
 const recurringFee = annualFeeLabel(cardData ?? { annualFee: { amount: annualFee } });
 const annualFeePending = cardData ? cardFeeNeedsReview(cardData, "annualFee") : false;
+const singleFeeOffer = !annualFeePending && !applicationUnavailable
+  && !(cardData?.refreshMode === "manual-primary" && recurringFee.qual);
 const vatQualifier = !annualFeePending && annualFee > 0 ? (cardData?.vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT") : null;
 
 // Stock photograph lookup. Each card may have an editorial photograph
@@ -271,7 +274,7 @@ const schema = {
             },
           }
         : {}),
-      ...(!annualFeePending && !applicationUnavailable ? { offers: {
+      ...(singleFeeOffer ? { offers: {
         "@type": "Offer",
         priceCurrency: "AED",
         price: annualFee,
@@ -345,9 +348,10 @@ const schema = {
           {(recurringFee.qual || vatQualifier) && <dd class="detail">{[recurringFee.qual, vatQualifier].filter(Boolean).join(" · ")}</dd>}
         </div>
         <div>
-          <dt>Minimum monthly salary</dt>
-          <dd class={eligibilityProvenance === "needs-review" ? "is-unverified" : ""}>
-            {eligibilityProvenance === "needs-review"
+          <dt>{publishedIncome === undefined ? "Minimum monthly salary" : "Published minimum monthly income"}</dt>
+          <dd class={publishedIncome === undefined && eligibilityProvenance === "needs-review" ? "is-unverified" : ""}>
+            {publishedIncome !== undefined ? formatAED(publishedIncome)
+              : eligibilityProvenance === "needs-review"
               ? "Pending"
               : invitationOnly
               ? "Invitation only"
@@ -357,6 +361,7 @@ const schema = {
               ? "No minimum"
               : minSalary === null ? "Pending" : formatAED(minSalary)}
           </dd>
+          {publishedIncome !== undefined && <dd class="detail">Other eligibility conditions pending</dd>}
         </div>
         <div>
           <dt>FX markup</dt>

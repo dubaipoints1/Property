@@ -23,6 +23,9 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  ...Object.fromEntries(["simplicity", "rewards", "premier", "prestige", "ultima"].map(
+    product => [`card-citi-${product}`, "Text-led source profile; no issuer card art has an approved licence record. Do not substitute synthetic card art."],
+  )),
   "news-uae-card-change-log-citi-cash-back-application-route":
     "Deliberately text-led: the issuer terms and worked comparison are the evidence; no decorative article hero, with the existing fallback cover on the listing.",
   "news-uae-salary-switch-scorecard":

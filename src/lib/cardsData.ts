@@ -478,6 +478,8 @@ export const CardDataSchema = z.object({
     /** null = product-specific salary threshold not confirmed/published.
      * It is never zero, and is excluded from salary-qualified recommendations. */
     minSalary: z.number().nonnegative().nullable(),
+    /** Published income floor only; not a salary filter or eligibility decision. */
+    publishedMinMonthlyIncome: z.number().positive().optional(),
     /** null = not confirmed; never silently coerced to "not required". */
     salaryTransferRequired: z.boolean().nullable(),
     residencyRequired: z.boolean().nullable(),
@@ -597,7 +599,10 @@ export const CardDataSchema = z.object({
   .refine(c => c.scopedEarnRates === undefined || new Set(c.scopedEarnRates.map(r => r.key)).size === c.scopedEarnRates.length,
     "Scoped earning keys must be unique")
   .refine(c => c.scopedEarnRates === undefined || c.scopedEarnRates.every(row => (c._fieldEvidence?.[`scopedEarnRates.${row.key}`]?.length ?? 0) > 0),
-    "Every scoped earning row needs its own source evidence");
+    "Every scoped earning row needs its own source evidence")
+  .refine(c => c.eligibility.publishedMinMonthlyIncome === undefined ||
+    (c.eligibility.minSalary === null && (c._fieldEvidence?.["eligibility.publishedMinMonthlyIncome"]?.length ?? 0) > 0),
+    "Published income floors require exact source evidence and stay separate from salary matching");
 
 export type CardData = z.infer<typeof CardDataSchema>;
 export type CardFeature = z.infer<typeof Feature>;
