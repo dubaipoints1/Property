@@ -22,6 +22,18 @@ export const SECTOR_LABELS: Record<NonNullable<Deal["data"]["sector"]>, string> 
 
 const DAY_MS = 86_400_000;
 
+// For these FAB offers the issuer publishes a revised date but not a
+// checkout cutoff. Do not translate that date into a live countdown.
+const FAB_RECORDED_DATE_ONLY = new Set([
+  "fab-amazon-10pct-monthly",
+  "fab-lulu-20pct-online",
+  "fab-noon-10pct-monthly",
+]);
+
+export function usesRecordedExpiryLabel(id: string): boolean {
+  return FAB_RECORDED_DATE_ONLY.has(id);
+}
+
 export function isLive(d: Deal, nowMs = Date.now()): boolean {
   return !d.data.archived && d.data.expiresOn.getTime() >= nowMs;
 }
