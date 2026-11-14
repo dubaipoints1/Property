@@ -86,6 +86,17 @@ test("curated guide continuations validate guide targets and exclude self and ac
   assert.deepEqual(missingTarget, { actions: [], relatedGuides: [] });
 });
 
+test("the first-card guide links to eligibility, costs and comparison before incidental references", () => {
+  const result = resolveReaderJourney({
+    section: "guides", id: "expat-starter-first-credit-card", cards: ["card-a", "card-b"], programmes: ["skywards"],
+  }, {
+    ...catalogue,
+    guides: [...catalogue.guides, guide("uae-credit-card-eligibility-2026"), guide("aecb-credit-report-walkthrough")],
+  });
+  assert.deepEqual(result.actions.map((action) => action.href), ["/cards/finder/", "/cards/fees/", "/cards/compare/"]);
+  assert.deepEqual(result.relatedGuides.map((related) => related.id), ["uae-credit-card-eligibility-2026", "aecb-credit-report-walkthrough"]);
+});
+
 test("the current guide cannot recommend itself and input arrays are not mutated", () => {
   const before = JSON.stringify(catalogue);
   const context = { section: "guides" as const, id: "programme-guide", programmes: ["skywards"] };
