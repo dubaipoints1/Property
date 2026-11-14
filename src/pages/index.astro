@@ -7,7 +7,7 @@
 // scroll-scrubbed reel is unchanged. Below it:
 //
 //   Dusk     proof line on night, fading into the paper page
-//   Tools    four numbered hairline rows
+//   Tools    four task-led starting points, with native links
 //   Cards    three typographic card faces + four L2 facts each
 //   Live     salary-transfer offers and deals, hairline lists
 //   Latest   six publication-dated news stories, then separate updated guides
@@ -126,11 +126,11 @@ const rated = cards
     };
   });
 
-const TOOLS = [
-  { href: "/cards/finder/", title: "Card finder", desc: `Explore ${cards.length} cards against your own monthly spending.` },
-  { href: "/calculator/", title: "Spend-return calculator", desc: "What a card pays back, in AED, on the way you actually spend." },
-  { href: "/salary-transfer/calculator/", title: "Salary-transfer calculator", desc: "Match your salary band to the live bank offers." },
-  { href: "/cards/compare/", title: "Compare cards", desc: "Put a shortlist side by side: fees, earn, FX and eligibility." },
+const STARTING_POINTS = [
+  { href: "/guides/expat-starter/", title: "New to UAE rewards", desc: "Start with UAE banking, your first card and how points work here." },
+  { href: "/cards/finder/", title: "Choose a credit card", desc: "Build a shortlist around what you spend, fees and eligibility." },
+  { href: "/salary-transfer/", title: "Check salary offers", desc: "Compare bank offers, when they pay and what can trigger a clawback." },
+  { href: "/transfer-finder/", title: "Use your points", desc: "See which bank and hotel points transfer to airline miles." },
 ];
 
 // Source-qualified rows are useful discovery, not a universal rankable rate.
@@ -333,7 +333,7 @@ const DIRECTORY = [
   description="Independent UAE-resident-led guides to credit cards, salary-transfer bonuses, miles redemptions and lifestyle deals. AED-first, sourced and dated."
   fullWidth
 >
-  <!-- Owner-selected Journey Aperture; the remaining homepage is unchanged. -->
+  <!-- Owner-selected Journey Aperture. -->
   <HomeJourneyHero />
 
   <!-- ── Dusk (8 Oct 2026, direction B "night to day"): the reel ends on
@@ -348,18 +348,17 @@ const DIRECTORY = [
     </p>
   </div>
 
-  <!-- ── Tools: numbered hairline rows ─────────────────────────────── -->
-  <section class="hp-sec hp-sec-tools" id="tools" data-hp-anim aria-labelledby="hp-tools-h">
+  <!-- ── Starting points: reuse the existing #tools destination ────── -->
+  <section class="hp-sec hp-sec-tools" id="tools" aria-labelledby="hp-tools-h">
     <div class="hp-sec-head">
       <div>
-        <p class="hp-kicker">Tools</p>
-        <h2 id="hp-tools-h">Start with <em>a tool.</em></h2>
+        <p class="hp-kicker">Start here</p>
+        <h2 id="hp-tools-h">Choose your <em>starting point.</em></h2>
       </div>
-      <p class="hp-sec-sub">Explore, compare and calculate against sourced card data — before you apply.</p>
     </div>
-    <ol class="hp-tools">
-      {TOOLS.map((t, i) => (
-        <li style={`--i:${i}`}>
+    <ul class="hp-tools" role="list">
+      {STARTING_POINTS.map((t, i) => (
+        <li>
           <a href={t.href}>
             <span class="n" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
             <h3>{t.title}</h3>
@@ -368,7 +367,7 @@ const DIRECTORY = [
           </a>
         </li>
       ))}
-    </ol>
+    </ul>
   </section>
 
   <!-- ── Cards we rate: issuer artwork or an explicit missing-image panel ── -->
@@ -584,7 +583,7 @@ const DIRECTORY = [
   <section class="hp-sec" data-hp-anim aria-labelledby="hp-dir-h">
     <div class="hp-sec-head">
       <div>
-        <p class="hp-kicker">Start here</p>
+        <p class="hp-kicker">Directory</p>
         <h2 id="hp-dir-h">Everything <em>on DubaiPoints.</em></h2>
       </div>
     </div>
@@ -773,13 +772,16 @@ const DIRECTORY = [
   .hp-sec a { color: inherit; text-decoration: none; }
   .hp-sec a:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
 
-  /* Tools: numbered rows. */
-  .hp-tools li { border-top: 1px solid var(--line); }
+  /* Starting points: always visible, including when keyboard focus arrives
+     ahead of a scroll reveal. Preserve full-row touch targets on phones. */
+  #tools { scroll-margin-block-start: calc(var(--dp-sticky-header-height) + 16px); }
+  .hp-sec-tools .hp-kicker, .hp-tools .n { color: var(--green); }
+  .hp-tools li { min-inline-size: 0; border-top: 1px solid var(--line); }
   .hp-tools li:last-child { border-bottom: 1px solid var(--line); }
-  .hp-tools a { display: grid; grid-template-columns: 34px 1fr 20px; gap: 4px 14px; padding: 22px 0; align-items: baseline; }
-  .hp-tools .n { font-family: var(--font-display); font-style: italic; font-size: 18px; color: var(--gold-ink); }
-  .hp-tools h3 { margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 25px; line-height: 1.15; letter-spacing: -0.01em; color: var(--ink); }
-  .hp-tools p { grid-column: 2; margin: 0; font-size: 15px; line-height: 1.45; color: var(--muted); }
+  .hp-tools a { display: grid; grid-template-columns: 28px minmax(0, 1fr) 20px; gap: 4px 12px; min-block-size: var(--dp-ui-control); padding: 18px 0; align-items: baseline; }
+  .hp-tools .n { font-family: var(--font-display); font-style: italic; font-size: 18px; }
+  .hp-tools h3 { grid-area: 1 / 2; margin: 0; font-family: var(--font-display); font-weight: 500; font-size: 25px; line-height: 1.15; letter-spacing: -0.01em; color: var(--ink); }
+  .hp-tools p { grid-area: 2 / 2; margin: 0; font-size: 15px; line-height: 1.45; color: var(--muted); }
   .hp-tools .ar { grid-row: 1; grid-column: 3; text-align: right; color: var(--green); }
   .hp-tools a:hover h3 { color: var(--green); }
 
@@ -901,13 +903,13 @@ const DIRECTORY = [
     .hp-sec-tools { padding-top: 0; }
     .hp-sec-head { flex-direction: row; align-items: flex-end; justify-content: space-between; gap: 48px; margin-bottom: 52px; }
     .hp-sec-head .hp-more { align-self: flex-end; }
-    .hp-tools { display: grid; grid-template-columns: repeat(4, 1fr); }
+    .hp-tools { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: 24px; }
     .hp-tools li, .hp-tools li:last-child { border-bottom: 0; }
-    .hp-tools a { grid-template-columns: 1fr 20px; gap: 10px 0; padding: 28px 32px 40px 0; align-content: start; height: 100%; }
-    .hp-tools .n { grid-column: 1; grid-row: 1; margin-bottom: 24px; }
+    .hp-tools a { grid-template-columns: minmax(0, 1fr) 20px; gap: 10px 0; padding: 24px 0 32px; align-content: start; height: 100%; }
+    .hp-tools .n { grid-area: 1 / 1; margin-bottom: 16px; }
     .hp-tools .ar { grid-column: 2; }
-    .hp-tools h3 { font-size: 28px; grid-column: 1 / 3; }
-    .hp-tools p { grid-column: 1 / 3; max-width: 26ch; }
+    .hp-tools h3 { font-size: 28px; grid-area: 2 / 1 / 3 / 3; }
+    .hp-tools p { grid-area: 3 / 1 / 4 / 3; max-width: 26ch; }
     .hp-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
     .hp-live { grid-template-columns: 1fr 1fr; gap: 64px; }
     .hp-news { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 48px; }
@@ -937,7 +939,7 @@ const DIRECTORY = [
   [data-hp-anim] .hp-sec-head .hp-more,
   [data-hp-anim] .dps-lede,
   [data-hp-anim] .dps-pills { transition: opacity 0.8s var(--ease) 0.25s, transform 0.8s var(--ease) 0.25s; }
-  [data-hp-anim] :is(.hp-tools, .hp-cards, .hp-latest, .hp-grid) > li {
+  [data-hp-anim] :is(.hp-cards, .hp-latest, .hp-grid) > li {
     transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
     transition-delay: calc(0.2s + var(--i, 0) * 0.09s);
   }
@@ -954,7 +956,7 @@ const DIRECTORY = [
   .is-pending .hp-kicker::before { transform: scaleX(0); }
   .is-pending h2, .is-pending h2 em { opacity: 0; transform: translateY(22px); filter: blur(10px); }
   .is-pending :is(.hp-sec-sub, .hp-sec-head .hp-more, .dps-lede, .dps-pills) { opacity: 0; transform: translateY(14px); }
-  .is-pending :is(.hp-tools, .hp-latest, .hp-grid) > li,
+  .is-pending :is(.hp-latest, .hp-grid) > li,
   .is-pending .hp-rows li,
   .is-pending .hp-stats > div,
   .is-pending .hp-proof > span { opacity: 0; transform: translateY(26px); }
@@ -962,13 +964,13 @@ const DIRECTORY = [
   .is-pending .hp-cards > li { opacity: 0; transform: translateY(48px) rotate(calc(-5deg + var(--i, 0) * 5deg)) scale(0.96); }
 
   /* Hairlines draw left to right as their row arrives. */
-  .hp-tools li, .hp-latest li, .hp-grid li, .hp-rows li { position: relative; }
-  [data-hp-anim] :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before {
+  .hp-latest li, .hp-grid li, .hp-rows li { position: relative; }
+  [data-hp-anim] :is(.hp-latest, .hp-grid, .hp-rows) li::before {
     content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 1px;
     background: var(--gold); transform-origin: left; transform: scaleX(0); opacity: 0;
     pointer-events: none;
   }
-  [data-hp-anim].is-in :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before {
+  [data-hp-anim].is-in :is(.hp-latest, .hp-grid, .hp-rows) li::before {
     animation: hp-rule 1.6s var(--ease) calc(0.15s + var(--i, 0) * 0.09s) 1 both;
   }
   @keyframes hp-rule {
@@ -1010,7 +1012,7 @@ const DIRECTORY = [
 
   @media (prefers-reduced-motion: reduce) {
     .hp-tile, .hp-tile::after, .hp-tools .ar, .hp-more,
-    :is(.hp-tools, .hp-latest, .hp-grid, .hp-rows) li::before { transition: none !important; animation: none !important; }
+    :is(.hp-latest, .hp-grid, .hp-rows) li::before { transition: none !important; animation: none !important; }
     .hp-card:hover .hp-tile { transform: none; }
   }
 
