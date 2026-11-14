@@ -1345,6 +1345,102 @@
           "sha256": "1fd89eae691d7dcf9cac1950cc65e42afc9a76835c47564f54a2f7df02b88602"
         }
       ]
+    },
+    {
+      "slug": "mashreq-aura",
+      "bank": "mashreq",
+      "productUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/aura-credit-card/",
+      "kfsUrl": "https://www.mashreq.com/-/jssmedia/pdfs/aura-pdf/mashreq-cards-aura-kfs-en-ar.ashx",
+      "sourceFixtureIds": [
+        "mashreq-aura-head",
+        "mashreq-aura-apply",
+        "mashreq-aura-fee",
+        "mashreq-aura-documents",
+        "mashreq-aura-issued",
+        "mashreq-aura-kfs",
+        "mashreq-aura-redemption"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_mashreq-aura.ts",
+        "export": "parseMashreqAura",
+        "sha256": "b87071a789eb435e0ad6b0ff6132f20d56b1ae6cd3cbdb0633e52132e1c0cf70",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-mashreq-aura.json",
+          "sha256": "400f6c9b874375892708202d1530af250ecdb65c407be7d68ff6d690aac035c5"
+        }
+      ]
+    },
+    {
+      "slug": "mashreq-aura-world",
+      "bank": "mashreq",
+      "productUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/aura-world-credit-card/",
+      "kfsUrl": "https://www.mashreq.com/-/jssmedia/pdfs/aura-pdf/mashreq-cards-aura-kfs-en-ar.ashx",
+      "sourceFixtureIds": [
+        "mashreq-aura-world-head",
+        "mashreq-aura-world-apply",
+        "mashreq-aura-world-fee",
+        "mashreq-aura-world-documents",
+        "mashreq-aura-issued",
+        "mashreq-aura-kfs",
+        "mashreq-aura-redemption"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_mashreq-aura.ts",
+        "export": "parseMashreqAura",
+        "sha256": "b87071a789eb435e0ad6b0ff6132f20d56b1ae6cd3cbdb0633e52132e1c0cf70",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-mashreq-aura.json",
+          "sha256": "400f6c9b874375892708202d1530af250ecdb65c407be7d68ff6d690aac035c5"
+        }
+      ]
+    },
+    {
+      "slug": "mashreq-aura-world-elite",
+      "bank": "mashreq",
+      "productUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/aura-elite-credit-card/",
+      "kfsUrl": "https://www.mashreq.com/-/jssmedia/pdfs/aura-pdf/mashreq-cards-aura-kfs-en-ar.ashx",
+      "sourceFixtureIds": [
+        "mashreq-aura-world-elite-head",
+        "mashreq-aura-world-elite-apply",
+        "mashreq-aura-world-elite-fee",
+        "mashreq-aura-world-elite-documents",
+        "mashreq-aura-issued",
+        "mashreq-aura-kfs",
+        "mashreq-aura-redemption"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_mashreq-aura.ts",
+        "export": "parseMashreqAura",
+        "sha256": "b87071a789eb435e0ad6b0ff6132f20d56b1ae6cd3cbdb0633e52132e1c0cf70",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-mashreq-aura.json",
+          "sha256": "400f6c9b874375892708202d1530af250ecdb65c407be7d68ff6d690aac035c5"
+        }
+      ]
     }
   ]
 }
