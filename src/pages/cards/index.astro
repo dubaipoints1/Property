@@ -139,12 +139,13 @@ function perkChips(card: typeof cards[number]["card"]): string[] {
 // (see `annualFeeLabel`) so every listing surface (Top picks, row list,
 // SpecCard, comparison tables) routes through the same primitive.
 const siteUrl = siteUrlFrom(Astro.site);
-const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit cards", description: "UAE credit cards covered by DubaiPoints, checked against primary issuer sources.", crumbs: [{ name: "Cards", path: "/cards/" }] });
+const description = "Browse UAE credit-card profiles, compare published fees and rewards, and see which terms still need checking before you apply.";
+const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit cards", description, crumbs: [{ name: "Cards", path: "/cards/" }] });
 ---
 
 <BaseLayout
   title={`The best UAE credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
-  description="UAE credit cards covered by DubaiPoints, sorted by welcome-bonus value. Annual fees and earn rates checked against primary issuer sources."
+  description={description}
   fullWidth
   schema={schema}
 >

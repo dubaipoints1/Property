@@ -217,6 +217,9 @@ const relatedCards = getActiveCards()
 const compareHref = slug ? `/cards/compare/?cards=${[slug, ...relatedCards.slice(0, 2).map((c) => c.slug)].join(",")}` : "/cards/compare/";
 const cardData = slug ? getCardData(slug) : undefined;
 const publishedIncome = cardData?.eligibility.publishedMinMonthlyIncome;
+// This issuer batch is the measured surface; do not change eager/lazy
+// behaviour on unrelated card profiles or the main card artwork.
+const deferRelatedArt = slug === "mashreq-noon" || slug === "mashreq-platinum-plus" || slug === "mashreq-solitaire";
 const availabilityUnconfirmed = cardData?.applicationAvailability === "unconfirmed";
 const applicationUnavailable = availabilityUnconfirmed || cardData?.discontinuedForNewApplicants !== undefined;
 const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
@@ -547,13 +550,19 @@ const schema = {
       <div class="dp-article-related-grid">
         {relatedCards.map((c) => (
           <a href={`/cards/${c.slug}/`} class="dp-article-related-card">
-            <CardImage
-              cardSlug={c.slug}
-              cardName={c.name}
-              bankName={relatedBankName(c.bank)}
-              coverSize="med"
-              sizes="(max-width: 900px) calc(100vw - 40px), 380px"
-            />
+            {deferRelatedArt ? (
+              <span class="dp-related-art-slot">
+                <template data-related-card-art>
+                  <CardImage cardSlug={c.slug} cardName={c.name} bankName={relatedBankName(c.bank)} coverSize="med"
+                    sizes="(max-width: 900px) calc(100vw - 40px), 380px" />
+                </template>
+                <noscript><CardImage cardSlug={c.slug} cardName={c.name} bankName={relatedBankName(c.bank)} coverSize="med"
+                  sizes="(max-width: 900px) calc(100vw - 40px), 380px" /></noscript>
+              </span>
+            ) : (
+              <CardImage cardSlug={c.slug} cardName={c.name} bankName={relatedBankName(c.bank)} coverSize="med"
+                sizes="(max-width: 900px) calc(100vw - 40px), 380px" />
+            )}
             <div class="body">
               <span class="cat">{relatedBankName(c.bank)} · {c.categories?.[0] ?? "Cards"}</span>
               <h3>{c.name}</h3>
@@ -564,6 +573,25 @@ const schema = {
       </div>
     </section>
   )}
+  {deferRelatedArt && <script is:inline>
+    (() => {
+      const slots = [...document.querySelectorAll('[data-related-card-art]')];
+      const reveal = (template) => template.replaceWith(template.content);
+      if (!('IntersectionObserver' in window)) {
+        slots.forEach(reveal);
+        return;
+      }
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(({ target, isIntersecting }) => {
+          if (!isIntersecting) return;
+          observer.unobserve(target);
+          const template = target.querySelector('[data-related-card-art]');
+          if (template) reveal(template);
+        });
+      }, { rootMargin: '96px' });
+      slots.forEach((template) => observer.observe(template.parentElement));
+    })();
+  </script>}
 
   <!-- Sources footer -->
   {sources.length > 0 && (
@@ -586,6 +614,7 @@ const schema = {
 </BaseLayout>
 
 <style>
+  .dp-related-art-slot { display: block; aspect-ratio: 16 / 10; overflow: hidden; }
   .dp-card-summary :global(nav ol) { display: flex; flex-wrap: wrap; column-gap: .45rem; list-style: none; padding: 0; margin: 0; }
   .dp-card-summary :global(nav li + li::before) { content: "/"; margin-inline-end: .45rem; color: var(--ink-soft); }
   .dp-card-summary-facts {

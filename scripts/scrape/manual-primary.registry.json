@@ -811,6 +811,92 @@
           "sha256": "6d8600a122c3349e3137ce80a0842a360be29cf42a8132a6fc5d62fa89c0c333"
         }
       ]
+    },
+    {
+      "slug": "mashreq-noon",
+      "bank": "mashreq",
+      "productUrl": "https://www.mashreq.com/uae/neo/cards/credit-cards/noon-credit-card/",
+      "kfsUrl": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+      "sourceFixtureIds": [
+        "mashreq-noon-fee",
+        "mashreq-fee-schedule",
+        "mashreq-kfs"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_mashreq-expansion.ts",
+        "export": "parseMashreqExpansion",
+        "sha256": "341b645c667d8c819381466da9289974fb5d3e2b72c948bbca4c89e6bca83320",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-mashreq-expansion.json",
+          "sha256": "4de4435f70e66c5b12de3dfe4bd61d61c29a73f2f65c0f2f8a6658fbe2a25945"
+        }
+      ]
+    },
+    {
+      "slug": "mashreq-platinum-plus",
+      "bank": "mashreq",
+      "productUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/platinum-plus-credit-card/",
+      "kfsUrl": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+      "sourceFixtureIds": [
+        "mashreq-platinum-plus-fee",
+        "mashreq-platinum-plus-income",
+        "mashreq-fee-schedule",
+        "mashreq-kfs"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_mashreq-expansion.ts",
+        "export": "parseMashreqExpansion",
+        "sha256": "341b645c667d8c819381466da9289974fb5d3e2b72c948bbca4c89e6bca83320",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-mashreq-expansion.json",
+          "sha256": "4de4435f70e66c5b12de3dfe4bd61d61c29a73f2f65c0f2f8a6658fbe2a25945"
+        }
+      ]
+    },
+    {
+      "slug": "mashreq-solitaire",
+      "bank": "mashreq",
+      "productUrl": "https://www.mashreq.com/en/uae/neo/cards/credit-cards/solitaire-credit-card",
+      "kfsUrl": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/KFS-TnC/Mashreq-Cards-KFS-new-en-ar.ashx/",
+      "sourceFixtureIds": [
+        "mashreq-solitaire-fee",
+        "mashreq-solitaire-income",
+        "mashreq-fee-schedule",
+        "mashreq-kfs"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_mashreq-expansion.ts",
+        "export": "parseMashreqExpansion",
+        "sha256": "341b645c667d8c819381466da9289974fb5d3e2b72c948bbca4c89e6bca83320",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-mashreq-expansion.json",
+          "sha256": "4de4435f70e66c5b12de3dfe4bd61d61c29a73f2f65c0f2f8a6658fbe2a25945"
+        }
+      ]
     }
   ]
 }
