@@ -32778,6 +32778,384 @@
     },
     "applicationAvailability": "unconfirmed"
   },
+  "fab-du-titanium": {
+    "bank": "fab",
+    "name": "FAB du Titanium Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "co-brand",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 5000,
+      "publishedIncomeBasis": "salary",
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/du-credit-card",
+    "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/du-credit-card",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/terms-and-conditions-consolidated/card-specific/ducreditcard_tnc.pdf?view=1"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "partnerBrands": "needs-review",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "annualFeeWaiver": "needs-review",
+      "joiningFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.publishedIncomeBasis": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "fab/rewards-wave2-issuer-fees/v1",
+          "productScope": "FAB du Titanium Credit Card",
+          "unit": "AED standard primary annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-14T13:18:22Z",
+          "sourceTextSha256": "d9cd712358190295738d51241c18cd1d7d225730232176f9115a725b7ceec171",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "Page 1, named annual membership fee row, primary then supplementary",
+          "firstLine": 21,
+          "lastLine": 21,
+          "rawText": "         du Titanium                                               Free                                    Free",
+          "rawTextSha256": "27ea5a925f74ac1efa2b392a60771f1652c70631c43d105cb6049142dceb3026"
+        },
+        {
+          "parserId": "fab/rewards-wave2-issuer-fees/v1",
+          "productScope": "FAB du Titanium Credit Card",
+          "unit": "VAT-inclusive primary and supplementary membership columns",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-14T13:18:22Z",
+          "sourceTextSha256": "d9cd712358190295738d51241c18cd1d7d225730232176f9115a725b7ceec171",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "Page 1, annual membership fee table header, primary then supplementary",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/rewards-wave2-issuer-fees/v1",
+          "productScope": "FAB du Titanium Credit Card",
+          "unit": "AED monthly salary published by issuer; not full eligibility",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/du-credit-card",
+          "capturedAt": "2026-11-14T13:18:16Z",
+          "sourceTextSha256": "b7965fc2ddfdb5bc7b1253fb8a49c5cb3a69ca7ca2da9f6665ee6238b81089c5",
+          "sourceBodySha256": "b7965fc2ddfdb5bc7b1253fb8a49c5cb3a69ca7ca2da9f6665ee6238b81089c5",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 50319,
+          "sourceEndByte": 50441,
+          "firstLine": 640,
+          "lastLine": 640,
+          "rawText": "<h2 class=\"infographic-heading\"> 5,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "accfee2aac510d38e9cf0ab55e3608b932b0817fa393b81a1d2e130a9ac9f7b7"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "FAB’s exact product and application path, standard annual membership fee and published salary floor were checked. This is not a full card review.",
+      "eligibility": "A published salary floor does not establish approval, required documents, residency or salary-transfer conditions.",
+      "fxFee": "The published fee documents describe an issuer upper bound and separate scheme charges; a total foreign-currency cost is not modelled.",
+      "earnRates": "du spending rewards are paid in FAB Rewards Points and are subject to qualifying previous-month spend and a monthly cap. No cash-equivalent rate or ongoing benefit value is modelled."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
+  "fab-rewards-indulge": {
+    "bank": "fab",
+    "name": "FAB Rewards Indulge Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "lifestyle",
+      "shopping",
+      "dining"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 5000,
+      "publishedIncomeBasis": "salary",
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-rewards-indulge-card",
+    "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/fab-rewards-indulge-card",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fab-rewards-indulge/pdf/card-benefits-terms-and-conditions.pdf?view=1"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "partnerBrands": "needs-review",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "annualFeeWaiver": "needs-review",
+      "joiningFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.publishedIncomeBasis": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "fab/rewards-wave2-issuer-fees/v1",
+          "productScope": "FAB Rewards Indulge Credit Card",
+          "unit": "AED standard primary annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-14T13:18:22Z",
+          "sourceTextSha256": "d9cd712358190295738d51241c18cd1d7d225730232176f9115a725b7ceec171",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "Page 1, named annual membership fee row, primary then supplementary",
+          "firstLine": 23,
+          "lastLine": 23,
+          "rawText": "         FAB Rewards Indulge                                       Free                                    Free",
+          "rawTextSha256": "c7f0e7462241d1729ffad9296ec2e2205ddb46af2cfa7f0d5a10fc1151a7c69d"
+        },
+        {
+          "parserId": "fab/rewards-wave2-issuer-fees/v1",
+          "productScope": "FAB Rewards Indulge Credit Card",
+          "unit": "VAT-inclusive primary and supplementary membership columns",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-14T13:18:22Z",
+          "sourceTextSha256": "d9cd712358190295738d51241c18cd1d7d225730232176f9115a725b7ceec171",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "Page 1, annual membership fee table header, primary then supplementary",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/rewards-wave2-issuer-fees/v1",
+          "productScope": "FAB Rewards Indulge Credit Card",
+          "unit": "AED monthly salary published by issuer; not full eligibility",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-rewards-indulge-card",
+          "capturedAt": "2026-11-14T13:18:18Z",
+          "sourceTextSha256": "a076af0d7b753567b523a43034c44496f82c3d38fe94b8d5dde74d606134f96c",
+          "sourceBodySha256": "a076af0d7b753567b523a43034c44496f82c3d38fe94b8d5dde74d606134f96c",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 80008,
+          "sourceEndByte": 80130,
+          "firstLine": 1092,
+          "lastLine": 1092,
+          "rawText": "<h2 class=\"infographic-heading\"> 5,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "accfee2aac510d38e9cf0ab55e3608b932b0817fa393b81a1d2e130a9ac9f7b7"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "FAB’s exact product and application path, standard annual membership fee and published salary floor were checked. This is not a full card review.",
+      "eligibility": "A published salary floor does not establish approval, required documents, residency or salary-transfer conditions.",
+      "fxFee": "The published fee documents describe an issuer upper bound and separate scheme charges; a total foreign-currency cost is not modelled.",
+      "earnRates": "The monthly bonus, eligible online spend, reduced categories and caps are not modelled. Check current merchant-offer terms and validity separately."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
+  "fab-rewards-active": {
+    "bank": "fab",
+    "name": "FAB Rewards Active Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 315,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 5000,
+      "publishedIncomeBasis": "salary",
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-rewards-active-credit-card",
+    "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+    "lastVerified": "2026-11-14",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/fab-rewards-active-credit-card",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/fab-consolidated-credit-cards-en.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fab-rewards-active-credit-card/documents/card-benefits-terms-and-conditions-en.pdf?view=1"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "partnerBrands": "needs-review",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "fxFee": "needs-review",
+      "annualFeeWaiver": "needs-review",
+      "joiningFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.publishedIncomeBasis": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "fab/rewards-wave2-issuer-fees/v1",
+          "productScope": "FAB Rewards Active Credit Card",
+          "unit": "AED standard primary annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-14T13:18:22Z",
+          "sourceTextSha256": "d9cd712358190295738d51241c18cd1d7d225730232176f9115a725b7ceec171",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "Page 1, named annual membership fee row, primary then supplementary",
+          "firstLine": 24,
+          "lastLine": 24,
+          "rawText": "         FAB Rewards Active                                         315                                    Free",
+          "rawTextSha256": "cb6510d749f1ff5fa320d8e84001488b70ea526f57c2b67408d66f3e1bf7a019"
+        },
+        {
+          "parserId": "fab/rewards-wave2-issuer-fees/v1",
+          "productScope": "FAB Rewards Active Credit Card",
+          "unit": "VAT-inclusive primary and supplementary membership columns",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-14T13:18:22Z",
+          "sourceTextSha256": "d9cd712358190295738d51241c18cd1d7d225730232176f9115a725b7ceec171",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "Page 1, annual membership fee table header, primary then supplementary",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/rewards-wave2-issuer-fees/v1",
+          "productScope": "FAB Rewards Active Credit Card",
+          "unit": "AED monthly salary published by issuer; not full eligibility",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-rewards-active-credit-card",
+          "capturedAt": "2026-11-14T13:18:19Z",
+          "sourceTextSha256": "2e4844d3ea9315bea86575555a51bae3a823acbafcb56ccf50c2fca37a5fc3ce",
+          "sourceBodySha256": "2e4844d3ea9315bea86575555a51bae3a823acbafcb56ccf50c2fca37a5fc3ce",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 50730,
+          "sourceEndByte": 50852,
+          "firstLine": 639,
+          "lastLine": 639,
+          "rawText": "<h2 class=\"infographic-heading\"> 5,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "accfee2aac510d38e9cf0ab55e3608b932b0817fa393b81a1d2e130a9ac9f7b7"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "FAB’s exact product and application path, standard annual membership fee and published salary floor were checked. This is not a full card review.",
+      "eligibility": "A published salary floor does not establish approval, required documents, residency or salary-transfer conditions.",
+      "fxFee": "The published fee documents describe an issuer upper bound and separate scheme charges; a total foreign-currency cost is not modelled.",
+      "earnRates": "FAB Rewards on eligible sport spending and activities are not modelled. FAB’s ADV+ gym terms require qualifying spend and say visits can be chargeable; no gym count or ongoing fitness perk value is assumed."
+    },
+    "_lastReviewed": "2026-11-14"
+  },
   "hsbc-cash-plus": {
     "_provenance": {
       "bank": "scraped",
