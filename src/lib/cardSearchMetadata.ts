@@ -13,11 +13,14 @@ export function cardSearchMetadata(card: CardData) {
   const qualification = partial ? annualFeeLabel(card).qual : null;
   const qualifier = qualification === "year 2+" ? " from year two"
     : qualification ? ` · ${qualification}` : "";
+  const noMembershipFees = partial && card.eligibility.publishedIncomeBasis === "salaried-applicants"
+    && card.annualFee.amount === 0 && card.joiningFee?.amount === 0
+    && card._provenance?.annualFee === "editor-confirmed" && card._provenance?.joiningFee === "editor-confirmed";
   return {
     kind: partial ? "source profile" : "review",
     description: [
       `${card.name} ${partial ? "partial source profile" : "review"}`,
-      `Standard annual fee: ${cardFeeAmountLabel(card)}${qualifier}`,
+      noMembershipFees ? "Standard annual fee: none; no listed joining fee" : `Standard annual fee: ${cardFeeAmountLabel(card)}${qualifier}`,
       limited && card.standardFeeConditions === "introductory-offer-unconfirmed" ? "Terms pending" :
         limited ? "Terms pending; read source notes" : `Minimum salary: ${cardSalaryLabel(card)}`,
       !limited && top && topLabel ? `${formatEarnRate(top.value, card.earnUnit, card.categories)} ${topLabel}` : null,
