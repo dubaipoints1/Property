@@ -17,7 +17,7 @@
  *    (`_provenance.eligibility: needs-review`) or invitation-only, on the
  *    same footing as /cards/salary/.
  */
-import { isStructuredAnnualFeeWaiver } from "./cardsDataFormat";
+import { annualFeeLabel, isStructuredAnnualFeeWaiver } from "./cardsDataFormat";
 import { median } from "./interestPayoff";
 import type { CardData } from "./cardsData";
 import { hasUsableSalaryMinimum } from "./cardEligibility";
@@ -30,6 +30,7 @@ export interface CardForFeeIndex {
   bank: string;
   annualFee: { amount: number; currency: string };
   annualFeeWaiver?: unknown;
+  standardFeeConditions?: CardData["standardFeeConditions"];
   fxFee: number | null;
   fxFeeScope?: CardData["fxFeeScope"];
   fxFeeVatTreatment?: CardData["fxFeeVatTreatment"];
@@ -43,6 +44,7 @@ export interface FeeIndexRow {
   name: string;
   bank: string;
   annualFee: number | null;
+  renewalOnlyFeeLabel?: string;
   firstYearAnnualFeeStatus: FirstYearAnnualFeeStatus;
   fxFee: number | null;
   fxFeeScope?: CardData["fxFeeScope"];
@@ -109,6 +111,7 @@ export type FirstYearAnnualFeeStatus = "waived" | "standard" | "pending";
  * joining-fee observation must never turn this into a free-first-year claim.
  * Unresolved annual-fee/waiver evidence is not a negative waiver decision. */
 export function firstYearAnnualFeeStatus(card: CardForFeeIndex): FirstYearAnnualFeeStatus {
+  if (card.standardFeeConditions === "renewal-only") return "pending";
   const relevant = ["annualFee", "annualFeeWaiver", "vatPolicy"];
   const pending = Object.entries(card._provenance ?? {}).some(([field, state]) => state === "needs-review"
     && relevant.some(group => field === group || field.startsWith(group + ".")));
@@ -133,11 +136,14 @@ function mean(values: number[]): number | null {
 
 export function toRow(card: CardForFeeIndex): FeeIndexRow {
   const unverified = !hasUsableSalaryMinimum(card);
+  const feeKnown = !cardFeeNeedsReview(card, "annualFee") && Number.isFinite(card.annualFee.amount) && card.annualFee.amount >= 0;
+  const renewalOnly = card.standardFeeConditions === "renewal-only";
   return {
     slug: card.slug,
     name: card.name,
     bank: card.bank,
-    annualFee: cardFeeNeedsReview(card, "annualFee") || !Number.isFinite(card.annualFee.amount) || card.annualFee.amount < 0 ? null : card.annualFee.amount,
+    annualFee: feeKnown && !renewalOnly ? card.annualFee.amount : null,
+    ...(feeKnown && renewalOnly ? { renewalOnlyFeeLabel: annualFeeLabel(card).amount + " from year two" } : {}),
     firstYearAnnualFeeStatus: firstYearAnnualFeeStatus(card),
     fxFee: card.fxFee,
     fxFeeScope: card.fxFeeScope,

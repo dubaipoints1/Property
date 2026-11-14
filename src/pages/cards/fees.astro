@@ -123,7 +123,7 @@ const fx = (n: number | null) => n === null ? "Pending" : (n === 0 ? "0%" : `${n
               <tr>
                 <td><a href={`/cards/${r.slug}/`}>{r.name}</a></td>
                 <td>{bankName(r.bank)}</td>
-                <td class="num">{r.annualFee === null ? "Pending" : r.annualFee === 0 ? "Free" : aed(r.annualFee)}</td>
+                <td class="num">{r.renewalOnlyFeeLabel ?? (r.annualFee === null ? "Pending" : r.annualFee === 0 ? "Free" : aed(r.annualFee))}</td>
                 <td>{firstYearAnnualFeeLabel(r)}</td>
                 <td class="num">{cardFxFeeLabel(r)}</td>
                 <td class="num">{r.minSalary == null ? "—" : r.minSalary === 0 ? "None" : aed(r.minSalary)}</td>
@@ -141,7 +141,7 @@ const fx = (n: number | null) => n === null ? "Pending" : (n === 0 ? "0%" : `${n
       </div>
       <div class="col">
         <div class="lbl">Annual fee</div>
-        <p>The standard published amount before any spend-based waiver. The first-year column and waiver count cover the annual fee only, not joining charges, interest or total first-year cost. Pending annual-fee or waiver terms are not counted as waived. A zero annual fee does not confirm that joining or other charges are zero. See each card's source notes and conditions.</p>
+        <p>The standard published amount before any spend-based waiver. The first-year column and waiver count cover the annual fee only, not joining charges, interest or total first-year cost. Pending terms do not count as waived. A known renewal-only fee is shown in the table but left out of the annual-fee comparisons when the initial terms are pending. A zero annual fee does not confirm that joining or other charges are zero. See each card's source notes and conditions.</p>
       </div>
       <div class="col">
         <div class="lbl">FX fee</div>

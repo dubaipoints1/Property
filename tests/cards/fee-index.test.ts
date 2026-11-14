@@ -75,7 +75,7 @@ test("the live index is the card set, row for row", () => {
   assert.equal(idx.byBank.reduce((n, b) => n + b.cards, 0), idx.total);
   for (const row of idx.rows) {
     const card = cards.find((k) => k.slug === row.slug)!;
-    assert.equal(row.annualFee, cardFeeNeedsReview(card, "annualFee") ? null : card.annualFee.amount, row.slug);
+    assert.equal(row.annualFee, cardFeeNeedsReview(card, "annualFee") || card.standardFeeConditions === "renewal-only" ? null : card.annualFee.amount, row.slug);
     assert.equal(row.fxFee, card.fxFee, row.slug);
   }
   for (let i = 1; i < idx.rows.length; i++) {
@@ -129,7 +129,7 @@ test("actual fee-page cell executes the shared status formatter and pending live
   const expression = source.match(/<td>\{(firstYearAnnualFeeLabel\(r\))\}<\/td>/)?.[1];
   assert.ok(expression, "actual page cell must call the tested formatter");
   const evaluate = new Function("r", "firstYearAnnualFeeLabel", `"use strict"; return (${expression});`);
-  const annualExpression = source.match(/<td class="num">\{(r\.annualFee === null \? "Pending"[^\n]+)\}<\/td>/)?.[1];
+  const annualExpression = source.match(/<td class="num">\{(r\.renewalOnlyFeeLabel \?\? \(r\.annualFee === null \? "Pending"[^\n]+)\}<\/td>/)?.[1];
   assert.ok(annualExpression, "actual annual-fee cell must distinguish null before any zero branch");
   const evaluateAnnual = new Function("r", "aed", `return (${annualExpression});`);
   const cards = getActiveCards(), idx = buildFeeIndex(cards);

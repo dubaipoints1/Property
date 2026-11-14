@@ -1241,6 +1241,110 @@
           "sha256": "08eabed58b66ca3ecf8bf747addc9d295ae1af8a393f9d6487560d59ecbd54fb"
         }
       ]
+    },
+    {
+      "slug": "dib-prime-platinum",
+      "bank": "dib",
+      "productUrl": "https://www.dib.ae/personal/cards/prime-platinum-card",
+      "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "sourceFixtureIds": [
+        "prime-head",
+        "prime-apply",
+        "prime-landing",
+        "kfs-fees",
+        "kfs-vat",
+        "soc-fees",
+        "prime-salary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_dib-wave-two.ts",
+        "export": "parseDibWaveTwo",
+        "sha256": "7d93a5bd9afb352d3bb1597905334a877fc519f7b9cdd747b279bbf8c3d7ffa6",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-wave-two.json",
+          "sha256": "1fd89eae691d7dcf9cac1950cc65e42afc9a76835c47564f54a2f7df02b88602"
+        }
+      ]
+    },
+    {
+      "slug": "dib-shams-signature",
+      "bank": "dib",
+      "productUrl": "https://www.dib.ae/personal/cards/shams-dib-signature-covered-card",
+      "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "sourceFixtureIds": [
+        "signature-head",
+        "signature-apply",
+        "signature-landing",
+        "kfs-fees",
+        "kfs-vat",
+        "soc-fees",
+        "kfs-foot",
+        "signature-waiver",
+        "offer-fees",
+        "offer-scope",
+        "offer-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_dib-wave-two.ts",
+        "export": "parseDibWaveTwo",
+        "sha256": "7d93a5bd9afb352d3bb1597905334a877fc519f7b9cdd747b279bbf8c3d7ffa6",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-wave-two.json",
+          "sha256": "1fd89eae691d7dcf9cac1950cc65e42afc9a76835c47564f54a2f7df02b88602"
+        }
+      ]
+    },
+    {
+      "slug": "dib-shams-infinite",
+      "bank": "dib",
+      "productUrl": "https://www.dib.ae/personal/cards/shams-dib-infinite-covered-card",
+      "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "sourceFixtureIds": [
+        "infinite-head",
+        "infinite-apply",
+        "infinite-landing",
+        "kfs-fees",
+        "kfs-vat",
+        "soc-fees",
+        "kfs-foot",
+        "infinite-waiver",
+        "offer-fees",
+        "offer-scope",
+        "offer-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_dib-wave-two.ts",
+        "export": "parseDibWaveTwo",
+        "sha256": "7d93a5bd9afb352d3bb1597905334a877fc519f7b9cdd747b279bbf8c3d7ffa6",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-wave-two.json",
+          "sha256": "1fd89eae691d7dcf9cac1950cc65e42afc9a76835c47564f54a2f7df02b88602"
+        }
+      ]
     }
   ]
 }
