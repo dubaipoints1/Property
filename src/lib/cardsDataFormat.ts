@@ -392,7 +392,7 @@ export interface CardForAnnualFee {
   annualFee: { amount: number };
   joiningFee?: { amount: number } | null;
   annualFeeWaiver?: unknown;
-  standardFeeConditions?: "waiver-terms" | "introductory-offer-unconfirmed" | "renewal-only";
+  standardFeeConditions?: "waiver-terms" | "introductory-offer-unconfirmed" | "renewal-only" | "renewal-waiver";
   _provenance?: Record<string, string> | null;
 }
 
@@ -442,6 +442,7 @@ export function annualFeeLabel(card: CardForAnnualFee): {
   const amount =
     card.annualFee.amount === 0 ? "Free" : formatAED(card.annualFee.amount);
   if (card.standardFeeConditions === "renewal-only") return { amount, qual: "year 2+; initial terms pending" };
+  if (card.standardFeeConditions === "renewal-waiver") return { amount, qual: "year 2+" };
   if (card.standardFeeConditions === "introductory-offer-unconfirmed") return { amount, qual: "first-year offer pending" };
   if (card.standardFeeConditions === "waiver-terms") return { amount, qual: "waiver terms apply" };
   const jf = card.joiningFee?.amount;

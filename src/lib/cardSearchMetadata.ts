@@ -18,7 +18,8 @@ export function cardSearchMetadata(card: CardData) {
     description: [
       `${card.name} ${partial ? "partial source profile" : "review"}`,
       `Standard annual fee: ${cardFeeAmountLabel(card)}${qualifier}`,
-      limited ? "Terms pending; read source notes" : `Minimum salary: ${cardSalaryLabel(card)}`,
+      limited && card.standardFeeConditions === "introductory-offer-unconfirmed" ? "Terms pending" :
+        limited ? "Terms pending; read source notes" : `Minimum salary: ${cardSalaryLabel(card)}`,
       !limited && top && topLabel ? `${formatEarnRate(top.value, card.earnUnit, card.categories)} ${topLabel}` : null,
     ].filter(Boolean).join(" · "),
   };

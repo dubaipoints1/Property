@@ -998,6 +998,71 @@
           "sha256": "461a8aa4982c1c2830ef320d4d7517148ab9e2bd3806061e6ccb45d096b3225d"
         }
       ]
+    },
+    {
+      "slug": "dib-consumer-cashback-platinum",
+      "bank": "dib",
+      "productUrl": "https://www.dib.ae/personal/cards/consumer-platinum-card",
+      "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "sourceFixtureIds": [
+        "consumer-head",
+        "consumer-apply",
+        "consumer-net-fee",
+        "consumer-limited-first-year",
+        "consumer-notice-header",
+        "consumer-notice-fee",
+        "dib-kfs-fee-columns",
+        "dib-kfs-shams-footnote",
+        "dib-kfs-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_dib-expansion.ts",
+        "export": "parseDibExpansion",
+        "sha256": "2e7006ed4d8bc0fbbc3b35d68287a023925361bc54df2825831a0d5ff4e92b7f",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-two-cards.json",
+          "sha256": "24c9750af87cdde508f585ecb763fbd42efa4adddfbe5bffd00d58d772a550d3"
+        }
+      ]
+    },
+    {
+      "slug": "dib-shams-platinum",
+      "bank": "dib",
+      "productUrl": "https://www.dib.ae/personal/cards/shams-dib-platinum-covered-card",
+      "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "sourceFixtureIds": [
+        "shams-head",
+        "shams-apply",
+        "shams-waiver",
+        "dib-kfs-fee-columns",
+        "dib-kfs-shams-footnote",
+        "dib-kfs-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_dib-expansion.ts",
+        "export": "parseDibExpansion",
+        "sha256": "2e7006ed4d8bc0fbbc3b35d68287a023925361bc54df2825831a0d5ff4e92b7f",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-two-cards.json",
+          "sha256": "24c9750af87cdde508f585ecb763fbd42efa4adddfbe5bffd00d58d772a550d3"
+        }
+      ]
     }
   ]
 }

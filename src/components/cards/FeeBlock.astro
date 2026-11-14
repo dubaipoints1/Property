@@ -14,6 +14,7 @@ import type {
   StructuredAnnualFeeWaiver,
 } from "~/lib/cardsData";
 import {
+  annualFeeLabel,
   annualFeeWaiverDisplay,
   isStructuredAnnualFeeWaiver,
   getCardData,
@@ -84,6 +85,7 @@ const joiningFee = resolved?.joiningFee ?? joiningFeeProp;
 const vatPolicy = resolved?.vatPolicy ?? "inclusive";
 const feeEvidence = resolved ?? { annualFee, _provenance: provenanceProp ?? {} };
 const annualFeePending = cardFeeNeedsReview(feeEvidence, "annualFee");
+const scopeQualifier = !annualFeePending && resolved?.standardFeeConditions ? annualFeeLabel(resolved).qual : null;
 const joiningFeePending = cardFeeNeedsReview(feeEvidence, "joiningFee");
 const waiverPending = Object.entries(feeEvidence._provenance ?? {}).some(([key, state]) => state === "needs-review" && /^annualFeeWaiver(?:\.|$)/.test(key));
 const showVatTag = !annualFeePending && annualFee.amount > 0;
@@ -136,6 +138,7 @@ const showJoiningFee =
   <div class="amt">{feeLabel}</div>
   {showVatTag && <div class="vat">{vatTagText}</div>}
   <div class="lbl">{resolved?.standardFeeConditions ? "Standard annual fee" : "Annual fee"}</div>
+  {scopeQualifier && <div class="joining">{scopeQualifier}</div>}
   {annualFeePending && <div class="joining">The standard annual fee is Pending; joining and other charges are not assumed to be zero.</div>}
   {joiningFeePending && <div class="joining">Joining fee — confirmation pending</div>}
   {showJoiningFee && joiningFee && (
