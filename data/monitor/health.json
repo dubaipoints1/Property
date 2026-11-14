@@ -1,7 +1,7 @@
 {
-  "runId": "43424648752",
-  "attemptedAt": "2026-11-13T12:23:03.165Z",
-  "asOf": "2026-11-13T12:23:03.165Z",
+  "runId": "43590895807",
+  "attemptedAt": "2026-11-14T11:37:27.401Z",
+  "asOf": "2026-11-14T11:37:27.401Z",
   "dryRun": false,
   "healthy": false,
   "inspectedWindowPerQuery": 100,
@@ -10,7 +10,7 @@
   "scope": "Free reads of existing checks only; no new collection, provisioning or card verification.",
   "monitors": {
     "fee-docs": {
-      "attemptedAt": "2026-11-13T12:23:03.165Z",
+      "attemptedAt": "2026-11-14T11:37:27.401Z",
       "listComplete": true,
       "newChecks": 0,
       "readableChecks": 0,
@@ -27,7 +27,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-13T12:23:03.165Z",
+        "asOf": "2026-11-14T11:37:27.401Z",
         "schedule": {
           "cron": "0 12 1 * *",
           "timezone": "UTC"
@@ -41,7 +41,7 @@
       }
     },
     "product-pages": {
-      "attemptedAt": "2026-11-13T12:23:03.165Z",
+      "attemptedAt": "2026-11-14T11:37:27.401Z",
       "listComplete": true,
       "newChecks": 0,
       "readableChecks": 0,
@@ -58,7 +58,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-13T12:23:03.165Z",
+        "asOf": "2026-11-14T11:37:27.401Z",
         "schedule": {
           "cron": "0 9 1,15 * *",
           "timezone": "UTC"
@@ -72,7 +72,7 @@
       }
     },
     "salary-transfer": {
-      "attemptedAt": "2026-11-13T12:23:03.165Z",
+      "attemptedAt": "2026-11-14T11:37:27.401Z",
       "listComplete": true,
       "newChecks": 0,
       "readableChecks": 0,
@@ -89,7 +89,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-13T12:23:03.165Z",
+        "asOf": "2026-11-14T11:37:27.401Z",
         "schedule": {
           "cron": "0 11 8,22 * *",
           "timezone": "UTC"
@@ -103,14 +103,14 @@
       }
     },
     "press-rooms": {
-      "attemptedAt": "2026-11-13T12:23:03.165Z",
+      "attemptedAt": "2026-11-14T11:37:27.401Z",
       "listComplete": true,
-      "newChecks": 0,
+      "newChecks": 1,
       "readableChecks": 0,
       "latestObservedCheck": {
-        "id": "01a1caec-4def-72a4-a407-b7a1dc48cf33",
-        "status": "completed",
-        "scheduledFor": "2026-11-11 14:00:00+00"
+        "id": "01a1d538-d5b7-77be-84b7-9c9ea4621432",
+        "status": "skipped_no_credits",
+        "scheduledFor": "2026-11-13 14:00:00+00"
       },
       "latestSuccessfulCheck": {
         "id": "01a1caec-4def-72a4-a407-b7a1dc48cf33",
@@ -120,24 +120,24 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-13T12:23:03.165Z",
+        "asOf": "2026-11-14T11:37:27.401Z",
         "schedule": {
           "cron": "0 14 * * 1,3,5",
           "timezone": "UTC"
         },
-        "nextRunAt": "2026-11-13 14:00:00+00",
-        "lastRunAt": "2026-11-11 14:04:21.615+00",
+        "nextRunAt": "2026-11-16 14:00:00+00",
+        "lastRunAt": "2026-11-13 14:03:54.273+00",
         "currentCheckId": null,
-        "latestDueSlot": "2026-11-11T14:00:00.000Z",
-        "state": "current-complete",
-        "reason": "A completed non-empty error-free check covers the latest due slot; not whole-card verification"
+        "latestDueSlot": "2026-11-13T14:00:00.000Z",
+        "state": "failed",
+        "reason": "The latest due collection has status skipped_no_credits or incomplete page coverage"
       }
     },
     "offers": {
-      "attemptedAt": "2026-11-13T12:23:03.165Z",
+      "attemptedAt": "2026-11-14T11:37:27.401Z",
       "listComplete": true,
-      "newChecks": 1,
-      "readableChecks": 1,
+      "newChecks": 0,
+      "readableChecks": 0,
       "latestObservedCheck": {
         "id": "01a1cfd9-d4e4-7138-bda6-93823d9bfa04",
         "status": "completed",
@@ -151,7 +151,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-13T12:23:03.165Z",
+        "asOf": "2026-11-14T11:37:27.401Z",
         "schedule": {
           "cron": "0 13 * * 1,4",
           "timezone": "UTC"
@@ -165,7 +165,7 @@
       }
     },
     "programme-offers": {
-      "attemptedAt": "2026-11-13T12:23:03.165Z",
+      "attemptedAt": "2026-11-14T11:37:27.401Z",
       "listComplete": true,
       "newChecks": 0,
       "readableChecks": 0,
@@ -182,7 +182,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-13T12:23:03.165Z",
+        "asOf": "2026-11-14T11:37:27.401Z",
         "schedule": {
           "cron": "0 10 * * 3",
           "timezone": "UTC"
@@ -196,7 +196,7 @@
       }
     },
     "press-rooms-weekly": {
-      "attemptedAt": "2026-11-13T12:23:03.165Z",
+      "attemptedAt": "2026-11-14T11:37:27.401Z",
       "listComplete": true,
       "newChecks": 0,
       "readableChecks": 0,
@@ -213,7 +213,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-13T12:23:03.165Z",
+        "asOf": "2026-11-14T11:37:27.401Z",
         "schedule": {
           "cron": "0 10 * * 4",
           "timezone": "UTC"
@@ -239,6 +239,24 @@
       "kind": "latest_check_unhealthy",
       "note": "Latest observed check has status skipped_no_credits; polling it did not collect pages.",
       "checkId": "01a1bad3-c821-739e-a13d-b3c340ee41d7"
+    },
+    {
+      "monitor": "press-rooms",
+      "kind": "collection_failed",
+      "note": "The latest due collection has status skipped_no_credits or incomplete page coverage",
+      "checkId": "01a1d538-d5b7-77be-84b7-9c9ea4621432"
+    },
+    {
+      "monitor": "press-rooms",
+      "kind": "latest_check_unhealthy",
+      "note": "Latest observed check has status skipped_no_credits; polling it did not collect pages.",
+      "checkId": "01a1d538-d5b7-77be-84b7-9c9ea4621432"
+    },
+    {
+      "monitor": "press-rooms",
+      "kind": "check_failed",
+      "note": "Check status skipped_no_credits: Monitor check skipped: insufficient credits.",
+      "checkId": "01a1d538-d5b7-77be-84b7-9c9ea4621432"
     }
   ]
 }
