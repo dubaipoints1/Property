@@ -426,7 +426,7 @@ export const CardDataSchema = z.object({
     currency: z.literal("AED").default("AED"),
   }),
   /** A published baseline, not an unconditional first-year charge. */
-  standardFeeConditions: z.enum(["waiver-terms", "introductory-offer-unconfirmed", "renewal-only"]).optional(),
+  standardFeeConditions: z.enum(["waiver-terms", "introductory-offer-unconfirmed", "renewal-only", "renewal-waiver"]).optional(),
   /**
    * Either the structured object (preferred), a legacy free-text string,
    * or null (no waiver path). Pages render the structured form when
