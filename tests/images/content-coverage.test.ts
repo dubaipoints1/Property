@@ -33,6 +33,9 @@ const ALLOWED_MISSING: Record<string, string> = {
   ...Object.fromEntries(["noon", "platinum-plus", "solitaire"].map(
     product => [`card-mashreq-${product}`, "Text-led partial source profile; issuer art was checked only to identify the network and is not republished."],
   )),
+  ...Object.fromEntries(["aura", "aura-world", "aura-world-elite"].map(
+    product => [`card-mashreq-${product}`, "Text-led scoped profile; issuer card artwork is not licensed for republication."],
+  )),
   ...Object.fromEntries(["fab-adnoc-rewards", "fab-gems-world", "fab-travel", "fab-du-titanium", "fab-rewards-indulge", "fab-rewards-active"].map(
     slug => [`card-${slug}`, "Text-led scoped issuer source profiles; no approved art republished."],
   )),
