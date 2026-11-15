@@ -10,6 +10,7 @@ import { MAX_CARD_SELECTION as MAX_CARDS, readCardSelection, setCardSelection, u
     var empty = document.getElementById("dp-compare-empty");
     var countEl = document.getElementById("dp-compare-count");
     var modeEl = document.getElementById("dp-compare-mode");
+    var requestStatus = document.getElementById("dp-compare-request-status");
     if (!grid || !empty || !countEl || !modeEl) return;
 
     var cols = Array.prototype.slice.call(grid.querySelectorAll("[data-slug]"));
@@ -17,17 +18,25 @@ import { MAX_CARD_SELECTION as MAX_CARDS, readCardSelection, setCardSelection, u
     cols.forEach(function (el) {
       known[el.getAttribute("data-slug")] = el;
     });
+    var knownSlugs = new Set(Object.keys(known));
 
     var selectedOrder = [];
     var refreshPicker = function () {};
-    function requested() {
-      return readCardSelection(new URLSearchParams(window.location.search), new Set(Object.keys(known)));
-    }
-
     function apply() {
-      var chosen = requested();
+      var params = new URLSearchParams(window.location.search);
+      var chosen = readCardSelection(params, knownSlugs);
       var isDefault = chosen.length === 0;
       var show = isDefault ? defaultSlugs : chosen;
+      // Check the requested IDs before the shared parser drops unknowns. An
+      // absent or empty selection deliberately keeps the usual default view.
+      var missing = params.getAll("cards").some(function (value) {
+        return value.split(",").some(function (slug) { return slug !== "" && !knownSlugs.has(slug); });
+      });
+      if (requestStatus) {
+        requestStatus.textContent = !missing ? "" : isDefault
+          ? "We couldn’t match the cards in this link. Showing the default comparison instead."
+          : "Some cards in this link aren’t listed. Showing the ones we could match.";
+      }
       selectedOrder = show.slice();
 
       cols.forEach(function (el) {

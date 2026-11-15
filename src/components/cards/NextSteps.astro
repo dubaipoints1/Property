@@ -17,20 +17,19 @@ interface Props {
   bankSlug?: string;
   bankName?: string;
   earnUnit?: string;
-  minSalary?: number | null;
   /** Slugs of the closest rivals, best first (the layout's related cards). */
   rivals: Array<{ slug: string; name: string }>;
 }
 
-const { slug, cardName, bankSlug, bankName, earnUnit = "", minSalary = 0, rivals } = Astro.props;
+const { slug, cardName, bankSlug, bankName, earnUnit = "", rivals } = Astro.props;
 
 const compareWith = rivals.slice(0, 2);
 const compareHref = `/cards/compare/?cards=${[slug, ...compareWith.map((r) => r.slug)].join(",")}`;
 
 const prefer = /cashback/i.test(earnUnit) ? "cashback" : /mile|avios/i.test(earnUnit) ? "miles" : "points";
-const finderParams = new URLSearchParams({ prefer });
-if (typeof minSalary === "number" && minSalary > 0) finderParams.set("salary", String(minSalary));
-const finderHref = `/cards/finder/?${finderParams.toString()}`;
+// A card's minimum salary is not the reader's salary. CardJourney preserves
+// the reader's own filter when they arrived with one.
+const finderHref = `/cards/finder/?${new URLSearchParams({ prefer })}`;
 
 const now = Date.now();
 const liveOffers = bankSlug
@@ -47,8 +46,8 @@ const items = [
     : []),
   {
     href: finderHref,
-    title: "Find your best card",
-    meta: `Ranked for your salary and spending${typeof minSalary === "number" && minSalary > 0 ? `, starting from ${formatAED(minSalary)} a month` : ""}`,
+    title: "Find cards for your salary",
+    meta: "Shortlist cards by salary, spending and rewards",
   },
   ...(liveOffers.length > 0 && bankName
     ? [{

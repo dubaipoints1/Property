@@ -463,7 +463,6 @@ const schema = {
           bankSlug={bankSlug}
           bankName={bankName}
           earnUnit={earnUnit}
-          minSalary={eligibilityProvenance === "needs-review" ? null : minSalary}
           rivals={relatedCards.map((c) => ({ slug: c.slug, name: c.name }))}
         />
       )}
