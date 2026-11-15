@@ -54,6 +54,10 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Deliberately text-led: this is a timetable report, not a flight review. No licensed photograph for these routes or original on-location imagery was verified for this item.",
   "news-skywards-my-family-pooling-pause":
     "Deliberately text-led: the official account-transition notice is the evidence; an aircraft photo would not illustrate the pooling or transfer rules.",
+  "news-standard-chartered-targeted-cashback-november-2026":
+    "Deliberately text-led: the invitation terms and payment exclusions are the evidence; a card image would not establish customer eligibility.",
+  "news-emirates-premium-economy-europe-segment-check":
+    "Deliberately text-led: the published cabin schedule and programme rules are the evidence; cabin art would not establish the equipment or cabin on a reader's flight.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
