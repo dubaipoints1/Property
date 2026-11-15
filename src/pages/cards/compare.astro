@@ -128,38 +128,13 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     <div class="crumb">DubaiPoints / Cards / Compare</div>
     <h1>Compare cards</h1>
     <p>
-      Compare fees, rewards and eligibility for up to four cards. Share your selection using the page link.
+      Compare fees, rewards and eligibility side by side. Share the comparison using the page link.
     </p>
-
-    <div class="dp-tools-stats">
-      <span>
-        <span class="lbl">Cards covered:</span>
-        <strong>{allCards.length}</strong>
-      </span>
-      <span>
-        <span class="lbl">Showing:</span>
-        <strong>
-          <span id="dp-compare-count">{defaultSlugs.length}</span>{" "}
-          <span id="dp-compare-mode">top welcome-bonus cards</span>
-        </strong>
-      </span>
-      <span>
-        <span class="lbl">Methodology:</span>
-        <strong>
-          <a href="/editorial-policy/" style="color: var(--link);">Read →</a>
-        </strong>
-      </span>
-    </div>
     <p id="dp-compare-request-status" class="dp-compare-request-status" role="status"></p>
-  </div>
 
-  <CardJourney />
-
-  <!-- ── Picker ───────────────────────────────────────────────────── -->
-  <section class="dp-compare-picker">
-    <details>
+    <details class="dp-compare-picker">
       <summary>
-        <span class="dp-compare-picker-title">Pick cards to compare</span>
+        <span class="dp-compare-picker-title">Choose cards to compare</span>
         <span class="dp-compare-picker-hint">
           Up to {MAX_CARDS} cards
         </span>
@@ -198,7 +173,29 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
         </div>
       </form>
     </details>
-  </section>
+
+    <div class="dp-tools-stats">
+      <span>
+        <span class="lbl">Cards covered:</span>
+        <strong>{allCards.length}</strong>
+      </span>
+      <span>
+        <span class="lbl">Showing:</span>
+        <strong>
+          <span id="dp-compare-count">{defaultSlugs.length}</span>{" "}
+          <span id="dp-compare-mode">top welcome-bonus cards</span>
+        </strong>
+      </span>
+      <span>
+        <span class="lbl">Methodology:</span>
+        <strong>
+          <a href="/editorial-policy/" style="color: var(--link);">Read →</a>
+        </strong>
+      </span>
+    </div>
+  </div>
+
+  <CardJourney />
 
   <div
     id="dp-compare-empty"
@@ -435,11 +432,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
   .dp-compare-picker-head .dp-compare-request-status:not(:empty) { margin-block-start: 12px; }
   .dp-compare-picker {
-    max-width: var(--container-listing);
-    margin: 12px auto 0;
-    padding: 0 32px;
-  }
-  .dp-compare-picker details {
+    margin-block-start: 16px;
     border: 1px solid var(--line);
     border-radius: 8px;
     background: var(--paper);
@@ -463,7 +456,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     color: var(--ink-soft);
     font-size: 12px;
   }
-  .dp-compare-picker details[open] > summary::after {
+  .dp-compare-picker[open] > summary::after {
     transform: rotate(180deg);
   }
   .dp-compare-picker summary:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 8px; }
@@ -471,7 +464,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: 18px;
-    color: var(--ink);
+    color: var(--green);
   }
   .dp-compare-picker-hint {
     font-size: 12px;
@@ -664,7 +657,6 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   }
   @media (max-width: 720px) {
     .dp-compare-picker-head { padding-inline: 20px; }
-    .dp-compare-picker,
     .dp-compare-value-context {
       padding-inline: 20px;
     }

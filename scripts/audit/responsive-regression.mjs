@@ -292,6 +292,15 @@ try {
   };
   page.on("request", collectCompareArt);
   await navigate(page, "/cards/compare/?cards=cbd-one,wio-credit,sc-platinum-x");
+  const comparePicker = page.locator("details.dp-compare-picker");
+  const chooseCards = comparePicker.locator("summary");
+  assert.equal(await comparePicker.getAttribute("open"), null, "The picker does not hide the initial comparison behind an open form");
+  assert.ok((await chooseCards.boundingBox()).height >= 44, "Compare picker has a usable touch target");
+  assert.ok(await chooseCards.evaluate((control) => {
+    const rect = control.getBoundingClientRect();
+    const meta = document.querySelector(".dp-compare-picker-head .dp-tools-stats");
+    return rect.top >= 0 && rect.bottom <= innerHeight && control.compareDocumentPosition(meta) & Node.DOCUMENT_POSITION_FOLLOWING;
+  }), "The chooser is visible before tool metadata on initial mobile entry");
   const activeComparison = page.locator("#dp-compare-grid > .dp-compare-col:not([hidden])");
   assert.deepEqual(await activeComparison.evaluateAll((columns) => columns.map((col) => col.dataset.slug)),
     ["cbd-one", "wio-credit", "sc-platinum-x"]);
@@ -314,8 +323,10 @@ try {
   assert.deepEqual([...new Set(compareArtRequests.map((asset) => path.basename(asset)))].sort(),
     ["cbd-one.webp", "sc-platinum-x.webp"], "The picker does not fetch other cards' art");
   assert.equal(await page.evaluate(() => Boolean(document.querySelector("#dp-compare-grid").compareDocumentPosition(document.querySelector("#dp-compare-matchups")) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
-  await page.getByText("Pick cards to compare", { exact: true }).click();
+  await chooseCards.press("Enter");
   assert.ok(await page.getByRole("button", { name: "Update comparison" }).isVisible());
+  await chooseCards.press("Space");
+  assert.equal(await comparePicker.getAttribute("open"), null);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), 0);
   await navigate(page, "/cards/compare/fab-cashback-vs-citi-cashback/");
   const pairArt = page.locator(".dp-card-comparison img[data-compare-card-art]");
