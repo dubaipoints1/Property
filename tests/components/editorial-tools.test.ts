@@ -30,11 +30,13 @@ function comparePicker(search = "") {
   };
   const selection = { textContent: "" };
   const count = { textContent: "" };
+  const requestStatus = { textContent: "" };
   const elements: Record<string, object> = {
     "dp-compare-grid": grid,
     "dp-compare-empty": { hidden: true },
     "dp-compare-count": count,
     "dp-compare-mode": { textContent: "" },
+    "dp-compare-request-status": requestStatus,
     "dp-compare-selection": selection,
   };
   const script = readFileSync("src/scripts/cardComparison.mjs", "utf8").replace(/^import .*;\n/gm, "").replace("export function", "function") + '\ninitialiseCardComparison(["a", "b", "c"]);';
@@ -47,7 +49,7 @@ function comparePicker(search = "") {
       querySelector: () => ({ querySelectorAll: () => boxes, addEventListener: (_event: string, handler: typeof submit) => { submit = handler; } }),
     },
   });
-  return { boxes, cols, grid, count, selection, changeHandlers, windowHandlers, location, submit };
+  return { boxes, cols, grid, count, selection, requestStatus, changeHandlers, windowHandlers, location, submit };
 }
 
 test("comparison picker keeps URL order, distinct cards and the existing four-card limit", () => {
@@ -80,6 +82,24 @@ test("comparison checkboxes remain multi-select and re-enable choices after dese
 test("unknown comparison links retain the readable default comparison", () => {
   const result = comparePicker("?cards=unknown");
   assert.deepEqual(result.cols.filter(col => !col.hidden).map(col => col.slug), ["a", "b", "c"]);
+  assert.match(result.requestStatus.textContent, /default comparison instead/);
+});
+
+test("mixed stale comparison links name the partial fallback and keep available cards in order", () => {
+  const result = comparePicker("?cards=d,retired&cards=b");
+  assert.deepEqual(result.cols.filter(col => !col.hidden).map(col => col.slug), ["d", "b"]);
+  assert.match(result.requestStatus.textContent, /Some cards.*ones we could match/);
+  result.location.search = "?cards=b,d";
+  result.windowHandlers.get("popstate")!();
+  assert.equal(result.requestStatus.textContent, "");
+});
+
+test("default or explicitly empty comparison links do not show a missing-selection notice", () => {
+  for (const query of ["", "?cards="]) {
+    const result = comparePicker(query);
+    assert.equal(result.requestStatus.textContent, "");
+    assert.deepEqual(result.cols.filter(col => !col.hidden).map(col => col.slug), ["a", "b", "c"]);
+  }
 });
 
 test("comparison submission keeps deliberate order, whitelisted filters and zero example spend", () => {

@@ -150,6 +150,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
         </strong>
       </span>
     </div>
+    <p id="dp-compare-request-status" class="dp-compare-request-status" role="status"></p>
   </div>
 
   <CardJourney />
@@ -427,6 +428,12 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   .dp-compare-picker-head h1 { margin-block-end: 8px; }
   .dp-compare-picker-head .dp-tools-stats { margin-block-start: 12px; gap: 4px 16px; }
   .dp-compare-picker-head .dp-tools-stats a { text-decoration: underline; text-underline-offset: .16em; }
+  .dp-compare-picker-head .dp-compare-request-status {
+    margin: 0;
+    color: var(--ink-soft);
+    font: 500 .875rem/1.5 var(--font-ui);
+  }
+  .dp-compare-picker-head .dp-compare-request-status:not(:empty) { margin-block-start: 12px; }
   .dp-compare-picker {
     max-width: var(--container-listing);
     margin: 12px auto 0;
