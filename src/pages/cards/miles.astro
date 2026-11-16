@@ -9,6 +9,7 @@ import {
   annualFeeLabel,
 } from "~/lib/cardsData";
 import { formatEarnRate } from "~/lib/cardsDataFormat";
+import { everydayEarnSummary } from "~/lib/cardEarnModel";
 
 const milesCards = getActiveCards().filter(
   (c) => c.categories.includes("travel") || c.categories.includes("co-brand"),
@@ -25,8 +26,7 @@ const rows = await Promise.all(
       values: [
         fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
         cardFxFeeLabel(c),
-        c.earnRates.everythingElse === null || c.scopedEarnRates?.length || c._provenance?.["earnRates.everythingElse"] === "needs-review"
-          ? "Pending — see scoped rewards" : formatEarnRate(c.earnRates.everythingElse, c.earnUnit, c.categories),
+        everydayEarnSummary(c, (v) => formatEarnRate(v, c.earnUnit, c.categories)),
         welcomeBonusHeadline(c.welcomeBonus) || "—",
       ],
     };
@@ -38,6 +38,6 @@ const rows = await Promise.all(
   title={`Best UAE miles credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
   heading={`Best UAE miles credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""}`}
   description="Side-by-side comparison of UAE credit cards earning Skywards Miles, Etihad Guest Miles, and convertible TouchPoints / ENBD Plus / Mashreq Salaam."
-  columns={["Annual fee", "FX fee", "Base earn", "Welcome bonus"]}
+  columns={["Annual fee", "FX fee", "Everyday earn", "Welcome bonus"]}
   rows={rows}
 />

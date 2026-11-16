@@ -58,6 +58,8 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Deliberately text-led: the invitation terms and payment exclusions are the evidence; a card image would not establish customer eligibility.",
   "news-emirates-premium-economy-europe-segment-check":
     "Deliberately text-led: the published cabin schedule and programme rules are the evidence; cabin art would not establish the equipment or cabin on a reader's flight.",
+  "news-emirates-islamic-barca-cashback-card-free-for-life-up-to-4-percent":
+    "Deliberately text-led: the issuer's offer page is the evidence. No clean issuer card art is published for this card yet, and a football or stadium photo would imply club imagery we do not hold.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
