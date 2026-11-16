@@ -1,5 +1,6 @@
 ---
 import { cardHasUnresolvedTerms } from "~/lib/cardEligibility";
+import { everydayEarnSummary } from "~/lib/cardEarnModel";
 // Cards index — Phase F (May 2026 mockup-fidelity rebuild).
 // Reference: Replit Canvas mockup, page 02 (Credit Cards).
 //
@@ -262,7 +263,12 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     <!-- ── 4. Card rows ────────────────────────────────────────────── -->
     <ul class="cards-row-list">
       {compareList.map((f) => {
-        const earn = topEarnRate(f.card);
+        // Cards whose rates are stored as source-qualified rows have no
+        // legacy category rate, so the column used to print a dash on most
+        // rows. Fall back to the issuer's own everyday row (Charter §6: no
+        // invented base rate).
+        const everyday = everydayEarnSummary(f.card, (v) => formatEarnRate(v, f.card.earnUnit, f.card.categories));
+        const earn = topEarnRate(f.card) ?? (everyday.hasRates ? everyday.text : null);
         const chips = perkChips(f.card);
         const fee = annualFeeLabel(f.card);
         const bonus = welcomeBonusHeadline(f.card.welcomeBonus);
@@ -309,7 +315,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
                 </span>
               </div>
               <div class="cards-row-earn">
-                <span class="cards-row-label">Top earn rate</span>
+                <span class="cards-row-label">Earn rate</span>
                 <span class="cards-row-value">{earn ?? "—"}</span>
               </div>
               <div class="cards-row-cta">
