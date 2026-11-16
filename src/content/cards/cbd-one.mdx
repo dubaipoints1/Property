@@ -2,7 +2,7 @@
 slug: cbd-one
 cons:
 - "Merchant-credit amounts and conditions require the detailed terms"
-- "The current KFS is unreadable in this source review; costs and finance terms are pending"
+- "Card-scheme charges are separate; repayment and interest terms still need reconciliation"
 - "Do not assume a cinema discount or count it as annual value without current benefit terms"
 pros:
 - "The visible current product says free for life"
@@ -16,8 +16,8 @@ skipIf: "You want a general-spend cashback card or a fully verified fee and fina
 keyTakeaways:
 - "Cashback is merchant-specific and capped, not a general-spend percentage"
 - "The visible product permits eligible digital-wallet, online and POS transactions at selected merchants"
-- "Current KFS and detailed merchant-benefit terms remain unresolved"
-editorTake: "CBD One is a selected-merchant cashback product, not a broad category earner. Its visible current terms permit eligible digital-wallet, online and POS transactions at named merchants, so the earlier blanket in-store exclusion was too broad. The free-for-life headline, merchant list and qualifying-spend gate are visible, but the detailed merchant-credit terms and current KFS remain unresolved. We do not value an unconfirmed cinema discount or present the retained cost and finance figures as newly verified."
+- "CBD lists its international transaction fee separately from Visa or other scheme charges"
+editorTake: "CBD One is a selected-merchant cashback product, not a broad category earner. Eligible digital-wallet, online and POS transactions at named merchants may qualify. We checked the issuer’s international transaction and cash withdrawal fees. We do not estimate merchant cashback or value an unconfirmed cinema discount."
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
@@ -30,6 +30,7 @@ import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import HotTip from "~/components/cards/HotTip.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
 import AEDValueBreakdown from "~/components/cards/AEDValueBreakdown.astro";
+import { getCardData } from "~/lib/cardsData";
 
 <JumpToSection sections={[
   { id: "cashback", label: "Cashback" },
@@ -66,7 +67,9 @@ Cashback is selected-merchant specific, not a general-spend percentage. The visi
 
 <FeeBlock card="cbd-one" />
 
-Eligible digital-wallet, online and POS transactions at the selected merchants may qualify, subject to the detailed product terms. The earlier blanket in-store exclusion was too broad. Current merchant-credit details, KFS costs and the cinema-discount claim remain unconfirmed; we do not value them here.
+The [CBD One Key Facts Statement](https://www.cbd.ae/docs/default-source/document/cards/cbd-kfs-conventional_cbd-one-cc.pdf) applies the issuer charge to international transactions in AED as well as in other currencies. The card scheme’s processing fee is separate, so the issuer fee is not the total cost.
+
+**Cash withdrawal fee:** {getCardData("cbd-one")?.cashAdvanceFee}, including VAT. Interest on the withdrawal is separate.
 
 ## What you get — per-benefit value
 
@@ -82,9 +85,9 @@ the full eight-visit ration.
 
 ### Cinema and Emaar-attraction discounts
 
-Eligible digital-wallet, online and POS transactions at the selected merchants may qualify, subject to the detailed product terms. The earlier blanket in-store exclusion was too broad. Current merchant-credit details, KFS costs and the cinema-discount claim remain unconfirmed; we do not value them here.
+The product lists Emaar-attraction discounts. We have not confirmed that the earlier cinema discount still applies and do not assign it a value.
 
-We do not state an aggregate annual package value while the detailed merchant-credit, cinema-benefit and current KFS terms remain unresolved. Confirm the benefits you would actually use before comparing this card with a general-spend cashback product.
+We do not estimate an aggregate annual value while the detailed merchant-credit and cinema terms remain unresolved.
 
 ## Key conditions to know
 
@@ -98,15 +101,14 @@ We do not state an aggregate annual package value while the detailed merchant-cr
   <dt>Lifestyle</dt>
   <dd>The visible product lists Emaar-attraction discounts, purchase protection and extended warranty. The former cinema-discount claim is unconfirmed and not valued here.</dd>
   <dt>Eligibility</dt>
-  <dd>The current visible product confirms a salaried-applicant threshold and a separate self-employed document route. Current KFS cost and finance terms remain unresolved.</dd>
+  <dd>CBD has published a salaried-applicant threshold and a separate self-employed document route. A published threshold does not guarantee approval.</dd>
 </dl>
 
 
 ## Watch out for
 
-- Eligible digital-wallet, online and POS transactions at the selected merchants may qualify, subject to the detailed product terms. The earlier blanket in-store exclusion was too broad. Current merchant-credit details, KFS costs and the cinema-discount claim remain unconfirmed; we do not value them here.
+- Eligibility for selected merchants depends on how the transaction is made and posted.
 - **The AED 5,000 gate.** Spend under AED 5,000 in a month and the cashback doesn't pay.
-- Eligible digital-wallet, online and POS transactions at the selected merchants may qualify, subject to the detailed product terms. The earlier blanket in-store exclusion was too broad. Current merchant-credit details, KFS costs and the cinema-discount claim remain unconfirmed; we do not value them here.
 - **Unpublished rate.** The per-merchant cashback percentage isn't on the product page;
   we've recorded the monthly cap and flagged the field.
 
@@ -116,8 +118,7 @@ CBD One is worth investigating if your spending regularly reaches the named merc
 Check the qualifying spend, eligible channels and merchant-credit terms against your
 actual purchases. Unconfirmed credits and costs are not included in a return estimate.
 
-Eligible digital-wallet, online and POS transactions at the selected merchants may qualify, subject to the detailed product terms. The earlier blanket in-store exclusion was too broad. Current merchant-credit details, KFS costs and the cinema-discount claim remain unconfirmed; we do not value them here.
 
 ## Bottom line
 
-Eligible digital-wallet, online and POS transactions at the selected merchants may qualify, subject to the detailed product terms. The earlier blanket in-store exclusion was too broad. Current merchant-credit details, KFS costs and the cinema-discount claim remain unconfirmed; we do not value them here.
+Compare CBD One on the merchants you actually use, and check the current terms with CBD before relying on any estimate.
