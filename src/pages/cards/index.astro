@@ -107,7 +107,9 @@ function topEarnRate(card: typeof cards[number]["card"]): string | null {
 // free-text `perks[]`. Free-text fallback clips at the last whole word
 // inside 18 chars so the chip never reads "Complimentary unlimited D…".
 function perkChips(card: typeof cards[number]["card"]): string[] {
-  if (cardFeatureNeedsReview(card)) return ["Benefits pending"];
+  // Unconfirmed benefits show no chip at all: a chip is a claim, and a
+  // "pending" chip on most rows only made the list look unfinished.
+  if (cardFeatureNeedsReview(card)) return [];
   const seen = new Set<string>();
   const out: string[] = [];
   for (const f of (card._features ?? []) as Array<{ type: string }>) {
@@ -248,7 +250,9 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   <section class="cards-compare-section">
     <div class="cards-compare-head">
       <h2>Compare all cards.</h2>
+
       <div class="cards-compare-tools">
+        <span class="cards-quick-label">Comparison tables</span>
         <nav class="cards-compare-pills" aria-label="Browse card categories">
           {filters.map((f) => (
             f.active
@@ -258,6 +262,22 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
         </nav>
         <span class="cards-compare-sort">Sorted by <strong>welcome bonus</strong></span>
       </div>
+      {/* Quick in-page filter (owner direction, 16 November 2026): the full
+          list is ~40 phone screens long, so let a reader cut it to the cards
+          that fit and open with a short first page. Enhancement only: with
+          no JavaScript the bar stays hidden and every card is listed. */}
+      <div class="cards-quick" data-cards-quick hidden>
+        <span class="cards-quick-label" id="cards-quick-label">Filter this list</span>
+        <div class="cards-quick-chips" role="group" aria-labelledby="cards-quick-label">
+          <button type="button" class="dp-ui-filter" data-cards-filter="all" aria-pressed="true">All cards</button>
+          <button type="button" class="dp-ui-filter" data-cards-filter="cashback" aria-pressed="false">Cashback</button>
+          <button type="button" class="dp-ui-filter" data-cards-filter="travel" aria-pressed="false">Travel and miles</button>
+          <button type="button" class="dp-ui-filter" data-cards-filter="free" aria-pressed="false">No annual fee</button>
+          <button type="button" class="dp-ui-filter" data-cards-filter="islamic" aria-pressed="false">Islamic</button>
+        </div>
+        <p class="cards-quick-status" data-cards-status role="status" aria-live="polite"></p>
+      </div>
+
     </div>
 
     <!-- ── 4. Card rows ────────────────────────────────────────────── -->
@@ -273,7 +293,14 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
         const fee = annualFeeLabel(f.card);
         const bonus = welcomeBonusHeadline(f.card.welcomeBonus);
         return (
-          <li class="cards-row">
+          <li
+            class="cards-row"
+            data-card-row
+            data-cashback={f.card.categories.includes("cashback") ? "" : undefined}
+            data-travel={f.card.categories.includes("travel") || f.card.categories.includes("co-brand") ? "" : undefined}
+            data-islamic={f.card.categories.includes("Islamic") ? "" : undefined}
+            data-free={fee.amount === "Free" ? "" : undefined}
+          >
             <a href={`/cards/${f.card.slug}/`} class="cards-row-link">
               <div class="cards-row-art" data-cards-art="row">
                 <CardsIndexDeferredArt
@@ -320,13 +347,16 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
               </div>
               <div class="cards-row-cta">
                 <span class="cards-row-cta-pill">Read review →</span>
-                <span class="cards-row-verified">{cardHasUnresolvedTerms(f.card) ? `Source record ${fmt(f.card.lastVerified)} — terms pending` : `Verified ${fmt(f.card.lastVerified)}`}</span>
+                <span class="cards-row-verified">{cardHasUnresolvedTerms(f.card) ? `Source checked ${fmt(f.card.lastVerified)}` : `Verified ${fmt(f.card.lastVerified)}`}</span>
               </div>
             </a>
           </li>
         );
       })}
     </ul>
+    <p class="cards-quick-more" data-cards-more-wrap hidden>
+      <button type="button" class="dp-ui-action dp-ui-secondary" data-cards-more>Show all cards</button>
+    </p>
   </section>
 
   <!-- ── 5. Editorial callout (dark) ─────────────────────────────────── -->
@@ -353,6 +383,38 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
 </BaseLayout>
 
 <script>
+  // Quick filter + short first page for the catalogue list.
+  {
+    const PAGE = 12;
+    const bar = document.querySelector<HTMLElement>("[data-cards-quick]");
+    const rows = Array.from(document.querySelectorAll<HTMLElement>("[data-card-row]"));
+    const status = document.querySelector<HTMLElement>("[data-cards-status]");
+    const moreWrap = document.querySelector<HTMLElement>("[data-cards-more-wrap]");
+    const more = document.querySelector<HTMLButtonElement>("[data-cards-more]");
+    const chips = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-cards-filter]"));
+    if (bar && status && moreWrap && more && rows.length > PAGE) {
+      let filter = "all";
+      let expanded = false;
+      const labels: Record<string, string> = { all: "cards", cashback: "cashback cards", travel: "travel and miles cards", free: "cards with no annual fee", islamic: "Islamic cards" };
+      const apply = () => {
+        const match = rows.filter((row) => filter === "all" || row.hasAttribute(`data-${filter}`));
+        const shown = expanded ? match : match.slice(0, PAGE);
+        const visible = new Set(shown);
+        for (const row of rows) row.hidden = !visible.has(row);
+        status.textContent = match.length > shown.length
+          ? `Showing ${shown.length} of ${match.length} ${labels[filter]}, by welcome bonus.`
+          : `${match.length} ${labels[filter]}.`;
+        moreWrap.hidden = match.length <= shown.length;
+        more.textContent = `Show all ${match.length} ${labels[filter]}`;
+        for (const chip of chips) chip.setAttribute("aria-pressed", String(chip.dataset.cardsFilter === filter));
+      };
+      for (const chip of chips) chip.addEventListener("click", () => { filter = chip.dataset.cardsFilter ?? "all"; expanded = false; apply(); });
+      more.addEventListener("click", () => { expanded = true; apply(); });
+      bar.hidden = false;
+      apply();
+    }
+  }
+
   // Keep the existing artwork and no-script fallback, but do not let
   // native lazy-loading fetch a screenful of catalogue rows early.
   const artSlots = document.querySelectorAll<HTMLElement>("[data-cards-art]");
@@ -665,7 +727,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   }
   .cards-compare-head {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr;
     align-items: end;
     gap: 16px 24px;
     margin-bottom: 24px;
@@ -994,4 +1056,14 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
       .cards-row-chips { display: none; }
     }
   }
+
+  .cards-quick { grid-column: 1 / -1; margin-block: 4px 0; }
+  .cards-quick-label { display: block; margin-block-end: 8px; color: var(--ink-soft); font: 600 .6875rem/1.2 var(--font-ui); letter-spacing: .12em; text-transform: uppercase; }
+  .cards-compare-tools > .cards-quick-label { flex-basis: 100%; margin-block-end: 0; }
+  .cards-quick-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cards-quick-chips .dp-ui-filter { cursor: pointer; }
+  .cards-quick-chips .dp-ui-filter[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: var(--paper, #fff); }
+  .cards-quick-status { margin: 10px 0 0; color: var(--ink-soft); font-size: .875rem; }
+  .cards-row[hidden] { display: none; }
+  .cards-quick-more { margin: 20px 0 0; text-align: center; }
 </style>

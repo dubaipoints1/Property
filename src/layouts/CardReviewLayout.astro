@@ -392,7 +392,7 @@ const schema = {
       </dl>
       <p class="dp-card-summary-proof">
         {network && <>{network}<span aria-hidden="true"> · </span></>}
-        {verificationLimited ? "Source record" : "Verified"} <time datetime={lastVerified.toISOString()}>{fmt(lastVerified)}</time>{verificationLimited && " — some terms pending"}
+        {verificationLimited ? "Source checked" : "Verified"} <time datetime={lastVerified.toISOString()}>{fmt(lastVerified)}</time>
       </p>
       {availabilityUnconfirmed && <p class="dp-card-summary-proof">New applications are unconfirmed. This source profile is retained for reference, not an open-application recommendation.</p>}
       {shortVerdict && <p class="dp-card-summary-verdict" data-card-hero-verdict><strong>Our verdict:</strong> {shortVerdict}</p>}
