@@ -1,0 +1,23 @@
+# ADIB Smiles Visa Signature — review-only source disclosure
+
+16 November 2026, Dubai. Scope: this UAE product's detail-page wording only. Preserve the held combined FX and welcome fields in `cards.json`; no calculator, sorting, eligibility, rewards valuation, signup outcome or source-date change. Before release: independent Fact/Standards and Banking Section review, applicable Council sign-off and the normal hosted checks. This source record is not approval.
+
+## Fresh downloads and visual inspection
+
+At approximately 21:19 Dubai (17:19 UTC) I downloaded the three public primary sources without logging in, submitting a form, using paid credit or following an application CTA. Each gave HTTP 200 and the expected file type; the named product linked directly to the two PDFs. Both PDFs are byte-for-byte identical by SHA-256 to the issuer bodies recorded in the 7 November ADIB fixtures. I rendered and visually read tariff page 1 and terms pages 44–45; the retained `pdftotext-layout` captures let the exact table columns, clauses and byte spans be reproduced locally.
+
+| Source | Bytes | SHA-256 of fresh response | Scope |
+|---|---:|---|---|
+| [Named UAE product](https://www.adib.ae/en/personal/cards/smiles-covered-cards/adib-smiles-visa-signature-card) | 271,788 | `3ad48899deb1e0a2d6c84e901a296a0515843d407a3c6a31bfd4c01bf8e9c0f0` | Product HTML advertises the larger welcome award in isolation (lines 2245 and 2339) and links to the formal tariff (line 2734). This fresh HTML is not the previous product fixture and is not the source of the typed numbers. |
+| [Schedule of charges](https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/cards/adib-covered-cards-schedule-of-charges-and-fees.pdf#page=1) | 692,393 | `67bc99481e11344304641d95c5c01eb242a0eaf5feb31bd8081889b293b8e4c6` | V46 October 2026, page 1: exact Smiles Visa Signature column and two transaction service-fee rows, VAT heading and notes 5 and 6. |
+| [Covered-card terms](https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/cards/adib-covered-cards-terms-and-conditions.pdf#page=44) | 872,526 | `16d03fcba503b8bbffc450e385b7bddf5e3d02ffe488b017ec1bf1f2ae54aadb` | V31, pages 44–45: 21.2.4 and sub-clauses for the named tier, 21.2.5 one-time award and reapplication/upgrades, and 21.2.7 transaction exclusions. |
+
+The named product uses a lower-case tariff link, while the fixture records an upper-case path. The bytes retrieved from the lower-case URL are the exact body in the fixture receipt. No cache-busting or alternate terms version was substituted.
+
+## Exact deterministic evidence and limits
+
+- The new detail-only extractor reuses `adib-soc` from `tests/scrape/fixtures/2026-11-adib-primary.json` (text SHA-256 `0bd302c18eaa2d1138881843fee1eda21bdf7a8059ae9cb7e09538a2acc7da5f`) and `adib-terms-v31` from `tests/scrape/fixtures/2026-11-adib-terms.json` (text SHA-256 `ad9e627e73e052a6d257f86c935c7634fd74557c37bb8d4fe2a94d95004a537e`). It binds both PDFs and both exact text digests, checks the existing ordered tariff header fingerprint and the specific Signature column, extracts the two named service-fee cells, checks the notes and binds the exact Sign-up Signature clauses and guards. No source fixture or existing parser was changed.
+- **FX:** the fee cells are layout lines 42/43 and half-open byte offsets 26870–26874 and 27748–27753. The general VAT rule is line 1. Note 5 (line 76) refers separately to conversion and the card-network fee. Note 6 (lines 78–80; the PDF text interleaves unrelated notes from another column) is linked to the AED-labelled international row but describes foreign currency payments outside the UAE and includes a Visa component. The detail uses both published rows with that caveat; do not present one rate as the total, add the rows together, add the Visa component again or infer merchant conversion economics. Historical pre-effective pricing, conversion-rate modelling and all-in comparison remain excluded.
+- **Welcome:** layout lines 1984–1985 give the receipt-based qualifying-purchase window; 1989–1992 bind the separate non-self-funded and self-funded Signature awards. Lines 2005–2021 give one-time, reapplication and named upgrades; lines 2029–2043 retain exclusions. The figures are native Smiles Points; no AED conversion, guarantee, quarterly-spend threshold or other promotional amount is included. Explicitly keep the L2 hold so this prose does not become a public rank, automated offer, or Finder assumption.
+
+The review sections have stable anchors `adib-smiles-fx-terms` and `adib-smiles-welcome-terms`. Recheck the linked terms and parser pins before release or on document drift. No change here to other card profiles or site tracking.

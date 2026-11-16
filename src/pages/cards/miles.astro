@@ -9,7 +9,7 @@ import {
   annualFeeLabel,
 } from "~/lib/cardsData";
 import { formatEarnRate } from "~/lib/cardsDataFormat";
-import { everydayEarnSummary } from "~/lib/cardEarnModel";
+import { CARD_REWARD_RATES_ID, everydayEarnSummary } from "~/lib/cardEarnModel";
 
 const milesCards = getActiveCards().filter(
   (c) => c.categories.includes("travel") || c.categories.includes("co-brand"),
@@ -19,15 +19,28 @@ const rows = await Promise.all(
   milesCards.map(async (c) => {
     const bank = await getEntry("banks", c.bank);
     const fee = annualFeeLabel(c);
+    const href = `/cards/${c.slug}/`;
+    const fx = cardFxFeeLabel(c);
+    const bonus = welcomeBonusHeadline(c.welcomeBonus);
+    const earn = everydayEarnSummary(c, (v) => formatEarnRate(v, c.earnUnit, c.categories));
+    const isAdibSmilesSignature = c.slug === "adib-smiles-visa-signature";
+    const detail = (text: string, fragment: string, label: string) => ({
+      text,
+      link: { href: `${href}#${fragment}`, label, accessibleLabel: `${label} for ${c.name}` },
+    });
     return {
       cardName: c.name,
       bankName: bank?.data.name ?? c.bank,
-      href: `/cards/${c.slug}/`,
+      href,
       values: [
-        fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
-        cardFxFeeLabel(c),
-        everydayEarnSummary(c, (v) => formatEarnRate(v, c.earnUnit, c.categories)),
-        welcomeBonusHeadline(c.welcomeBonus) || "—",
+        fee.amount === "Pending" ? "Not yet verified" : fee.qual ? `${fee.amount} (${fee.qual})` : fee.amount,
+        fx === "Pending"
+          ? isAdibSmilesSignature ? detail("No single confirmed rate", "adib-smiles-fx-terms", "View fee terms") : "Not yet verified"
+          : fx,
+        earn.hasRates ? detail(earn.text, CARD_REWARD_RATES_ID, "View rates") : earn.text,
+        bonus === "Welcome offer pending source review."
+          ? isAdibSmilesSignature ? detail("Varies by card funding", "adib-smiles-welcome-terms", "View offer terms") : "Not yet verified"
+          : bonus || "No offer recorded",
       ],
     };
   }),
@@ -37,7 +50,9 @@ const rows = await Promise.all(
 <ComparisonTableLayout
   title={`Best UAE miles credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""} | DubaiPoints`}
   heading={`Best UAE miles credit cards${verifiedStamp ? ` (${verifiedStamp})` : ""}`}
-  description="Side-by-side comparison of UAE credit cards earning Skywards Miles, Etihad Guest Miles, and convertible TouchPoints / ENBD Plus / Mashreq Salaam."
+  description="Compare UAE travel and co-branded credit cards. Depending on the card, rewards may be airline miles, cashback or partner points."
   columns={["Annual fee", "FX fee", "Everyday earn", "Welcome bonus"]}
   rows={rows}
-/>
+>
+  <p>Rewards may vary by purchase, merchant or currency. Use “View rates” to check the categories and conditions in the card review. “Not yet verified” is not a zero rate, a waiver or confirmation that no offer exists.</p>
+</ComparisonTableLayout>

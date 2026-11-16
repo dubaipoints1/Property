@@ -58,7 +58,7 @@ test("held earn-rate fields never become numeric headlines, including inline tab
   assert.equal(earnRateFieldPending({ "earnRates.everythingElse": "needs-review" }, "dining"), false);
   const source = readFileSync("src/components/cards/EarnRateTable.astro", "utf8");
   assert.match(source, /earnRateFieldPending\(provenance, key\) \? null : v/);
-  assert.match(source, /value === null \? "Pending"/);
+  assert.match(source, /value === null \? "Not yet verified"/);
   for (const file of ["src/components/cards/SpecCard.astro", "src/components/cards/FinderCard.astro", "src/pages/cards/compare.astro"])
     assert.match(readFileSync(file, "utf8"), /provenance=\{card\._provenance\}/, file);
   for (const file of ["src/components/cards/AtAGlance.astro", "src/components/cards/SpecCard.astro", "src/pages/cards/compare.astro"])

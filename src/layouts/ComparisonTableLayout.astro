@@ -7,11 +7,13 @@
 import BaseLayout from "./BaseLayout.astro";
 import CompareCardArt from "~/components/cards/CompareCardArt.astro";
 
+type ComparisonValue = string | number | { text: string; link: { href: string; label: string; accessibleLabel: string } };
+
 interface Row {
   cardName: string;
   bankName: string;
   href: string;
-  values: (string | number)[];
+  values: ComparisonValue[];
 }
 
 interface Props {
@@ -61,7 +63,12 @@ const displayRows = rows.map((row) => ({
               {r.values.map((v, i) => (
                 <td role="cell">
                   <span class="dp-compare-label" aria-hidden="true">{columns[i]}</span>
-                  <span class="dp-compare-value">{v}</span>
+                  <span class="dp-compare-value">
+                    {typeof v === "object" ? <>
+                      {v.text}
+                      <a class="dp-compare-detail-link" href={v.link.href} aria-label={v.link.accessibleLabel}>{v.link.label}</a>
+                    </> : v}
+                  </span>
                 </td>
               ))}
             </tr>
@@ -122,6 +129,16 @@ const displayRows = rows.map((row) => ({
   }
   .dp-compare-table tbody tr:hover td { background: var(--shade-1); }
   .dp-compare-label { display: none; }
+  .dp-compare-detail-link {
+    display: block;
+    inline-size: fit-content;
+    min-block-size: 24px;
+    margin-block-start: 4px;
+    color: var(--link);
+    text-decoration: underline;
+    text-underline-offset: 0.17em;
+  }
+  .dp-compare-detail-link:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
   .dp-compare-card {
     position: sticky;
     left: 0;
@@ -164,6 +181,7 @@ const displayRows = rows.map((row) => ({
   @media (max-width: 824px) {
     .dp-cmp-body { padding-block: 20px 60px; }
     .dp-compare-scroll-hint { display: none; }
+    .dp-compare-detail-link { display: flex; align-items: center; min-block-size: 44px; }
     .dp-compare-wrap {
       overflow: visible;
       border: 0;

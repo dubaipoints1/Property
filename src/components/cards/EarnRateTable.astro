@@ -11,7 +11,7 @@
 import type { CardData } from "~/lib/cardsData";
 import { getCardData } from "~/lib/cardsData";
 import { formatEarnRate, formatEarnValue, earnIsPercentage, earnRateFieldPending } from "~/lib/cardsDataFormat";
-import { formatScopedEarnRate } from "~/lib/cardEarnModel";
+import { CARD_REWARD_RATES_ID, formatScopedEarnRate, scopedEarnRatePending } from "~/lib/cardEarnModel";
 
 interface Props {
   /** Phase 2a.2: when set, the component resolves earnRates + earnUnit
@@ -127,16 +127,17 @@ const displayUnit = isPct
 const cats = resolved?.categories;
 const conditionNote = resolved?._dataIssues?.earnRates ?? note;
 const scopedEarnRates = resolved?.scopedEarnRates ?? scopedEarnRatesProp;
-const scopedPending = (key: string) => Object.entries(provenance ?? {}).some(([field, state]) => state === "needs-review"
-  && (field === "scopedEarnRates" || field === `scopedEarnRates.${key}` || field.startsWith(`scopedEarnRates.${key}.`)));
+const scopedPending = (key: string) => scopedEarnRatePending(provenance, key);
+const isReview = !!card && Astro.url.pathname.replace(/\/$/, "") === `/cards/${card}`;
 ---
 
+<div id={isReview ? CARD_REWARD_RATES_ID : undefined} class:list={{ "dp-reward-rates-anchor": isReview }} tabindex={isReview ? -1 : undefined}>
 {scopedEarnRates?.length ? (
   <dl class="dp-earn-table is-scoped" aria-label="Source-qualified reward rates, not a universal all-spend return">
     {scopedEarnRates.map(row => (
       <div class="row">
         <dt>{row.label}<span class="scope">{row.scope}</span></dt>
-        <dd>{scopedPending(row.key) ? "Pending" : formatScopedEarnRate(row)}<span class="scope">{scopedPending(row.key) ? "Source scope requires confirmation" : row.bound === "upper" ? "Advertised upper bound" : "Source-stated qualifying rate"}</span></dd>
+        <dd>{scopedPending(row.key) ? "Not yet verified" : formatScopedEarnRate(row)}<span class="scope">{scopedPending(row.key) ? "Source scope requires confirmation" : row.bound === "upper" ? "Advertised upper bound" : "Source-stated qualifying rate"}</span></dd>
       </div>
     ))}
   </dl>
@@ -152,14 +153,17 @@ const scopedPending = (key: string) => Object.entries(provenance ?? {}).some(([f
         class={`row${key === "everythingElse" ? " is-default" : ""}${key === topKey ? " is-top" : ""}`}
       >
         <dt>{label}</dt>
-        <dd>{value === null ? "Pending" : formatEarnRate(value, earnUnit, cats)}</dd>
+        <dd>{value === null ? "Not yet verified" : formatEarnRate(value, earnUnit, cats)}</dd>
       </div>
     ))}
   </dl> : <p class="dp-earn-note">No universal base earn rate is confirmed.</p>
 )}
 {conditionNote && <p class="dp-earn-note">{conditionNote}</p>}
+</div>
 
 <style>
+  .dp-reward-rates-anchor { scroll-margin-block-start: calc(var(--dp-sticky-header-height, 92px) + 16px); }
+  .dp-reward-rates-anchor:focus-visible { outline: 2px solid var(--green); outline-offset: 4px; }
   .dp-earn-note { color: var(--ink-soft); font: .8125rem/1.6 var(--font-ui); margin-block: -20px 24px; }
   .is-scoped .row { grid-template-columns: minmax(0, 1fr) minmax(100px, .85fr); align-items: start; }
   .is-scoped :is(dt, dd) { min-width: 0; overflow-wrap: anywhere; }
