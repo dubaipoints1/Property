@@ -1,0 +1,9 @@
+# RAKBANK Titanium and conventional World: dated digital onboarding offer
+
+Status: research and source replay for detail-page wording only; not Council approval, not release and not a canonical welcome-bonus input. Checked 2026-11-16 Dubai time. Both product banners and all three pages of [RAKBANK's promotion terms](https://www.rakbank.ae/globalassets/rakbank/all-pdfs/001---campaign/tc---new-customer-dob-feb-2025.pdf) were read. The PDF body SHA-256 is `c47dd08e48ac4180e90b3f2fad07418b41dbae8428e330bbad6d732ceba5e0a9`. Retain the captured body and layout text privately; the deterministic fixture stores exact pinned excerpts only.
+
+- [Titanium](https://www.rakbank.ae/en/cards/credit-cards/titanium-credit-card): named PDF table p1/layout lines 42–44; product banner lines 11–15.
+- [World](https://www.rakbank.ae/en/cards/credit-cards/world-credit-card): named PDF table p1/layout lines 46–48; product banner lines 11–15. This is the conventional, not Islamic, card.
+- Application and issue through the app, closing date and exclusions: p1/layout lines 8–30 and 55–72, p2/layout lines 85–127. The first eligible card, previous holders' closure window, qualifying-spend rules, self-employed and staff exclusions, credit and clawback timing remain important. Neither card's ongoing cashback, finance costs, FX, salary qualification, comparability or review date was re-verified here.
+- RED is excluded: its named product banner had an earlier date than the shared digital terms read on the same day. Do not assume it continued or ended conclusively without resolving that specific conflict. The common filing path has an older date in its filename; the current dated PDF body is the evidence.
+- Keep `cards.json`, source registry, ranking and welcome comparators unchanged. Review or replace the time-bounded prose if the issuer amends the terms or after the closing date; do not infer a successor.

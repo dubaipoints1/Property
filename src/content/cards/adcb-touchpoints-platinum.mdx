@@ -7,12 +7,11 @@ pros:
 - "First-year annual-fee waiver is stated in the current fee schedule"
 - "Visa and Mastercard variants are offered within the product family"
 cons:
-- "Detailed earning and monthly-bonus quantities remain unconfirmed"
+- "Published rewards vary by purchase type; the full return and limits are not confirmed"
 - "Renewal pricing depends on relationship tier; benefit conditions depend on the card variant"
 ---
 
 import FeeBlock from "~/components/cards/FeeBlock.astro";
-import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 import EditorVerdict from "~/components/cards/EditorVerdict.astro";
 import ProsCons from "~/components/cards/ProsCons.astro";
 import AtAGlance from "~/components/cards/AtAGlance.astro";
@@ -32,14 +31,22 @@ import JumpToSection from "~/components/cards/JumpToSection.astro";
 A TouchPoints card offered in Visa and Mastercard variants. The current source supports relationship-based fees and a first-year waiver, but not the former universal single-network narrative.
 
 <AtAGlance card="adcb-touchpoints-platinum" />
-<CardDataIssues card="adcb-touchpoints-platinum" />
+<CardDataIssues card="adcb-touchpoints-platinum" omitFields={["earnRates"]} />
 <ProsCons card="adcb-touchpoints-platinum" />
 
 ## Earn rates
 
-<EarnRateTable card="adcb-touchpoints-platinum" />
+ADCB’s [product page](https://www.adcb.com/en/personal/cards/credit-cards/touchpoint-platinum-cc) advertises **up to 1 TouchPoint per AED 1**. That is the highest advertised rate, not what you earn on every purchase.
 
-The detailed reward schedule remains inside an uncaptured nested panel. Earlier fuel, travel, base and monthly-bonus quantities are not reverified and are withheld. A visible spending threshold is not itself a bonus-point award.
+- **0.4 TouchPoints per AED 1** on eligible domestic purchases at supermarkets, car dealers and fast-food restaurants.
+- **0.2 TouchPoints per AED 1** on eligible domestic purchases in fuel, education, government services, real estate, telecoms and transport.
+- **0.40 TouchPoints per AED 1 equivalent** on qualifying retail purchases in what ADCB calls its UK and Europe category. The bank refers to the European Economic Area (EEA) in its description; merchant category and EEA classification follow the applicable Visa or Mastercard rules. Don’t assume every UK or European purchase qualifies.
+
+ADCB separately advertises **10,000 bonus TouchPoints** for **AED 10,000 in qualifying retail spend in a calendar month**. This is not a welcome bonus. Under the [card terms, section 7 (PDF)](https://www.adcb.com/en/multimedia/tnc/cb-tnc-touchpoints-credit-card.pdf), ADCB deducts reversals and refunds and excludes disputed purchases and cash withdrawals.
+
+The [programme terms, Schedule B (PDF)](https://www.adcb.com/en/multimedia/tnc/cb-tnc-touchpoints-reward-program.pdf) limit earning each month to spend up to your assigned credit limit. The product page names charity and insurance categories, but the programme terms exclude charitable donations and specified insurance payments. Don’t count donations; ask ADCB whether a particular insurance payment qualifies. These selected rates do not establish a universal return.
+
+_Reward rows checked 16 November 2026. No all-spend rate or cash value has been estimated; other card terms were not reverified in this check._
 
 ## Fee summary
 

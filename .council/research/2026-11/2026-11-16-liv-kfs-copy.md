@@ -1,0 +1,8 @@
+# Liv Cashback and Cashback+: named KFS read-back
+
+16 November 2026, Dubai. Two editorial takeaways still called the key facts statement unreadable even though it had been captured and parsed for the published figures. This patch removes those statements without adding new rates or resetting source dates.
+
+- [Liv January 2026 KFS](https://www.liv.me/-/media/liv/website/pdf/2024/kfs/apr/liv-credit-card-key-facts-statement-kfs-english.pdf): 200, application PDF, 5,356,132 bytes at 18:01:16 UTC, SHA-256 `5aac22dcc2a4e2b17ffc406f200d95384d2a6fd0b768cf8e3525d728f8711827`. Exactly matches retained complete fixture. First English table, lines 23–35, names both adjacent Cashback products. Page 2, lines 162–163, limits the Cashback+ joining-charge waiver to the applicable pre-application Liv account and active Liv Max route. No waiver of renewal or guarantee of approval inferred.
+- [Named Liv products](https://www.liv.me/en/liv-credit-card): 200, extracted table at lines 215–241, body SHA-256 `25e3bec63e263ce2339d8ca9cb59ed82011f163adf8ea3b144a242285a64f6b7`. Marketing pre-VAT fees not presented as payable inclusive totals. [Published features](https://www.liv.me/en/important-information/features/liv-credit-card-feature) and [charges](https://www.liv.me/en/charges) re-read; total FX and rewards assumptions remain held.
+
+Existing deterministic Liv parser reproduces both held-distinct fee and income records from the exact adjacent columns, and 21 focused source tests passed. Independent review rehashed both issuer PDF and its layout representation and inspected the exact two-line copy delta. No tracked card record or approval logic changed.
