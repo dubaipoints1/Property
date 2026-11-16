@@ -35,6 +35,7 @@ import AtAGlance from "~/components/cards/AtAGlance.astro";
 import GreatCardIf from "~/components/cards/GreatCardIf.astro";
 import EditorScorecard from "~/components/cards/EditorScorecard.astro";
 import JumpToSection from "~/components/cards/JumpToSection.astro";
+import EarnRateTable from "~/components/cards/EarnRateTable.astro";
 
 <JumpToSection sections={[
   { id: "earn-rates", label: "Earn rates" },
@@ -63,7 +64,7 @@ Skywards card built for AED 12k–25k earners who fly Emirates a few times a yea
 
 Earn rates are credited as **Skywards Miles per USD 1** of qualifying spend. Keep the source denomination when comparing cards.
 
-Emirates and named partner categories: 1.5 Skywards Miles per USD 1; Qualifying international spend: 1 Skywards Miles per USD 1; Qualifying domestic spend: 0.75 Skywards Miles per USD 1. These are qualifying merchant/category rates, not a single rate for every purchase. Use the exact rows in the table and check the issuer exclusions and caps.
+<EarnRateTable card="emirates-nbd-skywards-signature" />
 
 Miles post directly to your Emirates Skywards account — no transfer step.
 

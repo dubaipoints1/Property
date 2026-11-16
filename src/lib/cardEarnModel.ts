@@ -1,6 +1,8 @@
 import type { CardData } from "./cardsData";
+import { earnRateFieldPending } from "./cardsDataFormat";
 type EarnCard = Pick<CardData, "earnRates" | "earnUnit" | "_provenance" | "scopedEarnRates"> & { slug?: string };
 export type ScopedEarnRate = NonNullable<CardData["scopedEarnRates"]>[number];
+export const CARD_REWARD_RATES_ID = "card-reward-rates";
 const unmodelled = new Map<string, string>([
   ["adcb-365-cashback", "Eligible subscription merchants, direct-payment channels and reduced-category exclusions are not modelled by this all-spend example. Check the current issuer eligibility guide."],
   ["wio-credit", "Cashback depends on your Wio plan, its fee and a cap shared with My Money. The Standard plan earns none."],
@@ -34,6 +36,11 @@ export function formatScopedEarnRate(row: ScopedEarnRate): string {
   return `${row.bound === "upper" ? "Up to " : ""}${number}${unit}${denominator}`;
 }
 
+export function scopedEarnRatePending(provenance: EarnCard["_provenance"] | undefined, key: string): boolean {
+  return Object.entries(provenance ?? {}).some(([field, state]) => state === "needs-review"
+    && (field === "scopedEarnRates" || field === `scopedEarnRates.${key}` || field.startsWith(`scopedEarnRates.${key}.`)));
+}
+
 // Keys a source row uses for ordinary qualifying spend, most specific first.
 // Only these are summarised as an "everyday" rate in comparison tables;
 // tiered or merchant-specific rows are never promoted to one.
@@ -50,19 +57,24 @@ const EVERYDAY_ROW_KEYS = [
 export function everydayEarnSummary(
   card: EarnCard,
   formatBase: (value: number) => string,
-): string {
+): { text: string; hasRates: boolean } {
   const rows = card.scopedEarnRates ?? [];
   if (rows.length) {
+    const visibleRows = rows.filter((row) => !scopedEarnRatePending(card._provenance, row.key));
     for (const key of EVERYDAY_ROW_KEYS) {
-      const row = rows.find((r) => r.key === key);
-      if (row) return `${formatScopedEarnRate(row)} (${row.label.charAt(0).toLowerCase()}${row.label.slice(1)})`;
+      const row = visibleRows.find((r) => r.key === key);
+      if (row) return {
+        text: `${formatScopedEarnRate(row)} (${row.label.charAt(0).toLowerCase()}${row.label.slice(1)})`,
+        hasRates: true,
+      };
     }
-    return `Varies by category (${rows.length} rates); see the card's review`;
+    return visibleRows.length ? { text: "Varies by spend", hasRates: true } : { text: "Not yet verified", hasRates: false };
   }
   const base = card.earnRates.everythingElse;
-  const held = card._provenance?.earnRates === "needs-review" || card._provenance?.["earnRates.everythingElse"] === "needs-review";
-  if (typeof base === "number" && Number.isFinite(base) && !held) {
-    return formatBase(base);
+  if (typeof base === "number" && Number.isFinite(base) && !earnRateFieldPending(card._provenance, "everythingElse")) {
+    return { text: formatBase(base), hasRates: true };
   }
-  return "Not yet confirmed";
+  const confirmedCategories = Object.entries(card.earnRates).some(([key, value]) =>
+    key !== "everythingElse" && typeof value === "number" && Number.isFinite(value) && !earnRateFieldPending(card._provenance, key));
+  return confirmedCategories ? { text: "Varies by spend", hasRates: true } : { text: "Not yet verified", hasRates: false };
 }

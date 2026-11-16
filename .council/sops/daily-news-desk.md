@@ -113,6 +113,41 @@ Technical review checks the actual draft, links, imagery, schema and release
 checks. Chairman clearance is article-specific, not the commissioning
 queue's `ready` label or an unrelated maintenance approval.
 
+## Reporting a partially verified issuer change
+
+Use this checklist when an issuer notice, terms sheet or product page
+establishes only part of a change. The sourcing, review and release rules
+above still apply.
+
+1. **Pin the claim, not the whole product.** Identify the exact product or
+   variant, eligible audience, transaction or rate, and any currency, unit,
+   fee or condition that changes its meaning. In the dossier, pin the URL
+   and clause, page or row, source version where available, and access
+   timestamp. Separate the announcement, effective, access and expiry dates;
+   label unknown dates as such. Keep comparable before-and-after evidence
+   for a claim that something rose, fell or changed. Without that evidence,
+   report only the terms found on the check date. If sources conflict,
+   record both and leave the affected field unresolved.
+2. **Decide what can be reported and what stays on watch.** A checked part
+   can support a narrow story only if it answers a useful UAE reader
+   question on its own. Keep the scope in the headline, summary and body.
+   If an unresolved term could change who qualifies, what the reader pays or
+   receives, or what they should do, hold the affected angle. Record the
+   exact missing check, next owner and any recheck date in the existing
+   dossier and queue. Pending does not mean zero, unchanged or inapplicable;
+   do not use a narrow story to clear an existing hold.
+3. **Give the reader a safe next step.** Say, for example, “The issuer lists
+   [term] for [scope]; we checked it on [date]. We could not confirm
+   [missing term]. Check [issuer document] before [action].” Put a material
+   restriction in the opening, not only in the sources. Do not rank, price
+   or recommend an action that depends on an unchecked term.
+4. **Keep corrections and data updates narrow.** Distinguish a later issuer
+   change from an error in our reporting. Follow the [existing visible
+   correction and logging process](../research/2026-07/news-sourcing-policy.md#4-kill-list-additions-for-news-copy)
+   when the published record needs correcting; never silently replace it.
+   A news check does not promote a fact into canonical data, override
+   protected provenance, or refresh an unrelated verification date.
+
 ## The explicit local queue
 
 `.council/newsroom/queue.json` records the first shift's two draft commissions,

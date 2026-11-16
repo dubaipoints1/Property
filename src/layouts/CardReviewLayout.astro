@@ -381,7 +381,7 @@ const schema = {
           <dt>FX markup</dt>
           <dd class={fxPending ? "is-unverified" : ""}>
             {fxPending
-              ? <><span aria-hidden="true">—</span><span class="sr-only">not yet verified</span></>
+              ? "Not yet verified"
               : fxFeeScope || fxFeeUpperBound || fxFee === null
               ? cardFxFeeLabel({ fxFee, fxFeeScope, fxFeeVatTreatment, fxFeeUpperBound, _provenance: fxProvenance })
               : fxFee === 0
@@ -681,6 +681,9 @@ const schema = {
     border-radius: var(--dp-ui-radius, 12px);
   }
   .dp-card-review-sources { scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px); }
+  .dp-cr-body :global(:is(#adib-smiles-fx-terms, #adib-smiles-welcome-terms)) {
+    scroll-margin-block-start: calc(var(--dp-sticky-header-height, 92px) + 16px);
+  }
   @media (max-width: 719.98px) {
     .dp-card-summary-figure { inline-size: min(100%, 12rem); }
   }
