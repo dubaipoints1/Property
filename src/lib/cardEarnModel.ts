@@ -33,3 +33,36 @@ export function formatScopedEarnRate(row: ScopedEarnRate): string {
     ? ` per ${row.denominator.currency} ${row.denominator.amount.toLocaleString("en-GB", { maximumFractionDigits: 8 })}` : "";
   return `${row.bound === "upper" ? "Up to " : ""}${number}${unit}${denominator}`;
 }
+
+// Keys a source row uses for ordinary qualifying spend, most specific first.
+// Only these are summarised as an "everyday" rate in comparison tables;
+// tiered or merchant-specific rows are never promoted to one.
+const EVERYDAY_ROW_KEYS = [
+  "base", "local", "domestic", "general-qualifying", "general-retail",
+  "retail", "other-retail", "domestic-other", "other",
+] as const;
+
+/**
+ * One-cell summary of a card's everyday earn for comparison tables. It shows
+ * the issuer's own row for ordinary qualifying spend, labelled with that
+ * row's own scope, and never invents a universal base rate (Charter §6).
+ */
+export function everydayEarnSummary(
+  card: EarnCard,
+  formatBase: (value: number) => string,
+): string {
+  const rows = card.scopedEarnRates ?? [];
+  if (rows.length) {
+    for (const key of EVERYDAY_ROW_KEYS) {
+      const row = rows.find((r) => r.key === key);
+      if (row) return `${formatScopedEarnRate(row)} (${row.label.charAt(0).toLowerCase()}${row.label.slice(1)})`;
+    }
+    return `Varies by category (${rows.length} rates); see the card's review`;
+  }
+  const base = card.earnRates.everythingElse;
+  const held = card._provenance?.earnRates === "needs-review" || card._provenance?.["earnRates.everythingElse"] === "needs-review";
+  if (typeof base === "number" && Number.isFinite(base) && !held) {
+    return formatBase(base);
+  }
+  return "Not yet confirmed";
+}
