@@ -107,7 +107,9 @@ function topEarnRate(card: typeof cards[number]["card"]): string | null {
 // free-text `perks[]`. Free-text fallback clips at the last whole word
 // inside 18 chars so the chip never reads "Complimentary unlimited D…".
 function perkChips(card: typeof cards[number]["card"]): string[] {
-  if (cardFeatureNeedsReview(card)) return ["Benefits pending"];
+  // Unconfirmed benefits show no chip at all: a chip is a claim, and a
+  // "pending" chip on most rows only made the list look unfinished.
+  if (cardFeatureNeedsReview(card)) return [];
   const seen = new Set<string>();
   const out: string[] = [];
   for (const f of (card._features ?? []) as Array<{ type: string }>) {
@@ -320,7 +322,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
               </div>
               <div class="cards-row-cta">
                 <span class="cards-row-cta-pill">Read review →</span>
-                <span class="cards-row-verified">{cardHasUnresolvedTerms(f.card) ? `Source record ${fmt(f.card.lastVerified)} — terms pending` : `Verified ${fmt(f.card.lastVerified)}`}</span>
+                <span class="cards-row-verified">{cardHasUnresolvedTerms(f.card) ? `Source checked ${fmt(f.card.lastVerified)}` : `Verified ${fmt(f.card.lastVerified)}`}</span>
               </div>
             </a>
           </li>

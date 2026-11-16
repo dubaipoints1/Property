@@ -34,14 +34,14 @@ const fmt = (d: Date) =>
 ---
 
 <span
-  class={`dp-card-verified${isStale || limited ? " is-stale" : ""}`}
-  title={limited ? "Some terms remain pending; see the card's source notes" : isStale
+  class={`dp-card-verified${isStale ? " is-stale" : ""}`}
+  title={limited ? "Date the issuer's sources were last checked. Any figure still unconfirmed is marked Pending beside it." : isStale
     ? "Last verified more than 90 days ago — pending re-audit"
     : "Verified within the last 90 days"}
 >
   <span class="dot" aria-hidden="true"></span>
   {limited ? (
-    <span class="lbl">Source record {fmt(verifiedAt)} — terms pending</span>
+    <span class="lbl">Source checked {fmt(verifiedAt)}</span>
   ) : isStale ? (
     <span class="lbl">Last verified {fmt(verifiedAt)} — pending re-audit</span>
   ) : (

@@ -28,5 +28,7 @@ test("actual feature catalogue, Finder flags and directory chips use the same pe
   const finder = readFileSync("src/pages/cards/finder/index.astro", "utf8");
   assert.match(finder, /hasLounge: cardHasKnownFeature\(card, "lounge_access"\)/);
   assert.match(finder, /hasStatus: cardHasKnownFeature\(card, "status_match"\)/);
-  assert.match(readFileSync("src/pages/cards/index.astro", "utf8"), /cardFeatureNeedsReview\(card\)\) return \["Benefits pending"\]/);
+  // Unconfirmed benefits render no chip (16 Nov 2026); they must never fall
+  // through to the free-text perk chips.
+  assert.match(readFileSync("src/pages/cards/index.astro", "utf8"), /cardFeatureNeedsReview\(card\)\) return \[\];/);
 });

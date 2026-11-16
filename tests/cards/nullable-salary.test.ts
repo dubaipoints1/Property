@@ -35,7 +35,7 @@ test("invitation and provenance conditions cannot be flattened into a numeric ga
   assert.equal(hasUsableSalaryMinimum({ ...card(0), _provenance: { "eligibility.minSalary": "needs-review" } }), false);
 });
 test("rendered card surfaces retain explicit uncertainty and never blanket-verify a partial profile", () => {
-  assert.match(readFileSync("src/components/cards/VerifiedStamp.astro", "utf8"), /Source record.*terms pending/);
+  assert.match(readFileSync("src/components/cards/VerifiedStamp.astro", "utf8"), /limited \? \(\s*<span class="lbl">Source checked/);
   assert.match(readFileSync("src/components/cards/SpecCard.astro", "utf8"), /limited=\{cardHasUnresolvedTerms\(card\)\}/);
   for (const file of ["src/components/cards/FinderCard.astro", "src/pages/cards/compare.astro"])
     assert.match(readFileSync(file, "utf8"), /limited=\{cardHasUnresolvedTerms\(card\)\}/, file);
