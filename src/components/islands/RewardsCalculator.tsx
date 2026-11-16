@@ -998,7 +998,7 @@ export default function RewardsCalculator({ cards }: Props) {
 
               <div class="dp-calc-tile-meta">
                 <span class="verified">
-                  {cardHasUnresolvedTerms(r.card) ? "Source record" : "Last verified"}: {fmtVerified(r.card.lastVerified)}{cardHasUnresolvedTerms(r.card) && " — terms pending"}
+                  {cardHasUnresolvedTerms(r.card) ? "Source checked" : "Last verified"}: {fmtVerified(r.card.lastVerified)}
                 </span>
                 {r.staleData && (
                   <span class="chip is-stale" title="Verified more than 90 days ago">

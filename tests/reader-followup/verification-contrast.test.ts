@@ -8,7 +8,7 @@ test('pending/stale verification text uses the readable trust-ink token, not dec
   assert.ok(rule);
   assert.match(rule, /color:\s*var\(--gold-ink\)/);
   assert.doesNotMatch(rule, /var\(--gold\)/);
-  assert.match(source, /Source record \{fmt\(verifiedAt\)\} — terms pending/);
+  assert.match(source, /Source checked \{fmt\(verifiedAt\)\}/);
   assert.match(source, /Last verified \{fmt\(verifiedAt\)\} — pending re-audit/);
   assert.match(source, /\.dp-card-verified\.is-stale \.dot\s*\{\s*background:\s*var\(--gold\)/);
 });

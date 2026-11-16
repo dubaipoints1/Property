@@ -42,13 +42,16 @@ const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
 const edition = partitionNewsEdition(posts);
-// A photograph can change the newest story's treatment, never its order.
-// Older image-led stories stay in their chronological place.
+// Lead with a photograph (owner direction, 16 November 2026): the newest
+// story in this edition that owns a manifest-tracked photo leads the page,
+// so the desk never opens as a wall of headlines. Every other story keeps
+// its chronological place, and each row still carries its own date.
 const first = edition.current[0];
-const featured = first && !first.data.textLed && (first.data.beat === "airline" || first.data.beat === "hotel") && stagePhoto(`news-${first.id}`) ? first : undefined;
-const featureIsLatest = Boolean(featured);
-const latest = featured ? edition.current.slice(1, 3) : edition.current;
-const more = featured ? edition.current.slice(3) : [];
+const featured = edition.current.find((p) => !p.data.textLed && stagePhoto(`news-${p.id}`));
+const featureIsLatest = Boolean(featured) && featured === first;
+const rest = edition.current.filter((p) => p !== featured);
+const latest = featured ? rest.slice(0, 2) : rest;
+const more = featured ? rest.slice(2) : [];
 const { earlier, archive } = edition;
 const olderCount = earlier.length + archive.length;
 const oldest = archive.at(-1) ?? earlier.at(-1);
@@ -135,19 +138,19 @@ const schema = collectionPageGraph({ siteUrl, path: newsPath, name: newsName, de
   </header>
 
   <div class="intel-grid">
-    <div class:list={["intel-main", { "has-feature": Boolean(featured), "feature-is-latest": featureIsLatest }]}>
+    <div class:list={["intel-main", { "has-feature": Boolean(featured), "feature-is-latest": Boolean(featured) }]}>
       {posts.length === 0 ? (
         <section class="news-empty">
           <slot name="empty" />
         </section>
       ) : (
         <>
-          {featureIsLatest && featured && (
+          {featured && (
             <a href={`/news/${featured.id}/`} class="intel-featured" data-news-feature>
               <NewsListingVisual id={featured.id} featured />
               <div class="intel-featured-body">
                 <span class="intel-featured-top">
-                  <span class="intel-featured-eyebrow">Latest reporting · {formatCategory(featured.data.category)}</span>
+                  <span class="intel-featured-eyebrow">{featureIsLatest ? "Latest reporting" : "Featured story"} · {formatCategory(featured.data.category)}</span>
                   <time class="intel-date" datetime={featured.data.publishedAt.toISOString()}>{fmt(featured.data.publishedAt)}</time>
                 </span>
                 <h2>{featured.data.title}</h2>

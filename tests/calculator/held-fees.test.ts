@@ -54,7 +54,7 @@ test("rendered calculator does not quote a held annual fee or label the record f
   const html = renderToString(h(RewardsCalculator, { cards: [held("annualFee.amount")] }));
   assert.match(html, /Annual fee<\/span><strong class="num-value">Pending<\/strong>/);
   assert.match(html, /no net return or fee break-even estimated/);
-  assert.match(html, /Source record: .*terms pending/);
+  assert.match(html, /Source checked: /);
   assert.doesNotMatch(html, /Covers its fee at about|Last verified:/);
 });
 

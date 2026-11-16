@@ -413,7 +413,7 @@ const DIRECTORY = [
                 {c.fx && <div><dt>FX fee</dt><dd>{c.fx}</dd></div>}
                 {c.bonus && <div><dt>Welcome</dt><dd class="is-long">{c.bonus}</dd></div>}
               </dl>
-              <span class="hp-verified">{c.limited ? "Source record" : "Verified"} {fmtShort(c.verified)}{c.limited ? " — terms pending" : ""}{c.art ? ` · card image: ${c.bankName}` : ""} · read the review →</span>
+              <span class="hp-verified">{c.limited ? "Source checked" : "Verified"} {fmtShort(c.verified)}{c.art ? ` · card image: ${c.bankName}` : ""} · read the review →</span>
             </a>
           </li>
         ))}
