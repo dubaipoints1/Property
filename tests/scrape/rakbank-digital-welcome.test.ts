@@ -9,6 +9,15 @@ const fixture = JSON.parse(get('./fixtures/2026-11-16-rakbank-digital-welcome.js
 const cases = [['rakbank-titanium',500,5000], ['rakbank-world',750,10000]] as const;
 const aed = new Intl.NumberFormat('en-AE');
 
+test('only the two scoped review heroes jump to dated terms instead of quoting a pending or universal bonus', () => {
+  const review = get('../../src/layouts/CardReviewLayout.astro');
+  assert.match(review, /slug === "rakbank-titanium" \? "#rakbank-digital-welcome"\s+: slug === "rakbank-world" \? "#welcome-bonus-breakdown"\s+: null/);
+  assert.match(review, /href=\{datedDigitalOfferHref\}>Check dates and eligibility<\/a>/);
+  assert.match(review, /: welcomeBonusStrap && <p class="dp-card-summary-bonus">/);
+  assert.match(get('../../src/content/cards/rakbank-titanium.mdx'), /<h2 id="rakbank-digital-welcome" class="dp-dated-offer-heading">/);
+  assert.match(get('../../src/content/cards/rakbank-world.mdx'), /<h2 id="welcome-bonus-breakdown" class="dp-dated-offer-heading">/);
+});
+
 test('named source rows replay the approved dated review copy without feeding the canonical welcome fields',()=>{
   const cards=JSON.parse(get('../../src/data/cards.json'));
   for (const [slug,cashback,spend] of cases) {

@@ -158,6 +158,11 @@ const {
 // card has no structured welcome bonus at all (in which case the strap
 // is hidden entirely).
 const welcomeBonusStrap = welcomeBonusHeadline(welcomeBonus) || null;
+// These dated issuer disclosures are not general-purpose L2 welcome offers.
+// Link only from the two exact reviews, with no amount or live-offer claim.
+const datedDigitalOfferHref = slug === "rakbank-titanium" ? "#rakbank-digital-welcome"
+  : slug === "rakbank-world" ? "#welcome-bonus-breakdown"
+  : null;
 const shortVerdict = editorialVerdict?.trim();
 
 const fmt = (d: Date) =>
@@ -399,7 +404,9 @@ const schema = {
       {(score != null || verdictLabel) && (
         <p class="dp-card-summary-verdict"><strong>{shortVerdict ? "Verdict rating:" : "Our verdict:"}</strong> {score != null && `${fmtScore(score)}/5`} {verdictLabel}</p>
       )}
-      {welcomeBonusStrap && <p class="dp-card-summary-bonus"><strong>Welcome bonus:</strong> {welcomeBonusStrap}</p>}
+      {datedDigitalOfferHref
+        ? <p class="dp-card-summary-bonus"><strong>Dated app offer:</strong> <a href={datedDigitalOfferHref}>Check dates and eligibility</a></p>
+        : welcomeBonusStrap && <p class="dp-card-summary-bonus"><strong>Welcome bonus:</strong> {welcomeBonusStrap}</p>}
       <div class="dp-utility-actions">
         <a class="dp-ui-action dp-ui-primary" href={compareHref}>Compare cards</a>
         {sources.length > 0 && <a class="dp-ui-action dp-ui-secondary" href="#card-review-sources">See issuer sources</a>}
@@ -681,7 +688,7 @@ const schema = {
     border-radius: var(--dp-ui-radius, 12px);
   }
   .dp-card-review-sources { scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px); }
-  .dp-cr-body :global(:is(#adib-smiles-fx-terms, #adib-smiles-welcome-terms)) {
+  .dp-cr-body :global(:is(#adib-smiles-fx-terms, #adib-smiles-welcome-terms, .dp-dated-offer-heading)) {
     scroll-margin-block-start: calc(var(--dp-sticky-header-height, 92px) + 16px);
   }
   @media (max-width: 719.98px) {
