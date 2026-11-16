@@ -47,7 +47,8 @@ export function parseRakbankDigitalWelcome(fixture:Fixture, slug:string) {
     || !/should have been closed at least six \(6\) months prior to the current application/.test(omit)
     || !/Rakbank staff are not eligible/.test(omit) || !/Self-employed customers .* will not be eligible/.test(omit)
     || !/RAKMoney Transfer\/Funds Transfer/.test(omit) || !/fees, charges, repayments and instalment-related/i.test(omit)
-    || !/the first Eligible Card only/.test(omit)) return null;
+    || !/the first Eligible Card only/.test(omit) || !/any other spend based promotion\/offers in respect of the same Eligible Card during the Promotion Period, unless expressly permitted by Rakbank/.test(omit)
+    || !/delinquent, blocked, over limit and inactive Eligible Cards during the Promotion or Cashback\/RAKrewards fulfillment period will not be eligible/.test(omit)) return null;
   const tokens = row.raw.split('\n');
   const columns = tokens[1]?.match(new RegExp(String.raw`^\s+${N} {2,}${N} {2,}${N}\s*$`));
   if (tokens.length!==3 || tokens[2].trim()!==`${name} Credit Card` || !columns) return null;

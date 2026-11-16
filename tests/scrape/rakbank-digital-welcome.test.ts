@@ -17,7 +17,7 @@ test('named source rows replay the approved dated review copy without feeding th
     assert.deepEqual([parsed.cashbackAed,parsed.spendAed,parsed.daysAfterIssuance,parsed.closes],[cashback,spend,60,'31 December 2026']);
     const doc=get(`../../src/content/cards/${slug}.mdx`);
     assert.ok(doc.includes(`**AED ${aed.format(parsed.cashbackAed)} cashback** after **AED ${aed.format(parsed.spendAed)} in qualifying spend within ${parsed.daysAfterIssuance} days of card issuance**`));
-    for (const exact of [parsed.closes,parsed.termsUrl,parsed.productUrl,'issued through that channel','not counted in our comparisons','first eligible card','at least six months','self-employed customers do not qualify','90 business days','first 12 months']) assert.ok(doc.includes(exact),exact);
+    for (const exact of [`${parsed.opens} to ${parsed.closes}`,`issued after ${parsed.closes}, do not count on this offer`,parsed.termsUrl,parsed.productUrl,'issued through that channel','not counted in our comparisons','first eligible card','at least six months','self-employed customers do not qualify','unless RAKBANK permits it','delinquent, blocked, over limit or inactive','90 business days','first 12 months']) assert.ok(doc.includes(exact),exact);
     assert.equal(cards[slug].welcomeBonus??null,null);
     assert.equal(cards[slug]._provenance.welcomeBonus,'needs-review');
   }
