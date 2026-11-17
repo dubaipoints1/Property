@@ -58,6 +58,12 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Deliberately text-led: the invitation terms and payment exclusions are the evidence; a card image would not establish customer eligibility.",
   "news-emirates-premium-economy-europe-segment-check":
     "Deliberately text-led: the published cabin schedule and programme rules are the evidence; cabin art would not establish the equipment or cabin on a reader's flight.",
+  "guide-abu-dhabi-boat-show-2026-plan-marina-visit":
+    "Deliberately text-led: access and opening-time evidence comes from official event and ticket listings; no event photograph was cleared.",
+  "news-etihad-calgary-daily-october-2027":
+    "Deliberately text-led: the published timetable is the evidence; no licensed route-specific image was cleared.",
+  "news-citi-uae-premier-rewards-airport-dining-january-2027":
+    "Deliberately text-led: dated issuer allowances are the evidence; artwork would not establish entitlement.",
   "news-emirates-islamic-barca-cashback-card-free-for-life-up-to-4-percent":
     "Deliberately text-led: the issuer's offer page is the evidence. No clean issuer card art is published for this card yet, and a football or stadium photo would imply club imagery we do not hold.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
