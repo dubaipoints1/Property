@@ -68,6 +68,8 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Deliberately text-led: a dated multi-property rate check is the evidence; no one hotel image represents the offer.",
   "news-global-village-taylor-swift-tribute-november-25-2026":
     "Deliberately text-led: dated operator schedule and entry rules are the evidence; no cleared event image or artist likeness.",
+  "news-krisflyer-offline-service-fee-december-2026":
+    "Deliberately text-led: the airline's fee table is the evidence; aircraft or route imagery would not verify the fee or waiver.",
   "news-emirates-islamic-barca-cashback-card-free-for-life-up-to-4-percent":
     "Deliberately text-led: the issuer's offer page is the evidence. No clean issuer card art is published for this card yet, and a football or stadium photo would imply club imagery we do not hold.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
