@@ -34014,6 +34014,348 @@
     },
     "applicationAvailability": "unconfirmed"
   },
+  "fab-z-credit-card": {
+    "bank": "fab",
+    "name": "FAB Z Credit Card",
+    "network": "Mastercard",
+    "categories": [
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 105,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "standardFeeConditions": "renewal-waiver",
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual"
+    },
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "FAB Rewards",
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 5000,
+      "publishedIncomeBasis": "salary",
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-z-card",
+    "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/fab-z-card",
+      "https://apply.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf",
+      "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "standardFeeConditions": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "fxFee": "needs-review",
+      "joiningFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.publishedIncomeBasis": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_dataIssues": {
+      "reviewScope": "The named product, annual membership fee, first-year waiver, published salary floor and rewards programme were checked.",
+      "eligibility": "This is the salary floor FAB publishes. Meeting it does not mean you qualify or that FAB will approve you.",
+      "earnRates": "Rewards programme: FAB Rewards. No earn rate or reward value is modelled."
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB Z Credit Card",
+          "unit": "AED standard primary annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf",
+          "capturedAt": "2026-11-18T13:42:28Z",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "FAB conventional Schedule of Fees; page 1 VAT-inclusive primary and supplementary membership columns",
+          "firstLine": 25,
+          "lastLine": 25,
+          "rawText": "         FAB Z (First year free)                                    105                                    Free",
+          "rawTextSha256": "dcf73839b7c09019155966234e47386d1b1e38dc8c64f504f363c09993252826"
+        },
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB Z Credit Card",
+          "unit": "VAT-inclusive membership fee columns",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf",
+          "capturedAt": "2026-11-18T13:42:28Z",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "FAB conventional Schedule of Fees; page 1 VAT-inclusive primary and supplementary membership columns",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        }
+      ],
+      "annualFeeWaiver": [
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB Z Credit Card",
+          "unit": "First-year primary annual membership fee waiver",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-z-card",
+          "capturedAt": "2026-11-18T13:42:29Z",
+          "sourceTextSha256": "1e242449299b8929562458cc422b5be5dd68dc2e787a00e61a2739ba92be2a5b",
+          "sourceBodySha256": "1e242449299b8929562458cc422b5be5dd68dc2e787a00e61a2739ba92be2a5b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 50474,
+          "sourceEndByte": 50608,
+          "firstLine": 644,
+          "lastLine": 644,
+          "rawText": "<h2 class=\"infographic-heading\">Annual Fee</h2><div class=\"global-rich-text infographic-text\"><p>No annual fees for the first year</p>",
+          "rawTextSha256": "a9dcb7aa773d8bcf879ec071e4f0eb5f260ecef74c111abde44193555d9c965f"
+        },
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB Z Credit Card",
+          "unit": "First-year waiver separately labelled from standard renewal",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf",
+          "capturedAt": "2026-11-18T13:42:28Z",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "FAB conventional Schedule of Fees; page 1 VAT-inclusive primary and supplementary membership columns",
+          "firstLine": 25,
+          "lastLine": 25,
+          "rawText": "         FAB Z (First year free)                                    105                                    Free",
+          "rawTextSha256": "dcf73839b7c09019155966234e47386d1b1e38dc8c64f504f363c09993252826"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB Z Credit Card",
+          "unit": "AED monthly salary published by issuer; not full eligibility",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-z-card",
+          "capturedAt": "2026-11-18T13:42:29Z",
+          "sourceTextSha256": "1e242449299b8929562458cc422b5be5dd68dc2e787a00e61a2739ba92be2a5b",
+          "sourceBodySha256": "1e242449299b8929562458cc422b5be5dd68dc2e787a00e61a2739ba92be2a5b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 50273,
+          "sourceEndByte": 50395,
+          "firstLine": 644,
+          "lastLine": 644,
+          "rawText": "<h2 class=\"infographic-heading\"> 5,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "accfee2aac510d38e9cf0ab55e3608b932b0817fa393b81a1d2e130a9ac9f7b7"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB Z Credit Card",
+          "unit": "Rewards programme name only; no earn rate",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-z-card",
+          "capturedAt": "2026-11-18T13:42:29Z",
+          "sourceTextSha256": "1e242449299b8929562458cc422b5be5dd68dc2e787a00e61a2739ba92be2a5b",
+          "sourceBodySha256": "1e242449299b8929562458cc422b5be5dd68dc2e787a00e61a2739ba92be2a5b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 72005,
+          "sourceEndByte": 72073,
+          "firstLine": 644,
+          "lastLine": 644,
+          "rawText": "<span class=\"lwiat-item-desc\">Earn FAB Rewards when you spend</span>",
+          "rawTextSha256": "e2796f2b01e2464865adfcf54798858f89598a0b4d01a1c75964232be7eac8d9"
+        }
+      ]
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18"
+  },
+  "fab-share-platinum": {
+    "bank": "fab",
+    "name": "FAB SHARE Platinum Credit Card",
+    "network": "Visa",
+    "categories": [
+      "co-brand",
+      "shopping",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "SHARE points",
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 5000,
+      "publishedIncomeBasis": "salary",
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-share-cards/platinum-credit-card",
+    "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/fab-share-cards/platinum-credit-card",
+      "https://apply.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf",
+      "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "annualFeeWaiver": "needs-review",
+      "fxFee": "needs-review",
+      "joiningFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.publishedIncomeBasis": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_dataIssues": {
+      "reviewScope": "The named product, standard primary annual membership fee, published salary floor and rewards programme were checked.",
+      "eligibility": "This is the salary floor FAB publishes. Meeting it does not mean you qualify or that FAB will approve you.",
+      "earnRates": "Rewards programme: SHARE points. No earn rate or reward value is modelled."
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB SHARE Platinum Credit Card",
+          "unit": "AED standard primary annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf",
+          "capturedAt": "2026-11-18T13:42:28Z",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "FAB conventional Schedule of Fees; page 1 VAT-inclusive primary and supplementary membership columns",
+          "firstLine": 17,
+          "lastLine": 17,
+          "rawText": "         FAB SHARE Platinum                                        Free                                    Free",
+          "rawTextSha256": "be13f19e07d1c9bf463be4cb183611ed71f3a230c1631244f485511fb1d8a892"
+        },
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB SHARE Platinum Credit Card",
+          "unit": "VAT-inclusive membership fee columns",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf",
+          "capturedAt": "2026-11-18T13:42:28Z",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "FAB conventional Schedule of Fees; page 1 VAT-inclusive primary and supplementary membership columns",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB SHARE Platinum Credit Card",
+          "unit": "AED monthly salary published by issuer; not full eligibility",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-share-cards/platinum-credit-card",
+          "capturedAt": "2026-11-18T13:42:31Z",
+          "sourceTextSha256": "ea9401484f6a9e7224072e68cffac62a3a20acf8862c86c995cc35c3833eed3b",
+          "sourceBodySha256": "ea9401484f6a9e7224072e68cffac62a3a20acf8862c86c995cc35c3833eed3b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 50194,
+          "sourceEndByte": 50316,
+          "firstLine": 652,
+          "lastLine": 652,
+          "rawText": "<h2 class=\"infographic-heading\"> 5,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "accfee2aac510d38e9cf0ab55e3608b932b0817fa393b81a1d2e130a9ac9f7b7"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "fab/z-share-primary/v1",
+          "productScope": "FAB SHARE Platinum Credit Card",
+          "unit": "Rewards programme name only; no earn rate",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-share-cards/platinum-credit-card",
+          "capturedAt": "2026-11-18T13:42:31Z",
+          "sourceTextSha256": "ea9401484f6a9e7224072e68cffac62a3a20acf8862c86c995cc35c3833eed3b",
+          "sourceBodySha256": "ea9401484f6a9e7224072e68cffac62a3a20acf8862c86c995cc35c3833eed3b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 59001,
+          "sourceEndByte": 59071,
+          "firstLine": 660,
+          "lastLine": 660,
+          "rawText": "<th>Earning on the FAB SHARE Platinum Credit Card per  1 spent</th>",
+          "rawTextSha256": "70d263b60b35b9c726c82988fc6e0aee43c90e628465132f1777367bc49b9e63"
+        }
+      ]
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18"
+  },
   "fab-du-titanium": {
     "bank": "fab",
     "name": "FAB du Titanium Credit Card",
