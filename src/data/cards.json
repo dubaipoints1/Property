@@ -37899,5 +37899,692 @@
     },
     "_lastScraped": null,
     "_lastReviewed": "2026-11-18"
+  },
+  "hsbc-premier": {
+    "name": "HSBC Premier Credit Card",
+    "bank": "hsbc",
+    "network": "Mastercard",
+    "categories": [
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "loyaltyProgram": "HSBC Rewards",
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.hsbc.ae/credit-cards/products/premier/",
+    "kfsUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/key-fact-statement-credit-cards.pdf",
+    "sources": [
+      "https://www.hsbc.ae/credit-cards/products/premier/",
+      "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/key-fact-statement-credit-cards.pdf",
+      "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/uae-credit-card-application-form-existing-account-holders.pdf",
+      "https://www.hsbc.ae/credit-cards/products/premier/rewards/"
+    ],
+    "refreshMode": "manual-primary",
+    "lastVerified": "2026-11-18",
+    "_lastReviewed": "2026-11-18",
+    "_lastScraped": null,
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Premier Credit Card",
+          "unit": "AED standard annual membership fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/premier/",
+          "capturedAt": "2026-11-18T13:42:41.716Z",
+          "sourceBodySha256": "fb9ed4689ddd6271200e93ac88a3defaae08ebe0e4f283426cef8fe31f4123fe",
+          "sourceTextSha256": "fb9ed4689ddd6271200e93ac88a3defaae08ebe0e4f283426cef8fe31f4123fe",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 197635,
+          "sourceEndByte": 197714,
+          "captureMethod": "public-http-reader",
+          "firstLine": 7022,
+          "lastLine": 7022,
+          "rawText": "<li><span style=\"background-color: rgba(0, 0, 0, 0);\">No annual fee</span></li>",
+          "rawTextSha256": "09705934f3e3d01a129584387dec43dc9a79bbb04bf366dac317fc120e39d00b"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Premier Credit Card",
+          "unit": "Named membership fee and account gate",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/key-fact-statement-credit-cards.pdf",
+          "capturedAt": "2026-11-18T13:42:41.918Z",
+          "sourceBodySha256": "cd55d6a298febed5a8c328d363968e999d6b264abed4e6b24782393ea84009bc",
+          "sourceTextSha256": "50685cfb2f128c60e2e0f930f8fa478cc63026235cf84a5f86f4e4b18e5f8f45",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceScope": "page 1; PDF text layout via pdfplumber 0.11.9",
+          "captureMethod": "public-http-reader",
+          "firstLine": 37,
+          "lastLine": 41,
+          "rawText": "     HSBC Premier Credit Card                                                     \n                                                                                  \n     Income requirement - you’ll need to have a Premier Account. No annual fee is applicable.\n     Key Features: HSBC Rewards, complimentary annual membership to Zomato Gold, a wide range of travel and\n     lifestyle benefits, and much more.                                           ",
+          "rawTextSha256": "be9cf1bbeaeed08a5258a978708a04338b3c492bec6503113dfc0abd8c089849"
+        }
+      ],
+      "eligibility": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Premier Credit Card",
+          "unit": "Issuer matching account requirement",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/premier/",
+          "capturedAt": "2026-11-18T13:42:41.716Z",
+          "sourceBodySha256": "fb9ed4689ddd6271200e93ac88a3defaae08ebe0e4f283426cef8fe31f4123fe",
+          "sourceTextSha256": "fb9ed4689ddd6271200e93ac88a3defaae08ebe0e4f283426cef8fe31f4123fe",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 196677,
+          "sourceEndByte": 196800,
+          "captureMethod": "public-http-reader",
+          "firstLine": 6984,
+          "lastLine": 6984,
+          "rawText": "<li>have a <a href=\"/current-accounts/products/premier/\" target=\"_blank\" rel=\"noopener noreferrer\">Premier Account</a></li>",
+          "rawTextSha256": "0436e597090e4711141885a6a91e051b246d890f4372e0700ba94bbd6eef1852"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Premier Credit Card",
+          "unit": "Distinct existing-customer application choices",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/uae-credit-card-application-form-existing-account-holders.pdf",
+          "capturedAt": "2026-11-18T15:07:50.232Z",
+          "sourceBodySha256": "b1799c82e9e3c0fcad5a3808031fd19c8c676f1fb31c44f6e29ec5724e954e6d",
+          "sourceTextSha256": "502413992e69c65ae965a3d2f6a7e9acecf0eeb59aff819197d5c75fae5e1a67",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceScope": "page 1; PDF text layout via pdfplumber 0.11.9",
+          "captureMethod": "public-http-reader",
+          "firstLine": 16,
+          "lastLine": 18,
+          "rawText": "     I wish to apply for a new credit card:                                       \n       Private Bank     HSBC Emirates Skywards Infinite Live+ HSBC Emirates Skywards Signature\n       Premier          Advance                Cash+                              ",
+          "rawTextSha256": "1f9f8d0acafc4f8aa8456627aa78432b9ce3d0f16ac1484f204e87935009cb45"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Premier Credit Card",
+          "unit": "Named rewards source identity",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/premier/rewards/",
+          "capturedAt": "2026-11-18T15:07:50.118Z",
+          "sourceBodySha256": "69b0f9828fedffa47b2092fc93e84df1579ea41dbcbd11fd2c7a0336e9f0ffa9",
+          "sourceTextSha256": "69b0f9828fedffa47b2092fc93e84df1579ea41dbcbd11fd2c7a0336e9f0ffa9",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 145864,
+          "sourceEndByte": 146001,
+          "captureMethod": "public-http-reader",
+          "firstLine": 3915,
+          "lastLine": 3921,
+          "rawText": "<h1 class=\"crh-hero-banner__main-header A-TYPS1R-RW-DEV text-container text \">\n    \n    \n        \n        Your Premier rewards\n    \n</h1>",
+          "rawTextSha256": "e60448169a6f9dc624674e611aebb4e21b72321905fe70ecba6b1ce54b178271"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Premier Credit Card",
+          "unit": "Issuer rewards programme name only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/premier/rewards/",
+          "capturedAt": "2026-11-18T15:07:50.118Z",
+          "sourceBodySha256": "69b0f9828fedffa47b2092fc93e84df1579ea41dbcbd11fd2c7a0336e9f0ffa9",
+          "sourceTextSha256": "69b0f9828fedffa47b2092fc93e84df1579ea41dbcbd11fd2c7a0336e9f0ffa9",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 160942,
+          "sourceEndByte": 161068,
+          "captureMethod": "public-http-reader",
+          "firstLine": 4767,
+          "lastLine": 4769,
+          "rawText": "<h2 class=\"heading A-TYP28L-RW-ALL remove-bottom-space\" id=\"content_main_heading_2\">\n    How to redeem your HSBC Rewards\n</h2>",
+          "rawTextSha256": "0931f59f26d68fc78b3193ce6f4a47ea6d85e8bad40d68de75b9cff69d74bde0"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Premier Credit Card",
+          "unit": "Issuer Mastercard network identity",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/premier/",
+          "capturedAt": "2026-11-18T13:42:41.716Z",
+          "sourceBodySha256": "fb9ed4689ddd6271200e93ac88a3defaae08ebe0e4f283426cef8fe31f4123fe",
+          "sourceTextSha256": "fb9ed4689ddd6271200e93ac88a3defaae08ebe0e4f283426cef8fe31f4123fe",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 184228,
+          "sourceEndByte": 184815,
+          "captureMethod": "public-http-reader",
+          "firstLine": 6033,
+          "lastLine": 6090,
+          "rawText": "<li class=\"element M-SMARTSPCGENELEMENT-DEV\"><div class=\"list-item\" id=\"pp_tools_advancedListElement_11\">\n    \n    \n    <span class=\"icon-container\">\n        <i class=\"icon icon-agree green\" aria-hidden=\"true\"></i>\n    </span>\n    \n    \n    \n    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"A-TYP16RL-DEV-ALL text-container text \">\n    \n    \n        \n        <a href=\"/configuration/smartlinks-creditcard/\" target=\"_blank\" rel=\"noopener noreferrer\">Download the Mastercard Travel Pass app</a> and register your HSBC credit card\n    \n</div>\n\n\n    \n        \n    \n    \n    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n</div>\n</li>",
+          "rawTextSha256": "18b5a0eb75d6c2cae0a2b8d9be80776f2b8e8d15f5bb137f9170dca3fcc3ebf1"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "This source record covers card identity, the standard annual fee, the named rewards programme and the eligibility stated below. The foreign-transaction cost, welcome offer and other benefits are not confirmed here.",
+      "eligibility": "HSBC links this credit card to an HSBC Premier Account. A banking relationship is not the same as a card salary threshold or guaranteed approval.",
+      "earnRates": "HSBC Rewards is a points programme. No earn rate, cash equivalent or annual return is confirmed here."
+    }
+  },
+  "hsbc-advance": {
+    "name": "HSBC Advance Credit Card",
+    "bank": "hsbc",
+    "network": "Mastercard",
+    "categories": [
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "loyaltyProgram": "HSBC Rewards",
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.hsbc.ae/credit-cards/products/advance/",
+    "kfsUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/key-fact-statement-credit-cards.pdf",
+    "sources": [
+      "https://www.hsbc.ae/credit-cards/products/advance/",
+      "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/key-fact-statement-credit-cards.pdf",
+      "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/uae-credit-card-application-form-existing-account-holders.pdf",
+      "https://www.hsbc.ae/credit-cards/products/advance/rewards/"
+    ],
+    "refreshMode": "manual-primary",
+    "lastVerified": "2026-11-18",
+    "_lastReviewed": "2026-11-18",
+    "_lastScraped": null,
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Advance Credit Card",
+          "unit": "AED standard annual membership fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/advance/",
+          "capturedAt": "2026-11-18T13:42:41.805Z",
+          "sourceBodySha256": "2f146056e3f852e8bc1fbd4680de8089cb4674fb17fcd6c55220af8696cb6c64",
+          "sourceTextSha256": "2f146056e3f852e8bc1fbd4680de8089cb4674fb17fcd6c55220af8696cb6c64",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 192514,
+          "sourceEndByte": 192536,
+          "captureMethod": "public-http-reader",
+          "firstLine": 6785,
+          "lastLine": 6785,
+          "rawText": "<li>No annual fee</li>",
+          "rawTextSha256": "53eca051a09d9b3ac3fb6e1abf2835b1d9f0b29c01af1fd8012280cdd40fe587"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Advance Credit Card",
+          "unit": "Named membership fee and account gate",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/key-fact-statement-credit-cards.pdf",
+          "capturedAt": "2026-11-18T13:42:41.918Z",
+          "sourceBodySha256": "cd55d6a298febed5a8c328d363968e999d6b264abed4e6b24782393ea84009bc",
+          "sourceTextSha256": "50685cfb2f128c60e2e0f930f8fa478cc63026235cf84a5f86f4e4b18e5f8f45",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceScope": "page 1; PDF text layout via pdfplumber 0.11.9",
+          "captureMethod": "public-http-reader",
+          "firstLine": 43,
+          "lastLine": 47,
+          "rawText": "     HSBC Advance Credit Card                                                     \n     Income requirement - you’ll need to have an Advance Account. No annual fee is applicable.\n                                                                                  \n     Key Features: HSBC Rewards, complimentary annual membership to Zomato Gold, a wide range of travel and\n     lifestyle benefits, and much more.                                           ",
+          "rawTextSha256": "03d9a473402eb2727000eb77b6bc567421598a9908dedb99f1424a813b63c10e"
+        }
+      ],
+      "eligibility": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Advance Credit Card",
+          "unit": "Issuer matching account requirement",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/advance/",
+          "capturedAt": "2026-11-18T13:42:41.805Z",
+          "sourceBodySha256": "2f146056e3f852e8bc1fbd4680de8089cb4674fb17fcd6c55220af8696cb6c64",
+          "sourceTextSha256": "2f146056e3f852e8bc1fbd4680de8089cb4674fb17fcd6c55220af8696cb6c64",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 191628,
+          "sourceEndByte": 191660,
+          "captureMethod": "public-http-reader",
+          "firstLine": 6747,
+          "lastLine": 6747,
+          "rawText": "<li>have an Advance Account</li>",
+          "rawTextSha256": "cbcf8e3a09e281faedd2b73cd5a643ac83d743157754ecbe523f487fd49bdbde"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Advance Credit Card",
+          "unit": "Distinct existing-customer application choices",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/uae-credit-card-application-form-existing-account-holders.pdf",
+          "capturedAt": "2026-11-18T15:07:50.232Z",
+          "sourceBodySha256": "b1799c82e9e3c0fcad5a3808031fd19c8c676f1fb31c44f6e29ec5724e954e6d",
+          "sourceTextSha256": "502413992e69c65ae965a3d2f6a7e9acecf0eeb59aff819197d5c75fae5e1a67",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceScope": "page 1; PDF text layout via pdfplumber 0.11.9",
+          "captureMethod": "public-http-reader",
+          "firstLine": 16,
+          "lastLine": 18,
+          "rawText": "     I wish to apply for a new credit card:                                       \n       Private Bank     HSBC Emirates Skywards Infinite Live+ HSBC Emirates Skywards Signature\n       Premier          Advance                Cash+                              ",
+          "rawTextSha256": "1f9f8d0acafc4f8aa8456627aa78432b9ce3d0f16ac1484f204e87935009cb45"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Advance Credit Card",
+          "unit": "Named rewards source identity",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/advance/rewards/",
+          "capturedAt": "2026-11-18T15:07:50.990Z",
+          "sourceBodySha256": "1a1a4676db8b3ecc80c20ce82616c5536f05403988be0b4b35268a044412dbf2",
+          "sourceTextSha256": "1a1a4676db8b3ecc80c20ce82616c5536f05403988be0b4b35268a044412dbf2",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 145864,
+          "sourceEndByte": 146001,
+          "captureMethod": "public-http-reader",
+          "firstLine": 3915,
+          "lastLine": 3921,
+          "rawText": "<h1 class=\"crh-hero-banner__main-header A-TYPS1R-RW-DEV text-container text \">\n    \n    \n        \n        Your Advance rewards\n    \n</h1>",
+          "rawTextSha256": "773593f70b83a899b0eb72b80c68a962703b405ac3113481634588ef9b4726c6"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Advance Credit Card",
+          "unit": "Issuer rewards programme name only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/advance/rewards/",
+          "capturedAt": "2026-11-18T15:07:50.990Z",
+          "sourceBodySha256": "1a1a4676db8b3ecc80c20ce82616c5536f05403988be0b4b35268a044412dbf2",
+          "sourceTextSha256": "1a1a4676db8b3ecc80c20ce82616c5536f05403988be0b4b35268a044412dbf2",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 161175,
+          "sourceEndByte": 161301,
+          "captureMethod": "public-http-reader",
+          "firstLine": 4767,
+          "lastLine": 4769,
+          "rawText": "<h2 class=\"heading A-TYP28L-RW-ALL remove-bottom-space\" id=\"content_main_heading_2\">\n    How to redeem your HSBC Rewards\n</h2>",
+          "rawTextSha256": "0931f59f26d68fc78b3193ce6f4a47ea6d85e8bad40d68de75b9cff69d74bde0"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "HSBC Advance Credit Card",
+          "unit": "Issuer Mastercard network identity",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.hsbc.ae/credit-cards/products/advance/",
+          "capturedAt": "2026-11-18T13:42:41.805Z",
+          "sourceBodySha256": "2f146056e3f852e8bc1fbd4680de8089cb4674fb17fcd6c55220af8696cb6c64",
+          "sourceTextSha256": "2f146056e3f852e8bc1fbd4680de8089cb4674fb17fcd6c55220af8696cb6c64",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 179856,
+          "sourceEndByte": 180438,
+          "captureMethod": "public-http-reader",
+          "firstLine": 5830,
+          "lastLine": 5887,
+          "rawText": "<li class=\"element M-SMARTSPCGENELEMENT-DEV\"><div class=\"list-item\" id=\"pp_tools_advancedListElement_10\">\n    \n    \n    <span class=\"icon-container\">\n        <i class=\"icon icon-agree \" aria-hidden=\"true\"></i>\n    </span>\n    \n    \n    \n    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n<div class=\"A-TYP16RL-DEV-ALL text-container text \">\n    \n    \n        \n        <a href=\"/configuration/smartlinks-creditcard/\" target=\"_blank\" rel=\"noopener noreferrer\">Download the Mastercard Travel Pass app</a> and register your HSBC credit card\n    \n</div>\n\n\n    \n        \n    \n    \n    \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    \n</div>\n</li>",
+          "rawTextSha256": "d9e256c1ab2dee7c6d0e376c1069d410bb0db6fc2db91075e0344b15009b0ea0"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "This source record covers card identity, the standard annual fee, the named rewards programme and the eligibility stated below. The foreign-transaction cost, welcome offer and other benefits are not confirmed here.",
+      "eligibility": "HSBC links this credit card to an HSBC Advance Account. A banking relationship is not the same as a card salary threshold or guaranteed approval.",
+      "earnRates": "HSBC Rewards is a points programme. No earn rate, cash equivalent or annual return is confirmed here."
+    }
+  },
+  "sc-journey": {
+    "name": "Standard Chartered Journey Credit Card",
+    "bank": "standard-chartered",
+    "network": "Visa",
+    "categories": [
+      "travel",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 1575,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "standardFeeConditions": "waiver-terms",
+    "annualFeeWaiver": {
+      "year_one_waived": false,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual",
+      "notes": "The Key Facts Statement lists a first-year waiver for new credit card applicants who spend at least AED 10,000 in the first 60 days, and lists the standard fee separately for existing cardholders. The fee applies from year one if you closed a Standard Chartered credit card in the last 6 months and are applying again."
+    },
+    "fxFee": null,
+    "loyaltyProgram": "360° Rewards",
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 30000,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.sc.com/ae/credit-cards/journey/",
+    "kfsUrl": "https://av.sc.com/ae/content/docs/ae-scb-key-facts-statement.pdf",
+    "sources": [
+      "https://www.sc.com/ae/credit-cards/journey/",
+      "https://www.sc.com/ae/credit-cards/journey/apply-now/?productName=journey&entryPoint=web_product_credit-cards_journey-credit-card_presistentbar_apply-now",
+      "https://av.sc.com/ae/content/docs/ae-scb-key-facts-statement.pdf",
+      "https://av.sc.com/ae/content/docs/ae-sp-price-guide-conventional-english-v3.pdf?v=202499"
+    ],
+    "refreshMode": "manual-primary",
+    "lastVerified": "2026-11-18",
+    "_lastReviewed": "2026-11-18",
+    "_lastScraped": null,
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "loyaltyProgram": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "AED standard annual membership including VAT",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.sc.com/ae/credit-cards/journey/",
+          "capturedAt": "2026-11-18T13:42:42.148Z",
+          "sourceBodySha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceTextSha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 200764,
+          "sourceEndByte": 201009,
+          "captureMethod": "public-http-reader",
+          "firstLine": 3554,
+          "lastLine": 3554,
+          "rawText": "<p>AED 1,575 (Get First year annual fee waiver by meeting minimum AED10,000 spends in first 60 days. After the first year and every year after that, your annual fee will be waived if you spend at least AED 150,000 in the previous 12 months).</p>",
+          "rawTextSha256": "67d2df6133eb765a5b9bc759d697183d0339d440563e45a1356628ce6eefd348"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "Product's pre-VAT and VAT-inclusive amounts",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.sc.com/ae/credit-cards/journey/",
+          "capturedAt": "2026-11-18T13:42:42.148Z",
+          "sourceBodySha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceTextSha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 201887,
+          "sourceEndByte": 202163,
+          "captureMethod": "public-http-reader",
+          "firstLine": 3577,
+          "lastLine": 3577,
+          "rawText": "<li>Note: If you don’t meet the minimum spend for the Annual Fee waiver, you’ll be charged an annual fee of AED 1,500 (AED 1,575 inclusive of VAT) in the 3<sup>rd</sup> month in first year, and so on for every first month statement of the new annual cycle statement.</li>",
+          "rawTextSha256": "d35f2e98f30762c72d1725a8a2f063da34975d9a6b385a26a7e9b7a01046bcfd"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "Named primary card fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://av.sc.com/ae/content/docs/ae-scb-key-facts-statement.pdf",
+          "capturedAt": "2026-11-18T15:07:50.131Z",
+          "sourceBodySha256": "9a7cf3264b250f5133d9965d9444b429a1bbee00ee06589aee715cc955f42ffa",
+          "sourceTextSha256": "8f32592d50c95b0a90ebd1660404c469f3d59835771b078b6d419453fd4eff3a",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceScope": "page 1; PDF text layout via pdfplumber 0.11.9",
+          "captureMethod": "public-http-reader",
+          "firstLine": 72,
+          "lastLine": 79,
+          "rawText": "                                           Primary Card(s)                        \n                    Primary Card(s)                                               \n                                           For Existing  Supplementary Card(s)    \n                    For New Credit Card Applicants                                \n                                           Credit Cardholders                     \n                    D1,575                                                        \n       Journey      Spend D 10,000 in the first 60 days for D 1,575 Free          \n                    an annual fee waiver.                                         ",
+          "rawTextSha256": "34a63a0a2b808bacec22041f8345179e068f2cdb5e6313b373942dc543811a37"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "Named tariff's primary card fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://av.sc.com/ae/content/docs/ae-sp-price-guide-conventional-english-v3.pdf?v=202499",
+          "capturedAt": "2026-11-18T15:07:50.315Z",
+          "sourceBodySha256": "1a19ede635b2f033e2edc3d885f7d699c365447b05af7412bc5eae5c5c496b41",
+          "sourceTextSha256": "a2f32f0bada01b43a925c601604a3dc4fbe45276b1fc0c2845959b19fd3a82f1",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceScope": "page 13; PDF text layout via pdfplumber 0.11.9",
+          "captureMethod": "public-http-reader",
+          "firstLine": 11,
+          "lastLine": 16,
+          "rawText": "             Journey                                             Charges (AED)               \n                                                                                             \n            Annual Fee                                                                       \n              Primary Card                                                                   \n                                                                    1,575.00                 \n              First card(s)                                                                  ",
+          "rawTextSha256": "b7275867a09e8cafbfdc6d78a0cf6cdd64066dd4e5dfb18ee2f4b7eeef69fa25"
+        }
+      ],
+      "annualFeeWaiver": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "First-year qualifying spend and days",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.sc.com/ae/credit-cards/journey/",
+          "capturedAt": "2026-11-18T13:42:42.148Z",
+          "sourceBodySha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceTextSha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 200764,
+          "sourceEndByte": 201009,
+          "captureMethod": "public-http-reader",
+          "firstLine": 3554,
+          "lastLine": 3554,
+          "rawText": "<p>AED 1,575 (Get First year annual fee waiver by meeting minimum AED10,000 spends in first 60 days. After the first year and every year after that, your annual fee will be waived if you spend at least AED 150,000 in the previous 12 months).</p>",
+          "rawTextSha256": "67d2df6133eb765a5b9bc759d697183d0339d440563e45a1356628ce6eefd348"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "Named first-year qualifying spend and days",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://av.sc.com/ae/content/docs/ae-scb-key-facts-statement.pdf",
+          "capturedAt": "2026-11-18T15:07:50.131Z",
+          "sourceBodySha256": "9a7cf3264b250f5133d9965d9444b429a1bbee00ee06589aee715cc955f42ffa",
+          "sourceTextSha256": "8f32592d50c95b0a90ebd1660404c469f3d59835771b078b6d419453fd4eff3a",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceScope": "page 1; PDF text layout via pdfplumber 0.11.9",
+          "captureMethod": "public-http-reader",
+          "firstLine": 72,
+          "lastLine": 79,
+          "rawText": "                                           Primary Card(s)                        \n                    Primary Card(s)                                               \n                                           For Existing  Supplementary Card(s)    \n                    For New Credit Card Applicants                                \n                                           Credit Cardholders                     \n                    D1,575                                                        \n       Journey      Spend D 10,000 in the first 60 days for D 1,575 Free          \n                    an annual fee waiver.                                         ",
+          "rawTextSha256": "34a63a0a2b808bacec22041f8345179e068f2cdb5e6313b373942dc543811a37"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "Issuance exclusion and conflicting renewal boundary; no typed renewal threshold",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://av.sc.com/ae/content/docs/ae-scb-key-facts-statement.pdf",
+          "capturedAt": "2026-11-18T15:07:50.131Z",
+          "sourceBodySha256": "9a7cf3264b250f5133d9965d9444b429a1bbee00ee06589aee715cc955f42ffa",
+          "sourceTextSha256": "8f32592d50c95b0a90ebd1660404c469f3d59835771b078b6d419453fd4eff3a",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceScope": "page 1; PDF text layout via pdfplumber 0.11.9",
+          "captureMethod": "public-http-reader",
+          "firstLine": 88,
+          "lastLine": 92,
+          "rawText": "      Note: In the event that you have closed your Standard Chartered credit card(s) in the last 6 months and are applying for a new credit card,\n      annual fee as per the grid above will be charged from the first year. All fees and charges listed are inclusive of 5% Value Added Tax (VAT).\n      2) For Journey: Primary credit card Annual Fee from the second year onwards will be waived if retail spends\n                                D                                                 \n         of the preceding 12 months exceeds 150,000 or equivalent in other currencies.",
+          "rawTextSha256": "b6464c1d427f9afdcdeeba84e71bac217287ebc90c373e3ff58181f377ad03ec"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "AED published resident income floor, with account requirement",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.sc.com/ae/credit-cards/journey/",
+          "capturedAt": "2026-11-18T13:42:42.148Z",
+          "sourceBodySha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceTextSha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 198849,
+          "sourceEndByte": 198974,
+          "captureMethod": "public-http-reader",
+          "firstLine": 3493,
+          "lastLine": 3497,
+          "rawText": "<ul>\n<li>Age 21 to 60 years old</li>\n<li>Minimum Monthly Income AED 30,000</li>\n<li>SCB Current or Savings Account</li>\n</ul>",
+          "rawTextSha256": "7c0cea3607b5a28fe24e33bcd0c87e5e17f98c2d1a86697fe31256c7b763e1ce"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "AED published national income floor, with account requirement",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.sc.com/ae/credit-cards/journey/",
+          "capturedAt": "2026-11-18T13:42:42.148Z",
+          "sourceBodySha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceTextSha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 199557,
+          "sourceEndByte": 199682,
+          "captureMethod": "public-http-reader",
+          "firstLine": 3517,
+          "lastLine": 3521,
+          "rawText": "<ul>\n<li>Age 21 to 60 years old</li>\n<li>Minimum Monthly Income AED 30,000</li>\n<li>SCB Current or Savings Account</li>\n</ul>",
+          "rawTextSha256": "7c0cea3607b5a28fe24e33bcd0c87e5e17f98c2d1a86697fe31256c7b763e1ce"
+        },
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "AED published application salary confirmation only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.sc.com/ae/credit-cards/journey/apply-now/?productName=journey&entryPoint=web_product_credit-cards_journey-credit-card_presistentbar_apply-now",
+          "capturedAt": "2026-11-18T15:07:50.490Z",
+          "sourceBodySha256": "506512f687c02c45f1db35150481141f559f1fd8f6e423efe2b044e7a3d1659d",
+          "sourceTextSha256": "506512f687c02c45f1db35150481141f559f1fd8f6e423efe2b044e7a3d1659d",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 15790,
+          "sourceEndByte": 15836,
+          "captureMethod": "public-http-reader",
+          "firstLine": 263,
+          "lastLine": 263,
+          "rawText": "<li>Monthly Salary of at least AED 30,000</li>",
+          "rawTextSha256": "3dbc0adc73cfc92f343f31291263946a7376c14a6a91288408129dc4aefe0eeb"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "Issuer programme name only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.sc.com/ae/credit-cards/journey/",
+          "capturedAt": "2026-11-18T13:42:42.148Z",
+          "sourceBodySha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceTextSha256": "d8b984bd2d4b49bdd6508ce1cd2772260d2d45dce8ad132478b222f5c87b3922",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 188581,
+          "sourceEndByte": 188673,
+          "captureMethod": "public-http-reader",
+          "firstLine": 3310,
+          "lastLine": 3311,
+          "rawText": "<h3 class=\"question-text\"><p>Earn 360° Rewards Points on every spend.<sup>8</sup></p>\n</h3>",
+          "rawTextSha256": "7eb2ce9814bdbcbb153626bb0a1a7891bd1cc62dbed9a6a61cefb991230f0fd6"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "hsbc-sc/relationship-cards/v1",
+          "productScope": "Standard Chartered Journey Credit Card",
+          "unit": "Named issuer Visa application network",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.sc.com/ae/credit-cards/journey/apply-now/?productName=journey&entryPoint=web_product_credit-cards_journey-credit-card_presistentbar_apply-now",
+          "capturedAt": "2026-11-18T15:07:50.490Z",
+          "sourceBodySha256": "506512f687c02c45f1db35150481141f559f1fd8f6e423efe2b044e7a3d1659d",
+          "sourceTextSha256": "506512f687c02c45f1db35150481141f559f1fd8f6e423efe2b044e7a3d1659d",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 12399,
+          "sourceEndByte": 12503,
+          "captureMethod": "public-http-reader",
+          "firstLine": 198,
+          "lastLine": 198,
+          "rawText": "<li><span property=\"name\" class=\"post post-page current\">Apply for Visa Infinite Credit Card</span></li>",
+          "rawTextSha256": "6ae8c795cea8c341b947b7f0be5bec61471145260f19d2b4f89ea0d9df1c9455"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "This source record covers card identity, the standard annual fee, the named rewards programme and the eligibility stated below. The foreign-transaction cost, welcome offer and other benefits are not confirmed here.",
+      "eligibility": "Standard Chartered names a minimum monthly income and a current or savings account held with the bank. The income figure does not by itself establish eligibility or guarantee approval.",
+      "earnRates": "360° Rewards is a points programme. No earn rate, cash equivalent or annual return is confirmed here.",
+      "annualFeeWaiver": "The product page and Key Facts Statement use different wording at the renewal-waiver spend threshold. Check which applies before relying on a waiver after the first year."
+    }
   }
 }
