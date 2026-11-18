@@ -2,6 +2,7 @@
 import { cardHasUnresolvedTerms, cardSalaryLabel } from "~/lib/cardEligibility";
 import BankHubLayout from "~/layouts/BankHubLayout.astro";
 import CardImage from "~/components/CardImage.astro";
+import CardsIndexDeferredArt from "~/components/CardsIndexDeferredArt.astro";
 import { getCollection, getEntry, render } from "astro:content";
 import { getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
@@ -20,6 +21,9 @@ const { bank } = Astro.props;
 const { Content } = await render(bank);
 const offers = await getOffersForBank(bank.id);
 const allCards = getCardsByBank(bank.id);
+// Chrome's native lazy-load margin can fetch a full screen of this long
+// grid before the hub heading paints. Keep other bank pages unchanged.
+const deferBankCardArt = bank.id === "emirates-nbd";
 
 const relatedGuides = await Promise.all(
   (bank.data.relatedGuides ?? []).map((ref) => getEntry(ref)),
@@ -118,7 +122,11 @@ const cardTiles = allCards.map((c) => {
                 <span class="dp-bank-card-network">{t.network}</span>
                 <span class="dp-bank-card-name">{t.name}</span>
               </span>
-              {t.hasArt && <CardImage cardSlug={t.slug} cardName={t.name} bankName={bank.data.name} coverSize="thumb" class="dp-bank-card-art" sizes="84px" />}
+              {t.hasArt && (deferBankCardArt ? (
+                <span class="dp-bank-card-art dp-bank-art-slot" data-enbd-card-art>
+                  <CardsIndexDeferredArt cardSlug={t.slug} cardName={t.name} bankName={bank.data.name} coverSize="thumb" sizes="84px" />
+                </span>
+              ) : <CardImage cardSlug={t.slug} cardName={t.name} bankName={bank.data.name} coverSize="thumb" class="dp-bank-card-art" sizes="84px" />)}
             </span>
             <dl class="dp-bank-card-facts">
               <div class="fact">
@@ -141,6 +149,27 @@ const cardTiles = allCards.map((c) => {
         ))
       )
     }
+    {deferBankCardArt && <script is:inline>
+      (() => {
+        const slots = [...document.querySelectorAll('[data-enbd-card-art]')];
+        const reveal = slot => {
+          const template = slot.querySelector('template[data-cards-art-template]');
+          if (template) template.replaceWith(template.content.cloneNode(true));
+        };
+        if (!('IntersectionObserver' in window)) {
+          slots.forEach(reveal);
+          return;
+        }
+        const observer = new IntersectionObserver(entries => {
+          for (const { target, isIntersecting } of entries) {
+            if (!isIntersecting) continue;
+            observer.unobserve(target);
+            reveal(target);
+          }
+        }, { rootMargin: '96px 0px' });
+        slots.forEach(slot => observer.observe(slot));
+      })();
+    </script>}
   </div>
 
   <div slot="articles">
@@ -208,6 +237,7 @@ const cardTiles = allCards.map((c) => {
   }
   .dp-bank-card-ident { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .dp-bank-card-ident :global(.dp-bank-card-art) { flex: 0 1 84px; min-inline-size: 48px; border-radius: 6px; }
+  .dp-bank-art-slot { display: block; aspect-ratio: 16 / 10; overflow: hidden; }
   .dp-bank-card-network {
     align-self: flex-start;
     font-size: 9.5px;

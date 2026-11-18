@@ -45,6 +45,9 @@ const ALLOWED_MISSING: Record<string, string> = {
   ...Object.fromEntries(["hsbc-premier", "hsbc-advance", "sc-journey"].map(
     slug => [`card-${slug}`, "Text-led scoped issuer profile; no approved card art is republished."],
   )),
+  ...Object.fromEntries(["emirates-nbd-share-visa-platinum", "emirates-nbd-u-by-emaar-signature", "liv-tamayaz-platinum"].map(
+    slug => [`card-${slug}`, "Text-led exact-tier source profile; no approved card art is republished."],
+  )),
   ...Object.fromEntries(["fab-adnoc-rewards", "fab-gems-world", "fab-travel", "fab-du-titanium", "fab-rewards-indulge", "fab-rewards-active", "fab-z-credit-card", "fab-share-platinum"].map(
     slug => [`card-${slug}`, "Text-led scoped issuer source profiles; no approved art republished."],
   )),

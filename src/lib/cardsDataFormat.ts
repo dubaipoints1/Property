@@ -467,7 +467,7 @@ export function annualFeeLabel(card: CardForAnnualFee): {
 export interface CardForComparison {
   name: string;
   annualFee: { amount: number };
-  joiningFee?: { amount: number } | null;
+  joiningFee?: { amount: number; vatTreatment?: "unspecified" } | null;
   standardFeeConditions?: CardForAnnualFee["standardFeeConditions"];
   eligibility: { minSalary: number | null; invitationOnly?: boolean };
   _provenance?: Record<string, string> | null;
@@ -800,6 +800,8 @@ export function cardComparisonRows(
     const rJoin = right.joiningFee?.amount ?? null;
     const lPending = cardFeeNeedsReview(left, "joiningFee");
     const rPending = cardFeeNeedsReview(right, "joiningFee");
+    const vatUnspecified = ((lJoin ?? 0) > 0 && left.joiningFee?.vatTreatment === "unspecified")
+      || ((rJoin ?? 0) > 0 && right.joiningFee?.vatTreatment === "unspecified");
     if (lJoin !== null || rJoin !== null || lPending || rPending) {
       rows.push({
         key: "joiningFee",
@@ -809,7 +811,7 @@ export function cardComparisonRows(
         leftValue: lPending ? "Pending" : lJoin === null ? "—" : formatAED(lJoin),
         rightValue: rPending ? "Pending" : rJoin === null ? "—" : formatAED(rJoin),
         winner:
-          lPending || rPending || lJoin === null || rJoin === null ? "none" : lowerWins(lJoin, rJoin),
+          lPending || rPending || vatUnspecified || lJoin === null || rJoin === null ? "none" : lowerWins(lJoin, rJoin),
       });
     }
   }

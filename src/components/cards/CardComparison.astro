@@ -81,6 +81,9 @@ function vatTagFor(
   if (rowKey !== "annualFee" && rowKey !== "joiningFee") return null;
   const card = side === "left" ? leftCard : rightCard;
   if (cardFeeNeedsReview(card, rowKey)) return null;
+  if (rowKey === "joiningFee" && (card.joiningFee?.amount ?? 0) > 0 && card.joiningFee?.vatTreatment === "unspecified") {
+    return "(VAT not specified)";
+  }
   const inclusive = side === "left" ? leftVat : rightVat;
   if (!inclusive) return null;
   const amount =

@@ -1790,6 +1790,113 @@
           "sha256": "f7d6afc888c8c470f3ed0b56c7abe401b5d5879140fee245e4d8e11bb6723332"
         }
       ]
+    },
+    {
+      "slug": "emirates-nbd-share-visa-platinum",
+      "bank": "emirates-nbd",
+      "productUrl": "https://www.emiratesnbd.com/en/cards/credit-cards/share-visa-platinum-credit-card",
+      "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+      "sourceFixtureIds": [
+        "enbd-share-heading",
+        "enbd-share-salary",
+        "enbd-share-headline-fee",
+        "enbd-share-application",
+        "enbd-share-programme",
+        "enbd-share-kfs-link",
+        "enbd-share-guide-link",
+        "enbd-kfs-joining",
+        "enbd-kfs-renewal",
+        "enbd-share-guide"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_enbd-scoped-co-brands.ts",
+        "export": "parseEnbdScopedCoBrands",
+        "sha256": "7a498b784acecd875f2636615ffbb398a0ff54673e87a7adf61c906dcfc6c961",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-enbd-scoped-co-brands.json",
+          "sha256": "510cc086b9a7e1abb2bb5a50fd540231e79ed470998136b0900dc871d26229e5"
+        }
+      ]
+    },
+    {
+      "slug": "emirates-nbd-u-by-emaar-signature",
+      "bank": "emirates-nbd",
+      "productUrl": "https://www.emiratesnbd.com/en/cards/credit-cards/u-by-emaar-signature-credit-card",
+      "kfsUrl": "https://cdn.emiratesnbd.com/enbd/files/pdf/kfs_credit_cards_horizontal_em_new.pdf",
+      "sourceFixtureIds": [
+        "enbd-emaar-heading",
+        "enbd-emaar-network",
+        "enbd-emaar-salary",
+        "enbd-emaar-headline-fee",
+        "enbd-emaar-application",
+        "enbd-emaar-programme",
+        "enbd-emaar-kfs-link",
+        "enbd-emaar-guide-link",
+        "enbd-kfs-joining",
+        "enbd-kfs-renewal",
+        "enbd-emaar-guide"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_enbd-scoped-co-brands.ts",
+        "export": "parseEnbdScopedCoBrands",
+        "sha256": "7a498b784acecd875f2636615ffbb398a0ff54673e87a7adf61c906dcfc6c961",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-enbd-scoped-co-brands.json",
+          "sha256": "510cc086b9a7e1abb2bb5a50fd540231e79ed470998136b0900dc871d26229e5"
+        }
+      ]
+    },
+    {
+      "slug": "liv-tamayaz-platinum",
+      "bank": "liv",
+      "productUrl": "https://www.liv.me/en/liv-tamayaz-credit-card",
+      "kfsUrl": "https://www.liv.me/-/media/liv/website/pdf/kfs/liv_tamayaz_credit_card_kfs.pdf",
+      "sourceFixtureIds": [
+        "liv-tamayaz-platinum-product-heading",
+        "liv-tamayaz-platinum-product-tier",
+        "liv-tamayaz-platinum-product-apply",
+        "liv-tamayaz-platinum-named-kfs",
+        "liv-tamayaz-platinum-general-kfs",
+        "liv-tamayaz-platinum-features-network",
+        "liv-tamayaz-platinum-features-points",
+        "liv-tamayaz-platinum-features-redemption",
+        "liv-tamayaz-platinum-faq-route",
+        "liv-tamayaz-platinum-faq-applicants",
+        "liv-tamayaz-platinum-faq-redemption"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_liv-tamayaz-platinum.ts",
+        "export": "parseLivTamayazPlatinum",
+        "sha256": "5e7f247b36944e9f8fce66833adf82c6a984ba427aeebf4b624165fb0bd50449",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-liv-tamayaz-platinum.json",
+          "sha256": "69831bfef4826a4bc5e03e39d0ed05b8e023be3a12f1dcf7a058eaa47c71a9b5"
+        }
+      ]
     }
   ]
 }

@@ -2,8 +2,10 @@ import { strict as assert } from "node:assert";
 import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import { getCardData } from "../../src/lib/cardsData.ts";
-import { formatAED } from "../../src/lib/cardsDataFormat.ts";
+import { cardComparisonRows, formatAED } from "../../src/lib/cardsDataFormat.ts";
 import { cardFeeAmountLabel, cardFeeNeedsReview, cardIllustrativeNetLabel, cardFxFeeLabel } from "../../src/lib/cardFeeFacts.ts";
+import { cardValueTerms } from "../../src/lib/cardValue.ts";
+import { finderEvidence } from "../../src/lib/finderEvidence.ts";
 
 const base = getCardData("liv-cashback-plus")!;
 const flagged = (key: string) => ({ ...base, _provenance: { ...base._provenance, [key]: "needs-review" } });
@@ -28,6 +30,21 @@ test("parent and dotted fee provenance fail closed without mutating real card da
   assert.equal(cardFeeNeedsReview(base, "annualFee"), false);
   assert.equal(cardFeeNeedsReview(base, "joiningFee"), false);
   assert.equal(cardFeeAmountLabel(flagged("joiningFee.amount")), cardFeeAmountLabel(base), "joining uncertainty does not change a renewal-only fee label");
+});
+
+test("a separately quoted joining fee never inherits annual VAT or sets a first-year total or winner", () => {
+  const card = { ...base, joiningFee: { ...base.joiningFee!, vatTreatment: "unspecified" as const } };
+  const joining = formatAED(card.joiningFee.amount);
+  assert.equal(cardFeeAmountLabel(card, "joiningFee"), `${joining} (VAT not specified)`);
+  assert.equal(cardFeeAmountLabel(card), cardFeeAmountLabel(base));
+  // Select a different recurring amount only so Finder emits both labels.
+  const separate = { ...card, annualFee: { ...card.annualFee, amount: 100 } };
+  assert.ok(finderEvidence(separate).feeNotes.includes(`Listed joining fee: ${joining} (VAT not specified).`));
+  assert.equal(cardValueTerms(card, "test-scope").firstFee, null);
+  assert.match(cardValueTerms(card, "test-scope").firstFeeIssue, /VAT treatment/);
+  assert.equal(cardComparisonRows(card, base).find(r => r.key === "joiningFee")?.winner, "none");
+  assert.match(readFileSync("src/components/cards/FeeBlock.astro", "utf8"), /joiningFee\.vatTreatment === "unspecified" \? "; VAT not specified"/);
+  assert.match(readFileSync("src/components/cards/CardComparison.astro", "utf8"), /rowKey === "joiningFee"[^\n]*vatTreatment === "unspecified"/);
 });
 
 test("a flagged VAT basis blocks both fee fields and the net example", () => {

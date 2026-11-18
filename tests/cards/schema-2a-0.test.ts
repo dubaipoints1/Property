@@ -270,6 +270,8 @@ test("schema-2a-0: refreshed joining-fee inventory retains every recorded field"
   // retained 08/2026 ENBD KFS. Exact parser/source pins have separate tests;
   // no standard renewal tariff replaces an existing promotional waiver.
   // 2026-11-14: two named RAKBANK standard joining fees explicitly free.
+  // 2026-11-18: exact ENBD KFS joining rows for SHARE Platinum and U by
+  // Emaar Signature, and matching Liv Tamayaz Platinum KFS columns.
   const slugs = Object.entries(cards)
     .filter(([, c]) => (c as { joiningFee?: unknown }).joiningFee !== undefined)
     .map(([s]) => s);
@@ -283,6 +285,7 @@ test("schema-2a-0: refreshed joining-fee inventory retains every recorded field"
     "emirates-nbd-priority-banking-visa-infinite", "emirates-nbd-share-visa-signature",
     "emirates-nbd-u-by-emaar-family", "emirates-nbd-voyager-world",
     "rakbank-red", "rakbank-titanium",
+    "emirates-nbd-share-visa-platinum", "emirates-nbd-u-by-emaar-signature", "liv-tamayaz-platinum",
   ].sort());
 });
 
