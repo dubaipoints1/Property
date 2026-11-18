@@ -7,6 +7,8 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/cards/fab-share-platinum/": "FAB SHARE Platinum Credit Card",
   "/cards/fab-share-signature/": "FAB SHARE Signature Credit Card",
   "/banks/nbf/": "National Bank of Fujairah",
+  "/cards/nbf-visa-infinite/": "NBF Visa Infinite Credit Card",
+  "/cards/nbf-platinum-exclusive/": "NBF Platinum Exclusive Credit Card",
   "/cards/nbf-islamic-visa-infinite/": "NBF Islamic Visa Infinite Credit Card",
   "/cards/nbf-islamic-platinum-exclusive/": "NBF Islamic Platinum Exclusive Credit Card",
   "/banks/hsbc/": "HSBC",

@@ -2066,6 +2066,82 @@
           "sha256": "e57f442189d550236452dac074a565ad3ccdafa9471782499ebda7cbc76e7137"
         }
       ]
+    },
+    {
+      "slug": "nbf-visa-infinite",
+      "bank": "nbf",
+      "productUrl": "https://nbf.ae/personal/personal-cards/infinite-credit-card/",
+      "kfsUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Infinite_Credit_Card_Apr-2025.pdf",
+      "sourceFixtureIds": [
+        "nbf-conventional-infinite-heading",
+        "nbf-conventional-infinite-apply",
+        "nbf-conventional-infinite-enquiry",
+        "nbf-conventional-infinite-programme",
+        "nbf-conventional-infinite-kfs-link",
+        "nbf-conventional-infinite-tariff-link",
+        "nbf-conventional-infinite-kfs-name",
+        "nbf-conventional-infinite-kfs-network",
+        "nbf-conventional-infinite-kfs-salary",
+        "nbf-conventional-infinite-kfs-deposit",
+        "nbf-conventional-infinite-kfs-fee",
+        "nbf-conventional-tariff-fee",
+        "nbf-conventional-tariff-priority"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_nbf-conventional.ts",
+        "export": "parseNbfConventional",
+        "sha256": "74a0b7c241462324ade410c979628c42e903bab9acf39d3dbcf19b7493eca85b",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-nbf-conventional.json",
+          "sha256": "b539bb66ecc481721d0cbfe95b3490a0054d2998d35f5945e1de1203e6b3c524"
+        }
+      ]
+    },
+    {
+      "slug": "nbf-platinum-exclusive",
+      "bank": "nbf",
+      "productUrl": "https://nbf.ae/personal/personal-cards/platinum-exclusive-credit-card/",
+      "kfsUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Platinum_Credit-Card_Apr-2025.pdf",
+      "sourceFixtureIds": [
+        "nbf-conventional-platinum-heading",
+        "nbf-conventional-platinum-apply",
+        "nbf-conventional-platinum-enquiry",
+        "nbf-conventional-platinum-programme",
+        "nbf-conventional-platinum-kfs-link",
+        "nbf-conventional-platinum-tariff-link",
+        "nbf-conventional-platinum-kfs-name",
+        "nbf-conventional-platinum-kfs-network",
+        "nbf-conventional-platinum-kfs-salary",
+        "nbf-conventional-platinum-kfs-deposit",
+        "nbf-conventional-platinum-kfs-fee",
+        "nbf-conventional-tariff-fee",
+        "nbf-conventional-tariff-priority"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_nbf-conventional.ts",
+        "export": "parseNbfConventional",
+        "sha256": "74a0b7c241462324ade410c979628c42e903bab9acf39d3dbcf19b7493eca85b",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-nbf-conventional.json",
+          "sha256": "b539bb66ecc481721d0cbfe95b3490a0054d2998d35f5945e1de1203e6b3c524"
+        }
+      ]
     }
   ]
 }
