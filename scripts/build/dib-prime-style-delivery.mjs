@@ -12,8 +12,10 @@ const headings = Object.freeze({
   "/cards/dib-prime-infinite/": "DIB Prime Infinite Card",
 });
 export const DIB_PRIME_STYLE_ROUTES = Object.freeze(Object.keys(headings));
-// Consume the same inert nodes as the shared identity tokenizer first.
-const BODY_TOKEN = new RegExp(STYLE_IDENTITY_TOKEN.source + "|<h1\\b[^>]*>[\\s\\S]*?<\\/h1\\s*>", "gi");
+// Skip comments, raw text, templates and noscript fallback content, rather
+// than accepting an example identity as the active page heading or article.
+const BODY_TOKEN = new RegExp(STYLE_IDENTITY_TOKEN.source +
+  "|<noscript\\b[^>]*>[\\s\\S]*?<\\/noscript\\s*>|<h1\\b[^>]*>[\\s\\S]*?<\\/h1\\s*>", "gi");
 
 export function inlineDibPrimeStyles(distDir) {
   return inlineExactRouteStyles(distDir, {

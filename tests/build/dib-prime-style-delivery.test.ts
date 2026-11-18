@@ -78,6 +78,7 @@ test("A changed route, missing font, or unsupported later stylesheet fails befor
     [html(last).replace(canonical(last), canonical("/cards/dib-prime-platinum/")), /route identity/],
     [html(last).replace(headings[last], headings["/cards/dib-prime-signature/"]), /route identity/],
     [html(last).replace("<h1>", "<!--<h1>").replace("</h1>", "</h1>-->"), /route identity/],
+    [html(last).replace("<h1>", "<noscript><h1>").replace("</h1>", "</h1></noscript>"), /route identity/],
     [html(last).replace(hint(fonts[0]), ""), /font preload identity/],
     [html(last).replace(link(hrefs[1]), '<link rel="stylesheet" media="print" href="' + hrefs[1] + '">'), /stylesheet semantics/],
   ] as const;
