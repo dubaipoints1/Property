@@ -3,7 +3,7 @@ slug: tools-and-bank-audit-release
 tier: T3
 vertical: business-realestate
 assigned-editor: business-realestate-editor
-chairman-status: pending
+chairman-status: approved
 ---
 
 # Tools and bank audit release
@@ -11,8 +11,11 @@ chairman-status: pending
 Directed scope: the 18 November site audit and in-session direction to
 release the tested Calculator, Valuations, Salary Tracker and
 field-specific bank corrections before editorial and newsroom work.
-The declared review state here is not consent to publish unrelated exact
-editorial copy, widen data-capture/monitoring or change tracking.
+Chairman approved this directed site-maintenance scope in-session on
+18 November 2026 ("Ok do it"), under the 6 August Council amendment.
+This does not waive independent specialist review, hosted checks or the
+protected merge, and does not approve the separate editorial copy,
+monitoring changes or analytics changes.
 
 ## Change and earlier ruling
 
@@ -38,3 +41,9 @@ and [salary source receipts](../research/2026-11/2026-11-18-salary-transfer-sour
 Release only after exact-head checks and preview, independent Council
 review within scope, and protected merge. No auto-merge or analytics
 changes.
+
+Independent source/research and business-editor review verified the
+issuer terms and rechecked the tracked source fixes. Independent release
+control confirmed separation from editorial, Newswire and tracking,
+and passed 115 targeted checks on the code tree immediately preceding
+this brief-only commit. No physical Safari result is inferred.
