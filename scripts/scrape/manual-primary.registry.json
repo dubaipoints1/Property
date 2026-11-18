@@ -1139,6 +1139,76 @@
       ]
     },
     {
+      "slug": "fab-share-infinite",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-share-cards/infinite-credit-card",
+      "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "sourceFixtureIds": [
+        "fab-share-upper-infinite-title",
+        "fab-share-upper-infinite-salary",
+        "fab-share-upper-infinite-salary-repeat",
+        "fab-share-upper-infinite-network",
+        "fab-share-upper-infinite-application",
+        "fab-share-upper-infinite-programme",
+        "fab-share-upper-infinite-tariff-link",
+        "fab-share-upper-tariff-columns",
+        "fab-share-upper-infinite-tariff-fee",
+        "fab-share-upper-kfs-delegation"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-share-upper.ts",
+        "export": "parseFabShareUpper",
+        "sha256": "af64f7504c2b5192c1e6e4eb6dc69fb04787416ff925d37ff6d2d4431d48b086",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-share-upper.json",
+          "sha256": "2bae78ef11196e69c2a31959754129d7ffcfa74729ab26061bca31c2d8c42983"
+        }
+      ]
+    },
+    {
+      "slug": "fab-share-signature",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-share-cards/signature-credit-card",
+      "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "sourceFixtureIds": [
+        "fab-share-upper-signature-title",
+        "fab-share-upper-signature-salary",
+        "fab-share-upper-signature-salary-repeat",
+        "fab-share-upper-signature-network",
+        "fab-share-upper-signature-application",
+        "fab-share-upper-signature-programme",
+        "fab-share-upper-signature-tariff-link",
+        "fab-share-upper-tariff-columns",
+        "fab-share-upper-signature-tariff-fee",
+        "fab-share-upper-kfs-delegation"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-share-upper.ts",
+        "export": "parseFabShareUpper",
+        "sha256": "af64f7504c2b5192c1e6e4eb6dc69fb04787416ff925d37ff6d2d4431d48b086",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-share-upper.json",
+          "sha256": "2bae78ef11196e69c2a31959754129d7ffcfa74729ab26061bca31c2d8c42983"
+        }
+      ]
+    },
+    {
       "slug": "fab-z-credit-card",
       "bank": "fab",
       "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-z-card",
