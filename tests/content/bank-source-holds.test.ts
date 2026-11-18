@@ -31,7 +31,7 @@ test("archived account promotions do not become current card or campaign eligibi
 
 test("bank hubs do not invent a universal missed-payment reporting deadline", () => {
   const files = readdirSync("src/content/banks").filter(name => name.endsWith(".mdx"));
-  assert.equal(files.length, 15);
+  assert.equal(files.length, 16);
   for (const file of files) {
     const text = readFileSync(`src/content/banks/${file}`, "utf8");
     assert.doesNotMatch(text, /missed\s+payments?[^.!?]{0,90}within\s+30\s+days/i, file);
