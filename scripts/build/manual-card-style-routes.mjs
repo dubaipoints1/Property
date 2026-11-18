@@ -7,4 +7,9 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/banks/nbf/": "National Bank of Fujairah",
   "/cards/nbf-islamic-visa-infinite/": "NBF Islamic Visa Infinite Credit Card",
   "/cards/nbf-islamic-platinum-exclusive/": "NBF Islamic Platinum Exclusive Credit Card",
+  "/banks/hsbc/": "HSBC",
+  "/banks/standard-chartered/": "Standard Chartered",
+  "/cards/hsbc-premier/": "HSBC Premier Credit Card",
+  "/cards/hsbc-advance/": "HSBC Advance Credit Card",
+  "/cards/sc-journey/": "Standard Chartered Journey Credit Card",
 });
