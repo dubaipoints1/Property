@@ -11,7 +11,7 @@ import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
 import { getLiveOffers, getLapsedUnarchivedOffers, getUpcomingUnarchivedOffers } from "~/lib/offerAdapter";
-import { classifyCoverage, coverageGuardError } from "~/lib/salaryTransferCoverage";
+import { classifyCoverage, coverageGuardError, SALARY_OFFER_REVIEW_PENDING_BANKS } from "~/lib/salaryTransferCoverage";
 import { TRACKER_SALARY_BANDS as bands } from "~/lib/salaryTransferTrackerBands";
 import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
 import { getSalaryTransferTimeline, getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
@@ -63,6 +63,7 @@ const coverage = classifyCoverage({
   upcomingOfferBanks: upcomingOffers.map((o) => o.bankSlug),
   checkedWithoutLiveOffer,
   advertisedWithoutCurrentTerms,
+  reviewPendingBanks: SALARY_OFFER_REVIEW_PENDING_BANKS,
 });
 const guardError = coverageGuardError(coverage, coveredCount);
 if (guardError) throw new Error(guardError);
@@ -149,6 +150,11 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
           <>{" "}We have not verified current terms for advertised offers from {linkList(coverage.advertisedWithoutCurrentTerms).map((b) => (
             <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
           ))}, so those offers are not included.</>
+        )}
+        {coverage.reviewPending.length > 0 && (
+          <>{" "}We have not completed a current salary-transfer offer review for {linkList(coverage.reviewPending).map((b) => (
+            <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
+          ))}.</>
         )}
         {coverage.upcoming.length > 0 && (
           <>{" "}Offers from {linkList(coverage.upcoming).map((b) => (

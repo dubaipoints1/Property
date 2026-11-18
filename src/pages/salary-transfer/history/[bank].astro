@@ -5,6 +5,7 @@ import { getOffersForBank, getHistoryForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getSalaryTransferTimeline } from "~/lib/salaryTransferTimeline";
 import { salaryOfferSourceNote } from "~/lib/salaryTransferRules";
+import { SALARY_OFFER_REVIEW_PENDING_BANKS } from "~/lib/salaryTransferCoverage";
 
 export async function getStaticPaths() {
   const banks = await getCollection("banks");
@@ -52,4 +53,5 @@ const entries = [
   description={`Compare the ${bankName} salary transfer offers DubaiPoints has tracked, with reward bands and campaign dates where published.`}
   bankName={bankName}
   entries={entries}
+  reviewPending={SALARY_OFFER_REVIEW_PENDING_BANKS.includes(bankId)}
 />
