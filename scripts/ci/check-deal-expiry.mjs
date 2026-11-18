@@ -15,7 +15,7 @@
 //
 // Same shape as check-signoff.mjs: a pure function unit-tested in
 // tests/ci/deal-expiry.test.ts, plus a thin CLI. The CLI parses only the
-// two frontmatter fields it needs (expiresOn, archived) with line-anchored
+// frontmatter fields it needs (expiresOn, expiresAt, archived) with line-anchored
 // regexes rather than a YAML dependency — both are plain scalars in every
 // entry, and the schema (content.config.ts) is what enforces their shape.
 //
@@ -24,20 +24,20 @@
 
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { dealCalendarDaysUntil, isDealLiveAt } from "../../src/lib/dealWindow.mjs";
 
 /**
- * @param {Array<{id: string, expiresOn: Date, archived: boolean}>} deals
+ * @param {Array<{id: string, expiresOn: Date, expiresAt?: Date, archived: boolean}>} deals
  * @param {Date} today
  * @returns {{ok: boolean, stale: Array<{id: string, expiresOn: Date, daysOverdue: number}>}}
  */
 export function checkDealExpiry(deals, today) {
-  const dayMs = 24 * 60 * 60 * 1000;
   const stale = deals
-    .filter((d) => !d.archived && d.expiresOn.getTime() < today.getTime())
+    .filter((d) => !d.archived && !isDealLiveAt(d, today.getTime()))
     .map((d) => ({
       id: d.id,
       expiresOn: d.expiresOn,
-      daysOverdue: Math.floor((today.getTime() - d.expiresOn.getTime()) / dayMs),
+      daysOverdue: -dealCalendarDaysUntil(d.expiresOn, today.getTime(), d.expiresAt) || 0,
     }))
     .sort((a, b) => b.daysOverdue - a.daysOverdue);
   return { ok: stale.length === 0, stale };
@@ -49,15 +49,17 @@ export function checkDealExpiry(deals, today) {
  * the schema fails the build for that long before this check matters.
  *
  * @param {string} raw
- * @returns {{expiresOn: Date, archived: boolean}|null}
+ * @returns {{expiresOn: Date, expiresAt?: Date, archived: boolean}|null}
  */
 export function parseDealFrontmatter(raw) {
   const fm = raw.match(/^---\n([\s\S]*?)\n---/);
   if (!fm) return null;
-  const expires = fm[1].match(/^expiresOn:\s*["']?(\d{4}-\d{2}-\d{2})/m);
+  const expires = fm[1].match(/^expiresOn:[ \t]*(["']?)(\d{4}-\d{2}-\d{2}(?:T\S+?)?)\1[ \t]*(?:#.*)?$/m);
   if (!expires) return null;
   const archived = /^archived:\s*true\b/m.test(fm[1]);
-  return { expiresOn: new Date(`${expires[1]}T00:00:00Z`), archived };
+  const exact = fm[1].match(/^expiresAt:[ \t]*(["'])([^"'\r\n]+)\1[ \t]*(?:#.*)?$/m);
+  const hasExact = /^expiresAt:/m.test(fm[1]);
+  return { expiresOn: new Date(expires[2]), ...(hasExact ? { expiresAt: new Date(exact?.[2] ?? NaN) } : {}), archived };
 }
 
 /** @param {string} dir */

@@ -5,6 +5,7 @@
 // one place rather than being re-typed per page.
 
 import { getCollection, type CollectionEntry } from "astro:content";
+import { dealCalendarDaysUntil, dealDeadlineMs, isDealLiveAt } from "./dealWindow.mjs";
 
 export type Deal = CollectionEntry<"deals">;
 
@@ -20,34 +21,20 @@ export const SECTOR_LABELS: Record<NonNullable<Deal["data"]["sector"]>, string> 
   banking: "Bank offers",
 };
 
-const DAY_MS = 86_400_000;
-
-// For these FAB offers the issuer publishes a revised date but not a
-// checkout cutoff. Do not translate that date into a live countdown.
-const FAB_RECORDED_DATE_ONLY = new Set([
-  "fab-amazon-10pct-monthly",
-  "fab-lulu-20pct-online",
-  "fab-noon-10pct-monthly",
-]);
-
-export function usesRecordedExpiryLabel(id: string): boolean {
-  return FAB_RECORDED_DATE_ONLY.has(id);
-}
-
 export function isLive(d: Deal, nowMs = Date.now()): boolean {
-  return !d.data.archived && d.data.expiresOn.getTime() >= nowMs;
+  return isDealLiveAt(d.data, nowMs);
 }
 
 /** Live deals, soonest expiry first. */
 export async function getLiveDeals(nowMs = Date.now()): Promise<Deal[]> {
   return (await getCollection("deals"))
     .filter((d) => isLive(d, nowMs))
-    .sort((a, b) => a.data.expiresOn.getTime() - b.data.expiresOn.getTime());
+    .sort((a, b) => dealDeadlineMs(a.data.expiresOn, a.data.expiresAt) - dealDeadlineMs(b.data.expiresOn, b.data.expiresAt));
 }
 
 /** Whole days until expiry, counting the expiry day itself as day 0. */
 export function daysLeft(d: Deal, nowMs = Date.now()): number {
-  return Math.max(0, Math.floor((d.data.expiresOn.getTime() - nowMs) / DAY_MS));
+  return Math.max(0, dealCalendarDaysUntil(d.data.expiresOn, nowMs, d.data.expiresAt));
 }
 
 /** Within this many days a deal counts as "ending soon". */

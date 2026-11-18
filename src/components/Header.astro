@@ -5,16 +5,16 @@
 
 import ThemeToggle from "~/components/ThemeToggle.astro";
 import { dpValueSub } from "~/lib/valuations";
+import { isLive } from "~/lib/deals";
+import { getCollection } from "astro:content";
 
 const currentPath = Astro.url.pathname;
-import { getCollection } from "astro:content";
 
 // R9 (Chairman ruling, 15 Sep 2026): the deals slot stays, and the label
 // carries the live count so the number argues for itself. Same filter as
 // the homepage live desk and /deals/.
-const liveDealCount = (await getCollection("deals")).filter(
-  (d) => !d.data.archived && d.data.expiresOn.getTime() >= Date.now(),
-).length;
+const nowMs = Date.now();
+const liveDealCount = (await getCollection("deals")).filter((d) => isLive(d, nowMs)).length;
 // 19 Oct 2026 UX review: the count renders as a small badge beside the
 // label rather than "Deals · 11 live" text. The accessible name still
 // reads "Deals 11 live" (the word "live" is screen-reader only).

@@ -1,6 +1,7 @@
 import { defineCollection, reference } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { dealCalendarDaysUntil } from "./lib/dealWindow.mjs";
 
 const REGION = z.enum(["UAE", "GCC", "Global"]);
 const DEAL_CATEGORY = z.enum([
@@ -180,7 +181,10 @@ const deals = defineCollection({
       publishedAt: z.coerce.date(),
       /** When a human last checked the offer against the issuer's page. */
       lastVerified: z.coerce.date(),
+      /** Named expiry day (inclusive in Dubai unless an exact cutoff is sourced). */
       expiresOn: z.coerce.date(),
+      /** Optional exact source-pinned cutoff: quoted ISO datetime with a Z or offset. */
+      expiresAt: z.iso.datetime({ offset: true }).transform((value) => new Date(value)).optional(),
       /**
        * Set true when the deal expires. Expired-but-unarchived deals fail
        * scripts/ci/check-deal-expiry.mjs — the weekly sweep the 2026-H2
@@ -220,6 +224,9 @@ const deals = defineCollection({
     .superRefine((data, ctx) => {
       const hasBank = data.bank !== undefined;
       const hasProgram = data.program !== undefined;
+      if (data.expiresAt && dealCalendarDaysUntil(data.expiresOn, data.expiresAt.getTime()) !== 0) {
+        ctx.addIssue({ code: "custom", path: ["expiresAt"], message: "Exact cutoff must fall on the stated Dubai expiry day." });
+      }
       if (!hasBank && !hasProgram) {
         ctx.addIssue({
           code: "custom",

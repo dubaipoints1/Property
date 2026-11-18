@@ -29,6 +29,10 @@ const expiresStr = deal.data.expiresOn.toLocaleDateString("en-GB", {
   day: "numeric",
   month: "long",
   year: "numeric",
+  timeZone: "UTC",
+});
+const cutoffTime = deal.data.expiresAt?.toLocaleTimeString("en-GB", {
+  hour: "numeric", minute: "2-digit", second: "2-digit", timeZone: "Asia/Dubai",
 });
 const verifiedStr = deal.data.lastVerified.toLocaleDateString("en-GB", {
   day: "numeric",
@@ -40,7 +44,7 @@ const offerSource = deal.data.offerSource ?? deal.data.promoCodeSource;
 const promoSource = deal.data.promoCodeSource;
 const deck = isCurrentAtBuild
   ? `Last checked ${verifiedStr}; recorded to expire ${expiresStr}. Verify provider terms before acting.`
-  : `Recorded expiry ${expiresStr}. Kept for archival reference.`;
+  : `Recorded expiry ${expiresStr}. This is a historical offer record, not a current promotion.`;
 ---
 
 <ArticleLayout
@@ -58,6 +62,7 @@ const deck = isCurrentAtBuild
   <Fragment slot="before-hero">
     <section class="dp-deal-terms" aria-labelledby="deal-terms-heading" data-deal-terms>
       <h2 id="deal-terms-heading">{isCurrentAtBuild ? "Offer at a glance" : "Archived offer"}</h2>
+      {!isCurrentAtBuild && <p>This page records the original terms. Do not use the offer or code below as current. <a href="/deals/">See current deals</a>.</p>}
       {isCurrentAtBuild && deal.data.promoCode && promoSource && (
         <PromoCode code={deal.data.promoCode} source={promoSource === offerSource ? undefined : promoSource} />
       )}
@@ -70,7 +75,7 @@ const deck = isCurrentAtBuild
         <div><dt>Issuer</dt><dd>{issuer.name}</dd></div>
         {deal.data.eligibilityNote && <div><dt>Who qualifies</dt><dd>{deal.data.eligibilityNote}</dd></div>}
         {deal.data.restrictionNote && <div><dt>Main limits</dt><dd>{deal.data.restrictionNote}</dd></div>}
-        <div><dt>Recorded expiry</dt><dd><time datetime={deal.data.expiresOn.toISOString().slice(0, 10)}>{expiresStr}</time></dd></div>
+        <div><dt>Recorded expiry</dt><dd><time datetime={deal.data.expiresAt?.toISOString() ?? deal.data.expiresOn.toISOString().slice(0, 10)}>{expiresStr}{cutoffTime ? ` at ${cutoffTime} Dubai time` : ""}</time></dd></div>
       </dl>
     </section>
   </Fragment>
