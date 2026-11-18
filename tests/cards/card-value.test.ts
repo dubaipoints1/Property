@@ -118,7 +118,10 @@ test("uncertain caps, gross fee and invalid input are handled without inventing 
   const exclusive = cardValueTerms({
     ...citi, annualFee: { amount: 299, currency: "AED" }, vatPolicy: "exclusive",
   }, citiSlug);
-  assert.equal(exclusive.laterFee, 313.95);
+  assert.equal(exclusive.firstFee, null);
+  assert.equal(exclusive.laterFee, null);
+  assert.match(exclusive.laterFeeIssue, /before VAT/);
+  assert.equal(calculateCardValue(exclusive, base).later, null);
   for (const spend of [-1, NaN, Infinity, 1.5, MAX_CARD_VALUE_MONTHLY_SPEND + 1]) {
     const estimate = calculateCardValue(exclusive, spend);
     assert.equal(estimate.first, null);

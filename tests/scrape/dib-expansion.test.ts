@@ -30,7 +30,8 @@ test("DIB fee differences survive schema, public results and metadata", () => {
   const layout = readFileSync(new URL("../../src/layouts/CardReviewLayout.astro", import.meta.url), "utf8");
   assert.match(layout, /slug === "dib-consumer-cashback-platinum" \|\| slug === "dib-shams-platinum"/);
   const block = readFileSync(new URL("../../src/components/cards/FeeBlock.astro", import.meta.url), "utf8");
-  assert.match(block, /resolved\?\.standardFeeConditions \? annualFeeLabel\(resolved\)\.qual/);
+  assert.match(block, /const standardFeeConditions = resolved\?\.standardFeeConditions \?\? standardFeeConditionsProp;/);
+  assert.match(block, /annualFeeLabel\(\{ \.\.\.feeEvidence, standardFeeConditions \}\)\.qual/);
   assert.match(block, /scopeQualifier && <div class="joining">\{scopeQualifier\}/);
 });
 const alter = (id: string, callback: (s: string) => string, repin = true) => {

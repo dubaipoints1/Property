@@ -269,6 +269,20 @@ export function transformManualCardStyles(html, readCss) {
   return transformStylesWithNormalFontHints(html, readCss, "manual-card", "Manual card");
 }
 
+// Only the two exact decision-tool routes use system typography and no
+// font preloads. Retain the whole cascade and preserve executable scripts.
+export function transformCardToolStyles(html, readCss) {
+  const { head } = splitHead(html);
+  if (/<(?:template|noscript)\b/i.test(head)) throw Error("Card tool head contains unsupported inert markup");
+  const fontHint = [...head.matchAll(TOKEN)].some(([token]) => {
+    if (!/^<link\b/i.test(token)) return false;
+    const attrs = attributes(token, "link");
+    return attrs.get("rel") === "preload" && attrs.get("as") === "font";
+  });
+  if (fontHint) throw Error("Card tools must not preload display fonts");
+  return transformCompiledStyles(html, readCss, "card-tool");
+}
+
 // The Expat Starter runner supplies its own exact route and identity preflight.
 export function transformExpatStarterStyles(html, readCss) {
   // The shared transformer is for a flat, generated head, not inert markup.

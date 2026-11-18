@@ -43,11 +43,6 @@ type CardValue = {
 // inputs to the model. Do not turn a plan's advertised rate or Liv's floor
 // into the reader's rate. Revisit only with typed plan/tier and cap terms.
 
-/** Already-stored VAT convention; do not change the issuer figures in L2. */
-function feeWithVAT(amount: number, vatPolicy: CardData["vatPolicy"]): number {
-  return vatPolicy === "exclusive" ? Math.round(amount * 105) / 100 : amount;
-}
-
 export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
   const pending = (key: string) => card._provenance[key] === "needs-review";
   const basis = parseEarnBasis(card.earnUnit);
@@ -97,11 +92,15 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
   const feePending = cardFeeNeedsReview(card, "annualFee");
   const joinPending = cardFeeNeedsReview(card, "joiningFee");
   const joining = card.joiningFee?.amount;
-  const standard = feeWithVAT(card.annualFee.amount, card.vatPolicy);
-  let firstFee = feePending ? null : standard;
-  let laterFee = feePending ? null : standard;
-  let firstFeeIssue = feePending ? "Confirm the first-year fee with the issuer." : "";
-  let laterFeeIssue = feePending ? "Confirm the standard renewal fee with the issuer." : "";
+  const standard = card.annualFee.amount;
+  // The stored VAT flag describes the quote, not a verified all-in amount.
+  // Do not display an inferred gross fee in the Finder/Compare value model.
+  const renewalPreTax = card.vatPolicy === "exclusive" && standard > 0;
+  const firstYearPreTax = renewalPreTax || (card.vatPolicy === "exclusive" && (joining ?? 0) > 0);
+  let firstFee = feePending || firstYearPreTax ? null : standard;
+  let laterFee = feePending || renewalPreTax ? null : standard;
+  let firstFeeIssue = feePending ? "Confirm the first-year fee with the issuer." : firstYearPreTax ? "Confirm the total first-year fees including VAT with the issuer." : "";
+  let laterFeeIssue = feePending ? "Confirm the standard renewal fee with the issuer." : renewalPreTax ? "The issuer quotes the renewal fee before VAT. Confirm the total with the issuer." : "";
 
   // A zero recorded on a first-year promotion does not establish a free
   // renewal. Conversely, an explicit unconditional ongoing waiver does.
@@ -120,17 +119,19 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
   } else if ((joining ?? 0) > 0 && card.joiningFee?.vatTreatment === "unspecified") {
     firstFee = null;
     firstFeeIssue = "Confirm the VAT treatment and total first-year fees with the issuer.";
+  } else if (firstYearPreTax) {
+    firstFee = null;
   } else if (waiverPending) {
     firstFee = null;
     firstFeeIssue = "Confirm the first-year annual fee and waiver conditions with the issuer.";
   } else if (assumesYearOneWaiver) {
-    firstFee = feeWithVAT(joining ?? 0, card.vatPolicy);
+    firstFee = joining ?? 0;
     firstFeeIssue = "";
   } else if (joining != null && joining > 0 && standard > 0) {
     firstFee = null;
     firstFeeIssue = "Confirm whether both joining and annual fees are due in year one.";
   } else if (!feePending && joining != null) {
-    firstFee = feeWithVAT(joining, card.vatPolicy) + standard;
+    firstFee = joining + standard;
   }
 
   return {

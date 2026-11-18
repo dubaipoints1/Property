@@ -27,6 +27,8 @@ interface Props {
    * `<FeeBlock card="emirates-nbd-skywards-infinite" />`. */
   card?: string;
   annualFee?: CardData["annualFee"];
+  vatPolicy?: CardData["vatPolicy"];
+  standardFeeConditions?: CardData["standardFeeConditions"];
   fxFee?: number | null;
   /** L2 `_provenance.fxFee` — when "needs-review" the fxFee line is
    * rendered as "—" instead of "0.00%" so an unverified zero can't be
@@ -49,6 +51,8 @@ interface Props {
 const {
   card,
   annualFee: annualFeeProp,
+  vatPolicy: vatPolicyProp,
+  standardFeeConditions: standardFeeConditionsProp,
   fxFee: fxFeeProp,
   fxFeeProvenance: fxFeeProvenanceProp,
   provenance: provenanceProp,
@@ -82,15 +86,17 @@ const joiningFee = resolved?.joiningFee ?? joiningFeeProp;
 // Phase 2a.2.3 (2026-05-20) — VAT tag. Defaults to "inclusive" per the
 // schema default so cards without an explicit policy render the
 // inclusive treatment.
-const vatPolicy = resolved?.vatPolicy ?? "inclusive";
+const vatPolicy = resolved?.vatPolicy ?? vatPolicyProp ?? "inclusive";
 const feeEvidence = resolved ?? { annualFee, _provenance: provenanceProp ?? {} };
 const annualFeePending = cardFeeNeedsReview(feeEvidence, "annualFee");
-const scopeQualifier = !annualFeePending && resolved?.standardFeeConditions ? annualFeeLabel(resolved).qual : null;
+const standardFeeConditions = resolved?.standardFeeConditions ?? standardFeeConditionsProp;
+const scopeQualifier = !annualFeePending && standardFeeConditions
+  ? annualFeeLabel({ ...feeEvidence, standardFeeConditions }).qual : null;
 const joiningFeePending = cardFeeNeedsReview(feeEvidence, "joiningFee");
 const waiverPending = Object.entries(feeEvidence._provenance ?? {}).some(([key, state]) => state === "needs-review" && /^annualFeeWaiver(?:\.|$)/.test(key));
 const showVatTag = !annualFeePending && annualFee.amount > 0;
 const vatTagText =
-  vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
+  vatPolicy === "exclusive" ? "+ VAT" : "incl. VAT";
 
 const aedFormatter = new Intl.NumberFormat("en-AE", {
   style: "currency",
@@ -137,13 +143,13 @@ const showJoiningFee =
 <div class="dp-fee-block">
   <div class="amt">{feeLabel}</div>
   {showVatTag && <div class="vat">{vatTagText}</div>}
-  <div class="lbl">{resolved?.standardFeeConditions ? "Standard annual fee" : "Annual fee"}</div>
+  <div class="lbl">{standardFeeConditions ? "Standard annual fee" : "Annual fee"}</div>
   {scopeQualifier && <div class="joining">{scopeQualifier}</div>}
   {annualFeePending && <div class="joining">The standard annual fee is Pending; joining and other charges are not assumed to be zero.</div>}
   {joiningFeePending && <div class="joining">Joining fee — confirmation pending</div>}
   {showJoiningFee && joiningFee && (
     <div class="joining">
-      Joining fee {formatAED(joiningFee.amount)} (year 1{joiningFee.amount > 0 && joiningFee.vatTreatment === "unspecified" ? "; VAT not specified" : vatPolicy === "inclusive" ? ", incl. VAT" : ""})
+      Joining fee {formatAED(joiningFee.amount)} (year 1{joiningFee.amount > 0 && joiningFee.vatTreatment === "unspecified" ? "; VAT not specified" : vatPolicy === "inclusive" ? ", incl. VAT" : joiningFee.amount > 0 ? ", + VAT" : ""})
     </div>
   )}
   {/* Provenance-aware FX line: when the L2 fxFee provenance is

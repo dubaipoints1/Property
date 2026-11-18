@@ -174,12 +174,9 @@ export function compareByWelcomeValue(
   return 0;
 }
 
-/** Classify a card's reward currency for goal-based ranking surfaces.
- *
- * MIRROR: the card finder's inline client script carries a verbatim
- * JS copy of this function (src/pages/cards/finder/index.astro,
- * `function loyaltyTag`) because it must run without imports. Change
- * both together — tests/cards/loyalty-tag.test.ts pins this one. */
+/** Legacy currency classifier. Finder gates calls on positive programme
+ * evidence in finderEvidence; the homepage retains its existing behaviour
+ * for records without a programme name. */
 export function loyaltyTag(
   loyaltyProgram: string | undefined | null,
 ): "cashback" | "miles" | "points" {
@@ -390,6 +387,7 @@ export function formatAED(amount: number): string {
 /** Minimal shape needed by `annualFeeLabel`. */
 export interface CardForAnnualFee {
   annualFee: { amount: number };
+  vatPolicy?: "inclusive" | "exclusive";
   joiningFee?: { amount: number } | null;
   annualFeeWaiver?: unknown;
   standardFeeConditions?: "waiver-terms" | "introductory-offer-unconfirmed" | "renewal-only" | "renewal-waiver";
@@ -434,13 +432,13 @@ export function verifiedMonthStamp(
     : null;
 }
 
-export function annualFeeLabel(card: CardForAnnualFee): {
+export function annualFeeLabel(card: CardForAnnualFee, options: { separateVatLabel?: boolean } = {}): {
   amount: string;
   qual: string | null;
 } {
   if (cardFeeNeedsReview(card, "annualFee")) return { amount: "Pending", qual: null };
-  const amount =
-    card.annualFee.amount === 0 ? "Free" : formatAED(card.annualFee.amount);
+  const amount = card.annualFee.amount === 0 ? "Free"
+    : formatAED(card.annualFee.amount) + (card.vatPolicy === "exclusive" && !options.separateVatLabel ? " + VAT" : "");
   if (card.standardFeeConditions === "renewal-only") return { amount, qual: "year 2+; initial terms pending" };
   if (card.standardFeeConditions === "renewal-waiver") return { amount, qual: "year 2+" };
   if (card.standardFeeConditions === "introductory-offer-unconfirmed") return { amount, qual: "first-year offer pending" };
@@ -467,6 +465,7 @@ export function annualFeeLabel(card: CardForAnnualFee): {
 export interface CardForComparison {
   name: string;
   annualFee: { amount: number };
+  vatPolicy?: CardForAnnualFee["vatPolicy"];
   joiningFee?: { amount: number; vatTreatment?: "unspecified" } | null;
   standardFeeConditions?: CardForAnnualFee["standardFeeConditions"];
   eligibility: { minSalary: number | null; invitationOnly?: boolean };
@@ -776,7 +775,7 @@ export function cardComparisonRows(
     const rPending = cardFeeNeedsReview(right, "annualFee");
     const scopedFee = (card: CardForComparison, pending: boolean) => {
       if (pending) return "Pending";
-      const { amount, qual } = annualFeeLabel(card);
+      const { amount, qual } = annualFeeLabel(card, { separateVatLabel: true });
       return card.standardFeeConditions && qual ? `${amount} · ${qual}` : amount;
     };
     rows.push({
@@ -786,7 +785,8 @@ export function cardComparisonRows(
       subtext: "year 2+",
       leftValue: scopedFee(left, lPending),
       rightValue: scopedFee(right, rPending),
-      winner: lPending || rPending || left.standardFeeConditions || right.standardFeeConditions ? "none" : lowerWins(lFee, rFee),
+      winner: lPending || rPending || left.standardFeeConditions || right.standardFeeConditions
+        || (left.vatPolicy ?? "inclusive") !== (right.vatPolicy ?? "inclusive") ? "none" : lowerWins(lFee, rFee),
     });
   }
 
@@ -811,7 +811,8 @@ export function cardComparisonRows(
         leftValue: lPending ? "Pending" : lJoin === null ? "—" : formatAED(lJoin),
         rightValue: rPending ? "Pending" : rJoin === null ? "—" : formatAED(rJoin),
         winner:
-          lPending || rPending || vatUnspecified || lJoin === null || rJoin === null ? "none" : lowerWins(lJoin, rJoin),
+          lPending || rPending || vatUnspecified || lJoin === null || rJoin === null
+            || (left.vatPolicy ?? "inclusive") !== (right.vatPolicy ?? "inclusive") ? "none" : lowerWins(lJoin, rJoin),
       });
     }
   }

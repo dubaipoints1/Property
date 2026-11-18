@@ -123,6 +123,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
   title="Compare UAE credit cards side-by-side | DubaiPoints"
   description="Pick up to four UAE credit cards and compare them side by side across eligibility, earn rates, welcome bonuses, and verified-on date."
   fullWidth
+  systemTypography
 >
   <div class="dp-pagehead dp-compare-picker-head">
     <div class="crumb">DubaiPoints / Cards / Compare</div>
@@ -255,7 +256,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
                 </h2>
                 <span class="network">{card.network}</span>
               </div>
-              <CompareCardArt slug={card.slug} deferred size="identity" />
+              <CompareCardArt slug={card.slug} deferred size="identity" showNoscriptArt={defaultSet.has(card.slug)} />
             </header>
 
             <div class="dp-compare-col-section dp-compare-fee" data-difference-section="fees">

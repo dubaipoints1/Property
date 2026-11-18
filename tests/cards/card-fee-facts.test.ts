@@ -14,7 +14,7 @@ test("fee labels and illustrative fee deductions retain the verified inclusive b
   assert.equal(cardFeeAmountLabel(base), `${formatAED(base.annualFee.amount)} including VAT`);
   assert.equal(cardFeeAmountLabel(base, "joiningFee"), `${formatAED(base.joiningFee!.amount)} including VAT`);
   assert.equal(cardIllustrativeNetLabel(base, 720), formatAED(720 - base.annualFee.amount));
-  assert.equal(cardFeeAmountLabel({...base, vatPolicy: "exclusive"}), `${formatAED(base.annualFee.amount)} + 5% VAT`);
+  assert.equal(cardFeeAmountLabel({...base, vatPolicy: "exclusive"}), `${formatAED(base.annualFee.amount)} + VAT`);
   assert.throws(() => cardIllustrativeNetLabel({...base, vatPolicy: "exclusive"}, 720), /verified VAT-inclusive/);
 });
 

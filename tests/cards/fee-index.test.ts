@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { buildFeeIndex, SALARY_TIERS, toRow, firstYearAnnualFeeStatus, firstYearAnnualFeeLabel, type CardForFeeIndex } from "../../src/lib/feeIndex.ts";
+import { buildFeeIndex, feeIndexAnnualFeeLabel, SALARY_TIERS, toRow, firstYearAnnualFeeStatus, firstYearAnnualFeeLabel, type CardForFeeIndex } from "../../src/lib/feeIndex.ts";
 import { getActiveCards } from "../../src/lib/cardsData.ts";
 import { cardFeeNeedsReview, compareKnownAnnualFees } from "../../src/lib/cardFeeProvenance.ts";
 
@@ -9,12 +9,34 @@ function c(over: Partial<CardForFeeIndex> & { slug: string; fee: number; fx?: nu
   return {
     slug: over.slug, name: over.name ?? over.slug, bank: over.bank ?? "bank",
     annualFee: { amount: over.fee, currency: "AED" },
+    vatPolicy: over.vatPolicy,
+    standardFeeConditions: over.standardFeeConditions,
     annualFeeWaiver: over.annualFeeWaiver,
     fxFee: over.fx ?? 2.99,
     eligibility: { minSalary: over.salary ?? 5000, invitationOnly: false },
     _provenance: over._provenance ?? {},
   };
 }
+
+test("tax-exclusive renewals are labelled, not marked pending or mixed into all-in fee statistics", () => {
+  const exclusive = c({ slug: "before-vat", fee: 150, vatPolicy: "exclusive", standardFeeConditions: "renewal-waiver",
+    annualFeeWaiver: { year_one_waived: true, ongoing_threshold_aed: null, threshold_period: "annual" } });
+  const idx = buildFeeIndex([exclusive, c({ slug: "included", fee: 200, vatPolicy: "inclusive" })]);
+  const row = idx.rows.find(item => item.slug === "before-vat")!;
+  assert.equal(feeIndexAnnualFeeLabel(row), "AED\u00a0150 + VAT from year two");
+  assert.equal(firstYearAnnualFeeLabel(row), "Waived");
+  assert.equal(idx.annualFeeBeforeVat, 1);
+  assert.equal(idx.annualFeePending, 0);
+  assert.equal(idx.annualFeeSampleSize, 1);
+  assert.equal(idx.medianFee, 200);
+  assert.equal(idx.lowestPaid?.slug, "included");
+
+  const held = toRow({ ...exclusive, _provenance: { vatPolicy: "needs-review" } });
+  assert.equal(feeIndexAnnualFeeLabel(held), "Pending");
+  const zero = toRow(c({ slug: "zero", fee: 0, vatPolicy: "exclusive" }));
+  assert.equal(feeIndexAnnualFeeLabel(zero), "Free");
+  assert.equal(zero.annualFee, 0);
+});
 
 test("headline aggregates on a fixture", () => {
   const idx = buildFeeIndex([
@@ -129,9 +151,9 @@ test("actual fee-page cell executes the shared status formatter and pending live
   const expression = source.match(/<td>\{(firstYearAnnualFeeLabel\(r\))\}<\/td>/)?.[1];
   assert.ok(expression, "actual page cell must call the tested formatter");
   const evaluate = new Function("r", "firstYearAnnualFeeLabel", `"use strict"; return (${expression});`);
-  const annualExpression = source.match(/<td class="num">\{(r\.renewalOnlyFeeLabel \?\? \(r\.annualFee === null \? "Pending"[^\n]+)\}<\/td>/)?.[1];
+  const annualExpression = source.match(/<td class="num">\{(feeIndexAnnualFeeLabel\(r\))\}<\/td>/)?.[1];
   assert.ok(annualExpression, "actual annual-fee cell must distinguish null before any zero branch");
-  const evaluateAnnual = new Function("r", "aed", `return (${annualExpression});`);
+  const evaluateAnnual = new Function("r", "feeIndexAnnualFeeLabel", `return (${annualExpression});`);
   const cards = getActiveCards(), idx = buildFeeIndex(cards);
   const held = cards.filter(card => card._provenance.annualFeeWaiver === "needs-review");
   assert.ok(held.length > 0);
@@ -141,9 +163,9 @@ test("actual fee-page cell executes the shared status formatter and pending live
   }
   const classic = idx.rows.find(row => row.slug === "adib-smiles-visa-classic")!;
   assert.ok(classic); assert.equal(evaluate(classic, firstYearAnnualFeeLabel), "Pending");
-  assert.equal(evaluateAnnual(classic, () => { throw new Error("explicit zero uses the label branch"); }), "Free");
+  assert.equal(evaluateAnnual(classic, feeIndexAnnualFeeLabel), "Free");
   const wio = idx.rows.find(row => row.slug === "wio-credit")!;
-  assert.equal(evaluateAnnual(wio, () => { throw new Error("unknown fee must not reach numeric formatter"); }), "Pending");
+  assert.equal(evaluateAnnual(wio, feeIndexAnnualFeeLabel), "Pending");
   const cash = idx.rows.find(row => row.slug === "hsbc-cash-plus")!;
   assert.equal(evaluate(cash, firstYearAnnualFeeLabel), "Waived", "the independently accepted annual-fee waiver remains visible");
   assert.equal(idx.firstYearPending, idx.rows.filter(row => row.firstYearAnnualFeeStatus === "pending").length);

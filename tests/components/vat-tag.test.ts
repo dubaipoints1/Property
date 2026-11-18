@@ -1,9 +1,9 @@
 // Phase 2a.2.3 (2026-05-20) — VAT tag render-source test.
 //
 // Asserts the VAT-tag rendering contract on the three components:
-//   - FeeBlock        — "incl. VAT" line below the amount, "+5% VAT" on excl.
+//   - FeeBlock        — "incl. VAT" line below the amount, "+ VAT" on excl.
 //   - AtAGlance       — `.qual` row beneath the annual fee value
-//   - CardComparison  — inline `(incl. VAT)` after Annual fee + Joining fee
+//   - CardComparison  — inline VAT basis after Annual fee + Joining fee
 //
 // Source-pattern assertions, NOT Astro Container render — same rationale
 // as the EditorScorecard test.
@@ -28,6 +28,7 @@ const CARD_COMPARISON = readFileSync(
   path.join("src", "components", "cards", "CardComparison.astro"),
   "utf8",
 );
+const SPEC_CARD = readFileSync(path.join("src", "components", "cards", "SpecCard.astro"), "utf8");
 
 function sourceExpression(source: string, name: string): string {
   const expression = source.match(new RegExp(`const ${name} = ([^;]+);`))?.[1];
@@ -39,10 +40,10 @@ function sourceExpression(source: string, name: string): string {
 
 test("FeeBlock: inclusive vatPolicy renders 'incl. VAT' line beneath the amount", () => {
   // The vatTagText resolver:
-  //   const vatTagText = vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
+  //   const vatTagText = vatPolicy === "exclusive" ? "+ VAT" : "incl. VAT";
   assert.match(
     FEE_BLOCK,
-    /const vatTagText\s*=\s*\n?\s*vatPolicy === "exclusive" \? "\+ 5% VAT" : "incl\. VAT";/,
+    /const vatTagText\s*=\s*\n?\s*vatPolicy === "exclusive" \? "\+ VAT" : "incl\. VAT";/,
   );
   // Positive, source-qualified fees only; unknown fees carry no VAT claim.
   assert.match(FEE_BLOCK, /const showVatTag = !annualFeePending && annualFee\.amount > 0;/);
@@ -68,20 +69,23 @@ test("FeeBlock: zero and held positive fees suppress VAT tags; known positive fe
   }
 });
 
-// ── 3. FeeBlock — exclusive policy renders "+ 5% VAT" ───────────────────
+// ── 3. FeeBlock — exclusive policy renders "+ VAT" ──────────────────────
 
-test("FeeBlock: exclusive vatPolicy renders '+ 5% VAT' tag text", () => {
+test("FeeBlock: exclusive vatPolicy renders '+ VAT' without inferring a rate", () => {
   // The same resolver line carries both branches.
-  assert.match(FEE_BLOCK, /"\+ 5% VAT"/);
+  assert.match(FEE_BLOCK, /"\+ VAT"/);
   assert.match(FEE_BLOCK, /"incl\. VAT"/);
+  assert.match(FEE_BLOCK, /const vatPolicy = resolved\?\.vatPolicy \?\? vatPolicyProp \?\? "inclusive"/);
+  assert.match(SPEC_CARD, /vatPolicy=\{card\.vatPolicy\}/);
+  assert.match(SPEC_CARD, /standardFeeConditions=\{card\.standardFeeConditions\}/);
 });
 
-// ── 4. AtAGlance — qual tag is conditional + uses incl. / + 5% wording ──
+// ── 4. AtAGlance — qualifier uses incl. / + VAT wording ─────────────────
 
 test("AtAGlance: VAT qualifier appended to Annual fee tile when amount > 0", () => {
   // Resolver block:
   //   const showVatQual = !cardFeeNeedsReview(card, "annualFee") && annualFeeAmount > 0;
-  //   const vatQualText = vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
+  //   const vatQualText = vatPolicy === "exclusive" ? "+ VAT" : "incl. VAT";
   assert.match(AT_A_GLANCE, /const showVatQual = !cardFeeNeedsReview\(card, "annualFee"\) && annualFeeAmount > 0;/);
   const gate = new Function("card", "cardFeeNeedsReview", "annualFeeAmount", `return (${sourceExpression(AT_A_GLANCE, "showVatQual")});`);
   for (const amount of [0, 315]) {
@@ -94,7 +98,7 @@ test("AtAGlance: VAT qualifier appended to Annual fee tile when amount > 0", () 
   }
   assert.match(
     AT_A_GLANCE,
-    /const vatQualText\s*=\s*\n?\s*vatPolicy === "exclusive" \? "\+ 5% VAT" : "incl\. VAT";/,
+    /const vatQualText\s*=\s*\n?\s*vatPolicy === "exclusive" \? "\+ VAT" : "incl\. VAT";/,
   );
   // JSX gate appends a <span class="qual">…</span> beneath the value.
   assert.match(
@@ -111,8 +115,8 @@ test("CardComparison: inline VAT tag rendered for annualFee + joiningFee rows on
     CARD_COMPARISON,
     /if \(rowKey !== "annualFee" && rowKey !== "joiningFee"\) return null;/,
   );
-  // The returned string is the literal `(incl. VAT)` parenthetical.
-  assert.match(CARD_COMPARISON, /return "\(incl\. VAT\)";/);
+  // Show the tax basis on both positive verified fee types.
+  assert.match(CARD_COMPARISON, /return inclusive \? "\(incl\. VAT\)" : "\(\+ VAT\)";/);
   // Both left and right cells render via {leftVatTag} / {rightVatTag}.
   assert.match(
     CARD_COMPARISON,

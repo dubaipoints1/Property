@@ -1,5 +1,5 @@
 import type { CardData } from "./cardsData";
-import { earnIsPercentage, earnRateFieldPending, formatAED, formatEarnRate } from "./cardsDataFormat";
+import { earnIsPercentage, earnRateFieldPending, formatAED, formatEarnRate, isStructuredAnnualFeeWaiver, loyaltyTag } from "./cardsDataFormat";
 import { cardFeeNeedsReview } from "./cardFeeProvenance";
 
 // Shared source-qualified ranking inputs and their matching display strings.
@@ -8,6 +8,14 @@ const spendKeys = ["dining", "groceries", "travel", "fuel", "online", "everythin
 
 export function finderEvidence(card: CardData & { slug?: string }) {
   const pending = (key: string) => card._provenance?.[key] === "needs-review";
+  const fieldHeld = (group: string) => Object.entries(card._provenance ?? {}).some(([key, state]) =>
+    state === "needs-review" && (key === group || key.startsWith(group + ".")));
+  // The legacy classifier treats an empty programme as cashback. Finder
+  // needs positive evidence for that preference, not just a missing name.
+  const programme = card.loyaltyProgram?.trim();
+  const rewardPreference = fieldHeld("loyaltyProgram") ? null
+    : programme ? (card._provenance?.loyaltyProgram === "editor-confirmed-null" ? null : loyaltyTag(programme))
+    : !fieldHeld("categories") && card.categories.includes("cashback") ? "cashback" as const : null;
   const pendingEarnKeys = spendKeys.filter(key => !!card.scopedEarnRates?.length || earnRateFieldPending(card._provenance, key));
   // Ranking and explanation must consume the same held-field boundary.
   // Never send a known-held numeric category as an actionable score.
@@ -19,13 +27,20 @@ export function finderEvidence(card: CardData & { slug?: string }) {
   const vat = card.vatPolicy === "exclusive" ? " + VAT" : " incl. VAT";
   const priced = (amount: number) => formatAED(amount) + (amount > 0 ? vat : "");
   const annualFeePending = cardFeeNeedsReview(card, "annualFee");
+  const { amount: annualFee } = card.annualFee;
+  const comparableAnnualFee = annualFeePending || card.standardFeeConditions || !Number.isFinite(annualFee)
+    || annualFee < 0 || (annualFee > 0 && card.vatPolicy === "exclusive") ? null : annualFee;
+  const waiver = card.annualFeeWaiver;
+  const firstYearAnnualFeeWaived = !fieldHeld("annualFeeWaiver") && isStructuredAnnualFeeWaiver(waiver) && waiver.year_one_waived;
   const fee = annualFeePending
     ? "Annual fee: confirmation pending."
     : card.standardFeeConditions === "renewal-only"
-      ? `Standard renewal fee from year two: ${priced(card.annualFee.amount)}; first-year terms pending.`
-    : card.annualFee.amount === 0
+      ? `Standard renewal fee from year two: ${priced(annualFee)}; first-year terms pending.`
+    : card.standardFeeConditions === "renewal-waiver"
+      ? `Standard renewal fee from year two: ${priced(annualFee)}; ${firstYearAnnualFeeWaived ? "annual fee waived in year one" : "first-year terms pending"}.`
+    : annualFee === 0
       ? "No listed annual fee."
-      : `Listed annual fee: ${priced(card.annualFee.amount)} before any waiver.`;
+      : `Listed annual fee: ${priced(annualFee)} before any waiver.`;
   const feeNotes = [fee];
   if (cardFeeNeedsReview(card, "joiningFee")) {
     feeNotes.push("Joining fee: confirmation pending.");
@@ -74,6 +89,8 @@ export function finderEvidence(card: CardData & { slug?: string }) {
     rankRates,
     pendingEarnKeys,
     annualFeePending,
+    comparableAnnualFee,
+    rewardPreference,
     earnLabels,
     feeNotes,
     feeExcludesVat: !annualFeePending && card.annualFee.amount > 0 && card.vatPolicy === "exclusive",

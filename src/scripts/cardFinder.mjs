@@ -26,28 +26,6 @@ import { compareKnownAnnualFees } from "../lib/cardFeeProvenance";
       return cardFinderState(new URLSearchParams(window.location.search));
     }
 
-    // MIRROR: verbatim JS copy of loyaltyTag() in
-    // src/lib/cardsDataFormat.ts (this inline script runs without
-    // imports). Change both together; the TS one is unit-tested.
-    function loyaltyTag(loyalty) {
-      var l = (loyalty || "").toLowerCase();
-      if (
-        l.indexOf("cashback") >= 0 ||
-        l.indexOf("aed") >= 0 ||
-        l === ""
-      )
-        return "cashback";
-      if (
-        l.indexOf("skywards") >= 0 ||
-        l.indexOf("etihad") >= 0 ||
-        l.indexOf("avios") >= 0 ||
-        l.indexOf("alfursan") >= 0 ||
-        l.indexOf("miles") >= 0
-      )
-        return "miles";
-      return "points";
-    }
-
     function feeMatches(annualFee, bucket) {
       if (bucket === "any") return true;
       if (!Number.isFinite(annualFee) || annualFee < 0) return false;
@@ -73,7 +51,8 @@ import { compareKnownAnnualFees } from "../lib/cardFeeProvenance";
       if (prefer === "none") return false;
       if (prefer === "lounges") return card.hasLounge;
       if (prefer === "status") return card.hasStatus;
-      return loyaltyTag(card.loyaltyProgram) === prefer;
+      var reward = card.evidence.rewardPreference;
+      return reward === "cashback" || reward === "points" || reward === "miles" ? reward === prefer : null;
     }
 
     function apply() {
@@ -106,7 +85,8 @@ import { compareKnownAnnualFees } from "../lib/cardFeeProvenance";
         })
         .sort(function (a, b) {
           if ((a.score === null) !== (b.score === null)) return a.score === null ? 1 : -1;
-          if (b.preferred !== a.preferred) return Number(b.preferred) - Number(a.preferred);
+          var preferredFirst = Number(b.preferred === true) - Number(a.preferred === true);
+          if (preferredFirst) return preferredFirst;
           if (b.score !== a.score) return b.score - a.score;
           return compareKnownAnnualFees(a.annualFee, b.annualFee);
         });
@@ -129,7 +109,8 @@ import { compareKnownAnnualFees } from "../lib/cardFeeProvenance";
         if (r.invitationOnly) labels.push("Invitation only");
         if (r.card.eligibleForSalaryFilter === false) labels.push("Eligibility confirmation pending");
         if (p.prefer !== "none") {
-          labels.push(r.preferred ? "Matches your preference: " + preferenceLabel : "Different reward or benefit");
+          labels.push(r.preferred === null ? "Reward type not yet confirmed"
+            : r.preferred ? "Matches your preference: " + preferenceLabel : "Different reward or benefit");
         }
         note.textContent = labels.join(" · ");
         note.hidden = labels.length === 0;
@@ -156,7 +137,7 @@ import { compareKnownAnnualFees } from "../lib/cardFeeProvenance";
         }
         if (p.network !== "any") applied.push("Network: " + p.network + ".");
         if (p.fee !== "any") {
-          applied.push("Fee filter: " + OPTIONS.feeLabels[p.fee] + (evidence.feeExcludesVat ? " (before VAT)." : "."));
+          applied.push("Fee filter: " + OPTIONS.feeLabels[p.fee] + ".");
         }
         tile.querySelector("[data-finder-filters]").textContent = applied.length ? applied.join(" ") : "No salary, network or fee filter applied.";
 

@@ -6,11 +6,15 @@ interface Props {
   slug: string;
   /** The static picker renders every card but activates only the chosen ones. */
   deferred?: boolean;
+  /** Finder ranks several cards; materialise the artwork only in view. */
+  finderViewportDeferred?: boolean;
+  /** Only server-visible default cards need a live image without scripts. */
+  showNoscriptArt?: boolean;
   /** Identity surfaces give real art more room without cropping it. */
   size?: "compact" | "identity";
 }
 
-const { slug, deferred = false, size = "compact" } = Astro.props;
+const { slug, deferred = false, finderViewportDeferred = false, showNoscriptArt = false, size = "compact" } = Astro.props;
 const art = getCardArt(slug);
 const srcset = art ? cardArtSrcset(slug, art) : undefined;
 // The manifest records issuer imagery, not a generic stock credit. Link
@@ -31,9 +35,12 @@ const image = art && {
 ---
 
 {image && (
-  <span class="dp-compare-card-art" data-size={size}>
+  <span class="dp-compare-card-art" data-size={size} data-card-art-reserved={deferred || finderViewportDeferred || undefined} data-finder-art-viewport={finderViewportDeferred || undefined}>
     <span class="dp-compare-card-imagebox">
-      {deferred ? <template data-compare-art-template><img {...image} /></template> : <img {...image} />}
+      {deferred || finderViewportDeferred ? <>
+        <template data-finder-art-template={finderViewportDeferred || undefined} data-compare-art-template={deferred || undefined}><img {...image} /></template>
+        {showNoscriptArt && <noscript><img {...image} /></noscript>}
+      </> : <img {...image} />}
     </span>
     {size === "identity" && creditUrl && <small class="dp-compare-card-credit">Card image: <a href={creditUrl}>{creditLabel}</a></small>}
   </span>
@@ -43,13 +50,13 @@ const image = art && {
   .dp-compare-card-art {
     display: none;
   }
-  .dp-compare-card-art:has(img) {
+  .dp-compare-card-art:is(:has(img), [data-card-art-reserved]) {
     display: block;
     flex: none;
     inline-size: 56px;
   }
   .dp-compare-card-imagebox { display: block; inline-size: 100%; aspect-ratio: 16 / 10; }
-  .dp-compare-card-art[data-size="identity"]:has(img) {
+  .dp-compare-card-art[data-size="identity"]:is(:has(img), [data-card-art-reserved]) {
     inline-size: 144px;
     max-inline-size: 100%;
   }
@@ -72,6 +79,6 @@ const image = art && {
     object-fit: contain;
   }
   @media (max-width: 640px) {
-    .dp-compare-card-art[data-size="identity"]:has(img) { inline-size: 128px; }
+    .dp-compare-card-art[data-size="identity"]:is(:has(img), [data-card-art-reserved]) { inline-size: 128px; }
   }
 </style>

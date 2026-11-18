@@ -25,11 +25,14 @@ const SOURCE = readFileSync("src/pages/cards/finder/index.astro", "utf8");
 function defaultSix(): string[] {
   return getActiveCards()
     .filter((card) => card.discontinuedForNewApplicants === undefined && card.eligibility.invitationOnly !== true)
-    .map((card) => ({
-      slug: card.slug,
-      score: finderEvidence(card).fallbackPending ? null : card.earnRates.everythingElse ?? null,
-      annualFee: finderEvidence(card).annualFeePending || card.standardFeeConditions ? null : card.annualFee.amount,
-    }))
+    .map((card) => {
+      const evidence = finderEvidence(card);
+      return {
+        slug: card.slug,
+        score: evidence.fallbackPending ? null : evidence.rankRates.everythingElse ?? null,
+        annualFee: evidence.comparableAnnualFee,
+      };
+    })
     .sort((a, b) => a.score === null || b.score === null
       ? a.score === b.score ? compareKnownAnnualFees(a.annualFee, b.annualFee) : a.score === null ? 1 : -1
       : b.score !== a.score ? b.score - a.score : compareKnownAnnualFees(a.annualFee, b.annualFee))
@@ -57,27 +60,29 @@ test("the page still derives its pre-rendered set the documented way", () => {
   assert.match(SOURCE, /const defaultRank = new Map\(defaultTopSlugs\.map\(/);
   assert.match(SOURCE, /card\.discontinuedForNewApplicants === undefined/);
   assert.match(SOURCE, /card\.eligibility\.invitationOnly !== true/);
-  assert.match(SOURCE, /score: evidence\.fallbackPending \? null : card\.earnRates\.everythingElse \?\? null/);
+  assert.match(SOURCE, /score: evidence\.fallbackPending \? null : evidence\.rankRates\.everythingElse \?\? null/);
   assert.match(SOURCE, /a\.score === null \|\| b\.score === null/);
   assert.match(SOURCE, /\.slice\(0, 6\)/);
 });
 
 function renderFinder(search: string, fixtures = getActiveCards()) {
-  const cards = fixtures.map((card) => ({
-    slug: card.slug,
-    network: card.network,
-    annualFee: finderEvidence(card).annualFeePending || card.standardFeeConditions ? null : card.annualFee.amount,
-    minSalary: card.eligibility.minSalary,
-    eligibleForSalaryFilter: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary),
-    salaryTransferRequired: card.eligibility.salaryTransferRequired,
-    invitationOnly: card.eligibility.invitationOnly === true,
-    discontinued: card.discontinuedForNewApplicants !== undefined,
-    loyaltyProgram: card.loyaltyProgram ?? "",
-    earnRates: finderEvidence(card).rankRates,
-    hasLounge: card._features.some((f) => f.type === "lounge_access"),
-    hasStatus: card._features.some((f) => f.type === "status_match"),
-    evidence: finderEvidence(card),
-  }));
+  const cards = fixtures.map((card) => {
+    const evidence = finderEvidence(card);
+    return {
+      slug: card.slug,
+      network: card.network,
+      annualFee: evidence.comparableAnnualFee,
+      minSalary: card.eligibility.minSalary,
+      eligibleForSalaryFilter: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary),
+      salaryTransferRequired: card.eligibility.salaryTransferRequired,
+      invitationOnly: card.eligibility.invitationOnly === true,
+      discontinued: card.discontinuedForNewApplicants !== undefined,
+      earnRates: evidence.rankRates,
+      hasLounge: card._features.some((f) => f.type === "lounge_access"),
+      hasStatus: card._features.some((f) => f.type === "status_match"),
+      evidence,
+    };
+  });
   const tiles = cards.map(({ slug }) => {
     const parts = {
       "[data-finder-match]": { textContent: "", hidden: true },
@@ -103,10 +108,10 @@ function renderFinder(search: string, fixtures = getActiveCards()) {
     "finder-card-index": { textContent: JSON.stringify(cards) },
     "finder-options": {
       textContent: JSON.stringify({
-        prefer: ["none", "cashback", "miles", "lounges"],
+        prefer: ["none", "cashback", "miles", "points", "lounges", "status"],
         spend: ["general", "groceries", "online", "dining", "travel", "fuel"],
         spendLabels: { general: "General / mixed", groceries: "Groceries", online: "Online shopping", dining: "Dining", travel: "Travel", fuel: "Fuel" },
-        preferLabels: { cashback: "AED cashback", miles: "Airline miles", lounges: "Airport lounges" },
+        preferLabels: { cashback: "AED cashback", miles: "Airline miles", points: "Other points and credits", lounges: "Airport lounges", status: "Hotel / airline status" },
         network: ["any", "Visa", "Mastercard"],
         fee: ["any", "free", "under-500", "under-1000"],
         feeLabels: { free: "Free only", "under-500": "Under AED 500", "under-1000": "Under AED 1,000" },
@@ -163,6 +168,32 @@ test("preferred benefits rank ahead of alternatives and compare uses that DOM or
   assert.equal(target.searchParams.get("cards"), result.tiles.slice(0, 3).map((tile) => tile.slug).join(","));
   assert.equal(target.searchParams.get("salary"), "12000");
   assert.equal(target.searchParams.get("prefer"), "cashback");
+});
+
+test("Finder distinguishes unknown rewards from an evidenced match or different programme", () => {
+  const original = { ...getCardData("citi-cashback")!, _provenance: {} };
+  const unknown = { ...original, slug: "unknown-reward", loyaltyProgram: "  ", categories: ["travel" as const], earnRates: { everythingElse: 7 } };
+  const legacyCashback = { ...unknown, slug: "legacy-cashback", categories: ["cashback" as const], earnRates: { everythingElse: 1 } };
+  const namedPoints = { ...legacyCashback, slug: "named-points", loyaltyProgram: "FAB Rewards", earnRates: { everythingElse: 3 } };
+  const held = { ...namedPoints, slug: "held-reward", _provenance: { ...namedPoints._provenance, "loyaltyProgram.scope": "needs-review" as const } };
+  const heldCategory = { ...legacyCashback, slug: "held-category", _provenance: { ...legacyCashback._provenance, categories: "needs-review" as const } };
+  assert.equal(finderEvidence(unknown).rewardPreference, null);
+  assert.equal(finderEvidence(legacyCashback).rewardPreference, "cashback");
+  assert.equal(finderEvidence(namedPoints).rewardPreference, "points");
+  assert.equal(finderEvidence(held).rewardPreference, null);
+  assert.equal(finderEvidence(heldCategory).rewardPreference, null);
+
+  const { tiles } = renderFinder("?prefer=cashback", [namedPoints, unknown, legacyCashback, held]);
+  assert.deepEqual(tiles.slice(0, 2).map(tile => tile.slug), [legacyCashback.slug, unknown.slug],
+    "unknown rewards do not get a match boost or override the rate tie-break for non-matches");
+  assert.match(tiles[0].note.textContent, /Matches your preference: AED cashback/);
+  assert.match(tiles.find(tile => tile.slug === namedPoints.slug)!.note.textContent, /Different reward or benefit/);
+  for (const slug of [unknown.slug, held.slug]) {
+    const note = tiles.find(tile => tile.slug === slug)!.note.textContent;
+    assert.match(note, /Reward type not yet confirmed/);
+    assert.doesNotMatch(note, /Matches your preference|Different reward or benefit/);
+  }
+  assert.match(renderFinder("?prefer=points", [namedPoints]).tiles[0].note.textContent, /Matches your preference: Other points and credits/);
 });
 
 test("Liv Cashback cards appear at their published salary thresholds, not below", () => {
@@ -275,8 +306,31 @@ test("unknown annual fees cannot match fee buckets or win the cheaper-fee tie-br
   assert.equal(renderFinder("?fee=free", [confirmedZero]).tiles.length, 1);
   assert.equal(renderFinder("", [known, confirmedZero]).tiles[0].slug, confirmedZero.slug);
   for (const tile of renderFinder("?fee=free").tiles) assert.equal(cardFeeNeedsReview(getCardData(tile.slug)!, "annualFee"), false);
-  assert.equal((SOURCE.match(/annualFee: evidence\.annualFeePending \|\| card\.standardFeeConditions \? null : card\.annualFee\.amount/g) ?? []).length, 2, "Both serialized and SSR fee inputs must use the guard");
+  assert.equal((SOURCE.match(/annualFee: evidence\.comparableAnnualFee/g) ?? []).length, 2, "Both serialized and SSR fee inputs must use the same evidence");
 });
+
+test("pre-tax and conditional annual fees cannot enter a bucket or tie-break; an evidenced zero can", () => {
+  const original = getCardData("citi-cashback")!;
+  const confirmed = { ...original, slug: "confirmed-price", standardFeeConditions: undefined, vatPolicy: "inclusive" as const,
+    annualFee: { amount: 315, currency: "AED" as const }, _provenance: { annualFee: "editor-confirmed" as const } };
+  const preTax = { ...confirmed, slug: "pre-tax-price", annualFee: { ...confirmed.annualFee, amount: 150 }, vatPolicy: "exclusive" as const };
+  const verifiedZero = { ...preTax, slug: "verified-zero", annualFee: { ...preTax.annualFee, amount: 0 } };
+  const renewal = { ...preTax, slug: "waived-annual-only", standardFeeConditions: "renewal-waiver" as const,
+    annualFeeWaiver: { year_one_waived: true, threshold_period: "annual" as const, ongoing_threshold_aed: null } };
+  const conditionalZero = { ...verifiedZero, slug: "conditional-zero", standardFeeConditions: "waiver-terms" as const };
+  assert.equal(finderEvidence(confirmed).comparableAnnualFee, 315);
+  assert.equal(finderEvidence(preTax).comparableAnnualFee, null);
+  assert.equal(finderEvidence(renewal).comparableAnnualFee, null);
+  assert.equal(finderEvidence(conditionalZero).comparableAnnualFee, null);
+  assert.equal(finderEvidence(verifiedZero).comparableAnnualFee, 0);
+  assert.deepEqual(renderFinder("?fee=under-500", [preTax, renewal, conditionalZero, confirmed]).tiles.map(tile => tile.slug), [confirmed.slug]);
+  assert.deepEqual(renderFinder("?fee=free", [preTax, renewal, conditionalZero, verifiedZero]).tiles.map(tile => tile.slug), [verifiedZero.slug]);
+  assert.equal(renderFinder("", [preTax, confirmed]).tiles[0].slug, confirmed.slug);
+  assert.match(finderEvidence(renewal).feeNotes[0], /^Standard renewal fee from year two: AED\s150 \+ VAT; annual fee waived in year one\.$/);
+  const heldWaiver = { ...renewal, _provenance: { ...renewal._provenance, "annualFeeWaiver.year_one_waived": "needs-review" as const } };
+  assert.match(finderEvidence(heldWaiver).feeNotes[0], /first-year terms pending/);
+});
+
 test("unknown required eligibility flags never qualify under an active salary filter", () => {
   const citi = getActiveCards().find(c => c.slug === "citi-cashback")!;
   const unknown = { ...citi, slug: "unknown-eligibility-fixture", eligibility: { ...citi.eligibility, salaryTransferRequired: null, residencyRequired: null, employmentTypes: [] },

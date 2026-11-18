@@ -15,7 +15,7 @@ test("partial card search/Product copy retains scope and standard-fee VAT qualif
     assert.match(meta.description, /Standard annual fee:/);
     assert.match(meta.description, /Terms pending/);
     assert.doesNotMatch(meta.description, /AED-first verdict|min salary|no min salary/);
-    if (card.annualFee.amount > 0) assert.match(meta.description, /including VAT|\+ 5% VAT/);
+    if (card.annualFee.amount > 0) assert.match(meta.description, /including VAT|\+ VAT/);
   }
   assert.match(cardSearchMetadata(getCardData("citi-cashback")!).description, /including VAT/);
   assert.match(cardSearchMetadata(getCardData("citi-rewards")!).description, /including VAT from year two/);

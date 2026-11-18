@@ -63,13 +63,13 @@ if (wb && typeof wb === "object") {
   }
 }
 
-const recurringFee = annualFeeLabel(card);
+const recurringFee = annualFeeLabel(card, { separateVatLabel: true });
 
 // Phase 2a.2.3 (2026-05-20) — VAT qualifier on the annual fee tile.
 const vatPolicy = card.vatPolicy ?? "inclusive";
 const showVatQual = !cardFeeNeedsReview(card, "annualFee") && annualFeeAmount > 0;
 const vatQualText =
-  vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT";
+  vatPolicy === "exclusive" ? "+ VAT" : "incl. VAT";
 
 const publishedIncome = card.eligibility.publishedMinMonthlyIncome;
 const minSalaryEyebrow = publishedIncome === undefined ? "Min salary" :
