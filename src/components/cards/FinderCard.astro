@@ -10,8 +10,8 @@ import VerifiedStamp from "~/components/cards/VerifiedStamp.astro";
 import WelcomeBonusCallout from "~/components/cards/WelcomeBonusCallout.astro";
 import { welcomeBonusDisplay } from "~/lib/cardsData";
 import { getEntry } from "astro:content";
-interface Props { card: CardData & { slug: string }; bankName: string; }
-const { card, bankName } = Astro.props;
+interface Props { card: CardData & { slug: string }; bankName: string; showNoscriptArt?: boolean; }
+const { card, bankName, showNoscriptArt = false } = Astro.props;
 const bonus = card.welcomeBonus ? welcomeBonusDisplay(card.welcomeBonus) : "";
 const editorial = await getEntry("cards", card.slug);
 const tagline = editorial?.data.editorTake?.trim().replace(/\s+/g, " ").match(/^[^.!?]+[.!?](?:\s|$)/)?.[0]?.trim();
@@ -21,13 +21,13 @@ const tagline = editorial?.data.editorTake?.trim().replace(/\s+/g, " ").match(/^
     <div class="brand">
       <span class="dp-finder-bank-mark" data-finder-art-viewport>
         <template data-finder-art-template><BankLogo slug={card.bank} name={bankName} size="sm" decorative /></template>
-        <noscript><BankLogo slug={card.bank} name={bankName} size="sm" decorative /></noscript>
+        {showNoscriptArt && <noscript><BankLogo slug={card.bank} name={bankName} size="sm" decorative /></noscript>}
       </span>
       <span>{bankName}</span>
     </div>
     <span class="network">{card.network}</span>
   </header>
-  <div class="identity"><h3><a href={`/cards/${card.slug}/`}>{card.name}</a></h3><CompareCardArt slug={card.slug} size="identity" finderViewportDeferred /></div>
+  <div class="identity"><h3><a href={`/cards/${card.slug}/`}>{card.name}</a></h3><CompareCardArt slug={card.slug} size="identity" finderViewportDeferred showNoscriptArt={showNoscriptArt} /></div>
   {card.discontinuedForNewApplicants && <p class="dp-card-chip is-warn">No longer accepting applications</p>}
   <div class="dp-finder-key-facts">
     <FeeBlock card={card.slug} />

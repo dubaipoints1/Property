@@ -382,7 +382,7 @@ const lastRefreshed = new Date(
             data-slug={card.slug}
             hidden={!defaultRank.has(card.slug)}
           >
-            <FinderCard card={card} bankName={bankName}>
+            <FinderCard card={card} bankName={bankName} showNoscriptArt={defaultRank.has(card.slug)}>
               <div slot="match-summary" class="dp-finder-match-summary">
                 <p class="dp-finder-match-preference" data-finder-match hidden></p>
                 <p data-finder-ranking>General spending: {evidence.earnLabels.everythingElse ?? "rate needs confirmation"}.</p>

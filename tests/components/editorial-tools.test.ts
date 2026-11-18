@@ -137,7 +137,7 @@ test("larger card art stays real, contained, lazy and deferred for unchosen comp
   const art = readFileSync("src/components/cards/CompareCardArt.astro", "utf8");
   const finder = readFileSync("src/components/cards/FinderCard.astro", "utf8");
   assert.match(art, /size\?: "compact" \| "identity"/);
-  assert.match(art, /<template data-compare-art-template><img/);
+  assert.match(art, /<template\b[^>]+data-compare-art-template=\{deferred \|\| undefined\}[^>]*><img/);
   assert.match(art, /loading: "lazy"/);
   assert.match(art, /object-fit: contain/);
   assert.match(art, /max-inline-size: 100%/);

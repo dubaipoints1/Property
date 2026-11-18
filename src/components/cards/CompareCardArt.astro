@@ -8,11 +8,13 @@ interface Props {
   deferred?: boolean;
   /** Finder ranks several cards; materialise the artwork only in view. */
   finderViewportDeferred?: boolean;
+  /** Only server-visible default cards need a live image without scripts. */
+  showNoscriptArt?: boolean;
   /** Identity surfaces give real art more room without cropping it. */
   size?: "compact" | "identity";
 }
 
-const { slug, deferred = false, finderViewportDeferred = false, size = "compact" } = Astro.props;
+const { slug, deferred = false, finderViewportDeferred = false, showNoscriptArt = false, size = "compact" } = Astro.props;
 const art = getCardArt(slug);
 const srcset = art ? cardArtSrcset(slug, art) : undefined;
 // The manifest records issuer imagery, not a generic stock credit. Link
@@ -37,7 +39,7 @@ const image = art && {
     <span class="dp-compare-card-imagebox">
       {deferred || finderViewportDeferred ? <>
         <template data-finder-art-template={finderViewportDeferred || undefined} data-compare-art-template={deferred || undefined}><img {...image} /></template>
-        <noscript><img {...image} /></noscript>
+        {showNoscriptArt && <noscript><img {...image} /></noscript>}
       </> : <img {...image} />}
     </span>
     {size === "identity" && creditUrl && <small class="dp-compare-card-credit">Card image: <a href={creditUrl}>{creditLabel}</a></small>}

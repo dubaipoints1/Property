@@ -3,14 +3,17 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { initialiseFinderArtwork } from "../../src/scripts/finderArtwork";
 
-test("Finder artwork is inert before actual visibility, but uses the same real artworks without JS", () => {
+test("Finder and Compare keep artwork inert until needed and include no-script images only for server-visible cards", () => {
   const finder = readFileSync("src/components/cards/FinderCard.astro", "utf8");
   const art = readFileSync("src/components/cards/CompareCardArt.astro", "utf8");
   const page = readFileSync("src/pages/cards/finder/index.astro", "utf8");
-  assert.match(finder, /data-finder-art-viewport[\s\S]*<template data-finder-art-template><BankLogo ([^\n]+)<\/template>\s*<noscript><BankLogo \1<\/noscript>/);
-  assert.match(finder, /<CompareCardArt[^>]+ finderViewportDeferred/);
+  const compare = readFileSync("src/pages/cards/compare.astro", "utf8");
+  assert.match(finder, /data-finder-art-viewport[\s\S]*<template data-finder-art-template><BankLogo ([^\n]+)<\/template>\s*\{showNoscriptArt && <noscript><BankLogo \1<\/noscript>\}/);
+  assert.match(finder, /<CompareCardArt[^>]+ finderViewportDeferred showNoscriptArt=\{showNoscriptArt\}/);
   assert.match(art, /data-card-art-reserved=\{deferred \|\| finderViewportDeferred \|\| undefined\}/);
-  assert.match(art, /deferred \|\| finderViewportDeferred \? <>\s*<template data-finder-art-template=\{finderViewportDeferred \|\| undefined\} data-compare-art-template=\{deferred \|\| undefined\}><img \{\.\.\.image\} \/><\/template>\s*<noscript><img \{\.\.\.image\} \/><\/noscript>/);
+  assert.match(art, /deferred \|\| finderViewportDeferred \? <>\s*<template data-finder-art-template=\{finderViewportDeferred \|\| undefined\} data-compare-art-template=\{deferred \|\| undefined\}><img \{\.\.\.image\} \/><\/template>\s*\{showNoscriptArt && <noscript><img \{\.\.\.image\} \/><\/noscript>\}/);
+  assert.match(page, /hidden=\{!defaultRank\.has\(card\.slug\)\}[\s\S]*<FinderCard[^>]+ showNoscriptArt=\{defaultRank\.has\(card\.slug\)\}/);
+  assert.match(compare, /hidden=\{!defaultSet\.has\(card\.slug\)\}[\s\S]*<CompareCardArt[^>]+ showNoscriptArt=\{defaultSet\.has\(card\.slug\)\}/);
   assert.match(page, /initialiseFinderArtwork\(\);/);
 });
 

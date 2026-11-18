@@ -147,11 +147,36 @@ try {
   await ctx.close();
  }
  const nojs=await browser.newContext({viewport:{width:320,height:740},javaScriptEnabled:false});
- const p=await nojs.newPage(); await p.goto(server.baseUrl+'/cards/finder/');
+ await nojs.route('**/*',r=>r.request().url().startsWith(server.baseUrl+'/')?r.continue():r.abort());
+ const p=await nojs.newPage();
+ let artworkRequests=new Set();
+ p.on('request',request=>{
+  const resource=new URL(request.url());
+  if(resource.origin===server.baseUrl && /^\/(?:images\/cards\/|logos\/banks\/)/.test(resource.pathname)) artworkRequests.add(resource.pathname);
+ });
+ async function noHiddenArtwork(grid, card, count){
+  const visible=p.locator(`${grid} > ${card}:not([hidden])`);
+  const hidden=p.locator(`${grid} > ${card}[hidden]`);
+  assert.equal(await visible.count(),count);
+  assert.equal(await hidden.locator('img').count(),0);
+  assert.ok(await hidden.locator('template[data-finder-art-template],template[data-compare-art-template]').count()>0,'hidden cards keep their inert JS art templates');
+  const emitted=await visible.locator('noscript img').evaluateAll(imgs=>imgs.flatMap(img=>
+   [img.getAttribute('src'),...(img.getAttribute('srcset')??'').split(',').map(candidate=>candidate.trim().split(/\s+/)[0])]
+  ).filter(Boolean));
+  assert.ok(emitted.length>0,'visible defaults must retain real no-script images');
+  assert.ok(artworkRequests.size>0,'the default artwork must actually load');
+  assert.deepEqual([...artworkRequests].filter(src=>!emitted.includes(src)),[], 'hidden-card assets must not load');
+  console.log(grid,count,'default cards;',artworkRequests.size,'default art/logo requests; zero hidden card requests');
+ }
+ await p.goto(server.baseUrl+'/cards/finder/');
+ await noHiddenArtwork('#finder-grid','.dp-finder-tile',6);
  assert.equal(await p.locator('.dp-finder-tile:not([hidden])').count(),6);
  const d=p.locator('.dp-finder-tile:not([hidden]) .dp-finder-card-details').first();
  await d.locator(':scope > summary').press('Enter'); assert.equal(await d.getAttribute('open'),'');
  assert.ok(await p.locator('.dp-finder-tile:not([hidden])').first().getByRole('link',{name:/^Read review/}).isVisible());
+ artworkRequests=new Set();
+ await p.goto(server.baseUrl+'/cards/compare/');
+ await noHiddenArtwork('#dp-compare-grid','.dp-compare-col',3);
  await nojs.close();
- assert.deepEqual(errors,[]);console.log('No-JS shortlist/disclosures and zero page errors passed');
+ assert.deepEqual(errors,[]);console.log('No-JS shortlist, disclosures, default-only artwork and zero page errors passed');
 }finally{await browser.close();server.close();}

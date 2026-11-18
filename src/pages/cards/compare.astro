@@ -256,7 +256,7 @@ const earnLine = (card: (typeof cardsRaw)[number]["card"]) => {
                 </h2>
                 <span class="network">{card.network}</span>
               </div>
-              <CompareCardArt slug={card.slug} deferred size="identity" />
+              <CompareCardArt slug={card.slug} deferred size="identity" showNoscriptArt={defaultSet.has(card.slug)} />
             </header>
 
             <div class="dp-compare-col-section dp-compare-fee" data-difference-section="fees">
