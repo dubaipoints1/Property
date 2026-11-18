@@ -40235,5 +40235,422 @@
         }
       ]
     }
+  },
+  "nbf-visa-infinite": {
+    "bank": "nbf",
+    "name": "NBF Visa Infinite Credit Card",
+    "network": "Visa",
+    "categories": [
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "NBF Rewards",
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://nbf.ae/personal/personal-cards/infinite-credit-card/",
+    "kfsUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Infinite_Credit_Card_Apr-2025.pdf",
+    "sources": [
+      "https://nbf.ae/personal/personal-cards/infinite-credit-card/",
+      "https://nbf.ae/personal/personal-cards/infinite-credit-card/apply/",
+      "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Infinite_Credit_Card_Apr-2025.pdf",
+      "https://nbf.ae/wp-content/uploads/2025/09/NBF-Personal-Banking-SOC_Conventional.pdf"
+    ],
+    "lastVerified": "2026-11-18",
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "needs-review",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Visa Infinite Credit Card",
+          "unit": "Priority relationship changes may affect card or fees",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/09/NBF-Personal-Banking-SOC_Conventional.pdf",
+          "capturedAt": "2026-11-18T18:30:50.005Z",
+          "sourceBodySha256": "777a62df669b2bbde42f406b8c013054742137fee1fbfc9039870afa9e0c5d7f",
+          "sourceTextSha256": "010caf000f42f378c996ec0f41a9bcf409cbb094876c9475ee45b9fd7d2dde12",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 8",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 13,
+          "lastLine": 13,
+          "rawText": "10. The bank reserves the right to levy fees or replace the card in case Priority segment eligibility is not maintained",
+          "rawTextSha256": "f62d2000bb304c720460f80ecc510e48cde0e792beeecf88a8953e9af1cbe0e3"
+        },
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Visa Infinite Credit Card",
+          "unit": "Issued KFS standard annual membership fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Infinite_Credit_Card_Apr-2025.pdf",
+          "capturedAt": "2026-11-18T18:30:48.256Z",
+          "sourceBodySha256": "68edd17a0c1353f92a3de73654d8df736781f37e288405ef56a6de6102458f3f",
+          "sourceTextSha256": "694ebd23a8e15376081c5ee236d2b16da6f17140c20e8408bebff1dfdb93e2c3",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 2",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 30,
+          "lastLine": 30,
+          "rawText": " Annual Fee                              Lifetime free",
+          "rawTextSha256": "8ef3fa806f3948a82612ec881e040ef43f1dd316b046946f20e41a6ffb0efcde"
+        },
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Visa Infinite Credit Card",
+          "unit": "Current conventional tariff standard annual membership fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/09/NBF-Personal-Banking-SOC_Conventional.pdf",
+          "capturedAt": "2026-11-18T18:30:50.005Z",
+          "sourceBodySha256": "777a62df669b2bbde42f406b8c013054742137fee1fbfc9039870afa9e0c5d7f",
+          "sourceTextSha256": "4266e71ddfac5a9837614bc2c88563039b8c88ee1c8dd2483d7a379aefc73e7b",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 7",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 3,
+          "lastLine": 3,
+          "rawText": " Annual fee                                                                                                                      Life-time free                                                                 Life-time free",
+          "rawTextSha256": "f1df43a4a810bf4a954c96695de485c3a05ad6c7e3d1f9b611030e7cd5db1125"
+        }
+      ],
+      "eligibility": [
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Visa Infinite Credit Card",
+          "unit": "Published salary or NBF Priority status",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Infinite_Credit_Card_Apr-2025.pdf",
+          "capturedAt": "2026-11-18T18:30:48.256Z",
+          "sourceBodySha256": "68edd17a0c1353f92a3de73654d8df736781f37e288405ef56a6de6102458f3f",
+          "sourceTextSha256": "6b77bca7c113db54a1f64c3232a56db9e7337ea3cb04cc0a9375bf06d471b2fe",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 1",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 53,
+          "lastLine": 53,
+          "rawText": "Minimum Salary                         AED 40,000 or Priority Segment status with NBF.",
+          "rawTextSha256": "ab0304e993ed69f0927d1586ace72e4bf097605e3f551427fb0a1d93dc0c5258"
+        },
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Visa Infinite Credit Card",
+          "unit": "Possible deposit-backed route without any fee or approval promise",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Infinite_Credit_Card_Apr-2025.pdf",
+          "capturedAt": "2026-11-18T18:30:48.256Z",
+          "sourceBodySha256": "68edd17a0c1353f92a3de73654d8df736781f37e288405ef56a6de6102458f3f",
+          "sourceTextSha256": "6b77bca7c113db54a1f64c3232a56db9e7337ea3cb04cc0a9375bf06d471b2fe",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 1",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 27,
+          "lastLine": 27,
+          "rawText": "                                       •   The Credit Card can be issued based on your income or against a fixed deposit placed",
+          "rawTextSha256": "9118718e55d47800229cea3a2ee802224c78a3c22bc72751ba3f61380a4df760"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Visa Infinite Credit Card",
+          "unit": "Visa network identity only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Infinite_Credit_Card_Apr-2025.pdf",
+          "capturedAt": "2026-11-18T18:30:48.256Z",
+          "sourceBodySha256": "68edd17a0c1353f92a3de73654d8df736781f37e288405ef56a6de6102458f3f",
+          "sourceTextSha256": "6b77bca7c113db54a1f64c3232a56db9e7337ea3cb04cc0a9375bf06d471b2fe",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 1",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 32,
+          "lastLine": 32,
+          "rawText": "                                       •   Infinite Cards qualify for offers, discounts and benefits from Visa",
+          "rawTextSha256": "cd9920346a420af197a883d2839eae5aa2df05818a51c1a2da1c649793d7d9e6"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Visa Infinite Credit Card",
+          "unit": "Issuer programme identity only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/personal/personal-cards/infinite-credit-card/",
+          "capturedAt": "2026-11-18T18:30:48.234Z",
+          "sourceBodySha256": "3609bfa66e31ed0338b4f0ed77c30e1979039dddbdd2a3270f3e8533826d793c",
+          "sourceTextSha256": "3609bfa66e31ed0338b4f0ed77c30e1979039dddbdd2a3270f3e8533826d793c",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceStartByte": 321281,
+          "sourceEndByte": 321389,
+          "firstLine": 3043,
+          "lastLine": 3043,
+          "rawText": "<div class=\"e-n-accordion-item-title-text\"> Experience a world of exclusive benefits with NBF Rewards </div>",
+          "rawTextSha256": "d1f0b2c9e07d36a2428dcc02b446184ef07e1a273db6a321a70d9bf38e45251e"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: the exact conventional card, Visa network, NBF Rewards programme name and scoped issuer wording on annual fees and eligibility. Other terms are not fully reviewed here.",
+      "annualFee": "NBF lists no standard annual fee for this card. Its tariff says it may levy fees or replace a card if a customer stops meeting Priority conditions. That does not establish a fee for your circumstances; ask NBF what would apply.",
+      "eligibility": "NBF lists AED 40,000 monthly salary or NBF Priority status. The bank also describes deposit-backed issuance. Other criteria apply; neither the published figure nor Priority status guarantees approval.",
+      "fxFee": "We have not established the cost of an overseas transaction. Check the issuer charge, network processing and any applicable VAT separately.",
+      "earnRates": "NBF Rewards is a points programme. No general earn rate, cash equivalent or total rewards return is established here."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18"
+  },
+  "nbf-platinum-exclusive": {
+    "bank": "nbf",
+    "name": "NBF Platinum Exclusive Credit Card",
+    "network": "Visa",
+    "categories": [
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "NBF Rewards",
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": [],
+      "publishedMinMonthlyIncome": 9000,
+      "publishedIncomeBasis": "salaried-applicants"
+    },
+    "applyUrl": "https://nbf.ae/personal/personal-cards/platinum-exclusive-credit-card/",
+    "kfsUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Platinum_Credit-Card_Apr-2025.pdf",
+    "sources": [
+      "https://nbf.ae/personal/personal-cards/platinum-exclusive-credit-card/",
+      "https://nbf.ae/personal/personal-cards/platinum-exclusive-credit-card/apply/",
+      "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Platinum_Credit-Card_Apr-2025.pdf",
+      "https://nbf.ae/wp-content/uploads/2025/09/NBF-Personal-Banking-SOC_Conventional.pdf"
+    ],
+    "lastVerified": "2026-11-18",
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "needs-review",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Platinum Exclusive Credit Card",
+          "unit": "Priority relationship changes may affect card or fees",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/09/NBF-Personal-Banking-SOC_Conventional.pdf",
+          "capturedAt": "2026-11-18T18:30:50.005Z",
+          "sourceBodySha256": "777a62df669b2bbde42f406b8c013054742137fee1fbfc9039870afa9e0c5d7f",
+          "sourceTextSha256": "010caf000f42f378c996ec0f41a9bcf409cbb094876c9475ee45b9fd7d2dde12",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 8",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 13,
+          "lastLine": 13,
+          "rawText": "10. The bank reserves the right to levy fees or replace the card in case Priority segment eligibility is not maintained",
+          "rawTextSha256": "f62d2000bb304c720460f80ecc510e48cde0e792beeecf88a8953e9af1cbe0e3"
+        },
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Platinum Exclusive Credit Card",
+          "unit": "Issued KFS standard annual membership fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Platinum_Credit-Card_Apr-2025.pdf",
+          "capturedAt": "2026-11-18T18:30:48.248Z",
+          "sourceBodySha256": "421a37ac07083dacff3d8322ce4fd355326a4df5511520d07f57957526440f81",
+          "sourceTextSha256": "fc228e254d13b58c2e690c951eab570c5ecc8e7a199f3533fcd820554995e8fa",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 2",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 33,
+          "lastLine": 33,
+          "rawText": " Annual Fee                              Lifetime free",
+          "rawTextSha256": "8ef3fa806f3948a82612ec881e040ef43f1dd316b046946f20e41a6ffb0efcde"
+        },
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Platinum Exclusive Credit Card",
+          "unit": "Current conventional tariff standard annual membership fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/09/NBF-Personal-Banking-SOC_Conventional.pdf",
+          "capturedAt": "2026-11-18T18:30:50.005Z",
+          "sourceBodySha256": "777a62df669b2bbde42f406b8c013054742137fee1fbfc9039870afa9e0c5d7f",
+          "sourceTextSha256": "4266e71ddfac5a9837614bc2c88563039b8c88ee1c8dd2483d7a379aefc73e7b",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 7",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 3,
+          "lastLine": 3,
+          "rawText": " Annual fee                                                                                                                      Life-time free                                                                 Life-time free",
+          "rawTextSha256": "f1df43a4a810bf4a954c96695de485c3a05ad6c7e3d1f9b611030e7cd5db1125"
+        }
+      ],
+      "eligibility": [
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Platinum Exclusive Credit Card",
+          "unit": "Published salary only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Platinum_Credit-Card_Apr-2025.pdf",
+          "capturedAt": "2026-11-18T18:30:48.248Z",
+          "sourceBodySha256": "421a37ac07083dacff3d8322ce4fd355326a4df5511520d07f57957526440f81",
+          "sourceTextSha256": "a8d509f3334f62a1de664d6fd116c909890037c064f1b2d8e0da4272ebeddcfc",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 1",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 54,
+          "lastLine": 54,
+          "rawText": "Minimum Salary                       AED 9000",
+          "rawTextSha256": "5bc3a0978b8bf4214dae05cb1c9fd4b463cd8e02b97b5435cd6456774913108a"
+        },
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Platinum Exclusive Credit Card",
+          "unit": "Possible deposit-backed route without any fee or approval promise",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Platinum_Credit-Card_Apr-2025.pdf",
+          "capturedAt": "2026-11-18T18:30:48.248Z",
+          "sourceBodySha256": "421a37ac07083dacff3d8322ce4fd355326a4df5511520d07f57957526440f81",
+          "sourceTextSha256": "a8d509f3334f62a1de664d6fd116c909890037c064f1b2d8e0da4272ebeddcfc",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 1",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 28,
+          "lastLine": 28,
+          "rawText": "                                     •    The Credit Card can be issued based on your income or against a fixed deposit placed",
+          "rawTextSha256": "8583c6629a31034d9d643580f79aca385cbaf1a8e28611fe052e18d6a15dbe6c"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Platinum Exclusive Credit Card",
+          "unit": "AED published salary for salaried applicants, not ranking",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Platinum_Credit-Card_Apr-2025.pdf",
+          "capturedAt": "2026-11-18T18:30:48.248Z",
+          "sourceBodySha256": "421a37ac07083dacff3d8322ce4fd355326a4df5511520d07f57957526440f81",
+          "sourceTextSha256": "a8d509f3334f62a1de664d6fd116c909890037c064f1b2d8e0da4272ebeddcfc",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 1",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 54,
+          "lastLine": 54,
+          "rawText": "Minimum Salary                       AED 9000",
+          "rawTextSha256": "5bc3a0978b8bf4214dae05cb1c9fd4b463cd8e02b97b5435cd6456774913108a"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Platinum Exclusive Credit Card",
+          "unit": "Visa network identity only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/wp-content/uploads/2025/04/KFS_NBF-Platinum_Credit-Card_Apr-2025.pdf",
+          "capturedAt": "2026-11-18T18:30:48.248Z",
+          "sourceBodySha256": "421a37ac07083dacff3d8322ce4fd355326a4df5511520d07f57957526440f81",
+          "sourceTextSha256": "a8d509f3334f62a1de664d6fd116c909890037c064f1b2d8e0da4272ebeddcfc",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceScope": "PDF page 1",
+          "sourceExtraction": "pdftotext-layout",
+          "firstLine": 33,
+          "lastLine": 33,
+          "rawText": "                                     •    Platinum Credit Cards qualify for offers, discounts and benefits from Visa",
+          "rawTextSha256": "2c11d4dee4f1f72e13e54dc1c893924ad59525fa4c847c3b8094f23b1ad58501"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "nbf/conventional-named-tiers/v1",
+          "productScope": "NBF Platinum Exclusive Credit Card",
+          "unit": "Issuer programme identity only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbf.ae/personal/personal-cards/platinum-exclusive-credit-card/",
+          "capturedAt": "2026-11-18T18:30:48.235Z",
+          "sourceBodySha256": "ba491ac0c2c7de6b2c53895a32bdfb764abe9135a9f8798c8ad9738c3ef4d85f",
+          "sourceTextSha256": "ba491ac0c2c7de6b2c53895a32bdfb764abe9135a9f8798c8ad9738c3ef4d85f",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceStartByte": 337181,
+          "sourceEndByte": 337289,
+          "firstLine": 3160,
+          "lastLine": 3160,
+          "rawText": "<div class=\"e-n-accordion-item-title-text\"> Experience a world of exclusive benefits with NBF Rewards </div>",
+          "rawTextSha256": "d1f0b2c9e07d36a2428dcc02b446184ef07e1a273db6a321a70d9bf38e45251e"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: the exact conventional card, Visa network, NBF Rewards programme name and scoped issuer wording on annual fees and eligibility. Other terms are not fully reviewed here.",
+      "annualFee": "NBF lists no standard annual fee for this card. Its tariff says it may levy fees or replace a card if a customer stops meeting Priority conditions. That does not establish a fee for your circumstances; ask NBF what would apply.",
+      "eligibility": "The published salary figure applies to the salary route. NBF also describes deposit-backed issuance. This profile does not establish what the bank will require or whether it will approve an application.",
+      "fxFee": "We have not established the cost of an overseas transaction. Check the issuer charge, network processing and any applicable VAT separately.",
+      "earnRates": "NBF Rewards is a points programme. No general earn rate, cash equivalent or total rewards return is established here."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18"
   }
 }
