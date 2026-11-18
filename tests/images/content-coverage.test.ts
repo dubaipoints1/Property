@@ -76,6 +76,10 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Text-led review candidate; no event photography or artist likeness has been cleared.",
   "guide-dubai-city-check-in-emirates-flydubai":
     "Text-led review candidate; the carrier service table is the evidence.",
+  "guide-expo-winter-city-choose-ticket-date":
+    "Deliberately text-led; no imagery licensed to represent the event.",
+  "guide-air-arabia-poland-choose-your-airport":
+    "Deliberately text-led; the guide compares schedules, fare types and airport connections rather than claiming a first-hand flight.",
   "news-emirates-islamic-barca-cashback-card-free-for-life-up-to-4-percent":
     "Deliberately text-led: the issuer's offer page is the evidence. No clean issuer card art is published for this card yet, and a football or stadium photo would imply club imagery we do not hold.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
