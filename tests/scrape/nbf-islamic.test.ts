@@ -31,6 +31,7 @@ test("NBF Islamic: the exact products and named disclosures reproduce the shippe
     assert.equal(card.kfsUrl, parsed.kfsUrl);
     assert.equal(card.lastVerified, parsed.capturedDate);
     assert.deepEqual(card.sources, parsed.sources);
+    assert.ok(!card.sources.includes(parsed.application));
     assert.equal(card.refreshMode, "manual-primary");
     assert.deepEqual(card._fieldEvidence, JSON.parse(JSON.stringify(parsed.evidence)));
     assert.equal(card.loyaltyProgram, parsed.loyaltyProgram);

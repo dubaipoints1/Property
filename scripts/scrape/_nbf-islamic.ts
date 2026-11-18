@@ -73,7 +73,8 @@ export function parseNbfIslamic(input: Source[], slug: string) {
   });
   return { name: p.name, productUrl, application, kfsUrl, capturedDate: heading.capturedAt.slice(0, 10),
     annualFee: 0, income, priority: p.priority, loyaltyProgram: "NBF Rewards", network: "Visa",
-    ids: found.map(s => s.id), sources: [productUrl, application, kfsUrl],
+    // The named CTA is a product identity pin, not a source document or tested form.
+    ids: found.map(s => s.id), sources: [productUrl, kfsUrl],
     evidence: {
       annualFee: [pin(fees, "AED standard annual membership fee", "not-applicable")],
       [p.priority ? "eligibility" : "eligibility.publishedMinMonthlyIncome"]:
