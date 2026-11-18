@@ -30,7 +30,10 @@ export function finderEvidence(card: CardData & { slug?: string }) {
   if (cardFeeNeedsReview(card, "joiningFee")) {
     feeNotes.push("Joining fee: confirmation pending.");
   } else if (card.joiningFee && card.joiningFee.amount !== card.annualFee.amount) {
-    feeNotes.push(`Listed joining fee: ${priced(card.joiningFee.amount)}.`);
+    const joining = card.joiningFee;
+    const label = joining.amount > 0 && joining.vatTreatment === "unspecified"
+      ? `${formatAED(joining.amount)} (VAT not specified)` : priced(joining.amount);
+    feeNotes.push(`Listed joining fee: ${label}.`);
   }
   if (card.annualFeeWaiver || pending("annualFeeWaiver")) {
     feeNotes.push("Check first-year and renewal waiver terms.");

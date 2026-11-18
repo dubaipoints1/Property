@@ -58,18 +58,26 @@ test("model values and protected provenance match named issuer columns without a
 
 test("Finder, salary listings, Compare and fee-index consume the same corrected L2 facts", () => {
   const cards = getActiveCards().filter((c) => c.bank === "liv");
-  for (const card of cards) {
+  // The historic correction fixture sources the two Cashback products only;
+  // keep the full set for the fee index and test Tamayaz separately.
+  const corrected = cards.filter(card => Object.hasOwn(parsed, card.slug));
+  assert.equal(corrected.length, Object.keys(parsed).length);
+  const feeIndex = buildFeeIndex(cards).rows;
+  for (const card of corrected) {
     const facts = parsed[card.slug];
     const evidence = finderEvidence(card);
     assert.equal(evidence.salaryPending, false);
     assert.equal(evidence.salaryLabel, formatAED(facts.minSalary));
     assert.equal(cards.filter((c) => c.eligibility.minSalary <= facts.minSalary - 1).some((c) => c.slug === card.slug), false);
     assert.equal(cards.filter((c) => c.eligibility.minSalary <= facts.minSalary).some((c) => c.slug === card.slug), true);
-    const fee = buildFeeIndex(cards).rows.find((row) => row.slug === card.slug)!;
+    const fee = feeIndex.find((row) => row.slug === card.slug)!;
     assert.equal(fee.minSalary, facts.minSalary);
     assert.equal(fee.annualFee, facts.annualFee);
     if (facts.annualFee) assert.ok(evidence.feeNotes.some((note) => note.includes(formatAED(facts.annualFee)) && note.includes("incl. VAT")));
   }
+  const tamayaz = cards.find(c=>c.slug==="liv-tamayaz-platinum")!;
+  assert.equal(finderEvidence(tamayaz).salaryPending, true);
+  assert.equal(feeIndex.find(row=>row.slug===tamayaz.slug)?.minSalary, null);
   const rows = cardComparisonRows(getCardData("liv-cashback")!, getCardData("liv-cashback-plus")!);
   assert.equal(rows.find((row) => row.key === "minSalary")?.leftValue, `${formatAED(parsed["liv-cashback"].minSalary)}/mo`);
   assert.equal(rows.find((row) => row.key === "minSalary")?.rightValue, `${formatAED(parsed["liv-cashback-plus"].minSalary)}/mo`);

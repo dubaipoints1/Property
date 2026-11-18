@@ -12,4 +12,9 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/cards/hsbc-premier/": "HSBC Premier Credit Card",
   "/cards/hsbc-advance/": "HSBC Advance Credit Card",
   "/cards/sc-journey/": "Standard Chartered Journey Credit Card",
+  "/banks/emirates-nbd/": "Emirates NBD",
+  "/banks/liv/": "Liv",
+  "/cards/emirates-nbd-share-visa-platinum/": "Emirates NBD SHARE Visa Platinum Credit Card",
+  "/cards/emirates-nbd-u-by-emaar-signature/": "Emirates NBD U by Emaar Visa Signature Credit Card",
+  "/cards/liv-tamayaz-platinum/": "Liv Tamayaz Platinum Credit Card",
 });

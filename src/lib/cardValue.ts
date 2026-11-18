@@ -117,6 +117,9 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
   } else if (joinPending) {
     firstFee = null;
     firstFeeIssue = "Confirm the joining fee with the issuer.";
+  } else if ((joining ?? 0) > 0 && card.joiningFee?.vatTreatment === "unspecified") {
+    firstFee = null;
+    firstFeeIssue = "Confirm the VAT treatment and total first-year fees with the issuer.";
   } else if (waiverPending) {
     firstFee = null;
     firstFeeIssue = "Confirm the first-year annual fee and waiver conditions with the issuer.";

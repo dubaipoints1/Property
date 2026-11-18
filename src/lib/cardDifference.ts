@@ -17,7 +17,9 @@ export function cardDifference(card: CardData & { slug?: string }, canonicalProg
   const reviewed = (key: string) => provenance[key] === "editor-confirmed" || provenance[key] === "editor-corrected";
   const uncertain = (...prefixes: string[]) => Object.entries(provenance).some(([key, state]) => prefixes.some(prefix => key === prefix || key.startsWith(prefix + ".")) && (state === "needs-review" || state === "scraped"));
   const descriptor = (known: boolean, value: unknown): DifferenceDescriptor => known ? { known: true, signature: stable(value) } : { known: false };
-  const joiningKnown = card.joiningFee ? reviewed("joiningFee") : provenance.joiningFee === "editor-confirmed-null";
+  const joiningKnown = card.joiningFee
+    ? reviewed("joiningFee") && (card.joiningFee.amount === 0 || card.joiningFee.vatTreatment !== "unspecified")
+    : provenance.joiningFee === "editor-confirmed-null";
   const waiverKnown = card.annualFeeWaiver === null ? provenance.annualFeeWaiver === "editor-confirmed-null"
     : typeof card.annualFeeWaiver === "object" && card.annualFeeWaiver !== null && reviewed("annualFeeWaiver");
   // An upper bound describes variable charges, not a confirmed exact fee.

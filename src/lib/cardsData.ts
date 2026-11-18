@@ -419,6 +419,8 @@ export const CardDataSchema = z.object({
     .object({
       amount: z.number().nonnegative(),
       currency: z.literal("AED").default("AED"),
+      /** The issuer quotes an amount without stating its VAT treatment. */
+      vatTreatment: z.literal("unspecified").optional(),
     })
     .optional(),
   annualFee: z.object({

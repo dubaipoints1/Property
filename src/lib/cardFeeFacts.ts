@@ -11,6 +11,9 @@ export function cardFeeAmountLabel(card: FeeCard, field: FeeField = "annualFee")
   const fee = card[field];
   if (fee == null) return "Not listed";
   if (fee.amount === 0) return "Free";
+  if (field === "joiningFee" && card.joiningFee?.vatTreatment === "unspecified") {
+    return `${formatAED(fee.amount)} (VAT not specified)`;
+  }
   return `${formatAED(fee.amount)} ${card.vatPolicy === "exclusive" ? "+ 5% VAT" : "including VAT"}`;
 }
 
