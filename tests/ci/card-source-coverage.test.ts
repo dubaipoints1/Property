@@ -24,7 +24,7 @@ test('real catalogue: all slugs, including closed and unconfirmed profiles, have
   const cardCount = Object.keys(input.cards).length;
   assert.ok(cardCount >= 80, "retain the covered Citi baseline");
   assert.deepEqual(report.summary, {
-    cards: cardCount, banks: 15, activeScrapers: 14, configuredScraperRoutes: 58, manualPrimaryRoutes: cardCount - 58,
+    cards: cardCount, banks: 16, activeScrapers: 14, configuredScraperRoutes: 58, manualPrimaryRoutes: cardCount - 58,
     configuredDocumentGaps: 32, routeDocumentGaps: 0, manualDocumentRoutes: 33, uniqueManualDocuments: 5,
     manualDocumentNumericHolds: 3, routeProductInventoryDifferences: 1, canonicalDocumentCandidates: cardCount, overdueSourceRecords: 0,
     cardsWithPendingFields: cardCount, errors: 0, warnings: 1,

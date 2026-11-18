@@ -39271,5 +39271,626 @@
       "earnRates": "Rewards are Tamayaz Points for Union Coop redemption, not statement cashback. No general earn rate or projected return is confirmed here.",
       "fxFee": "An issuer currency-conversion component is not the total overseas transaction cost. Ask Liv to confirm the fees that would apply to your purchase."
     }
+  },
+  "nbk-visa-classic": {
+    "bank": "nbk",
+    "name": "NBK UAE Visa Classic Credit Card",
+    "network": "Visa",
+    "categories": [
+      "lifestyle"
+    ],
+    "sharia": false,
+    "annualFee": {
+      "amount": 150,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual"
+    },
+    "vatPolicy": "exclusive",
+    "standardFeeConditions": "renewal-waiver",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-classic-credit-card.html",
+    "kfsUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://www.nbk.com/uae/personal/cards/credit-cards/visa-classic-credit-card.html",
+      "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: exact UAE card, first-year annual fee waiver, standard renewal before VAT and the bank account prerequisite. This is a scoped profile, not a full review of all charges or benefits.",
+      "eligibility": "NBK says its account is needed to request the card. The issuer disclosure describes multiple routes; no standalone minimum is used for Finder.",
+      "earnRates": "No universal rewards rate or programme is verified for ranking; do not treat this profile as cashback.",
+      "fxFee": "No all-in foreign spending cost is verified in this review."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18",
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Classic Credit Card",
+          "unit": "AED issuer product amount only; tax basis separately sourced",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-classic-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.344Z",
+          "sourceBodySha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceTextSha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 66968,
+          "sourceEndByte": 67003,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2129,
+          "lastLine": 2129,
+          "rawText": "<li>Card annual fee is AED 150</li>",
+          "rawTextSha256": "52678d884811c587abb7d2f6c3bac6743cfd82f72bd4f6035f14c1314456dfdd"
+        },
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Classic Credit Card",
+          "unit": "AED standard annual renewal fee",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+          "capturedAt": "2026-11-18T18:04:31.180Z",
+          "sourceBodySha256": "6dcb9087d48491a4909461dea456bbd4e35cb5fc9ada32eb893db264d5e18f01",
+          "sourceTextSha256": "8a7134a376d508a844faf1a67cdaf35e7beb83491efbb8333279ff15a6f8e6eb",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 2",
+          "captureMethod": "public-http-reader",
+          "firstLine": 113,
+          "lastLine": 113,
+          "rawText": "‫‪Classic card‬‬          ‫‪AED 150‬‬              ‫‪Annual renewal fee for Classic",
+          "rawTextSha256": "782b34e67e932f96eb3a0fa8deccabb4931f4eb8d45678e39d2fb6436a6f6ae8"
+        }
+      ],
+      "vatPolicy": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Classic Credit Card",
+          "unit": "Renewal table tax basis",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+          "capturedAt": "2026-11-18T18:04:31.180Z",
+          "sourceBodySha256": "6dcb9087d48491a4909461dea456bbd4e35cb5fc9ada32eb893db264d5e18f01",
+          "sourceTextSha256": "8a7134a376d508a844faf1a67cdaf35e7beb83491efbb8333279ff15a6f8e6eb",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 2",
+          "captureMethod": "public-http-reader",
+          "firstLine": 86,
+          "lastLine": 86,
+          "rawText": "Other fees & charges (Excluding VAT",
+          "rawTextSha256": "3d4cfdbfa19ecb388b9d1f46984ab979b78825793656d969066b2ff87de02b02"
+        }
+      ],
+      "annualFeeWaiver": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Classic Credit Card",
+          "unit": "First-year annual card fee only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-classic-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.344Z",
+          "sourceBodySha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceTextSha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 65945,
+          "sourceEndByte": 65990,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2108,
+          "lastLine": 2108,
+          "rawText": "<strong>Free card for the first year</strong>",
+          "rawTextSha256": "11ba4f2be97a8444352f48fa41e0c386029358ad637833265355efcc231e56c1"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Classic Credit Card",
+          "unit": "Network and exact UAE product",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-classic-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.344Z",
+          "sourceBodySha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceTextSha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 61928,
+          "sourceEndByte": 61961,
+          "captureMethod": "public-http-reader",
+          "firstLine": 1981,
+          "lastLine": 1981,
+          "rawText": "<h1>Visa Classic Credit Card</h1>",
+          "rawTextSha256": "eb4f360fe35b65ec401090acca2a5d20037cd5fb7c550a4ee0f74165db3663c9"
+        }
+      ],
+      "applicationAvailability": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Classic Credit Card",
+          "unit": "Named UAE product enquiry fields; no submission",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-classic-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.344Z",
+          "sourceBodySha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceTextSha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 71715,
+          "sourceEndByte": 71854,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2298,
+          "lastLine": 2299,
+          "rawText": "<input type=\"hidden\" name=\"productName\" value=\"Visa Classic Credit Card\">\r\n            <input type=\"hidden\" name=\"countryName\" value=\"uae\">",
+          "rawTextSha256": "f54e410130ec1cd3641b716f8aa74a3779ba9f84e41518e59d3b3a2086c072a4"
+        }
+      ],
+      "eligibility": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Classic Credit Card",
+          "unit": "NBK account needed to request card; other eligibility not determined",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-classic-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.344Z",
+          "sourceBodySha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceTextSha256": "32cab7571e9e8fc684fb83e6b28ca8385e089987185378ea7175ca1fa86de2e1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 66749,
+          "sourceEndByte": 66826,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2123,
+          "lastLine": 2123,
+          "rawText": "To request the card, simply open an account with the National Bank of Kuwait.",
+          "rawTextSha256": "5919ed450f69fabfff8f347eef6356c52c6c007ba0c58cd5ee93c4b4138f69cc"
+        }
+      ]
+    }
+  },
+  "nbk-visa-gold": {
+    "bank": "nbk",
+    "name": "NBK UAE Visa Gold Credit Card",
+    "network": "Visa",
+    "categories": [
+      "lifestyle"
+    ],
+    "sharia": false,
+    "annualFee": {
+      "amount": 300,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual"
+    },
+    "vatPolicy": "exclusive",
+    "standardFeeConditions": "renewal-waiver",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-gold-credit-card.html",
+    "kfsUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://www.nbk.com/uae/personal/cards/credit-cards/visa-gold-credit-card.html",
+      "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: exact UAE card, first-year annual fee waiver, standard renewal before VAT and the bank account prerequisite. This is a scoped profile, not a full review of all charges or benefits.",
+      "eligibility": "NBK says its account is needed to request the card. The issuer disclosure describes multiple routes; no standalone minimum is used for Finder.",
+      "earnRates": "No universal rewards rate or programme is verified for ranking; do not treat this profile as cashback.",
+      "fxFee": "No all-in foreign spending cost is verified in this review."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18",
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Gold Credit Card",
+          "unit": "AED issuer product amount only; tax basis separately sourced",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-gold-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.385Z",
+          "sourceBodySha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceTextSha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 66873,
+          "sourceEndByte": 66908,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2128,
+          "lastLine": 2128,
+          "rawText": "<li>Card annual fee is AED 300</li>",
+          "rawTextSha256": "35565cc59a228bf2ebf400bd802837041f969a5add9779c183f5dcf7d18e3cc0"
+        },
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Gold Credit Card",
+          "unit": "AED standard annual renewal fee",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+          "capturedAt": "2026-11-18T18:04:31.180Z",
+          "sourceBodySha256": "6dcb9087d48491a4909461dea456bbd4e35cb5fc9ada32eb893db264d5e18f01",
+          "sourceTextSha256": "8a7134a376d508a844faf1a67cdaf35e7beb83491efbb8333279ff15a6f8e6eb",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 2",
+          "captureMethod": "public-http-reader",
+          "firstLine": 115,
+          "lastLine": 115,
+          "rawText": "‫‪Gold Card‬‬             ‫‪AED 300‬‬              ‫‪Annual renewal fee for Gold",
+          "rawTextSha256": "004583ab84864961fbbeebaaec13edfd81509f1ee3a406e823bf17b3a1abbcd4"
+        }
+      ],
+      "vatPolicy": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Gold Credit Card",
+          "unit": "Renewal table tax basis",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+          "capturedAt": "2026-11-18T18:04:31.180Z",
+          "sourceBodySha256": "6dcb9087d48491a4909461dea456bbd4e35cb5fc9ada32eb893db264d5e18f01",
+          "sourceTextSha256": "8a7134a376d508a844faf1a67cdaf35e7beb83491efbb8333279ff15a6f8e6eb",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 2",
+          "captureMethod": "public-http-reader",
+          "firstLine": 86,
+          "lastLine": 86,
+          "rawText": "Other fees & charges (Excluding VAT",
+          "rawTextSha256": "3d4cfdbfa19ecb388b9d1f46984ab979b78825793656d969066b2ff87de02b02"
+        }
+      ],
+      "annualFeeWaiver": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Gold Credit Card",
+          "unit": "First-year annual card fee only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-gold-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.385Z",
+          "sourceBodySha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceTextSha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 65918,
+          "sourceEndByte": 65963,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2108,
+          "lastLine": 2108,
+          "rawText": "<strong>Free card for the first year</strong>",
+          "rawTextSha256": "11ba4f2be97a8444352f48fa41e0c386029358ad637833265355efcc231e56c1"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Gold Credit Card",
+          "unit": "Network and exact UAE product",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-gold-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.385Z",
+          "sourceBodySha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceTextSha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 62145,
+          "sourceEndByte": 62175,
+          "captureMethod": "public-http-reader",
+          "firstLine": 1982,
+          "lastLine": 1982,
+          "rawText": "<h1>Visa Gold Credit Card</h1>",
+          "rawTextSha256": "592f174149ee98c6ebeaa698f15a8cb0ed516c1784b2f274f09e2c6261a01d52"
+        }
+      ],
+      "applicationAvailability": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Gold Credit Card",
+          "unit": "Named UAE product enquiry fields; no submission",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-gold-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.385Z",
+          "sourceBodySha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceTextSha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 71770,
+          "sourceEndByte": 71906,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2301,
+          "lastLine": 2302,
+          "rawText": "<input type=\"hidden\" name=\"productName\" value=\"Visa Gold Credit Card\">\r\n            <input type=\"hidden\" name=\"countryName\" value=\"uae\">",
+          "rawTextSha256": "276f2a971ddd9e0a226617d0acb84526f83269caf0d9e3b965cc44e9414fdfca"
+        }
+      ],
+      "eligibility": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Gold Credit Card",
+          "unit": "NBK account needed to request card; other eligibility not determined",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-gold-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.385Z",
+          "sourceBodySha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceTextSha256": "e6663e5cec30d7525d7ed4a67c98b487ce3297a6b3b9bd04caf19b785f2b200c",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 66654,
+          "sourceEndByte": 66731,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2122,
+          "lastLine": 2122,
+          "rawText": "To request the card, simply open an account with the National Bank of Kuwait.",
+          "rawTextSha256": "5919ed450f69fabfff8f347eef6356c52c6c007ba0c58cd5ee93c4b4138f69cc"
+        }
+      ]
+    }
+  },
+  "nbk-visa-platinum": {
+    "bank": "nbk",
+    "name": "NBK UAE Visa Platinum Credit Card",
+    "network": "Visa",
+    "categories": [
+      "lifestyle"
+    ],
+    "sharia": false,
+    "annualFee": {
+      "amount": 450,
+      "currency": "AED"
+    },
+    "annualFeeWaiver": {
+      "year_one_waived": true,
+      "ongoing_threshold_aed": null,
+      "threshold_period": "annual"
+    },
+    "vatPolicy": "exclusive",
+    "standardFeeConditions": "renewal-waiver",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-platinum-credit-card.html",
+    "kfsUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://www.nbk.com/uae/personal/cards/credit-cards/visa-platinum-credit-card.html",
+      "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "annualFeeWaiver": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: exact UAE card, first-year annual fee waiver, standard renewal before VAT and the bank account prerequisite. This is a scoped profile, not a full review of all charges or benefits.",
+      "eligibility": "NBK says its account is needed to request the card. The issuer disclosure describes multiple routes; no standalone minimum is used for Finder.",
+      "earnRates": "No universal rewards rate or programme is verified for ranking; do not treat this profile as cashback.",
+      "fxFee": "No all-in foreign spending cost is verified in this review."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18",
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Platinum Credit Card",
+          "unit": "AED issuer product amount only; tax basis separately sourced",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-platinum-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.384Z",
+          "sourceBodySha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceTextSha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 67750,
+          "sourceEndByte": 67785,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2135,
+          "lastLine": 2135,
+          "rawText": "<li>Card annual fee is AED 450</li>",
+          "rawTextSha256": "6879058b535091614d17506b83a0087c3842016a7a6b986c23dbcc4728234770"
+        },
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Platinum Credit Card",
+          "unit": "AED standard annual renewal fee",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+          "capturedAt": "2026-11-18T18:04:31.180Z",
+          "sourceBodySha256": "6dcb9087d48491a4909461dea456bbd4e35cb5fc9ada32eb893db264d5e18f01",
+          "sourceTextSha256": "8a7134a376d508a844faf1a67cdaf35e7beb83491efbb8333279ff15a6f8e6eb",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 2",
+          "captureMethod": "public-http-reader",
+          "firstLine": 117,
+          "lastLine": 117,
+          "rawText": "‫‪Platinum Card‬‬         ‫‪AED 450‬‬              ‫‪Annual renewal fee for Platinum",
+          "rawTextSha256": "a70502368b0427c75506b132d38b965492948b619e5c3250511e2befbace12b0"
+        }
+      ],
+      "vatPolicy": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Platinum Credit Card",
+          "unit": "Renewal table tax basis",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+          "capturedAt": "2026-11-18T18:04:31.180Z",
+          "sourceBodySha256": "6dcb9087d48491a4909461dea456bbd4e35cb5fc9ada32eb893db264d5e18f01",
+          "sourceTextSha256": "8a7134a376d508a844faf1a67cdaf35e7beb83491efbb8333279ff15a6f8e6eb",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 2",
+          "captureMethod": "public-http-reader",
+          "firstLine": 86,
+          "lastLine": 86,
+          "rawText": "Other fees & charges (Excluding VAT",
+          "rawTextSha256": "3d4cfdbfa19ecb388b9d1f46984ab979b78825793656d969066b2ff87de02b02"
+        }
+      ],
+      "annualFeeWaiver": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Platinum Credit Card",
+          "unit": "First-year annual card fee only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-platinum-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.384Z",
+          "sourceBodySha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceTextSha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 66650,
+          "sourceEndByte": 66695,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2113,
+          "lastLine": 2113,
+          "rawText": "<strong>Free card for the first year</strong>",
+          "rawTextSha256": "11ba4f2be97a8444352f48fa41e0c386029358ad637833265355efcc231e56c1"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Platinum Credit Card",
+          "unit": "Network and exact UAE product",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-platinum-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.384Z",
+          "sourceBodySha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceTextSha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 62774,
+          "sourceEndByte": 62808,
+          "captureMethod": "public-http-reader",
+          "firstLine": 1982,
+          "lastLine": 1982,
+          "rawText": "<h1>Visa Platinum Credit Card</h1>",
+          "rawTextSha256": "e7868b93b51fad969f8be89679bcb04ccdfb1d54bee1a02f1e3a524225e4518c"
+        }
+      ],
+      "applicationAvailability": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Platinum Credit Card",
+          "unit": "Named UAE product enquiry fields; no submission",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-platinum-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.384Z",
+          "sourceBodySha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceTextSha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 71975,
+          "sourceEndByte": 72115,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2266,
+          "lastLine": 2267,
+          "rawText": "<input type=\"hidden\" name=\"productName\" value=\"Visa Platinum Credit Card\">\r\n            <input type=\"hidden\" name=\"countryName\" value=\"uae\">",
+          "rawTextSha256": "845036922f81a78ee3435f015b224813cdffe369a77c834d7960b48ce4e5d80b"
+        }
+      ],
+      "eligibility": [
+        {
+          "parserId": "nbk-uae/visa-tiers/v1",
+          "productScope": "NBK UAE Visa Platinum Credit Card",
+          "unit": "NBK account needed to request card; other eligibility not determined",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-platinum-credit-card.html",
+          "capturedAt": "2026-11-18T18:04:31.384Z",
+          "sourceBodySha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceTextSha256": "ab07a8a238c416ebd4c15b3744b063d8dd227ca8d3b0a0a1b6830292db77420b",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 67531,
+          "sourceEndByte": 67608,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2129,
+          "lastLine": 2129,
+          "rawText": "To request the card, simply open an account with the National Bank of Kuwait.",
+          "rawTextSha256": "5919ed450f69fabfff8f347eef6356c52c6c007ba0c58cd5ee93c4b4138f69cc"
+        }
+      ]
+    }
   }
 }

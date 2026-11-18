@@ -1897,6 +1897,105 @@
           "sha256": "69831bfef4826a4bc5e03e39d0ed05b8e023be3a12f1dcf7a058eaa47c71a9b5"
         }
       ]
+    },
+    {
+      "slug": "nbk-visa-classic",
+      "bank": "nbk",
+      "productUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-classic-credit-card.html",
+      "kfsUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+      "sourceFixtureIds": [
+        "nbk-visa-classic-heading",
+        "nbk-visa-classic-application",
+        "nbk-visa-classic-kfs-link",
+        "nbk-visa-classic-waiver",
+        "nbk-visa-classic-account",
+        "nbk-visa-classic-product-fee",
+        "nbk-visa-classic-renewal",
+        "nbk-kfs-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_nbk-visa.ts",
+        "export": "parseNbkVisa",
+        "sha256": "4f83d54ca224f17d93019e959f1e1b39d062db20c4320cc7d210637b4518a8a6",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-nbk-visa.json",
+          "sha256": "e57f442189d550236452dac074a565ad3ccdafa9471782499ebda7cbc76e7137"
+        }
+      ]
+    },
+    {
+      "slug": "nbk-visa-gold",
+      "bank": "nbk",
+      "productUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-gold-credit-card.html",
+      "kfsUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+      "sourceFixtureIds": [
+        "nbk-visa-gold-heading",
+        "nbk-visa-gold-application",
+        "nbk-visa-gold-kfs-link",
+        "nbk-visa-gold-waiver",
+        "nbk-visa-gold-account",
+        "nbk-visa-gold-product-fee",
+        "nbk-visa-gold-renewal",
+        "nbk-kfs-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_nbk-visa.ts",
+        "export": "parseNbkVisa",
+        "sha256": "4f83d54ca224f17d93019e959f1e1b39d062db20c4320cc7d210637b4518a8a6",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-nbk-visa.json",
+          "sha256": "e57f442189d550236452dac074a565ad3ccdafa9471782499ebda7cbc76e7137"
+        }
+      ]
+    },
+    {
+      "slug": "nbk-visa-platinum",
+      "bank": "nbk",
+      "productUrl": "https://www.nbk.com/uae/personal/cards/credit-cards/visa-platinum-credit-card.html",
+      "kfsUrl": "https://www.nbk.com/dam/jcr%3A33c61d37-55de-411a-a69a-33bc95a257ae/KFS_Credit%20Card%20%28RJ%29%20Form.pdf",
+      "sourceFixtureIds": [
+        "nbk-visa-platinum-heading",
+        "nbk-visa-platinum-application",
+        "nbk-visa-platinum-kfs-link",
+        "nbk-visa-platinum-waiver",
+        "nbk-visa-platinum-account",
+        "nbk-visa-platinum-product-fee",
+        "nbk-visa-platinum-renewal",
+        "nbk-kfs-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_nbk-visa.ts",
+        "export": "parseNbkVisa",
+        "sha256": "4f83d54ca224f17d93019e959f1e1b39d062db20c4320cc7d210637b4518a8a6",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-nbk-visa.json",
+          "sha256": "e57f442189d550236452dac074a565ad3ccdafa9471782499ebda7cbc76e7137"
+        }
+      ]
     }
   ]
 }
