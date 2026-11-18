@@ -31,6 +31,9 @@ const ALLOWED_MISSING: Record<string, string> = {
   )),
   "card-dib-shams-signature": "Text-led scope; issuer card art was used only to identify the network, not republished.",
   "card-dib-shams-infinite": "Text-led scope; issuer card art was used only to identify the network, not republished.",
+  "bank-nbf": "Text-led issuer directory entry with a plain-text label rather than an issuer mark.",
+  "card-nbf-islamic-visa-infinite": "Text-led issuer profile; no licensed issuer card art is republished.",
+  "card-nbf-islamic-platinum-exclusive": "Text-led issuer profile; no licensed issuer card art is republished.",
   "card-rakbank-red": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-rakbank-titanium": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   ...Object.fromEntries(["noon", "platinum-plus", "solitaire"].map(

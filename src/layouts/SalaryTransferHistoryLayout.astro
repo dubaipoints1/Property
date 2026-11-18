@@ -22,9 +22,10 @@ interface Props {
   description?: string;
   bankName: string;
   entries: TimelineEntry[];
+  reviewPending?: boolean;
 }
 
-const { title, description, bankName, entries } = Astro.props;
+const { title, description, bankName, entries, reviewPending } = Astro.props;
 
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
@@ -47,9 +48,9 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
     {entries.length === 0 && (
       <div class="dp-hist-empty">
         <p>
-          <strong>Nothing tracked yet.</strong> We haven't recorded a salary
-          transfer offer from {bankName} since tracking began — either the bank
-          hasn't run one, or it predates our archive.
+          <strong>Nothing tracked yet.</strong> {reviewPending
+            ? `We have not recorded a salary-transfer offer from ${bankName}. That does not mean the bank has not run one.`
+            : `We haven't recorded a salary transfer offer from ${bankName} since tracking began — either the bank hasn't run one, or it predates our archive.`}
         </p>
         <p>
           <a href="/salary-transfer/">See the banks with live offers →</a>

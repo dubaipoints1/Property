@@ -1620,6 +1620,70 @@
           "sha256": "400f6c9b874375892708202d1530af250ecdb65c407be7d68ff6d690aac035c5"
         }
       ]
+    },
+    {
+      "slug": "nbf-islamic-visa-infinite",
+      "bank": "nbf",
+      "productUrl": "https://nbfislamic.ae/personal/cards/infinite-credit-card/",
+      "kfsUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Infinite-Credit-Card-27102025.pdf",
+      "sourceFixtureIds": [
+        "nbf-islamic-infinite-heading",
+        "nbf-islamic-infinite-apply",
+        "nbf-islamic-infinite-programme",
+        "nbf-islamic-infinite-kfs-title",
+        "nbf-islamic-infinite-kfs-network",
+        "nbf-islamic-infinite-kfs-salary",
+        "nbf-islamic-infinite-kfs-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_nbf-islamic.ts",
+        "export": "parseNbfIslamic",
+        "sha256": "8d08edc819eeeee42951dd4c0516f86ec0f76fe94211d5e69a18fd1ab9f6586e",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-nbf-islamic.json",
+          "sha256": "dd663c230ac14d54332b8ca5378ab2b71f8ddec43c8541091cc5f809b0a132e1"
+        }
+      ]
+    },
+    {
+      "slug": "nbf-islamic-platinum-exclusive",
+      "bank": "nbf",
+      "productUrl": "https://nbfislamic.ae/personal/cards/platinum-exclusive-credit-card/",
+      "kfsUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Platinum-Credit-Card-27102025.pdf",
+      "sourceFixtureIds": [
+        "nbf-islamic-platinum-heading",
+        "nbf-islamic-platinum-apply",
+        "nbf-islamic-platinum-programme",
+        "nbf-islamic-platinum-kfs-title",
+        "nbf-islamic-platinum-kfs-network",
+        "nbf-islamic-platinum-kfs-salary",
+        "nbf-islamic-platinum-kfs-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_nbf-islamic.ts",
+        "export": "parseNbfIslamic",
+        "sha256": "8d08edc819eeeee42951dd4c0516f86ec0f76fe94211d5e69a18fd1ab9f6586e",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-nbf-islamic.json",
+          "sha256": "dd663c230ac14d54332b8ca5378ab2b71f8ddec43c8541091cc5f809b0a132e1"
+        }
+      ]
     }
   ]
 }

@@ -37612,5 +37612,292 @@
       "annualFee": "The annual fee has not been confirmed as zero. The current captured tariff omits an annual-card-fee row; omission is not an explicit free-fee promise. Annual card fee remains pending, separately from account-plan costs.",
       "reviewScope": "Selected primary-source fields were reviewed on 7 November 2026. The earlier source-record and scrape dates have not been advanced, and this is not a new whole-card verification. Confirm any pending costs, qualification, rewards or benefits before applying."
     }
+  },
+  "nbf-islamic-visa-infinite": {
+    "bank": "nbf",
+    "name": "NBF Islamic Visa Infinite Credit Card",
+    "network": "Visa",
+    "categories": [
+      "Islamic",
+      "lifestyle"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "NBF Rewards",
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://nbfislamic.ae/personal/cards/infinite-credit-card/",
+    "kfsUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Infinite-Credit-Card-27102025.pdf",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://nbfislamic.ae/personal/cards/infinite-credit-card/",
+      "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Infinite-Credit-Card-27102025.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "nbf-islamic/named-tiers/v1",
+          "productScope": "NBF Islamic Visa Infinite Credit Card",
+          "unit": "AED standard annual membership fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Infinite-Credit-Card-27102025.pdf",
+          "capturedAt": "2026-11-18T13:43:26.012Z",
+          "sourceBodySha256": "0061e565a7042778dc08a0fa41b7f3e4cb7ed3c9222cb1ed055a9194cd2b36b1",
+          "sourceTextSha256": "577a25ca4e613123a1d7e1d6c3210ef50a0e1713b37f6bbb340a4fc5f73e3d9b",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 2",
+          "captureMethod": "public-http-reader",
+          "firstLine": 105,
+          "lastLine": 105,
+          "rawText": " Annual fee                             Lifetime free",
+          "rawTextSha256": "6625e7ca1d9a179e067ec1369563a76b960396638563a5b4556838e624ab560f"
+        }
+      ],
+      "eligibility": [
+        {
+          "parserId": "nbf-islamic/named-tiers/v1",
+          "productScope": "NBF Islamic Visa Infinite Credit Card",
+          "unit": "AED monthly salary route or NBF Priority status",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Infinite-Credit-Card-27102025.pdf",
+          "capturedAt": "2026-11-18T13:43:26.012Z",
+          "sourceBodySha256": "0061e565a7042778dc08a0fa41b7f3e4cb7ed3c9222cb1ed055a9194cd2b36b1",
+          "sourceTextSha256": "577a25ca4e613123a1d7e1d6c3210ef50a0e1713b37f6bbb340a4fc5f73e3d9b",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "captureMethod": "public-http-reader",
+          "firstLine": 60,
+          "lastLine": 60,
+          "rawText": "Minimum salary                         AED 40,000 or priority status with NBF",
+          "rawTextSha256": "7184a5e489eb64331ef4800776006ab9fceb9effea1e3c8a25c6fdc8c84b7323"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "nbf-islamic/named-tiers/v1",
+          "productScope": "NBF Islamic Visa Infinite Credit Card",
+          "unit": "Issuer programme name only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbfislamic.ae/personal/cards/infinite-credit-card/",
+          "capturedAt": "2026-11-18T13:43:25.909Z",
+          "sourceBodySha256": "3895538522bff5cf0e58156036c8fb732316a0c87ae6dd8ebd3247dadb93379f",
+          "sourceTextSha256": "3895538522bff5cf0e58156036c8fb732316a0c87ae6dd8ebd3247dadb93379f",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 271212,
+          "sourceEndByte": 271320,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2456,
+          "lastLine": 2456,
+          "rawText": "<div class=\"e-n-accordion-item-title-text\"> Experience a World of Exclusive Benefits with NBF Rewards </div>",
+          "rawTextSha256": "b15289c02c32ee574d787716a971da9a0a09e312bda93d7112046f983c9f08f6"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "nbf-islamic/named-tiers/v1",
+          "productScope": "NBF Islamic Visa Infinite Credit Card",
+          "unit": "Network identity, not benefits acceptance",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Infinite-Credit-Card-27102025.pdf",
+          "capturedAt": "2026-11-18T13:43:26.012Z",
+          "sourceBodySha256": "0061e565a7042778dc08a0fa41b7f3e4cb7ed3c9222cb1ed055a9194cd2b36b1",
+          "sourceTextSha256": "577a25ca4e613123a1d7e1d6c3210ef50a0e1713b37f6bbb340a4fc5f73e3d9b",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "captureMethod": "public-http-reader",
+          "firstLine": 32,
+          "lastLine": 32,
+          "rawText": "                                       •   Infinite Cards qualify for offers, discounts and benefits from Visa",
+          "rawTextSha256": "cd9920346a420af197a883d2839eae5aa2df05818a51c1a2da1c649793d7d9e6"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: named card, standard annual membership fee, the bank’s published eligibility wording and rewards programme name. This is not a full review of the card’s terms or charges.",
+      "eligibility": "The issuer lists AED 40,000 monthly salary or NBF Priority status. Other criteria apply. Neither route guarantees approval.",
+      "fxFee": "The card disclosure lists a foreign-currency processing charge. We have not established the tax treatment or total cost of an overseas transaction.",
+      "earnRates": "No universal rewards return is verified. Confirm eligible spend, caps and redemption terms before comparing points value."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18"
+  },
+  "nbf-islamic-platinum-exclusive": {
+    "bank": "nbf",
+    "name": "NBF Islamic Platinum Exclusive Credit Card",
+    "network": "Visa",
+    "categories": [
+      "Islamic",
+      "lifestyle"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "NBF Rewards",
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": [],
+      "publishedMinMonthlyIncome": 9000,
+      "publishedIncomeBasis": "salaried-applicants"
+    },
+    "applyUrl": "https://nbfislamic.ae/personal/cards/platinum-exclusive-credit-card/",
+    "kfsUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Platinum-Credit-Card-27102025.pdf",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://nbfislamic.ae/personal/cards/platinum-exclusive-credit-card/",
+      "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Platinum-Credit-Card-27102025.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "nbf-islamic/named-tiers/v1",
+          "productScope": "NBF Islamic Platinum Exclusive Credit Card",
+          "unit": "AED standard annual membership fee",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Platinum-Credit-Card-27102025.pdf",
+          "capturedAt": "2026-11-18T13:43:26.091Z",
+          "sourceBodySha256": "a8a50887ca451074c310897d4e02e5f9d32fc80ef74c51abce4dbebbc7de23fe",
+          "sourceTextSha256": "d23f084dc704a31c8646412edf06e51cc7eb6477fd1816981015acab68c96349",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 3",
+          "captureMethod": "public-http-reader",
+          "firstLine": 113,
+          "lastLine": 113,
+          "rawText": " Annual fee                                Lifetime free",
+          "rawTextSha256": "b318dcce4d6619a522a84e30cdf789a4b5ab555173437e08850bbaba723c4e6f"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "nbf-islamic/named-tiers/v1",
+          "productScope": "NBF Islamic Platinum Exclusive Credit Card",
+          "unit": "AED published minimum salary for salaried applicants",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Platinum-Credit-Card-27102025.pdf",
+          "capturedAt": "2026-11-18T13:43:26.091Z",
+          "sourceBodySha256": "a8a50887ca451074c310897d4e02e5f9d32fc80ef74c51abce4dbebbc7de23fe",
+          "sourceTextSha256": "d23f084dc704a31c8646412edf06e51cc7eb6477fd1816981015acab68c96349",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "captureMethod": "public-http-reader",
+          "firstLine": 60,
+          "lastLine": 60,
+          "rawText": "Minimum salary                        AED 9000",
+          "rawTextSha256": "4f2408302cce84ed818a9c2d03164e47cb988f9fe31a52bf7aefbf2958f4abc8"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "nbf-islamic/named-tiers/v1",
+          "productScope": "NBF Islamic Platinum Exclusive Credit Card",
+          "unit": "Issuer programme name only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbfislamic.ae/personal/cards/platinum-exclusive-credit-card/",
+          "capturedAt": "2026-11-18T13:43:25.996Z",
+          "sourceBodySha256": "b3ed55fa7d3a9b2b2fb4a76d9e80584f536499545b0e80486c32d7cedf4503f7",
+          "sourceTextSha256": "b3ed55fa7d3a9b2b2fb4a76d9e80584f536499545b0e80486c32d7cedf4503f7",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 268547,
+          "sourceEndByte": 268640,
+          "captureMethod": "public-http-reader",
+          "firstLine": 2433,
+          "lastLine": 2433,
+          "rawText": "<div class=\"e-n-accordion-item-title-text\"> Earn Rewards Effortlessly with NBF Rewards </div>",
+          "rawTextSha256": "a22a939da6fc3b32752b33c37509c43e95d27dd0b7bc88208fc0113303fee5d3"
+        }
+      ],
+      "network": [
+        {
+          "parserId": "nbf-islamic/named-tiers/v1",
+          "productScope": "NBF Islamic Platinum Exclusive Credit Card",
+          "unit": "Network identity, not benefits acceptance",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://nbfislamic.ae/wp-content/uploads/2025/11/KFS_NBF-Islamic-Platinum-Credit-Card-27102025.pdf",
+          "capturedAt": "2026-11-18T13:43:26.091Z",
+          "sourceBodySha256": "a8a50887ca451074c310897d4e02e5f9d32fc80ef74c51abce4dbebbc7de23fe",
+          "sourceTextSha256": "d23f084dc704a31c8646412edf06e51cc7eb6477fd1816981015acab68c96349",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "captureMethod": "public-http-reader",
+          "firstLine": 32,
+          "lastLine": 32,
+          "rawText": "                                      •   Platinum Cards qualify for offers, discounts and benefits from Visa",
+          "rawTextSha256": "1f1b1658522dc47e52fb4e4c87dbf7b0159b6275dd166c1d03debdc9942081b7"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: named card, standard annual membership fee, the bank’s published eligibility wording and rewards programme name. This is not a full review of the card’s terms or charges.",
+      "eligibility": "The listed salary floor applies to salaried applicants. It is not a qualification decision; ask about the bank’s other criteria or a deposit-backed application.",
+      "fxFee": "The card disclosure lists a foreign-currency processing charge. We have not established the tax treatment or total cost of an overseas transaction.",
+      "earnRates": "No universal rewards return is verified. Confirm eligible spend, caps and redemption terms before comparing points value."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18"
   }
 }

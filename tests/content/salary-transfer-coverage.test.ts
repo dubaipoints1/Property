@@ -42,6 +42,23 @@ test("a bank that is live and lapsed at once counts as tracked only", () => {
   assert.deepEqual(c.lapsed, []);
 });
 
+test("an issuer with cards can have an explicit salary-offer review hold without implying no offer", () => {
+  const input = {
+    coveredBanks: ["fab", "nbf"],
+    liveOfferBanks: ["fab"],
+    lapsedOfferBanks: [],
+    checkedWithoutLiveOffer: [],
+    advertisedWithoutCurrentTerms: [],
+    reviewPendingBanks: ["nbf"],
+  };
+  const c = classifyCoverage(input);
+  assert.deepEqual(c.reviewPending, ["nbf"]);
+  assert.deepEqual(c.tracked, ["fab"]);
+  assert.deepEqual(c.checkedWithoutLiveOffer, []);
+  assert.equal(coverageGuardError(c, 2), null);
+  assert.match(coverageGuardError(classifyCoverage({ ...input, upcomingOfferBanks: ["nbf"] }), 2) ?? "", /nbf in more than one bucket/);
+});
+
 test("an upcoming offer classifies without being counted as live or lapsed", () => {
   const c = classifyCoverage({
     coveredBanks: ["dib", "fab"],

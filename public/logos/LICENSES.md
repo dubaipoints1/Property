@@ -205,6 +205,7 @@ each was checked rasterised on `#1f3a4d`.
 | banks/liv | placeholder | 2026-08-22 | Text-mark authored by DubaiPoints. Replace with a Liv (Emirates NBD) brand-kit SVG or Commons {{PD-textlogo}} asset — **superseded 2026-10-20: real mark, see the 2026-10-20 section** |
 | banks/wio | placeholder | 2026-08-22 | Text-mark authored by DubaiPoints. Replace with a Wio Bank brand-kit SVG or Commons {{PD-textlogo}} asset — **superseded 2026-10-20: real mark, see the 2026-10-20 section** |
 | banks/al-hilal | placeholder | 2026-08-22 | Text-mark authored by DubaiPoints. Replace with an Al Hilal Bank (ADCB Group) brand-kit SVG or Commons {{PD-textlogo}} asset |
+| banks/nbf | placeholder | 2026-11-18 | Plain text authored by DubaiPoints for the National Bank of Fujairah directory entry; no issuer logo or card artwork reproduced. |
 | banks/hsbc | https://commons.wikimedia.org/wiki/File:HSBC_logo_(2018).svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of HSBC Holdings, used nominatively |
 | banks/citi | https://commons.wikimedia.org/wiki/File:Citi.svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Citigroup, used nominatively |
 | banks/standard-chartered | https://commons.wikimedia.org/wiki/File:Standard_Chartered_(2021).svg | 2026-05-29 | Wikimedia Commons — {{PD-textlogo}} (below threshold of originality); trademark of Standard Chartered PLC, used nominatively |

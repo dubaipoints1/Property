@@ -18,6 +18,9 @@
  * still throws.
  */
 
+// Covering an issuer's cards is not evidence about its salary-transfer offers.
+export const SALARY_OFFER_REVIEW_PENDING_BANKS: readonly string[] = ["nbf"];
+
 export interface CoverageInput {
   /** Every bank the publication covers (the denominator). */
   coveredBanks: readonly string[];
@@ -31,6 +34,8 @@ export interface CoverageInput {
   checkedWithoutLiveOffer: readonly string[];
   /** Editorial: bank advertises an offer without current published terms. */
   advertisedWithoutCurrentTerms: readonly string[];
+  /** Editorial: no current salary-offer review has been completed. */
+  reviewPendingBanks?: readonly string[];
 }
 
 export interface Coverage {
@@ -39,6 +44,7 @@ export interface Coverage {
   upcoming: string[];
   checkedWithoutLiveOffer: string[];
   advertisedWithoutCurrentTerms: string[];
+  reviewPending: string[];
   /** Covered banks that appear in no bucket — still a hard build error. */
   unclassified: string[];
   /** Banks named in more than one editorial list (a copy-paste mistake). */
@@ -56,22 +62,25 @@ export function classifyCoverage(input: CoverageInput): Coverage {
   const isLapsed = new Set(lapsed);
   const checked = uniqSorted(input.checkedWithoutLiveOffer);
   const advertised = uniqSorted(input.advertisedWithoutCurrentTerms);
+  const reviewPending = uniqSorted(input.reviewPendingBanks ?? []);
+  const known = new Set([...tracked, ...lapsed, ...upcoming, ...checked, ...advertised]);
 
   const overlaps = uniqSorted(
     [...checked.filter((b) => advertised.includes(b) || isTracked.has(b) || isLapsed.has(b) || isUpcoming.has(b)),
-     ...advertised.filter((b) => isTracked.has(b) || isLapsed.has(b) || isUpcoming.has(b))],
+     ...advertised.filter((b) => isTracked.has(b) || isLapsed.has(b) || isUpcoming.has(b)),
+     ...reviewPending.filter((b) => known.has(b))],
   );
 
-  const classified = new Set([...tracked, ...lapsed, ...upcoming, ...checked, ...advertised]);
+  const classified = new Set([...known, ...reviewPending]);
   const unclassified = uniqSorted(input.coveredBanks).filter((b) => !classified.has(b));
 
-  return { tracked, lapsed, upcoming, checkedWithoutLiveOffer: checked, advertisedWithoutCurrentTerms: advertised, unclassified, overlaps };
+  return { tracked, lapsed, upcoming, checkedWithoutLiveOffer: checked, advertisedWithoutCurrentTerms: advertised, reviewPending, unclassified, overlaps };
 }
 
 /** Human-readable reason for the build guard, or null when the page may render. */
 export function coverageGuardError(coverage: Coverage, coveredCount: number): string | null {
   if (coverage.unclassified.length) {
-    return `Salary-transfer coverage classification misses ${coverage.unclassified.join(", ")} (${coveredCount} banks covered). Add each to checkedWithoutLiveOffer or advertisedWithoutCurrentTerms in src/pages/salary-transfer/index.astro.`;
+    return `Salary-transfer coverage classification misses ${coverage.unclassified.join(", ")} (${coveredCount} banks covered). Record each bank's evidence state or an explicit review hold.`;
   }
   if (coverage.overlaps.length) {
     return `Salary-transfer coverage lists ${coverage.overlaps.join(", ")} in more than one bucket.`;
