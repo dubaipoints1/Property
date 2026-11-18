@@ -17219,6 +17219,498 @@
     "_lastScraped": null,
     "_lastReviewed": "2026-11-14"
   },
+  "dib-prime-gold": {
+    "bank": "dib",
+    "name": "DIB Prime Gold Card",
+    "network": "Visa",
+    "categories": [
+      "Islamic",
+      "lifestyle"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "Wala’a Rewards",
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": [],
+      "publishedMinMonthlyIncome": 5000,
+      "publishedIncomeBasis": "salary"
+    },
+    "applyUrl": "https://www.dib.ae/personal/cards/prime-gold-card",
+    "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://www.dib.ae/personal/cards/prime-gold-card",
+      "https://www.dib.ae/global/apply-now?type=card&view=Default&product=prime-gold-card",
+      "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "https://www.dib.ae/docs/default-source/cpr/soc/cpr-soc-cards.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Gold Card",
+          "unit": "AED standard annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.dib.ae/docs/default-source/cpr/soc/cpr-soc-cards.pdf",
+          "capturedAt": "2026-11-14T13:19:07Z",
+          "sourceBodySha256": "c336354e744a75009ab092243bdb0632883da7a6c6270e7dfa5f7ec2a77ce80d",
+          "sourceTextSha256": "9cb2644b4d9783fd1083d303c8ba0ac9e91d86c90a74da5bf645ada7328fe9f3",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "Schedule p.1 — named Prime and SHAMS annual fee tiers",
+          "captureMethod": "public-http-reader",
+          "firstLine": 18,
+          "lastLine": 35,
+          "rawText": "            ‫‪Annual Fee‬‬                                                                                                                                                    ‫الرسوم السنوية‬\n                                          ‫الكالسيكية‬          ‫الذهبية‪ /‬المجزية‬         ‫بالتينيوم‬\n                                                                                                            ‫سيغنتشر ‪Signature‬‬                 ‫إنفنيت ‪Infinite‬‬\n                                            ‫‪Classic‬‬             ‫‪Reward/Gold‬‬            ‫‪Platinum‬‬\n                                                                                                                   ‫مجانًا‬\n            ‫‪Prime Covered Card‬‬            ‫مجانًا ‪Free‬‬           ‫مجانًا ‪Free‬‬           ‫مجانًا ‪Free‬‬                                               ‫مجانًا ‪Free‬‬               ‫بطاقة برايم المغطاة‬\n                                                                                                                     ‫‪Free‬‬\n            ‫‪Consumer Cashback‬‬                                                                                                                                                ‫بطاقة المستهلك‬\n                                          ‫ال يوجد ‪N/A‬‬               ‫‪210‬‬                 ‫‪261.45‬‬                  ‫ال يوجد ‪N/A‬‬                    ‫ال يوجد ‪N/A‬‬\n            ‫‪Card‬‬                                                                                                                                                              ‫لالسترداد النقدي‬\n                                                                                                          ‫السنة األولى ‪Year 1‬‬           ‫السنة األولى ‪Year 1‬‬\n                                                                                                                 ‫‪1,575‬‬                         ‫‪2,625‬‬\n            ‫‪Emirates Skywards‬‬                                                                                                                                        ‫البطاقات المغطاة سكاي‬\n                                          ‫ال يوجد ‪N/A‬‬           ‫ال يوجد ‪N/A‬‬               ‫‪525‬‬           ‫السنة الثانية وما بعدها‬       ‫السنة الثانية وما بعدها‬\n            ‫‪Covered Card‬‬                                                                                                                                                 ‫واردز طيران اإلمارات‬\n                                                                                                            ‫‪Year 2 onwards‬‬                ‫‪Year 2 onwards‬‬\n                                                                                                                  ‫‪735‬‬                          ‫‪1,575‬‬\n            ‫‪SHAMS Covered Card‬‬            ‫ال يوجد ‪N/A‬‬           ‫ال يوجد ‪N/A‬‬             ‫‪208.95‬‬                    ‫‪523.95‬‬                         ‫‪733.95‬‬                 ‫بطاقة شمس المغطاة‬",
+          "rawTextSha256": "0e928800685e03621a8394458f11c7d6883940aa95897a15346fcc980dc1163b"
+        },
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Gold Card",
+          "unit": "KFS stated VAT treatment",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+          "capturedAt": "2026-11-14T13:19:07Z",
+          "sourceBodySha256": "0c630b660d2cc1430a0c37c3deb676b52ff468ea6dea857c17cf75f71d5ba564",
+          "sourceTextSha256": "641469106e2fb4bc3a38298269d12c372ff40efbfd45629df9f9f8e4315a5272",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "KFS p.10 — VAT",
+          "captureMethod": "public-http-reader",
+          "firstLine": 683,
+          "lastLine": 683,
+          "rawText": "‫‪• All charges are inclusive of 5% VAT which may be amended from time‬‬",
+          "rawTextSha256": "2b4d00eecb409040fbb7ede114b7c283a949f4c40e6463167083b832fc249d2b"
+        },
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Gold Card",
+          "unit": "AED issuer headline annual fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.dib.ae/personal/cards/prime-gold-card",
+          "capturedAt": "2026-11-18T13:05:07Z",
+          "sourceBodySha256": "20d978529c3e6084463922fcc0e4559af4e2cc32e00bd83713638dd2553bc1ca",
+          "sourceTextSha256": "20d978529c3e6084463922fcc0e4559af4e2cc32e00bd83713638dd2553bc1ca",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 41597,
+          "sourceEndByte": 41703,
+          "captureMethod": "public-http-reader",
+          "firstLine": 789,
+          "lastLine": 790,
+          "rawText": "<div class=\"cc-title\">No </div>\r\n                            <div class=\"cc-description\">Annual Fee </div>",
+          "rawTextSha256": "672582d75b8765bfea7a48d302c60e67c333e2c4bdc1431b0461d6b79a6ee5ec"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Gold Card",
+          "unit": "AED published salary floor only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.dib.ae/personal/cards/prime-gold-card",
+          "capturedAt": "2026-11-18T13:05:07Z",
+          "sourceBodySha256": "20d978529c3e6084463922fcc0e4559af4e2cc32e00bd83713638dd2553bc1ca",
+          "sourceTextSha256": "20d978529c3e6084463922fcc0e4559af4e2cc32e00bd83713638dd2553bc1ca",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 42508,
+          "sourceEndByte": 42623,
+          "captureMethod": "public-http-reader",
+          "firstLine": 805,
+          "lastLine": 806,
+          "rawText": "<div class=\"cc-title\">AED 5,000</div>\r\n                            <div class=\"cc-description\">Minimum Salary</div>",
+          "rawTextSha256": "58805f5a2ffdc34c45a6cb081f60468e4ab98704467e4ba4f7504e47cdf756f4"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Gold Card",
+          "unit": "Issuer programme name only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.dib.ae/personal/cards/prime-gold-card",
+          "capturedAt": "2026-11-18T13:05:07Z",
+          "sourceBodySha256": "20d978529c3e6084463922fcc0e4559af4e2cc32e00bd83713638dd2553bc1ca",
+          "sourceTextSha256": "20d978529c3e6084463922fcc0e4559af4e2cc32e00bd83713638dd2553bc1ca",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 47813,
+          "sourceEndByte": 47838,
+          "captureMethod": "public-http-reader",
+          "firstLine": 884,
+          "lastLine": 884,
+          "rawText": "<h3>Wala’a Rewards</h3>",
+          "rawTextSha256": "af468b4f68aa2b9f5b007adb52dbbf89e764a8f3bd49b77dceff58d0dce9f8c3"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: named product, standard annual membership fee, published salary floor and rewards programme name.",
+      "eligibility": "A published salary floor is not a qualification result; the bank may apply additional criteria.",
+      "earnRates": "No universal return has been calculated. Ask DIB how your purchases would earn before comparing points value."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18"
+  },
+  "dib-prime-signature": {
+    "bank": "dib",
+    "name": "DIB Prime Signature Card",
+    "network": "Visa",
+    "categories": [
+      "Islamic",
+      "lifestyle"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "Wala’a Rewards",
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": [],
+      "publishedMinMonthlyIncome": 15000,
+      "publishedIncomeBasis": "salary"
+    },
+    "applyUrl": "https://www.dib.ae/personal/cards/prime-signature-card",
+    "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://www.dib.ae/personal/cards/prime-signature-card",
+      "https://www.dib.ae/global/apply-now?type=card&view=Default&product=prime-signature-card",
+      "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "https://www.dib.ae/docs/default-source/cpr/soc/cpr-soc-cards.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Signature Card",
+          "unit": "AED standard annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.dib.ae/docs/default-source/cpr/soc/cpr-soc-cards.pdf",
+          "capturedAt": "2026-11-14T13:19:07Z",
+          "sourceBodySha256": "c336354e744a75009ab092243bdb0632883da7a6c6270e7dfa5f7ec2a77ce80d",
+          "sourceTextSha256": "9cb2644b4d9783fd1083d303c8ba0ac9e91d86c90a74da5bf645ada7328fe9f3",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "Schedule p.1 — named Prime and SHAMS annual fee tiers",
+          "captureMethod": "public-http-reader",
+          "firstLine": 18,
+          "lastLine": 35,
+          "rawText": "            ‫‪Annual Fee‬‬                                                                                                                                                    ‫الرسوم السنوية‬\n                                          ‫الكالسيكية‬          ‫الذهبية‪ /‬المجزية‬         ‫بالتينيوم‬\n                                                                                                            ‫سيغنتشر ‪Signature‬‬                 ‫إنفنيت ‪Infinite‬‬\n                                            ‫‪Classic‬‬             ‫‪Reward/Gold‬‬            ‫‪Platinum‬‬\n                                                                                                                   ‫مجانًا‬\n            ‫‪Prime Covered Card‬‬            ‫مجانًا ‪Free‬‬           ‫مجانًا ‪Free‬‬           ‫مجانًا ‪Free‬‬                                               ‫مجانًا ‪Free‬‬               ‫بطاقة برايم المغطاة‬\n                                                                                                                     ‫‪Free‬‬\n            ‫‪Consumer Cashback‬‬                                                                                                                                                ‫بطاقة المستهلك‬\n                                          ‫ال يوجد ‪N/A‬‬               ‫‪210‬‬                 ‫‪261.45‬‬                  ‫ال يوجد ‪N/A‬‬                    ‫ال يوجد ‪N/A‬‬\n            ‫‪Card‬‬                                                                                                                                                              ‫لالسترداد النقدي‬\n                                                                                                          ‫السنة األولى ‪Year 1‬‬           ‫السنة األولى ‪Year 1‬‬\n                                                                                                                 ‫‪1,575‬‬                         ‫‪2,625‬‬\n            ‫‪Emirates Skywards‬‬                                                                                                                                        ‫البطاقات المغطاة سكاي‬\n                                          ‫ال يوجد ‪N/A‬‬           ‫ال يوجد ‪N/A‬‬               ‫‪525‬‬           ‫السنة الثانية وما بعدها‬       ‫السنة الثانية وما بعدها‬\n            ‫‪Covered Card‬‬                                                                                                                                                 ‫واردز طيران اإلمارات‬\n                                                                                                            ‫‪Year 2 onwards‬‬                ‫‪Year 2 onwards‬‬\n                                                                                                                  ‫‪735‬‬                          ‫‪1,575‬‬\n            ‫‪SHAMS Covered Card‬‬            ‫ال يوجد ‪N/A‬‬           ‫ال يوجد ‪N/A‬‬             ‫‪208.95‬‬                    ‫‪523.95‬‬                         ‫‪733.95‬‬                 ‫بطاقة شمس المغطاة‬",
+          "rawTextSha256": "0e928800685e03621a8394458f11c7d6883940aa95897a15346fcc980dc1163b"
+        },
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Signature Card",
+          "unit": "KFS stated VAT treatment",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+          "capturedAt": "2026-11-14T13:19:07Z",
+          "sourceBodySha256": "0c630b660d2cc1430a0c37c3deb676b52ff468ea6dea857c17cf75f71d5ba564",
+          "sourceTextSha256": "641469106e2fb4bc3a38298269d12c372ff40efbfd45629df9f9f8e4315a5272",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "KFS p.10 — VAT",
+          "captureMethod": "public-http-reader",
+          "firstLine": 683,
+          "lastLine": 683,
+          "rawText": "‫‪• All charges are inclusive of 5% VAT which may be amended from time‬‬",
+          "rawTextSha256": "2b4d00eecb409040fbb7ede114b7c283a949f4c40e6463167083b832fc249d2b"
+        },
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Signature Card",
+          "unit": "AED annual membership and renewal fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+          "capturedAt": "2026-11-14T13:19:07Z",
+          "sourceBodySha256": "0c630b660d2cc1430a0c37c3deb676b52ff468ea6dea857c17cf75f71d5ba564",
+          "sourceTextSha256": "641469106e2fb4bc3a38298269d12c372ff40efbfd45629df9f9f8e4315a5272",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "KFS p.9 — exact product tier fee columns",
+          "captureMethod": "public-http-reader",
+          "firstLine": 551,
+          "lastLine": 570,
+          "rawText": "                                                                                                                                         ‫‪Prime‬‬        ‫‪Prime‬‬                                       ‫‪MyHome‬‬                      ‫‪SHAMS‬‬       ‫‪SHAMS‬‬\n                                                                              ‫‪Consumer‬‬           ‫‪Consumer‬‬\n                                                                                                                     ‫‪Prime‬‬                                                        ‫‪Prime‬‬                       ‫‪SHAMS‬‬\n                           ‫‪Skywards‬‬         ‫‪Skywards‬‬         ‫‪Skywards‬‬         ‫‪Cashback‬‬           ‫‪Cashback‬‬\n                                                                                                                    ‫‪Infinite‬‬           ‫‪Signature‬‬     ‫‪Platinum‬‬                     ‫‪Classic‬‬\n                            ‫‪Infinite‬‬        ‫‪Signature‬‬        ‫‪Platinum‬‬         ‫‪Platinum‬‬            ‫‪Reward‬‬                                                                                          ‫‪Signature‬‬   ‫‪Infinite‬‬       ‫‪Signature‬‬   ‫‪Platinum‬‬\n\n\n‫الهيكلة وفقًا للشريعة‬\n                                                                                                                                          ‫سّلّم‬\n‫اإلسالمية‬\n‫‪Sharia Structure‬‬                                                                                                                          ‫‪Salam‬‬\n\n‫رسوم سنوية‬                                                                                                          ‫ال شيء‬            ‫ال شيء‬         ‫ال شيء‬     ‫ال شيء‬            ‫ال شيء‬          ‫ال شيء‬\n                           ‫‪2,625‬‬            ‫‪1,575‬‬              ‫‪525‬‬            ‫‪261.45‬‬               ‫‪210‬‬                                                                                                        ‫‪733.95‬‬         ‫‪523.95‬‬      ‫‪208.95‬‬\n‫‪Annual Fee‬‬                                                                                                           ‫‪Nil‬‬                 ‫‪Nil‬‬           ‫‪Nil‬‬       ‫‪Nil‬‬               ‫‪Nil‬‬              ‫‪Nil‬‬\n\n‫رسوم التجديد‬                                                                                                        ‫ال شيء‬            ‫ال شيء‬         ‫ال شيء‬     ‫ال شيء‬            ‫ال شيء‬          ‫ال شيء‬\n                           ‫‪1,575‬‬              ‫‪735‬‬              ‫‪525‬‬            ‫‪261.45‬‬               ‫‪210‬‬                                                                                                        ‫*‪733.95‬‬        ‫*‪523.95‬‬     ‫*‪208.95‬‬\n‫‪Renewal Fee‬‬                                                                                                          ‫‪Nil‬‬                 ‫‪Nil‬‬           ‫‪Nil‬‬       ‫‪Nil‬‬               ‫‪Nil‬‬              ‫‪Nil‬‬",
+          "rawTextSha256": "7ea44455349d4ed112b80774acdba15b6881ad8526a7d4c3684320064456d1a4"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Signature Card",
+          "unit": "AED published salary floor only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.dib.ae/personal/cards/prime-signature-card",
+          "capturedAt": "2026-11-18T13:05:08Z",
+          "sourceBodySha256": "858cadb5c738e62703b7d34dded55e5f45ec778d1a08b58853216b19ba7034dd",
+          "sourceTextSha256": "858cadb5c738e62703b7d34dded55e5f45ec778d1a08b58853216b19ba7034dd",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 42394,
+          "sourceEndByte": 42510,
+          "captureMethod": "public-http-reader",
+          "firstLine": 801,
+          "lastLine": 802,
+          "rawText": "<div class=\"cc-title\">AED 15,000</div>\r\n                            <div class=\"cc-description\">Minimum Salary</div>",
+          "rawTextSha256": "e0e8ff1c2bc757fe547258b901e55f8abc2a76d463f622d57bd7b043a98ffd32"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Signature Card",
+          "unit": "Issuer programme name only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.dib.ae/personal/cards/prime-signature-card",
+          "capturedAt": "2026-11-18T13:05:08Z",
+          "sourceBodySha256": "858cadb5c738e62703b7d34dded55e5f45ec778d1a08b58853216b19ba7034dd",
+          "sourceTextSha256": "858cadb5c738e62703b7d34dded55e5f45ec778d1a08b58853216b19ba7034dd",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 47862,
+          "sourceEndByte": 47887,
+          "captureMethod": "public-http-reader",
+          "firstLine": 880,
+          "lastLine": 880,
+          "rawText": "<h3>Wala’a Rewards</h3>",
+          "rawTextSha256": "af468b4f68aa2b9f5b007adb52dbbf89e764a8f3bd49b77dceff58d0dce9f8c3"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: named product, standard annual membership fee, published salary floor and rewards programme name.",
+      "eligibility": "A published salary floor is not a qualification result; the bank may apply additional criteria.",
+      "earnRates": "No universal return has been calculated. Ask DIB how your purchases would earn before comparing points value."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18"
+  },
+  "dib-prime-infinite": {
+    "bank": "dib",
+    "name": "DIB Prime Infinite Card",
+    "network": "Visa",
+    "categories": [
+      "Islamic",
+      "lifestyle"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "Wala’a Rewards",
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": [],
+      "publishedMinMonthlyIncome": 20000,
+      "publishedIncomeBasis": "salary"
+    },
+    "applyUrl": "https://www.dib.ae/personal/cards/prime-infinite-card",
+    "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+    "lastVerified": "2026-11-18",
+    "sources": [
+      "https://www.dib.ae/personal/cards/prime-infinite-card",
+      "https://www.dib.ae/global/apply-now?type=card&view=Default&product=prime-infinite-card",
+      "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "https://www.dib.ae/docs/default-source/cpr/soc/cpr-soc-cards.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "annualFee": [
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Infinite Card",
+          "unit": "AED standard annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.dib.ae/docs/default-source/cpr/soc/cpr-soc-cards.pdf",
+          "capturedAt": "2026-11-14T13:19:07Z",
+          "sourceBodySha256": "c336354e744a75009ab092243bdb0632883da7a6c6270e7dfa5f7ec2a77ce80d",
+          "sourceTextSha256": "9cb2644b4d9783fd1083d303c8ba0ac9e91d86c90a74da5bf645ada7328fe9f3",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "Schedule p.1 — named Prime and SHAMS annual fee tiers",
+          "captureMethod": "public-http-reader",
+          "firstLine": 18,
+          "lastLine": 35,
+          "rawText": "            ‫‪Annual Fee‬‬                                                                                                                                                    ‫الرسوم السنوية‬\n                                          ‫الكالسيكية‬          ‫الذهبية‪ /‬المجزية‬         ‫بالتينيوم‬\n                                                                                                            ‫سيغنتشر ‪Signature‬‬                 ‫إنفنيت ‪Infinite‬‬\n                                            ‫‪Classic‬‬             ‫‪Reward/Gold‬‬            ‫‪Platinum‬‬\n                                                                                                                   ‫مجانًا‬\n            ‫‪Prime Covered Card‬‬            ‫مجانًا ‪Free‬‬           ‫مجانًا ‪Free‬‬           ‫مجانًا ‪Free‬‬                                               ‫مجانًا ‪Free‬‬               ‫بطاقة برايم المغطاة‬\n                                                                                                                     ‫‪Free‬‬\n            ‫‪Consumer Cashback‬‬                                                                                                                                                ‫بطاقة المستهلك‬\n                                          ‫ال يوجد ‪N/A‬‬               ‫‪210‬‬                 ‫‪261.45‬‬                  ‫ال يوجد ‪N/A‬‬                    ‫ال يوجد ‪N/A‬‬\n            ‫‪Card‬‬                                                                                                                                                              ‫لالسترداد النقدي‬\n                                                                                                          ‫السنة األولى ‪Year 1‬‬           ‫السنة األولى ‪Year 1‬‬\n                                                                                                                 ‫‪1,575‬‬                         ‫‪2,625‬‬\n            ‫‪Emirates Skywards‬‬                                                                                                                                        ‫البطاقات المغطاة سكاي‬\n                                          ‫ال يوجد ‪N/A‬‬           ‫ال يوجد ‪N/A‬‬               ‫‪525‬‬           ‫السنة الثانية وما بعدها‬       ‫السنة الثانية وما بعدها‬\n            ‫‪Covered Card‬‬                                                                                                                                                 ‫واردز طيران اإلمارات‬\n                                                                                                            ‫‪Year 2 onwards‬‬                ‫‪Year 2 onwards‬‬\n                                                                                                                  ‫‪735‬‬                          ‫‪1,575‬‬\n            ‫‪SHAMS Covered Card‬‬            ‫ال يوجد ‪N/A‬‬           ‫ال يوجد ‪N/A‬‬             ‫‪208.95‬‬                    ‫‪523.95‬‬                         ‫‪733.95‬‬                 ‫بطاقة شمس المغطاة‬",
+          "rawTextSha256": "0e928800685e03621a8394458f11c7d6883940aa95897a15346fcc980dc1163b"
+        },
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Infinite Card",
+          "unit": "KFS stated VAT treatment",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+          "capturedAt": "2026-11-14T13:19:07Z",
+          "sourceBodySha256": "0c630b660d2cc1430a0c37c3deb676b52ff468ea6dea857c17cf75f71d5ba564",
+          "sourceTextSha256": "641469106e2fb4bc3a38298269d12c372ff40efbfd45629df9f9f8e4315a5272",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "KFS p.10 — VAT",
+          "captureMethod": "public-http-reader",
+          "firstLine": 683,
+          "lastLine": 683,
+          "rawText": "‫‪• All charges are inclusive of 5% VAT which may be amended from time‬‬",
+          "rawTextSha256": "2b4d00eecb409040fbb7ede114b7c283a949f4c40e6463167083b832fc249d2b"
+        },
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Infinite Card",
+          "unit": "AED annual membership and renewal fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+          "capturedAt": "2026-11-14T13:19:07Z",
+          "sourceBodySha256": "0c630b660d2cc1430a0c37c3deb676b52ff468ea6dea857c17cf75f71d5ba564",
+          "sourceTextSha256": "641469106e2fb4bc3a38298269d12c372ff40efbfd45629df9f9f8e4315a5272",
+          "sourceRepresentation": "pdftotext-layout",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "KFS p.9 — exact product tier fee columns",
+          "captureMethod": "public-http-reader",
+          "firstLine": 551,
+          "lastLine": 570,
+          "rawText": "                                                                                                                                         ‫‪Prime‬‬        ‫‪Prime‬‬                                       ‫‪MyHome‬‬                      ‫‪SHAMS‬‬       ‫‪SHAMS‬‬\n                                                                              ‫‪Consumer‬‬           ‫‪Consumer‬‬\n                                                                                                                     ‫‪Prime‬‬                                                        ‫‪Prime‬‬                       ‫‪SHAMS‬‬\n                           ‫‪Skywards‬‬         ‫‪Skywards‬‬         ‫‪Skywards‬‬         ‫‪Cashback‬‬           ‫‪Cashback‬‬\n                                                                                                                    ‫‪Infinite‬‬           ‫‪Signature‬‬     ‫‪Platinum‬‬                     ‫‪Classic‬‬\n                            ‫‪Infinite‬‬        ‫‪Signature‬‬        ‫‪Platinum‬‬         ‫‪Platinum‬‬            ‫‪Reward‬‬                                                                                          ‫‪Signature‬‬   ‫‪Infinite‬‬       ‫‪Signature‬‬   ‫‪Platinum‬‬\n\n\n‫الهيكلة وفقًا للشريعة‬\n                                                                                                                                          ‫سّلّم‬\n‫اإلسالمية‬\n‫‪Sharia Structure‬‬                                                                                                                          ‫‪Salam‬‬\n\n‫رسوم سنوية‬                                                                                                          ‫ال شيء‬            ‫ال شيء‬         ‫ال شيء‬     ‫ال شيء‬            ‫ال شيء‬          ‫ال شيء‬\n                           ‫‪2,625‬‬            ‫‪1,575‬‬              ‫‪525‬‬            ‫‪261.45‬‬               ‫‪210‬‬                                                                                                        ‫‪733.95‬‬         ‫‪523.95‬‬      ‫‪208.95‬‬\n‫‪Annual Fee‬‬                                                                                                           ‫‪Nil‬‬                 ‫‪Nil‬‬           ‫‪Nil‬‬       ‫‪Nil‬‬               ‫‪Nil‬‬              ‫‪Nil‬‬\n\n‫رسوم التجديد‬                                                                                                        ‫ال شيء‬            ‫ال شيء‬         ‫ال شيء‬     ‫ال شيء‬            ‫ال شيء‬          ‫ال شيء‬\n                           ‫‪1,575‬‬              ‫‪735‬‬              ‫‪525‬‬            ‫‪261.45‬‬               ‫‪210‬‬                                                                                                        ‫*‪733.95‬‬        ‫*‪523.95‬‬     ‫*‪208.95‬‬\n‫‪Renewal Fee‬‬                                                                                                          ‫‪Nil‬‬                 ‫‪Nil‬‬           ‫‪Nil‬‬       ‫‪Nil‬‬               ‫‪Nil‬‬              ‫‪Nil‬‬",
+          "rawTextSha256": "7ea44455349d4ed112b80774acdba15b6881ad8526a7d4c3684320064456d1a4"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Infinite Card",
+          "unit": "AED published salary floor only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.dib.ae/personal/cards/prime-infinite-card",
+          "capturedAt": "2026-11-18T13:05:09Z",
+          "sourceBodySha256": "b72431ca15a38848b6ac57b76c4b95e1f5e7261260a643d425da6089ba3af45e",
+          "sourceTextSha256": "b72431ca15a38848b6ac57b76c4b95e1f5e7261260a643d425da6089ba3af45e",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 42089,
+          "sourceEndByte": 42206,
+          "captureMethod": "public-http-reader",
+          "firstLine": 797,
+          "lastLine": 798,
+          "rawText": "<div class=\"cc-title\">AED 20,000 </div>\r\n                            <div class=\"cc-description\">Minimum Salary</div>",
+          "rawTextSha256": "efba7fefd9d4ab8b1a1cbe94ea587b95f894e6c3bb582b036664c8195973714c"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "dib/named-prime-tiers/v1",
+          "productScope": "Prime Infinite Card",
+          "unit": "Issuer programme name only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.dib.ae/personal/cards/prime-infinite-card",
+          "capturedAt": "2026-11-18T13:05:09Z",
+          "sourceBodySha256": "b72431ca15a38848b6ac57b76c4b95e1f5e7261260a643d425da6089ba3af45e",
+          "sourceTextSha256": "b72431ca15a38848b6ac57b76c4b95e1f5e7261260a643d425da6089ba3af45e",
+          "sourceRepresentation": "http-decoded-response-body",
+          "sourceStartByte": 47986,
+          "sourceEndByte": 48011,
+          "captureMethod": "public-http-reader",
+          "firstLine": 884,
+          "lastLine": 884,
+          "rawText": "<h3>Wala’a Rewards</h3>",
+          "rawTextSha256": "af468b4f68aa2b9f5b007adb52dbbf89e764a8f3bd49b77dceff58d0dce9f8c3"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Verified: named product, standard annual membership fee, published salary floor and rewards programme name.",
+      "eligibility": "A published salary floor is not a qualification result; the bank may apply additional criteria.",
+      "earnRates": "No universal return has been calculated. Ask DIB how your purchases would earn before comparing points value."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-18"
+  },
   "dib-prime-platinum": {
     "bank": "dib",
     "name": "DIB Prime Platinum Card",

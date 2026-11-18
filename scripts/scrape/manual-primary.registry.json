@@ -1243,6 +1243,117 @@
       ]
     },
     {
+      "slug": "dib-prime-gold",
+      "bank": "dib",
+      "productUrl": "https://www.dib.ae/personal/cards/prime-gold-card",
+      "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "sourceFixtureIds": [
+        "prime-gold-heading",
+        "prime-gold-apply",
+        "prime-gold-landing",
+        "prime-gold-salary",
+        "prime-gold-programme",
+        "kfs-vat",
+        "soc-fees",
+        "prime-gold-annual-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_dib-prime.ts",
+        "export": "parseDibPrime",
+        "sha256": "0c27a8f609e55edf421063a446fe9ca85cd481b204effa22cb34c002b8f41824",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-prime.json",
+          "sha256": "5615c3a4723dcc26ee7c79c9bd625f911805266c4215e11284afdc8f63385a34"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-wave-two.json",
+          "sha256": "1fd89eae691d7dcf9cac1950cc65e42afc9a76835c47564f54a2f7df02b88602"
+        }
+      ]
+    },
+    {
+      "slug": "dib-prime-signature",
+      "bank": "dib",
+      "productUrl": "https://www.dib.ae/personal/cards/prime-signature-card",
+      "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "sourceFixtureIds": [
+        "prime-signature-heading",
+        "prime-signature-apply",
+        "prime-signature-landing",
+        "prime-signature-salary",
+        "prime-signature-programme",
+        "kfs-vat",
+        "soc-fees",
+        "kfs-fees"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_dib-prime.ts",
+        "export": "parseDibPrime",
+        "sha256": "0c27a8f609e55edf421063a446fe9ca85cd481b204effa22cb34c002b8f41824",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-prime.json",
+          "sha256": "5615c3a4723dcc26ee7c79c9bd625f911805266c4215e11284afdc8f63385a34"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-wave-two.json",
+          "sha256": "1fd89eae691d7dcf9cac1950cc65e42afc9a76835c47564f54a2f7df02b88602"
+        }
+      ]
+    },
+    {
+      "slug": "dib-prime-infinite",
+      "bank": "dib",
+      "productUrl": "https://www.dib.ae/personal/cards/prime-infinite-card",
+      "kfsUrl": "https://www.dib.ae/docs/default-source/cpr/kfs/cards-kfs-dib-new-credit-cards-cm-sign-reqd-static.pdf?sfvrsn=799c3157_45",
+      "sourceFixtureIds": [
+        "prime-infinite-heading",
+        "prime-infinite-apply",
+        "prime-infinite-landing",
+        "prime-infinite-salary",
+        "prime-infinite-programme",
+        "kfs-vat",
+        "soc-fees",
+        "kfs-fees"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_dib-prime.ts",
+        "export": "parseDibPrime",
+        "sha256": "0c27a8f609e55edf421063a446fe9ca85cd481b204effa22cb34c002b8f41824",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-prime.json",
+          "sha256": "5615c3a4723dcc26ee7c79c9bd625f911805266c4215e11284afdc8f63385a34"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-dib-wave-two.json",
+          "sha256": "1fd89eae691d7dcf9cac1950cc65e42afc9a76835c47564f54a2f7df02b88602"
+        }
+      ]
+    },
+    {
       "slug": "dib-prime-platinum",
       "bank": "dib",
       "productUrl": "https://www.dib.ae/personal/cards/prime-platinum-card",

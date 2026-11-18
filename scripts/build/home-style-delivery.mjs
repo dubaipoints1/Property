@@ -221,17 +221,16 @@ export function transformMyFamilyStyles(html, readCss) {
   return transformCompiledStyles(html, readCss, "my-family");
 }
 
-// Cards keeps the exact stylesheet order and the two existing normal
-// font hints. Move those hints before the CSS bytes so the document
-// preload scanner can discover them immediately.
-export function transformCardsStyles(html, readCss) {
+// Keep the exact stylesheet order and two existing normal font hints.
+// Move the hints before the CSS bytes so the preload scanner sees them early.
+function transformStylesWithNormalFontHints(html, readCss, scope, label) {
   if (/<(?:template|noscript)\b/i.test(splitHead(html).head)) {
-    throw Error("Cards head contains unsupported inert markup");
+    throw Error(`${label} head contains unsupported inert markup`);
   }
-  const result = transformCompiledStyles(html, readCss, "cards");
+  const result = transformCompiledStyles(html, readCss, scope);
   const parts = splitHead(result.html);
   const tokens = [...parts.head.matchAll(TOKEN)].map(match => match[0]);
-  const styles = tokens.filter(token => token.startsWith("<style data-dp-cards-css="));
+  const styles = tokens.filter(token => token.startsWith(`<style data-dp-${scope}-css=`));
   const fontLink = /^<link rel="preload" href="(\/_astro\/(?:newsreader|geist)-latin-wght-normal-site\.[A-Za-z0-9_-]+\.woff2)" as="font" type="font\/woff2" crossorigin>$/;
   const hints = tokens.filter(token => {
     if (!/^<link\b/i.test(token)) return false;
@@ -241,7 +240,7 @@ export function transformCardsStyles(html, readCss) {
   const fonts = hints.map(token => fontLink.exec(token)?.[1]);
   if (fonts.length !== 2 || !fonts[0]?.includes("/newsreader-") || !fonts[1]?.includes("/geist-") ||
       !fonts.every(href => styles.some(style => style.includes(href)))) {
-    throw Error("Cards font preload identity mismatch");
+    throw Error(`${label} font preload identity mismatch`);
   }
   let inserted = false;
   const head = parts.head.replace(TOKEN, token => {
@@ -252,10 +251,18 @@ export function transformCardsStyles(html, readCss) {
     }
     return token;
   });
-  if (!inserted) throw Error("Cards inline styles not found");
+  if (!inserted) throw Error(`${label} inline styles not found`);
   result.html = parts.before + head + parts.after;
   result.htmlBytesAfter = byteLength(result.html);
   return result;
+}
+
+export function transformCardsStyles(html, readCss) {
+  return transformStylesWithNormalFontHints(html, readCss, "cards", "Cards");
+}
+
+export function transformDibPrimeStyles(html, readCss) {
+  return transformStylesWithNormalFontHints(html, readCss, "dib-prime", "DIB Prime");
 }
 
 // The Expat Starter runner supplies its own exact route and identity preflight.
