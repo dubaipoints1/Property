@@ -26,6 +26,9 @@ const ALLOWED_MISSING: Record<string, string> = {
   "card-dib-consumer-cashback-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-dib-shams-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-dib-prime-platinum": "Text-led scope; issuer card art was used only to identify the network, not republished.",
+  ...Object.fromEntries(["gold", "signature", "infinite"].map(
+    tier => [`card-dib-prime-${tier}`, "Text-led scope; issuer card art was checked only to identify the network, not republished."],
+  )),
   "card-dib-shams-signature": "Text-led scope; issuer card art was used only to identify the network, not republished.",
   "card-dib-shams-infinite": "Text-led scope; issuer card art was used only to identify the network, not republished.",
   "card-rakbank-red": "Text-led scope; issuer card art was used as source evidence only, not republished.",
