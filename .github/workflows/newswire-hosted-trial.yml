@@ -1,0 +1,54 @@
+name: newswire-hosted-trial
+
+# New dispatch workflows require the default branch. A single bootstrap push
+# to the exact owned trial branch tests the unmerged commit on GitHub.
+# Intentionally no schedule, issue delivery or state writes.
+on:
+  push:
+    branches: ["codex/newswire-hosted-trial-2026-11-18"]
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: "Fixed-source profile; only aggregate counts are retained"
+        type: choice
+        options: [full, rss, fast]
+        default: full
+
+permissions:
+  contents: read
+
+concurrency:
+  group: newswire-hosted-trial
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    if: github.run_attempt == 1 && (github.event_name == 'workflow_dispatch' || (github.event.created && !github.event.deleted && github.ref == 'refs/heads/codex/newswire-hosted-trial-2026-11-18'))
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Install locked dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Test the new lead and duplicate-suppression rules on fixtures
+        run: node --test tests/newsroom/wire-hosted-trial.test.ts
+      - name: Compare two actual polls of reviewed public surfaces
+        env:
+          WIRE_PROFILE: ${{ inputs.profile || 'full' }}
+        run: |
+          set -o pipefail
+          node scripts/newsroom/wire-hosted-trial.mjs "$WIRE_PROFILE" repeat | tee "$RUNNER_TEMP/newswire-hosted-receipt.json"
+      - name: Retain aggregate counts only
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: newswire-hosted-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/newswire-hosted-receipt.json
+          retention-days: 7
+          if-no-files-found: warn
