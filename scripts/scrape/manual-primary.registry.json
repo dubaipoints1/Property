@@ -1684,6 +1684,112 @@
           "sha256": "dd663c230ac14d54332b8ca5378ab2b71f8ddec43c8541091cc5f809b0a132e1"
         }
       ]
+    },
+    {
+      "slug": "hsbc-premier",
+      "bank": "hsbc",
+      "productUrl": "https://www.hsbc.ae/credit-cards/products/premier/",
+      "kfsUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/key-fact-statement-credit-cards.pdf",
+      "sourceFixtureIds": [
+        "hsbc-premier-heading",
+        "hsbc-premier-apply",
+        "hsbc-premier-fee",
+        "hsbc-premier-account",
+        "hsbc-premier-scheme",
+        "hsbc-premier-rewards-heading",
+        "hsbc-premier-rewards-programme",
+        "hsbc-premier-kfs",
+        "hsbc-existing-form"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_hsbc-sc-relationship.ts",
+        "export": "parseHsbcScRelationship",
+        "sha256": "18695f059fe555f85a76bc1ffb662c9a9feaa7c287676f1ff24e1825db63638e",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-hsbc-sc-relationship.json",
+          "sha256": "f7d6afc888c8c470f3ed0b56c7abe401b5d5879140fee245e4d8e11bb6723332"
+        }
+      ]
+    },
+    {
+      "slug": "hsbc-advance",
+      "bank": "hsbc",
+      "productUrl": "https://www.hsbc.ae/credit-cards/products/advance/",
+      "kfsUrl": "https://www.hsbc.ae/content/dam/hsbc/ae/docs/en/cards/key-fact-statement-credit-cards.pdf",
+      "sourceFixtureIds": [
+        "hsbc-advance-heading",
+        "hsbc-advance-apply",
+        "hsbc-advance-fee",
+        "hsbc-advance-account",
+        "hsbc-advance-scheme",
+        "hsbc-advance-rewards-heading",
+        "hsbc-advance-rewards-programme",
+        "hsbc-advance-kfs",
+        "hsbc-existing-form"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_hsbc-sc-relationship.ts",
+        "export": "parseHsbcScRelationship",
+        "sha256": "18695f059fe555f85a76bc1ffb662c9a9feaa7c287676f1ff24e1825db63638e",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-hsbc-sc-relationship.json",
+          "sha256": "f7d6afc888c8c470f3ed0b56c7abe401b5d5879140fee245e4d8e11bb6723332"
+        }
+      ]
+    },
+    {
+      "slug": "sc-journey",
+      "bank": "standard-chartered",
+      "productUrl": "https://www.sc.com/ae/credit-cards/journey/",
+      "kfsUrl": "https://av.sc.com/ae/content/docs/ae-scb-key-facts-statement.pdf",
+      "sourceFixtureIds": [
+        "sc-journey-heading",
+        "sc-journey-apply",
+        "sc-journey-fee",
+        "sc-journey-vat",
+        "sc-journey-programme",
+        "sc-journey-resident",
+        "sc-journey-national",
+        "sc-journey-form",
+        "sc-journey-form-title",
+        "sc-journey-form-salary",
+        "sc-journey-kfs-fees",
+        "sc-journey-kfs-conditions",
+        "sc-journey-tariff"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_hsbc-sc-relationship.ts",
+        "export": "parseHsbcScRelationship",
+        "sha256": "18695f059fe555f85a76bc1ffb662c9a9feaa7c287676f1ff24e1825db63638e",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-hsbc-sc-relationship.json",
+          "sha256": "f7d6afc888c8c470f3ed0b56c7abe401b5d5879140fee245e4d8e11bb6723332"
+        }
+      ]
     }
   ]
 }
