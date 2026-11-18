@@ -1,0 +1,52 @@
+# Read-only review leads; no provider credits, catalogue writes or outbound notifications.
+name: Card coverage discovery
+
+on:
+  schedule:
+    - cron: "37 4 * * 3" # Wednesday 08:37 Dubai; actual execution may be delayed.
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/card-coverage.yml'
+      - 'scripts/monitor/card-coverage*.mjs'
+      - 'scripts/monitor/card-coverage.registry.json'
+      - 'src/data/cards.json'
+      - 'src/lib/cardAvailability.ts'
+      - 'tests/monitor/card-coverage*.test.ts'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: card-coverage-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Verify inventory and exercise source boundaries offline
+        run: |
+          node --test tests/monitor/card-coverage*.test.ts
+          node scripts/monitor/card-coverage.mjs > /dev/null
+      - name: Read fixed official sources
+        if: github.event_name != 'push' && github.ref == 'refs/heads/main'
+        run: |
+          report="$(mktemp "$RUNNER_TEMP/card-coverage.XXXXXX")"
+          trap 'rm -f -- "$report"' EXIT
+          result=0
+          node scripts/monitor/card-coverage.mjs --scan > "$report" || result=$?
+          # The repository is public. Publish only aggregate counts, not names, URLs or fingerprints.
+          if [ -s "$report" ]; then
+            node scripts/monitor/card-coverage.mjs --summary "$report" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit "$result"
