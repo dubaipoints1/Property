@@ -39,7 +39,7 @@ const ALLOWED_MISSING: Record<string, string> = {
   ...Object.fromEntries(["aura", "aura-world", "aura-world-elite"].map(
     product => [`card-mashreq-${product}`, "Text-led scoped profile; issuer card artwork is not licensed for republication."],
   )),
-  ...Object.fromEntries(["fab-adnoc-rewards", "fab-gems-world", "fab-travel", "fab-du-titanium", "fab-rewards-indulge", "fab-rewards-active"].map(
+  ...Object.fromEntries(["fab-adnoc-rewards", "fab-gems-world", "fab-travel", "fab-du-titanium", "fab-rewards-indulge", "fab-rewards-active", "fab-z-credit-card", "fab-share-platinum"].map(
     slug => [`card-${slug}`, "Text-led scoped issuer source profiles; no approved art republished."],
   )),
   ...Object.fromEntries(["simplicity", "rewards", "premier", "prestige", "ultima"].map(

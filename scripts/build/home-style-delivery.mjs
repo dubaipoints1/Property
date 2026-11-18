@@ -265,6 +265,10 @@ export function transformDibPrimeStyles(html, readCss) {
   return transformStylesWithNormalFontHints(html, readCss, "dib-prime", "DIB Prime");
 }
 
+export function transformManualCardStyles(html, readCss) {
+  return transformStylesWithNormalFontHints(html, readCss, "manual-card", "Manual card");
+}
+
 // The Expat Starter runner supplies its own exact route and identity preflight.
 export function transformExpatStarterStyles(html, readCss) {
   // The shared transformer is for a flat, generated head, not inert markup.

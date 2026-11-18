@@ -1139,6 +1139,74 @@
       ]
     },
     {
+      "slug": "fab-z-credit-card",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-z-card",
+      "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "sourceFixtureIds": [
+        "z-title",
+        "z-salary",
+        "z-headline-fee",
+        "z-apply",
+        "z-programme",
+        "z-card-art-source",
+        "fab-z-share-fee-columns",
+        "z-fee-row",
+        "fab-z-share-kfs-fee-delegation"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-z-share.ts",
+        "export": "parseFabZShare",
+        "sha256": "825b92f893ebeb85e51f50e0d663fdc8ac0939de6dc3169bf2df7515aacadeee",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-z-share.json",
+          "sha256": "c52a7e753df44968939805cdc6ac3723def6dcc274bc1b4f47a61a6ce71d3296"
+        }
+      ]
+    },
+    {
+      "slug": "fab-share-platinum",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/fab-share-cards/platinum-credit-card",
+      "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "sourceFixtureIds": [
+        "share-title",
+        "share-salary",
+        "share-headline-fee",
+        "share-apply",
+        "share-programme",
+        "share-card-art-source",
+        "fab-z-share-fee-columns",
+        "share-fee-row",
+        "fab-z-share-kfs-fee-delegation"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-z-share.ts",
+        "export": "parseFabZShare",
+        "sha256": "825b92f893ebeb85e51f50e0d663fdc8ac0939de6dc3169bf2df7515aacadeee",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-z-share.json",
+          "sha256": "c52a7e753df44968939805cdc6ac3723def6dcc274bc1b4f47a61a6ce71d3296"
+        }
+      ]
+    },
+    {
       "slug": "fab-du-titanium",
       "bank": "fab",
       "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/du-credit-card",
