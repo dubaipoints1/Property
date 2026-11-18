@@ -150,6 +150,7 @@ const lastRefreshed = new Date(
   title="Find your UAE credit card | DubaiPoints"
   description={`Tell us your AED salary, primary spend category, and what you're optimising for. We'll rank the ${allCards.length} UAE cards in our database against your profile.`}
   fullWidth
+  systemTypography
 >
   <div class="dp-pagehead dp-finder-head">
     <div class="crumb">DubaiPoints / Cards / Finder</div>
@@ -446,10 +447,12 @@ const lastRefreshed = new Date(
   import { initialiseCardSelection } from "~/scripts/cardSelection";
   import { initialiseFinderGuide } from "~/scripts/finderGuide";
   import { initialiseFinderFilterDrawer } from "~/scripts/finderFilterDrawer";
+  import { initialiseFinderArtwork } from "~/scripts/finderArtwork";
   initialiseCardSelection();
   initialiseCardFinder();
   initialiseFinderGuide();
   initialiseFinderFilterDrawer();
+  initialiseFinderArtwork();
 </script>
 
 <style>
