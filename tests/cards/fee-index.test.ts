@@ -93,11 +93,12 @@ test("the live index is the card set, row for row", () => {
   const cards = getActiveCards();
   const idx = buildFeeIndex(cards);
   assert.equal(idx.total, cards.length);
-  assert.equal(idx.freeForLife + idx.paidCount + idx.annualFeePending, idx.total);
+  assert.equal(idx.freeForLife + idx.paidCount + idx.annualFeePending + idx.annualFeeBeforeVat, idx.total);
   assert.equal(idx.byBank.reduce((n, b) => n + b.cards, 0), idx.total);
   for (const row of idx.rows) {
     const card = cards.find((k) => k.slug === row.slug)!;
-    assert.equal(row.annualFee, cardFeeNeedsReview(card, "annualFee") || card.standardFeeConditions === "renewal-only" ? null : card.annualFee.amount, row.slug);
+    const preTax = card.vatPolicy === "exclusive" && card.annualFee.amount > 0;
+    assert.equal(row.annualFee, cardFeeNeedsReview(card, "annualFee") || card.standardFeeConditions === "renewal-only" || preTax ? null : card.annualFee.amount, row.slug);
     assert.equal(row.fxFee, card.fxFee, row.slug);
   }
   for (let i = 1; i < idx.rows.length; i++) {

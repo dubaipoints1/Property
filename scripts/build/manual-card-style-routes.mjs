@@ -17,4 +17,8 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/cards/emirates-nbd-share-visa-platinum/": "Emirates NBD SHARE Visa Platinum Credit Card",
   "/cards/emirates-nbd-u-by-emaar-signature/": "Emirates NBD U by Emaar Visa Signature Credit Card",
   "/cards/liv-tamayaz-platinum/": "Liv Tamayaz Platinum Credit Card",
+  "/banks/nbk/": "National Bank of Kuwait UAE",
+  "/cards/nbk-visa-classic/": "NBK UAE Visa Classic Credit Card",
+  "/cards/nbk-visa-gold/": "NBK UAE Visa Gold Credit Card",
+  "/cards/nbk-visa-platinum/": "NBK UAE Visa Platinum Credit Card",
 });

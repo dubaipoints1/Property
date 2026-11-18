@@ -2,6 +2,8 @@
 
 This directory holds bank and airline-programme logos used by the site.
 
+18 November 2026: `banks/nbk.svg` is an editorial plain-text identifier for National Bank of Kuwait UAE, not an issuer logo or a depiction of its cards. No copied artwork.
+
 ## Status
 
 As of 2026-05-29, this directory holds a **mix**: 10 files are real brand
