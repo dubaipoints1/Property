@@ -1,7 +1,5 @@
-// Pins loyaltyTag() in src/lib/cardsDataFormat.ts — the shared goal
-// classifier the homepage strategy panel ranks with. The card finder's
-// inline client script carries a verbatim JS mirror (it must run
-// without imports); if this table changes, change the mirror too.
+// Pins the legacy goal classifier used by the homepage. Finder handles
+// missing and unconfirmed programme evidence in its own regression tests.
 
 import { test } from "node:test";
 import assert from "node:assert/strict";

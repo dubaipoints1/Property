@@ -44,7 +44,7 @@ test("conditional FAB standard prices are explicitly labelled and never an uncon
     assert.equal(row?.winner, "none");
   }
   const finder = readFileSync(new URL("../../src/pages/cards/finder/index.astro", import.meta.url), "utf8");
-  assert.equal([...finder.matchAll(/evidence\.annualFeePending \|\| card\.standardFeeConditions \? null/g)].length, 2);
+  assert.equal([...finder.matchAll(/annualFee: evidence\.comparableAnnualFee/g)].length, 2);
 });
 
 test("drift, conflicting sources, repeated rows and absent scoped receipts fail closed", () => {

@@ -62,13 +62,12 @@ const cardIndex = cardsWithBanks.map(({ card, evidence }) => ({
   name: card.name,
   bank: card.bank,
   network: card.network,
-  annualFee: evidence.annualFeePending || card.standardFeeConditions ? null : card.annualFee.amount,
+  annualFee: evidence.comparableAnnualFee,
   minSalary: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary) ? card.eligibility.minSalary : null,
   eligibleForSalaryFilter: eligibleForSalaryFilter(card._provenance, card.eligibility.minSalary),
   salaryTransferRequired: card._provenance?.eligibility === "needs-review" || card._provenance?.["eligibility.salaryTransferRequired"] === "needs-review" ? null : card.eligibility.salaryTransferRequired,
   invitationOnly: card._provenance?.eligibility !== "needs-review" && card._provenance?.["eligibility.invitationOnly"] !== "needs-review" && card.eligibility.invitationOnly === true,
   discontinued: card.discontinuedForNewApplicants !== undefined,
-  loyaltyProgram: card.loyaltyProgram ?? "",
   earnRates: evidence.rankRates,
   hasLounge: cardHasKnownFeature(card, "lounge_access"),
   hasStatus: cardHasKnownFeature(card, "status_match"),
@@ -124,8 +123,8 @@ const defaultCandidates = cardsWithBanks.filter(
 const defaultTopSlugs = defaultCandidates
   .map(({ card, evidence }) => ({
     slug: card.slug,
-    score: evidence.fallbackPending ? null : card.earnRates.everythingElse ?? null,
-    annualFee: evidence.annualFeePending || card.standardFeeConditions ? null : card.annualFee.amount,
+    score: evidence.fallbackPending ? null : evidence.rankRates.everythingElse ?? null,
+    annualFee: evidence.comparableAnnualFee,
   }))
   .sort((a, b) => a.score === null || b.score === null
     ? a.score === b.score ? compareKnownAnnualFees(a.annualFee, b.annualFee) : a.score === null ? 1 : -1

@@ -550,8 +550,8 @@ export const CardDataSchema = z.object({
 
   /** Phase 2a.2.3 (2026-05-20): VAT treatment of stored fee figures.
    * "inclusive" (default) = AED amounts in this record already include 5% UAE VAT.
-   * "exclusive" = AED amounts are pre-VAT; UI must render either a "+ 5% VAT"
-   * tag or gross up. */
+   * "exclusive" = AED amounts are pre-VAT; UI must retain that qualifier
+   * unless using an independently supported tax-inclusive calculation. */
   vatPolicy: z.enum(["inclusive", "exclusive"]).default("inclusive"),
 
   /** Per-field provenance map. Keys mirror dotted paths into the data. */

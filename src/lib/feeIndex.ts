@@ -17,7 +17,7 @@
  *    (`_provenance.eligibility: needs-review`) or invitation-only, on the
  *    same footing as /cards/salary/.
  */
-import { annualFeeLabel, isStructuredAnnualFeeWaiver } from "./cardsDataFormat";
+import { annualFeeLabel, formatAED, isStructuredAnnualFeeWaiver } from "./cardsDataFormat";
 import { median } from "./interestPayoff";
 import type { CardData } from "./cardsData";
 import { hasUsableSalaryMinimum } from "./cardEligibility";
@@ -29,6 +29,7 @@ export interface CardForFeeIndex {
   name: string;
   bank: string;
   annualFee: { amount: number; currency: string };
+  vatPolicy?: CardData["vatPolicy"];
   annualFeeWaiver?: unknown;
   standardFeeConditions?: CardData["standardFeeConditions"];
   fxFee: number | null;
@@ -45,6 +46,7 @@ export interface FeeIndexRow {
   bank: string;
   annualFee: number | null;
   renewalOnlyFeeLabel?: string;
+  beforeVatFeeLabel?: string;
   firstYearAnnualFeeStatus: FirstYearAnnualFeeStatus;
   fxFee: number | null;
   fxFeeScope?: CardData["fxFeeScope"];
@@ -79,6 +81,7 @@ export interface FeeIndex {
   firstYearFree: number;
   firstYearPending: number;
   annualFeePending: number;
+  annualFeeBeforeVat: number;
   annualFeeSampleSize: number;
   paidCount: number;
   medianFee: number | null;
@@ -123,10 +126,16 @@ export function firstYearAnnualFeeStatus(card: CardForFeeIndex): FirstYearAnnual
 
 /** The page uses this formatter rather than inferring Charged from a
  * false boolean. A listed annual zero does not establish zero joining costs. */
-export function firstYearAnnualFeeLabel(row: Pick<FeeIndexRow, "annualFee" | "firstYearAnnualFeeStatus">): string {
+export function firstYearAnnualFeeLabel(row: Pick<FeeIndexRow, "annualFee" | "firstYearAnnualFeeStatus" | "beforeVatFeeLabel">): string {
   if (row.firstYearAnnualFeeStatus === "pending") return "Pending";
   if (row.firstYearAnnualFeeStatus === "waived") return "Waived";
-  return row.annualFee === null ? "Pending" : row.annualFee === 0 ? "No annual fee listed" : "Standard fee";
+  return row.annualFee === null ? (row.beforeVatFeeLabel ? "Standard fee" : "Pending")
+    : row.annualFee === 0 ? "No annual fee listed" : "Standard fee";
+}
+
+export function feeIndexAnnualFeeLabel(row: Pick<FeeIndexRow, "annualFee" | "renewalOnlyFeeLabel" | "beforeVatFeeLabel">): string {
+  return row.renewalOnlyFeeLabel ?? row.beforeVatFeeLabel
+    ?? (row.annualFee === null ? "Pending" : row.annualFee === 0 ? "Free" : formatAED(row.annualFee));
 }
 
 function mean(values: number[]): number | null {
@@ -138,12 +147,15 @@ export function toRow(card: CardForFeeIndex): FeeIndexRow {
   const unverified = !hasUsableSalaryMinimum(card);
   const feeKnown = !cardFeeNeedsReview(card, "annualFee") && Number.isFinite(card.annualFee.amount) && card.annualFee.amount >= 0;
   const renewalOnly = card.standardFeeConditions === "renewal-only";
+  const beforeVat = feeKnown && card.annualFee.amount > 0 && card.vatPolicy === "exclusive";
+  const display = annualFeeLabel(card);
   return {
     slug: card.slug,
     name: card.name,
     bank: card.bank,
-    annualFee: feeKnown && !renewalOnly ? card.annualFee.amount : null,
-    ...(feeKnown && renewalOnly ? { renewalOnlyFeeLabel: annualFeeLabel(card).amount + " from year two" } : {}),
+    annualFee: feeKnown && !renewalOnly && !beforeVat ? card.annualFee.amount : null,
+    ...(feeKnown && renewalOnly ? { renewalOnlyFeeLabel: display.amount + " from year two" } : {}),
+    ...(beforeVat ? { beforeVatFeeLabel: display.amount + (display.qual === "year 2+" ? " from year two" : display.qual ? " · " + display.qual : "") } : {}),
     firstYearAnnualFeeStatus: firstYearAnnualFeeStatus(card),
     fxFee: card.fxFee,
     fxFeeScope: card.fxFeeScope,
@@ -196,7 +208,8 @@ export function buildFeeIndex(cards: CardForFeeIndex[]): FeeIndex {
     freeShare: known.length === 0 ? null : free.length / known.length,
     firstYearFree: rows.filter((r) => r.firstYearAnnualFeeStatus === "waived").length,
     firstYearPending: rows.filter((r) => r.firstYearAnnualFeeStatus === "pending").length,
-    annualFeePending: rows.length - known.length,
+    annualFeePending: rows.filter(r => r.annualFee === null && !r.beforeVatFeeLabel).length,
+    annualFeeBeforeVat: rows.filter(r => r.beforeVatFeeLabel !== undefined).length,
     annualFeeSampleSize: known.length,
     paidCount: paid.length,
     medianFee: median(fees),

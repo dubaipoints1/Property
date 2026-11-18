@@ -68,8 +68,8 @@ const rowGroups = [
 ].map((group) => ({ ...group, rows: rows.filter((row) => group.keys.includes(row.key)) }));
 
 // Phase 2a.2.3 (2026-05-20) — per-row VAT tag for the Annual fee +
-// Joining fee rows. Inclusive policy + non-zero amount = "(incl. VAT)"
-// after the value. Free / AED 0 / "—" = no tag.
+// Joining fee rows. A non-zero amount retains its tax basis; a raw pre-tax
+// quote is not an all-in price. Free / AED 0 / "—" = no tag.
 const leftCard = left;
 const rightCard = right;
 const leftVat = (leftCard.vatPolicy ?? "inclusive") === "inclusive";
@@ -85,13 +85,12 @@ function vatTagFor(
     return "(VAT not specified)";
   }
   const inclusive = side === "left" ? leftVat : rightVat;
-  if (!inclusive) return null;
   const amount =
     rowKey === "annualFee"
       ? card.annualFee.amount
       : card.joiningFee?.amount ?? null;
   if (amount === null || amount === 0) return null;
-  return "(incl. VAT)";
+  return inclusive ? "(incl. VAT)" : "(+ VAT)";
 }
 ---
 

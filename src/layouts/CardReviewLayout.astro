@@ -204,7 +204,7 @@ const relatedDescriptor = (c: CardData) =>
     ? "No annual fee"
     : c.standardFeeConditions
       ? `${annualFeeLabel(c).amount} standard annual fee · ${annualFeeLabel(c).qual}`
-      : `${formatAED(c.annualFee.amount)} annual fee`);
+      : `${annualFeeLabel(c).amount} annual fee`);
 const relatedCards = getActiveCards()
   .filter((c) => c.slug !== slug)
   .map((c) => {
@@ -240,14 +240,15 @@ const availabilityUnconfirmed = cardData?.applicationAvailability === "unconfirm
 const applicationUnavailable = availabilityUnconfirmed || cardData?.discontinuedForNewApplicants !== undefined;
 const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
 const fxPending = cardFxNeedsReview({ _provenance: fxProvenance });
-const recurringFee = annualFeeLabel(cardData ?? { annualFee: { amount: annualFee } });
+const recurringFee = annualFeeLabel(cardData ?? { annualFee: { amount: annualFee } }, { separateVatLabel: true });
 const annualFeePending = cardData ? cardFeeNeedsReview(cardData, "annualFee") : false;
 // A standalone zero in structured data reads as a free offer, not just a
 // free annual fee. Do not emit it without an explicit, unheld zero joining fee.
 const singleFeeOffer = !annualFeePending && !applicationUnavailable
+  && !(annualFee > 0 && cardData?.vatPolicy === "exclusive")
   && !(cardData?.refreshMode === "manual-primary" && recurringFee.qual)
   && (annualFee !== 0 || (!!cardData && cardData.joiningFee?.amount === 0 && !cardFeeNeedsReview(cardData, "joiningFee")));
-const vatQualifier = !annualFeePending && annualFee > 0 ? (cardData?.vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT") : null;
+const vatQualifier = !annualFeePending && annualFee > 0 ? (cardData?.vatPolicy === "exclusive" ? "+ VAT" : "incl. VAT") : null;
 
 // Stock photograph lookup. Each card may have an editorial photograph
 // registered in data/stock/manifest.json under `card-<slug>` (e.g.

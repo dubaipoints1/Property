@@ -122,4 +122,17 @@ test("comparison VAT tags do not qualify a held annual or joining fee", () => {
     assert.equal(tag(key, "left", held, base, true, true, cardFeeNeedsReview), null, field);
   }
   assert.equal(tag("annualFee", "right", base, base, true, true, cardFeeNeedsReview), "(incl. VAT)");
+  assert.equal(tag("annualFee", "right", base, base, true, false, cardFeeNeedsReview), "(+ VAT)");
+  assert.equal(tag("joiningFee", "left", { ...base, joiningFee: { amount: 100, vatTreatment: "unspecified" } }, base, false, true, cardFeeNeedsReview), "(VAT not specified)");
+});
+
+test("annual-fee labels retain VAT and renewal scope; mixed tax bases do not get a winner or schema price", () => {
+  const exclusive = { ...base, annualFee: { ...base.annualFee, amount: 150 }, vatPolicy: "exclusive" as const };
+  const renewal = { ...exclusive, standardFeeConditions: "renewal-waiver" as const };
+  const inclusive = { ...base, annualFee: { ...base.annualFee, amount: 200 }, vatPolicy: "inclusive" as const };
+  assert.deepEqual(annualFeeLabel(renewal), { amount: `${formatAED(150)} + VAT`, qual: "year 2+" });
+  assert.deepEqual(annualFeeLabel(renewal, { separateVatLabel: true }), { amount: formatAED(150), qual: "year 2+" });
+  assert.equal(cardComparisonRows(exclusive, inclusive).find(row => row.key === "annualFee")?.winner, "none");
+  const singleOffer = new Function("annualFeePending", "applicationUnavailable", "cardData", "recurringFee", "annualFee", "cardFeeNeedsReview", `return (${expression("src/layouts/CardReviewLayout.astro", "singleFeeOffer")});`);
+  assert.equal(singleOffer(false, false, exclusive, { qual: null }, 150, cardFeeNeedsReview), false);
 });

@@ -14,7 +14,7 @@ export function cardFeeAmountLabel(card: FeeCard, field: FeeField = "annualFee")
   if (field === "joiningFee" && card.joiningFee?.vatTreatment === "unspecified") {
     return `${formatAED(fee.amount)} (VAT not specified)`;
   }
-  return `${formatAED(fee.amount)} ${card.vatPolicy === "exclusive" ? "+ 5% VAT" : "including VAT"}`;
+  return `${formatAED(fee.amount)} ${card.vatPolicy === "exclusive" ? "+ VAT" : "including VAT"}`;
 }
 
 type FxCard = {
