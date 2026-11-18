@@ -38,7 +38,7 @@ test("all held annual-fee and VAT subtrees suppress public calculator cost, net 
   }
 });
 
-test("confirmed VAT-inclusive and exclusive fees retain exact gross-up and net/break-even maths", () => {
+test("calculator maths keep their explicit tax convention while the Finder/Compare quote model withholds a pre-tax total", () => {
   const inclusive = rankCards([fixture()], spend, { netOfFee: true })[0];
   assert.equal(inclusive.annualFeeAED, 1200); assert.equal(inclusive.monthlyFeeAED, 100);
   assert.equal(inclusive.netMonthlyAED, 0); assert.equal(inclusive.breakEvenMonthlySpendAED, 10000);
@@ -46,7 +46,8 @@ test("confirmed VAT-inclusive and exclusive fees retain exact gross-up and net/b
   assert.equal(exclusive.annualFeeAED, 1260); assert.equal(exclusive.monthlyFeeAED, 105);
   assert.equal(exclusive.netMonthlyAED, -5); assert.equal(exclusive.breakEvenMonthlySpendAED, 10500);
   const terms = cardValueTerms({ ...fixture(), vatPolicy: "exclusive" }, "synthetic-fee-evidence");
-  assert.equal(terms.firstFee, 1260); assert.equal(terms.laterFee, 1260);
+  assert.equal(terms.firstFee, null); assert.equal(terms.laterFee, null);
+  assert.match(terms.laterFeeIssue, /before VAT/);
   assert.equal(cardFeeNeedsReview({ ...fixture(), _provenance: { partnerBrands: "needs-review" } }, "annualFee"), false);
 });
 
