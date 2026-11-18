@@ -150,14 +150,16 @@ export function scoreOffer(
     );
   }
 
-  if (!input.willStay12Months && offer.tenureMonths >= 6) {
+  const rule = getSalaryOfferRules(offer);
+  if (!input.willStay12Months && rule?.earlyExitNote) {
+    reasons.push(rule.earlyExitNote);
+  } else if (!input.willStay12Months && offer.tenureMonths >= 6) {
     if (status !== "disqualified") status = "warning";
     reasons.push(
       `Clawback risk: offer requires ${offer.tenureMonths} months of salary transfer.`,
     );
   }
 
-  const rule = getSalaryOfferRules(offer);
   if (!rule && hasSalaryOfferRule(offer.id)) {
     requireConfirmation("The campaign source has changed. Verify the current conditions with the bank.");
   }

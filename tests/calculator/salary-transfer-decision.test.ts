@@ -75,3 +75,17 @@ test("value sort does not promote ads with source conflicts or a changed source 
   assert.deepEqual([mashreq, changed, confirmed, larger].sort(compareSalaryOffersByReward),
     [larger, confirmed, mashreq, changed]);
 });
+
+test("FAB campaign examples neither rank above cash terms nor imply retrospective clawback", () => {
+  const fab = { ...offer, id: "fab-20-percent-2026", bankSlug: "fab", tenureMonths: 12,
+    sourceUrl: "https://www.bankfab.com/-/media/fab-uds/personal/promotions/2026/20-percent-cashback-on-salary-transfers/terms-and-conditions-en.pdf" };
+  const result = scoreOffer(fab, { ...input, willStay12Months: false });
+  assert.equal(result.status, "conditional");
+  assert.equal(result.cashEquivalentAED, 0);
+  assert.ok(result.reasons.some(reason => /forfeits unpaid cashback/.test(reason)));
+  assert.ok(result.reasons.every(reason => !/Clawback risk/.test(reason)));
+  assert.deepEqual([
+    { offer: fab, reward: { rewardAmount: 9_000 } },
+    { offer, reward: { rewardAmount: 500 } },
+  ].sort(compareSalaryOffersByReward).map(row => row.offer.id), ["generic", fab.id]);
+});

@@ -17,6 +17,8 @@ const rules = {
     bank: "fab",
     source: "https://www.bankfab.com/-/media/fab-uds/personal/promotions/2026/20-percent-cashback-on-salary-transfers/terms-and-conditions-en.pdf",
     needsConfirmation: "Requires qualifying savings or new-card spend each month. This calculator does not verify either route.",
+    trackerExamples: true,
+    earlyExitNote: "A missed qualifying month is not paid later. Closing before payment forfeits unpaid cashback.",
   },
   "hsbc-new-to-bank-2026-sep-dec": {
     bank: "hsbc",
@@ -42,6 +44,8 @@ export interface SalaryOfferRules {
   needsConfirmation?: string;
   confirmHighestTier?: string;
   trackerNote?: string;
+  trackerExamples?: true;
+  earlyExitNote?: string;
 }
 
 export const hasSalaryOfferRule = (id: string) => Object.hasOwn(rules, id);
@@ -68,5 +72,8 @@ export function compareSalaryOffersByReward(
   const aHeld = Boolean(salaryOfferSourceNote(a.offer));
   const bHeld = Boolean(salaryOfferSourceNote(b.offer));
   if (aHeld || bHeld) return Number(aHeld) - Number(bHeld);
+  const aExample = Boolean(getSalaryOfferRules(a.offer)?.trackerExamples);
+  const bExample = Boolean(getSalaryOfferRules(b.offer)?.trackerExamples);
+  if (aExample || bExample) return Number(aExample) - Number(bExample);
   return b.reward.rewardAmount - a.reward.rewardAmount;
 }

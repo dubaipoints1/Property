@@ -8,7 +8,7 @@ import {
   type RewardType,
 } from "../../lib/salaryTransfer";
 import { daysToSalaryOfferEnd } from "../../lib/salaryTransferWindow";
-import { compareSalaryOffersByReward, salaryOfferSourceNote } from "../../lib/salaryTransferRules";
+import { compareSalaryOffersByReward, getSalaryOfferRules, salaryOfferSourceNote } from "../../lib/salaryTransferRules";
 import {
   accountOnlyTrackerTiers,
   type TrackerSalaryBand,
@@ -110,9 +110,10 @@ function rewardRange(tier: SalaryBand): string {
 
 function SalaryForReward({ offer, reward }: { offer: SalaryTransferOffer; reward: SalaryBand }) {
   const min = Math.min(...offer.salaryBands.map((b) => b.minSalary));
+  const example = getSalaryOfferRules(offer)?.trackerExamples;
   return (
     <span class="dpst-salary">
-      <span>{rewardRange(reward)}</span>
+      <span>{example ? `Example: AED ${fmt(reward.minSalary)}` : rewardRange(reward)}</span>
       {min < reward.minSalary && <small>Offer starts at AED {fmt(min)}</small>}
     </span>
   );
@@ -226,7 +227,9 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
           : noCard && path?.financeAlternative
             ? "Qualifying finance required without a card"
             : undefined;
-        return [{ offer, reward, rewardNote: salaryOfferSourceNote(offer) ?? rewardNote }];
+        const example = getSalaryOfferRules(offer)?.trackerExamples;
+        return [{ offer, reward, rewardNote: salaryOfferSourceNote(offer)
+          ?? (example ? "Bank example · total over 12 qualifying months" : rewardNote) }];
       })
       .sort((a, b) => {
         if (sort === "value") return compareSalaryOffersByReward(a, b);

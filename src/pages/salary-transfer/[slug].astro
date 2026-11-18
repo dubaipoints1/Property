@@ -13,7 +13,7 @@ import { getLiveOffers, getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
 import { getSalaryTransferTimeline, getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
-import { salaryOfferSourceNote } from "~/lib/salaryTransferRules";
+import { getSalaryOfferRules, salaryOfferSourceNote } from "~/lib/salaryTransferRules";
 import {
   salaryBandsOverlap,
   TRACKER_SALARY_BANDS,
@@ -126,6 +126,7 @@ const siteUrl = siteUrlFrom(Astro.site);
           const noteEntry = renderedNotes.find((n) => n.id === o.id);
           const NoteContent = noteEntry?.Content;
           const sourceNote = salaryOfferSourceNote(o);
+          const examples = getSalaryOfferRules(o)?.trackerExamples;
           return (
             <section class="dp-offer-card">
               <header class="dp-offer-head">
@@ -137,12 +138,12 @@ const siteUrl = siteUrlFrom(Astro.site);
 
               <SalaryTransferTimeline offer={o} timeline={getSalaryTransferTimeline(o)} showHistory={false} />
 
-              <div class="dp-st-offer-table" role="region" aria-label="Salary and reward tiers" tabindex="0">
+              <div class="dp-st-offer-table" role="region" aria-label={examples ? "Illustrative salary and rewards" : "Salary and reward tiers"} tabindex="0">
               <table class="dp-data-table">
                 <thead>
                   <tr>
-                    <th>Salary band</th>
-                    <th>{sourceNote ? "Offer-page reward" : "Reward"}</th>
+                    <th>{examples ? "Example salary" : "Salary band"}</th>
+                    <th>{examples ? "Illustrative total over 12 qualifying months" : sourceNote ? "Offer-page reward" : "Reward"}</th>
                     <th>Type</th>
                   </tr>
                 </thead>
@@ -150,8 +151,7 @@ const siteUrl = siteUrlFrom(Astro.site);
                   {o.salaryBands.map((b) => (
                     <tr>
                       <td>
-                        {formatAED(b.minSalary)} –{" "}
-                        {b.maxSalary === null ? "no limit" : formatAED(b.maxSalary)}
+                        {examples ? formatAED(b.minSalary) : `${formatAED(b.minSalary)} – ${b.maxSalary === null ? "no limit" : formatAED(b.maxSalary)}`}
                       </td>
                       <td class="num">{formatAED(b.rewardAmount)}</td>
                       <td>{b.rewardType.replace("_", " ")}</td>
