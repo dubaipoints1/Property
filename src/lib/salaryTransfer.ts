@@ -272,11 +272,6 @@ function formatBandRange(bands: SalaryBand[]): string {
 export const formatAED = (n: number) =>
   `AED ${Math.round(n).toLocaleString("en-AE")}`;
 
-export const daysUntil = (iso: string) => {
-  const ms = new Date(iso).getTime() - Date.now();
-  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
-};
-
 /**
  * The offer title with its bank prefix removed.
  *

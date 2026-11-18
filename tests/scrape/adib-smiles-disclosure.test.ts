@@ -4,6 +4,10 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { parseAdibSmilesDisclosure } from "../../scripts/scrape/_adib-smiles-disclosure.ts";
 import { loadAdibMappingSources } from "../../scripts/scrape/propose-adib-primary.ts";
+import { parseMinSalary } from "../../scripts/scrape/_lib.ts";
+import { proposeAdibProfile } from "../../scripts/scrape/_adib-primary.ts";
+import { getCardData } from "../../src/lib/cardsData.ts";
+import { hasUsableSalaryMinimum } from "../../src/lib/cardEligibility.ts";
 
 const sha = (text: string | Buffer) => createHash("sha256").update(text).digest("hex");
 const sources = loadAdibMappingSources();
@@ -48,4 +52,44 @@ test("Smiles detail discloses both scoped outcomes without changing the canonica
   assert.equal(card._provenance.fxFee, "needs-review");
   assert.equal(card._provenance.welcomeBonus, "needs-review");
   assert.equal(card.welcomeBonusValue, undefined);
+});
+
+test("Classic rates map its named tariff column and its own funding awards without flattening them", () => {
+  const out = parseAdibSmilesDisclosure(tariff, terms, "adib-smiles-visa-classic");
+  assert.ok(out);
+  assert.equal(out.comparableFxRate, null);
+  assert.deepEqual([out.nonAedFee.rate, out.intlAedFee.rate, out.vatDefault], [2.3, 2.75, 5]);
+  assert.deepEqual([out.welcome.nonSelfFundedPoints, out.welcome.selfFundedPoints, out.welcome.daysFromReceipt], [5000, 2500, 30]);
+  assert.deepEqual(out.welcome.evidence.map(p => [p.firstLine, p.lastLine]), [[1984, 1985], [2001, 2002], [2003, 2004], [2005, 2021], [2029, 2043]]);
+  for (const p of out.welcome.evidence)
+    assert.equal(sha(Buffer.from(terms.text).subarray(p.firstByte, p.pastLastByte)), p.rawTextSha256);
+  const text = readFileSync("src/content/cards/adib-smiles-visa-classic.mdx", "utf8");
+  for (const points of [out.welcome.nonSelfFundedPoints, out.welcome.selfFundedPoints])
+    assert.ok(text.includes(`${points.toLocaleString("en-GB")} Smiles Points`));
+  const classic = getCardData("adib-smiles-visa-classic")!;
+  assert.equal(classic.fxFee, null);
+  assert.equal(classic._provenance.fxFee, "needs-review");
+  assert.equal(classic._provenance.welcomeBonus, "needs-review");
+  assert.equal(classic.welcomeBonusValue, undefined);
+});
+
+test("ADIB income floors replay exact issuer lines and do not enter salary-qualified matching", () => {
+  for (const slug of ["adib-smiles-visa-classic", "adib-smiles-visa-signature"]) {
+    const c = getCardData(slug)!;
+    const evidence = c._fieldEvidence?.["eligibility.publishedMinMonthlyIncome"]?.[0];
+    assert.ok(evidence);
+    assert.equal(sha(evidence.rawText), evidence.rawTextSha256);
+    assert.equal(parseMinSalary(evidence.rawText), c.eligibility.publishedMinMonthlyIncome);
+    assert.equal(c.eligibility.minSalary, null);
+    assert.equal(c._provenance.eligibility, "needs-review");
+    assert.equal(hasUsableSalaryMinimum(c), false);
+  }
+  const listing = sources.find(s => s.id === "ADIB Smiles Visa Classic Card")!;
+  const kfs = sources.find(s => s.id === "adib-kfs")!;
+  const parsed = proposeAdibProfile(listing, tariff, kfs, "adib-smiles-visa-classic");
+  assert.ok(parsed && "annualFee" in parsed);
+  const classic = getCardData("adib-smiles-visa-classic")!;
+  assert.equal(parsed.annualFee.amount, classic.annualFee.amount);
+  assert.equal(classic._provenance.annualFee, "editor-confirmed");
+  assert.equal(classic._provenance.joiningFee, "needs-review");
 });

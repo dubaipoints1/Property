@@ -16,7 +16,7 @@
 // all ten rows as well.
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import { programmeValuations, baselinesConfirmed } from "~/lib/valuations";
+import { programmeValuations, baselinesConfirmed, formatBaseline, programmesByValue } from "~/lib/valuations";
 import PointsToAEDConverter from "~/components/islands/PointsToAEDConverter";
 
 // The converter prices a balance at the same rows the table renders, so the
@@ -28,12 +28,13 @@ const converterProgrammes = programmeValuations.map((p) => ({
   name: `${p.name} ${p.currencyName}`,
   currencyName: p.currencyName,
   dpValue: p.dpValue ?? null,
+  approx: p.approx,
 }));
 
 // Rows and baselines live in src/lib/valuations.ts — the single
 // source of truth the header mega-menu also renders from (Fact-Checker
 // redline, 11 June 2026; nav fork closed 29 August 2026).
-const programmes = programmeValuations;
+const programmes = programmesByValue(programmeValuations);
 const fmt = (d: Date) =>
   d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
@@ -73,7 +74,7 @@ const fmt = (d: Date) =>
       <thead>
         <tr>
           <th style="width: 46%;">Programme</th>
-          <th class="sort-active">DP value (fils) ▼</th>
+          <th scope="col" class="sort-active" aria-sort="descending">DP value (fils) <span aria-hidden="true">▼</span></th>
           <th>Status</th>
         </tr>
       </thead>
@@ -89,7 +90,7 @@ const fmt = (d: Date) =>
                 </div>
               </div>
             </td>
-            <td class="num"><strong style="font-size: 15px;">{p.dpValue ?? "—"}</strong></td>
+            <td class="num"><strong style="font-size: 15px;">{formatBaseline(p) ?? "—"}</strong></td>
             <td>
               <span class={p.status === "Active" ? "status-active" : "status-paused"} style={p.status === "Pending" ? "color: var(--muted);" : ""}>● {p.status}</span>
             </td>

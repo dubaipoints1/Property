@@ -8,11 +8,9 @@
  * `getActiveCards()` — no LLM, no live scraping (Charter §6).
  */
 import BaseLayout from "~/layouts/BaseLayout.astro";
-import RewardsCalculator from "~/components/islands/RewardsCalculator";
+import RewardsCalculator, { comparableCardCount } from "~/components/islands/RewardsCalculator";
 import { getActiveCards } from "~/lib/cardsData";
-import { PLACEHOLDER_AED_PER_UNIT } from "~/components/islands/RewardsCalculator";
 import { VALUATION_SLUG_BY_LOYALTY_PROGRAM, dpValueFils } from "~/lib/valuations";
-import { hasUsableGenericEarnRate } from "~/lib/cardEarnModel";
 import { calculatorCardPayload } from "~/lib/calculatorCardPayload";
 
 // The currencies this publication has published a baseline for, read from
@@ -24,18 +22,12 @@ const publishedRates = Object.entries(VALUATION_SLUG_BY_LOYALTY_PROGRAM)
 
 const cards = getActiveCards();
 const calculatorCards = calculatorCardPayload(cards);
-const cardCount = cards.filter(hasUsableGenericEarnRate).length;
-const unmodelledCount = cards.length - cardCount;
-const lastUpdated = new Date().toLocaleDateString("en-GB", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+const cardCount = comparableCardCount(calculatorCards);
 ---
 
 <BaseLayout
   title="UAE credit-card spend-ROI calculator | DubaiPoints"
-  description="A free, transparent calculator: enter your monthly spend across seven categories and see which UAE credit card pays you back the most. AED-first, methodology visible, no email wall."
+  description="Estimate rewards on UAE cards with comparable published rates. Enter your monthly spend across seven categories and see how it affects estimated AED return."
   fullWidth
 >
   <article class="dp-article is-wide">
@@ -48,8 +40,7 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
         Estimate monthly rewards in AED from your spending and each card’s published earn rates.
       </p>
       <p class="dp-article-meta">
-        <strong>{cardCount}</strong> cards with a usable general-spend model
-        <span class="sep">·</span> Last updated {lastUpdated}
+        <strong>{cardCount} of {cards.length}</strong> active cards can be ranked for general spending
         <span class="sep">·</span>
         <a href="#methodology">Methodology</a>
         <span class="sep">·</span>
@@ -57,8 +48,8 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
       </p>
     </header>
 
+    {cardCount < cards.length && <p class="dp-card-note">We only rank cards with a usable general earn rate and a published AED equivalent. Find other cards and their specific terms in the <a href="/cards/">card directory</a>. Unranked does not mean zero rewards.</p>}
     <RewardsCalculator client:load cards={calculatorCards} />
-    {unmodelledCount > 0 && <p class="dp-card-note">{unmodelledCount} other source profiles are not return-ranked here because their base rate, reward limits, plan or merchant/channel conditions are not fully modelled. They remain available in the <a href="/cards/">card directory</a>; unknown is not a zero return.</p>}
 
     <section id="methodology" class="dp-article-section">
       <h2>Methodology</h2>
@@ -183,22 +174,16 @@ const lastUpdated = new Date().toLocaleDateString("en-GB", {
           ))}
           <tr>
             <td>Every other currency</td>
-            <td class="num">{(PLACEHOLDER_AED_PER_UNIT * 100).toFixed(1)}</td>
-            <td>Placeholder — flagged on the card</td>
+            <td class="num">—</td>
+            <td>No published equivalent; not ranked</td>
           </tr>
         </tbody>
       </table>
 
       <p>
-        <strong>The placeholder row is not a valuation.</strong> Most
-        cards here earn a bank or merchant currency — ENBD Plus
-        Points, ADCB TouchPoints, LuLu Points, Darna, U by Emaar, FAB
-        Rewards, SHARE, Voyager Miles — and we have not published a
-        baseline for any of them. Those cards are ranked on a flat
-        placeholder so they stay visible in the tool, and every one of
-        them carries a label saying so. Do not read a placeholder
-        card's AED figure against a published one; the two are not
-        measured the same way.
+        If we haven’t published an AED equivalent for a currency, we
+        don’t estimate its AED return or put it in the ranking. Read the
+        card review for earning and redemption terms.
       </p>
 
       <h3>Annual fee handling</h3>

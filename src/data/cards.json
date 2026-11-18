@@ -8830,7 +8830,8 @@
       "name": "scraped",
       "network": "scraped",
       "categories": "scraped",
-      "annualFee": "scraped",
+      "annualFee": "editor-confirmed",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
       "loyaltyProgram": "scraped",
       "earnUnit": "scraped",
       "applyUrl": "scraped",
@@ -8934,7 +8935,9 @@
       }
     ],
     "eligibility": {
-      "minSalary": 5000,
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 5000,
+      "publishedIncomeBasis": "salary",
       "salaryTransferRequired": null,
       "residencyRequired": null,
       "employmentTypes": []
@@ -9521,7 +9524,7 @@
           "rawTextSha256": "194514195da71ff92ad6d3c7f0aed34d77350075a546eb61929695db88b94589"
         }
       ],
-      "eligibility": [
+      "eligibility.publishedMinMonthlyIncome": [
         {
           "parserId": "adib/product-scoped-standing-economics/v1",
           "productScope": "ADIB Smiles Visa Classic Card",
@@ -9544,11 +9547,11 @@
       ]
     },
     "_dataIssues": {
-      "eligibility": "Only a source-stated income amount is retained where available. Full salary-transfer, residency and employment qualification conditions remain Pending; empty employment is unknown, not any employment.",
-      "fxFee": "Issuer service fees, VAT and scheme/international components have not been reconciled into an exact comparable FX charge. Pending does not mean free.",
-      "annualFee": "The displayed figure is the standard primary annual fee. Joining charges, fee waivers and profit charges have not been reconciled; no first-year or total annual cost is estimated.",
+      "eligibility.publishedMinMonthlyIncome": "The issuer publishes a salary threshold. Full salary-transfer, residency and employment conditions are not confirmed.",
+      "fxFee": "See the two issuer service-fee rows below. They do not establish a single comparable FX cost.",
+      "annualFee": "The issuer confirms no standard primary-card annual fee. That is not a total-cost figure; check joining charges and profit charges separately.",
       "earnRates": "These are named source-qualified rows, not a universal earn rate or guaranteed total return. All figures apply only to qualifying expenditure; specific merchants, EEA, card-limit, payment-status and other issuer conditions remain applicable. The full foreign-currency cost has not been confirmed. Check issuer charges, VAT and any scheme charges separately. monthly points cap: 100,000 Smiles Points per month.",
-      "_features": "This source review covers identity, standard annual fee and scoped rewards. Perks and welcome incentives have not been verified in this review or assigned a cash value."
+      "_features": "The card review separates the two funding-specific sign-up awards. No universal welcome amount or cash value is assigned, and other perks are not confirmed here."
     }
   },
   "adib-smiles-visa-signature": {
@@ -9562,6 +9565,7 @@
       "earnUnit": "scraped",
       "applyUrl": "scraped",
       "kfsUrl": "scraped",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
       "sources": "scraped",
       "scopedEarnRates": "scraped",
       "fxFee": "needs-review",
@@ -9661,7 +9665,9 @@
       }
     ],
     "eligibility": {
-      "minSalary": 20000,
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 20000,
+      "publishedIncomeBasis": "salary",
       "salaryTransferRequired": null,
       "residencyRequired": null,
       "employmentTypes": []
@@ -10208,7 +10214,7 @@
           "rawTextSha256": "e4346ad84ebea2262e70ac9f1d357bdba602d2cdb9c02b6c0694c148a4219db8"
         }
       ],
-      "eligibility": [
+      "eligibility.publishedMinMonthlyIncome": [
         {
           "parserId": "adib/product-scoped-standing-economics/v1",
           "productScope": "ADIB Smiles Visa Signature Card",

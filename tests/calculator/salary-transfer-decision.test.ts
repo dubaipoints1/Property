@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { rankOffers, scoreOffer, type CalculatorInput, type SalaryTransferOffer } from "../../src/lib/salaryTransfer";
+import { compareSalaryOffersByReward, salaryOfferSourceNote } from "../../src/lib/salaryTransferRules";
 
 const input: CalculatorInput = { monthlySalary: 20_000, willingProducts: [], willStay12Months: true, shariaOnly: false, cashOnly: false };
 const offer: SalaryTransferOffer = {
@@ -46,4 +47,31 @@ test("card-required and unidentified points offers cannot become top estimates",
   assert.equal(scoreOffer(card, { ...input, willingProducts: ["credit_card"] }).status, "conditional");
   assert.equal(scoreOffer(points, input).status, "conditional");
   assert.equal(rankOffers([points, card, offer], input)[0].offer.id, "generic");
+});
+
+test("Priority relationship and Mashreq source conflicts require confirmation rather than a cash ranking", () => {
+  for (const [id, bankSlug, sourceUrl, reason] of [
+    ["standard-chartered-priority-2026-nov-2027-jan", "standard-chartered",
+      "https://av.sc.com/ae/content/docs/sc-ae-wsdepositscampaign.pdf", /relationship/],
+    ["mashreq-2026", "mashreq",
+      "https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer/", /terms differ/],
+  ] as const) {
+    const result = scoreOffer({ ...offer, id, bankSlug, sourceUrl }, input);
+    assert.equal(result.status, "conditional");
+    assert.equal(result.cashEquivalentAED, 0);
+    assert.ok(result.reasons.some((text) => reason.test(text)));
+  }
+});
+
+test("value sort does not promote ads with source conflicts or a changed source identity", () => {
+  const confirmed = { offer, reward: { rewardAmount: 100 } };
+  const larger = { offer: { ...offer, id: "generic-two" }, reward: { rewardAmount: 500 } };
+  const mashreq = { offer: { ...offer, id: "mashreq-2026", bankSlug: "mashreq",
+    sourceUrl: "https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer/" },
+    reward: { rewardAmount: 20_000 } };
+  assert.match(salaryOfferSourceNote(mashreq.offer) ?? "", /terms differ/);
+  const changed = { ...mashreq, offer: { ...mashreq.offer, sourceUrl: "https://example.com/changed" }, reward: { rewardAmount: 40_000 } };
+  assert.match(salaryOfferSourceNote(changed.offer) ?? "", /source changed/i);
+  assert.deepEqual([mashreq, changed, confirmed, larger].sort(compareSalaryOffersByReward),
+    [larger, confirmed, mashreq, changed]);
 });

@@ -41,6 +41,7 @@ import {
 } from "~/lib/cardsDataFormat";
 import { getLiveOffers } from "~/lib/offerAdapter";
 import { getSalaryTransferTimeline } from "~/lib/salaryTransferTimeline";
+import { salaryOfferSourceNote } from "~/lib/salaryTransferRules";
 import { formatAED } from "~/lib/salaryTransfer";
 import { resolveDealIssuer } from "~/lib/dealIssuer";
 import { getLiveDeals } from "~/lib/deals";
@@ -282,7 +283,7 @@ const goals = [
 const liveOffers = await getLiveOffers();
 const fmtVerified = (iso: string) =>
   new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-const offerRows = liveOffers.map((o) => {
+const offerRows = liveOffers.filter((o) => !salaryOfferSourceNote(o)).map((o) => {
   const best = o.salaryBands.reduce((a, b) => (b.rewardAmount > a.rewardAmount ? b : a));
   const minBand = o.salaryBands.reduce((a, b) => (b.minSalary < a.minSalary ? b : a));
   return {

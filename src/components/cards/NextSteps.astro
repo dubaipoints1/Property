@@ -7,8 +7,9 @@
 // Every link goes to a page that exists; the salary link renders only when
 // the bank has a live, unarchived offer on the tracker.
 
-import { getCollection } from "astro:content";
 import { formatAED } from "~/lib/cardsDataFormat";
+import { getOffersForBank } from "~/lib/offerAdapter";
+import { salaryOfferSourceNote } from "~/lib/salaryTransferRules";
 import NextStepLinks from "~/components/NextStepLinks.astro";
 
 interface Props {
@@ -31,14 +32,8 @@ const prefer = /cashback/i.test(earnUnit) ? "cashback" : /mile|avios/i.test(earn
 // the reader's own filter when they arrived with one.
 const finderHref = `/cards/finder/?${new URLSearchParams({ prefer })}`;
 
-const now = Date.now();
-const liveOffers = bankSlug
-  ? await getCollection(
-      "salaryTransferOffers",
-      (e) => !e.data.archived && e.data.bank.id === bankSlug && e.data.validUntil.getTime() >= now,
-    )
-  : [];
-const topReward = Math.max(0, ...liveOffers.flatMap((o) => o.data.salaryBands.map((b) => b.rewardAmount ?? 0)));
+const liveOffers = bankSlug ? await getOffersForBank(bankSlug) : [];
+const topReward = Math.max(0, ...liveOffers.filter((o) => !salaryOfferSourceNote(o)).flatMap((o) => o.salaryBands.map((b) => b.rewardAmount)));
 
 const items = [
   ...(compareWith.length > 0
@@ -53,7 +48,7 @@ const items = [
     ? [{
         href: `/salary-transfer/${bankSlug}/`,
         title: `${bankName} salary-transfer offer`,
-        meta: topReward > 0 ? `Up to ${formatAED(topReward)} for moving your salary` : "Live offer for moving your salary",
+        meta: topReward > 0 ? `Up to ${formatAED(topReward)} if you qualify` : "Check the applicable terms with the bank",
       }]
     : []),
 ];

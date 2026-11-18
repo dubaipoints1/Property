@@ -6,6 +6,7 @@
  * quietly price a currency the table says is Pending.
  */
 import { useMemo, useState } from "preact/hooks";
+import { formatBaseline } from "../../lib/valuations";
 
 export interface ConverterProgramme {
   slug: string;
@@ -13,6 +14,7 @@ export interface ConverterProgramme {
   currencyName: string;
   /** Fils per unit, or null when no baseline is published. */
   dpValue: number | null;
+  approx?: boolean;
 }
 
 interface Props {
@@ -55,7 +57,7 @@ export default function PointsToAEDConverter({ programmes }: Props) {
       <p class="dp-p2a-out" aria-live="polite">
         {valueAED != null && fils != null ? (
           <>
-            ≈ <strong>{aed.format(Math.round(valueAED))}</strong> at {fils.toFixed(1)} fils each
+            ≈ <strong>{aed.format(Math.round(valueAED))}</strong> at {programme && formatBaseline(programme)} fils each
             {perThousand != null && <> · AED 1,000 needs about {int.format(perThousand)} {programme?.currencyName}</>}
           </>
         ) : (

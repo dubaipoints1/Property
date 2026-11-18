@@ -42,6 +42,21 @@ test("a bank that is live and lapsed at once counts as tracked only", () => {
   assert.deepEqual(c.lapsed, []);
 });
 
+test("an upcoming offer classifies without being counted as live or lapsed", () => {
+  const c = classifyCoverage({
+    coveredBanks: ["dib", "fab"],
+    liveOfferBanks: ["fab"],
+    lapsedOfferBanks: ["dib"],
+    upcomingOfferBanks: ["dib", "fab"],
+    checkedWithoutLiveOffer: [],
+    advertisedWithoutCurrentTerms: [],
+  });
+  assert.deepEqual(c.tracked, ["fab"]);
+  assert.deepEqual(c.upcoming, ["dib"]);
+  assert.deepEqual(c.lapsed, []);
+  assert.equal(coverageGuardError(c, 2), null);
+});
+
 test("a bank named in two editorial lists is reported as an overlap", () => {
   const c = classifyCoverage({
     coveredBanks: ["adcb", "fab"],

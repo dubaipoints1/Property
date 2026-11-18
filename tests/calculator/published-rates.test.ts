@@ -1,8 +1,9 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import {
-  PLACEHOLDER_AED_PER_UNIT,
   conversionForCard,
+  comparableCardCount,
+  nativeUnitNoun,
   rankCards,
   type CardForCalc,
   type SpendProfile,
@@ -11,6 +12,9 @@ import { getActiveCards } from "../../src/lib/cardsData.ts";
 import {
   VALUATION_SLUG_BY_LOYALTY_PROGRAM,
   dpValueFils,
+  formatBaseline,
+  programmeValuations,
+  programmesByValue,
   publishedAEDPerUnit,
 } from "../../src/lib/valuations.ts";
 import { AED_PER_USD } from "../../src/lib/earnBasis.ts";
@@ -44,6 +48,11 @@ test("a published currency is priced at exactly the /valuations/ figure", () => 
   }
 });
 
+test("a monthly reward shows the currency, not the issuer's per-spend denominator", () => {
+  assert.equal(nativeUnitNoun("Skywards Miles per USD 1"), "Skywards Miles");
+  assert.equal(nativeUnitNoun("Etihad Guest Miles per AED 10 spent"), "Etihad Guest Miles");
+});
+
 test("Skywards and Etihad Guest are 2 fils, Bonvoy 2.5 — not the old 4 and 0.8", () => {
   assert.equal(publishedAEDPerUnit("Emirates Skywards"), 0.02);
   assert.equal(publishedAEDPerUnit("Etihad Guest"), 0.02);
@@ -52,14 +61,13 @@ test("Skywards and Etihad Guest are 2 fils, Bonvoy 2.5 — not the old 4 and 0.8
 
 test("Voyager Miles is not valued as if it were Skywards", () => {
   // The old regex matched the word "miles" and priced Voyager at the miles
-  // rate. Voyager has no published baseline, so it must fall to the
-  // placeholder and be labelled.
+  // rate. Voyager has no published baseline, so it is not rankable.
   assert.equal(publishedAEDPerUnit("Voyager Miles"), null);
   const voyager = cards().find((c) => c.loyaltyProgram === "Voyager Miles");
   assert.ok(voyager, "expected a Voyager Miles card in the active set");
   const conv = conversionForCard(voyager);
-  assert.equal(conv.basis, "placeholder");
-  assert.equal(conv.aedPerUnit, PLACEHOLDER_AED_PER_UNIT);
+  assert.equal(conv.basis, "unrankable");
+  assert.equal(conv.aedPerUnit, null);
 });
 
 test("every mapped programme still matches a card, and every card resolves", () => {
@@ -73,7 +81,7 @@ test("every mapped programme still matches a card, and every card resolves", () 
   for (const card of cards()) {
     const basis = conversionForCard(card).basis;
     assert.ok(
-      ["cashback", "published", "placeholder", "unrankable"].includes(basis),
+      ["cashback", "published", "unrankable"].includes(basis),
       `${card.slug} resolved to an unexpected basis`,
     );
   }
@@ -149,5 +157,14 @@ test("a card with no stated denominator is left out of the ranking", () => {
   const ranked = rankCards(cards(), SPEND, { netOfFee: false, now: new Date("2026-09-10") });
   const ranking = new Set(ranked.map((r) => r.card.slug));
   assert.ok(!ranking.has("cbd-one"), "cbd-one has no per-spend rate and must not be ranked");
-  assert.ok(ranked.every((r) => r.rateBasis !== "unrankable"));
+  assert.equal(ranked.length, comparableCardCount(cards()));
+});
+
+test("valuation table sorts real figures first, keeps the Qatar approximation and does not reorder the shared source", () => {
+  const sourceOrder = programmeValuations.map((p) => p.name);
+  const ordered = programmesByValue(programmeValuations);
+  assert.deepEqual(ordered.map((p) => p.dpValue), [3, 2.5, 2, 2, 1.5, null, null, null, null, null]);
+  assert.equal(formatBaseline(ordered[0]), "~3.0");
+  assert.equal(formatBaseline(ordered.at(-1)!), null);
+  assert.deepEqual(programmeValuations.map((p) => p.name), sourceOrder);
 });

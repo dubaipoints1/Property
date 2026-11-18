@@ -93,8 +93,8 @@ test("a cap that is not reached leaves the figure alone and reports no cap", () 
 test("a points card is never clamped by an AED-denominated cap", () => {
   const points = {
     ...cashback({ slug: "points", rates: { everythingElse: 2 }, caps: { monthly_max_aed: 10 } }),
-    earnUnit: "Points per AED 1 spent",
-    loyaltyProgram: "Some Points",
+    earnUnit: "Skywards Miles per AED 1 spent",
+    loyaltyProgram: "Emirates Skywards",
   } as CardForCalc;
   const [r] = rankCards([points], { ...ZERO, dining: 10000 }, { netOfFee: false, now: NOW });
   assert.equal(r!.monthlyRewardNative, 20000);

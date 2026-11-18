@@ -6,6 +6,7 @@ import { getCollection, getEntry, render } from "astro:content";
 import { getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getSalaryTransferTimeline } from "~/lib/salaryTransferTimeline";
+import { salaryOfferSourceNote } from "~/lib/salaryTransferRules";
 import { getCardsByBank } from "~/lib/cardsData";
 import { getCardArt } from "~/lib/cardArt";
 import { annualFeeLabel, topEarnEntry, formatEarnRate } from "~/lib/cardsDataFormat";
@@ -24,9 +25,9 @@ const relatedGuides = await Promise.all(
   (bank.data.relatedGuides ?? []).map((ref) => getEntry(ref)),
 );
 
-const topBonusAed = offers.length === 0
-  ? undefined
-  : Math.max(...offers.flatMap((o) => o.salaryBands.map((b) => b.rewardAmount)));
+const sourcedTopBonus = offers.filter((o) => !salaryOfferSourceNote(o))
+  .flatMap((o) => o.salaryBands.map((b) => b.rewardAmount));
+const topBonusAed = sourcedTopBonus.length ? Math.max(...sourcedTopBonus) : undefined;
 
 const fullyCheckedCards = allCards.filter(c => !cardHasUnresolvedTerms(c));
 const latestVerified = fullyCheckedCards.length === 0
@@ -78,13 +79,13 @@ const cardTiles = allCards.map((c) => {
           <div class="dp-bank-salary-card">
             <p class="dp-bank-salary-name">{o.name}</p>
             <p class="dp-bank-salary-meta">
-              Up to{" "}
-              <strong>
-                {formatAED(Math.max(...o.salaryBands.map((b) => b.rewardAmount)))}
-              </strong>{" "}
-              · {o.tenureMonths} months · {getSalaryTransferTimeline(o)?.endDate === "published" ? (
-                <>ends <time datetime={o.validUntil.slice(0, 10)}>{new Date(o.validUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time></>
-              ) : "check deadline with the bank"}
+              {salaryOfferSourceNote(o) ?? <>
+                Up to{" "}
+                <strong>{formatAED(Math.max(...o.salaryBands.map((b) => b.rewardAmount)))}</strong>{" "}
+                · {o.tenureMonths} months · {getSalaryTransferTimeline(o)?.endDate === "published" ? (
+                  <>ends <time datetime={o.validUntil.slice(0, 10)}>{new Date(o.validUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}</time></>
+                ) : "check deadline with the bank"}
+              </>}
             </p>
             <p class="dp-bank-salary-cta">
               <a href={`/salary-transfer/${bank.id}/`}>Full offer details →</a>
