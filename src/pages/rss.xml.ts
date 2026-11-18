@@ -10,6 +10,7 @@
 
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
+import { isLive } from "~/lib/deals";
 import { renderFeed, type FeedItem } from "~/lib/rssFeed";
 
 export const GET: APIRoute = async () => {
@@ -35,11 +36,11 @@ export const GET: APIRoute = async () => {
       category: "guide",
     })),
     ...deals
-      .filter((d) => !d.data.archived && d.data.expiresOn.getTime() >= todayMs)
+      .filter((d) => isLive(d, todayMs))
       .map((d) => ({
         href: `/deals/${d.id}/`,
         title: d.data.title,
-        description: `Deal expires ${d.data.expiresOn.toLocaleDateString("en-GB")}.`,
+        description: `Recorded expiry: ${d.data.expiresOn.toLocaleDateString("en-GB", { timeZone: "UTC" })}. Check the issuer terms before acting.`,
         pubDate: d.data.publishedAt,
         category: d.data.category,
       })),

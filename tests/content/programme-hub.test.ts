@@ -38,6 +38,16 @@ test("live offer selection rejects archive/future/expired and uses earliest expi
   assert.deepEqual(result.deals.map(item => item.id), ["soon", "later"]);
 });
 
+test("programme offers honour exact cutoffs and the Dubai date-only boundary", () => {
+  const inclusive = deal("dubai-final-day", "skywards", "2026-11-29");
+  const exact = { ...deal("explicit", "skywards", "2026-11-29"), data: { ...inclusive.data, expiresAt: date("2026-11-29T18:00:00Z") } };
+  const input = { news: [], guides: [], deals: [inclusive, exact] };
+  const select = (asOf: string) => selectProgrammeHub("skywards", input, date(asOf)).deals.map(item => item.id);
+  assert.deepEqual(select("2026-11-29T18:00:00Z"), ["explicit", "dubai-final-day"]);
+  assert.deepEqual(select("2026-11-29T19:59:59.999Z"), ["dubai-final-day"]);
+  assert.deepEqual(select("2026-11-29T20:00:00Z"), []);
+});
+
 test("guides use their own update dates without being relabelled as news", () => {
   const result = selectProgrammeHub("skywards", { news: [], guides: [guide("old", "skywards", "2026-10-01"), guide("new"), guide("future", "skywards", "2026-11-11")], deals: [] }, now);
   assert.deepEqual(result.guides.map(item => item.id), ["new", "old"]);

@@ -1,4 +1,6 @@
 /** Editorial joins only: explicit references, original dates and no inferred facts. */
+import { dealDeadlineMs, isDealLiveAt } from "./dealWindow.mjs";
+
 type Reference = { id: string };
 type RelatedEntry = {
   id: string;
@@ -8,7 +10,7 @@ type NewsEntry = RelatedEntry & { data: { staleAfter?: Date } };
 type GuideEntry = RelatedEntry & { data: { updatedAt: Date } };
 type DealEntry = {
   id: string;
-  data: { program?: Reference; publishedAt: Date; expiresOn: Date; archived: boolean };
+  data: { program?: Reference; publishedAt: Date; expiresOn: Date; expiresAt?: Date; archived: boolean };
 };
 
 const time = (date: Date) => date.getTime();
@@ -22,7 +24,7 @@ function unique<T extends { id: string }>(items: T[]): T[] {
 
 /** Build-time curation, not a source-verification or real-time availability claim.
  * A news staleAfter date is inclusive through its UTC calendar day. Deals use
- * the site's existing exact expiresOn instant contract, not a new timezone rule.
+ * the same Dubai expiry window as the Deals page and RSS.
  */
 export function selectProgrammeHub<N extends NewsEntry, G extends GuideEntry, D extends DealEntry>(
   programme: string,
@@ -40,7 +42,7 @@ export function selectProgrammeHub<N extends NewsEntry, G extends GuideEntry, D 
     && valid(entry.data.updatedAt) && time(entry.data.updatedAt) <= nowMs)
     .sort((a, b) => time(b.data.updatedAt) - time(a.data.updatedAt) || tie(a, b))).slice(0, 3);
   const deals = unique(input.deals.filter(entry => entry.data.program?.id === programme && published(entry)
-    && !entry.data.archived && valid(entry.data.expiresOn) && time(entry.data.expiresOn) >= nowMs)
-    .sort((a, b) => time(a.data.expiresOn) - time(b.data.expiresOn) || tie(a, b))).slice(0, 3);
+    && isDealLiveAt(entry.data, nowMs))
+    .sort((a, b) => dealDeadlineMs(a.data.expiresOn, a.data.expiresAt) - dealDeadlineMs(b.data.expiresOn, b.data.expiresAt) || tie(a, b))).slice(0, 3);
   return { news, guides, deals };
 }
