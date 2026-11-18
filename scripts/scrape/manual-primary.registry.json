@@ -1252,6 +1252,7 @@
         "prime-gold-apply",
         "prime-gold-landing",
         "prime-gold-salary",
+        "prime-gold-programme",
         "kfs-vat",
         "soc-fees",
         "prime-gold-annual-fee"
@@ -1259,7 +1260,7 @@
       "parser": {
         "module": "scripts/scrape/_dib-prime.ts",
         "export": "parseDibPrime",
-        "sha256": "1137bc7244def7f66e4b2e956173563373e0db7ddd5a3c69412bd7ae9547b9eb",
+        "sha256": "0c27a8f609e55edf421063a446fe9ca85cd481b204effa22cb34c002b8f41824",
         "dependencies": [
           {
             "path": "scripts/scrape/_lib.ts",
@@ -1270,7 +1271,7 @@
       "fixtures": [
         {
           "path": "tests/scrape/fixtures/2026-11-dib-prime.json",
-          "sha256": "2917e0d78e2323f5b36aaa24af892e898500c72ec001d04c2d2158f844d1d61f"
+          "sha256": "5615c3a4723dcc26ee7c79c9bd625f911805266c4215e11284afdc8f63385a34"
         },
         {
           "path": "tests/scrape/fixtures/2026-11-dib-wave-two.json",
@@ -1288,6 +1289,7 @@
         "prime-signature-apply",
         "prime-signature-landing",
         "prime-signature-salary",
+        "prime-signature-programme",
         "kfs-vat",
         "soc-fees",
         "kfs-fees"
@@ -1295,7 +1297,7 @@
       "parser": {
         "module": "scripts/scrape/_dib-prime.ts",
         "export": "parseDibPrime",
-        "sha256": "1137bc7244def7f66e4b2e956173563373e0db7ddd5a3c69412bd7ae9547b9eb",
+        "sha256": "0c27a8f609e55edf421063a446fe9ca85cd481b204effa22cb34c002b8f41824",
         "dependencies": [
           {
             "path": "scripts/scrape/_lib.ts",
@@ -1306,7 +1308,7 @@
       "fixtures": [
         {
           "path": "tests/scrape/fixtures/2026-11-dib-prime.json",
-          "sha256": "2917e0d78e2323f5b36aaa24af892e898500c72ec001d04c2d2158f844d1d61f"
+          "sha256": "5615c3a4723dcc26ee7c79c9bd625f911805266c4215e11284afdc8f63385a34"
         },
         {
           "path": "tests/scrape/fixtures/2026-11-dib-wave-two.json",
@@ -1324,6 +1326,7 @@
         "prime-infinite-apply",
         "prime-infinite-landing",
         "prime-infinite-salary",
+        "prime-infinite-programme",
         "kfs-vat",
         "soc-fees",
         "kfs-fees"
@@ -1331,7 +1334,7 @@
       "parser": {
         "module": "scripts/scrape/_dib-prime.ts",
         "export": "parseDibPrime",
-        "sha256": "1137bc7244def7f66e4b2e956173563373e0db7ddd5a3c69412bd7ae9547b9eb",
+        "sha256": "0c27a8f609e55edf421063a446fe9ca85cd481b204effa22cb34c002b8f41824",
         "dependencies": [
           {
             "path": "scripts/scrape/_lib.ts",
@@ -1342,7 +1345,7 @@
       "fixtures": [
         {
           "path": "tests/scrape/fixtures/2026-11-dib-prime.json",
-          "sha256": "2917e0d78e2323f5b36aaa24af892e898500c72ec001d04c2d2158f844d1d61f"
+          "sha256": "5615c3a4723dcc26ee7c79c9bd625f911805266c4215e11284afdc8f63385a34"
         },
         {
           "path": "tests/scrape/fixtures/2026-11-dib-wave-two.json",

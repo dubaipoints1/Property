@@ -4,7 +4,8 @@ import { createHash } from "node:crypto";
 import { DIB_PRIME, parseDibPrime } from "../../scripts/scrape/_dib-prime";
 import { getActiveCards, getCardData, getEditorConfirmedCards } from "../../src/lib/cardsData";
 import { finderEvidence } from "../../src/lib/finderEvidence";
-import { cardComparisonRows } from "../../src/lib/cardsDataFormat";
+import { cardComparisonRows, loyaltyTag } from "../../src/lib/cardsDataFormat";
+import { cardValueTerms } from "../../src/lib/cardValue";
 import data from "../../src/data/cards.json";
 import html from "./fixtures/2026-11-dib-prime.json";
 import pdf from "./fixtures/2026-11-dib-wave-two.json";
@@ -36,6 +37,8 @@ test("DIB Prime: named application, annual fees and published salary regenerate 
     assert.ok(card.sources.includes(parsed.application));
     assert.equal(card.eligibility.publishedMinMonthlyIncome, parsed.income);
     assert.equal(parsed.income, bySlug[slug]);
+    assert.equal(card.loyaltyProgram, "Wala’a Rewards");
+    assert.equal(card.loyaltyProgram, parsed.loyaltyProgram);
     assert.deepEqual(card._fieldEvidence, JSON.parse(JSON.stringify(parsed.evidence)));
   }
 });
@@ -47,6 +50,12 @@ test("DIB Prime: mismatched applications, generic salary copy and unlabelled ter
   assert.equal(parseDibPrime(alter("prime-infinite-apply", replacing("prime-infinite-card", "prime-signature-card")), infinite), null);
   assert.equal(parseDibPrime(alter("prime-infinite-salary", s => ({ ...s, sourceStartByte: s.sourceStartByte! + 5000 })), infinite), null);
   assert.equal(parseDibPrime(alter("prime-signature-salary", replacing("Minimum Salary", "Generic Salary")), signature), null);
+  assert.equal(parseDibPrime(alter("prime-signature-programme", replacing("Wala’a Rewards", "Cashback")), signature), null);
+  assert.equal(parseDibPrime(alter("prime-infinite-programme", s => ({ ...s, sourceStartByte: s.sourceStartByte! + 10000 })), infinite), null);
+  assert.equal(parseDibPrime(alter("prime-gold-programme", s => {
+    const replay = inputs.find(row => row.id === "prime-signature-programme")!;
+    return { ...replay, id: s.id, url: s.url };
+  }), gold), null);
   assert.equal(parseDibPrime(alter("prime-gold-annual-fee", replacing("Annual Fee", "Joining Fee")), gold), null);
   assert.equal(parseDibPrime(alter("soc-fees", replacing("Reward/Gold", "Reward")), gold), null);
   assert.equal(parseDibPrime(alter("kfs-fees", replacing("‪Nil‬", "‪500‬")), infinite), null);
@@ -68,6 +77,8 @@ test("DIB Prime: listing coverage is not eligibility or rewards advice", () => {
     assert.equal(card.joiningFee, undefined);
     assert.equal(Object.hasOwn(data[slug as keyof typeof bySlug], "welcomeBonus"), false);
     assert.equal(card.welcomeBonus, "Welcome offer pending source review.");
+    assert.equal(loyaltyTag(card.loyaltyProgram), "points");
+    assert.equal(cardValueTerms(card, slug).rate, null);
     assert.deepEqual(finderEvidence(card).rankRates, {});
     assert.equal(finderEvidence(card).fallbackPending, true);
     assert.equal(finderEvidence(card).salaryPending, true);

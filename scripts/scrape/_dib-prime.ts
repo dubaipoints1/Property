@@ -51,9 +51,9 @@ export function parseDibPrime(input: Source[], slug: string) {
   const application = ORIGIN + "/global/apply-now?type=card&view=Default&product=" + route;
   const html = (key: string, url = productUrl) => select(input, "prime-" + p.tier + "-" + key, url, false);
   const heading = html("heading"), apply = html("apply"), landing = html("landing", application);
-  const salary = html("salary"), vat = select(input, "kfs-vat", KFS, true), tariff = select(input, "soc-fees", SOC, true);
-  if (!heading || !apply || !landing || !salary || !vat || !tariff || !sameCapture(heading, apply)
-      || !sameCapture(heading, salary)
+  const salary = html("salary"), programme = html("programme"), vat = select(input, "kfs-vat", KFS, true), tariff = select(input, "soc-fees", SOC, true);
+  if (!heading || !apply || !landing || !salary || !programme || !vat || !tariff || !sameCapture(heading, apply)
+      || !sameCapture(heading, salary) || !sameCapture(heading, programme)
       || heading.text.replace(/\s+/g, " ") !== '<h1 class="col-side-heading-1" itemprop="name"> <text>' + p.name + '</text> </h1>'
       || landing.text.replace(/\s+/g, " ") !== '<h1 class="col-side-heading-1"> ' + p.name + ' </h1>'
       || !apply.text.startsWith('<a href="/global/apply-now?type=card&amp;view=Default&amp;product=' + route + '" ')
@@ -65,6 +65,9 @@ export function parseDibPrime(input: Source[], slug: string) {
   const amount = salary.text.match(incomePattern)?.[1];
   const income = amount ? parseSourceNumber(amount) : null;
   if (!insideNamedBlock(salary) || income === null || income <= 0) return null;
+  const loyaltyProgram = programme.text.match(/^<h3>(Wala’a Rewards)<\/h3>$/)?.[1];
+  const programmeDistance = programme.sourceStartByte! - apply.sourceStartByte!;
+  if (!loyaltyProgram || programmeDistance <= 0 || programmeDistance > 6500) return null;
 
   const rows = stripBidi(tariff.text).split("\n");
   if (rows.length !== 18 || !/^\s*Annual Fee\b/.test(rows[0])
@@ -74,7 +77,7 @@ export function parseDibPrime(input: Source[], slug: string) {
       || !/^Prime Covered Card(?: +مجانًا Free){4} +بطاقة برايم المغطاة$/.test(rows[5].trim())
       || !/^• All charges are inclusive of 5% VAT which may be amended from time$/.test(stripBidi(vat.text))) return null;
 
-  const sources = [heading, apply, landing, salary, vat, tariff];
+  const sources = [heading, apply, landing, salary, programme, vat, tariff];
   const annualEvidence = [pin(tariff, p.name, "AED standard annual membership fee", "inclusive"),
     pin(vat, p.name, "KFS stated VAT treatment", "not-applicable")];
   if (p.kfsColumn === null) {
@@ -97,7 +100,8 @@ export function parseDibPrime(input: Source[], slug: string) {
     annualEvidence.push(pin(fees, p.name, "AED annual membership and renewal fee", "inclusive"));
   }
   return { name: p.name, productUrl, application, kfsUrl: KFS, capturedDate: heading.capturedAt.slice(0, 10), annualFee: 0,
-    income, ids: sources.map(source => source.id), sources: [productUrl, application, KFS, SOC],
+    income, loyaltyProgram, ids: sources.map(source => source.id), sources: [productUrl, application, KFS, SOC],
     evidence: { annualFee: annualEvidence, "eligibility.publishedMinMonthlyIncome":
-      [pin(salary, p.name, "AED published salary floor only", "not-applicable")] } };
+      [pin(salary, p.name, "AED published salary floor only", "not-applicable")],
+      loyaltyProgram: [pin(programme, p.name, "Issuer programme name only", "not-applicable")] } };
 }
