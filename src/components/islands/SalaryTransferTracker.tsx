@@ -6,8 +6,9 @@ import {
   type SalaryBand,
   type SalaryTransferOffer,
   type RewardType,
-  daysUntil,
 } from "../../lib/salaryTransfer";
+import { daysToSalaryOfferEnd } from "../../lib/salaryTransferWindow";
+import { compareSalaryOffersByReward, getSalaryOfferRules, salaryOfferSourceNote } from "../../lib/salaryTransferRules";
 import {
   accountOnlyTrackerTiers,
   type TrackerSalaryBand,
@@ -51,16 +52,17 @@ const fmtDate = (iso: string) =>
     day: "numeric",
     month: "short",
     year: "numeric",
+    timeZone: "UTC",
   });
 const validClass = (n: number) => (n <= 14 ? "urgent" : n <= 45 ? "soon" : "far");
 const validText = (n: number) =>
-  n <= 0 ? "Ended" : n === 1 ? "Ends tomorrow" : `Ends in ${n} days`;
+  n < 0 ? "Ended" : n === 0 ? "Ends today" : n === 1 ? "Ends tomorrow" : `Ends in ${n} days`;
 
 function CampaignValidity({ offer, timeline }: { offer: SalaryTransferOffer; timeline?: Timeline }) {
   if (timeline?.endDate !== "published") {
     return <span class="dpst-chip-valid far">{timeline ? "No fixed end published" : "Check bank deadline"}</span>;
   }
-  const days = daysUntil(offer.validUntil);
+  const days = daysToSalaryOfferEnd(offer.validUntil);
   return (
     <span class={`dpst-chip-valid ${validClass(days)}`}>
       <span class="dot" aria-hidden="true" />
@@ -108,9 +110,10 @@ function rewardRange(tier: SalaryBand): string {
 
 function SalaryForReward({ offer, reward }: { offer: SalaryTransferOffer; reward: SalaryBand }) {
   const min = Math.min(...offer.salaryBands.map((b) => b.minSalary));
+  const example = getSalaryOfferRules(offer)?.trackerExamples;
   return (
     <span class="dpst-salary">
-      <span>{rewardRange(reward)}</span>
+      <span>{example ? `Example: AED ${fmt(reward.minSalary)}` : rewardRange(reward)}</span>
       {min < reward.minSalary && <small>Offer starts at AED {fmt(min)}</small>}
     </span>
   );
@@ -198,7 +201,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
 
   const rows = useMemo(() => {
     const expiry = (offer: SalaryTransferOffer) => timelines[offer.id]?.endDate === "published"
-      ? daysUntil(offer.validUntil)
+      ? daysToSalaryOfferEnd(offer.validUntil)
       : Infinity;
     return offers
       .flatMap((offer) => {
@@ -224,10 +227,12 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
           : noCard && path?.financeAlternative
             ? "Qualifying finance required without a card"
             : undefined;
-        return [{ offer, reward, rewardNote }];
+        const example = getSalaryOfferRules(offer)?.trackerExamples;
+        return [{ offer, reward, rewardNote: salaryOfferSourceNote(offer)
+          ?? (example ? "Bank example · total over 12 qualifying months" : rewardNote) }];
       })
       .sort((a, b) => {
-        if (sort === "value") return b.reward.rewardAmount - a.reward.rewardAmount;
+        if (sort === "value") return compareSalaryOffersByReward(a, b);
         const aExpiry = expiry(a.offer);
         const bExpiry = expiry(b.offer);
         return aExpiry === bExpiry ? 0 : aExpiry - bExpiry;
@@ -251,6 +256,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
 
   // Per-offer detail (fine print + verification). Real fields only.
   const Detail = ({ o }: { o: SalaryTransferOffer }) => {
+    const sourceNote = salaryOfferSourceNote(o);
     const path = cardPaths[o.id];
     const cardExample = path?.example;
     return (
@@ -302,7 +308,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
       </div>
       <div class="dpst-verified">
         <div class="vrow">
-          <svg
+          {!sourceNote && <svg
             width="14"
             height="14"
             viewBox="0 0 24 24"
@@ -314,12 +320,15 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
             aria-hidden="true"
           >
             <polyline points="20 6 9 17 4 12" />
-          </svg>{" "}
-          Source-verified
+          </svg>}{" "}
+          {sourceNote ? "Source needs confirmation" : "Source-verified"}
         </div>
         <div class={`vdate${isStale(o.lastVerified) ? " is-stale" : ""}`}>
-          Last checked <b>{fmtDate(o.lastVerified)}</b> against the bank's
-          published terms.
+          {sourceNote ? (
+            <>{sourceNote}. Confirm the terms with the bank. Last confirmed review: <b>{fmtDate(o.lastVerified)}</b>.</>
+          ) : (
+            <>Last checked <b>{fmtDate(o.lastVerified)}</b> against the bank's published terms.</>
+          )}
           {isStale(o.lastVerified) && (
             <>
               {" "}
@@ -630,7 +639,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
       <div class="dpst-foot">
         <span class="left">
           Tracking <b>{banksTracked} UAE bank{banksTracked === 1 ? "" : "s"}</b>{" "}
-          · each offer verified against the bank's published terms
+          · check each row’s source status and terms
         </span>
         <span>
           {/* Absolute path + hash: the tracker also renders on the five

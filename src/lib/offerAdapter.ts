@@ -1,6 +1,7 @@
 import type { CollectionEntry } from "astro:content";
 import { getCollection, getEntry } from "astro:content";
 import type { SalaryTransferOffer } from "./salaryTransfer";
+import { salaryOfferWindow, type SalaryOfferWindow } from "./salaryTransferWindow";
 
 type OfferEntry =
   | CollectionEntry<"salaryTransferOffers">
@@ -39,13 +40,17 @@ export async function entryToOffer(entry: OfferEntry): Promise<SalaryTransferOff
   };
 }
 
-export async function getLiveOffers(): Promise<SalaryTransferOffer[]> {
-  const today = Date.now();
-  const entries = await getCollection("salaryTransferOffers", (e) => {
-    if (e.data.archived) return false;
-    return e.data.validUntil.getTime() >= today;
-  });
+async function offersInWindow(window: SalaryOfferWindow, now: Date): Promise<SalaryTransferOffer[]> {
+  const entries = await getCollection("salaryTransferOffers", (e) => salaryOfferWindow(e.data, now) === window);
   return Promise.all(entries.map(entryToOffer));
+}
+
+export function getLiveOffers(now = new Date()): Promise<SalaryTransferOffer[]> {
+  return offersInWindow("live", now);
+}
+
+export function getUpcomingUnarchivedOffers(now = new Date()): Promise<SalaryTransferOffer[]> {
+  return offersInWindow("upcoming", now);
 }
 
 /**
@@ -54,13 +59,8 @@ export async function getLiveOffers(): Promise<SalaryTransferOffer[]> {
  * ended <date>") instead of failing the build — see
  * src/lib/salaryTransferCoverage.ts for the 2026-09-06 incident.
  */
-export async function getLapsedUnarchivedOffers(): Promise<SalaryTransferOffer[]> {
-  const today = Date.now();
-  const entries = await getCollection("salaryTransferOffers", (e) => {
-    if (e.data.archived) return false;
-    return e.data.validUntil.getTime() < today;
-  });
-  return Promise.all(entries.map(entryToOffer));
+export function getLapsedUnarchivedOffers(now = new Date()): Promise<SalaryTransferOffer[]> {
+  return offersInWindow("lapsed", now);
 }
 
 export async function getOffersForBank(bankSlug: string): Promise<SalaryTransferOffer[]> {
@@ -71,11 +71,9 @@ export async function getOffersForBank(bankSlug: string): Promise<SalaryTransfer
   // too, so /salary-transfer/emirates-nbd/ rendered the archived
   // cash-bonus offer as if live while the bank hub prose described the
   // bonus-interest offer as current (staleness-sweep finding #3).
-  const today = Date.now();
+  const now = new Date();
   const entries = await getCollection("salaryTransferOffers", (e) => {
-    if (e.data.bank.id !== bankSlug) return false;
-    if (e.data.archived) return false;
-    return e.data.validUntil.getTime() >= today;
+    return e.data.bank.id === bankSlug && salaryOfferWindow(e.data, now) === "live";
   });
   return Promise.all(entries.map(entryToOffer));
 }

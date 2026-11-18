@@ -55,6 +55,16 @@ export const programmeValuations: ProgrammeValuation[] = [
   { slug: "air-arabia-airrewards", name: "Air Arabia",     currencyName: "AirRewards",    mark: "G9",  floor: null, ceiling: null, dpValue: null, delta90: "—", status: "Pending" },
 ];
 
+/** Highest published baseline first; missing values stay at the end. */
+export function programmesByValue(rows: readonly ProgrammeValuation[]): ProgrammeValuation[] {
+  return [...rows].sort((a, b) => (b.dpValue ?? -1) - (a.dpValue ?? -1));
+}
+
+/** The same number and approximation flag for the table and navigation. */
+export function formatBaseline(p: Pick<ProgrammeValuation, "dpValue" | "approx">): string | null {
+  return p.dpValue == null ? null : `${p.approx ? "~" : ""}${p.dpValue.toFixed(1)}`;
+}
+
 /** Published DP-value baseline in fils for a programme slug, or null. */
 export function dpValueFils(slug: string): number | null {
   return programmeValuations.find((p) => p.slug === slug)?.dpValue ?? null;
@@ -63,8 +73,8 @@ export function dpValueFils(slug: string): number | null {
 /** Nav-chrome sub-line for a programme, e.g. "2.0 fils · DP value". */
 export function dpValueSub(slug: string): string | undefined {
   const p = programmeValuations.find((e) => e.slug === slug);
-  if (p?.dpValue == null) return undefined;
-  return `${p.approx ? "~" : ""}${p.dpValue.toFixed(1)} fils · DP value`;
+  const value = p && formatBaseline(p);
+  return value ? `${value} fils · DP value` : undefined;
 }
 
 // Date the published baselines were last confirmed against the

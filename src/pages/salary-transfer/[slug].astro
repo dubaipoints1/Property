@@ -13,6 +13,7 @@ import { getLiveOffers, getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
 import { getSalaryTransferTimeline, getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
+import { getSalaryOfferRules, salaryOfferSourceNote } from "~/lib/salaryTransferRules";
 import {
   salaryBandsOverlap,
   TRACKER_SALARY_BANDS,
@@ -51,9 +52,10 @@ if (props.kind === "band") {
   liveOfferCount = (await getLiveOffers()).length;
   // Title stamp from the newest verification date, never the build clock
   // (2026-09-06 audit, F-014: every bank page re-dated itself each deploy).
-  bankStamp = bankOffers.length
-    ? new Date(Math.max(...bankOffers.map((o) => new Date(o.lastVerified).getTime())))
-        .toLocaleDateString("en-GB", { month: "long", year: "numeric" })
+  const verifiedOffers = bankOffers.filter((offer) => !salaryOfferSourceNote(offer));
+  bankStamp = verifiedOffers.length
+    ? new Date(Math.max(...verifiedOffers.map((o) => new Date(o.lastVerified).getTime())))
+        .toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" })
     : null;
   const offerEntries = await getCollection(
     "salaryTransferOffers",
@@ -123,23 +125,25 @@ const siteUrl = siteUrlFrom(Astro.site);
         {bankOffers.map((o) => {
           const noteEntry = renderedNotes.find((n) => n.id === o.id);
           const NoteContent = noteEntry?.Content;
+          const sourceNote = salaryOfferSourceNote(o);
+          const examples = getSalaryOfferRules(o)?.trackerExamples;
           return (
             <section class="dp-offer-card">
               <header class="dp-offer-head">
                 <h2>{o.name}</h2>
                 <span class="dp-offer-verified">
-                  Last verified {new Date(o.lastVerified).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                  {sourceNote ?? `Last verified ${new Date(o.lastVerified).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}`}
                 </span>
               </header>
 
               <SalaryTransferTimeline offer={o} timeline={getSalaryTransferTimeline(o)} showHistory={false} />
 
-              <div class="dp-st-offer-table" role="region" aria-label="Salary and reward tiers" tabindex="0">
+              <div class="dp-st-offer-table" role="region" aria-label={examples ? "Illustrative salary and rewards" : "Salary and reward tiers"} tabindex="0">
               <table class="dp-data-table">
                 <thead>
                   <tr>
-                    <th>Salary band</th>
-                    <th>Reward</th>
+                    <th>{examples ? "Example salary" : "Salary band"}</th>
+                    <th>{examples ? "Illustrative total over 12 qualifying months" : sourceNote ? "Offer-page reward" : "Reward"}</th>
                     <th>Type</th>
                   </tr>
                 </thead>
@@ -147,8 +151,7 @@ const siteUrl = siteUrlFrom(Astro.site);
                   {o.salaryBands.map((b) => (
                     <tr>
                       <td>
-                        {formatAED(b.minSalary)} –{" "}
-                        {b.maxSalary === null ? "no limit" : formatAED(b.maxSalary)}
+                        {examples ? formatAED(b.minSalary) : `${formatAED(b.minSalary)} – ${b.maxSalary === null ? "no limit" : formatAED(b.maxSalary)}`}
                       </td>
                       <td class="num">{formatAED(b.rewardAmount)}</td>
                       <td>{b.rewardType.replace("_", " ")}</td>

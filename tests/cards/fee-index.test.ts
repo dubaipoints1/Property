@@ -141,7 +141,9 @@ test("actual fee-page cell executes the shared status formatter and pending live
   }
   const classic = idx.rows.find(row => row.slug === "adib-smiles-visa-classic")!;
   assert.ok(classic); assert.equal(evaluate(classic, firstYearAnnualFeeLabel), "Pending");
-  assert.equal(evaluateAnnual(classic, () => { throw new Error("unknown fee must not reach numeric formatter"); }), "Pending");
+  assert.equal(evaluateAnnual(classic, () => { throw new Error("explicit zero uses the label branch"); }), "Free");
+  const wio = idx.rows.find(row => row.slug === "wio-credit")!;
+  assert.equal(evaluateAnnual(wio, () => { throw new Error("unknown fee must not reach numeric formatter"); }), "Pending");
   const cash = idx.rows.find(row => row.slug === "hsbc-cash-plus")!;
   assert.equal(evaluate(cash, firstYearAnnualFeeLabel), "Waived", "the independently accepted annual-fee waiver remains visible");
   assert.equal(idx.firstYearPending, idx.rows.filter(row => row.firstYearAnnualFeeStatus === "pending").length);

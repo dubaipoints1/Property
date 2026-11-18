@@ -242,8 +242,11 @@ const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeP
 const fxPending = cardFxNeedsReview({ _provenance: fxProvenance });
 const recurringFee = annualFeeLabel(cardData ?? { annualFee: { amount: annualFee } });
 const annualFeePending = cardData ? cardFeeNeedsReview(cardData, "annualFee") : false;
+// A standalone zero in structured data reads as a free offer, not just a
+// free annual fee. Do not emit it without an explicit, unheld zero joining fee.
 const singleFeeOffer = !annualFeePending && !applicationUnavailable
-  && !(cardData?.refreshMode === "manual-primary" && recurringFee.qual);
+  && !(cardData?.refreshMode === "manual-primary" && recurringFee.qual)
+  && (annualFee !== 0 || (!!cardData && cardData.joiningFee?.amount === 0 && !cardFeeNeedsReview(cardData, "joiningFee")));
 const vatQualifier = !annualFeePending && annualFee > 0 ? (cardData?.vatPolicy === "exclusive" ? "+ 5% VAT" : "incl. VAT") : null;
 
 // Stock photograph lookup. Each card may have an editorial photograph

@@ -150,14 +150,16 @@ export function scoreOffer(
     );
   }
 
-  if (!input.willStay12Months && offer.tenureMonths >= 6) {
+  const rule = getSalaryOfferRules(offer);
+  if (!input.willStay12Months && rule?.earlyExitNote) {
+    reasons.push(rule.earlyExitNote);
+  } else if (!input.willStay12Months && offer.tenureMonths >= 6) {
     if (status !== "disqualified") status = "warning";
     reasons.push(
       `Clawback risk: offer requires ${offer.tenureMonths} months of salary transfer.`,
     );
   }
 
-  const rule = getSalaryOfferRules(offer);
   if (!rule && hasSalaryOfferRule(offer.id)) {
     requireConfirmation("The campaign source has changed. Verify the current conditions with the bank.");
   }
@@ -271,11 +273,6 @@ function formatBandRange(bands: SalaryBand[]): string {
 
 export const formatAED = (n: number) =>
   `AED ${Math.round(n).toLocaleString("en-AE")}`;
-
-export const daysUntil = (iso: string) => {
-  const ms = new Date(iso).getTime() - Date.now();
-  return Math.max(0, Math.ceil(ms / (1000 * 60 * 60 * 24)));
-};
 
 /**
  * The offer title with its bank prefix removed.

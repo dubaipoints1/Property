@@ -25,6 +25,8 @@ export interface CoverageInput {
   liveOfferBanks: readonly string[];
   /** Banks whose offers have all lapsed but are still unarchived. */
   lapsedOfferBanks: readonly string[];
+  /** Banks with an unarchived offer that is not open yet. */
+  upcomingOfferBanks?: readonly string[];
   /** Editorial: checked, no current live banded cash offer. */
   checkedWithoutLiveOffer: readonly string[];
   /** Editorial: bank advertises an offer without current published terms. */
@@ -34,6 +36,7 @@ export interface CoverageInput {
 export interface Coverage {
   tracked: string[];
   lapsed: string[];
+  upcoming: string[];
   checkedWithoutLiveOffer: string[];
   advertisedWithoutCurrentTerms: string[];
   /** Covered banks that appear in no bucket — still a hard build error. */
@@ -47,20 +50,22 @@ const uniqSorted = (xs: Iterable<string>) => [...new Set(xs)].sort();
 export function classifyCoverage(input: CoverageInput): Coverage {
   const tracked = uniqSorted(input.liveOfferBanks);
   const isTracked = new Set(tracked);
-  const lapsed = uniqSorted(input.lapsedOfferBanks).filter((b) => !isTracked.has(b));
+  const upcoming = uniqSorted(input.upcomingOfferBanks ?? []).filter((b) => !isTracked.has(b));
+  const isUpcoming = new Set(upcoming);
+  const lapsed = uniqSorted(input.lapsedOfferBanks).filter((b) => !isTracked.has(b) && !isUpcoming.has(b));
   const isLapsed = new Set(lapsed);
   const checked = uniqSorted(input.checkedWithoutLiveOffer);
   const advertised = uniqSorted(input.advertisedWithoutCurrentTerms);
 
   const overlaps = uniqSorted(
-    [...checked.filter((b) => advertised.includes(b) || isTracked.has(b) || isLapsed.has(b)),
-     ...advertised.filter((b) => isTracked.has(b) || isLapsed.has(b))],
+    [...checked.filter((b) => advertised.includes(b) || isTracked.has(b) || isLapsed.has(b) || isUpcoming.has(b)),
+     ...advertised.filter((b) => isTracked.has(b) || isLapsed.has(b) || isUpcoming.has(b))],
   );
 
-  const classified = new Set([...tracked, ...lapsed, ...checked, ...advertised]);
+  const classified = new Set([...tracked, ...lapsed, ...upcoming, ...checked, ...advertised]);
   const unclassified = uniqSorted(input.coveredBanks).filter((b) => !classified.has(b));
 
-  return { tracked, lapsed, checkedWithoutLiveOffer: checked, advertisedWithoutCurrentTerms: advertised, unclassified, overlaps };
+  return { tracked, lapsed, upcoming, checkedWithoutLiveOffer: checked, advertisedWithoutCurrentTerms: advertised, unclassified, overlaps };
 }
 
 /** Human-readable reason for the build guard, or null when the page may render. */

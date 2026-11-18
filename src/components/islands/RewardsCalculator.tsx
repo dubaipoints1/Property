@@ -12,8 +12,8 @@
  *      percent, 1.5 points per AED 1, 1.5 miles per AED 10 or 1.5 miles per
  *      USD 1, and this module used to multiply all four by spend alike.
  *   2. WHAT ONE UNIT IS WORTH — resolved from the published baselines in
- *      src/lib/valuations.ts where one exists, and otherwise an openly
- *      labelled placeholder in {@link PLACEHOLDER_AED_PER_UNIT}.
+ *      src/lib/valuations.ts. Without a published conversion, a points
+ *      card has no comparable AED result.
  *
  * Before 10 September 2026 neither was right: percent-denominated cards came
  * out 100x high (the page told readers the RAKBANK World card paid
@@ -111,48 +111,25 @@ export type RankOptions = {
 
 // ── Conversion ───────────────────────────────────────────────────────────
 
-/**
- * Rate used when this publication has NOT published a baseline for the
- * card's currency — 36 of 58 cards, among them ENBD Plus Points, ADCB
- * TouchPoints, LuLu Points, Darna, U by Emaar, FAB Rewards, dnata, SHARE and
- * Voyager Miles.
- *
- * It is a placeholder, not a valuation, and the UI says so on every card it
- * touches. Chairman direction of 10 September 2026 was to keep these cards
- * in the ranking with the weaker basis disclosed rather than drop two-thirds
- * of the market out of the tool. Publishing a real baseline for a currency
- * means adding a row to src/lib/valuations.ts, after which that currency
- * stops using this number.
- */
-export const PLACEHOLDER_AED_PER_UNIT = 0.01;
+/** Where a comparable AED calculation came from. */
+export type RateBasis = "cashback" | "published";
 
-/** Where a card's AED-per-unit came from — shown to the reader. */
-export type RateBasis =
-  /** The card pays dirhams; no currency valuation is involved. */
-  | "cashback"
-  /** Taken from the published baseline on /valuations/. */
-  | "published"
-  /** No published baseline for this currency; placeholder rate. */
-  | "placeholder"
-  /** `earnUnit` does not state a denominator — no AED figure is possible. */
-  | "unrankable";
-
-export type CardConversion = {
-  basis: RateBasis;
-  /** null only when basis is "unrankable". */
-  earnBasis: EarnBasis | null;
-  aedPerUnit: number;
+type PricedConversion = { basis: RateBasis; earnBasis: EarnBasis; aedPerUnit: number };
+export type CardConversion = PricedConversion | {
+  basis: "unrankable";
+  reason: "unknown-earn-unit" | "unknown-valuation";
+  earnBasis: null;
+  aedPerUnit: null;
 };
 
 /**
- * Resolve how to price one card. Deterministic and total: a card whose
- * `earnUnit` states no denominator is returned as "unrankable" and kept out
- * of the AED ranking, rather than defaulted into it.
+ * Resolve how to price one card. No denominator or no published conversion
+ * means no AED amount, including in wallet and net-of-fee comparisons.
  */
 export function conversionForCard(card: CardForCalc): CardConversion {
   const earnBasis = parseEarnBasis(card.earnUnit);
   if (!earnBasis) {
-    return { basis: "unrankable", earnBasis: null, aedPerUnit: 0 };
+    return { basis: "unrankable", reason: "unknown-earn-unit", earnBasis: null, aedPerUnit: null };
   }
   if (earnsAED(card.earnUnit, earnBasis)) {
     return { basis: "cashback", earnBasis, aedPerUnit: 1 };
@@ -162,10 +139,23 @@ export function conversionForCard(card: CardForCalc): CardConversion {
     return { basis: "published", earnBasis, aedPerUnit: published };
   }
   return {
-    basis: "placeholder",
-    earnBasis,
-    aedPerUnit: PLACEHOLDER_AED_PER_UNIT,
+    basis: "unrankable",
+    reason: "unknown-valuation",
+    earnBasis: null,
+    aedPerUnit: null,
   };
+}
+
+function comparableCards(cards: readonly CardForCalc[]): { card: ReadyCardForCalc; conv: PricedConversion }[] {
+  return cards.filter(hasUsableGenericEarnRate).flatMap((card) => {
+    const conv = conversionForCard(card);
+    return conv.basis === "unrankable" ? [] : [{ card, conv }];
+  });
+}
+
+/** Uses the same coverage rules as the ranking and wallet. */
+export function comparableCardCount(cards: readonly CardForCalc[]): number {
+  return comparableCards(cards).length;
 }
 
 // ── Ranking — exported as a pure function for testability ────────────────
@@ -362,18 +352,9 @@ export function rankCards(
   const refTime = (opts.now ?? new Date()).getTime();
   const totalSpend = SPEND_CATEGORIES.reduce((sum, k) => sum + spend[k], 0);
 
-  const results: RankResult[] = cards.filter(hasUsableGenericEarnRate).map((card) => {
-    const { aedPerUnit, basis, earnBasis } = conversionForCard(card);
-    const breakdown = earnBasis
-      ? perCategoryBreakdown(card, spend, aedPerUnit, earnBasis, basis === "cashback")
-      : {
-          totalNative: 0,
-          totalAED: 0,
-          uncappedAED: 0,
-          cappedAtAED: null,
-          capHit: false,
-          topCategory: null,
-        };
+  const results: RankResult[] = comparableCards(cards).map(({ card, conv }) => {
+    const { aedPerUnit, basis, earnBasis } = conv;
+    const breakdown = perCategoryBreakdown(card, spend, aedPerUnit, earnBasis, basis === "cashback");
     const { totalNative, totalAED, topCategory } = breakdown;
     const annualFeeAED = cardFeeNeedsReview(card, "annualFee") ? null
       : card.vatPolicy === "exclusive" ? Math.round(card.annualFee.amount * 105) / 100 : card.annualFee.amount;
@@ -417,10 +398,8 @@ export function rankCards(
     ? (r: RankResult) => r.netMonthlyAED ?? Number.NEGATIVE_INFINITY
     : (r: RankResult) => r.monthlyRewardAED;
 
-  // A card whose earnUnit states no denominator has no honest AED figure, so
-  // it is not ranked at all rather than ranked at zero.
   return results
-    .filter((r) => r.rateBasis !== "unrankable" && (!opts.netOfFee || r.netMonthlyAED !== null))
+    .filter((r) => !opts.netOfFee || r.netMonthlyAED !== null)
     .sort((a, b) => keyFn(b) - keyFn(a));
 }
 
@@ -447,17 +426,14 @@ export type CategoryWinner = {
  * cap binds on the month's total in that category, which a single tap does
  * not know. The ranking above still applies them to the monthly figure.
  *
- * Categories with zero spend and cards with no honest denominator are
- * skipped. Returns an empty list for an empty wallet.
+ * Categories with zero spend and cards without a comparable rate are
+ * skipped. Returns an empty list if no held cards are comparable.
  */
 export function bestCardPerCategory(
   held: CardForCalc[],
   spend: SpendProfile,
 ): CategoryWinner[] {
-  const rankable = held
-    .filter(hasUsableGenericEarnRate)
-    .map((card) => ({ card, conv: conversionForCard(card) }))
-    .filter((x) => x.conv.earnBasis != null);
+  const rankable = comparableCards(held);
   if (rankable.length === 0) return [];
 
   const winners: CategoryWinner[] = [];
@@ -469,7 +445,7 @@ export function bestCardPerCategory(
         card,
         rateBasis: conv.basis,
         monthlyAED:
-          categoryNative(card, category, spendAED, conv.earnBasis!) * conv.aedPerUnit,
+          categoryNative(card, category, spendAED, conv.earnBasis) * conv.aedPerUnit,
       }))
       .sort((a, b) => b.monthlyAED - a.monthlyAED);
     const top = scored[0]!;
@@ -580,12 +556,12 @@ const fmtAED = (n: number): string =>
  * count beside a short currency noun — the full earn-unit wording carries
  * caps and exclusions that belong on the card's own page, not in a headline.
  */
-const nativeUnitNoun = (unit: string | undefined): string => {
+export const nativeUnitNoun = (unit: string | undefined): string => {
   if (!unit) return "";
   // Drop the denominator clause and any parenthetical, leaving the currency.
   const noun = unit
     .replace(/\s*\(.*$/, "")
-    .replace(/\s*per\s+(AED|USD)\s*[\d,]*\s*spent.*$/i, "")
+    .replace(/\s+per\s+(AED|USD)\s*[\d,]+(?:\s+.*)?$/i, "")
     .replace(/^%\s*(as|back as|value back as|back)?\s*/i, "")
     .trim();
   return noun;
@@ -650,6 +626,7 @@ export default function RewardsCalculator({ cards }: Props) {
     () => cards.filter((c) => heldSet.has(c.slug)),
     [cards, heldSet],
   );
+  const comparableHeldCount = useMemo(() => comparableCardCount(heldCards), [heldCards]);
   const toggleHeld = (slug: string) =>
     setHeld((prev) =>
       prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug],
@@ -859,6 +836,11 @@ export default function RewardsCalculator({ cards }: Props) {
           {netOfFee && <p class="dp-calc-results-sub">Cards with unconfirmed annual-fee or VAT terms are not net-ranked. Switch to gross reward to see them without assuming a zero fee.</p>}
         </header>
 
+        {walletActive && comparableHeldCount < heldCards.length && (
+          <p class="dp-card-note">
+            {comparableHeldCount} of {heldCards.length} selected cards can be compared in AED. The others are not counted as zero.
+          </p>
+        )}
         {walletActive && winners.length > 0 && (
           <div class="dp-calc-routing">
             <h3>Which of your cards to use where</h3>
@@ -901,7 +883,7 @@ export default function RewardsCalculator({ cards }: Props) {
         {walletActive && ranked.length === 0 && (
           <p class="dp-calc-empty" role="status">
             None of the selected cards has a usable reward model{netOfFee ? " and confirmed annual-fee/VAT terms for a net estimate" : ""}.
-            {netOfFee ? " Try gross reward or clear the wallet." : " Clear the wallet to see every card."}
+            {netOfFee ? " Try gross reward or clear the wallet." : " Clear the wallet to see all comparable cards."}
           </p>
         )}
 
@@ -928,9 +910,7 @@ export default function RewardsCalculator({ cards }: Props) {
                   <span class="num-sub">
                     {r.rateBasis === "cashback"
                       ? "paid in dirhams"
-                      : `≈ ${fmtAED(r.monthlyRewardAED)} at ${(r.aedPerUnit * 100).toFixed(1)} fils each, ${
-                          r.rateBasis === "published" ? "published" : "placeholder"
-                        }`}
+                      : `≈ ${fmtAED(r.monthlyRewardAED)} at ${(r.aedPerUnit * 100).toFixed(1)} fils each (published baseline)`}
                   </span>
                 </div>
                 <div class="num-block">
@@ -1003,14 +983,6 @@ export default function RewardsCalculator({ cards }: Props) {
                 {r.staleData && (
                   <span class="chip is-stale" title="Verified more than 90 days ago">
                     Data drift risk
-                  </span>
-                )}
-                {r.rateBasis === "placeholder" && (
-                  <span
-                    class="chip is-fallback"
-                    title="We have not published a baseline for this currency. The AED figure uses a placeholder rate and is not comparable with a card priced on a published one."
-                  >
-                    Placeholder rate — no published baseline
                   </span>
                 )}
               </div>

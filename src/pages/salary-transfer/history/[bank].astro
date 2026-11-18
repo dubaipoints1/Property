@@ -4,6 +4,7 @@ import { getCollection } from "astro:content";
 import { getOffersForBank, getHistoryForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getSalaryTransferTimeline } from "~/lib/salaryTransferTimeline";
+import { salaryOfferSourceNote } from "~/lib/salaryTransferRules";
 
 export async function getStaticPaths() {
   const banks = await getCollection("banks");
@@ -26,7 +27,7 @@ const entries = [
     validFrom: new Date(o.validFrom),
     validUntil: new Date(o.validUntil),
     publishedEnd: getSalaryTransferTimeline(o)?.endDate === "published",
-    headline: o.name,
+    headline: salaryOfferSourceNote(o) ? `${o.name} — ${salaryOfferSourceNote(o)}` : o.name,
     bands: o.salaryBands.map((b) => ({
       range: bandToString(b),
       reward: `${formatAED(b.rewardAmount)} ${b.rewardType.replace("_", " ")}`,

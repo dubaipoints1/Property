@@ -13,7 +13,8 @@ import assert from "node:assert/strict";
 import {
   rankCards,
   conversionForCard,
-  PLACEHOLDER_AED_PER_UNIT,
+  comparableCardCount,
+  bestCardPerCategory,
   type CardForCalc,
   type SpendProfile,
 } from "../../src/components/islands/RewardsCalculator.tsx";
@@ -92,23 +93,23 @@ test("Heavy-dining spend ranks the dining-bonus card first", () => {
   const diningHeavy = makeCard({
     slug: "dining-heavy",
     name: "Dining Heavy Card",
-    loyaltyProgram: "FAB Rewards",
-    earnUnit: "FAB Rewards per AED 1 spent",
+    loyaltyProgram: "Emirates Skywards",
+    earnUnit: "Skywards Miles per AED 1 spent",
     dining: 5,
     everythingElse: 1,
   });
   const balanced = makeCard({
     slug: "balanced",
     name: "Balanced Card",
-    loyaltyProgram: "FAB Rewards",
-    earnUnit: "FAB Rewards per AED 1 spent",
+    loyaltyProgram: "Emirates Skywards",
+    earnUnit: "Skywards Miles per AED 1 spent",
     everythingElse: 2,
   });
   const groceriesHeavy = makeCard({
     slug: "groceries-heavy",
     name: "Groceries Heavy Card",
-    loyaltyProgram: "FAB Rewards",
-    earnUnit: "FAB Rewards per AED 1 spent",
+    loyaltyProgram: "Emirates Skywards",
+    earnUnit: "Skywards Miles per AED 1 spent",
     groceries: 5,
     everythingElse: 1,
   });
@@ -125,7 +126,7 @@ test("Heavy-dining spend ranks the dining-bonus card first", () => {
 
   assert.equal(ranked[0].card.slug, "dining-heavy", "dining card should win");
   assert.equal(ranked[0].topCategory, "dining");
-  // Native reward: 5000 * 5 = 25,000 FAB Rewards.
+  // Native reward: 5000 * 5 = 25,000 Skywards Miles.
   assert.equal(ranked[0].monthlyRewardNative, 25000);
 });
 
@@ -234,14 +235,14 @@ test("Cards verified more than 90 days ago carry the stale flag", () => {
     slug: "fresh",
     name: "Fresh Card",
     loyaltyProgram: "AED Cashback",
-    earnUnit: "AED cashback per AED 1 spent",
+    earnUnit: "% cashback",
     lastVerified: new Date("2026-05-01"), // 11 days before REF_NOW
   });
   const stale = makeCard({
     slug: "stale",
     name: "Stale Card",
     loyaltyProgram: "AED Cashback",
-    earnUnit: "AED cashback per AED 1 spent",
+    earnUnit: "% cashback",
     lastVerified: new Date("2025-12-01"), // ~5 months before REF_NOW
   });
 
@@ -279,16 +280,21 @@ test("conversionForCard maps loyalty programmes to AED rates correctly", () => {
   assert.equal(conversionForCard(skywards).basis, "published");
   assert.equal(conversionForCard(skywards).aedPerUnit, 0.02);
 
-  // No published baseline for FAB Rewards, so a labelled placeholder — not
-  // a rate presented as though it came from /valuations/.
+  // A known denominator is not enough without a published AED value.
   const fabRewards = makeCard({
     slug: "f",
     name: "F",
     loyaltyProgram: "FAB Rewards",
     earnUnit: "FAB Rewards per AED 1 spent",
   });
-  assert.equal(conversionForCard(fabRewards).basis, "placeholder");
-  assert.equal(conversionForCard(fabRewards).aedPerUnit, PLACEHOLDER_AED_PER_UNIT);
+  assert.equal(conversionForCard(fabRewards).basis, "unrankable");
+  assert.equal(conversionForCard(fabRewards).aedPerUnit, null);
+  const spend = { ...ZERO_SPEND, groceries: 1000 };
+  assert.equal(comparableCardCount([fabRewards, skywards]), 1);
+  assert.deepEqual(rankCards([fabRewards, skywards], spend, { netOfFee: false }).map((row) => row.card.slug), ["s"]);
+  assert.deepEqual(rankCards([fabRewards], spend, { netOfFee: true }), []);
+  assert.deepEqual(bestCardPerCategory([fabRewards], spend), []);
+  assert.equal(bestCardPerCategory([fabRewards, skywards], spend)[0]?.card.slug, "s");
 
   // The programme name must match the valuations map exactly. "Marriott
   // Bonvoy Points" is not the string cards.json uses, so it does not

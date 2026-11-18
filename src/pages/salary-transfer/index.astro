@@ -10,14 +10,19 @@ import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
-import { getLiveOffers, getLapsedUnarchivedOffers } from "~/lib/offerAdapter";
+import { getLiveOffers, getLapsedUnarchivedOffers, getUpcomingUnarchivedOffers } from "~/lib/offerAdapter";
 import { classifyCoverage, coverageGuardError } from "~/lib/salaryTransferCoverage";
 import { TRACKER_SALARY_BANDS as bands } from "~/lib/salaryTransferTrackerBands";
 import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
 import { getSalaryTransferTimeline, getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
+import { salaryOfferSourceNote } from "~/lib/salaryTransferRules";
 
-const offers = await getLiveOffers();
-const lapsedOffers = await getLapsedUnarchivedOffers();
+const now = new Date();
+const [offers, lapsedOffers, upcomingOffers] = await Promise.all([
+  getLiveOffers(now),
+  getLapsedUnarchivedOffers(now),
+  getUpcomingUnarchivedOffers(now),
+]);
 
 // Coverage, stated rather than implied. "Banks tracked: 2" alone reads
 // either as "we cover two" or "only two banks run an offer" — and the
@@ -28,12 +33,11 @@ const lapsedOffers = await getLapsedUnarchivedOffers();
 // Current offers are derived. Negative and special-case findings are
 // editorial classifications from the source sweeps (6 August, updated 22
 // August 2026) and are named explicitly so a reader can distinguish an
-// absence finding from an unfinished search. Standard Chartered is its own
-// category: the bank ADVERTISES an AED 2,000 Priority salary-transfer
-// cashback today, but the campaign T&C it links is the April–June 2026
-// document — advertised, without current published terms.
+// absence finding from an unfinished search. Standard Chartered's
+// November–January campaign is now covered by the live collection.
 const allBanks = await getCollection("banks");
 const trackedBanks = new Set(offers.map((o) => o.bankSlug));
+const sourceHeldOffers = offers.filter((o) => salaryOfferSourceNote(o));
 const coveredCount = allBanks.length;
 const checkedWithoutLiveOffer = [
   "adcb",
@@ -45,7 +49,7 @@ const checkedWithoutLiveOffer = [
   "rakbank",
   "wio",
 ];
-const advertisedWithoutCurrentTerms = ["standard-chartered"];
+const advertisedWithoutCurrentTerms: string[] = [];
 const bankName = new Map(allBanks.map((bank) => [bank.id, bank.data.name]));
 // A lapsed, not-yet-archived offer is its own bucket (2026-09-06 P0: the
 // RAKBANK cash reward expired on 31 August and the old all-or-nothing
@@ -56,6 +60,7 @@ const coverage = classifyCoverage({
   coveredBanks: allBanks.map((bank) => bank.id),
   liveOfferBanks: [...trackedBanks],
   lapsedOfferBanks: lapsedOffers.map((o) => o.bankSlug),
+  upcomingOfferBanks: upcomingOffers.map((o) => o.bankSlug),
   checkedWithoutLiveOffer,
   advertisedWithoutCurrentTerms,
 });
@@ -125,7 +130,7 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
     <details class="dp-coverage-note" id="coverage-note">
       <summary>
         <strong class="st-long">Coverage status.</strong> <span class="st-long">{trackedBanks.size} of {coveredCount} covered
-        banks have a live, source-backed offer — why the others are not listed</span><span class="st-short">Why the other {coveredCount - trackedBanks.size} banks are not listed</span>
+        banks have an offer listed — why the others are not listed</span><span class="st-short">Why the other {coveredCount - trackedBanks.size} banks are not listed</span>
       </summary>
       <p>
         We checked
@@ -140,19 +145,29 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
         Liv and Wio run rate-based salary benefits — savings interest tied to the
         salary transfer, not banded cash. Al Hilal's up-to-AED-15,000 campaign
         ended 4 August 2026 (checked 22 August).
-        {" "}
-        {linkList(advertisedWithoutCurrentTerms).map((b) => (
-          <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
-        ))}
-        {" "}advertises an AED 2,000
-        Priority Banking salary-transfer cashback (salaries AED 30,000+), but the
-        campaign terms it links to are the April–June 2026 document — treat it as
-        unverified until current terms are republished.
+        {coverage.advertisedWithoutCurrentTerms.length > 0 && (
+          <>{" "}We have not verified current terms for advertised offers from {linkList(coverage.advertisedWithoutCurrentTerms).map((b) => (
+            <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
+          ))}, so those offers are not included.</>
+        )}
+        {coverage.upcoming.length > 0 && (
+          <>{" "}Offers from {linkList(coverage.upcoming).map((b) => (
+            <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
+          ))} are not open yet and are not included in the table.</>
+        )}
         {lapsedOffers.map((o) => (
           <>{" "}{bankName.get(o.bankSlug) ?? o.bankSlug}&rsquo;s {o.name} {getSalaryTransferTimeline(o)?.endDate === "published" ? "ended" : "is no longer listed following our review date of"} {fmtFull(new Date(o.validUntil))}.</>
         ))}
         {" "}Absence from the table is not evidence that no offer exists.
       </p>
+      {sourceHeldOffers.length > 0 && (
+        <p>
+          {linkList([...new Set(sourceHeldOffers.map((offer) => offer.bankSlug))]).map((b) => (
+            <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
+          ))}
+          {" "}published offer figures are listed with a source caveat and excluded from estimated cashback rankings.
+        </p>
+      )}
     </details>
   </div>
 

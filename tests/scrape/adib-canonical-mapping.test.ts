@@ -3,11 +3,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { CardDataSchema } from "../../src/lib/cardsData.ts";
 import { loadAdibMappingSources, proposeAdibCanonicalMappings } from "../../scripts/scrape/propose-adib-primary.ts";
+import { ADIB_PRODUCTS, parseAdibDetail, parseAdibKfs, parseAdibSchedule } from "../../scripts/scrape/_adib-primary.ts";
 import { hasUsableGenericEarnRate } from "../../src/lib/cardEarnModel.ts";
 import { hasUsableSalaryMinimum, cardHasUnresolvedTerms } from "../../src/lib/cardEligibility.ts";
 import { cardValueTerms } from "../../src/lib/cardValue.ts";
 
-const packet = proposeAdibCanonicalMappings(loadAdibMappingSources(), "2026-11-07");
+const sources = loadAdibMappingSources();
+const packet = proposeAdibCanonicalMappings(sources, "2026-11-07");
 test("accepted ADIB local records exactly reproduce the reviewed deterministic mapping", () => {
   const cards = JSON.parse(readFileSync("src/data/cards.json", "utf8"));
   for (const p of packet.proposals) {
@@ -20,6 +22,40 @@ test("accepted ADIB local records exactly reproduce the reviewed deterministic m
       .replace("Do not silently promote that named-merchant row into an all-domestic base rate.",
         "The named-merchant row does not establish a rate for all domestic spending.");
     expected._dataIssues!._features = "This source review covers identity, standard annual fee and scoped rewards. Perks and welcome incentives have not been verified in this review or assigned a cash value.";
+    // 18 November source repair: replay only the named Smiles edits over
+    // the historical candidate. Keep the parser's output unapproved and
+    // assert exact equality of every other bit of the canonical record.
+    if (p.slug === "adib-smiles-visa-classic" || p.slug === "adib-smiles-visa-signature") {
+      const detailSource = sources.find(s => s.url === expected.applyUrl && s.representation === "http-decoded-readable-text");
+      assert.ok(detailSource, p.slug);
+      const detail = parseAdibDetail(detailSource, p.slug);
+      assert.ok(detail && detail.minSalary !== null && detail.salaryState === "source-stated", p.slug);
+      assert.equal(detail.minSalary, expected.eligibility.minSalary, p.slug);
+      const salaryEvidence = expected._fieldEvidence.eligibility;
+      assert.ok(Array.isArray(salaryEvidence) && salaryEvidence.length === 1, p.slug);
+      expected.eligibility.minSalary = null;
+      expected.eligibility.publishedMinMonthlyIncome = detail.minSalary;
+      expected.eligibility.publishedIncomeBasis = "salary";
+      expected._fieldEvidence["eligibility.publishedMinMonthlyIncome"] = salaryEvidence;
+      delete expected._fieldEvidence.eligibility;
+      expected._provenance["eligibility.publishedMinMonthlyIncome"] = "editor-confirmed";
+    }
+    if (p.slug === "adib-smiles-visa-classic") {
+      const tariffSource = sources.find(s => s.id === "adib-soc");
+      const kfsSource = sources.find(s => s.id === "adib-kfs");
+      assert.ok(tariffSource && kfsSource);
+      const { socIndex, kfsIndex } = ADIB_PRODUCTS[p.slug];
+      const tariff = parseAdibSchedule(tariffSource), kfs = parseAdibKfs(kfsSource);
+      assert.equal(tariff?.feeCells[socIndex]?.raw, "Free");
+      assert.equal(kfs?.feeCells[kfsIndex]?.value, 0);
+      assert.deepEqual(expected.annualFee, { amount: 0, currency: "AED" });
+      expected._provenance.annualFee = "editor-confirmed";
+      delete expected._dataIssues.eligibility;
+      expected._dataIssues["eligibility.publishedMinMonthlyIncome"] = "The issuer publishes a salary threshold. Full salary-transfer, residency and employment conditions are not confirmed.";
+      expected._dataIssues.fxFee = "See the two issuer service-fee rows below. They do not establish a single comparable FX cost.";
+      expected._dataIssues.annualFee = "The issuer confirms no standard primary-card annual fee. That is not a total-cost figure; check joining charges and profit charges separately.";
+      expected._dataIssues._features = "The card review separates the two funding-specific sign-up awards. No universal welcome amount or cash value is assigned, and other perks are not confirmed here.";
+    }
     assert.deepEqual(cards[p.slug], expected, p.slug);
   }
   for (const p of packet.holds.filter(p => p.slug !== "adib-cashback-visa")) assert.equal(cards[p.slug], undefined, p.slug);

@@ -34,9 +34,10 @@ const cases = [
   ["mashreq-2026", "not-published", /12 equal monthly instalments/, /two consecutive months in the first year/],
   ["dib-xtra-2026", "not-published", /later applicable bundle or spend window/, /withhold or reverse/],
   ["emirates-nbd-payroll-cashback-2026-q4", "published", /after 150 calendar days from your first salary/, /12 consecutive salaries/],
+  ["standard-chartered-priority-2026-nov-2027-jan", "published", /end of the seventh month after the first salary/, /does not state a separate post-payout salary clawback/],
 ] as const;
 
-test("the six campaign timelines preserve their own payment clocks and retention tests", () => {
+test("campaign timelines preserve their own payment clocks and retention tests", () => {
   const campaigns = cases.flatMap(([id]) => {
     const campaign = readCampaign(id);
     return campaign ? [campaign] : [];
