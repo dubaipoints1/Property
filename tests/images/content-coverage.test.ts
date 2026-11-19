@@ -100,6 +100,14 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Deliberately text-led; the guide compares schedules, fare types and airport connections rather than claiming a first-hand flight.",
   "news-emirates-islamic-barca-cashback-card-free-for-life-up-to-4-percent":
     "Deliberately text-led: the issuer's offer page is the evidence. No clean issuer card art is published for this card yet, and a football or stadium photo would imply club imagery we do not hold.",
+  "news-world-of-hyatt-2027-free-night-suite-award-check":
+    "Deliberately text-led: Official programme terms are the evidence; an image would not verify individual room availability.",
+  "guide-marriott-bonvoy-gift-stay-or-transfer-points-uae":
+    "Deliberately text-led: Programme rules are the evidence; no claim about a particular property or a hosted stay.",
+  "guide-emirates-nbd-first-card-statement-payment-check":
+    "Deliberately text-led: Issuer support and payment terms; no fabricated statement or cardholder information.",
+  "guide-etihad-guest-missing-miles-claim-route-uae":
+    "Deliberately text-led: Official claim-route instructions are the evidence; no private membership or account image.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
