@@ -3,6 +3,75 @@
   "refreshMode": "manual-primary",
   "cards": [
     {
+      "slug": "fab-cashback-islamic",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/cashback-islamic-credit-card",
+      "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+      "sourceFixtureIds": [
+        "fab-cashback-islamic-title",
+        "fab-cashback-islamic-salary",
+        "fab-cashback-islamic-salary-repeat",
+        "fab-cashback-islamic-network",
+        "fab-cashback-islamic-tariff-link",
+        "fab-cashback-islamic-kfs-columns",
+        "fab-cashback-islamic-kfs-fee",
+        "fab-cashback-islamic-tariff-fee",
+        "fab-cashback-islamic-guide-fee",
+        "fab-cashback-islamic-guide-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-rak-islamic.ts",
+        "export": "parseFabRakIslamic",
+        "sha256": "e82050183cdf60d1391048214a9a1b55162ad3cbb4ae1d83ed7d6b9e7ba7d449",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-rak-islamic.json",
+          "sha256": "02be90d3d93096fcde80da60e4bbe8fd5a46bd3e838f68f4cede82c864cb8ae0"
+        }
+      ]
+    },
+    {
+      "slug": "rakbank-islamic-world",
+      "bank": "rakbank",
+      "productUrl": "https://www.rakbank.ae/en/islamic/personal/cards/credit-cards/world-credit-card",
+      "kfsUrl": "https://www.rakbank.ae/globalassets/rakbank/all-pdfs/002---islamic---key-fact-statements/bilingual/kfs055-islamic-world-mastercard.pdf",
+      "sourceFixtureIds": [
+        "rakbank-islamic-world-title",
+        "rakbank-islamic-world-kfs-link",
+        "rakbank-islamic-world-tariff-link",
+        "rakbank-islamic-world-programme",
+        "rakbank-islamic-world-kfs-title",
+        "rakbank-islamic-world-kfs-eligibility",
+        "rakbank-islamic-world-kfs-fee",
+        "rakbank-islamic-world-tariff-columns",
+        "rakbank-islamic-world-tariff-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-rak-islamic.ts",
+        "export": "parseFabRakIslamic",
+        "sha256": "e82050183cdf60d1391048214a9a1b55162ad3cbb4ae1d83ed7d6b9e7ba7d449",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-rak-islamic.json",
+          "sha256": "02be90d3d93096fcde80da60e4bbe8fd5a46bd3e838f68f4cede82c864cb8ae0"
+        }
+      ]
+    },
+    {
       "slug": "hsbc-cash-plus",
       "bank": "hsbc",
       "productUrl": "https://www.hsbc.ae/credit-cards/products/cash-plus/",
