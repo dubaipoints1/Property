@@ -2211,6 +2211,117 @@
           "sha256": "02be90d3d93096fcde80da60e4bbe8fd5a46bd3e838f68f4cede82c864cb8ae0"
         }
       ]
+    },
+    {
+      "slug": "emirates-islamic-skywards-signature",
+      "bank": "emirates-islamic",
+      "productUrl": "https://www.emiratesislamic.ae/en/cards/credit-cards/skywards-signature-credit-card",
+      "kfsUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "sourceFixtureIds": [
+        "emirates-islamic-skywards-signature-heading",
+        "emirates-islamic-skywards-signature-apply-identity",
+        "emirates-islamic-skywards-signature-issuer-network",
+        "emirates-islamic-skywards-signature-artwork-identity",
+        "ei-kfs-vat",
+        "ei-kfs-card-columns",
+        "ei-kfs-annual-fee-row",
+        "ei-tariff-vat",
+        "ei-tariff-profit-scope",
+        "ei-tariff-membership-columns",
+        "emirates-islamic-skywards-signature-tariff-row",
+        "ei-tariff-fee-based-boundary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_emirates-islamic-named-fees.ts",
+        "export": "parseEiNamedFees",
+        "sha256": "c3c87f282aaa6e584d1dda43c75fb29bb7e8b2478a8461fd057a361c1a86c889",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-named-fees.json",
+          "sha256": "9f0aa9c190162865de2a86d7c5310317ad806e17430c2f0c8c88b0033af04886"
+        }
+      ]
+    },
+    {
+      "slug": "emirates-islamic-barca-cashback",
+      "bank": "emirates-islamic",
+      "productUrl": "https://www.emiratesislamic.ae/en/cards/credit-cards/fc-barcelona-credit-card",
+      "kfsUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "sourceFixtureIds": [
+        "emirates-islamic-barca-cashback-heading",
+        "emirates-islamic-barca-cashback-apply-identity",
+        "emirates-islamic-barca-cashback-issuer-network",
+        "emirates-islamic-barca-cashback-artwork-identity",
+        "ei-kfs-vat",
+        "ei-kfs-card-columns",
+        "ei-kfs-annual-fee-row",
+        "ei-tariff-vat",
+        "ei-tariff-profit-scope",
+        "ei-tariff-membership-columns",
+        "emirates-islamic-barca-cashback-tariff-row",
+        "ei-tariff-fee-based-boundary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_emirates-islamic-named-fees.ts",
+        "export": "parseEiNamedFees",
+        "sha256": "c3c87f282aaa6e584d1dda43c75fb29bb7e8b2478a8461fd057a361c1a86c889",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-named-fees.json",
+          "sha256": "9f0aa9c190162865de2a86d7c5310317ad806e17430c2f0c8c88b0033af04886"
+        }
+      ]
+    },
+    {
+      "slug": "emirates-islamic-rta",
+      "bank": "emirates-islamic",
+      "productUrl": "https://www.emiratesislamic.ae/en/cards/credit-cards/rta-credit-card",
+      "kfsUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "sourceFixtureIds": [
+        "emirates-islamic-rta-heading",
+        "emirates-islamic-rta-apply-identity",
+        "emirates-islamic-rta-issuer-network",
+        "emirates-islamic-rta-artwork-identity",
+        "ei-kfs-vat",
+        "ei-kfs-card-columns",
+        "ei-kfs-annual-fee-row",
+        "ei-tariff-vat",
+        "ei-tariff-profit-scope",
+        "ei-tariff-membership-columns",
+        "emirates-islamic-rta-tariff-row",
+        "ei-tariff-fee-based-boundary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_emirates-islamic-named-fees.ts",
+        "export": "parseEiNamedFees",
+        "sha256": "c3c87f282aaa6e584d1dda43c75fb29bb7e8b2478a8461fd057a361c1a86c889",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-named-fees.json",
+          "sha256": "9f0aa9c190162865de2a86d7c5310317ad806e17430c2f0c8c88b0033af04886"
+        }
+      ]
     }
   ]
 }
