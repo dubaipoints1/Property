@@ -2,6 +2,7 @@
 // must keep their existing delivery. Add routes only after testing ownership.
 export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/banks/fab/": "First Abu Dhabi Bank",
+  "/cards/fab-cashback-islamic/": "FAB Cashback Islamic Credit Card",
   "/cards/fab-z-credit-card/": "FAB Z Credit Card",
   "/cards/fab-share-infinite/": "FAB SHARE Infinite Credit Card",
   "/cards/fab-share-platinum/": "FAB SHARE Platinum Credit Card",
@@ -16,6 +17,7 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/cards/hsbc-premier/": "HSBC Premier Credit Card",
   "/cards/hsbc-advance/": "HSBC Advance Credit Card",
   "/cards/sc-journey/": "Standard Chartered Journey Credit Card",
+  "/cards/rakbank-islamic-world/": "RAKBANK Islamic World Mastercard",
   "/banks/emirates-nbd/": "Emirates NBD",
   "/banks/liv/": "Liv",
   "/cards/emirates-nbd-share-visa-platinum/": "Emirates NBD SHARE Visa Platinum Credit Card",

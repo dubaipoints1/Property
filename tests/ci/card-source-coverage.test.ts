@@ -9,7 +9,7 @@ import { NINETY_DAYS_MS, isStale } from '../../src/lib/verification.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 // Replay the catalogue as of the latest exact issuer captures in this batch.
-const AS_OF = '2026-11-18';
+const AS_OF = '2026-11-19';
 const sha = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
 const fresh = () => loadCoverageInputs(ROOT);
 const audit = (input = fresh(), asOf = AS_OF) => auditCardSourceCoverage(input, { asOf });
