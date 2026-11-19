@@ -1,0 +1,12 @@
+# 19 November approved editorial release — evidence
+
+The owner accepted the exact articles and the DubaiPoints Editorial byline on 19 November and reported no relevant conflicts or other contributors for each approved item. Scope is a text-led editorial release only: no tracking, catalogue, live rates, card data, collector, or homepage design change. Publication date is 19 November Dubai time; the reader's body matches the approved draft. No first-hand use, booking, personal eligibility or outreach is claimed.
+
+| Exact article | Approved private SHA-256 | Independent recheck |
+|---|---|---|
+| Hyatt free nights and suite awards | `ac2c51aba569a3d4fd355379c2c04da333e296c31a53802d26c70298b99c0d2a` | [18 November announcement](https://newsroom.hyatt.com/worldofhyatt2027) and [future programme FAQ](https://world.hyatt.com/content/gp/en/rewards/world-of-hyatt-enhancements.html), Q8/12/14/16/17. Effective in January; a Suite Upgrade Award and a Premium Suite Credit are not the same. Check availability and eligibility for the reader's dates; no property or minimum stay is inferred. |
+| Marriott gifted stays or transfers | `4452fd9f9ad11562431df6ad243fd96bc41934039732c8446e3bc4a3df74974e` | [Bonvoy programme rules](https://www.marriott.com/loyalty/terms/default.mi) §§2.8, 3.2 and 3.3(c). Member Support gift process, transfer ownership, incidentals and benefits, and the Free Night Award exclusion remain separate. |
+| First Emirates NBD statement | `4541c563e4039cf86cd3fdac070d9a754867dd393e35e1f4c6fb6fe04d28180a` | [Payment support](https://www.emiratesnbd.com/en/help-and-support/manage-your-monthly-credit-card-payments), due date, payment history and FAQ, and [Key Facts Statement](https://www.emiratesnbd.com/en/kfs/credit-card), important terms and retail exclusions. Scope: this issuer only; no amounts, rates or grace-period assumptions. |
+| Missing Etihad Guest miles | `5a307c1df3d398dcdfde17c37a5ac3c10096f0d5b8a516e4a74b457562c39173` | [Official FAQ](https://www.etihad.com/en-ae/help/faq/etihad-guest), full relevant earnings and missed-credit sections: Etihad-operated, partner-flight and partner-purchase channels. No universal eligibility or deadline; no submission. |
+
+Independent evidence rechecks and reader/SEO scope review were performed against the exact draft. Each article still requires the exact hosted checks and full Council record before merge, followed by production read-back; this note is not deployment proof.
