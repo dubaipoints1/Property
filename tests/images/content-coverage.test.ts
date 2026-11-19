@@ -108,6 +108,8 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Deliberately text-led: Issuer support and payment terms; no fabricated statement or cardholder information.",
   "guide-etihad-guest-missing-miles-claim-route-uae":
     "Deliberately text-led: Official claim-route instructions are the evidence; no private membership or account image.",
+  "news-dxb-concourse-b-business-lounge-opening":
+    "Deliberately text-led: Named reporting and airline access guidance, not unverified photography of the new lounge.",
   // Phase E.26 deals (20 October 2026): photos are seeded by
   // .github/workflows/seed-images-e26.yml after push. Remove each line once
   // the manifest carries it (the stale-entry test below will insist).
