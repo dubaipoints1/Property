@@ -4,6 +4,7 @@ import { SPEND_PRESETS, presetTotal } from "../data/spendProfiles";
 import type { CardData } from "./cardsData";
 import { cardRewardModelIssue } from "./cardEarnModel";
 import { cardFeeNeedsReview } from "./cardFeeProvenance";
+import { cardFieldHeld } from "./cardPublicFacts";
 import {
   annualFeeWaiverDisplay,
   formatAED,
@@ -147,7 +148,9 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
     firstFeeIssue,
     laterFeeIssue,
     pointsBaseline: rate != null && !cash,
-    hasWelcomeOffer: Boolean(card.welcomeBonus),
+    // The public projection uses a truthy pending-source message, not a
+    // verified offer. Treat a hold on any tranche as a hold on this notice.
+    hasWelcomeOffer: Boolean(card.welcomeBonus) && !cardFieldHeld(card, "welcomeBonus"),
   };
 }
 
