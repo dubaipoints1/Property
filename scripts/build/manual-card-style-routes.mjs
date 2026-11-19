@@ -3,6 +3,8 @@
 export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/banks/fab/": "First Abu Dhabi Bank",
   "/cards/fab-cashback-islamic/": "FAB Cashback Islamic Credit Card",
+  "/cards/fab-etihad-guest-signature/": "FAB Etihad Guest Signature Credit Card",
+  "/cards/fab-etihad-guest-platinum/": "FAB Etihad Guest Platinum Credit Card",
   "/cards/fab-z-credit-card/": "FAB Z Credit Card",
   "/cards/fab-share-infinite/": "FAB SHARE Infinite Credit Card",
   "/cards/fab-share-platinum/": "FAB SHARE Platinum Credit Card",

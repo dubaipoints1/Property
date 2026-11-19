@@ -41815,5 +41815,345 @@
     },
     "_lastScraped": null,
     "_lastReviewed": "2026-11-18"
+  },
+  "fab-etihad-guest-signature": {
+    "bank": "fab",
+    "name": "FAB Etihad Guest Signature Credit Card",
+    "network": "Visa",
+    "categories": [
+      "travel",
+      "co-brand"
+    ],
+    "annualFee": {
+      "amount": 1575,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "Etihad Guest",
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 15000,
+      "publishedIncomeBasis": "salary",
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-signature",
+    "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+    "lastVerified": "2026-11-19",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-signature",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "annualFeeWaiver": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.publishedIncomeBasis": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "network": [
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Signature Credit Card",
+          "unit": "Visa network identity only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-signature",
+          "capturedAt": "2026-11-19T17:34:55.494Z",
+          "sourceBodySha256": "9d58de10b5870bd3f8e4c5c4301cdb4a4e989abdeaf02e56564740d02a471d34",
+          "sourceTextSha256": "9d58de10b5870bd3f8e4c5c4301cdb4a4e989abdeaf02e56564740d02a471d34",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 66679,
+          "sourceEndByte": 66740,
+          "firstLine": 482,
+          "lastLine": 482,
+          "rawText": "<div class=\"bpl-item-content-title\">Special Visa offers</div>",
+          "rawTextSha256": "036e6651c1c96f57f22ae7de230c072dc7e4d7560e76b599046ab403256623ec"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Signature Credit Card",
+          "unit": "Etihad Guest programme identity only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-signature",
+          "capturedAt": "2026-11-19T17:34:55.494Z",
+          "sourceBodySha256": "9d58de10b5870bd3f8e4c5c4301cdb4a4e989abdeaf02e56564740d02a471d34",
+          "sourceTextSha256": "9d58de10b5870bd3f8e4c5c4301cdb4a4e989abdeaf02e56564740d02a471d34",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 53871,
+          "sourceEndByte": 53948,
+          "firstLine": 481,
+          "lastLine": 481,
+          "rawText": "<span class=\"lwiat-item-desc\">Earn more Etihad Guest Miles on spending</span>",
+          "rawTextSha256": "486b3a0dcff32d5c78d5ee8c69c8f5fcab3959d151726e055d24e1da47b3c9b2"
+        }
+      ],
+      "annualFee": [
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Signature Credit Card",
+          "unit": "AED standard primary annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-19T17:34:54.824Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 11,
+          "lastLine": 11,
+          "rawText": "         Etihad Guest Signature                                    1,575                                 262.50",
+          "rawTextSha256": "1d067412860557cf364e08be0ad0c21c3b7b74a2ad5d9654e0e54e228a94d99a"
+        },
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Signature Credit Card",
+          "unit": "VAT-inclusive tariff; primary and supplementary columns",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-19T17:34:54.824Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Signature Credit Card",
+          "unit": "AED published minimum monthly salary; not an approval decision",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-signature",
+          "capturedAt": "2026-11-19T17:34:55.494Z",
+          "sourceBodySha256": "9d58de10b5870bd3f8e4c5c4301cdb4a4e989abdeaf02e56564740d02a471d34",
+          "sourceTextSha256": "9d58de10b5870bd3f8e4c5c4301cdb4a4e989abdeaf02e56564740d02a471d34",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 45678,
+          "sourceEndByte": 45801,
+          "firstLine": 478,
+          "lastLine": 478,
+          "rawText": "<h2 class=\"infographic-heading\"> 15,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "56acaedd12a54e9548aac7540f83f0cdc30ef0bd66d156d4c75feb465f180220"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Checked the named conventional card, Visa network, Etihad Guest programme, standard primary annual membership fee and published minimum monthly salary. This is not an all-terms review.",
+      "annualFee": "This is FAB’s standard annual membership fee for the main card, including VAT. It does not account for temporary offers or establish what you will pay in the first year.",
+      "eligibility": "This is FAB’s published salary floor, not confirmation that you meet every requirement or that FAB will approve an application.",
+      "earnRates": "The card earns Etihad Guest miles. No universal earn rate, promotional miles or total rewards value is modelled here."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-19"
+  },
+  "fab-etihad-guest-platinum": {
+    "bank": "fab",
+    "name": "FAB Etihad Guest Platinum Credit Card",
+    "network": "Visa",
+    "categories": [
+      "travel",
+      "co-brand"
+    ],
+    "annualFee": {
+      "amount": 525,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "loyaltyProgram": "Etihad Guest",
+    "eligibility": {
+      "minSalary": null,
+      "publishedMinMonthlyIncome": 8000,
+      "publishedIncomeBasis": "salary",
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-platinum",
+    "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+    "lastVerified": "2026-11-19",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-platinum",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed",
+      "joiningFee": "needs-review",
+      "annualFeeWaiver": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "loyaltyProgram": "editor-confirmed",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.publishedMinMonthlyIncome": "editor-confirmed",
+      "eligibility.publishedIncomeBasis": "editor-confirmed",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review"
+    },
+    "_fieldEvidence": {
+      "network": [
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Platinum Credit Card",
+          "unit": "Visa network identity only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-platinum",
+          "capturedAt": "2026-11-19T17:34:55.385Z",
+          "sourceBodySha256": "f350ce7d94e72d0e0428cf7d271e07325f776a06fb77642614b5ef29c2f3ad90",
+          "sourceTextSha256": "f350ce7d94e72d0e0428cf7d271e07325f776a06fb77642614b5ef29c2f3ad90",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 58470,
+          "sourceEndByte": 58531,
+          "firstLine": 482,
+          "lastLine": 482,
+          "rawText": "<div class=\"bpl-item-content-title\">Special Visa offers</div>",
+          "rawTextSha256": "036e6651c1c96f57f22ae7de230c072dc7e4d7560e76b599046ab403256623ec"
+        }
+      ],
+      "loyaltyProgram": [
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Platinum Credit Card",
+          "unit": "Etihad Guest programme identity only",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-platinum",
+          "capturedAt": "2026-11-19T17:34:55.385Z",
+          "sourceBodySha256": "f350ce7d94e72d0e0428cf7d271e07325f776a06fb77642614b5ef29c2f3ad90",
+          "sourceTextSha256": "f350ce7d94e72d0e0428cf7d271e07325f776a06fb77642614b5ef29c2f3ad90",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 47759,
+          "sourceEndByte": 47836,
+          "firstLine": 480,
+          "lastLine": 480,
+          "rawText": "<span class=\"lwiat-item-desc\">Earn more Etihad Guest Miles on spending</span>",
+          "rawTextSha256": "486b3a0dcff32d5c78d5ee8c69c8f5fcab3959d151726e055d24e1da47b3c9b2"
+        }
+      ],
+      "annualFee": [
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Platinum Credit Card",
+          "unit": "AED standard primary annual membership fee",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-19T17:34:54.824Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 12,
+          "lastLine": 12,
+          "rawText": "         Etihad Guest Platinum                                      525                                  262.50",
+          "rawTextSha256": "01eac45a8224c247008d4d73c4b4ca886d4e25e217c00b9521e583cda8dd23f4"
+        },
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Platinum Credit Card",
+          "unit": "VAT-inclusive tariff; primary and supplementary columns",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-19T17:34:54.824Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        }
+      ],
+      "eligibility.publishedMinMonthlyIncome": [
+        {
+          "parserId": "fab/etihad-conventional/v1",
+          "productScope": "FAB Etihad Guest Platinum Credit Card",
+          "unit": "AED published minimum monthly salary; not an approval decision",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-platinum",
+          "capturedAt": "2026-11-19T17:34:55.385Z",
+          "sourceBodySha256": "f350ce7d94e72d0e0428cf7d271e07325f776a06fb77642614b5ef29c2f3ad90",
+          "sourceTextSha256": "f350ce7d94e72d0e0428cf7d271e07325f776a06fb77642614b5ef29c2f3ad90",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 45496,
+          "sourceEndByte": 45618,
+          "firstLine": 480,
+          "lastLine": 480,
+          "rawText": "<h2 class=\"infographic-heading\"> 8,000</h2><div class=\"global-rich-text infographic-text\"><p>Minimum Monthly Salary</p>",
+          "rawTextSha256": "b14390fedcad5eff197c203eeb73755e2018ebbe6f120ec13b845b2d585b5b6d"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Checked the named conventional card, Visa network, Etihad Guest programme, standard primary annual membership fee and published minimum monthly salary. This is not an all-terms review.",
+      "annualFee": "This is FAB’s standard annual membership fee for the main card, including VAT. It does not account for temporary offers or establish what you will pay in the first year.",
+      "eligibility": "This is FAB’s published salary floor, not confirmation that you meet every requirement or that FAB will approve an application.",
+      "earnRates": "The card earns Etihad Guest miles. No universal earn rate, promotional miles or total rewards value is modelled here."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-19"
   }
 }

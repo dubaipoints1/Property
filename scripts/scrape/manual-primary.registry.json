@@ -2322,6 +2322,80 @@
           "sha256": "9f0aa9c190162865de2a86d7c5310317ad806e17430c2f0c8c88b0033af04886"
         }
       ]
+    },
+    {
+      "slug": "fab-etihad-guest-signature",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-signature",
+      "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "sourceFixtureIds": [
+        "fab-etihad-conventional-signature-title",
+        "fab-etihad-conventional-signature-salary",
+        "fab-etihad-conventional-signature-salary-repeat",
+        "fab-etihad-conventional-signature-network",
+        "fab-etihad-conventional-signature-programme",
+        "fab-etihad-conventional-signature-tariff-link",
+        "fab-etihad-conventional-signature-selector-heading",
+        "fab-etihad-conventional-signature-selector-kfs",
+        "fab-etihad-conventional-signature-selector-tariff",
+        "fab-etihad-conventional-tariff-columns",
+        "fab-etihad-conventional-signature-tariff-fee",
+        "fab-etihad-conventional-kfs-fee-delegation"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-etihad-conventional.ts",
+        "export": "parseFabEtihadConventional",
+        "sha256": "c48fc09ad092f8ffdd023ceeadee1c310db3dd791350bb3145e02bec1a6cac37",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-etihad-conventional.json",
+          "sha256": "42c89eafe463a3a71a05975375c555c5578f0151f2c0937344ba8d99e96d6a8d"
+        }
+      ]
+    },
+    {
+      "slug": "fab-etihad-guest-platinum",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/etihad-guest-platinum",
+      "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "sourceFixtureIds": [
+        "fab-etihad-conventional-platinum-title",
+        "fab-etihad-conventional-platinum-salary",
+        "fab-etihad-conventional-platinum-salary-repeat",
+        "fab-etihad-conventional-platinum-network",
+        "fab-etihad-conventional-platinum-programme",
+        "fab-etihad-conventional-platinum-tariff-link",
+        "fab-etihad-conventional-platinum-selector-heading",
+        "fab-etihad-conventional-platinum-selector-kfs",
+        "fab-etihad-conventional-platinum-selector-tariff",
+        "fab-etihad-conventional-tariff-columns",
+        "fab-etihad-conventional-platinum-tariff-fee",
+        "fab-etihad-conventional-kfs-fee-delegation"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-etihad-conventional.ts",
+        "export": "parseFabEtihadConventional",
+        "sha256": "c48fc09ad092f8ffdd023ceeadee1c310db3dd791350bb3145e02bec1a6cac37",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-etihad-conventional.json",
+          "sha256": "42c89eafe463a3a71a05975375c555c5578f0151f2c0937344ba8d99e96d6a8d"
+        }
+      ]
     }
   ]
 }
