@@ -43,6 +43,9 @@ const ALLOWED_MISSING: Record<string, string> = {
   "card-rakbank-red": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-rakbank-titanium": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-rakbank-islamic-world": "Text-led exact-product issuer profile; no approved card art is republished.",
+  ...Object.fromEntries(["skywards-signature", "barca-cashback", "rta"].map(
+    slug => [`card-emirates-islamic-${slug}`, "Text-led exact-product issuer profile; no approved card art is republished."],
+  )),
   ...Object.fromEntries(["noon", "platinum-plus", "solitaire"].map(
     product => [`card-mashreq-${product}`, "Text-led partial source profile; issuer art was checked only to identify the network and is not republished."],
   )),
