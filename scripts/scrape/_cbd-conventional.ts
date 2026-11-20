@@ -56,7 +56,7 @@ export function parseCbdConventional(input: readonly Evidence[], slug: string) {
   if (rendered.length !== 1 || !proof || proof.url !== productUrl || proof.page !== 0 || proof.firstLine !== 1
       || proof.sourceBodySha256 !== null || proof.sourceRepresentation !== "visible-main-dom-and-accessibility-snapshot"
       || proof.captureMethod !== "normal-public-browser-ui" || !proof.sourceScope
-      || !sha.test(proof.sourceSnapshotSha256 ?? "") || !sha.test(proof.sourceTextSha256) || !captured(proof.capturedAt)
+      || !sha.test(proof.sourceSnapshotSha256 ?? "") || proof.sourceTextSha256 !== proof.fixtureTextSha256 || !captured(proof.capturedAt)
       || typeof proof.text !== "string" || proof.text.length > 2500 || digest(proof.text) !== proof.fixtureTextSha256) return null;
   const [heading, acquisition, applyUrl, observedKfs, ...extraProof] = proof.text.split("\n");
   if (extraProof.length || heading !== spec.heading || acquisition !== "Apply in minutes through the CBD Mobile App"

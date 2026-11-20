@@ -60,6 +60,7 @@ test("refuses stale tier, shifted headings, inconsistent fee, unproved waiver or
   const product = sources.find(s=>s.id===slug+"-product")!;
   assert.equal(parseCbdConventional(sources.map(s=>s===product? {...s,sourceBodySha256:"1".repeat(64)}:s),slug),null);
   assert.equal(parseCbdConventional(sources.map(s=>s===product? {...s,sourceSnapshotSha256:undefined}:s),slug),null);
+  assert.equal(parseCbdConventional(sources.map(s=>s===product? {...s,sourceTextSha256:"1".repeat(64)}:s),slug),null);
   assert.equal(parseCbdConventional([...sources, fee],slug),null);
   assert.equal(parseCbdConventional(sources.filter(s=>s!==fee),slug),null);
   assert.equal(parseCbdConventional(sources.map(s=>s===fee? {...s,sourceBodySha256:"0".repeat(64)}:s),slug),null);
