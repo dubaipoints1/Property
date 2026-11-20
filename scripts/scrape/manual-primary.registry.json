@@ -2396,6 +2396,78 @@
           "sha256": "42c89eafe463a3a71a05975375c555c5578f0151f2c0937344ba8d99e96d6a8d"
         }
       ]
+    },
+    {
+      "slug": "emirates-islamic-amazon-world",
+      "bank": "emirates-islamic",
+      "productUrl": "https://www.emiratesislamic.ae/en/personal-banking/cards/credit-cards/amazon-credit-card",
+      "kfsUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "sourceFixtureIds": [
+        "emirates-islamic-amazon-world-canonical",
+        "emirates-islamic-amazon-world-heading",
+        "emirates-islamic-amazon-world-annual-membership-label",
+        "emirates-islamic-amazon-world-network-name",
+        "ei-kfs-vat",
+        "ei-kfs-card-columns",
+        "ei-kfs-annual-fee-row",
+        "ei-tariff-vat",
+        "ei-tariff-profit-scope",
+        "ei-tariff-membership-columns",
+        "ei-tariff-amazon-membership-row",
+        "ei-tariff-fee-based-boundary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_emirates-islamic-amazon-fees.ts",
+        "export": "parseEiAmazonFees",
+        "sha256": "4133e3ec3ca6879e64e17bc4f9c21bafaceba515ec1bb75b9127461592b7c36d",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-named-fees.json",
+          "sha256": "9f0aa9c190162865de2a86d7c5310317ad806e17430c2f0c8c88b0033af04886"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-amazon-fees.json",
+          "sha256": "22d2f0232e0b95353d5cfdd95422268cb7228a42e1b9a26ce4a20bd1d051dfd8"
+        }
+      ]
+    },
+    {
+      "slug": "emirates-islamic-amazon-platinum",
+      "bank": "emirates-islamic",
+      "productUrl": "https://www.emiratesislamic.ae/en/Personal-Banking/Cards/credit-cards/amazon-platinum-credit-card",
+      "kfsUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "sourceFixtureIds": [
+        "emirates-islamic-amazon-platinum-canonical",
+        "emirates-islamic-amazon-platinum-heading",
+        "emirates-islamic-amazon-platinum-annual-membership-label",
+        "emirates-islamic-amazon-platinum-network-name",
+        "ei-kfs-vat",
+        "ei-kfs-card-columns",
+        "ei-kfs-annual-fee-row",
+        "ei-tariff-vat",
+        "ei-tariff-profit-scope",
+        "ei-tariff-membership-columns",
+        "ei-tariff-amazon-membership-row",
+        "ei-tariff-fee-based-boundary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_emirates-islamic-amazon-fees.ts",
+        "export": "parseEiAmazonFees",
+        "sha256": "4133e3ec3ca6879e64e17bc4f9c21bafaceba515ec1bb75b9127461592b7c36d",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-named-fees.json",
+          "sha256": "9f0aa9c190162865de2a86d7c5310317ad806e17430c2f0c8c88b0033af04886"
+        },
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-amazon-fees.json",
+          "sha256": "22d2f0232e0b95353d5cfdd95422268cb7228a42e1b9a26ce4a20bd1d051dfd8"
+        }
+      ]
     }
   ]
 }

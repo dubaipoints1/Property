@@ -28,6 +28,8 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/cards/emirates-islamic-skywards-signature/": "Emirates Islamic Skywards Signature Credit Card",
   "/cards/emirates-islamic-barca-cashback/": "Emirates Islamic Barça Cashback Credit Card",
   "/cards/emirates-islamic-rta/": "Emirates Islamic RTA Platinum Credit Card (Profit-Based)",
+  "/cards/emirates-islamic-amazon-world/": "Emirates Islamic Amazon Mastercard World Credit Card",
+  "/cards/emirates-islamic-amazon-platinum/": "Emirates Islamic Amazon Mastercard Platinum Credit Card",
   "/banks/nbk/": "National Bank of Kuwait UAE",
   "/cards/nbk-visa-classic/": "NBK UAE Visa Classic Credit Card",
   "/cards/nbk-visa-gold/": "NBK UAE Visa Gold Credit Card",
