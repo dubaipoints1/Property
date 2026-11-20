@@ -14,6 +14,7 @@ const sha = (bytes: string | Buffer) => createHash('sha256').update(bytes).diges
 const fresh = () => loadCoverageInputs(ROOT);
 const audit = (input = fresh(), asOf = AS_OF) => auditCardSourceCoverage(input, { asOf });
 const hasError = (report: ReturnType<typeof audit>, code: string) => report.errors.some((item: { code: string }) => item.code === code);
+const hsbcFixtureCard = (input: ReturnType<typeof fresh>) => input.manualRegistry.cards.find((row: { slug: string }) => row.slug === 'hsbc-cash-plus')!;
 
 test('real catalogue: all slugs, including closed and unconfirmed profiles, have one explicit route', () => {
   const input = fresh();
@@ -24,7 +25,7 @@ test('real catalogue: all slugs, including closed and unconfirmed profiles, have
   const cardCount = Object.keys(input.cards).length;
   assert.ok(cardCount >= 80, "retain the covered Citi baseline");
   assert.deepEqual(report.summary, {
-    cards: cardCount, banks: 16, activeScrapers: 14, configuredScraperRoutes: 58, manualPrimaryRoutes: cardCount - 58,
+    cards: cardCount, banks: 17, activeScrapers: 14, configuredScraperRoutes: 58, manualPrimaryRoutes: cardCount - 58,
     configuredDocumentGaps: 32, routeDocumentGaps: 0, manualDocumentRoutes: 33, uniqueManualDocuments: 5,
     manualDocumentNumericHolds: 3, routeProductInventoryDifferences: 1, canonicalDocumentCandidates: cardCount, overdueSourceRecords: 0,
     cardsWithPendingFields: cardCount, errors: 0, warnings: 1,
@@ -88,7 +89,7 @@ test('manual registry requires canonical mode, unique source identities and prod
   const identity = fresh(); identity.manualRegistry.cards[0].sourceFixtureIds[0] = 'unknown-fixture';
   assert.ok(hasError(audit(identity), 'manual-source-identity'));
   assert.ok(hasError(audit(identity), 'manual-source-role'));
-  const duplicate = fresh(); duplicate.manualRegistry.cards[0].sourceFixtureIds.push('hsbc-card-kfs');
+  const duplicate = fresh(); hsbcFixtureCard(duplicate).sourceFixtureIds.push('hsbc-card-kfs');
   assert.ok(hasError(audit(duplicate), 'manual-fixture-ids'));
   const missingKfs = fresh(); missingKfs.manualRegistry.cards[0].kfsUrl = undefined;
   assert.ok(hasError(audit(missingKfs), 'source-url'));
@@ -117,7 +118,7 @@ test('relative runtime imports and fixture text require their own identity even 
   manual.parser.sha256 = sha(bytes);
   assert.ok(hasError(audit(input), 'parser-dependency-unpinned'));
   const fixtureInput = fresh();
-  const entry = fixtureInput.manualRegistry.cards[0];
+  const entry = hsbcFixtureCard(fixtureInput);
   const fixture = entry.fixtures.find((item: { path: string }) => item.path.includes('hsbc-new-products'))!;
   const content = JSON.parse(fixtureInput.files.get(fixture.path)!.toString('utf8'));
   content.sources[0].text += '\nChanged source text';

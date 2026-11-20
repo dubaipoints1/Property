@@ -50,7 +50,7 @@ const banks = defineCollection({
   schema: z.object({
     name: z.string(),
     slug: z.string(),
-    logo: z.string(),
+    logo: z.string().optional(),
     customerService: z.object({
       phone: z.string().optional(),
       email: z.email().optional(),

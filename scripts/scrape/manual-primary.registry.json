@@ -3,6 +3,153 @@
   "refreshMode": "manual-primary",
   "cards": [
     {
+      "slug": "united-arab-bank-mastercard-titanium",
+      "bank": "united-arab-bank",
+      "productUrl": "https://www.uab.ae/en/personal/cards/credit-cards/titanium-card",
+      "kfsUrl": "https://www.uab.ae/help-center/-/media/6BBE37E44A2F443593B56CC85E593FDC.ashx",
+      "sourceFixtureIds": [
+        "titanium-identity-and-availability",
+        "conv-selectable-three",
+        "conventional-dated-edition",
+        "conv-application-vat",
+        "conv-tariff-vat",
+        "portal-conventional-type.pdf",
+        "portal-conventional-kfs.pdf",
+        "portal-conventional-tariff.pdf",
+        "conv-tariff-order",
+        "standard-titanium",
+        "conv-annual-fee-matrix"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_uab-named-fees.ts",
+        "export": "parseUabNamedFees",
+        "sha256": "cfd94d2c211b4b67361e50c317f4a204914569dc511d9c7eab36f433120b8691",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-uab-named-annual-fees.json",
+          "sha256": "29e0b55ab54df8b0699feeeeb2edeb8f46a0a131f796edc5964e933681423e9b"
+        }
+      ]
+    },
+    {
+      "slug": "united-arab-bank-mastercard-platinum",
+      "bank": "united-arab-bank",
+      "productUrl": "https://www.uab.ae/en/personal/cards/credit-cards/platinum-card",
+      "kfsUrl": "https://www.uab.ae/help-center/-/media/6BBE37E44A2F443593B56CC85E593FDC.ashx",
+      "sourceFixtureIds": [
+        "platinum-identity-and-availability",
+        "conv-selectable-three",
+        "conventional-dated-edition",
+        "conv-application-vat",
+        "conv-tariff-vat",
+        "portal-conventional-type.pdf",
+        "portal-conventional-kfs.pdf",
+        "portal-conventional-tariff.pdf",
+        "conv-tariff-order",
+        "standard-platinum",
+        "conv-annual-fee-matrix",
+        "conv-spend-waiver"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_uab-named-fees.ts",
+        "export": "parseUabNamedFees",
+        "sha256": "cfd94d2c211b4b67361e50c317f4a204914569dc511d9c7eab36f433120b8691",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-uab-named-annual-fees.json",
+          "sha256": "29e0b55ab54df8b0699feeeeb2edeb8f46a0a131f796edc5964e933681423e9b"
+        }
+      ]
+    },
+    {
+      "slug": "united-arab-bank-mastercard-world",
+      "bank": "united-arab-bank",
+      "productUrl": "https://www.uab.ae/en/personal/cards/credit-cards/world-card",
+      "kfsUrl": "https://www.uab.ae/help-center/-/media/6BBE37E44A2F443593B56CC85E593FDC.ashx",
+      "sourceFixtureIds": [
+        "world-identity-and-availability",
+        "conv-selectable-three",
+        "conventional-dated-edition",
+        "conv-application-vat",
+        "conv-tariff-vat",
+        "portal-conventional-type.pdf",
+        "portal-conventional-kfs.pdf",
+        "portal-conventional-tariff.pdf",
+        "conv-tariff-order",
+        "standard-world",
+        "conv-annual-fee-matrix",
+        "conv-spend-waiver"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_uab-named-fees.ts",
+        "export": "parseUabNamedFees",
+        "sha256": "cfd94d2c211b4b67361e50c317f4a204914569dc511d9c7eab36f433120b8691",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-uab-named-annual-fees.json",
+          "sha256": "29e0b55ab54df8b0699feeeeb2edeb8f46a0a131f796edc5964e933681423e9b"
+        }
+      ]
+    },
+    {
+      "slug": "united-arab-bank-islamic-mastercard-titanium",
+      "bank": "united-arab-bank",
+      "productUrl": "https://www.uab.ae/en/islamic/personal-banking/islamic-credit-card/islamic-titanium-card",
+      "kfsUrl": "https://www.uab.ae/help-center/-/media/9dde5a44893247d3a9d971c5e8d9b293.ashx",
+      "sourceFixtureIds": [
+        "islamic-titanium-identity-and-availability",
+        "islamic-selectable-pair",
+        "islamic-dated-edition",
+        "islamic-application-vat",
+        "islamic-tariff-vat",
+        "portal-islamic-type.pdf",
+        "portal-islamic-kfs.pdf",
+        "portal-islamic-tariff.pdf",
+        "islamic-titanium-application",
+        "islamic-titanium-annual-fee",
+        "islamic-kfs-titanium-column",
+        "islamic-kfs-titanium-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_uab-named-fees.ts",
+        "export": "parseUabNamedFees",
+        "sha256": "cfd94d2c211b4b67361e50c317f4a204914569dc511d9c7eab36f433120b8691",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-uab-named-annual-fees.json",
+          "sha256": "29e0b55ab54df8b0699feeeeb2edeb8f46a0a131f796edc5964e933681423e9b"
+        }
+      ]
+    },
+    {
       "slug": "hsbc-cash-plus",
       "bank": "hsbc",
       "productUrl": "https://www.hsbc.ae/credit-cards/products/cash-plus/",

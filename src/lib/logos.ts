@@ -19,6 +19,11 @@ export interface BankMark {
   plated: boolean;
 }
 
+// Bank names with no licensed logo asset. Render site text, not an image.
+export function bankHasTextOnlyMark(slug: string): boolean {
+  return slug === "united-arab-bank";
+}
+
 export function bankMark(slug: string): BankMark {
   const white = WHITE[slug];
   if (white) return { src: `/logos/banks/${white}`, plated: true };

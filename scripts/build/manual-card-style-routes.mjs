@@ -35,4 +35,9 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/cards/nbk-visa-classic/": "NBK UAE Visa Classic Credit Card",
   "/cards/nbk-visa-gold/": "NBK UAE Visa Gold Credit Card",
   "/cards/nbk-visa-platinum/": "NBK UAE Visa Platinum Credit Card",
+  "/banks/united-arab-bank/": "United Arab Bank",
+  "/cards/united-arab-bank-mastercard-titanium/": "United Arab Bank Titanium Mastercard Credit Card",
+  "/cards/united-arab-bank-mastercard-platinum/": "United Arab Bank Platinum Mastercard Credit Card",
+  "/cards/united-arab-bank-mastercard-world/": "United Arab Bank World Mastercard Credit Card",
+  "/cards/united-arab-bank-islamic-mastercard-titanium/": "United Arab Bank Islamic Titanium Mastercard Credit Card",
 });
