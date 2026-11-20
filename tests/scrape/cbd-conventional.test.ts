@@ -6,6 +6,7 @@ import { getActiveCards, getCardData } from "../../src/lib/cardsData";
 import { annualFeeLabel } from "../../src/lib/cardsDataFormat";
 import { cardValueTerms } from "../../src/lib/cardValue";
 import { hasUsableSalaryMinimum } from "../../src/lib/cardEligibility";
+import { finderEvidence } from "../../src/lib/finderEvidence";
 import l2 from "../../src/data/cards.json";
 import registry from "../../scripts/scrape/manual-primary.registry.json";
 import fixture from "./fixtures/2026-11-cbd-conventional.json";
@@ -76,6 +77,9 @@ test("CBD catalogue preserves scope, primary-fee period and uncertainty in the t
     assert.deepEqual(registry.cards.find(r=>r.slug===slug)?.sourceFixtureIds,r.sourceFixtureIds);
     assert.equal(annualFeeLabel(card).qual,"year 2+");
     assert.equal(hasUsableSalaryMinimum(card),false);
+    const finder = finderEvidence(card);
+    assert.equal(finder.rewardPreference,null);
+    assert.equal(finder.comparableAnnualFee,null);
     const value=cardValueTerms(card,slug);
     assert.deepEqual([value.firstFee,value.laterFee,value.rate,value.hasWelcomeOffer],[null,gross[slug],null,false]);
     assert.equal(card.fxFee,null);
