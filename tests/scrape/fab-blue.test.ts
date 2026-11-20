@@ -105,5 +105,9 @@ test("the public catalogue uses the exact replay and withholds other terms", () 
     for (const field of ["joiningFee", "welcomeBonus", "loyaltyProgram", "annualFeeWaiver", "interestRate", "fxFeeUpperBound"])
       assert.ok(!Object.hasOwn(raw, field), field);
   }
-  assert.equal(active.has("fab-blue-islamic"), false);
+  assert.equal(parseFabBlue(sources, "fab-blue-islamic"), null);
+  const islamic = getCardData("fab-blue-islamic");
+  assert.ok(islamic && active.has("fab-blue-islamic") && islamic.sharia);
+  assert.notEqual(annualFeeLabel(islamic).amount, "Free");
+  assert.notEqual(islamic.kfsUrl, FAB_BLUE_KFS);
 });
