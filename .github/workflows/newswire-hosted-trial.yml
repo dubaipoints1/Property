@@ -1,0 +1,68 @@
+name: Newswire bounded hosted retest
+
+# One exact, newly created branch; never dispatch, schedule, or publish.
+# The reviewed commit must lead with [CF-Pages-Skip] to omit a Pages preview.
+on:
+  push:
+    branches: ["codex/newswire-hosted-oneoff-2026-11-20-f71b"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: newswire-hosted-oneoff-2026-11-20-f71b
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    if: >-
+      github.repository == 'dubaipoints1/Property' &&
+      github.ref == 'refs/heads/codex/newswire-hosted-oneoff-2026-11-20-f71b' &&
+      github.event_name == 'push' &&
+      github.event.created && !github.event.deleted &&
+      github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Verify immutable checkout and preview-skip marker
+        run: |
+          set -eu
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -z "$(git status --porcelain --untracked-files=no)"
+          case "$(git show -s --format=%s HEAD)" in
+            '[CF-Pages-Skip] '*) ;;
+            *) exit 1 ;;
+          esac
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+      - name: Install locked dependencies without scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Test coverage and receipt boundaries on offline fixtures
+        run: node --test tests/newsroom/wire.test.ts tests/newsroom/wire-pages.test.ts tests/newsroom/wire-hosted-trial.test.ts
+      - name: Compare two polls of the fixed public sources
+        id: collect
+        run: |
+          set -eu
+          umask 077
+          status=0
+          receipt="$RUNNER_TEMP/newswire-hosted-receipt.json"
+          env -i PATH="$PATH" node scripts/newsroom/wire-hosted-trial.mjs full repeat > "$receipt" || status=$?
+          if [ "$status" -eq 0 ] || [ "$status" -eq 2 ]; then
+            test -s "$receipt"
+            test "$(wc -c < "$receipt")" -le 8192
+            printf 'receipt_valid=true\n' >> "$GITHUB_OUTPUT"
+          fi
+          exit "$status"
+      - name: Retain aggregate receipt only
+        if: ${{ !cancelled() && steps.collect.outputs.receipt_valid == 'true' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: newswire-hosted-oneoff-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/newswire-hosted-receipt.json
+          if-no-files-found: error
+          retention-days: 2
