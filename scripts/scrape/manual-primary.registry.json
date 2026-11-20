@@ -3,6 +3,96 @@
   "refreshMode": "manual-primary",
   "cards": [
     {
+      "slug": "fab-blue-al-futtaim-infinite",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-infinite-credit-card",
+      "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "sourceFixtureIds": [
+        "fab-blue-infinite-heading",
+        "fab-blue-infinite-artwork",
+        "fab-blue-infinite-product-tariff",
+        "fab-blue-infinite-selector-heading",
+        "fab-blue-infinite-selector-kfs",
+        "fab-blue-infinite-selector-tariff",
+        "fab-blue-tariff-columns",
+        "fab-blue-infinite-tariff-row",
+        "fab-blue-kfs-delegation",
+        "fab-blue-family-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-blue.ts",
+        "export": "parseFabBlue",
+        "sha256": "488751a5993a89251f8d1fb3c228ba8b55ba4a0435b815093eac36c54d9debf5",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-blue.json",
+          "sha256": "ae665bbdd0cc0cfc48fc1fdd913ddb28e6d2e5cb84403c6b085e7e4d5e358e00"
+        }
+      ]
+    },
+    {
+      "slug": "fab-blue-al-futtaim-signature",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-signature-credit-card",
+      "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "sourceFixtureIds": [
+        "fab-blue-signature-heading",
+        "fab-blue-signature-artwork",
+        "fab-blue-signature-product-tariff",
+        "fab-blue-signature-selector-heading",
+        "fab-blue-signature-selector-kfs",
+        "fab-blue-signature-selector-tariff",
+        "fab-blue-tariff-columns",
+        "fab-blue-signature-tariff-row",
+        "fab-blue-kfs-delegation",
+        "fab-blue-family-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-blue.ts",
+        "export": "parseFabBlue",
+        "sha256": "488751a5993a89251f8d1fb3c228ba8b55ba4a0435b815093eac36c54d9debf5",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-blue.json",
+          "sha256": "ae665bbdd0cc0cfc48fc1fdd913ddb28e6d2e5cb84403c6b085e7e4d5e358e00"
+        }
+      ]
+    },
+    {
+      "slug": "fab-blue-al-futtaim-platinum",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-platinum-credit-card",
+      "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "sourceFixtureIds": [
+        "fab-blue-platinum-heading",
+        "fab-blue-platinum-artwork",
+        "fab-blue-platinum-product-tariff",
+        "fab-blue-platinum-selector-heading",
+        "fab-blue-platinum-selector-kfs",
+        "fab-blue-platinum-selector-tariff",
+        "fab-blue-tariff-columns",
+        "fab-blue-platinum-tariff-row",
+        "fab-blue-kfs-delegation",
+        "fab-blue-family-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-blue.ts",
+        "export": "parseFabBlue",
+        "sha256": "488751a5993a89251f8d1fb3c228ba8b55ba4a0435b815093eac36c54d9debf5",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-blue.json",
+          "sha256": "ae665bbdd0cc0cfc48fc1fdd913ddb28e6d2e5cb84403c6b085e7e4d5e358e00"
+        }
+      ]
+    },
+    {
       "slug": "united-arab-bank-mastercard-titanium",
       "bank": "united-arab-bank",
       "productUrl": "https://www.uab.ae/en/personal/cards/credit-cards/titanium-card",
