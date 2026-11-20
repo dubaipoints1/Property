@@ -1,0 +1,113 @@
+{
+  "kind": "Exact issuer Amazon Mastercard World/Platinum and affirmative annual fee excerpts from verified 18 November HTML; shared KFS/schedule sections in 2026-11-emirates-islamic-named-fees.json",
+  "sources": [
+    {
+      "id": "ei-tariff-amazon-membership-row",
+      "url": "https://www.emiratesislamic.ae/en/soc/cards",
+      "capturedAt": "2026-11-18T13:42:31.057Z",
+      "sourceRepresentation": "http-decoded-response-body",
+      "firstLine": 3533,
+      "sourceStartByte": 558360,
+      "sourceBodySha256": "efd2c144366e06f7d9bbd5c0282ea847f40e20137259c226b1827d282403ed56",
+      "sourceTextSha256": "efd2c144366e06f7d9bbd5c0282ea847f40e20137259c226b1827d282403ed56",
+      "text": "<tr>\n            <td>Amazon</td>\n            <td>3.69%</td>\n            <td>No Annual Membership Fee</td>\n        </tr>",
+      "fixtureTextSha256": "5abd4f58f4cfa16f08a06a008afaade1b7f4b0c89ada4953b8463074d94d9c29"
+    },
+    {
+      "id": "emirates-islamic-amazon-world-canonical",
+      "url": "https://www.emiratesislamic.ae/en/personal-banking/cards/credit-cards/amazon-credit-card",
+      "capturedAt": "2026-11-18T13:42:40.497Z",
+      "sourceRepresentation": "http-decoded-response-body",
+      "firstLine": 177,
+      "sourceStartByte": 29498,
+      "sourceBodySha256": "3e8411dd7a49f245ef74280fe20dff036758e0cca12c3e740e952bc8d0a35228",
+      "sourceTextSha256": "3e8411dd7a49f245ef74280fe20dff036758e0cca12c3e740e952bc8d0a35228",
+      "text": "<link rel=\"canonical\" href=\"https://www.emiratesislamic.ae/en/Personal-Banking/Cards/credit-cards/amazon-credit-card\" />",
+      "fixtureTextSha256": "538ff9f85689477637b1bfb2263ddc4cc09c9e6db03dca81cd8e57d4c8b0d7ef"
+    },
+    {
+      "id": "emirates-islamic-amazon-world-heading",
+      "url": "https://www.emiratesislamic.ae/en/personal-banking/cards/credit-cards/amazon-credit-card",
+      "capturedAt": "2026-11-18T13:42:40.497Z",
+      "sourceRepresentation": "http-decoded-response-body",
+      "firstLine": 786,
+      "sourceStartByte": 84915,
+      "sourceBodySha256": "3e8411dd7a49f245ef74280fe20dff036758e0cca12c3e740e952bc8d0a35228",
+      "sourceTextSha256": "3e8411dd7a49f245ef74280fe20dff036758e0cca12c3e740e952bc8d0a35228",
+      "text": "<h1>Amazon World Credit Card</h1>",
+      "fixtureTextSha256": "6c43622317021d9f14f5577b316262f19fd5ea3f800b48628e6903bcf8117ed1"
+    },
+    {
+      "id": "emirates-islamic-amazon-world-annual-membership-label",
+      "url": "https://www.emiratesislamic.ae/en/personal-banking/cards/credit-cards/amazon-credit-card",
+      "capturedAt": "2026-11-18T13:42:40.497Z",
+      "sourceRepresentation": "http-decoded-response-body",
+      "firstLine": 830,
+      "sourceStartByte": 88645,
+      "sourceBodySha256": "3e8411dd7a49f245ef74280fe20dff036758e0cca12c3e740e952bc8d0a35228",
+      "sourceTextSha256": "3e8411dd7a49f245ef74280fe20dff036758e0cca12c3e740e952bc8d0a35228",
+      "text": "<h5 class=\"card-title text-md-center\">No Annual Membership Fee</h5>",
+      "fixtureTextSha256": "fefc135035d254841b6baf4e6fa69c03bc8dba33716ee865f269b1b70a2e1eb4"
+    },
+    {
+      "id": "emirates-islamic-amazon-world-network-name",
+      "url": "https://www.emiratesislamic.ae/en/personal-banking/cards/credit-cards/amazon-credit-card",
+      "capturedAt": "2026-11-18T13:42:40.497Z",
+      "sourceRepresentation": "http-decoded-response-body",
+      "firstLine": 1554,
+      "sourceStartByte": 145217,
+      "sourceBodySha256": "3e8411dd7a49f245ef74280fe20dff036758e0cca12c3e740e952bc8d0a35228",
+      "sourceTextSha256": "3e8411dd7a49f245ef74280fe20dff036758e0cca12c3e740e952bc8d0a35228",
+      "text": "Amazon Mastercard World Credit Card",
+      "fixtureTextSha256": "9dd123806c5df3b239df94c829c2d2743c3c0013ae4a56741953ba407363dbb2"
+    },
+    {
+      "id": "emirates-islamic-amazon-platinum-canonical",
+      "url": "https://www.emiratesislamic.ae/en/Personal-Banking/Cards/credit-cards/amazon-platinum-credit-card",
+      "capturedAt": "2026-11-18T13:42:40.535Z",
+      "sourceRepresentation": "http-decoded-response-body",
+      "firstLine": 177,
+      "sourceStartByte": 29646,
+      "sourceBodySha256": "5ee7d1793e3ef1a5ca3ca71d78f0a624198179846c18654de25e783e3dff2cb3",
+      "sourceTextSha256": "5ee7d1793e3ef1a5ca3ca71d78f0a624198179846c18654de25e783e3dff2cb3",
+      "text": "<link rel=\"canonical\" href=\"https://www.emiratesislamic.ae/en/Personal-Banking/Cards/credit-cards/amazon-platinum-credit-card\" />",
+      "fixtureTextSha256": "a1ba2b51465613f2929d21053e98eec30f018e1b51a5453b0aa87b50982d1674"
+    },
+    {
+      "id": "emirates-islamic-amazon-platinum-heading",
+      "url": "https://www.emiratesislamic.ae/en/Personal-Banking/Cards/credit-cards/amazon-platinum-credit-card",
+      "capturedAt": "2026-11-18T13:42:40.535Z",
+      "sourceRepresentation": "http-decoded-response-body",
+      "firstLine": 633,
+      "sourceStartByte": 79606,
+      "sourceBodySha256": "5ee7d1793e3ef1a5ca3ca71d78f0a624198179846c18654de25e783e3dff2cb3",
+      "sourceTextSha256": "5ee7d1793e3ef1a5ca3ca71d78f0a624198179846c18654de25e783e3dff2cb3",
+      "text": "<h1>Amazon Platinum Credit Card</h1>",
+      "fixtureTextSha256": "b182000cf657228f13a666189deac3666d0c12476e4f52c4cf89df2c80604a0b"
+    },
+    {
+      "id": "emirates-islamic-amazon-platinum-annual-membership-label",
+      "url": "https://www.emiratesislamic.ae/en/Personal-Banking/Cards/credit-cards/amazon-platinum-credit-card",
+      "capturedAt": "2026-11-18T13:42:40.535Z",
+      "sourceRepresentation": "http-decoded-response-body",
+      "firstLine": 678,
+      "sourceStartByte": 83345,
+      "sourceBodySha256": "5ee7d1793e3ef1a5ca3ca71d78f0a624198179846c18654de25e783e3dff2cb3",
+      "sourceTextSha256": "5ee7d1793e3ef1a5ca3ca71d78f0a624198179846c18654de25e783e3dff2cb3",
+      "text": "<h5 class=\"card-title text-md-center\">No Annual Membership Fee</h5>",
+      "fixtureTextSha256": "fefc135035d254841b6baf4e6fa69c03bc8dba33716ee865f269b1b70a2e1eb4"
+    },
+    {
+      "id": "emirates-islamic-amazon-platinum-network-name",
+      "url": "https://www.emiratesislamic.ae/en/Personal-Banking/Cards/credit-cards/amazon-platinum-credit-card",
+      "capturedAt": "2026-11-18T13:42:40.535Z",
+      "sourceRepresentation": "http-decoded-response-body",
+      "firstLine": 1548,
+      "sourceStartByte": 149095,
+      "sourceBodySha256": "5ee7d1793e3ef1a5ca3ca71d78f0a624198179846c18654de25e783e3dff2cb3",
+      "sourceTextSha256": "5ee7d1793e3ef1a5ca3ca71d78f0a624198179846c18654de25e783e3dff2cb3",
+      "text": "Amazon Mastercard Platinum Credit Card",
+      "fixtureTextSha256": "cdcfd641442a26c39094b2ec482919cb6a33f2e580d59a022a21f6bb5fea7f46"
+    }
+  ]
+}
