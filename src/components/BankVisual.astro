@@ -4,7 +4,7 @@
 // want logo ... i do not want generic pictures." White-only marks sit,
 // unmodified, on the brand navy. Takes the class of the image it replaces.
 
-import { bankMark } from "../lib/logos";
+import { bankHasTextOnlyMark, bankMark } from "../lib/logos";
 
 interface Props {
   slug: string;
@@ -15,12 +15,13 @@ interface Props {
 }
 
 const { slug, name, class: className, coverSize = "med", loading = "lazy" } = Astro.props;
-const mark = bankMark(slug);
+const mark = bankHasTextOnlyMark(slug) ? null : bankMark(slug);
 ---
 
-<span class:list={["dp-bank-visual", className, `is-${coverSize}`, { "is-plated": mark.plated }]}>
+<span class:list={["dp-bank-visual", className, `is-${coverSize}`, { "is-plated": mark?.plated, "is-text-only": !mark }]}>
   <span class="dp-bank-visual-inner">
-    <img src={mark.src} alt={`${name} logo`} loading={loading} decoding="async" />
+    {mark ? <img src={mark.src} alt={`${name} logo`} loading={loading} decoding="async" />
+      : <span class="dp-bank-visual-name" aria-hidden="true">{name}</span>}
   </span>
 </span>
 
@@ -35,6 +36,13 @@ const mark = bankMark(slug);
   }
   .dp-bank-visual.is-hero { aspect-ratio: 16 / 9; }
   .dp-bank-visual.is-plated { background: #1f3a4d; }
+  .dp-bank-visual.is-text-only { background: var(--bg); }
+  .dp-bank-visual-name {
+    padding-inline: .75rem;
+    color: var(--ink);
+    font: 600 1.25rem / 1.15 var(--font-display);
+    text-align: center;
+  }
   .dp-bank-visual-inner {
     position: absolute;
     inset: 0;

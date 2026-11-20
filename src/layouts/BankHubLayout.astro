@@ -8,7 +8,7 @@
 
 import BaseLayout from "./BaseLayout.astro";
 import UtilityPageHead from "~/components/UtilityPageHead.astro";
-import { bankMark } from "~/lib/logos";
+import { bankHasTextOnlyMark, bankMark } from "~/lib/logos";
 
 interface Props {
   title: string;
@@ -46,7 +46,7 @@ const fmtVerified = (d: Date) =>
 
 // The bank's own mark leads the page (2026-10-20 ruling: logos, not
 // generic skyline photographs). White-only marks sit on the brand navy.
-const mark = slug ? bankMark(slug) : null;
+const mark = slug && !bankHasTextOnlyMark(slug) ? bankMark(slug) : null;
 
 // JSON-LD: bank hubs emit Organization (sub-type FinancialService) +
 // BreadcrumbList. Customer-service contact and the issuer website are

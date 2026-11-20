@@ -43,6 +43,10 @@ const ALLOWED_MISSING: Record<string, string> = {
   "card-dib-shams-infinite": "Text-led scope; issuer card art was used only to identify the network, not republished.",
   "bank-nbf": "Text-led issuer directory entry with a plain-text label rather than an issuer mark.",
   "bank-nbk": "Text-led issuer directory entry with a plain-text label rather than an issuer mark.",
+  "bank-united-arab-bank": "Text-led issuer directory entry: plain name identifier, not issuer artwork.",
+  ...Object.fromEntries(["mastercard-titanium", "mastercard-platinum", "mastercard-world", "islamic-mastercard-titanium"].map(
+    suffix => [`card-united-arab-bank-${suffix}`, "Text-led scoped issuer profile; no issuer card artwork is republished."],
+  )),
   "card-nbk-visa-classic": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-gold": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-platinum": "Text-led, scoped issuer profile; no issuer card artwork is republished.",

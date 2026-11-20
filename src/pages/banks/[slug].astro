@@ -8,6 +8,7 @@ import { getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getSalaryTransferTimeline } from "~/lib/salaryTransferTimeline";
 import { salaryOfferSourceNote } from "~/lib/salaryTransferRules";
+import { SALARY_OFFER_REVIEW_PENDING_BANKS } from "~/lib/salaryTransferCoverage";
 import { getCardsByBank } from "~/lib/cardsData";
 import { getCardArt } from "~/lib/cardArt";
 import { annualFeeLabel, topEarnEntry, formatEarnRate } from "~/lib/cardsDataFormat";
@@ -76,7 +77,9 @@ const cardTiles = allCards.map((c) => {
     {
       offers.length === 0 ? (
         <p class="dp-bank-salary-empty">
-          No live salary transfer offer tracked for {bank.data.name}.
+          {bank.id === "united-arab-bank" && SALARY_OFFER_REVIEW_PENDING_BANKS.includes(bank.id)
+            ? `We have not completed a current salary-transfer offer review for ${bank.data.name}.`
+            : `No live salary transfer offer tracked for ${bank.data.name}.`}
         </p>
       ) : (
         offers.map((o) => (

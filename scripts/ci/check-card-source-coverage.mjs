@@ -18,7 +18,7 @@ const BANK_DOMAINS = {
   citi: ['citibank.ae'], dib: ['dib.ae'], 'emirates-islamic': ['emiratesislamic.ae'],
   'emirates-nbd': ['emiratesnbd.com'], fab: ['bankfab.com'], hsbc: ['hsbc.ae'],
   liv: ['liv.me'], mashreq: ['mashreq.com'], nbf: ['nbf.ae', 'nbfislamic.ae'], nbk: ['nbk.com'], rakbank: ['rakbank.ae'],
-  'standard-chartered': ['sc.com'], wio: ['wio.io'],
+  'standard-chartered': ['sc.com'], 'united-arab-bank': ['uab.ae'], wio: ['wio.io'],
 };
 export const MAINTENANCE_OWNER = 'business-realestate-editor';
 
