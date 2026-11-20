@@ -40,6 +40,14 @@ test("monthly cash caps apply before annualising, and a zero-spend estimate rema
   assert.equal(calculateCardValue(terms, 200_000).capBinds, true);
   assert.equal(calculateCardValue(cardValueTerms(cashFixture, "synthetic-cash"), 0).first, 0);
 });
+test("a held whole welcome offer or tranche does not produce a listed-offer notice", () => {
+  for (const field of ["welcomeBonus", "welcomeBonus.with_salary_transfer.amount"]) {
+    const held = { ...cashFixture, welcomeBonus: "Welcome offer pending source review.",
+      _provenance: { [field]: "needs-review" as const } };
+    assert.equal(cardValueTerms(held, "synthetic-held-welcome").hasWelcomeOffer, false);
+  }
+  assert.equal(cardValueTerms(cashFixture, "synthetic-cash").hasWelcomeOffer, true);
+});
 test("365 merchant and payment-channel exceptions block a generic all-spend estimate", () => {
   const terms = termsFor("adcb-365-cashback");
   assert.equal(terms.rate, null); assert.equal(terms.cap, null);
