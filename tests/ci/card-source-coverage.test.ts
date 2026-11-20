@@ -9,12 +9,14 @@ import { NINETY_DAYS_MS, isStale } from '../../src/lib/verification.ts';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 // Replay the catalogue as of the latest exact issuer captures in this batch.
-const AS_OF = '2026-11-19';
+const AS_OF = '2026-11-20';
 const sha = (bytes: string | Buffer) => createHash('sha256').update(bytes).digest('hex');
 const fresh = () => loadCoverageInputs(ROOT);
 const audit = (input = fresh(), asOf = AS_OF) => auditCardSourceCoverage(input, { asOf });
 const hasError = (report: ReturnType<typeof audit>, code: string) => report.errors.some((item: { code: string }) => item.code === code);
 const hsbcFixtureCard = (input: ReturnType<typeof fresh>) => input.manualRegistry.cards.find((row: { slug: string }) => row.slug === 'hsbc-cash-plus')!;
+// This fixture deliberately has one product pin and a relative parser dependency.
+const uabFeeFixtureCard = (input: ReturnType<typeof fresh>) => input.manualRegistry.cards.find((row: { slug: string }) => row.slug === 'united-arab-bank-mastercard-titanium')!;
 
 test('real catalogue: all slugs, including closed and unconfirmed profiles, have one explicit route', () => {
   const input = fresh();
@@ -86,7 +88,7 @@ test('manual registry requires canonical mode, unique source identities and prod
   assert.ok(hasError(audit(mode), 'manual-mode'));
   const orphan = fresh(); orphan.manualRegistry.cards[0].slug = 'unknown-hsbc-card';
   assert.ok(hasError(audit(orphan), 'unknown-route'));
-  const identity = fresh(); identity.manualRegistry.cards[0].sourceFixtureIds[0] = 'unknown-fixture';
+  const identity = fresh(); uabFeeFixtureCard(identity).sourceFixtureIds[0] = 'unknown-fixture';
   assert.ok(hasError(audit(identity), 'manual-source-identity'));
   assert.ok(hasError(audit(identity), 'manual-source-role'));
   const duplicate = fresh(); hsbcFixtureCard(duplicate).sourceFixtureIds.push('hsbc-card-kfs');
@@ -97,7 +99,7 @@ test('manual registry requires canonical mode, unique source identities and prod
 
 test('manual parser, dependency and fixture byte hashes are enforced without executing parser modules', () => {
   for (const category of ['parser', 'dependency', 'fixture']) {
-    const input = fresh(), manual = input.manualRegistry.cards[0];
+    const input = fresh(), manual = uabFeeFixtureCard(input);
     const file = category === 'parser' ? manual.parser.module : category === 'dependency' ? manual.parser.dependencies[0].path : manual.fixtures[0].path;
     input.files.set(file, Buffer.concat([input.files.get(file)!, Buffer.from('\nchanged')]));
     assert.ok(hasError(audit(input), 'pin-hash'), category);

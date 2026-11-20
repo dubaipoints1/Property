@@ -1,4 +1,487 @@
 {
+  "fab-blue-al-futtaim-infinite": {
+    "bank": "fab",
+    "name": "Blue FAB Infinite Credit Card by Al-Futtaim",
+    "network": "Visa",
+    "categories": [
+      "shopping",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-infinite-credit-card",
+    "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+    "lastVerified": "2026-11-20",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-infinite-credit-card",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "https://www.bankfab.com/en-ae/personal/promotions/blue-fab-credit-cards"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "network": [
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Infinite Credit Card by Al-Futtaim",
+          "unit": "Visa Infinite mark on the exact issuer-linked Blue product artwork; no network benefits asserted",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-infinite-credit-card",
+          "capturedAt": "2026-11-20T17:30:42.168Z",
+          "sourceBodySha256": "e2d6282f3a138ce34aacbac29af748be0aac40becbc6df18a8fc1f1d9446be35",
+          "sourceTextSha256": "e2d6282f3a138ce34aacbac29af748be0aac40becbc6df18a8fc1f1d9446be35",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 43072,
+          "sourceEndByte": 43269,
+          "firstLine": 637,
+          "lastLine": 637,
+          "rawText": "src=\"https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/blue-fab-infinite-credit-card/fab-blue-infinite-cc-double.png?h=654&amp;iar=0&amp;w=932&amp;hash=5AD8C3C01B055084253F94AD3BC7404B\"",
+          "rawTextSha256": "2e8866a0145bb94607cf5a9ee387534cb5ea1255fa4df62b9a1acb851887a096"
+        }
+      ],
+      "annualFee": [
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Infinite Credit Card by Al-Futtaim",
+          "unit": "AED standard primary annual membership fee (first fee column)",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-20T17:30:41.555Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 18,
+          "lastLine": 18,
+          "rawText": "         BLUE FAB Infinite                                         Free                                    Free",
+          "rawTextSha256": "56dd44da91584c4630ace43ef66c23b72cc2aa9a2df21af510cc479f69ccf836"
+        },
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Infinite Credit Card by Al-Futtaim",
+          "unit": "Tariff heading defines VAT-inclusive amounts and separates primary and supplementary cards",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-20T17:30:41.555Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        },
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Infinite Credit Card by Al-Futtaim",
+          "unit": "Conventional key-facts statement delegates the annual fee to the tariff",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+          "capturedAt": "2026-11-20T17:30:41.975Z",
+          "sourceBodySha256": "68ac71008e461f9d92f512b0d1b6a199d3f96a05d515a2a8c5534e9a28fd3771",
+          "sourceTextSha256": "1f26b24bf7c4cbc9934c06cc1896e97e079862969e649cfa7385af2e6088c945",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 10,
+          "lastLine": 11,
+          "rawText": "  The Annual Membership Fee/Renewal Fee is payable as prescribed by FAB in the SoF (Schedule of Fees), for the Customer’s\n  Credit Card and each Supplementary Credit Card upon issuance or renewal",
+          "rawTextSha256": "cf250e88ad6179d522c8c905c9c9e6a7b0915841cc030ae79ba52065375d8c43"
+        },
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Infinite Credit Card by Al-Futtaim",
+          "unit": "Issuer confirms no annual fees for the Blue FAB family; not a statement about other charges",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/promotions/blue-fab-credit-cards",
+          "capturedAt": "2026-11-20T17:30:41.760Z",
+          "sourceBodySha256": "50d8039a779651917feb8368037e8dd3a6bedc4bb5b353b0065696cfbad3c8f1",
+          "sourceTextSha256": "50d8039a779651917feb8368037e8dd3a6bedc4bb5b353b0065696cfbad3c8f1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 108175,
+          "sourceEndByte": 108253,
+          "firstLine": 554,
+          "lastLine": 554,
+          "rawText": "These cards are free, there are no annual fees with the Blue FAB Credit Cards.",
+          "rawTextSha256": "ec25f192e5dbdd7fcc654934b010db19419afecd26868d11220fb29a7b46a152"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Checked this exact conventional Blue FAB Visa tier and the standard primary annual membership fee only.",
+      "annualFee": "The published annual fee is for the primary card. It does not establish a free joining fee or zero costs when using or borrowing on the card.",
+      "eligibility": "This review does not verify salary or other qualification requirements, including whether you qualify for any promotion.",
+      "fxFee": "Foreign-currency costs are outside this profile’s verification scope.",
+      "earnRates": "No rewards amount, rate or estimated return is used in this profile.",
+      "welcomeBonus": "This profile does not confirm or value a welcome offer."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-20"
+  },
+  "fab-blue-al-futtaim-signature": {
+    "bank": "fab",
+    "name": "Blue FAB Signature Credit Card by Al-Futtaim",
+    "network": "Visa",
+    "categories": [
+      "shopping",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-signature-credit-card",
+    "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+    "lastVerified": "2026-11-20",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-signature-credit-card",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "https://www.bankfab.com/en-ae/personal/promotions/blue-fab-credit-cards"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "network": [
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Signature Credit Card by Al-Futtaim",
+          "unit": "Visa Signature mark on the exact issuer-linked Blue product artwork; no network benefits asserted",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-signature-credit-card",
+          "capturedAt": "2026-11-20T17:30:42.080Z",
+          "sourceBodySha256": "cdc87f30a88de17930d858a07f0975472daae8e984281ecc21b082a6300d0a1d",
+          "sourceTextSha256": "cdc87f30a88de17930d858a07f0975472daae8e984281ecc21b082a6300d0a1d",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 43027,
+          "sourceEndByte": 43226,
+          "firstLine": 638,
+          "lastLine": 638,
+          "rawText": "src=\"https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/blue-fab-signature-credit-card/fab-blue-signature-cc-double.png?h=654&amp;iar=0&amp;w=932&amp;hash=52EB104ECB4034AD553E1D7BBDBE2CA8\"",
+          "rawTextSha256": "6da957baa950909fd8e4b78e80ccda1a344f39523a7d5a2afc9a75c8cfb7cef4"
+        }
+      ],
+      "annualFee": [
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Signature Credit Card by Al-Futtaim",
+          "unit": "AED standard primary annual membership fee (first fee column)",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-20T17:30:41.555Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 19,
+          "lastLine": 19,
+          "rawText": "         BLUE FAB Signature                                        Free                                    Free",
+          "rawTextSha256": "fdb60672f0609a13db4c66816aac0796a9115d03f247be73ba71e9e942f71e84"
+        },
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Signature Credit Card by Al-Futtaim",
+          "unit": "Tariff heading defines VAT-inclusive amounts and separates primary and supplementary cards",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-20T17:30:41.555Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        },
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Signature Credit Card by Al-Futtaim",
+          "unit": "Conventional key-facts statement delegates the annual fee to the tariff",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+          "capturedAt": "2026-11-20T17:30:41.975Z",
+          "sourceBodySha256": "68ac71008e461f9d92f512b0d1b6a199d3f96a05d515a2a8c5534e9a28fd3771",
+          "sourceTextSha256": "1f26b24bf7c4cbc9934c06cc1896e97e079862969e649cfa7385af2e6088c945",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 10,
+          "lastLine": 11,
+          "rawText": "  The Annual Membership Fee/Renewal Fee is payable as prescribed by FAB in the SoF (Schedule of Fees), for the Customer’s\n  Credit Card and each Supplementary Credit Card upon issuance or renewal",
+          "rawTextSha256": "cf250e88ad6179d522c8c905c9c9e6a7b0915841cc030ae79ba52065375d8c43"
+        },
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Signature Credit Card by Al-Futtaim",
+          "unit": "Issuer confirms no annual fees for the Blue FAB family; not a statement about other charges",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/promotions/blue-fab-credit-cards",
+          "capturedAt": "2026-11-20T17:30:41.760Z",
+          "sourceBodySha256": "50d8039a779651917feb8368037e8dd3a6bedc4bb5b353b0065696cfbad3c8f1",
+          "sourceTextSha256": "50d8039a779651917feb8368037e8dd3a6bedc4bb5b353b0065696cfbad3c8f1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 108175,
+          "sourceEndByte": 108253,
+          "firstLine": 554,
+          "lastLine": 554,
+          "rawText": "These cards are free, there are no annual fees with the Blue FAB Credit Cards.",
+          "rawTextSha256": "ec25f192e5dbdd7fcc654934b010db19419afecd26868d11220fb29a7b46a152"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Checked this exact conventional Blue FAB Visa tier and the standard primary annual membership fee only.",
+      "annualFee": "The published annual fee is for the primary card. It does not establish a free joining fee or zero costs when using or borrowing on the card.",
+      "eligibility": "This review does not verify salary or other qualification requirements, including whether you qualify for any promotion.",
+      "fxFee": "Foreign-currency costs are outside this profile’s verification scope.",
+      "earnRates": "No rewards amount, rate or estimated return is used in this profile.",
+      "welcomeBonus": "This profile does not confirm or value a welcome offer."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-20"
+  },
+  "fab-blue-al-futtaim-platinum": {
+    "bank": "fab",
+    "name": "Blue FAB Platinum Credit Card by Al-Futtaim",
+    "network": "Visa",
+    "categories": [
+      "shopping",
+      "lifestyle"
+    ],
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-platinum-credit-card",
+    "kfsUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+    "lastVerified": "2026-11-20",
+    "sources": [
+      "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-platinum-credit-card",
+      "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+      "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+      "https://www.bankfab.com/en-ae/personal/promotions/blue-fab-credit-cards"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "joiningFee": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "network": [
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Platinum Credit Card by Al-Futtaim",
+          "unit": "Visa Platinum mark on the exact issuer-linked Blue product artwork; no network benefits asserted",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-platinum-credit-card",
+          "capturedAt": "2026-11-20T17:30:42.259Z",
+          "sourceBodySha256": "f6a9d8130211aff6d58ff5e2072b504be28721e9b9845063e605f83a4e3eb975",
+          "sourceTextSha256": "f6a9d8130211aff6d58ff5e2072b504be28721e9b9845063e605f83a4e3eb975",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 42969,
+          "sourceEndByte": 43166,
+          "firstLine": 638,
+          "lastLine": 638,
+          "rawText": "src=\"https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/blue-fab-platinum-credit-card/fab-blue-platinum-cc-double.png?h=654&amp;iar=0&amp;w=932&amp;hash=2B630EAA9375333F74F451891D5721BE\"",
+          "rawTextSha256": "9d80796d72bdf55e5818246748caba15b613b763a8ed0bf5a5ea8aa6ea5d59c2"
+        }
+      ],
+      "annualFee": [
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Platinum Credit Card by Al-Futtaim",
+          "unit": "AED standard primary annual membership fee (first fee column)",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-20T17:30:41.555Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 20,
+          "lastLine": 20,
+          "rawText": "         BLUE FAB Platinum                                         Free                                    Free",
+          "rawTextSha256": "d5e16dffab14139ec7e40529b869394165278ba74cfb12b626aa5c251331e46b"
+        },
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Platinum Credit Card by Al-Futtaim",
+          "unit": "Tariff heading defines VAT-inclusive amounts and separates primary and supplementary cards",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/credit-cards/fees-and-charges/credit-card.pdf?view=1",
+          "capturedAt": "2026-11-20T17:30:41.555Z",
+          "sourceBodySha256": "e9fdd1ffc92169999b2e2ce62f4c284d8ba0b4242a1a653cededc08520c19d05",
+          "sourceTextSha256": "9966bc984c7e83d5bb686871f4ab17c22f3e1b2c8c6233f7cd71a6d4db326147",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 2,
+          "lastLine": 6,
+          "rawText": "         Annual Membership Fee (AMF) Inclusive of VAT\n\n                                                               Primary Card                    Supplementary Card\n         Card Type\n                                                                   (D )                               (D )",
+          "rawTextSha256": "84c67e8cbb8317891c1d840fa1f235ee67e1f3f370e9b8778e77b29f1541f618"
+        },
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Platinum Credit Card by Al-Futtaim",
+          "unit": "Conventional key-facts statement delegates the annual fee to the tariff",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://apply.bankfab.com/-/media/fab-uds/personal/key-facts-statements/credit-cards/Conventional-Cards-Key-Facts-Statement-BilingualSept2026.pdf",
+          "capturedAt": "2026-11-20T17:30:41.975Z",
+          "sourceBodySha256": "68ac71008e461f9d92f512b0d1b6a199d3f96a05d515a2a8c5534e9a28fd3771",
+          "sourceTextSha256": "1f26b24bf7c4cbc9934c06cc1896e97e079862969e649cfa7385af2e6088c945",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 10,
+          "lastLine": 11,
+          "rawText": "  The Annual Membership Fee/Renewal Fee is payable as prescribed by FAB in the SoF (Schedule of Fees), for the Customer’s\n  Credit Card and each Supplementary Credit Card upon issuance or renewal",
+          "rawTextSha256": "cf250e88ad6179d522c8c905c9c9e6a7b0915841cc030ae79ba52065375d8c43"
+        },
+        {
+          "parserId": "fab/blue-primary-membership/v1",
+          "productScope": "Blue FAB Platinum Credit Card by Al-Futtaim",
+          "unit": "Issuer confirms no annual fees for the Blue FAB family; not a statement about other charges",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/personal/promotions/blue-fab-credit-cards",
+          "capturedAt": "2026-11-20T17:30:41.760Z",
+          "sourceBodySha256": "50d8039a779651917feb8368037e8dd3a6bedc4bb5b353b0065696cfbad3c8f1",
+          "sourceTextSha256": "50d8039a779651917feb8368037e8dd3a6bedc4bb5b353b0065696cfbad3c8f1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 108175,
+          "sourceEndByte": 108253,
+          "firstLine": 554,
+          "lastLine": 554,
+          "rawText": "These cards are free, there are no annual fees with the Blue FAB Credit Cards.",
+          "rawTextSha256": "ec25f192e5dbdd7fcc654934b010db19419afecd26868d11220fb29a7b46a152"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "Checked this exact conventional Blue FAB Visa tier and the standard primary annual membership fee only.",
+      "annualFee": "The published annual fee is for the primary card. It does not establish a free joining fee or zero costs when using or borrowing on the card.",
+      "eligibility": "This review does not verify salary or other qualification requirements, including whether you qualify for any promotion.",
+      "fxFee": "Foreign-currency costs are outside this profile’s verification scope.",
+      "earnRates": "No rewards amount, rate or estimated return is used in this profile.",
+      "welcomeBonus": "This profile does not confirm or value a welcome offer."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-20"
+  },
   "united-arab-bank-mastercard-titanium": {
     "bank": "united-arab-bank",
     "name": "United Arab Bank Titanium Mastercard Credit Card",
