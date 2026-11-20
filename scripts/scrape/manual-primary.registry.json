@@ -2861,6 +2861,81 @@
           "sha256": "65ebdc1547f9eabfc4f79d5cd627135b4176e4e4a4f63a737272631a97c6eb5d"
         }
       ]
+    },
+    {
+      "slug": "emirates-islamic-flex-elite",
+      "bank": "emirates-islamic",
+      "productUrl": "https://www.emiratesislamic.ae/en/cards/credit-cards/flex-elite-card",
+      "kfsUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "sourceFixtureIds": [
+        "ei-flex-cashback-flex-elite-heading",
+        "ei-flex-cashback-flex-elite-acquisition",
+        "ei-flex-cashback-flex-elite-issuer-network",
+        "ei-flex-cashback-kfs-vat",
+        "ei-flex-cashback-kfs-columns",
+        "ei-flex-cashback-kfs-fees",
+        "ei-flex-cashback-soc-vat",
+        "ei-flex-cashback-soc-profit",
+        "ei-flex-cashback-soc-columns",
+        "ei-flex-cashback-flex-elite-tariff-row",
+        "ei-flex-cashback-soc-fee-based",
+        "ei-flex-cashback-golf-columns",
+        "ei-flex-cashback-flex-elite-golf-row"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_emirates-islamic-flex-cashback.ts",
+        "export": "parseEiFlexCashback",
+        "sha256": "cdf4d598b71a415b775c50c4ba0da77a55dbde9670c9605c79311d688dc475e4",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-flex-cashback.json",
+          "sha256": "b8b3b87f2b4f9690240c048a842ffff724bff9d116523352fa4ab3414aaec35b"
+        }
+      ]
+    },
+    {
+      "slug": "emirates-islamic-cashback-plus",
+      "bank": "emirates-islamic",
+      "productUrl": "https://www.emiratesislamic.ae/en/cards/credit-cards/cashback-plus-card",
+      "kfsUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "sourceFixtureIds": [
+        "ei-flex-cashback-cashback-plus-heading",
+        "ei-flex-cashback-cashback-plus-acquisition",
+        "ei-flex-cashback-kfs-vat",
+        "ei-flex-cashback-kfs-columns",
+        "ei-flex-cashback-kfs-fees",
+        "ei-flex-cashback-soc-vat",
+        "ei-flex-cashback-soc-profit",
+        "ei-flex-cashback-soc-columns",
+        "ei-flex-cashback-cashback-plus-tariff-row",
+        "ei-flex-cashback-soc-fee-based",
+        "ei-flex-cashback-golf-columns",
+        "ei-flex-cashback-cashback-plus-golf-row"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_emirates-islamic-flex-cashback.ts",
+        "export": "parseEiFlexCashback",
+        "sha256": "cdf4d598b71a415b775c50c4ba0da77a55dbde9670c9605c79311d688dc475e4",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-flex-cashback.json",
+          "sha256": "b8b3b87f2b4f9690240c048a842ffff724bff9d116523352fa4ab3414aaec35b"
+        }
+      ]
     }
   ]
 }
