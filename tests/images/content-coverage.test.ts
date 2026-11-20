@@ -78,6 +78,7 @@ const ALLOWED_MISSING: Record<string, string> = {
   ...Object.fromEntries(["infinite", "signature", "platinum"].map(
     tier => [`card-fab-blue-al-futtaim-${tier}`, "Text-led scoped issuer profile; no issuer card artwork is republished."],
   )),
+  "card-fab-blue-islamic": "Text-led exact Islamic issuer profile; no issuer card artwork is republished.",
   ...Object.fromEntries(["infinite", "signature", "platinum"].map(
     tier => [`card-fab-etihad-guest-${tier}-islamic`, "Text-led exact Islamic issuer profile; no issuer card artwork is republished."],
   )),

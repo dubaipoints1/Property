@@ -1,4 +1,187 @@
 {
+  "fab-blue-islamic": {
+    "bank": "fab",
+    "name": "Blue FAB Islamic Credit Card",
+    "network": "Visa",
+    "categories": [
+      "Islamic",
+      "shopping",
+      "lifestyle"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 315,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "standardFeeConditions": "waiver-terms",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/fab-blue-islamic-credit-card",
+    "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+    "lastVerified": "2026-11-20",
+    "sources": [
+      "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/fab-blue-islamic-credit-card",
+      "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+      "https://www.bankfab.com/-/media/fab-uds/islamic-banking/overview/pdfs/credit-cards-fees-and-charges.pdf?view=1",
+      "https://www.bankfab.com/en-ae/personal/key-facts-statements"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "joiningFee": "needs-review",
+      "annualFeeWaiver": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "network": [
+        {
+          "parserId": "fab/blue-islamic-primary-membership/v1",
+          "productScope": "Blue FAB Islamic Credit Card",
+          "unit": "Exact same-product issuer artwork identifies FAB Islamic and Visa Signature; no network benefits asserted",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/fab-blue-islamic-credit-card",
+          "capturedAt": "2026-11-20T18:59:14.729Z",
+          "sourceBodySha256": "93fea560c848e15872fc1aa4d361d9e51d7395e1cf889483683d04441f7a5ec1",
+          "sourceTextSha256": "93fea560c848e15872fc1aa4d361d9e51d7395e1cf889483683d04441f7a5ec1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 32749,
+          "sourceEndByte": 33041,
+          "firstLine": 386,
+          "lastLine": 386,
+          "rawText": "<img class=\"hbcc-image\" i18n=\"[object Object]\" loading=\"lazy\" alt=\"\" src=\"https://www.bankfab.com/-/media/fab-uds/islamic-banking/personal-islamic-banking/islamic-cards/fab-blue-islamic-credit-card/fab-blue-islamic-cc.png?h=491&amp;iar=0&amp;w=699&amp;hash=90166C00B6B8C57D2D330493CBD8889B\"/>",
+          "rawTextSha256": "623617f7aee15e4887026ac8682a5cc67c3a56dd6e0497ee042c522c13c00d3b"
+        }
+      ],
+      "annualFee": [
+        {
+          "parserId": "fab/blue-islamic-primary-membership/v1",
+          "productScope": "Blue FAB Islamic Credit Card",
+          "unit": "KFS primary and supplementary annual fee columns including VAT",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+          "capturedAt": "2026-11-20T18:59:14.419Z",
+          "sourceBodySha256": "a0449402f1d2284e7abe2aa5322f98103559315f29bdd7b5da25a02cd00f7636",
+          "sourceTextSha256": "5111110ab3407cd8ce4a25b501b873a85e62688157ff4c9d4b4b25ab7bfe437e",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 10,
+          "lastLine": 12,
+          "rawText": "                                                                                                                                                                       Annual Fee (Inclusive of VAT)\n                                                   Credit Card                                                                                                       )‫الرسوم السنوية (شاملة ضريبة القيمة المضافة‬\n                                                    ‫بطاقة االئتمان‬                                                                                               Primary Card                          Supplementary Card",
+          "rawTextSha256": "03604a0a3603bd2eb3905e0707d63422d6661a8a54b33e5ee5d6950823ec374a"
+        },
+        {
+          "parserId": "fab/blue-islamic-primary-membership/v1",
+          "productScope": "Blue FAB Islamic Credit Card",
+          "unit": "Printed KFS standard primary annual fee in AED for Blue Islamic",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+          "capturedAt": "2026-11-20T18:59:14.419Z",
+          "sourceBodySha256": "a0449402f1d2284e7abe2aa5322f98103559315f29bdd7b5da25a02cd00f7636",
+          "sourceTextSha256": "5111110ab3407cd8ce4a25b501b873a85e62688157ff4c9d4b4b25ab7bfe437e",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 17,
+          "lastLine": 19,
+          "rawText": " Blue Islamic Credit Card                                                                                                                                                                                                         NIL\n                                                                                                                                                                         D 315\n                                                                                                 ‫بطاقة بلو االئتمانية اإلسالمية‬                                                                                                  ‫ال يوجد‬",
+          "rawTextSha256": "bc5ea4a300455a1fbf1f5cf2a4abece33fa766e8702eec674f1ae489361ae061"
+        },
+        {
+          "parserId": "fab/blue-islamic-primary-membership/v1",
+          "productScope": "Blue FAB Islamic Credit Card",
+          "unit": "KFS explicit annual-fee VAT basis",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+          "capturedAt": "2026-11-20T18:59:14.419Z",
+          "sourceBodySha256": "a0449402f1d2284e7abe2aa5322f98103559315f29bdd7b5da25a02cd00f7636",
+          "sourceTextSha256": "5111110ab3407cd8ce4a25b501b873a85e62688157ff4c9d4b4b25ab7bfe437e",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 26,
+          "lastLine": 26,
+          "rawText": "Note: All annual membership fee details are inclusive of VAT.",
+          "rawTextSha256": "14ef7871d511514db4cc73717f26828422118d164541bf090740a3f26ae28768"
+        },
+        {
+          "parserId": "fab/blue-islamic-primary-membership/v1",
+          "productScope": "Blue FAB Islamic Credit Card",
+          "unit": "Blue Islamic linked tariff's named standard primary fee before VAT",
+          "vatTreatment": "exclusive",
+          "sourceUrl": "https://www.bankfab.com/-/media/fab-uds/islamic-banking/overview/pdfs/credit-cards-fees-and-charges.pdf?view=1",
+          "capturedAt": "2026-11-20T18:59:14.272Z",
+          "sourceBodySha256": "fb32edb86cb5293d132593d2cf2b5931570b1cdafd7ef3f84eda511100f7d7fd",
+          "sourceTextSha256": "56afb75dc94687b220fbe04203324274131a33ec3aad02278a6b051ad3cb21a7",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1",
+          "firstLine": 17,
+          "lastLine": 21,
+          "rawText": "                        ‫‪Annual Fees: D 300‬‬                                                        ‫الرسوم السنوية ‪D 300:‬‬\n‫‪Blue Islamic Credit‬‬                                                                                                                 ‫بطاقة بلو االئتمانية‬\n                        ‫‪Supplementary Annual Fee: Free‬‬               ‫الرسوم السنوية للبطاقة االضافية‪ :‬مجانا (باستثناء ضريبة‬\n‫‪Card‬‬                                                                                                                                           ‫اإلسالمية‬\n                        ‫)‪(Excluding VAT‬‬                                                                       ‫القيمة المضافة)‬",
+          "rawTextSha256": "d628c504b4cf9f2ca197356da3c254f3d85bb698f264f893e5b5b4282e9b5cb9"
+        },
+        {
+          "parserId": "fab/blue-islamic-primary-membership/v1",
+          "productScope": "Blue FAB Islamic Credit Card",
+          "unit": "Matching product headline annual fee; no VAT label or waiver terms used",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/fab-blue-islamic-credit-card",
+          "capturedAt": "2026-11-20T18:59:14.729Z",
+          "sourceBodySha256": "93fea560c848e15872fc1aa4d361d9e51d7395e1cf889483683d04441f7a5ec1",
+          "sourceTextSha256": "93fea560c848e15872fc1aa4d361d9e51d7395e1cf889483683d04441f7a5ec1",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 49489,
+          "sourceEndByte": 49545,
+          "firstLine": 390,
+          "lastLine": 390,
+          "rawText": "<h2 class=\"infographic-heading\"> 300* Annual Fee</h2>",
+          "rawTextSha256": "1e8540049a8fdca6fbe98245b4ea1fe1a48b992e5d6335de8f13eee891c67df9"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "The exact Islamic Visa Signature identity and standard VAT-inclusive primary annual membership fee were checked.",
+      "annualFee": "This is the standard primary annual fee before any applicable waiver. It is not a confirmed joining charge or a personalised first-year or renewal quote.",
+      "eligibility": "This profile does not verify salary, qualification or approval.",
+      "fxFee": "No verified FX figure is used.",
+      "earnRates": "No rate or reward return is estimated.",
+      "welcomeBonus": "No current welcome offer is confirmed in this profile."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-20"
+  },
   "fab-etihad-guest-infinite-islamic": {
     "bank": "fab",
     "name": "FAB Etihad Guest Infinite Islamic Credit Card",

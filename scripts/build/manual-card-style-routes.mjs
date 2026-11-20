@@ -11,6 +11,7 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/cards/fab-blue-al-futtaim-infinite/": "Blue FAB Infinite Credit Card by Al-Futtaim",
   "/cards/fab-blue-al-futtaim-signature/": "Blue FAB Signature Credit Card by Al-Futtaim",
   "/cards/fab-blue-al-futtaim-platinum/": "Blue FAB Platinum Credit Card by Al-Futtaim",
+  "/cards/fab-blue-islamic/": "Blue FAB Islamic Credit Card",
   "/cards/fab-z-credit-card/": "FAB Z Credit Card",
   "/cards/fab-share-infinite/": "FAB SHARE Infinite Credit Card",
   "/cards/fab-share-platinum/": "FAB SHARE Platinum Credit Card",

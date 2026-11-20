@@ -3,6 +3,45 @@
   "refreshMode": "manual-primary",
   "cards": [
     {
+      "slug": "fab-blue-islamic",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/fab-blue-islamic-credit-card",
+      "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+      "sourceFixtureIds": [
+        "fab-blue-islamic-heading",
+        "fab-blue-islamic-artwork",
+        "fab-blue-islamic-cta",
+        "fab-blue-islamic-cta-repeat",
+        "fab-blue-islamic-product-fee",
+        "fab-blue-islamic-product-fee-repeat",
+        "fab-blue-islamic-tariff-link",
+        "fab-blue-islamic-kfs-hub-link",
+        "fab-blue-islamic-tariff-heading",
+        "fab-blue-islamic-tariff-row",
+        "fab-blue-islamic-kfs-heading",
+        "fab-blue-islamic-kfs-columns",
+        "fab-blue-islamic-kfs-row",
+        "fab-blue-islamic-kfs-vat"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-blue-islamic.ts",
+        "export": "parseFabBlueIslamic",
+        "sha256": "6cea94cfcf048cc125feca57fed0de6b6728fc16c77e4114220433f8c91ce2dd",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-blue-islamic.json",
+          "sha256": "0b42d840e10cb21e817cab71514ed8c97c799978e3bf8af85f729fdf65442f0e"
+        }
+      ]
+    },
+    {
       "slug": "fab-blue-al-futtaim-infinite",
       "bank": "fab",
       "productUrl": "https://www.bankfab.com/en-ae/personal/credit-cards/blue-fab-infinite-credit-card",
