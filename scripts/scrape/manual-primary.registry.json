@@ -2705,6 +2705,123 @@
           "sha256": "22d2f0232e0b95353d5cfdd95422268cb7228a42e1b9a26ce4a20bd1d051dfd8"
         }
       ]
+    },
+    {
+      "slug": "fab-etihad-guest-infinite-islamic",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/etihad-guest-infinite-islamic",
+      "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+      "sourceFixtureIds": [
+        "fab-etihad-islamic-infinite-heading",
+        "fab-etihad-islamic-infinite-artwork",
+        "fab-etihad-islamic-infinite-acquisition",
+        "fab-etihad-islamic-infinite-acquisition-repeat",
+        "fab-etihad-islamic-infinite-product-fee",
+        "fab-etihad-islamic-infinite-product-fee-repeat",
+        "fab-etihad-islamic-infinite-tariff-link",
+        "fab-etihad-islamic-tariff-heading",
+        "fab-etihad-islamic-tariff-tier-fees",
+        "fab-etihad-islamic-kfs-heading",
+        "fab-etihad-islamic-kfs-columns",
+        "fab-etihad-islamic-kfs-tier-fees",
+        "fab-etihad-islamic-kfs-vat",
+        "fab-etihad-islamic-kfs-hub-link"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-etihad-islamic.ts",
+        "export": "parseFabEtihadIslamic",
+        "sha256": "50dcd135b695aa7ee5ce7125cb738bca42303ed2939e8d724f163aa2a3591a19",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-etihad-islamic.json",
+          "sha256": "65ebdc1547f9eabfc4f79d5cd627135b4176e4e4a4f63a737272631a97c6eb5d"
+        }
+      ]
+    },
+    {
+      "slug": "fab-etihad-guest-signature-islamic",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/etihad-guest-signature-islamic",
+      "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+      "sourceFixtureIds": [
+        "fab-etihad-islamic-signature-heading",
+        "fab-etihad-islamic-signature-artwork",
+        "fab-etihad-islamic-signature-acquisition",
+        "fab-etihad-islamic-signature-acquisition-repeat",
+        "fab-etihad-islamic-signature-product-fee",
+        "fab-etihad-islamic-signature-product-fee-repeat",
+        "fab-etihad-islamic-signature-tariff-link",
+        "fab-etihad-islamic-tariff-heading",
+        "fab-etihad-islamic-tariff-tier-fees",
+        "fab-etihad-islamic-kfs-heading",
+        "fab-etihad-islamic-kfs-columns",
+        "fab-etihad-islamic-kfs-tier-fees",
+        "fab-etihad-islamic-kfs-vat",
+        "fab-etihad-islamic-kfs-hub-link"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-etihad-islamic.ts",
+        "export": "parseFabEtihadIslamic",
+        "sha256": "50dcd135b695aa7ee5ce7125cb738bca42303ed2939e8d724f163aa2a3591a19",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-etihad-islamic.json",
+          "sha256": "65ebdc1547f9eabfc4f79d5cd627135b4176e4e4a4f63a737272631a97c6eb5d"
+        }
+      ]
+    },
+    {
+      "slug": "fab-etihad-guest-platinum-islamic",
+      "bank": "fab",
+      "productUrl": "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/etihad-guest-platinum-islamic",
+      "kfsUrl": "https://www.bankfab.com/-/media/fab-uds/personal/key-facts-statements/fab-islamic/fab-credit-cards-islamic-key-facts-statement.pdf?view=1",
+      "sourceFixtureIds": [
+        "fab-etihad-islamic-platinum-heading",
+        "fab-etihad-islamic-platinum-artwork",
+        "fab-etihad-islamic-platinum-acquisition",
+        "fab-etihad-islamic-platinum-acquisition-repeat",
+        "fab-etihad-islamic-platinum-product-fee",
+        "fab-etihad-islamic-platinum-product-fee-repeat",
+        "fab-etihad-islamic-platinum-tariff-link",
+        "fab-etihad-islamic-tariff-heading",
+        "fab-etihad-islamic-tariff-tier-fees",
+        "fab-etihad-islamic-kfs-heading",
+        "fab-etihad-islamic-kfs-columns",
+        "fab-etihad-islamic-kfs-tier-fees",
+        "fab-etihad-islamic-kfs-vat",
+        "fab-etihad-islamic-kfs-hub-link"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_fab-etihad-islamic.ts",
+        "export": "parseFabEtihadIslamic",
+        "sha256": "50dcd135b695aa7ee5ce7125cb738bca42303ed2939e8d724f163aa2a3591a19",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-fab-etihad-islamic.json",
+          "sha256": "65ebdc1547f9eabfc4f79d5cd627135b4176e4e4a4f63a737272631a97c6eb5d"
+        }
+      ]
     }
   ]
 }
