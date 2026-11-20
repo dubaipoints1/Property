@@ -23,6 +23,16 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "news-frieze-abu-dhabi-2026-public-tickets-mamsha-sculpture":
+    "Text-led timetable and access report; event photography was not cleared for republication.",
+  "guide-hotel-best-price-guarantee-uae-accor-ihg":
+    "Text-led rate-match checklist; a property image would not establish offer or claim eligibility.",
+  "news-air-arabia-egypt-cairo-al-ain-december-flights":
+    "Text-led timetable report; no licensed route-specific photo cleared, and no flown review is claimed.",
+  "news-radisson-black-friday-prepaid-hotel-uae-2026":
+    "Text-led campaign analysis; showing one property could imply participation or availability.",
+  "guide-uae-credit-card-cash-advance-checklist":
+    "Text-led statement and fee checklist; no source-licensed card or statement image is needed.",
   "card-dib-consumer-cashback-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-dib-shams-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-dib-prime-platinum": "Text-led scope; issuer card art was used only to identify the network, not republished.",
