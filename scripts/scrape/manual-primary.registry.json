@@ -2936,6 +2936,102 @@
           "sha256": "b8b3b87f2b4f9690240c048a842ffff724bff9d116523352fa4ab3414aaec35b"
         }
       ]
+    },
+    {
+      "slug": "cbd-visa-infinite",
+      "bank": "cbd",
+      "productUrl": "https://www.cbd.ae/personal/cards/credit-cards/visa-infinite",
+      "kfsUrl": "https://www.cbd.ae/docs/default-source/document/cards/cbd-kfs-conventional_visa-infinite-cc.pdf?sfvrsn=eeab066b_7",
+      "sourceFixtureIds": [
+        "cbd-visa-infinite-product",
+        "cbd-visa-infinite-kfs-head",
+        "cbd-visa-infinite-kfs-fee",
+        "cbd-visa-infinite-kfs-period",
+        "cbd-visa-infinite-kfs-vat",
+        "cbd-soc-vat",
+        "cbd-soc-primary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_cbd-conventional.ts",
+        "export": "parseCbdConventional",
+        "sha256": "cb29c126e4f5dbdbfd4e6e949dc74106e1999b62a392ae9ac6424909dc46c065",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-cbd-conventional.json",
+          "sha256": "972c75ca4a2f1cbc17422abc5decca234f8707fb0a0baa34f823567b2053ea76"
+        }
+      ]
+    },
+    {
+      "slug": "cbd-super-saver",
+      "bank": "cbd",
+      "productUrl": "https://www.cbd.ae/personal/cards/credit-cards/super-saver",
+      "kfsUrl": "https://www.cbd.ae/docs/default-source/document/cards/cbd-kfs-conventional_super-saver-cc.pdf?sfvrsn=dfaa066b_4",
+      "sourceFixtureIds": [
+        "cbd-super-saver-product",
+        "cbd-super-saver-kfs-head",
+        "cbd-super-saver-kfs-fee",
+        "cbd-super-saver-kfs-period",
+        "cbd-super-saver-kfs-vat",
+        "cbd-soc-vat",
+        "cbd-soc-primary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_cbd-conventional.ts",
+        "export": "parseCbdConventional",
+        "sha256": "cb29c126e4f5dbdbfd4e6e949dc74106e1999b62a392ae9ac6424909dc46c065",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-cbd-conventional.json",
+          "sha256": "972c75ca4a2f1cbc17422abc5decca234f8707fb0a0baa34f823567b2053ea76"
+        }
+      ]
+    },
+    {
+      "slug": "cbd-smiles-signature",
+      "bank": "cbd",
+      "productUrl": "https://www.cbd.ae/personal/cards/credit-cards/smiles-signature",
+      "kfsUrl": "https://www.cbd.ae/docs/default-source/document/cards/cbd-kfs-conventional_cbd-smiles-signature-cc.pdf?sfvrsn=11a9066b_4",
+      "sourceFixtureIds": [
+        "cbd-smiles-signature-product",
+        "cbd-smiles-signature-kfs-head",
+        "cbd-smiles-signature-kfs-fee",
+        "cbd-smiles-signature-kfs-period",
+        "cbd-smiles-signature-kfs-vat",
+        "cbd-soc-vat",
+        "cbd-soc-primary"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_cbd-conventional.ts",
+        "export": "parseCbdConventional",
+        "sha256": "cb29c126e4f5dbdbfd4e6e949dc74106e1999b62a392ae9ac6424909dc46c065",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-cbd-conventional.json",
+          "sha256": "972c75ca4a2f1cbc17422abc5decca234f8707fb0a0baa34f823567b2053ea76"
+        }
+      ]
     }
   ]
 }
