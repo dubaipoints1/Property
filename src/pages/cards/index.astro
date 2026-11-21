@@ -795,9 +795,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
     text-decoration: none;
     color: inherit;
   }
-  /* Per-card stock-image hero on the listing tile (F-UX-3, June 2026):
-     replaces the prior scaled card-mock + mobile bank-logo box. Single
-     element for both breakpoints; sizing controlled by .cards-row-art. */
+  /* One slot for either contained issuer artwork or its text disclosure. */
   .cards-row-art {
     width: 140px;
     height: 88px;
@@ -820,7 +818,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/cards/", name: "UAE credit
   .cards-row-art :global(img) {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
   .cards-row-id { display: grid; gap: 4px; }
