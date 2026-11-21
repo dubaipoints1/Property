@@ -23,6 +23,18 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "news-abu-dhabi-maritime-heritage-festival-2026-times-tickets":
+    "Text-led visiting hours and access; no event photograph cleared.",
+  "news-flydubai-five-december-routes-check-return-flight":
+    "Text-led airline timetable; no cleared route photograph or first-hand flight claim.",
+  "news-six-senses-palm-dubai-december-wellness-package":
+    "Text-led hotel package analysis; no cleared property photo or hosted stay claim.",
+  "guide-uae-flight-travel-agent-changes-and-refunds":
+    "Text-led ticket-servicing instructions; no route or airline photograph is evidence of the refund rules.",
+  "guide-uae-card-welcome-bonus-posting-date":
+    "Text-led issuer-terms checklist; no artwork or account data is needed.",
+  "guide-uae-hotel-missing-stay-hilton-marriott-claim":
+    "Text-led missing-stay instructions; no private statement or hotel image represents eligibility.",
   "news-frieze-abu-dhabi-2026-public-tickets-mamsha-sculpture":
     "Text-led timetable and access report; event photography was not cleared for republication.",
   "guide-hotel-best-price-guarantee-uae-accor-ihg":
