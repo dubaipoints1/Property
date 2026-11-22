@@ -45,6 +45,10 @@ export const DERIVATIVES = [
 const QUALITY = 72;
 export const CARD_ART_DERIVATIVES = [{ dir: "thumb", width: 360 }];
 const CARD_ART_QUALITY = 82; // card faces carry small type; keep it crisp
+// This high-contrast Blue thumbnail remains legible at the 176px mobile
+// review slot. A smaller encoding keeps that review within its transfer
+// budget without changing the full issuer image or any other thumbnail.
+const CARD_ART_QUALITY_OVERRIDES = new Map([["fab-blue-al-futtaim-platinum", 58]]);
 
 const ROOT = process.cwd();
 const PUBLIC = path.join(ROOT, "public");
@@ -65,7 +69,7 @@ const jobs = [
   ...manifest.entries.map((e) => ({ slug: e.slug, file: e.file, width: e.width, set: DERIVATIVES, quality: QUALITY })),
   ...Object.entries(cardArt)
     .filter(([, e]) => e && e.file && e.width)
-    .map(([slug, e]) => ({ slug, file: e.file, width: e.width, set: CARD_ART_DERIVATIVES, quality: CARD_ART_QUALITY })),
+    .map(([slug, e]) => ({ slug, file: e.file, width: e.width, set: CARD_ART_DERIVATIVES, quality: CARD_ART_QUALITY_OVERRIDES.get(slug) ?? CARD_ART_QUALITY })),
 ];
 
 for (const entry of jobs) {
