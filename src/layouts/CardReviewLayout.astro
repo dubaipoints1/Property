@@ -20,13 +20,10 @@ import Disclaimer from "~/components/Disclaimer.astro";
 import BankOffers from "~/components/deals/BankOffers.astro";
 import NextSteps from "~/components/cards/NextSteps.astro";
 import CardJourney from "~/components/cards/CardJourney.astro";
-import StockImage from "~/components/StockImage.astro";
-import ImageCredit from "~/components/ImageCredit.astro";
 import CardImage from "~/components/CardImage.astro";
 import { getCardArt } from "~/lib/cardArt";
 import { cardArtSrcset } from "~/lib/stockDerivatives";
 import HeroImage from "~/components/cards/HeroImage.astro";
-import { getStockEntry } from "~/lib/stockManifest";
 import { annualFeeLabel, formatEarnRate, welcomeBonusHeadline, formatAED } from "~/lib/cardsDataFormat";
 import { getActiveCards, getCardData } from "~/lib/cardsData";
 import { cardFxFeeLabel, cardFxNeedsReview, cardFeeNeedsReview } from "~/lib/cardFeeFacts";
@@ -250,16 +247,7 @@ const singleFeeOffer = !annualFeePending && !applicationUnavailable
   && (annualFee !== 0 || (!!cardData && cardData.joiningFee?.amount === 0 && !cardFeeNeedsReview(cardData, "joiningFee")));
 const vatQualifier = !annualFeePending && annualFee > 0 ? (cardData?.vatPolicy === "exclusive" ? "+ VAT" : "incl. VAT") : null;
 
-// Stock photograph lookup. Each card may have an editorial photograph
-// registered in data/stock/manifest.json under `card-<slug>` (e.g.
-// `card-emirates-nbd-skywards-infinite`). When present, the hero band
-// uses the photo if it doesn't have issuer art. There is no synthetic
-// product image if neither is available.
-const stockSlug = slug ? `card-${slug}` : null;
-const stockEntry = stockSlug ? getStockEntry(stockSlug) : undefined;
-const hasStockCredit = stockEntry?.source === "pexels" || stockEntry?.source === "unsplash";
-// Issuer card art (9 Oct 2026) outranks the stock photograph: the reader
-// is looking at a review of this card, so show this card.
+// Only the exact issuer image belongs in the card's identity slot.
 const cardArt = slug ? getCardArt(slug) : undefined;
 const cardArtSources = slug && cardArt ? cardArtSrcset(slug, cardArt) : undefined;
 
@@ -341,16 +329,6 @@ const schema = {
         </span>
         <figcaption>Card image: {bankName}</figcaption>
       </figure>
-    ) : stockEntry && stockSlug ? (
-      <figure slot="media" class="dp-card-summary-figure is-photo">
-        <StockImage
-          slug={stockSlug}
-          class="dp-card-summary-photo"
-          sizes="(max-width: 719px) 192px, 304px"
-          loading="eager"
-        />
-        {hasStockCredit && <figcaption><ImageCredit slug={stockSlug} /></figcaption>}
-      </figure>
     ) : null}
 
     <div class="dp-card-summary">
@@ -403,6 +381,7 @@ const schema = {
         {network && <>{network}<span aria-hidden="true"> · </span></>}
         {verificationLimited ? "Source checked" : "Verified"} <time datetime={lastVerified.toISOString()}>{fmt(lastVerified)}</time>
       </p>
+      {!cardArt && <p class="dp-card-summary-proof" data-issuer-art-unavailable>Issuer card image unavailable.</p>}
       {availabilityUnconfirmed && <p class="dp-card-summary-proof">New applications are unconfirmed. This source profile is retained for reference, not an open-application recommendation.</p>}
       {shortVerdict && <p class="dp-card-summary-verdict" data-card-hero-verdict><strong>Our verdict:</strong> {shortVerdict}</p>}
       {(score != null || verdictLabel) && (
@@ -670,9 +649,7 @@ const schema = {
   .dp-card-verdict-in-summary :global(.dp-editor-verdict) { display: none; }
   .dp-card-summary-bonus strong, .dp-card-summary-verdict strong { color: var(--ink); }
   .dp-card-summary-figure { margin: 0; inline-size: min(100%, 19rem); }
-  .dp-card-summary-figure.is-photo { max-inline-size: 19rem; }
   .dp-card-summary-figure figcaption { margin-block-start: 6px; color: var(--ink-soft); font-size: .75rem; line-height: 1.4; }
-  .dp-card-summary-figure figcaption :global(p) { margin: 0; }
   .dp-card-summary-art {
     display: grid;
     place-items: center;
@@ -683,14 +660,6 @@ const schema = {
     border-radius: var(--dp-ui-radius, 12px);
   }
   .dp-card-summary-art img { display: block; inline-size: 100%; block-size: 100%; object-fit: contain; }
-  .dp-card-summary-figure :global(.dp-card-summary-photo) {
-    display: block;
-    inline-size: 100%;
-    block-size: auto;
-    aspect-ratio: 16 / 10;
-    object-fit: cover;
-    border-radius: var(--dp-ui-radius, 12px);
-  }
   .dp-card-review-sources { scroll-margin-block-start: calc(var(--dp-sticky-header-height, 81px) + 16px); }
   .dp-cr-body :global(:is(#adib-smiles-fx-terms, #adib-smiles-welcome-terms, .dp-dated-offer-heading)) {
     scroll-margin-block-start: calc(var(--dp-sticky-header-height, 92px) + 16px);

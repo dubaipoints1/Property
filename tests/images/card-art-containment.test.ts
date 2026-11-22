@@ -19,3 +19,15 @@ test("the Liv correction thumbnail uses complete credited issuer art, not a crop
   assert.match(source, /Card image: Liv/);
   assert.match(source, /\.dp-news-issuer-art img[\s\S]*?object-fit: contain/);
 });
+
+test("card identity uses the exact issuer record or an explicit unavailable state", () => {
+  const tile = readFileSync("src/components/CardImage.astro", "utf8");
+  const review = readFileSync("src/layouts/CardReviewLayout.astro", "utf8");
+  assert.match(tile, /getCardArt\(cardSlug\)/);
+  assert.match(tile, /\{art \? \([\s\S]+?data-card-art=\{cardSlug\}[\s\S]+?\) : \([\s\S]+?Issuer card image unavailable/);
+  assert.doesNotMatch(tile, /<(StockImage|Cover)\b/);
+  assert.match(review, /getCardArt\(slug\)/);
+  assert.match(review, /Card image: \{bankName\}/);
+  assert.match(review, /!cardArt && <p[^>]+data-issuer-art-unavailable>Issuer card image unavailable/);
+  assert.doesNotMatch(review, /getStockEntry|dp-card-summary-photo/);
+});

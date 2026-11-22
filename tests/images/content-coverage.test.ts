@@ -76,10 +76,6 @@ const ALLOWED_MISSING: Record<string, string> = {
   "card-nbk-visa-classic": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-gold": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-platinum": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
-  "card-nbf-islamic-visa-infinite": "Text-led issuer profile; no licensed issuer card art is republished.",
-  "card-nbf-islamic-platinum-exclusive": "Text-led issuer profile; no licensed issuer card art is republished.",
-  "card-nbf-visa-infinite": "Text-led issuer profile; no licensed issuer card art is republished.",
-  "card-nbf-platinum-exclusive": "Text-led issuer profile; no licensed issuer card art is republished.",
   "card-rakbank-red": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-rakbank-titanium": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-rakbank-islamic-world": "Text-led exact-product issuer profile; no approved card art is republished.",
@@ -98,11 +94,8 @@ const ALLOWED_MISSING: Record<string, string> = {
   ...Object.fromEntries(["emirates-nbd-share-visa-platinum", "emirates-nbd-u-by-emaar-signature", "liv-tamayaz-platinum"].map(
     slug => [`card-${slug}`, "Text-led exact-tier source profile; no approved card art is republished."],
   )),
-  ...Object.fromEntries(["fab-adnoc-rewards", "fab-cashback-islamic", "fab-etihad-guest-signature", "fab-etihad-guest-platinum", "fab-gems-world", "fab-travel", "fab-du-titanium", "fab-rewards-indulge", "fab-rewards-active", "fab-z-credit-card", "fab-share-infinite", "fab-share-platinum", "fab-share-signature"].map(
+  ...Object.fromEntries(["fab-cashback-islamic", "fab-etihad-guest-signature", "fab-etihad-guest-platinum", "fab-du-titanium", "fab-rewards-indulge", "fab-rewards-active", "fab-z-credit-card", "fab-share-infinite", "fab-share-platinum", "fab-share-signature"].map(
     slug => [`card-${slug}`, "Text-led scoped issuer source profiles; no approved art republished."],
-  )),
-  ...Object.fromEntries(["infinite", "signature", "platinum"].map(
-    tier => [`card-fab-blue-al-futtaim-${tier}`, "Text-led scoped issuer profile; no issuer card artwork is republished."],
   )),
   "card-fab-blue-islamic": "Text-led exact Islamic issuer profile; no issuer card artwork is republished.",
   ...Object.fromEntries(["infinite", "signature", "platinum"].map(
