@@ -45,10 +45,12 @@ export const DERIVATIVES = [
 const QUALITY = 72;
 export const CARD_ART_DERIVATIVES = [{ dir: "thumb", width: 360 }];
 const CARD_ART_QUALITY = 82; // card faces carry small type; keep it crisp
-// This high-contrast Blue thumbnail remains legible at the 176px mobile
-// review slot. A smaller encoding keeps that review within its transfer
-// budget without changing the full issuer image or any other thumbnail.
-const CARD_ART_QUALITY_OVERRIDES = new Map([["fab-blue-al-futtaim-platinum", 58]]);
+// These thumbnails were reviewed at the 176px mobile slot. Use a smaller
+// encoding for those exact routes without altering the full issuer art.
+const CARD_ART_QUALITY_OVERRIDES = new Map([
+  ["fab-blue-al-futtaim-platinum", 58],
+  ["fab-etihad-guest-infinite-islamic", 58],
+]);
 
 const ROOT = process.cwd();
 const PUBLIC = path.join(ROOT, "public");
