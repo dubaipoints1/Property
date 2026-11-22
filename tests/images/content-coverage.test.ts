@@ -23,6 +23,20 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "guide-emirates-flydubai-codeshare-extra-baggage":
+    "Text-led comparison checklist; a photograph cannot show the baggage allowance on a specific ticket.",
+  "guide-uae-credit-card-closure-checklist":
+    "Text-led first-party closure checklist; no stock card, account details or statement image is needed.",
+  "news-motn-2026-al-ain-al-dhafra-opening-hours":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
+  "news-millennium-celebrate-uae-three-night-staycation-2026":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
+  "news-dubai-eid-al-etihad-2026-city-walk-bluewaters":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
+  "news-fly-jinnah-al-ain-islamabad-lahore-december-2026":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
+  "news-marriott-skywards-your-world-rewards-register-before-paid-stay-december-2026":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
   "news-abu-dhabi-maritime-heritage-festival-2026-times-tickets":
     "Text-led visiting hours and access; no event photograph cleared.",
   "news-flydubai-five-december-routes-check-return-flight":
