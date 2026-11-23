@@ -23,6 +23,18 @@ const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
   // slug: reason
+  "guide-uae-credit-card-instalment-refund":
+    "Text-led issuer and retailer refund instructions; no manufactured payment or statement image.",
+  "guide-uae-supplementary-credit-card-spending-limit":
+    "Text-led issuer controls and liability guide; no cardholder account image is needed.",
+  "news-emirates-thanksgiving-dubai-us-check-flight-menu":
+    "Text-led published menu eligibility; no image should imply what one specific flight serves.",
+  "news-etihad-white-friday-2026-compare-final-fare":
+    "Text-led fare comparison; an aircraft image would not substantiate an itinerary or fare.",
+  "news-kempinski-downtown-dubai-black-friday-flexible-2026":
+    "Text-led comparison of terms at two named hotels; no cleared image or on-property inspection is represented.",
+  "news-sheikh-zayed-festival-eid-al-etihad-al-wathba-2026":
+    "Text-led timetable and access advice; no licensed event photograph or attendance claim.",
   "guide-emirates-flydubai-codeshare-extra-baggage":
     "Text-led comparison checklist; a photograph cannot show the baggage allowance on a specific ticket.",
   "guide-uae-credit-card-closure-checklist":
