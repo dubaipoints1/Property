@@ -3,6 +3,64 @@
   "refreshMode": "manual-primary",
   "cards": [
     {
+      "slug": "nbq-visa-gold",
+      "bank": "nbq",
+      "productUrl": "https://nbq.ae/personal/cards/nbq-gold-credit-card",
+      "kfsUrl": "https://nbq.ae/docs/default-source/kfs/01-nbq-kfs-cc-15102025-3.pdf?sfvrsn=2cbb48d7_8",
+      "sourceFixtureIds": [
+        "nbq-visa-gold-title",
+        "nbq-visa-gold-cta",
+        "nbq-visa-gold-kfs-link",
+        "nbq-visa-gold-visa",
+        "nbq-kfs-heading",
+        "nbq-visa-gold-kfs-row",
+        "nbq-tariff-annual",
+        "nbq-tariff-vat",
+        "nbq-tariff-effective"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_nbq-visa.ts",
+        "export": "parseNbqVisa",
+        "sha256": "972c604bc362461acb848a6c1d703a0b506d3d0dca3ec979922d1cf277e52e16",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-nbq-visa.json",
+          "sha256": "315db4ec54d4c1e0531e91167653fcd5131e8a1c12535106b9e413ee56cf0656"
+        }
+      ]
+    },
+    {
+      "slug": "nbq-visa-platinum",
+      "bank": "nbq",
+      "productUrl": "https://nbq.ae/personal/cards/nbq-platinum-credit-card",
+      "kfsUrl": "https://nbq.ae/docs/default-source/kfs/01-nbq-kfs-cc-15102025-3.pdf?sfvrsn=2cbb48d7_8",
+      "sourceFixtureIds": [
+        "nbq-visa-platinum-title",
+        "nbq-visa-platinum-cta",
+        "nbq-visa-platinum-kfs-link",
+        "nbq-visa-platinum-visa",
+        "nbq-kfs-heading",
+        "nbq-visa-platinum-kfs-row",
+        "nbq-tariff-annual",
+        "nbq-tariff-vat",
+        "nbq-tariff-effective"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_nbq-visa.ts",
+        "export": "parseNbqVisa",
+        "sha256": "972c604bc362461acb848a6c1d703a0b506d3d0dca3ec979922d1cf277e52e16",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-nbq-visa.json",
+          "sha256": "315db4ec54d4c1e0531e91167653fcd5131e8a1c12535106b9e413ee56cf0656"
+        }
+      ]
+    },
+    {
       "slug": "mashreq-islamic-platinum-elite",
       "bank": "mashreq",
       "productUrl": "https://www.mashreqalislami.com/en/uae/neo/cards/credit-cards/platinum-elite-credit-card/",

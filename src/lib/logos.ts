@@ -21,7 +21,7 @@ export interface BankMark {
 
 // Bank names with no licensed logo asset. Render site text, not an image.
 export function bankHasTextOnlyMark(slug: string): boolean {
-  return slug === "united-arab-bank";
+  return slug === "united-arab-bank" || slug === "nbq";
 }
 
 export function bankMark(slug: string): BankMark {

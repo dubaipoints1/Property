@@ -77,7 +77,7 @@ const cardTiles = allCards.map((c) => {
     {
       offers.length === 0 ? (
         <p class="dp-bank-salary-empty">
-          {bank.id === "united-arab-bank" && SALARY_OFFER_REVIEW_PENDING_BANKS.includes(bank.id)
+          {(bank.id === "united-arab-bank" || bank.id === "nbq") && SALARY_OFFER_REVIEW_PENDING_BANKS.includes(bank.id)
             ? `We have not completed a current salary-transfer offer review for ${bank.data.name}.`
             : `No live salary transfer offer tracked for ${bank.data.name}.`}
         </p>
