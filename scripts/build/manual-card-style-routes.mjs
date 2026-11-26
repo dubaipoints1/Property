@@ -1,6 +1,8 @@
 // Keep this list explicit. Unrelated bank hubs, reviews and the homepage
 // must keep their existing delivery. Add routes only after testing ownership.
 export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
+  "/cards/mashreq-islamic-platinum-elite/": "Mashreq Al Islami Platinum Elite Credit Card",
+  "/cards/mashreq-emirati-solitaire/": "Mashreq Al Islami Emirati Solitaire Credit Card",
   "/cards/dib-shams-signature/": "DIB SHAMS Signature Covered Card",
   "/cards/dib-shams-platinum/": "DIB SHAMS Platinum Covered Card",
   "/cards/dib-shams-infinite/": "DIB SHAMS Infinite Covered Card",
