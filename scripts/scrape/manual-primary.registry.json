@@ -3222,6 +3222,96 @@
           "sha256": "2108b3c9ba887658ca76ef2f2073e52ace517cf7c44066ae018e0e674d8cbefc"
         }
       ]
+    },
+    {
+      "slug": "ajman-bank-bright-titanium",
+      "bank": "ajman-bank",
+      "productUrl": "https://www.ajmanbank.ae/site/bright-titanium.html",
+      "kfsUrl": "https://www.ajmanbank.ae/site/files/KFS_CREDIT_CARD_MAY_2025.pdf",
+      "sourceFixtureIds": [
+        "ajman-bank-bright-titanium-heading",
+        "ajman-bank-bright-titanium-shared-cta",
+        "ajman-bank-bright-titanium-kfs-link",
+        "ajman-bank-bright-titanium-tariff-link",
+        "bright-kfs-family",
+        "bright-kfs-fee-heading",
+        "ajman-bank-bright-titanium-kfs-primary-fee",
+        "bright-kfs-vat-and-period",
+        "bright-tariff-heading",
+        "bright-tariff-primary-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_ajman-bank-bright.ts",
+        "export": "parseAjmanBankBright",
+        "sha256": "5c419ec342abed3f3b3715f1bbb9c69c8d496cfa425e369cb9fc64db75731780",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-ajman-bank-bright.json",
+          "sha256": "162dda331ba35c066b0108313e496bea2bc5049ae69282b3c73e973185817fcb"
+        }
+      ]
+    },
+    {
+      "slug": "ajman-bank-bright-platinum",
+      "bank": "ajman-bank",
+      "productUrl": "https://www.ajmanbank.ae/site/bright-platinum.html",
+      "kfsUrl": "https://www.ajmanbank.ae/site/files/KFS_CREDIT_CARD_MAY_2025.pdf",
+      "sourceFixtureIds": [
+        "ajman-bank-bright-platinum-heading",
+        "ajman-bank-bright-platinum-shared-cta",
+        "ajman-bank-bright-platinum-kfs-link",
+        "ajman-bank-bright-platinum-tariff-link",
+        "bright-kfs-family",
+        "bright-kfs-fee-heading",
+        "ajman-bank-bright-platinum-kfs-primary-fee",
+        "bright-kfs-vat-and-period",
+        "bright-tariff-heading",
+        "bright-tariff-primary-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_ajman-bank-bright.ts",
+        "export": "parseAjmanBankBright",
+        "sha256": "5c419ec342abed3f3b3715f1bbb9c69c8d496cfa425e369cb9fc64db75731780",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-ajman-bank-bright.json",
+          "sha256": "162dda331ba35c066b0108313e496bea2bc5049ae69282b3c73e973185817fcb"
+        }
+      ]
+    },
+    {
+      "slug": "ajman-bank-bright-world",
+      "bank": "ajman-bank",
+      "productUrl": "https://www.ajmanbank.ae/site/bright-world.html",
+      "kfsUrl": "https://www.ajmanbank.ae/site/files/KFS_CREDIT_CARD_MAY_2025.pdf",
+      "sourceFixtureIds": [
+        "ajman-bank-bright-world-heading",
+        "ajman-bank-bright-world-shared-cta",
+        "ajman-bank-bright-world-kfs-link",
+        "ajman-bank-bright-world-tariff-link",
+        "bright-kfs-family",
+        "bright-kfs-fee-heading",
+        "ajman-bank-bright-world-kfs-primary-fee",
+        "bright-kfs-vat-and-period",
+        "bright-tariff-heading",
+        "bright-tariff-primary-fee"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_ajman-bank-bright.ts",
+        "export": "parseAjmanBankBright",
+        "sha256": "5c419ec342abed3f3b3715f1bbb9c69c8d496cfa425e369cb9fc64db75731780",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-ajman-bank-bright.json",
+          "sha256": "162dda331ba35c066b0108313e496bea2bc5049ae69282b3c73e973185817fcb"
+        }
+      ]
     }
   ]
 }

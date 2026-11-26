@@ -102,6 +102,10 @@ const ALLOWED_MISSING: Record<string, string> = {
   "bank-nbf": "Text-led issuer directory entry with a plain-text label rather than an issuer mark.",
   "bank-nbk": "Text-led issuer directory entry with a plain-text label rather than an issuer mark.",
   "bank-nbq": "Text-led issuer directory entry; no issuer logo or artwork was used.",
+  "bank-ajman-bank": "Text-led issuer directory entry; no issuer logo or artwork was used.",
+  "card-ajman-bank-bright-titanium": "Text-led scoped issuer fee profile; no cleared card artwork.",
+  "card-ajman-bank-bright-platinum": "Text-led scoped issuer fee profile; no cleared card artwork.",
+  "card-ajman-bank-bright-world": "Text-led scoped issuer fee profile; no cleared card artwork.",
   "bank-united-arab-bank": "Text-led issuer directory entry: plain name identifier, not issuer artwork.",
   ...Object.fromEntries(["mastercard-titanium", "mastercard-platinum", "mastercard-world", "islamic-mastercard-titanium"].map(
     suffix => [`card-united-arab-bank-${suffix}`, "Text-led scoped issuer profile; no issuer card artwork is republished."],
