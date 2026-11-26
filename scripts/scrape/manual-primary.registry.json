@@ -3,6 +3,58 @@
   "refreshMode": "manual-primary",
   "cards": [
     {
+      "slug": "mashreq-islamic-platinum-elite",
+      "bank": "mashreq",
+      "productUrl": "https://www.mashreqalislami.com/en/uae/neo/cards/credit-cards/platinum-elite-credit-card/",
+      "kfsUrl": "https://www.mashreqalislami.com/-/jssmedia/pdfs/mai/neo/cards/mai-credit-card-new-kfs.ashx",
+      "sourceFixtureIds": [
+        "mashreq-islamic-platinum-elite-heading",
+        "mashreq-islamic-platinum-elite-cta",
+        "mai-elite-kfs-version",
+        "mai-elite-kfs-fee",
+        "mai-elite-tariff-vat",
+        "mai-elite-tariff-principal"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_mashreq-alislami-elite.ts",
+        "export": "parseMashreqIslamicElite",
+        "sha256": "c1f0fdb6b4858efa197205dedf13ab4830ca0ad112108e4d4810c0a0878e1d4c",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-mashreq-alislami-elite.json",
+          "sha256": "e869183d02cd8907d5d0735a0f5b9ad4937cf88cf1ac383a2a97477e2bb5e38c"
+        }
+      ]
+    },
+    {
+      "slug": "mashreq-emirati-solitaire",
+      "bank": "mashreq",
+      "productUrl": "https://www.mashreqalislami.com/en/uae/emirati-banking/solitaire-credit-card/",
+      "kfsUrl": "https://www.mashreqalislami.com/-/jssmedia/pdfs/mai/neo/cards/mai-credit-card-new-kfs.ashx",
+      "sourceFixtureIds": [
+        "mashreq-emirati-solitaire-heading",
+        "mashreq-emirati-solitaire-cta",
+        "mai-elite-kfs-version",
+        "mai-elite-kfs-fee",
+        "mai-elite-tariff-vat",
+        "mai-elite-tariff-principal"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_mashreq-alislami-elite.ts",
+        "export": "parseMashreqIslamicElite",
+        "sha256": "c1f0fdb6b4858efa197205dedf13ab4830ca0ad112108e4d4810c0a0878e1d4c",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-mashreq-alislami-elite.json",
+          "sha256": "e869183d02cd8907d5d0735a0f5b9ad4937cf88cf1ac383a2a97477e2bb5e38c"
+        }
+      ]
+    },
+    {
       "slug": "fab-blue-islamic",
       "bank": "fab",
       "productUrl": "https://www.bankfab.com/en-ae/islamic-banking/personal-islamic-banking/islamic-cards/fab-blue-islamic-credit-card",
