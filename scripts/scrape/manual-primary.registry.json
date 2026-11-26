@@ -3197,6 +3197,31 @@
           "sha256": "972c75ca4a2f1cbc17422abc5decca234f8707fb0a0baa34f823567b2053ea76"
         }
       ]
+    },
+    {
+      "slug": "cbd-al-islami-super-saver",
+      "bank": "cbd",
+      "productUrl": "https://www.cbd.ae/islami/personal/cards/credit-cards/super-saver",
+      "kfsUrl": "https://www.cbd.ae/docs/revcbdislamilibraries/default-document-library/kfs-sa_islamic_credit-card_en-ar311032ff458f66deb8c5ff0b00b6b24a.pdf",
+      "sourceFixtureIds": [
+        "cbd-islami-product",
+        "cbd-islami-kfs-primary-fee",
+        "cbd-islami-kfs-version",
+        "cbd-islami-kfs-vat",
+        "cbd-islami-tariff-cohorts"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_cbd-islami-super-saver.ts",
+        "export": "parseCbdIslamiSuperSaver",
+        "sha256": "227c1b9783c1baa1b8737c79e0b73e230fbf3983d7f377c5ba85aee331a99ff4",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-cbd-islami-super-saver.json",
+          "sha256": "2108b3c9ba887658ca76ef2f2073e52ace517cf7c44066ae018e0e674d8cbefc"
+        }
+      ]
     }
   ]
 }

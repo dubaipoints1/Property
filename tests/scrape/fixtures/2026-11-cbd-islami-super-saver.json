@@ -1,0 +1,77 @@
+{
+  "notes": "Curated factual excerpts, not complete source documents. The exact linked KFS was retrieved as a complete public PDF and extracted with Poppler -layout. Only that raw KFS supplies the typed fee and waiver. The public reader page snippets preserve link identity and tariff qualifiers; no raw HTML is asserted.",
+  "sources": [
+    {
+      "id": "cbd-islami-product",
+      "url": "https://www.cbd.ae/islami/personal/cards/credit-cards/super-saver",
+      "capturedAt": "2026-11-26T20:41:27.000Z",
+      "representation": "public-readable-issuer-page-excerpt",
+      "fixtureIsCompleteSource": false,
+      "firstLine": 1092,
+      "text": "CBD Super Saver is a Visa Signature Credit Card",
+      "fixtureTextSha256": "a18ad28d4a169c29cc065173d3907dc5c15b263d87b03974ae95eb67aa64dc29",
+      "observedKfsLink": "https://www.cbd.ae/docs/revcbdislamilibraries/default-document-library/kfs-sa_islamic_credit-card_en-ar311032ff458f66deb8c5ff0b00b6b24a.pdf"
+    },
+    {
+      "id": "cbd-islami-kfs-primary-fee",
+      "url": "https://www.cbd.ae/docs/revcbdislamilibraries/default-document-library/kfs-sa_islamic_credit-card_en-ar311032ff458f66deb8c5ff0b00b6b24a.pdf",
+      "capturedAt": "2026-11-26T20:40:47.494Z",
+      "representation": "pdftotext-layout",
+      "fixtureIsCompleteSource": false,
+      "sourceBodySha256": "c312b03aed4817d9168f8170d270b457bd356c32e1ef7c5acf5120534e65b6d3",
+      "sourceBodyBytes": 378574,
+      "sourceTextSha256": "c64f1989c97fab101cc9bfab6884804d8baa00ae7bff155af8da92bf74bedccf",
+      "sourceTextBytes": 57458,
+      "pageCount": 6,
+      "page": 1,
+      "firstLine": 45,
+      "lastLine": 57,
+      "text": "\nFees – Islamic Credt Cards\n FEES                                           Primary CARD                                        Supplementary CARD                                   Islamic CARD Variants\n\n                                                Free For Life                                       Free For Life                                        Visa Platinum\n\n                                                AED 420.00*                                         Free For Life                                        Super Saver Visa Signature\n\n                                                AED 787.50*                                         Free For Life                                        Visa Inﬁnite\n\n                                                DISCLAIMER: * Oﬀered FREE for FIRST YEAR only, applicable fee will apply from the beginning of second year\n                                                and thereon for each year (i.e. upon completion of each anniversary). Waiver of Annual Fee in each year is subject\n                                                to achieving the minimum annual spends assigned for each CARD Variant and as published on Bank’s website.",
+      "fixtureTextSha256": "e4a3f53c0016a327f9caa345ef8ed4bbb62959a43786e7518265f4b4696cf6d8"
+    },
+    {
+      "id": "cbd-islami-kfs-version",
+      "url": "https://www.cbd.ae/docs/revcbdislamilibraries/default-document-library/kfs-sa_islamic_credit-card_en-ar311032ff458f66deb8c5ff0b00b6b24a.pdf",
+      "capturedAt": "2026-11-26T20:40:47.494Z",
+      "representation": "pdftotext-layout",
+      "fixtureIsCompleteSource": false,
+      "sourceBodySha256": "c312b03aed4817d9168f8170d270b457bd356c32e1ef7c5acf5120534e65b6d3",
+      "sourceBodyBytes": 378574,
+      "sourceTextSha256": "c64f1989c97fab101cc9bfab6884804d8baa00ae7bff155af8da92bf74bedccf",
+      "sourceTextBytes": 57458,
+      "pageCount": 6,
+      "page": 1,
+      "firstLine": 81,
+      "lastLine": 81,
+      "text": "Version: 1 November 2026",
+      "fixtureTextSha256": "5d48b9ccdedaffebe20688e4fc54bf3d93e4565fd0a8476b8fbbe9059efbc9b5"
+    },
+    {
+      "id": "cbd-islami-kfs-vat",
+      "url": "https://www.cbd.ae/docs/revcbdislamilibraries/default-document-library/kfs-sa_islamic_credit-card_en-ar311032ff458f66deb8c5ff0b00b6b24a.pdf",
+      "capturedAt": "2026-11-26T20:40:47.494Z",
+      "representation": "pdftotext-layout",
+      "fixtureIsCompleteSource": false,
+      "sourceBodySha256": "c312b03aed4817d9168f8170d270b457bd356c32e1ef7c5acf5120534e65b6d3",
+      "sourceBodyBytes": 378574,
+      "sourceTextSha256": "c64f1989c97fab101cc9bfab6884804d8baa00ae7bff155af8da92bf74bedccf",
+      "sourceTextBytes": 57458,
+      "pageCount": 6,
+      "page": 2,
+      "firstLine": 41,
+      "lastLine": 43,
+      "text": " 1. All Fees mentioned above & on Bank’s website are inclusive of Value Added Tax (VAT). A VAT of 5% shall be applicable on all Fees levied by\n    the Bank and will be billed along with the Fee and charged in the monthly SOA.\n 2. Fees mentioned in the table above are applicable for all Card Variants and rates mentioned herein are as of the date above.",
+      "fixtureTextSha256": "8c071916c757607675d1691c7d7c38b5ee2a1bf84edec026a551ba8a10d516ff"
+    },
+    {
+      "id": "cbd-islami-tariff-cohorts",
+      "url": "https://www.cbd.ae/islami/general/fees-and-charges",
+      "capturedAt": "2026-11-26T20:41:27.000Z",
+      "representation": "public-readable-issuer-page-excerpt",
+      "fixtureIsCompleteSource": false,
+      "firstLine": 1102,
+      "text": "Visa Signature - Islamic Super Saver 󸲻 420 (for existing Al Islami cardholders) and 󸲻 840 (for cardholders applied before 29-Feb-2020).",
+      "fixtureTextSha256": "b09fa666973e197bde9a366452be38997626f5ca0fb2e85130e54fedf7426a24"
+    }
+  ]
+}

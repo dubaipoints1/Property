@@ -39,6 +39,8 @@ export function finderEvidence(card: CardData & { slug?: string }) {
       ? `Standard renewal fee from year two: ${priced(annualFee)}; first-year terms pending.`
     : card.standardFeeConditions === "renewal-waiver"
       ? `Standard renewal fee from year two: ${priced(annualFee)}; ${firstYearAnnualFeeWaived ? "annual fee waived in year one" : "first-year terms pending"}.`
+    : card.standardFeeConditions === "kfs-renewal-cohort"
+      ? "The Key Facts Statement lists a primary annual-fee waiver in year one. Renewal is not used for ranking; check the profile for the published basis and legacy rates."
     : card.standardFeeConditions === "standard-only"
       ? `Standard annual fee: ${priced(annualFee)} before any waiver; what applies in each year is unconfirmed.`
     : annualFee === 0

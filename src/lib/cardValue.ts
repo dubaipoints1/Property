@@ -143,6 +143,13 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
     firstFeeIssue = "What applies in the first year is unconfirmed.";
     laterFeeIssue = "What applies at renewal is unconfirmed.";
   }
+  const kfsRenewalCohort = card.standardFeeConditions === "kfs-renewal-cohort";
+  if (kfsRenewalCohort) {
+    firstFee = null;
+    laterFee = null;
+    firstFeeIssue = "The Key Facts Statement lists a waiver for the year-one primary annual fee; a separate joining fee is unconfirmed.";
+    laterFeeIssue = "The Key Facts Statement and tariff distinguish renewal charges. Check which fee applies before estimating costs.";
+  }
 
   return {
     rate,
@@ -150,9 +157,11 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
     cap,
     firstFee,
     laterFee,
-    assumesYearOneWaiver: !standardOnly && assumesYearOneWaiver,
+    assumesYearOneWaiver: !standardOnly && !kfsRenewalCohort && assumesYearOneWaiver,
     hasConditionalRenewalWaiver: !standardOnly && !waiverPending && (waiver?.ongoing_threshold_aed ?? 0) > 0,
-    annualWaiver: standardOnly || waiverPending ? "" : annualFeeWaiverDisplay(rawWaiver),
+    annualWaiver: standardOnly || waiverPending ? "" : kfsRenewalCohort
+      ? "Check which terms apply to your card. The ongoing spend threshold for a renewal waiver is unconfirmed."
+      : annualFeeWaiverDisplay(rawWaiver),
     rewardIssue,
     firstFeeIssue,
     laterFeeIssue,

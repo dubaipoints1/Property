@@ -124,7 +124,9 @@ const feeLabel =
     ? "Free"
     : formatAED(annualFee.amount);
 
-const waiverString = annualFeeWaiverDisplay(
+const waiverString = standardFeeConditions === "kfs-renewal-cohort"
+  ? "The current Key Facts Statement lists a waiver for the first-year primary annual fee only. Confirm what applies to your card."
+  : annualFeeWaiverDisplay(
   waiver as StructuredAnnualFeeWaiver | string | null | undefined,
 );
 const showWaiver =

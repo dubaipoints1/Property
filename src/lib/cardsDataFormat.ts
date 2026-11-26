@@ -5,6 +5,7 @@
 // node:test running under tsx).
 import { cardSalaryLabel } from "./cardEligibility";
 import { cardFeeNeedsReview, hasUnconfirmedAdvertisedFeeWaiver } from "./cardFeeProvenance";
+import type { CardData } from "./cardsData";
 
 export type RewardUnit =
   | "skywards_miles"
@@ -390,7 +391,7 @@ export interface CardForAnnualFee {
   vatPolicy?: "inclusive" | "exclusive";
   joiningFee?: { amount: number } | null;
   annualFeeWaiver?: unknown;
-  standardFeeConditions?: "waiver-terms" | "introductory-offer-unconfirmed" | "renewal-only" | "renewal-waiver" | "standard-only";
+  standardFeeConditions?: CardData["standardFeeConditions"];
   _provenance?: Record<string, string> | null;
 }
 
@@ -441,6 +442,7 @@ export function annualFeeLabel(card: CardForAnnualFee, options: { separateVatLab
     : formatAED(card.annualFee.amount) + (card.vatPolicy === "exclusive" && !options.separateVatLabel ? " + VAT" : "");
   if (card.standardFeeConditions === "renewal-only") return { amount, qual: "year 2+; initial terms pending" };
   if (card.standardFeeConditions === "renewal-waiver") return { amount, qual: "year 2+" };
+  if (card.standardFeeConditions === "kfs-renewal-cohort") return { amount, qual: "Key Facts Statement, year 2+; legacy rates differ" };
   if (card.standardFeeConditions === "introductory-offer-unconfirmed") return { amount, qual: "first-year offer pending" };
   if (card.standardFeeConditions === "standard-only") return { amount, qual: "first-year and renewal terms unconfirmed" };
   if (card.standardFeeConditions === "waiver-terms") return { amount, qual: "waiver terms apply" };

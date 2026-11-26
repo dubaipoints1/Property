@@ -109,7 +109,7 @@ export const SALARY_TIERS: ReadonlyArray<{ label: string; min: number; max: numb
   { label: "AED 25,000 and above", min: 25000, max: null },
 ];
 
-export type FirstYearAnnualFeeStatus = "waived" | "standard" | "pending";
+export type FirstYearAnnualFeeStatus = "waived" | "waiver-listed-in-kfs" | "standard" | "pending";
 
 /** Annual-fee status only, not the full first-year cost. Absence of a
  * joining-fee observation must never turn this into a free-first-year claim.
@@ -122,6 +122,7 @@ export function firstYearAnnualFeeStatus(card: CardForFeeIndex): FirstYearAnnual
   if (pending || cardFeeNeedsReview(card, "annualFee") || !Number.isFinite(card.annualFee.amount) || card.annualFee.amount < 0) return "pending";
   const w = card.annualFeeWaiver;
   if (w != null && !isStructuredAnnualFeeWaiver(w)) return "pending";
+  if (card.standardFeeConditions === "kfs-renewal-cohort") return w?.year_one_waived ? "waiver-listed-in-kfs" : "pending";
   return card.annualFee.amount > 0 && isStructuredAnnualFeeWaiver(w) && w.year_one_waived === true ? "waived" : "standard";
 }
 
@@ -130,6 +131,7 @@ export function firstYearAnnualFeeStatus(card: CardForFeeIndex): FirstYearAnnual
 export function firstYearAnnualFeeLabel(row: Pick<FeeIndexRow, "annualFee" | "firstYearAnnualFeeStatus" | "beforeVatFeeLabel">): string {
   if (row.firstYearAnnualFeeStatus === "pending") return "Pending";
   if (row.firstYearAnnualFeeStatus === "waived") return "Waived";
+  if (row.firstYearAnnualFeeStatus === "waiver-listed-in-kfs") return "Waiver listed in KFS";
   return row.annualFee === null ? (row.beforeVatFeeLabel ? "Standard fee" : "Pending")
     : row.annualFee === 0 ? "No annual fee listed" : "Standard fee";
 }
@@ -148,6 +150,7 @@ export function toRow(card: CardForFeeIndex): FeeIndexRow {
   const unverified = !hasUsableSalaryMinimum(card);
   const feeKnown = !cardFeeNeedsReview(card, "annualFee") && Number.isFinite(card.annualFee.amount) && card.annualFee.amount >= 0;
   const renewalOnly = card.standardFeeConditions === "renewal-only";
+  const kfsCohortRenewal = card.standardFeeConditions === "kfs-renewal-cohort";
   const standardOnly = card.standardFeeConditions === "standard-only";
   const beforeVat = feeKnown && card.annualFee.amount > 0 && card.vatPolicy === "exclusive";
   const display = annualFeeLabel(card);
@@ -155,8 +158,9 @@ export function toRow(card: CardForFeeIndex): FeeIndexRow {
     slug: card.slug,
     name: card.name,
     bank: card.bank,
-    annualFee: feeKnown && !renewalOnly && !standardOnly && !beforeVat ? card.annualFee.amount : null,
+    annualFee: feeKnown && !renewalOnly && !kfsCohortRenewal && !standardOnly && !beforeVat ? card.annualFee.amount : null,
     ...(feeKnown && renewalOnly ? { renewalOnlyFeeLabel: display.amount + " from year two" } : {}),
+    ...(feeKnown && kfsCohortRenewal ? { renewalOnlyFeeLabel: `${display.amount}${beforeVat ? "" : " incl. VAT"} · ${display.qual}` } : {}),
     ...(feeKnown && standardOnly ? { standardOnlyFeeLabel: `${display.amount} standard fee; ${display.qual}` } : {}),
     ...(beforeVat ? { beforeVatFeeLabel: display.amount + (display.qual === "year 2+" ? " from year two" : display.qual ? " · " + display.qual : "") } : {}),
     firstYearAnnualFeeStatus: firstYearAnnualFeeStatus(card),

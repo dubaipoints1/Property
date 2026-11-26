@@ -428,7 +428,7 @@ export const CardDataSchema = z.object({
     currency: z.literal("AED").default("AED"),
   }),
   /** A published baseline, not an unconditional first-year charge. */
-  standardFeeConditions: z.enum(["waiver-terms", "introductory-offer-unconfirmed", "renewal-only", "renewal-waiver", "standard-only"]).optional(),
+  standardFeeConditions: z.enum(["waiver-terms", "introductory-offer-unconfirmed", "renewal-only", "renewal-waiver", "standard-only", "kfs-renewal-cohort"]).optional(),
   /**
    * Either the structured object (preferred), a legacy free-text string,
    * or null (no waiver path). Pages render the structured form when
@@ -621,7 +621,13 @@ export const CardDataSchema = z.object({
     "A published income basis cannot exist without a sourced amount")
   .refine(c => c.standardFeeConditions === undefined ||
     (c.refreshMode === "manual-primary" && (c._fieldEvidence?.annualFee?.length ?? 0) > 0),
-    "A conditional standard fee requires scoped primary evidence");
+    "A conditional standard fee requires scoped primary evidence")
+  .refine(c => c.standardFeeConditions !== "kfs-renewal-cohort" ||
+    (typeof c.annualFeeWaiver === "object" && c.annualFeeWaiver?.year_one_waived === true &&
+      c.annualFeeWaiver.ongoing_threshold_aed === null && !c.joiningFee &&
+      c._provenance.joiningFee === "needs-review" &&
+      (c._fieldEvidence?.annualFeeWaiver?.length ?? 0) > 0),
+    "A cohort-scoped KFS renewal requires separately evidenced primary first-year waiver, with joining fee and renewal waiver threshold held");
 
 export type CardData = z.infer<typeof CardDataSchema>;
 export type CardFeature = z.infer<typeof Feature>;
