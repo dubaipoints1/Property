@@ -11,6 +11,7 @@ import { salaryOfferSourceNote } from "~/lib/salaryTransferRules";
 import { SALARY_OFFER_REVIEW_PENDING_BANKS } from "~/lib/salaryTransferCoverage";
 import { getCardsByBank } from "~/lib/cardsData";
 import { getCardArt } from "~/lib/cardArt";
+import { FEE_SOURCE_HUBS } from "~/lib/cardFeeSourceHubs";
 import { annualFeeLabel, topEarnEntry, formatEarnRate } from "~/lib/cardsDataFormat";
 
 export async function getStaticPaths() {
@@ -22,7 +23,8 @@ const { bank } = Astro.props;
 const { Content } = await render(bank);
 const offers = await getOffersForBank(bank.id);
 const allCards = getCardsByBank(bank.id);
-const hasFeeSourceProfiles = bank.id === "ajman-bank";
+const feeSourceHub = Object.hasOwn(FEE_SOURCE_HUBS, bank.id) ? FEE_SOURCE_HUBS[bank.id] : undefined;
+const hasFeeSourceProfiles = feeSourceHub !== undefined;
 // Chrome's native lazy-load margin can fetch a full screen of this long
 // grid before the hub heading paints. Keep other bank pages unchanged.
 const deferBankCardArt = bank.id === "emirates-nbd";
@@ -65,10 +67,8 @@ const cardTiles = allCards.map((c) => {
 ---
 
 <BankHubLayout
-  title={hasFeeSourceProfiles ? "Ajman Bank BRight card fee profiles | DubaiPoints" : `${bank.data.name} — UAE card profiles & salary transfer | DubaiPoints`}
-  description={hasFeeSourceProfiles
-    ? "Ajman Bank’s BRight Titanium, Platinum and World fee profiles. New applications for each tier are unconfirmed."
-    : `${bank.data.name} hub: ${allCards.length} card profiles, ${offers.length ? "tracked salary-transfer offers" : "salary-transfer information"}, reward-currency notes and customer-service details.`}
+  title={feeSourceHub?.title ?? `${bank.data.name} — UAE card profiles & salary transfer | DubaiPoints`}
+  description={feeSourceHub?.description ?? `${bank.data.name} hub: ${allCards.length} card profiles, ${offers.length ? "tracked salary-transfer offers" : "salary-transfer information"}, reward-currency notes and customer-service details.`}
   bankName={bank.data.name}
   slug={bank.id}
   cardCount={hasFeeSourceProfiles ? undefined : allCards.length}
@@ -81,7 +81,7 @@ const cardTiles = allCards.map((c) => {
     {
       offers.length === 0 ? (
         <p class="dp-bank-salary-empty">
-          {(bank.id === "united-arab-bank" || bank.id === "nbq" || bank.id === "ajman-bank") && SALARY_OFFER_REVIEW_PENDING_BANKS.includes(bank.id)
+          {(bank.id === "united-arab-bank" || bank.id === "nbq" || hasFeeSourceProfiles) && SALARY_OFFER_REVIEW_PENDING_BANKS.includes(bank.id)
             ? `We have not completed a current salary-transfer offer review for ${bank.data.name}.`
             : `No live salary transfer offer tracked for ${bank.data.name}.`}
         </p>
