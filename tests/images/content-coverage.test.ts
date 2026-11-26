@@ -99,6 +99,9 @@ const ALLOWED_MISSING: Record<string, string> = {
   )),
   "card-fab-cashback-islamic": "Issuer marketing shows overlapping cards or a lifestyle scene; no standalone exact face approved.",
   "card-fab-blue-islamic": "Text-led exact Islamic issuer profile; no issuer card artwork is republished.",
+  ...Object.fromEntries(["visa-infinite", "super-saver", "smiles-signature"].map(
+    product => [`card-cbd-${product}`, "Text-led exact conventional issuer profile; no issuer card artwork is republished."],
+  )),
   "news-uae-card-change-log-citi-cash-back-application-route":
     "Deliberately text-led: the issuer terms and worked comparison are the evidence; no decorative article hero, with the existing fallback cover on the listing.",
   "news-uae-salary-switch-scorecard":
