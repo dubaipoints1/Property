@@ -17,6 +17,7 @@ test("bank hubs do not resurrect withdrawn held card fees, rates or qualificatio
   assert.match(bank("emirates-islamic"), /Eligibility remains Pending/);
   assert.match(bank("fab"), /New invitations and\s+the applicable qualification route remain unconfirmed/);
   assert.match(bank("standard-chartered"), /earlier stored general\s+rate is held/);
+  assert.match(bank("nbq"), /does not cover the Visa Infinite tier or salary-transfer offers/);
 });
 
 test("archived account promotions do not become current card or campaign eligibility", () => {
@@ -31,7 +32,7 @@ test("archived account promotions do not become current card or campaign eligibi
 
 test("bank hubs do not invent a universal missed-payment reporting deadline", () => {
   const files = readdirSync("src/content/banks").filter(name => name.endsWith(".mdx"));
-  assert.equal(files.length, 18);
+  assert.equal(files.length, 19);
   for (const file of files) {
     const text = readFileSync(`src/content/banks/${file}`, "utf8");
     assert.doesNotMatch(text, /missed\s+payments?[^.!?]{0,90}within\s+30\s+days/i, file);

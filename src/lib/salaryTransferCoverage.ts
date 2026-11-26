@@ -19,7 +19,7 @@
  */
 
 // Covering an issuer's cards is not evidence about its salary-transfer offers.
-export const SALARY_OFFER_REVIEW_PENDING_BANKS: readonly string[] = ["nbf", "nbk", "united-arab-bank"];
+export const SALARY_OFFER_REVIEW_PENDING_BANKS: readonly string[] = ["nbf", "nbk", "nbq", "united-arab-bank"];
 
 export interface CoverageInput {
   /** Every bank the publication covers (the denominator). */

@@ -100,6 +100,7 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Text-led statement and fee checklist; no source-licensed card or statement image is needed.",
   "bank-nbf": "Text-led issuer directory entry with a plain-text label rather than an issuer mark.",
   "bank-nbk": "Text-led issuer directory entry with a plain-text label rather than an issuer mark.",
+  "bank-nbq": "Text-led issuer directory entry; no issuer logo or artwork was used.",
   "bank-united-arab-bank": "Text-led issuer directory entry: plain name identifier, not issuer artwork.",
   ...Object.fromEntries(["mastercard-titanium", "mastercard-platinum", "mastercard-world", "islamic-mastercard-titanium"].map(
     suffix => [`card-united-arab-bank-${suffix}`, "Text-led scoped issuer profile; no issuer card artwork is republished."],
@@ -107,6 +108,8 @@ const ALLOWED_MISSING: Record<string, string> = {
   "card-nbk-visa-classic": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-gold": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-platinum": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
+  "card-nbq-visa-gold": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
+  "card-nbq-visa-platinum": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   ...Object.fromEntries(["skywards-signature", "barca-cashback", "rta", "amazon-world", "amazon-platinum", "flex-elite", "cashback-plus"].map(
     slug => [`card-emirates-islamic-${slug}`, "Text-led exact-product issuer profile; no approved card art is republished."],
   )),
