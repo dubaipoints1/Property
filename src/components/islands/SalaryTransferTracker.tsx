@@ -638,7 +638,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
       {/* FOOTER */}
       <div class="dpst-foot">
         <span class="left">
-          Tracking <b>{banksTracked} UAE bank{banksTracked === 1 ? "" : "s"}</b>{" "}
+          Offers listed from <b>{banksTracked} UAE bank{banksTracked === 1 ? "" : "s"}</b>{" "}
           · check each row’s source status and terms
         </span>
         <span>

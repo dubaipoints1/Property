@@ -4,12 +4,13 @@
 import { getEntry } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
 import { compareByWelcomeValue } from "~/lib/cardsDataFormat";
+import { cardFeeNeedsReview } from "~/lib/cardFeeProvenance";
 
 export interface ProgrammeRelatedCard {
   slug: string;
   name: string;
   bankName: string;
-  annualFeeAed: number;
+  annualFeeAed: number | null;
 }
 
 // Match a card's loyaltyProgram string to this programme. Loose match:
@@ -47,7 +48,7 @@ export async function relatedCardsForProgramme(
           slug: c.slug,
           name: c.name,
           bankName: bank?.data.name ?? c.bank,
-          annualFeeAed: c.annualFee.amount,
+          annualFeeAed: cardFeeNeedsReview(c, "annualFee") ? null : c.annualFee.amount,
         };
       }),
   );

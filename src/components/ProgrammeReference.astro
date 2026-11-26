@@ -29,7 +29,7 @@ const partners = kind === "partners" ? await Promise.all(transferPartners.map(as
   <section class="dp-prog-inline-reference dp-prog-related" id="programme-cards" aria-labelledby="programme-cards-heading">
     <h3 id="programme-cards-heading">UAE cards that earn into {currencyName}</h3>
     <ul class="dp-prog-related-list">
-      {cards.map(card => <li><a href={`/cards/${card.slug}/`}><span class="bank">{card.bankName}</span><span class="name">{card.name}</span><span class="fee">{card.annualFeeAed === 0 ? "Free" : `AED ${card.annualFeeAed.toLocaleString()}/yr`}</span></a></li>)}
+      {cards.map(card => <li><a href={`/cards/${card.slug}/`}><span class="bank">{card.bankName}</span><span class="name">{card.name}</span><span class="fee">{card.annualFeeAed === null ? "Annual fee pending" : card.annualFeeAed === 0 ? "Free" : `AED ${card.annualFeeAed.toLocaleString()}/yr`}</span></a></li>)}
     </ul>
     {cards.length > 1 && <a class="dp-ui-action dp-ui-secondary" href={`/cards/compare/?cards=${cards.slice(0, 4).map(card => card.slug).join(",")}`}>Compare these earning cards <span aria-hidden="true">→</span></a>}
   </section>
