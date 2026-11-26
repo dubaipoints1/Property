@@ -107,6 +107,7 @@ const ALLOWED_MISSING: Record<string, string> = {
   ...Object.fromEntries(["skywards-signature", "barca-cashback", "rta", "amazon-world", "amazon-platinum", "flex-elite", "cashback-plus"].map(
     slug => [`card-emirates-islamic-${slug}`, "Text-led exact-product issuer profile; no approved card art is republished."],
   )),
+  "card-emirates-islamic-cashback": "Text-led until authentic artwork for the base issuer card is verified; no sibling card art or illustration is shown.",
   "card-fab-cashback-islamic": "Issuer marketing shows overlapping cards or a lifestyle scene; no standalone exact face approved.",
   "card-fab-blue-islamic": "Text-led exact Islamic issuer profile; no issuer card artwork is republished.",
   ...Object.fromEntries(["visa-infinite", "super-saver", "smiles-signature"].map(

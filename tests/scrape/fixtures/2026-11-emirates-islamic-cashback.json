@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "description": "Exact scoped public issuer evidence for the base Cashback Card. Product, KFS and tariff preserve bounded normal-browser DOM fields and accessibility lines. The separately labelled network identity is a first-party page excerpt read through a public reader, not HTTP bytes or a browser snapshot.",
+  "sources": [
+    {
+      "id": "ei-base-cashback-product",
+      "url": "https://www.emiratesislamic.ae/en/cards/credit-cards/cashback-card",
+      "capturedAt": "2026-11-26T09:41:34.382Z",
+      "representation": "visible-main-dom-and-accessibility-snapshot",
+      "captureMethod": "normal-public-browser-ui",
+      "sourceBodySha256": null,
+      "sourceScope": "Bounded visible product heading, issuer disclaimer and named acquisition link; no link followed",
+      "fixtureIsCompleteSource": false,
+      "dom": {
+        "links": [
+          {
+            "href": "/en/apply-now?product=cashback%20card",
+            "label": "Apply Now",
+            "parentHeading": "Cashback Card"
+          },
+          {
+            "href": "/en/apply-now?product=cashback%20card",
+            "label": "Apply Now",
+            "parentHeading": "What Our Customers Are Saying"
+          }
+        ]
+      },
+      "text": "- heading \"Cashback Card\" [level=2]\n- link \"Apply Now\":\n- link \"Apply Now\":\n- emphasis: \"Disclaimer: The term “Credit Card” refers to the Covered Card, which is structured and offered in accordance with the applicable Shariah principles.\"",
+      "fixtureTextSha256": "4bea7a48024381894eec407e523af149677d62e5830ddc3093ba65194a1e45e4",
+      "sourceSnapshotSha256": "fcb809c0199b5807dc69d80e013f84e64e5505989ed4312d1685565d3c5d66af"
+    },
+    {
+      "id": "ei-base-cashback-kfs",
+      "url": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "capturedAt": "2026-11-26T09:40:57.890Z",
+      "representation": "visible-main-dom-and-accessibility-snapshot",
+      "captureMethod": "normal-public-browser-ui",
+      "sourceBodySha256": null,
+      "sourceScope": "Bounded KFS card table: one exact product names row, one annual fee row, and VAT basis",
+      "fixtureIsCompleteSource": false,
+      "dom": {
+        "heading": "Key Fact Statement (KFS) – Credit Cards",
+        "vat": "All charges are inclusive of Value Added Tax (VAT) in AED currency.",
+        "names": [
+          "Product Name",
+          "Skywards Black",
+          "Skywards Infinite",
+          "Skywards Signature",
+          "Cashback",
+          "Barça Cashback",
+          "Cashback Plus",
+          "Emarati",
+          "Flex Elite",
+          "Flex",
+          "RTA",
+          "Etihad Premium",
+          "Etihad Saqer",
+          "Etihad Ameera",
+          "Etihad Platinum",
+          "Switch Cashback Card",
+          "Amazon World & Amazon Platinum"
+        ],
+        "fees": [
+          "Annual Fee",
+          "5,775*",
+          "2100",
+          "735",
+          "367.5",
+          "NA",
+          "313.95",
+          "NA",
+          "735",
+          "NA",
+          "NA",
+          "2625",
+          "943.95",
+          "733.95",
+          "208.95",
+          "313.95",
+          "NA"
+        ]
+      },
+      "text": "- heading \"Key Fact Statement (KFS) – Credit Cards\" [level=1]\n- paragraph: All charges are inclusive of Value Added Tax (VAT) in AED currency.\n    - row \"Product Name Skywards Black Skywards Infinite Skywards Signature Cashback Barça Cashback Cashback Plus Emarati Flex Elite Flex RTA Etihad Premium Etihad Saqer Etihad Ameera Etihad Platinum Switch Cashback Card Amazon World & Amazon Platinum\":\n    - row \"Annual Fee 5,775* 2100 735 367.5 NA 313.95 NA 735 NA NA 2625 943.95 733.95 208.95 313.95 NA\":",
+      "fixtureTextSha256": "f2d85955d38bf0dad9732e2824445ebdc9f1ad2826f8e6f60e53cc6df1ed97b5",
+      "sourceSnapshotSha256": "976d0a87df0cce5a944d516a391fd2e944655faef370c97e30a395fcc095c9b7"
+    },
+    {
+      "id": "ei-base-cashback-tariff",
+      "url": "https://www.emiratesislamic.ae/en/soc/cards",
+      "capturedAt": "2026-11-26T09:41:17.376Z",
+      "representation": "visible-main-dom-and-accessibility-snapshot",
+      "captureMethod": "normal-public-browser-ui",
+      "sourceBodySha256": null,
+      "sourceScope": "Bounded tariff table between Profit based Cards and Fee based Cards; one named Cashback Platinum row with separate membership column",
+      "fixtureIsCompleteSource": false,
+      "dom": {
+        "heading": "Cards",
+        "vat": "All charges, commissions and fees are inclusive of Value Added Tax or any other similar sales tax (VAT).",
+        "from": "Profit based Cards",
+        "to": "Fee based Cards",
+        "tableCount": 1,
+        "headers": [
+          [
+            "Credit Card Type",
+            "Monthly Profit Rate",
+            "Annual Membership Fee"
+          ]
+        ],
+        "productRows": [
+          [
+            "Cashback Platinum",
+            "3.69%",
+            " 367.50"
+          ]
+        ]
+      },
+      "text": "- heading \"Cards\" [level=1]\n- paragraph: All charges, commissions and fees are inclusive of Value Added Tax or any other similar sales tax (VAT).\n- heading \"Profit based Cards\" [level=2]\n    - row \"Credit Card Type Monthly Profit Rate Annual Membership Fee\":\n    - row \"Cashback Platinum 3.69% AED 367.50\":\n- heading \"Fee based Cards\" [level=2]",
+      "fixtureTextSha256": "26ef2a82117081014fba5079aa472cf7db0ca0166ed25d09e1cd3e9df3fbdd78",
+      "sourceSnapshotSha256": "2e2b9925978eb61fd98d7b3a08aa7d80a8fc3af0166b075ff54677c994b54ed3"
+    },
+    {
+      "id": "ei-base-cashback-network",
+      "url": "https://www.emiratesislamic.ae/en/offers/cards-travel-offers",
+      "capturedOn": "2026-11-26",
+      "representation": "first-party-public-reader-excerpt",
+      "sourceBodySha256": null,
+      "fixtureIsCompleteSource": false,
+      "sourceScope": "Exact short fragments in issuer public-reader order: page title and introduction at lines 1002–1006; Avis heading, lower discount credit-card group ending in base Cashback, and separately named sibling products under the higher discount credit-card group at lines 1043–1066. Product network only.",
+      "text": "VISA Travel Offers\nyour Emirates Islamic Visa Credit or Debit Card.\nAvis\nCredit Cards:\nRTA & Cashback Credit Cards.\nSwitch Cashback, Cashback Plus",
+      "fixtureTextSha256": "c09e4522a0d39b28d403ba98567cfd03b9138a17ecd6207cea35da43a4588e62"
+    }
+  ]
+}
