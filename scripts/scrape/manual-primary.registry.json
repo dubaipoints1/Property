@@ -3312,6 +3312,63 @@
           "sha256": "162dda331ba35c066b0108313e496bea2bc5049ae69282b3c73e973185817fcb"
         }
       ]
+    },
+    {
+      "slug": "cbi-mastercard-titanium",
+      "bank": "cbi",
+      "productUrl": "https://www.cbiuae.com/en/personal/products-and-services/cards/mastercard-titanium-credit-card/",
+      "kfsUrl": "https://www.cbiuae.com/media/xbdnatz3/cbi-credit-cards-key-facts-statement-april-2026.pdf",
+      "sourceFixtureIds": [
+        "cbi-mastercard-titanium-heading",
+        "cbi-mastercard-titanium-cta",
+        "cbi-mastercard-titanium-mastercard",
+        "cbi-mastercard-titanium-kfs-link",
+        "cbi-mastercard-titanium-tariff-link",
+        "cbi-mastercard-titanium-kfs-primary",
+        "cbi-tariff-primary",
+        "cbi-tariff-revision"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_cbi-annual-fee-references.ts",
+        "export": "parseCbiAnnualFeeReferences",
+        "sha256": "55e49f7eabb14707e9e58e2d925054f4fbf252221d118aba0d11762893a56d11",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-cbi-fee-references.json",
+          "sha256": "73fb96e587cd26eee932e13e5923f576c7863eb9e325e8bb6e59d664b10f5c86"
+        }
+      ]
+    },
+    {
+      "slug": "cbi-rewards-platinum-mastercard",
+      "bank": "cbi",
+      "productUrl": "https://www.cbiuae.com/en/personal/products-and-services/cards/rewards-platinum-mastercard",
+      "kfsUrl": "https://www.cbiuae.com/media/faspisn4/cbi-credit-cards-key-facts-statement-april-2026.pdf",
+      "sourceFixtureIds": [
+        "cbi-rewards-platinum-mastercard-heading",
+        "cbi-rewards-platinum-mastercard-cta",
+        "cbi-rewards-platinum-mastercard-mastercard",
+        "cbi-rewards-platinum-mastercard-kfs-link",
+        "cbi-rewards-platinum-mastercard-tariff-link",
+        "cbi-rewards-platinum-mastercard-kfs-primary",
+        "cbi-tariff-primary",
+        "cbi-tariff-revision",
+        "cbi-rewards-platinum-mastercard-optional-accelerator"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_cbi-annual-fee-references.ts",
+        "export": "parseCbiAnnualFeeReferences",
+        "sha256": "55e49f7eabb14707e9e58e2d925054f4fbf252221d118aba0d11762893a56d11",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-cbi-fee-references.json",
+          "sha256": "73fb96e587cd26eee932e13e5923f576c7863eb9e325e8bb6e59d664b10f5c86"
+        }
+      ]
     }
   ]
 }

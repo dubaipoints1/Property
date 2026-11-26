@@ -18,6 +18,7 @@ import BaseLayout from "./BaseLayout.astro";
 import UtilityPageHead from "~/components/UtilityPageHead.astro";
 import Disclaimer from "~/components/Disclaimer.astro";
 import BankOffers from "~/components/deals/BankOffers.astro";
+import { hasFeeSourceHub } from "~/lib/cardFeeSourceHubs";
 import NextSteps from "~/components/cards/NextSteps.astro";
 import CardJourney from "~/components/cards/CardJourney.astro";
 import CardImage from "~/components/CardImage.astro";
@@ -237,7 +238,7 @@ const incomeLabel = cardData?.eligibility.publishedIncomeBasis === "salary" ? "P
   : "Published minimum monthly income";
 const availabilityUnconfirmed = cardData?.applicationAvailability === "unconfirmed";
 const kfsCohortReference = availabilityUnconfirmed && cardData?.standardFeeConditions === "kfs-renewal-cohort";
-const compareOtherCards = kfsCohortReference || (availabilityUnconfirmed && bankSlug === "ajman-bank");
+const compareOtherCards = kfsCohortReference || (availabilityUnconfirmed && hasFeeSourceHub(bankSlug));
 const applicationUnavailable = availabilityUnconfirmed || cardData?.discontinuedForNewApplicants !== undefined;
 const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
 const fxPending = cardFxNeedsReview({ _provenance: fxProvenance });

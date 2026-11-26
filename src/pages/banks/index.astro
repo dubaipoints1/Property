@@ -12,6 +12,7 @@ import { collectionPageGraph, breadcrumbGraph, siteUrlFrom } from "~/lib/schema"
 import BankVisual from "~/components/BankVisual.astro";
 import { getCollection } from "astro:content";
 import { getActiveCards } from "~/lib/cardsData";
+import { hasFeeSourceHub } from "~/lib/cardFeeSourceHubs";
 
 const banks = (await getCollection("banks")).sort((a, b) =>
   a.data.name.localeCompare(b.data.name),
@@ -113,7 +114,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/banks/", name: "UAE banks 
                   <div class="intel-card-body">
                     <span class="intel-card-cat">UAE bank</span>
                     <h3>{b.data.name}</h3>
-                    <p>{count > 0 ? `${count} card${count === 1 ? "" : "s"} reviewed` : b.id === "ajman-bank" ? "Card fee source profiles" : "Salary-transfer offer + bank hub"}</p>
+                    <p>{count > 0 ? `${count} card${count === 1 ? "" : "s"} reviewed` : hasFeeSourceHub(b.id) ? "Card fee source profiles" : "Salary-transfer offer + bank hub"}</p>
                     <span class="intel-card-meta">Open hub →</span>
                   </div>
                 </a>
