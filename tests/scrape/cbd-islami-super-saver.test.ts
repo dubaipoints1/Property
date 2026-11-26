@@ -110,8 +110,9 @@ test("KFS cohort terms are visible but not a fee-index sample, Finder rank, Comp
   // The actual static output is also probed in release QA.
   const layout = readFileSync("src/layouts/CardReviewLayout.astro", "utf8");
   assert.match(layout, /&& !\(cardData\?\.refreshMode === "manual-primary" && recurringFee\.qual\)/);
-  assert.match(layout, /kfsCohortReference \? "\/cards\/compare\/" : compareHref/);
-  assert.match(layout, /rivals=\{kfsCohortReference \? \[\] : relatedCards\.map/);
+  assert.match(layout, /const compareOtherCards = kfsCohortReference \|\|/);
+  assert.match(layout, /compareOtherCards \? "\/cards\/compare\/" : compareHref/);
+  assert.match(layout, /rivals=\{compareOtherCards \? \[\] : relatedCards\.map/);
   assert.equal(card.refreshMode, "manual-primary");
   assert.ok(annualFeeLabel(card).qual);
   const hub = readFileSync("src/content/banks/cbd.mdx", "utf8");

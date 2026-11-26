@@ -19,6 +19,8 @@ interface Props {
   logo?: string;
   /** Number of cards we cover from this issuer; renders as the headline metric. */
   cardCount?: number;
+  /** Reviewable bank disclosures with no confirmed new applications. */
+  hasFeeSourceProfiles?: boolean;
   /** Live salary-transfer top bonus in AED (or undefined when none). */
   topBonusAed?: number;
   /** Date this hub was last verified by the editorial team. */
@@ -36,6 +38,7 @@ const {
   bankName,
   slug,
   cardCount,
+  hasFeeSourceProfiles,
   topBonusAed,
   lastVerified,
   customerService,
@@ -91,9 +94,13 @@ const schema = {
   <UtilityPageHead variant="bank">
     <p class="dp-utility-kicker"><a href="/banks/">UAE banks</a></p>
     <h1>{bankName}</h1>
-    <p class="dp-utility-deck">Compare {bankName} cards and rewards, and check whether there is a tracked salary-transfer offer.</p>
+    <p class="dp-utility-deck">{hasFeeSourceProfiles
+      ? `Read ${bankName}’s published card fees. New applications are unconfirmed.`
+      : `Compare ${bankName} cards and rewards, and check whether there is a tracked salary-transfer offer.`}</p>
     <div class="dp-utility-actions">
-      {cardCount ? (
+      {hasFeeSourceProfiles ? (
+        <a class="dp-ui-action dp-ui-primary" href="#bank-fee-sources">Read the fee profiles</a>
+      ) : cardCount ? (
         <a class="dp-ui-action dp-ui-primary" href="#bank-cards">Compare {bankName} cards</a>
       ) : (
         <a class="dp-ui-action dp-ui-primary" href="/cards/">Browse UAE cards</a>

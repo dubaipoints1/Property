@@ -237,6 +237,7 @@ const incomeLabel = cardData?.eligibility.publishedIncomeBasis === "salary" ? "P
   : "Published minimum monthly income";
 const availabilityUnconfirmed = cardData?.applicationAvailability === "unconfirmed";
 const kfsCohortReference = availabilityUnconfirmed && cardData?.standardFeeConditions === "kfs-renewal-cohort";
+const compareOtherCards = kfsCohortReference || (availabilityUnconfirmed && bankSlug === "ajman-bank");
 const applicationUnavailable = availabilityUnconfirmed || cardData?.discontinuedForNewApplicants !== undefined;
 const fxProvenance = cardData?._provenance ?? (fxFeeProvenance ? { fxFee: fxFeeProvenance } : {});
 const fxPending = cardFxNeedsReview({ _provenance: fxProvenance });
@@ -394,7 +395,7 @@ const schema = {
         ? <p class="dp-card-summary-bonus"><strong>Dated app offer:</strong> <a href={datedDigitalOfferHref}>Check dates and eligibility</a></p>
         : welcomeBonusStrap && <p class="dp-card-summary-bonus"><strong>Welcome bonus:</strong> {welcomeBonusStrap}</p>}
       <div class="dp-utility-actions">
-        <a class="dp-ui-action dp-ui-primary" href={kfsCohortReference ? "/cards/compare/" : compareHref}>{kfsCohortReference ? "Compare other cards" : "Compare cards"}</a>
+        <a class="dp-ui-action dp-ui-primary" href={compareOtherCards ? "/cards/compare/" : compareHref}>{compareOtherCards ? "Compare other cards" : "Compare cards"}</a>
         {issuerLinks.length > 0 && <a class="dp-ui-action dp-ui-secondary" href="#card-review-sources">See issuer sources</a>}
       </div>
     </div>
@@ -456,7 +457,7 @@ const schema = {
           bankSlug={bankSlug}
           bankName={bankName}
           earnUnit={earnUnit}
-          rivals={kfsCohortReference ? [] : relatedCards.map((c) => ({ slug: c.slug, name: c.name }))}
+          rivals={compareOtherCards ? [] : relatedCards.map((c) => ({ slug: c.slug, name: c.name }))}
         />
       )}
 

@@ -113,7 +113,7 @@ const schema = collectionPageGraph({ siteUrl, path: "/banks/", name: "UAE banks 
                   <div class="intel-card-body">
                     <span class="intel-card-cat">UAE bank</span>
                     <h3>{b.data.name}</h3>
-                    <p>{count > 0 ? `${count} card${count === 1 ? "" : "s"} reviewed` : "Salary-transfer offer + bank hub"}</p>
+                    <p>{count > 0 ? `${count} card${count === 1 ? "" : "s"} reviewed` : b.id === "ajman-bank" ? "Card fee source profiles" : "Salary-transfer offer + bank hub"}</p>
                     <span class="intel-card-meta">Open hub →</span>
                   </div>
                 </a>
