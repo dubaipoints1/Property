@@ -22,6 +22,7 @@ import { HOTEL_PROGRAMME_IDS, programmeImage } from "../../src/lib/programmes";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
+  "card-mashreq-alislami-cashback": "Text-led: the exact issuer face was used for network evidence only; no reuse permission or replacement art.",
   "news-aeroplan-points-expiry-resumes-november-2026":
     "Text-led official Aeroplan inactivity policy and account checklist; no aircraft or account image evidences an individual expiry.",
   "news-ihg-voco-dubai-triple-base-points-december-2026":

@@ -2967,6 +2967,32 @@
       ]
     },
     {
+      "slug": "mashreq-alislami-cashback",
+      "bank": "mashreq",
+      "productUrl": "https://www.mashreqalislami.com/en/uae/neo/cards/credit-cards/cashback-credit-card/",
+      "kfsUrl": "https://www.mashreqalislami.com/-/jssmedia/pdfs/mai/neo/cards/mai-credit-card-new-kfs.ashx",
+      "sourceFixtureIds": [
+        "mashreq-islami-cashback-heading",
+        "mashreq-islami-cashback-acquisition",
+        "mashreq-islami-cashback-headline",
+        "mashreq-islami-cashback-kfs-pricing",
+        "mashreq-islami-cashback-tariff-vat",
+        "mashreq-islami-cashback-tariff-principal"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_mashreq-alislami-cashback.ts",
+        "export": "parseMashreqAlIslamiCashback",
+        "sha256": "c65024904850b299e8c2a60b70e0e2484a45fc4d3716851e3b050cfebe258ba6",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-mashreq-islami-cashback.json",
+          "sha256": "fd258b6b8f79cc6ccfa9ec7c97cf0233853109ddb40f67c805c81cc93e02c8bf"
+        }
+      ]
+    },
+    {
       "slug": "cbd-visa-infinite",
       "bank": "cbd",
       "productUrl": "https://www.cbd.ae/personal/cards/credit-cards/visa-infinite",

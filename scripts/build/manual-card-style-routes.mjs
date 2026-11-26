@@ -44,6 +44,7 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/cards/emirates-islamic-flex-elite/": "Emirates Islamic Flex Elite Credit Card",
   "/cards/emirates-islamic-cashback/": "Emirates Islamic Cashback Credit Card",
   "/cards/emirates-islamic-cashback-plus/": "Emirates Islamic Cashback Plus Credit Card",
+  "/cards/mashreq-alislami-cashback/": "Mashreq Al Islami Cashback Credit Card",
   "/cards/cbd-visa-infinite/": "CBD Visa Infinite Credit Card",
   "/cards/cbd-super-saver/": "CBD Super Saver Visa Signature Credit Card",
   "/cards/cbd-smiles-signature/": "CBD Smiles Visa Signature Credit Card",
