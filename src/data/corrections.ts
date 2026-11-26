@@ -37,6 +37,15 @@ export interface Correction {
 
 export const corrections: readonly Correction[] = [
   {
+    date: new Date("2026-11-26"),
+    title: "Emirates NBD Marriott Bonvoy World fee and salary-transfer wording",
+    cardsAffected: ["emirates-nbd-marriott-bonvoy-world"],
+    original:
+      'we showed the <a href="/cards/emirates-nbd-marriott-bonvoy-world/">Marriott Bonvoy World</a> as “Free (year 2+)” in card listings, and our <a href="/guides/best-uae-cards-hotel-points-2026/">hotel-points guide</a> gave a zero first-year cost and said a salary transfer was not required.',
+    corrected:
+      'the bank advertises a fee waiver. Its published standard renewal is <strong>AED 315 including VAT</strong>, but this does not establish the fee, joining charge or salary-transfer terms that apply to a particular applicant. We corrected the review, guide and fee displays and excluded the unconfirmed costs from estimates. This is a correction to our presentation, not a newly announced bank change or a whole-card re-verification. See the <a href="/cards/emirates-nbd-marriott-bonvoy-world/#fee-summary">fee summary and bank sources</a>.',
+  },
+  {
     date: new Date("2026-11-07"),
     title: "Residual comparison claims about salary floors and unrestricted returns",
     cardsAffected: ["liv-cashback", "wio-credit", "adcb-365-cashback", "mashreq-cashback", "hsbc-live-plus"],

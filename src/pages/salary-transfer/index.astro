@@ -110,16 +110,16 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Salary-transfer tracker</div>
     <h1>The salary-transfer tracker.</h1>
-    <p>Find current UAE salary-transfer offers for your salary band. Each offer is dated and checked against published bank material.</p>
+    <p>Compare listed UAE salary-transfer offers by salary band. Check each offer’s date, bank terms and any source warning before switching.</p>
 
     <div class="dp-tools-stats">
       {/* Phones get the short labels so the three stats fit one line
           (19 Oct 2026 UX review); the long ones are display:none there,
           so assistive tech reads exactly what is shown. */}
-      <span><span class="lbl st-long">Banks with current offers:</span><span class="lbl st-short">Banks</span> <strong>{trackedBanks.size} of {coveredCount}</strong></span>
-      <span><span class="lbl st-long">Live offers:</span><span class="lbl st-short">Offers</span> <strong>{offers.length}</strong></span>
+      <span><span class="lbl st-long">Banks with offers listed:</span><span class="lbl st-short">Banks</span> <strong>{trackedBanks.size} of {coveredCount}</strong></span>
+      <span><span class="lbl st-long">Offers listed:</span><span class="lbl st-short">Offers</span> <strong>{offers.length}</strong></span>
       {newestVerification && (
-        <span><span class="lbl st-long">Newest verification:</span><span class="lbl st-short">Checked</span> <strong><span class="st-long">{fmtFull(newestVerification)}</span><span class="st-short">{fmtShort(newestVerification)}</span></strong></span>
+        <span><span class="lbl st-long">Latest offer check:</span><span class="lbl st-short">Latest</span> <strong><span class="st-long">{fmtFull(newestVerification)}</span><span class="st-short">{fmtShort(newestVerification)}</span></strong></span>
       )}
     </div>
   </div>
@@ -130,15 +130,14 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   <div class="st-coverage">
     <details class="dp-coverage-note" id="coverage-note">
       <summary>
-        <strong class="st-long">Coverage status.</strong> <span class="st-long">{trackedBanks.size} of {coveredCount} covered
-        banks have an offer listed — why the others are not listed</span><span class="st-short">Why the other {coveredCount - trackedBanks.size} banks are not listed</span>
+        <strong class="st-long">Coverage.</strong> <span class="st-long">{trackedBanks.size} of the {coveredCount} banks profiled on DubaiPoints have an offer listed. See how we classify the others.</span><span class="st-short">Why the other {coveredCount - trackedBanks.size} profiled banks are not listed</span>
       </summary>
       <p>
-        We checked
+        At the time of our last checks, we did not confirm a qualifying banded cash offer from{" "}
         {linkList(checkedWithoutLiveOffer).map((b) => (
           <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
         ))}
-        {" "}and found no current live banded cash offer — ADCB's current
+        {" "}— ADCB's
         BEYOND campaign (8 September – 31 December 2026) pays TouchPoints and is
         open only to employees of companies ADCB has shortlisted, so it doesn't
         qualify for the cash table (checked 15 October), and ADIB's salary programme
@@ -168,10 +167,11 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
       </p>
       {sourceHeldOffers.length > 0 && (
         <p>
+          The following banks have listed offers with a source warning:{" "}
           {linkList([...new Set(sourceHeldOffers.map((offer) => offer.bankSlug))]).map((b) => (
             <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
           ))}
-          {" "}published offer figures are listed with a source caveat and excluded from estimated cashback rankings.
+          {". We exclude those figures from estimated cashback rankings."}
         </p>
       )}
     </details>

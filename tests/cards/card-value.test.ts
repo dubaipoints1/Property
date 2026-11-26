@@ -1,6 +1,10 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
 import { getCardData } from "../../src/lib/cardsData.ts";
+import { annualFeeLabel } from "../../src/lib/cardsDataFormat.ts";
+import { cardFeeAmountLabel } from "../../src/lib/cardFeeFacts.ts";
+import { firstYearAnnualFeeStatus, toRow } from "../../src/lib/feeIndex.ts";
+import { finderEvidence } from "../../src/lib/finderEvidence.ts";
 import {
   calculateCardValue,
   cardValueTerms,
@@ -84,11 +88,24 @@ test("placeholder points, merchant credits and conditional earn rates without an
   }
 });
 
-test("a promotional zero does not establish a zero renewal", () => {
-  const terms = termsFor("emirates-nbd-marriott-bonvoy-world");
-  assert.equal(terms.firstFee, 0);
+test("the Marriott advertised waiver is not a confirmed joining, first-year or renewal cost", () => {
+  const slug = "emirates-nbd-marriott-bonvoy-world";
+  const card = getCardData(slug)!;
+  const terms = cardValueTerms(card, slug);
+  assert.deepEqual(annualFeeLabel(card), { amount: "Pending", qual: "waiver advertised" });
+  assert.match(card._dataIssues?.annualFee ?? "", /advertises a waiver/);
+  assert.match(card._dataIssues?.eligibility ?? "", /do not establish a universal salary-transfer rule/);
+  assert.match(card._dataIssues?.reviewScope ?? "", /not a new whole-card verification/);
+  assert.equal(cardFeeAmountLabel(card, "joiningFee"), "Pending");
+  assert.equal(toRow({ ...card, slug }).annualFee, null);
+  assert.equal(firstYearAnnualFeeStatus(card), "pending");
+  assert.equal(finderEvidence(card).comparableAnnualFee, null);
+  assert.equal(terms.firstFee, null);
   assert.equal(terms.laterFee, null);
+  assert.equal(terms.assumesYearOneWaiver, false);
+  assert.equal(calculateCardValue(terms, base).first, null);
   assert.equal(calculateCardValue(terms, base).later, null);
+  assert.match(annualFeeLabel(getCardData("emirates-nbd-marriott-bonvoy-world-elite")!).amount, /^AED\s1,575$/);
 });
 
 test("unclear joining-fee timing suppresses first-year value without hiding a known renewal", () => {

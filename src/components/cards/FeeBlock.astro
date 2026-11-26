@@ -20,6 +20,7 @@ import {
   getCardData,
 } from "~/lib/cardsData";
 import { cardFxFeeLabel, cardFxNeedsReview, cardFeeNeedsReview } from "~/lib/cardFeeFacts";
+import { hasUnconfirmedAdvertisedFeeWaiver } from "~/lib/cardFeeProvenance";
 
 interface Props {
   /** Phase 2a.2: when set, the component resolves all inline props
@@ -145,7 +146,9 @@ const showJoiningFee =
   {showVatTag && <div class="vat">{vatTagText}</div>}
   <div class="lbl">{standardFeeConditions ? "Standard annual fee" : "Annual fee"}</div>
   {scopeQualifier && <div class="joining">{scopeQualifier}</div>}
-  {annualFeePending && <div class="joining">The standard annual fee is Pending; joining and other charges are not assumed to be zero.</div>}
+  {annualFeePending && <div class="joining">{hasUnconfirmedAdvertisedFeeWaiver(feeEvidence)
+    ? "The bank advertises a waiver. The annual fee that applies to your application is not confirmed."
+    : "The standard annual fee is Pending; joining and other charges are not assumed to be zero."}</div>}
   {joiningFeePending && <div class="joining">Joining fee — confirmation pending</div>}
   {showJoiningFee && joiningFee && (
     <div class="joining">

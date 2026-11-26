@@ -15,13 +15,7 @@ import ProgrammeHub from "~/components/ProgrammeHub.astro";
 import { getStockEntry } from "~/lib/stockManifest";
 import { programmeImage } from "~/lib/programmes";
 import { transferDestinations, transferOrigins } from "~/lib/transferFinder";
-
-interface RelatedCard {
-  slug: string;
-  name: string;
-  bankName: string;
-  annualFeeAed: number;
-}
+import type { ProgrammeRelatedCard } from "~/lib/programmeRelatedCards";
 
 interface Props {
   title: string;
@@ -35,7 +29,7 @@ interface Props {
   expirySection?: string;
   sweetSpots: { title: string; description: string }[];
   transferPartners: string[];
-  relatedCards?: RelatedCard[];
+  relatedCards?: ProgrammeRelatedCard[];
   headings: { depth: number; slug: string; text: string }[];
   /** Which programme directory this hub sits under (11 Oct 2026 hotels split). */
   section?: "airlines" | "hotels";

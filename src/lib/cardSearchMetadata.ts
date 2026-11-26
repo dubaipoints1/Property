@@ -1,5 +1,6 @@
 import type { CardData } from "./cardsData";
 import { cardFeeAmountLabel } from "./cardFeeFacts";
+import { hasUnconfirmedAdvertisedFeeWaiver } from "./cardFeeProvenance";
 import { cardHasUnresolvedTerms, cardSalaryLabel } from "./cardEligibility";
 import { annualFeeLabel, CATEGORY_LABELS_FOR_TOP, formatEarnRate, topEarnEntry } from "./cardsDataFormat";
 
@@ -20,7 +21,8 @@ export function cardSearchMetadata(card: CardData) {
     kind: partial ? "source profile" : "review",
     description: [
       `${card.name} ${partial ? "partial source profile" : "review"}`,
-      noMembershipFees ? "Standard annual fee: none; no listed joining fee" : `Standard annual fee: ${cardFeeAmountLabel(card)}${qualifier}`,
+      hasUnconfirmedAdvertisedFeeWaiver(card) ? "Annual fee: waiver advertised; confirm applicable charges" :
+        noMembershipFees ? "Standard annual fee: none; no listed joining fee" : `Standard annual fee: ${cardFeeAmountLabel(card)}${qualifier}`,
       limited && card.standardFeeConditions === "introductory-offer-unconfirmed" ? "Terms pending" :
         limited ? "Terms pending; read source notes" : `Minimum salary: ${cardSalaryLabel(card)}`,
       !limited && top && topLabel ? `${formatEarnRate(top.value, card.earnUnit, card.categories)} ${topLabel}` : null,

@@ -4,7 +4,7 @@
 // pulling in `astro:content` (which is a virtual module unavailable to
 // node:test running under tsx).
 import { cardSalaryLabel } from "./cardEligibility";
-import { cardFeeNeedsReview } from "./cardFeeProvenance";
+import { cardFeeNeedsReview, hasUnconfirmedAdvertisedFeeWaiver } from "./cardFeeProvenance";
 
 export type RewardUnit =
   | "skywards_miles"
@@ -436,7 +436,7 @@ export function annualFeeLabel(card: CardForAnnualFee, options: { separateVatLab
   amount: string;
   qual: string | null;
 } {
-  if (cardFeeNeedsReview(card, "annualFee")) return { amount: "Pending", qual: null };
+  if (cardFeeNeedsReview(card, "annualFee")) return { amount: "Pending", qual: hasUnconfirmedAdvertisedFeeWaiver(card) ? "waiver advertised" : null };
   const amount = card.annualFee.amount === 0 ? "Free"
     : formatAED(card.annualFee.amount) + (card.vatPolicy === "exclusive" && !options.separateVatLabel ? " + VAT" : "");
   if (card.standardFeeConditions === "renewal-only") return { amount, qual: "year 2+; initial terms pending" };
