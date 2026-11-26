@@ -93,6 +93,9 @@ test("the Marriott advertised waiver is not a confirmed joining, first-year or r
   const card = getCardData(slug)!;
   const terms = cardValueTerms(card, slug);
   assert.deepEqual(annualFeeLabel(card), { amount: "Pending", qual: "waiver advertised" });
+  assert.match(card._dataIssues?.annualFee ?? "", /advertises a waiver/);
+  assert.match(card._dataIssues?.eligibility ?? "", /do not establish a universal salary-transfer rule/);
+  assert.match(card._dataIssues?.reviewScope ?? "", /not a new whole-card verification/);
   assert.equal(cardFeeAmountLabel(card, "joiningFee"), "Pending");
   assert.equal(toRow({ ...card, slug }).annualFee, null);
   assert.equal(firstYearAnnualFeeStatus(card), "pending");
