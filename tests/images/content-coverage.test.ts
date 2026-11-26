@@ -22,7 +22,59 @@ import { HOTEL_PROGRAMME_IDS, programmeImage } from "../../src/lib/programmes";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
+  "news-flydubai-bangkok-don-mueang-third-daily-november-2026":
+    "Text-led announced timetable; no licensed route-specific photograph or flown review.",
+  "news-etihad-guest-november-promo-seats-2026":
+    "Text-led award comparison; no photograph represents live award inventory.",
+  "news-atlantis-the-palm-black-friday-room-park-tickets-2026":
+    "Text-led exact-property terms, without cleared property photography or a verified rate.",
+  "news-avani-ibn-battuta-black-friday-room-upgrade-2026":
+    "Text-led exact-property terms, without cleared property photography or an inspected room.",
+  "news-samsung-uae-wio-card-checkout-november-2026":
+    "Text-led merchant checkout terms; no card or device imagery implies offer eligibility.",
+  "news-adib-mumzworld-november-checkout-code":
+    "Text-led issuer checkout terms; no card image represents card eligibility.",
+  "guide-ihg-confirmable-suite-upgrade-uae-paid-rate-check":
+    "Text-led programme terms; no suite image implies confirmed room availability.",
   // slug: reason
+  "guide-uae-credit-card-instalment-refund":
+    "Text-led issuer and retailer refund instructions; no manufactured payment or statement image.",
+  "guide-uae-supplementary-credit-card-spending-limit":
+    "Text-led issuer controls and liability guide; no cardholder account image is needed.",
+  "news-emirates-thanksgiving-dubai-us-check-flight-menu":
+    "Text-led published menu eligibility; no image should imply what one specific flight serves.",
+  "news-etihad-white-friday-2026-compare-final-fare":
+    "Text-led fare comparison; an aircraft image would not substantiate an itinerary or fare.",
+  "news-kempinski-downtown-dubai-black-friday-flexible-2026":
+    "Text-led comparison of terms at two named hotels; no cleared image or on-property inspection is represented.",
+  "news-sheikh-zayed-festival-eid-al-etihad-al-wathba-2026":
+    "Text-led timetable and access advice; no licensed event photograph or attendance claim.",
+  "guide-emirates-flydubai-codeshare-extra-baggage":
+    "Text-led comparison checklist; a photograph cannot show the baggage allowance on a specific ticket.",
+  "guide-uae-credit-card-closure-checklist":
+    "Text-led first-party closure checklist; no stock card, account details or statement image is needed.",
+  "news-motn-2026-al-ain-al-dhafra-opening-hours":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
+  "news-millennium-celebrate-uae-three-night-staycation-2026":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
+  "news-dubai-eid-al-etihad-2026-city-walk-bluewaters":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
+  "news-fly-jinnah-al-ain-islamabad-lahore-december-2026":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
+  "news-marriott-skywards-your-world-rewards-register-before-paid-stay-december-2026":
+    "Text-led account of source terms or a published timetable; no event, hotel or airline imagery has been cleared for this report.",
+  "news-abu-dhabi-maritime-heritage-festival-2026-times-tickets":
+    "Text-led visiting hours and access; no event photograph cleared.",
+  "news-flydubai-five-december-routes-check-return-flight":
+    "Text-led airline timetable; no cleared route photograph or first-hand flight claim.",
+  "news-six-senses-palm-dubai-december-wellness-package":
+    "Text-led hotel package analysis; no cleared property photo or hosted stay claim.",
+  "guide-uae-flight-travel-agent-changes-and-refunds":
+    "Text-led ticket-servicing instructions; no route or airline photograph is evidence of the refund rules.",
+  "guide-uae-card-welcome-bonus-posting-date":
+    "Text-led issuer-terms checklist; no artwork or account data is needed.",
+  "guide-uae-hotel-missing-stay-hilton-marriott-claim":
+    "Text-led missing-stay instructions; no private statement or hotel image represents eligibility.",
   "news-frieze-abu-dhabi-2026-public-tickets-mamsha-sculpture":
     "Text-led timetable and access report; event photography was not cleared for republication.",
   "guide-hotel-best-price-guarantee-uae-accor-ihg":
@@ -50,10 +102,6 @@ const ALLOWED_MISSING: Record<string, string> = {
   "card-nbk-visa-classic": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-gold": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-platinum": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
-  "card-nbf-islamic-visa-infinite": "Text-led issuer profile; no licensed issuer card art is republished.",
-  "card-nbf-islamic-platinum-exclusive": "Text-led issuer profile; no licensed issuer card art is republished.",
-  "card-nbf-visa-infinite": "Text-led issuer profile; no licensed issuer card art is republished.",
-  "card-nbf-platinum-exclusive": "Text-led issuer profile; no licensed issuer card art is republished.",
   "card-rakbank-red": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-rakbank-titanium": "Text-led scope; issuer card art was used as source evidence only, not republished.",
   "card-rakbank-islamic-world": "Text-led exact-product issuer profile; no approved card art is republished.",
@@ -72,11 +120,8 @@ const ALLOWED_MISSING: Record<string, string> = {
   ...Object.fromEntries(["emirates-nbd-share-visa-platinum", "emirates-nbd-u-by-emaar-signature", "liv-tamayaz-platinum"].map(
     slug => [`card-${slug}`, "Text-led exact-tier source profile; no approved card art is republished."],
   )),
-  ...Object.fromEntries(["fab-adnoc-rewards", "fab-cashback-islamic", "fab-etihad-guest-signature", "fab-etihad-guest-platinum", "fab-gems-world", "fab-travel", "fab-du-titanium", "fab-rewards-indulge", "fab-rewards-active", "fab-z-credit-card", "fab-share-infinite", "fab-share-platinum", "fab-share-signature"].map(
+  ...Object.fromEntries(["fab-cashback-islamic", "fab-etihad-guest-signature", "fab-etihad-guest-platinum", "fab-du-titanium", "fab-rewards-indulge", "fab-rewards-active", "fab-z-credit-card", "fab-share-infinite", "fab-share-platinum", "fab-share-signature"].map(
     slug => [`card-${slug}`, "Text-led scoped issuer source profiles; no approved art republished."],
-  )),
-  ...Object.fromEntries(["infinite", "signature", "platinum"].map(
-    tier => [`card-fab-blue-al-futtaim-${tier}`, "Text-led scoped issuer profile; no issuer card artwork is republished."],
   )),
   "card-fab-blue-islamic": "Text-led exact Islamic issuer profile; no issuer card artwork is republished.",
   ...Object.fromEntries(["infinite", "signature", "platinum"].map(

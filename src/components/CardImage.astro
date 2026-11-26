@@ -1,12 +1,10 @@
 ---
-// CardImage — the issuer's own card art when we hold it (data/card-art,
-// fetched from the issuer's website, see src/lib/cardArt.ts), otherwise
-// the existing stock photograph / typographic Cover via StockImage.
+// CardImage — show the verified face for this exact card, or a plain
+// disclosure. Editorial photography is not a substitute for product art.
 //
 // 9 Oct 2026, Chairman: "for the cards pull the actual images". The card
 // sits centred on a quiet panel that takes the same class as the image it
 // replaces, so every grid keeps its dimensions.
-import StockImage from "./StockImage.astro";
 import { getCardArt } from "../lib/cardArt";
 import { cardArtSrcset } from "../lib/stockDerivatives";
 
@@ -17,7 +15,7 @@ interface Props {
   coverSize?: "hero" | "med" | "sm" | "thumb";
   class?: string;
   loading?: "eager" | "lazy";
-  /** Rendered slot width; used with the card-art or photo srcset. */
+  /** Rendered slot width; used with the issuer-art srcset. */
   sizes?: string;
 }
 
@@ -45,15 +43,9 @@ const artSizes = artSrcset ? (sizes ?? "100vw") : undefined;
     />
   </span>
 ) : (
-  <StockImage
-    slug={`card-${cardSlug}`}
-    coverTitle={cardName}
-    coverCategory="Review"
-    coverSize={coverSize}
-    class={className}
-    loading={loading}
-    sizes={sizes}
-  />
+  <span class:list={["dp-card-art-unavailable", className, `is-${coverSize}`]}>
+    Issuer card image unavailable
+  </span>
 )}
 
 <style>
@@ -72,6 +64,20 @@ const artSizes = artSrcset ? (sizes ?? "100vw") : undefined;
     overflow: hidden;
   }
   .dp-card-art.is-thumb { padding: 10% 8%; }
+  .dp-card-art-unavailable {
+    display: grid !important;
+    place-content: center;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    padding: 4px;
+    box-sizing: border-box;
+    background: var(--shade-1);
+    color: var(--ink-soft);
+    text-align: center;
+    font: 500 .75rem/1.25 var(--font-ui);
+    overflow-wrap: anywhere;
+  }
+  .dp-card-art-unavailable.is-thumb { font-size: .625rem; }
   /* More specific than `.dp-prose figure img { height: auto }`: the
      image box must fit this panel before object-fit can contain its art. */
   .dp-card-art img[data-card-art] {
