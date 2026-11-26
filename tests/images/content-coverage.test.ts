@@ -22,7 +22,33 @@ import { HOTEL_PROGRAMME_IDS, programmeImage } from "../../src/lib/programmes";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
+  "news-flydubai-bangkok-don-mueang-third-daily-november-2026":
+    "Text-led announced timetable; no licensed route-specific photograph or flown review.",
+  "news-etihad-guest-november-promo-seats-2026":
+    "Text-led award comparison; no photograph represents live award inventory.",
+  "news-atlantis-the-palm-black-friday-room-park-tickets-2026":
+    "Text-led exact-property terms, without cleared property photography or a verified rate.",
+  "news-avani-ibn-battuta-black-friday-room-upgrade-2026":
+    "Text-led exact-property terms, without cleared property photography or an inspected room.",
+  "news-samsung-uae-wio-card-checkout-november-2026":
+    "Text-led merchant checkout terms; no card or device imagery implies offer eligibility.",
+  "news-adib-mumzworld-november-checkout-code":
+    "Text-led issuer checkout terms; no card image represents card eligibility.",
+  "guide-ihg-confirmable-suite-upgrade-uae-paid-rate-check":
+    "Text-led programme terms; no suite image implies confirmed room availability.",
   // slug: reason
+  "guide-uae-credit-card-instalment-refund":
+    "Text-led issuer and retailer refund instructions; no manufactured payment or statement image.",
+  "guide-uae-supplementary-credit-card-spending-limit":
+    "Text-led issuer controls and liability guide; no cardholder account image is needed.",
+  "news-emirates-thanksgiving-dubai-us-check-flight-menu":
+    "Text-led published menu eligibility; no image should imply what one specific flight serves.",
+  "news-etihad-white-friday-2026-compare-final-fare":
+    "Text-led fare comparison; an aircraft image would not substantiate an itinerary or fare.",
+  "news-kempinski-downtown-dubai-black-friday-flexible-2026":
+    "Text-led comparison of terms at two named hotels; no cleared image or on-property inspection is represented.",
+  "news-sheikh-zayed-festival-eid-al-etihad-al-wathba-2026":
+    "Text-led timetable and access advice; no licensed event photograph or attendance claim.",
   "guide-emirates-flydubai-codeshare-extra-baggage":
     "Text-led comparison checklist; a photograph cannot show the baggage allowance on a specific ticket.",
   "guide-uae-credit-card-closure-checklist":
