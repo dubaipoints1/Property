@@ -6,11 +6,11 @@ export const FEE_SOURCE_HUBS: Readonly<Record<string, { title: string; descripti
   },
   cbi: {
     title: "Commercial Bank International card fee profiles | DubaiPoints",
-    description: "Commercial Bank International’s Mastercard Titanium and Rewards Platinum fee profiles. New applications for each tier are unconfirmed.",
+    description: "Commercial Bank International’s Mastercard Titanium, Rewards Platinum and Rewards World fee profiles. New applications for each tier are unconfirmed.",
   },
   "al-masraf": {
-    title: "Al Masraf Mastercard Platinum fee profile | DubaiPoints",
-    description: "Al Masraf’s conventional Mastercard Platinum tariff and VAT basis. New applications for this tier and any waiver are unconfirmed.",
+    title: "Al Masraf Mastercard Platinum and World fee profiles | DubaiPoints",
+    description: "Al Masraf’s conventional Mastercard Platinum and World tariff and VAT basis. New applications for each tier and any waiver are unconfirmed.",
   },
 };
 

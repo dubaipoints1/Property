@@ -3400,6 +3400,65 @@
           "sha256": "e94086b6272f02899b85ff836c07c363f5214e8462246b229a834ec5e3d55b4c"
         }
       ]
+    },
+    {
+      "slug": "cbi-rewards-world-mastercard",
+      "bank": "cbi",
+      "productUrl": "https://www.cbiuae.com/en/personal/products-and-services/cards/rewards-world-credit-card/",
+      "kfsUrl": "https://www.cbiuae.com/media/w3laroxq/cbi-credit-cards-key-facts-statement-april-2026.pdf",
+      "sourceFixtureIds": [
+        "world-heading",
+        "world-shared-enquiry",
+        "world-mastercard",
+        "world-kfs-link",
+        "world-tariff-link",
+        "world-kfs-primary",
+        "world-tariff-primary",
+        "world-tariff-version"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_cbi-rewards-world.ts",
+        "export": "parseCbiRewardsWorld",
+        "sha256": "546b0ca050eb99b260572b519e5e3ea1fe1fdffb46adec8fb65f64a0cf5aeb31",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-cbi-rewards-world.json",
+          "sha256": "7b2459a874642497383bfc1a2fbbc2e8e1c8696db790e04ef62317631a86f9e0"
+        }
+      ]
+    },
+    {
+      "slug": "al-masraf-mastercard-world",
+      "bank": "al-masraf",
+      "productUrl": "https://www.almasraf.ae/en/personal-banking/personal-card/world",
+      "kfsUrl": "https://www.almasraf.ae/pdf/kfs-credit-card.pdf",
+      "sourceFixtureIds": [
+        "world-product-title",
+        "world-product-canonical",
+        "world-shared-cta",
+        "platinum-shared-cta-witness",
+        "conventional-kfs-index-link",
+        "conventional-tariff-index-link",
+        "conventional-kfs-product-row",
+        "conventional-kfs-fee-referral",
+        "retail-tariff-edition-tax",
+        "retail-tariff-annual-table",
+        "expired-campaign-date"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_al-masraf-world.ts",
+        "export": "parseAlMasrafWorld",
+        "sha256": "f64b4e9ac86be83979e47cadc0bd1315679ac745311550401483db41d152f3da",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-al-masraf-world.json",
+          "sha256": "d9291521684c1f5a4e02ff20d37719aabf11487b1217a89a2a92f70983bbbd6d"
+        }
+      ]
     }
   ]
 }
