@@ -45478,6 +45478,146 @@
     "_lastScraped": null,
     "_lastReviewed": "2026-11-20"
   },
+  "emirates-islamic-cashback": {
+    "bank": "emirates-islamic",
+    "name": "Emirates Islamic Cashback Credit Card",
+    "network": "Visa",
+    "categories": [
+      "Islamic",
+      "cashback"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 367.5,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "standardFeeConditions": "standard-only",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.emiratesislamic.ae/en/cards/credit-cards/cashback-card",
+    "kfsUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+    "lastVerified": "2026-11-26",
+    "sources": [
+      "https://www.emiratesislamic.ae/en/cards/credit-cards/cashback-card",
+      "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "https://www.emiratesislamic.ae/en/soc/cards",
+      "https://www.emiratesislamic.ae/en/offers/cards-travel-offers"
+    ],
+    "publicIssuerReferences": {
+      "mode": "text-only",
+      "documents": [
+        {
+          "title": "Key Fact Statement (KFS) – Credit Cards",
+          "detail": "Cashback column, Annual Fee row. The statement lists amounts in AED including VAT."
+        },
+        {
+          "title": "Cards — Schedule of Charges",
+          "detail": "Profit based Cards table, Cashback Platinum row, Annual Membership Fee column."
+        }
+      ]
+    },
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "joiningFee": "needs-review",
+      "annualFeeWaiver": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "sharia": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "name": [
+        {
+          "parserId": "emirates-islamic/base-cashback-standard/v1",
+          "productScope": "Emirates Islamic Cashback Credit Card",
+          "unit": "Exact public product and named acquisition target; no application entered",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.emiratesislamic.ae/en/cards/credit-cards/cashback-card",
+          "capturedAt": "2026-11-26T09:41:34.382Z",
+          "sourceBodySha256": null,
+          "sourceTextSha256": "4bea7a48024381894eec407e523af149677d62e5830ddc3093ba65194a1e45e4",
+          "sourceRepresentation": "visible-main-dom-and-accessibility-snapshot",
+          "captureMethod": "normal-public-browser-ui",
+          "sourceSnapshotSha256": "fcb809c0199b5807dc69d80e013f84e64e5505989ed4312d1685565d3c5d66af",
+          "sourceScope": "Bounded visible product heading, issuer disclaimer and named acquisition link; no link followed",
+          "firstLine": 1,
+          "lastLine": 4,
+          "rawText": "- heading \"Cashback Card\" [level=2]\n- link \"Apply Now\":\n- link \"Apply Now\":\n- emphasis: \"Disclaimer: The term “Credit Card” refers to the Covered Card, which is structured and offered in accordance with the applicable Shariah principles.\"",
+          "rawTextSha256": "4bea7a48024381894eec407e523af149677d62e5830ddc3093ba65194a1e45e4"
+        }
+      ],
+      "annualFee": [
+        {
+          "parserId": "emirates-islamic/base-cashback-standard/v1",
+          "productScope": "Emirates Islamic Cashback Credit Card",
+          "unit": "Exact Cashback column with the standard annual fee in AED; VAT-inclusive; not a first-year quote",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+          "capturedAt": "2026-11-26T09:40:57.890Z",
+          "sourceBodySha256": null,
+          "sourceTextSha256": "f2d85955d38bf0dad9732e2824445ebdc9f1ad2826f8e6f60e53cc6df1ed97b5",
+          "sourceRepresentation": "visible-main-dom-and-accessibility-snapshot",
+          "captureMethod": "normal-public-browser-ui",
+          "sourceSnapshotSha256": "976d0a87df0cce5a944d516a391fd2e944655faef370c97e30a395fcc095c9b7",
+          "sourceScope": "Bounded KFS card table: one exact product names row, one annual fee row, and VAT basis",
+          "firstLine": 1,
+          "lastLine": 4,
+          "rawText": "- heading \"Key Fact Statement (KFS) – Credit Cards\" [level=1]\n- paragraph: All charges are inclusive of Value Added Tax (VAT) in AED currency.\n    - row \"Product Name Skywards Black Skywards Infinite Skywards Signature Cashback Barça Cashback Cashback Plus Emarati Flex Elite Flex RTA Etihad Premium Etihad Saqer Etihad Ameera Etihad Platinum Switch Cashback Card Amazon World & Amazon Platinum\":\n    - row \"Annual Fee 5,775* 2100 735 367.5 NA 313.95 NA 735 NA NA 2625 943.95 733.95 208.95 313.95 NA\":",
+          "rawTextSha256": "f2d85955d38bf0dad9732e2824445ebdc9f1ad2826f8e6f60e53cc6df1ed97b5"
+        },
+        {
+          "parserId": "emirates-islamic/base-cashback-standard/v1",
+          "productScope": "Emirates Islamic Cashback Credit Card",
+          "unit": "Profit-based Cashback Platinum row: standard annual membership in AED, not profit or a waiver",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.emiratesislamic.ae/en/soc/cards",
+          "capturedAt": "2026-11-26T09:41:17.376Z",
+          "sourceBodySha256": null,
+          "sourceTextSha256": "26ef2a82117081014fba5079aa472cf7db0ca0166ed25d09e1cd3e9df3fbdd78",
+          "sourceRepresentation": "visible-main-dom-and-accessibility-snapshot",
+          "captureMethod": "normal-public-browser-ui",
+          "sourceSnapshotSha256": "2e2b9925978eb61fd98d7b3a08aa7d80a8fc3af0166b075ff54677c994b54ed3",
+          "sourceScope": "Bounded tariff table between Profit based Cards and Fee based Cards; one named Cashback Platinum row with separate membership column",
+          "firstLine": 1,
+          "lastLine": 6,
+          "rawText": "- heading \"Cards\" [level=1]\n- paragraph: All charges, commissions and fees are inclusive of Value Added Tax or any other similar sales tax (VAT).\n- heading \"Profit based Cards\" [level=2]\n    - row \"Credit Card Type Monthly Profit Rate Annual Membership Fee\":\n    - row \"Cashback Platinum 3.69% AED 367.50\":\n- heading \"Fee based Cards\" [level=2]",
+          "rawTextSha256": "26ef2a82117081014fba5079aa472cf7db0ca0166ed25d09e1cd3e9df3fbdd78"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "The named Cashback Visa Covered Card and standard VAT-inclusive primary annual fee were checked. This is not Cashback Plus or Switch Cashback.",
+      "annualFee": "The standard fee is not a first-year or renewal quote. Current waiver terms and the first-year amount were not verified in this profile.",
+      "eligibility": "This profile does not verify minimum salary, individual qualification or approval.",
+      "fxFee": "No verified foreign-currency fee is used.",
+      "earnRates": "No reward rate or return is estimated.",
+      "welcomeBonus": "No current welcome offer is confirmed in this profile."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-26"
+  },
   "cbd-visa-infinite": {
     "bank": "cbd",
     "name": "CBD Visa Infinite Credit Card",

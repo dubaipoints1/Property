@@ -46,6 +46,7 @@ export interface FeeIndexRow {
   bank: string;
   annualFee: number | null;
   renewalOnlyFeeLabel?: string;
+  standardOnlyFeeLabel?: string;
   beforeVatFeeLabel?: string;
   firstYearAnnualFeeStatus: FirstYearAnnualFeeStatus;
   fxFee: number | null;
@@ -114,7 +115,7 @@ export type FirstYearAnnualFeeStatus = "waived" | "standard" | "pending";
  * joining-fee observation must never turn this into a free-first-year claim.
  * Unresolved annual-fee/waiver evidence is not a negative waiver decision. */
 export function firstYearAnnualFeeStatus(card: CardForFeeIndex): FirstYearAnnualFeeStatus {
-  if (card.standardFeeConditions === "renewal-only") return "pending";
+  if (card.standardFeeConditions === "renewal-only" || card.standardFeeConditions === "standard-only") return "pending";
   const relevant = ["annualFee", "annualFeeWaiver", "vatPolicy"];
   const pending = Object.entries(card._provenance ?? {}).some(([field, state]) => state === "needs-review"
     && relevant.some(group => field === group || field.startsWith(group + ".")));
@@ -133,8 +134,8 @@ export function firstYearAnnualFeeLabel(row: Pick<FeeIndexRow, "annualFee" | "fi
     : row.annualFee === 0 ? "No annual fee listed" : "Standard fee";
 }
 
-export function feeIndexAnnualFeeLabel(row: Pick<FeeIndexRow, "annualFee" | "renewalOnlyFeeLabel" | "beforeVatFeeLabel">): string {
-  return row.renewalOnlyFeeLabel ?? row.beforeVatFeeLabel
+export function feeIndexAnnualFeeLabel(row: Pick<FeeIndexRow, "annualFee" | "renewalOnlyFeeLabel" | "standardOnlyFeeLabel" | "beforeVatFeeLabel">): string {
+  return row.renewalOnlyFeeLabel ?? row.standardOnlyFeeLabel ?? row.beforeVatFeeLabel
     ?? (row.annualFee === null ? "Pending" : row.annualFee === 0 ? "Free" : formatAED(row.annualFee));
 }
 
@@ -147,14 +148,16 @@ export function toRow(card: CardForFeeIndex): FeeIndexRow {
   const unverified = !hasUsableSalaryMinimum(card);
   const feeKnown = !cardFeeNeedsReview(card, "annualFee") && Number.isFinite(card.annualFee.amount) && card.annualFee.amount >= 0;
   const renewalOnly = card.standardFeeConditions === "renewal-only";
+  const standardOnly = card.standardFeeConditions === "standard-only";
   const beforeVat = feeKnown && card.annualFee.amount > 0 && card.vatPolicy === "exclusive";
   const display = annualFeeLabel(card);
   return {
     slug: card.slug,
     name: card.name,
     bank: card.bank,
-    annualFee: feeKnown && !renewalOnly && !beforeVat ? card.annualFee.amount : null,
+    annualFee: feeKnown && !renewalOnly && !standardOnly && !beforeVat ? card.annualFee.amount : null,
     ...(feeKnown && renewalOnly ? { renewalOnlyFeeLabel: display.amount + " from year two" } : {}),
+    ...(feeKnown && standardOnly ? { standardOnlyFeeLabel: `${display.amount} standard fee; ${display.qual}` } : {}),
     ...(beforeVat ? { beforeVatFeeLabel: display.amount + (display.qual === "year 2+" ? " from year two" : display.qual ? " · " + display.qual : "") } : {}),
     firstYearAnnualFeeStatus: firstYearAnnualFeeStatus(card),
     fxFee: card.fxFee,

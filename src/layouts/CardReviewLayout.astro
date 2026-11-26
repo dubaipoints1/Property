@@ -220,6 +220,8 @@ const relatedCards = getActiveCards()
   .map(({ c }) => c);
 const compareHref = slug ? `/cards/compare/?cards=${[slug, ...relatedCards.slice(0, 2).map((c) => c.slug)].join(",")}` : "/cards/compare/";
 const cardData = slug ? getCardData(slug) : undefined;
+const issuerDocuments = cardData?.publicIssuerReferences?.documents;
+const issuerLinks = issuerDocuments ? [] : sources;
 const publishedIncome = cardData?.eligibility.publishedMinMonthlyIncome;
 // These issuer batches are the measured surfaces; do not change eager/lazy
 // behaviour on unrelated card profiles or the main card artwork.
@@ -392,7 +394,7 @@ const schema = {
         : welcomeBonusStrap && <p class="dp-card-summary-bonus"><strong>Welcome bonus:</strong> {welcomeBonusStrap}</p>}
       <div class="dp-utility-actions">
         <a class="dp-ui-action dp-ui-primary" href={compareHref}>Compare cards</a>
-        {sources.length > 0 && <a class="dp-ui-action dp-ui-secondary" href="#card-review-sources">See issuer sources</a>}
+        {issuerLinks.length > 0 && <a class="dp-ui-action dp-ui-secondary" href="#card-review-sources">See issuer sources</a>}
       </div>
     </div>
   </UtilityPageHead>
@@ -457,7 +459,7 @@ const schema = {
         />
       )}
 
-      {bankSlug && <BankOffers bankSlug={bankSlug} bankName={bankName} />}
+      {bankSlug && !issuerDocuments && <BankOffers bankSlug={bankSlug} bankName={bankName} />}
 
       <Disclaimer variant="card" />
     </article>
@@ -594,20 +596,23 @@ const schema = {
   </script>}
 
   <!-- Sources footer -->
-  {sources.length > 0 && (
+  {(issuerLinks.length > 0 || issuerDocuments) && (
     <footer class="dp-article-sources dp-card-review-sources" id="card-review-sources">
       <p>
         <strong>{verificationLimited ? "Source record date:" : "Last verified:"}</strong> {fmt(lastVerified)}{verificationLimited && " — some terms remain pending; this is not whole-card verification."}
       </p>
-      <p>
+      {issuerDocuments ? <>
+        <p><strong>Issuer documents checked:</strong> DubaiPoints lists the documents here without linking to bank pages.</p>
+        <ul>{issuerDocuments.map(doc => <li><strong>{doc.title}</strong> — {doc.detail}</li>)}</ul>
+      </> : <p>
         <strong>Sources:</strong>{" "}
-        {sources.map((s, i) => (
+        {issuerLinks.map((s, i) => (
           <>
             {i > 0 && " · "}
             <a href={s} target="_blank" rel="noopener noreferrer">{new URL(s).hostname}</a>
           </>
         ))}
-      </p>
+      </p>}
     </footer>
   )}
 

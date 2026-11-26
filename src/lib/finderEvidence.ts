@@ -1,6 +1,7 @@
 import type { CardData } from "./cardsData";
 import { earnIsPercentage, earnRateFieldPending, formatAED, formatEarnRate, isStructuredAnnualFeeWaiver, loyaltyTag } from "./cardsDataFormat";
 import { cardFeeNeedsReview } from "./cardFeeProvenance";
+import { publicCardIssuerTermUrl } from "./cardIssuerReferences";
 
 // Shared source-qualified ranking inputs and their matching display strings.
 // Derive both from L2; this is not a new rate, AED valuation or extraction.
@@ -38,6 +39,8 @@ export function finderEvidence(card: CardData & { slug?: string }) {
       ? `Standard renewal fee from year two: ${priced(annualFee)}; first-year terms pending.`
     : card.standardFeeConditions === "renewal-waiver"
       ? `Standard renewal fee from year two: ${priced(annualFee)}; ${firstYearAnnualFeeWaived ? "annual fee waived in year one" : "first-year terms pending"}.`
+    : card.standardFeeConditions === "standard-only"
+      ? `Standard annual fee: ${priced(annualFee)} before any waiver; what applies in each year is unconfirmed.`
     : annualFee === 0
       ? "No listed annual fee."
       : `Listed annual fee: ${priced(annualFee)} before any waiver.`;
@@ -98,6 +101,6 @@ export function finderEvidence(card: CardData & { slug?: string }) {
     categoryCaps,
     salaryPending: card.eligibility.minSalary === null || pending("eligibility") || pending("eligibility.minSalary"),
     salaryLabel: card.eligibility.minSalary !== null && card.eligibility.minSalary > 0 ? formatAED(card.eligibility.minSalary) : null,
-    sourceUrl: card.kfsUrl ?? card.sources[0],
+    sourceUrl: publicCardIssuerTermUrl(card),
   };
 }

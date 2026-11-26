@@ -428,7 +428,7 @@ export const CardDataSchema = z.object({
     currency: z.literal("AED").default("AED"),
   }),
   /** A published baseline, not an unconditional first-year charge. */
-  standardFeeConditions: z.enum(["waiver-terms", "introductory-offer-unconfirmed", "renewal-only", "renewal-waiver"]).optional(),
+  standardFeeConditions: z.enum(["waiver-terms", "introductory-offer-unconfirmed", "renewal-only", "renewal-waiver", "standard-only"]).optional(),
   /**
    * Either the structured object (preferred), a legacy free-text string,
    * or null (no waiver path). Pages render the structured form when
@@ -544,6 +544,15 @@ export const CardDataSchema = z.object({
   kfsUrl: z.url().optional(),
   lastVerified: z.coerce.date(),
   sources: z.array(z.url()).min(1),
+  /** Name the checked documents without serving the issuer's links. The
+   * canonical URLs and source receipts are still required for audit. */
+  publicIssuerReferences: z.object({
+    mode: z.literal("text-only"),
+    documents: z.array(z.object({
+      title: z.string().trim().min(1).max(100).regex(/^[^<>:/]+$/),
+      detail: z.string().trim().min(1).max(240).regex(/^(?!.*(?:https?:|www\.|<|>))/i),
+    })).min(1),
+  }).optional(),
   /** Offline/manual primary-source maintenance; never silently enrolled in
    * the existing paid scraper/monitor fleet. */
   refreshMode: z.literal("manual-primary").optional(),

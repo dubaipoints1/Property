@@ -98,7 +98,8 @@ test("the live index is the card set, row for row", () => {
   for (const row of idx.rows) {
     const card = cards.find((k) => k.slug === row.slug)!;
     const preTax = card.vatPolicy === "exclusive" && card.annualFee.amount > 0;
-    assert.equal(row.annualFee, cardFeeNeedsReview(card, "annualFee") || card.standardFeeConditions === "renewal-only" || preTax ? null : card.annualFee.amount, row.slug);
+    const notApplicable = card.standardFeeConditions === "renewal-only" || card.standardFeeConditions === "standard-only";
+    assert.equal(row.annualFee, cardFeeNeedsReview(card, "annualFee") || notApplicable || preTax ? null : card.annualFee.amount, row.slug);
     assert.equal(row.fxFee, card.fxFee, row.slug);
   }
   for (let i = 1; i < idx.rows.length; i++) {

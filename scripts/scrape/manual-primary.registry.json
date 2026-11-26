@@ -2938,6 +2938,35 @@
       ]
     },
     {
+      "slug": "emirates-islamic-cashback",
+      "bank": "emirates-islamic",
+      "productUrl": "https://www.emiratesislamic.ae/en/cards/credit-cards/cashback-card",
+      "kfsUrl": "https://www.emiratesislamic.ae/en/key-information/kfs-credit-cards",
+      "sourceFixtureIds": [
+        "ei-base-cashback-product",
+        "ei-base-cashback-kfs",
+        "ei-base-cashback-tariff",
+        "ei-base-cashback-network"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_emirates-islamic-cashback.ts",
+        "export": "parseEiBaseCashback",
+        "sha256": "bc2164e5ac9e35553130708d63614ff5d6ce48cd12709459e53c0e0ed35dab45",
+        "dependencies": [
+          {
+            "path": "scripts/scrape/_lib.ts",
+            "sha256": "b2108a8ce71b9dd1bd07e92485a0bf921825cbcff78cf865d60798bf49799977"
+          }
+        ]
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-emirates-islamic-cashback.json",
+          "sha256": "cfa27eec0ccfcf232c3851507a4015bd3272ce2f080f20092b47bd7ac06a0f6b"
+        }
+      ]
+    },
+    {
       "slug": "cbd-visa-infinite",
       "bank": "cbd",
       "productUrl": "https://www.cbd.ae/personal/cards/credit-cards/visa-infinite",
