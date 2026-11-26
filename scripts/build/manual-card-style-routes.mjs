@@ -1,6 +1,9 @@
 // Keep this list explicit. Unrelated bank hubs, reviews and the homepage
 // must keep their existing delivery. Add routes only after testing ownership.
 export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
+  "/cards/dib-shams-signature/": "DIB SHAMS Signature Covered Card",
+  "/cards/dib-shams-platinum/": "DIB SHAMS Platinum Covered Card",
+  "/cards/dib-shams-infinite/": "DIB SHAMS Infinite Covered Card",
   "/banks/fab/": "First Abu Dhabi Bank",
   "/cards/fab-cashback-islamic/": "FAB Cashback Islamic Credit Card",
   "/cards/fab-etihad-guest-signature/": "FAB Etihad Guest Signature Credit Card",

@@ -85,14 +85,6 @@ const ALLOWED_MISSING: Record<string, string> = {
     "Text-led campaign analysis; showing one property could imply participation or availability.",
   "guide-uae-credit-card-cash-advance-checklist":
     "Text-led statement and fee checklist; no source-licensed card or statement image is needed.",
-  "card-dib-consumer-cashback-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
-  "card-dib-shams-platinum": "Text-led scope; issuer card art was used as source evidence only, not republished.",
-  "card-dib-prime-platinum": "Text-led scope; issuer card art was used only to identify the network, not republished.",
-  ...Object.fromEntries(["gold", "signature", "infinite"].map(
-    tier => [`card-dib-prime-${tier}`, "Text-led scope; issuer card art was checked only to identify the network, not republished."],
-  )),
-  "card-dib-shams-signature": "Text-led scope; issuer card art was used only to identify the network, not republished.",
-  "card-dib-shams-infinite": "Text-led scope; issuer card art was used only to identify the network, not republished.",
   "bank-nbf": "Text-led issuer directory entry with a plain-text label rather than an issuer mark.",
   "bank-nbk": "Text-led issuer directory entry with a plain-text label rather than an issuer mark.",
   "bank-united-arab-bank": "Text-led issuer directory entry: plain name identifier, not issuer artwork.",
@@ -102,34 +94,11 @@ const ALLOWED_MISSING: Record<string, string> = {
   "card-nbk-visa-classic": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-gold": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
   "card-nbk-visa-platinum": "Text-led, scoped issuer profile; no issuer card artwork is republished.",
-  "card-rakbank-red": "Text-led scope; issuer card art was used as source evidence only, not republished.",
-  "card-rakbank-titanium": "Text-led scope; issuer card art was used as source evidence only, not republished.",
-  "card-rakbank-islamic-world": "Text-led exact-product issuer profile; no approved card art is republished.",
   ...Object.fromEntries(["skywards-signature", "barca-cashback", "rta", "amazon-world", "amazon-platinum", "flex-elite", "cashback-plus"].map(
     slug => [`card-emirates-islamic-${slug}`, "Text-led exact-product issuer profile; no approved card art is republished."],
   )),
-  ...Object.fromEntries(["noon", "platinum-plus", "solitaire"].map(
-    product => [`card-mashreq-${product}`, "Text-led partial source profile; issuer art was checked only to identify the network and is not republished."],
-  )),
-  ...Object.fromEntries(["aura", "aura-world", "aura-world-elite"].map(
-    product => [`card-mashreq-${product}`, "Text-led scoped profile; issuer card artwork is not licensed for republication."],
-  )),
-  ...Object.fromEntries(["hsbc-premier", "hsbc-advance", "sc-journey"].map(
-    slug => [`card-${slug}`, "Text-led scoped issuer profile; no approved card art is republished."],
-  )),
-  ...Object.fromEntries(["emirates-nbd-share-visa-platinum", "emirates-nbd-u-by-emaar-signature", "liv-tamayaz-platinum"].map(
-    slug => [`card-${slug}`, "Text-led exact-tier source profile; no approved card art is republished."],
-  )),
-  ...Object.fromEntries(["fab-cashback-islamic", "fab-etihad-guest-signature", "fab-etihad-guest-platinum", "fab-du-titanium", "fab-rewards-indulge", "fab-rewards-active", "fab-z-credit-card", "fab-share-infinite", "fab-share-platinum", "fab-share-signature"].map(
-    slug => [`card-${slug}`, "Text-led scoped issuer source profiles; no approved art republished."],
-  )),
+  "card-fab-cashback-islamic": "Issuer marketing shows overlapping cards or a lifestyle scene; no standalone exact face approved.",
   "card-fab-blue-islamic": "Text-led exact Islamic issuer profile; no issuer card artwork is republished.",
-  ...Object.fromEntries(["infinite", "signature", "platinum"].map(
-    tier => [`card-fab-etihad-guest-${tier}-islamic`, "Text-led exact Islamic issuer profile; no issuer card artwork is republished."],
-  )),
-  ...Object.fromEntries(["simplicity", "rewards", "premier", "prestige", "ultima"].map(
-    product => [`card-citi-${product}`, "Text-led source profile; no issuer card art has an approved licence record. Do not substitute synthetic card art."],
-  )),
   ...Object.fromEntries(["visa-infinite", "super-saver", "smiles-signature"].map(
     product => [`card-cbd-${product}`, "Text-led exact conventional issuer profile; no issuer card artwork is republished."],
   )),
