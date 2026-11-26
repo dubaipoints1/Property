@@ -85,8 +85,10 @@ test("listings, SpecCard, homepage and review hero share the same provenance-awa
   for (const file of ["src/components/cards/SpecCard.astro", "src/pages/cards/index.astro", "src/pages/cards/cashback.astro", "src/pages/cards/islamic.astro", "src/pages/cards/miles.astro", "src/pages/cards/perks/[perk].astro", "src/pages/cards/salary/[point].astro", "src/pages/banks/[slug].astro", "src/pages/index.astro", "src/layouts/CardReviewLayout.astro"])
     assert.match(read(file), /annualFeeLabel\(/, file);
   assert.match(read("src/components/cards/SpecCard.astro"), /feeLabel\.amount === "Pending" \? "annual fee pending"/);
-  for (const card of getActiveCards().filter(card => cardFeeNeedsReview(card, "annualFee")))
-    assert.deepEqual(annualFeeLabel(card), { amount: "Pending", qual: null }, card.slug);
+  for (const card of getActiveCards().filter(card => cardFeeNeedsReview(card, "annualFee"))) {
+    const qual = card.slug === "emirates-nbd-marriott-bonvoy-world" ? "waiver advertised" : null;
+    assert.deepEqual(annualFeeLabel(card), { amount: "Pending", qual }, card.slug);
+  }
 });
 
 test("held annual or joining fees cannot become a comparison winner, including absent-but-held joining fields", () => {
