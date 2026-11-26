@@ -1,7 +1,7 @@
 {
-  "runId": "45636299151",
-  "attemptedAt": "2026-11-25T14:38:53.190Z",
-  "asOf": "2026-11-25T14:38:53.190Z",
+  "runId": "45835077931",
+  "attemptedAt": "2026-11-26T14:03:09.664Z",
+  "asOf": "2026-11-26T14:03:09.664Z",
   "dryRun": false,
   "healthy": false,
   "inspectedWindowPerQuery": 100,
@@ -10,7 +10,7 @@
   "scope": "Free reads of existing checks only; no new collection, provisioning or card verification.",
   "monitors": {
     "fee-docs": {
-      "attemptedAt": "2026-11-25T14:38:53.190Z",
+      "attemptedAt": "2026-11-26T14:03:09.664Z",
       "listComplete": true,
       "newChecks": 0,
       "readableChecks": 0,
@@ -27,7 +27,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-25T14:38:53.190Z",
+        "asOf": "2026-11-26T14:03:09.664Z",
         "schedule": {
           "cron": "0 12 1 * *",
           "timezone": "UTC"
@@ -41,7 +41,7 @@
       }
     },
     "product-pages": {
-      "attemptedAt": "2026-11-25T14:38:53.190Z",
+      "attemptedAt": "2026-11-26T14:03:09.664Z",
       "listComplete": true,
       "newChecks": 0,
       "readableChecks": 0,
@@ -58,7 +58,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-25T14:38:53.190Z",
+        "asOf": "2026-11-26T14:03:09.664Z",
         "schedule": {
           "cron": "0 9 1,15 * *",
           "timezone": "UTC"
@@ -72,7 +72,7 @@
       }
     },
     "salary-transfer": {
-      "attemptedAt": "2026-11-25T14:38:53.190Z",
+      "attemptedAt": "2026-11-26T14:03:09.664Z",
       "listComplete": true,
       "newChecks": 0,
       "readableChecks": 0,
@@ -89,7 +89,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-25T14:38:53.190Z",
+        "asOf": "2026-11-26T14:03:09.664Z",
         "schedule": {
           "cron": "0 11 8,22 * *",
           "timezone": "UTC"
@@ -103,10 +103,10 @@
       }
     },
     "press-rooms": {
-      "attemptedAt": "2026-11-25T14:38:53.190Z",
+      "attemptedAt": "2026-11-26T14:03:09.664Z",
       "listComplete": true,
-      "newChecks": 1,
-      "readableChecks": 1,
+      "newChecks": 0,
+      "readableChecks": 0,
       "latestObservedCheck": {
         "id": "01a21305-400e-72f0-b321-e8db4c401234",
         "status": "completed",
@@ -120,7 +120,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-25T14:38:53.190Z",
+        "asOf": "2026-11-26T14:03:09.664Z",
         "schedule": {
           "cron": "0 14 * * 1,3,5",
           "timezone": "UTC"
@@ -134,41 +134,41 @@
       }
     },
     "offers": {
-      "attemptedAt": "2026-11-25T14:38:53.190Z",
+      "attemptedAt": "2026-11-26T14:03:09.664Z",
       "listComplete": true,
-      "newChecks": 0,
-      "readableChecks": 0,
+      "newChecks": 1,
+      "readableChecks": 1,
       "latestObservedCheck": {
-        "id": "01a2087f-fab0-7688-aa91-49ab2eac4123",
+        "id": "01a217f3-1796-74a3-81cd-49dbfd89dc99",
         "status": "completed",
-        "scheduledFor": "2026-11-23 13:00:00+00"
+        "scheduledFor": "2026-11-26 13:00:00+00"
       },
       "latestSuccessfulCheck": {
-        "id": "01a2087f-fab0-7688-aa91-49ab2eac4123",
+        "id": "01a217f3-1796-74a3-81cd-49dbfd89dc99",
         "status": "completed",
-        "scheduledFor": "2026-11-23 13:00:00+00",
+        "scheduledFor": "2026-11-26 13:00:00+00",
         "totalPages": 12
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-25T14:38:53.190Z",
+        "asOf": "2026-11-26T14:03:09.664Z",
         "schedule": {
           "cron": "0 13 * * 1,4",
           "timezone": "UTC"
         },
-        "nextRunAt": "2026-11-26 13:00:00+00",
-        "lastRunAt": "2026-11-23 13:02:57.271+00",
+        "nextRunAt": "2026-11-30 13:00:00+00",
+        "lastRunAt": "2026-11-26 13:03:11.884+00",
         "currentCheckId": null,
-        "latestDueSlot": "2026-11-23T13:00:00.000Z",
+        "latestDueSlot": "2026-11-26T13:00:00.000Z",
         "state": "current-complete",
         "reason": "A completed non-empty error-free check covers the latest due slot; not whole-card verification"
       }
     },
     "programme-offers": {
-      "attemptedAt": "2026-11-25T14:38:53.190Z",
+      "attemptedAt": "2026-11-26T14:03:09.664Z",
       "listComplete": true,
-      "newChecks": 1,
-      "readableChecks": 1,
+      "newChecks": 0,
+      "readableChecks": 0,
       "latestObservedCheck": {
         "id": "01a21229-89f9-7084-8331-1a5e3e36cb5f",
         "status": "completed",
@@ -182,7 +182,7 @@
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-25T14:38:53.190Z",
+        "asOf": "2026-11-26T14:03:09.664Z",
         "schedule": {
           "cron": "0 10 * * 3",
           "timezone": "UTC"
@@ -196,32 +196,32 @@
       }
     },
     "press-rooms-weekly": {
-      "attemptedAt": "2026-11-25T14:38:53.190Z",
+      "attemptedAt": "2026-11-26T14:03:09.664Z",
       "listComplete": true,
-      "newChecks": 0,
-      "readableChecks": 0,
+      "newChecks": 1,
+      "readableChecks": 1,
       "latestObservedCheck": {
-        "id": "01a1f343-6a28-74f5-977c-706a05550f32",
+        "id": "01a2174f-b8bb-71ec-a5b4-a4525cf1e32b",
         "status": "completed",
-        "scheduledFor": "2026-11-19 10:00:00+00"
+        "scheduledFor": "2026-11-26 10:00:00+00"
       },
       "latestSuccessfulCheck": {
-        "id": "01a1f343-6a28-74f5-977c-706a05550f32",
+        "id": "01a2174f-b8bb-71ec-a5b4-a4525cf1e32b",
         "status": "completed",
-        "scheduledFor": "2026-11-19 10:00:00+00",
+        "scheduledFor": "2026-11-26 10:00:00+00",
         "totalPages": 2
       },
       "historyComplete": true,
       "collection": {
-        "asOf": "2026-11-25T14:38:53.190Z",
+        "asOf": "2026-11-26T14:03:09.664Z",
         "schedule": {
           "cron": "0 10 * * 4",
           "timezone": "UTC"
         },
-        "nextRunAt": "2026-11-26 10:00:00+00",
-        "lastRunAt": "2026-11-19 10:04:26.806+00",
+        "nextRunAt": "2026-12-03 10:00:00+00",
+        "lastRunAt": "2026-11-26 10:04:12.88+00",
         "currentCheckId": null,
-        "latestDueSlot": "2026-11-19T10:00:00.000Z",
+        "latestDueSlot": "2026-11-26T10:00:00.000Z",
         "state": "current-complete",
         "reason": "A completed non-empty error-free check covers the latest due slot; not whole-card verification"
       }
