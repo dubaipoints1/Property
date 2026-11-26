@@ -6,6 +6,8 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/banks/nbq/": "National Bank of Umm Al Qaiwain",
   "/banks/ajman-bank/": "Ajman Bank",
   "/banks/cbi/": "Commercial Bank International",
+  "/banks/al-masraf/": "Al Masraf",
+  "/cards/al-masraf-mastercard-platinum/": "Al Masraf Mastercard Platinum Credit Card",
   "/cards/cbi-mastercard-titanium/": "CBI Mastercard Titanium Credit Card",
   "/cards/cbi-rewards-platinum-mastercard/": "CBI Rewards Platinum Mastercard Credit Card",
   "/cards/ajman-bank-bright-titanium/": "Ajman Bank BRight Titanium Credit Card",

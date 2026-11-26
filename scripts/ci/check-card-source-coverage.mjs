@@ -14,7 +14,7 @@ const HASH = /^[a-f0-9]{64}$/;
 const BANK_TO_SCRAPER = { 'emirates-nbd': 'enbd' };
 // Explicit issuer identity, not a rule that every bank must use *.ae.
 const BANK_DOMAINS = {
-  adcb: ['adcb.com'], adib: ['adib.ae', 'adib.com'], 'ajman-bank': ['ajmanbank.ae'], cbd: ['cbd.ae'], cbi: ['cbiuae.com'],
+  adcb: ['adcb.com'], adib: ['adib.ae', 'adib.com'], 'ajman-bank': ['ajmanbank.ae'], 'al-masraf': ['almasraf.ae'], cbd: ['cbd.ae'], cbi: ['cbiuae.com'],
   citi: ['citibank.ae'], dib: ['dib.ae'], 'emirates-islamic': ['emiratesislamic.ae'],
   'emirates-nbd': ['emiratesnbd.com'], fab: ['bankfab.com'], hsbc: ['hsbc.ae'],
   liv: ['liv.me'], mashreq: ['mashreq.com'], nbf: ['nbf.ae', 'nbfislamic.ae'], nbk: ['nbk.com'], nbq: ['nbq.ae'], rakbank: ['rakbank.ae'],

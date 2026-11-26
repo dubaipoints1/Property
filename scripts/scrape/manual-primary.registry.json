@@ -3369,6 +3369,37 @@
           "sha256": "73fb96e587cd26eee932e13e5923f576c7863eb9e325e8bb6e59d664b10f5c86"
         }
       ]
+    },
+    {
+      "slug": "al-masraf-mastercard-platinum",
+      "bank": "al-masraf",
+      "productUrl": "https://www.almasraf.ae/en/personal-banking/personal-card/platinum",
+      "kfsUrl": "https://www.almasraf.ae/pdf/kfs-credit-card.pdf",
+      "sourceFixtureIds": [
+        "platinum-product-title",
+        "platinum-product-canonical",
+        "platinum-shared-cta",
+        "world-shared-cta-witness",
+        "conventional-kfs-index-link",
+        "conventional-tariff-index-link",
+        "conventional-kfs-product-row",
+        "conventional-kfs-fee-referral",
+        "retail-tariff-tax",
+        "retail-tariff-annual-table",
+        "expired-campaign-date"
+      ],
+      "parser": {
+        "module": "scripts/scrape/_al-masraf-platinum.ts",
+        "export": "parseAlMasrafPlatinum",
+        "sha256": "61b33d71505e97a29ef926599f6b4a4f0f38e97b963112f09f3a485ae7f02b4a",
+        "dependencies": []
+      },
+      "fixtures": [
+        {
+          "path": "tests/scrape/fixtures/2026-11-al-masraf-platinum.json",
+          "sha256": "e94086b6272f02899b85ff836c07c363f5214e8462246b229a834ec5e3d55b4c"
+        }
+      ]
     }
   ]
 }

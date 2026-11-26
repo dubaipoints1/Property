@@ -104,6 +104,8 @@ const ALLOWED_MISSING: Record<string, string> = {
   "bank-nbq": "Text-led issuer directory entry; no issuer logo or artwork was used.",
   "bank-ajman-bank": "Text-led issuer directory entry; no issuer logo or artwork was used.",
   "bank-cbi": "Text-led issuer directory entry; no issuer logo or artwork was used.",
+  "bank-al-masraf": "Text-led issuer directory entry; no issuer logo or artwork was used.",
+  "card-al-masraf-mastercard-platinum": "Text-led scoped issuer fee profile; no cleared card artwork.",
   "card-cbi-mastercard-titanium": "Text-led scoped issuer fee profile; no cleared card artwork.",
   "card-cbi-rewards-platinum-mastercard": "Text-led scoped issuer fee profile; no cleared card artwork.",
   "card-ajman-bank-bright-titanium": "Text-led scoped issuer fee profile; no cleared card artwork.",
