@@ -38,6 +38,8 @@ function issuerProblem(value, bank) {
   if (problem) return problem;
   const url = new URL(value);
   if ((BANK_DOMAINS[bank] ?? []).some(domain => url.hostname === domain || url.hostname.endsWith(`.${domain}`))) return null;
+  // Mashreqbank PSC publishes its distinct Islamic window here. Allow the exact issuer host only.
+  if (bank === 'mashreq' && url.hostname === 'www.mashreqalislami.com') return null;
   // Wio's published documents use one Contentful tenant, not arbitrary CDN paths.
   if (bank === 'wio' && url.hostname === 'assets.ctfassets.net' && url.pathname.startsWith('/l65m9bcr2nac/')) return null;
   return `host is not an explicitly recognised source for bank ${bank}`;

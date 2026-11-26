@@ -40813,6 +40813,187 @@
     "_lastScraped": null,
     "_lastReviewed": "2026-11-14"
   },
+  "mashreq-alislami-cashback": {
+    "bank": "mashreq",
+    "name": "Mashreq Al Islami Cashback Credit Card",
+    "network": "Visa",
+    "categories": [
+      "Islamic",
+      "cashback"
+    ],
+    "sharia": true,
+    "annualFee": {
+      "amount": 0,
+      "currency": "AED"
+    },
+    "vatPolicy": "inclusive",
+    "fxFee": null,
+    "earnRates": {
+      "everythingElse": null
+    },
+    "eligibility": {
+      "minSalary": null,
+      "salaryTransferRequired": null,
+      "residencyRequired": null,
+      "employmentTypes": []
+    },
+    "applyUrl": "https://www.mashreqalislami.com/en/uae/neo/cards/credit-cards/cashback-credit-card/",
+    "kfsUrl": "https://www.mashreqalislami.com/-/jssmedia/pdfs/mai/neo/cards/mai-credit-card-new-kfs.ashx",
+    "lastVerified": "2026-11-26",
+    "sources": [
+      "https://www.mashreqalislami.com/en/uae/neo/cards/credit-cards/cashback-credit-card/",
+      "https://www.mashreqalislami.com/-/jssmedia/pdfs/mai/neo/cards/mai-credit-card-new-kfs.ashx",
+      "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/mashreq-cards-soc-latest.ashx"
+    ],
+    "refreshMode": "manual-primary",
+    "_provenance": {
+      "joiningFee": "needs-review",
+      "annualFeeWaiver": "needs-review",
+      "fxFee": "needs-review",
+      "earnRates": "needs-review",
+      "eligibility.minSalary": "needs-review",
+      "eligibility.salaryTransferRequired": "needs-review",
+      "eligibility.residencyRequired": "needs-review",
+      "eligibility.employmentTypes": "needs-review",
+      "interestRate": "needs-review",
+      "cashAdvanceFee": "needs-review",
+      "minPayment": "needs-review",
+      "welcomeBonus": "needs-review",
+      "_features": "needs-review",
+      "partnerBrands": "needs-review",
+      "name": "editor-confirmed",
+      "network": "editor-confirmed",
+      "sharia": "editor-confirmed",
+      "annualFee": "editor-confirmed",
+      "vatPolicy": "editor-confirmed"
+    },
+    "_fieldEvidence": {
+      "name": [
+        {
+          "parserId": "mashreq/alislami-base-cashback-standard/v1",
+          "productScope": "Mashreq Al Islami Cashback Credit Card",
+          "unit": "Exact base Cashback identity under the issuer's Islamic window",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.mashreqalislami.com/en/uae/neo/cards/credit-cards/cashback-credit-card/",
+          "capturedAt": "2026-11-26T17:06:37.000Z",
+          "sourceBodySha256": "96b9702b88955d653e74d1c9c05e036c555af4d25cc8bb8d2acf66f9ece917af",
+          "sourceTextSha256": "96b9702b88955d653e74d1c9c05e036c555af4d25cc8bb8d2acf66f9ece917af",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 116982,
+          "sourceEndByte": 117089,
+          "firstLine": 82,
+          "lastLine": 82,
+          "rawText": "<h5 class=\"ui-text ui-text-h5 text-(--main-brand-typography-color) ui-brand-text\">Cashback Credit Card</h5>",
+          "rawTextSha256": "bf68197761aae1cc9da376e284981d62b4557e1b28ea225407f835d805792f4e"
+        },
+        {
+          "parserId": "mashreq/alislami-base-cashback-standard/v1",
+          "productScope": "Mashreq Al Islami Cashback Credit Card",
+          "unit": "Named acquisition entry observed in product HTML; no form opened or approval implied",
+          "vatTreatment": "not-applicable",
+          "sourceUrl": "https://www.mashreqalislami.com/en/uae/neo/cards/credit-cards/cashback-credit-card/",
+          "capturedAt": "2026-11-26T17:06:37.000Z",
+          "sourceBodySha256": "96b9702b88955d653e74d1c9c05e036c555af4d25cc8bb8d2acf66f9ece917af",
+          "sourceTextSha256": "96b9702b88955d653e74d1c9c05e036c555af4d25cc8bb8d2acf66f9ece917af",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 117392,
+          "sourceEndByte": 117745,
+          "firstLine": 82,
+          "lastLine": 82,
+          "rawText": "<a href=\"https://digital.mashreqbank.com/creditcards/ntb/otp-send?utm_pname=maicashback&amp;utm_pcode=MAI92\" class=\"button Button_button__8iztp bg-main-brand hover:bg-main-brand-darker border-main-brand hover:border-main-brand-darker Button_isFullWidthMobile__8iztp text-neutral-white gold:text-neutral-copy-gray px-16\" title=\"Apply Now\" target=\"_self\">",
+          "rawTextSha256": "2fc7e9e23873438aab0cae57e920da24aad4e7745ec999b9b9db5055af3f6c5e"
+        }
+      ],
+      "annualFee": [
+        {
+          "parserId": "mashreq/alislami-base-cashback-standard/v1",
+          "productScope": "Mashreq Al Islami Cashback Credit Card",
+          "unit": "Issuer product's named standard annual fee, not total cost",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.mashreqalislami.com/en/uae/neo/cards/credit-cards/cashback-credit-card/",
+          "capturedAt": "2026-11-26T17:06:37.000Z",
+          "sourceBodySha256": "96b9702b88955d653e74d1c9c05e036c555af4d25cc8bb8d2acf66f9ece917af",
+          "sourceTextSha256": "96b9702b88955d653e74d1c9c05e036c555af4d25cc8bb8d2acf66f9ece917af",
+          "sourceRepresentation": "http-decoded-response-body",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "http-decoded-html-excerpt",
+          "sourceStartByte": 119586,
+          "sourceEndByte": 119676,
+          "firstLine": 82,
+          "lastLine": 82,
+          "rawText": "<h5 class=\"ui-text ui-text-h5 text-(--KPIs-subTitle-color) font-light\">No annual fees</h5>",
+          "rawTextSha256": "91bd9e3930ec639269a46bcd6556f916f8b6dff401549df3acaf1872d646a062"
+        },
+        {
+          "parserId": "mashreq/alislami-base-cashback-standard/v1",
+          "productScope": "Mashreq Al Islami Cashback Credit Card",
+          "unit": "Exact MAI Cashback primary recurring VAT-inclusive fee row; supplementary row excluded",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.mashreqalislami.com/-/jssmedia/pdfs/mai/neo/cards/mai-credit-card-new-kfs.ashx",
+          "capturedAt": "2026-11-26T17:06:38.000Z",
+          "sourceBodySha256": "a7f21bc6c953518f5eef3723742edbbe2ae8590901c3d1e16dddb3b21500684c",
+          "sourceTextSha256": "ebb37203bf8ebaadfff01b14b4ed0094711730082e05a6b6e9b19c5642feb43c",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 1 — Cashback named column, pricing section",
+          "firstLine": 17,
+          "lastLine": 27,
+          "rawText": "           LOYALTY, BENEFITS & PRICING:\n                                                                                                           MAI Cashback                                 MAI Platinum Elite               MAI Emirati Solitaire\n\n                      Annual fee (primary) -\n             AED\n\n                      recurring (VAT inclusive)                                                              Free for Life                                         682.50                              0\n\n\n                      Annual fee (supplementary) -                                                                         0                                        156.45                             0\n                      recurring (VAT inclusive)",
+          "rawTextSha256": "945c95f062acc4591e59b4d1894cff448dce53a731909dc3fe851fa15cf45b7c"
+        },
+        {
+          "parserId": "mashreq/alislami-base-cashback-standard/v1",
+          "productScope": "Mashreq Al Islami Cashback Credit Card",
+          "unit": "Exact named Islamic primary annual fee in the tariff's non-24X7 block",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/mashreq-cards-soc-latest.ashx",
+          "capturedAt": "2026-11-26T17:06:39.000Z",
+          "sourceBodySha256": "e0c2e69f9591deffd81406a8d2656946e550c552126e1f2dc722153440a4ba54",
+          "sourceTextSha256": "9287d6ac1bfe6ff46359e4ce10ca589966cb69bff25af6ff4c32386bfcf943f7",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 2 — unchanged first 235 layout characters of each relevant row; conventional and Islamic Cashback columns preserved separately",
+          "firstLine": 6,
+          "lastLine": 9,
+          "rawText": "Charges (in D)                                                                                           Cashback Card                                         Mashreq Al Islami Cashback Card               Platinum Elite Card\nJoining Fee\nPrincipal Annual Fee                                                                                        Free for life                                                    Free for life                        D 682.50\nSupplementary Annual Fee                                                                                    Free for life                                                    Free for life                        D 156.45",
+          "rawTextSha256": "7b3fe46033ddb63d2156b09f24496f88625f533db7f0300c7f0838c99cfec686"
+        },
+        {
+          "parserId": "mashreq/alislami-base-cashback-standard/v1",
+          "productScope": "Mashreq Al Islami Cashback Credit Card",
+          "unit": "Tariff stated VAT basis",
+          "vatTreatment": "inclusive",
+          "sourceUrl": "https://www.mashreq.com/-/jssmedia/pdfs/neo/cards/mashreq-cards-soc-latest.ashx",
+          "capturedAt": "2026-11-26T17:06:39.000Z",
+          "sourceBodySha256": "e0c2e69f9591deffd81406a8d2656946e550c552126e1f2dc722153440a4ba54",
+          "sourceTextSha256": "9287d6ac1bfe6ff46359e4ce10ca589966cb69bff25af6ff4c32386bfcf943f7",
+          "sourceRepresentation": "pdftotext-layout",
+          "captureMethod": "public-http-reader",
+          "sourceExtraction": "pdftotext-layout",
+          "sourceScope": "PDF page 2 — schedule VAT disclaimer",
+          "firstLine": 2,
+          "lastLine": 2,
+          "rawText": "Disclaimer: With effect from January 2019, all fees and charges mentoned below are inclusive of 5% Value Added Tax unless stated not applicable in the bank SOC’s as per taxaton regulatons.",
+          "rawTextSha256": "ce18d59ba5f6d567ea19ad91237666a1440bd87f788f9280a1757d9dc8428073"
+        }
+      ]
+    },
+    "_dataIssues": {
+      "reviewScope": "The exact Al Islami Cashback Visa card and its standard recurring primary annual membership fee were checked. This is not the conventional Cashback or either 24X7 product.",
+      "eligibility": "This profile does not verify minimum income, qualification or approval.",
+      "fxFee": "No verified foreign-currency fee is used.",
+      "earnRates": "No reward earnings or value are estimated.",
+      "welcomeBonus": "No current welcome offer is confirmed in this profile."
+    },
+    "_lastScraped": null,
+    "_lastReviewed": "2026-11-26"
+  },
   "mashreq-cashback": {
     "_provenance": {
       "bank": "editor-confirmed",
