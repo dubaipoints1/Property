@@ -63,6 +63,7 @@ test("the page still derives its pre-rendered set the documented way", () => {
   assert.match(SOURCE, /score: evidence\.fallbackPending \? null : evidence\.rankRates\.everythingElse \?\? null/);
   assert.match(SOURCE, /a\.score === null \|\| b\.score === null/);
   assert.match(SOURCE, /\.slice\(0, 6\)/);
+  assert.match(SOURCE, /hidden=\{defaultCompareSlugs\.length < 2\}\s*>\{defaultCompareSlugs\.length === 3 \? "Compare first 3 matches" : "Compare 2 matches"\}/);
 });
 
 function renderFinder(search: string, fixtures = getActiveCards()) {
@@ -143,9 +144,27 @@ test("the bare URL preserves server order, distinguishes count from preview and 
   const slugs = result.tiles.map((tile) => tile.slug);
   assert.deepEqual(slugs, defaultSix());
   assert.equal(result.count.textContent, `Showing 6 of ${result.cards.filter((c) => !c.invitationOnly).length} cards that meet your filters`);
+  assert.equal(result.compare.textContent, "Compare first 3 matches →");
+  assert.equal(result.compare.hidden, false);
   const compare = new URL(result.compare.href, "https://dubaipoints.ae");
   assert.equal(compare.searchParams.get("cards"), slugs.slice(0, 3).join(","));
   assert.equal(compare.searchParams.get("via"), "finder");
+});
+
+test("the shortcut compares both matches, but is hidden when fewer than two match", () => {
+  const fixtures = getActiveCards()
+    .filter((card) => card.discontinuedForNewApplicants === undefined && card.eligibility.invitationOnly !== true)
+    .slice(0, 2);
+  const two = renderFinder("?spend=groceries", fixtures);
+  assert.equal(two.tiles.length, 2);
+  assert.equal(two.compare.textContent, "Compare 2 matches →");
+  assert.equal(two.compare.hidden, false);
+  const target = new URL(two.compare.href, "https://dubaipoints.ae");
+  assert.equal(target.searchParams.get("cards"), two.tiles.map((tile) => tile.slug).join(","));
+  assert.equal(target.searchParams.get("spend"), "groceries");
+  assert.equal(target.searchParams.get("via"), "finder");
+  assert.equal(renderFinder("", fixtures.slice(0, 1)).compare.hidden, true);
+  assert.equal(renderFinder("", []).compare.hidden, true);
 });
 
 test("a documented network-choice family matches either network without adding duplicate cards", () => {

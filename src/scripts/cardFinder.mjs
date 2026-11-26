@@ -170,7 +170,7 @@ import { compareKnownAnnualFees } from "../lib/cardFeeProvenance";
         compareState.set("cards", top3.join(","));
         compareState.set("via", "finder");
         compareLink.href = "/cards/compare/?" + compareState;
-        compareLink.textContent = "Compare top " + top3.length + " →";
+        compareLink.textContent = top3.length === 3 ? "Compare first 3 matches →" : "Compare 2 matches →";
         compareLink.hidden = top3.length < 2;
       }
       mode.textContent = (p.prefer !== "none" ? preferenceLabel + " matches first. " : "")

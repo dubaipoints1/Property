@@ -369,7 +369,7 @@ const lastRefreshed = new Date(
           class="dp-ui-action dp-ui-secondary"
           href={`/cards/compare/?cards=${defaultCompareSlugs.join(",")}`}
           hidden={defaultCompareSlugs.length < 2}
-        >Compare top {defaultCompareSlugs.length} →</a>
+        >{defaultCompareSlugs.length === 3 ? "Compare first 3 matches" : "Compare 2 matches"} →</a>
         <button type="button" id="finder-share" class="dp-ui-action dp-ui-quiet" hidden>Copy results link</button>
         <span id="finder-share-status" role="status" aria-live="polite"></span>
         <p class="dp-finder-share-notice">Shared links include salary and spending choices. Share only if you want to.</p>
