@@ -53,6 +53,7 @@ export const MANUAL_CARD_STYLE_ROUTES = Object.freeze({
   "/cards/cbd-visa-infinite/": "CBD Visa Infinite Credit Card",
   "/cards/cbd-super-saver/": "CBD Super Saver Visa Signature Credit Card",
   "/cards/cbd-smiles-signature/": "CBD Smiles Visa Signature Credit Card",
+  "/cards/cbd-al-islami-super-saver/": "CBD Al Islami Super Saver Visa Signature Credit Card",
   "/banks/nbk/": "National Bank of Kuwait UAE",
   "/cards/nbk-visa-classic/": "NBK UAE Visa Classic Credit Card",
   "/cards/nbk-visa-gold/": "NBK UAE Visa Gold Credit Card",

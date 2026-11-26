@@ -356,7 +356,7 @@ export function rankCards(
     const { aedPerUnit, basis, earnBasis } = conv;
     const breakdown = perCategoryBreakdown(card, spend, aedPerUnit, earnBasis, basis === "cashback");
     const { totalNative, totalAED, topCategory } = breakdown;
-    const annualFeeAED = cardFeeNeedsReview(card, "annualFee") || card.standardFeeConditions === "standard-only" ? null
+    const annualFeeAED = cardFeeNeedsReview(card, "annualFee") || card.standardFeeConditions === "standard-only" || card.standardFeeConditions === "kfs-renewal-cohort" ? null
       : card.vatPolicy === "exclusive" ? Math.round(card.annualFee.amount * 105) / 100 : card.annualFee.amount;
     const monthlyFeeAED = annualFeeAED === null ? null : annualFeeAED / 12;
     const verifiedAt =
