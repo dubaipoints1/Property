@@ -92,7 +92,7 @@ test("the Marriott advertised waiver is not a confirmed joining, first-year or r
   const slug = "emirates-nbd-marriott-bonvoy-world";
   const card = getCardData(slug)!;
   const terms = cardValueTerms(card, slug);
-  assert.equal(annualFeeLabel(card).amount, "Pending");
+  assert.deepEqual(annualFeeLabel(card), { amount: "Pending", qual: "waiver advertised" });
   assert.equal(cardFeeAmountLabel(card, "joiningFee"), "Pending");
   assert.equal(toRow({ ...card, slug }).annualFee, null);
   assert.equal(firstYearAnnualFeeStatus(card), "pending");
