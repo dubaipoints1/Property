@@ -22,6 +22,16 @@ import { HOTEL_PROGRAMME_IDS, programmeImage } from "../../src/lib/programmes";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
+  "news-aeroplan-points-expiry-resumes-november-2026":
+    "Text-led official Aeroplan inactivity policy and account checklist; no aircraft or account image evidences an individual expiry.",
+  "news-ihg-voco-dubai-triple-base-points-december-2026":
+    "Text-led brand-specific points terms; no hotel image evidences a qualifying rate or account eligibility.",
+  "news-accor-caravan-hatta-four-times-reward-points":
+    "Text-led programme terms and named participating property, without cleared property photography or a checked room rate.",
+  "news-mashreq-24x7-cashback-card-check-your-spend":
+    "Text-led issuer documents and merchant coding; no product image represents cashback eligibility.",
+  "guide-uae-credit-card-renewal-recurring-payments":
+    "Text-led card updater and merchant cancellation checklist; no account or cardholder details depicted.",
   "news-flydubai-bangkok-don-mueang-third-daily-november-2026":
     "Text-led announced timetable; no licensed route-specific photograph or flown review.",
   "news-etihad-guest-november-promo-seats-2026":
