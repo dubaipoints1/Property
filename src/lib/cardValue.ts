@@ -134,6 +134,15 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
   } else if (!feePending && joining != null) {
     firstFee = joining + standard;
   }
+  const standardOnly = card.standardFeeConditions === "standard-only";
+  if (standardOnly) {
+    // The tariff establishes a standard price, not what a reader would
+    // actually pay at opening or renewal. Keep it out of both estimates.
+    firstFee = null;
+    laterFee = null;
+    firstFeeIssue = "What applies in the first year is unconfirmed.";
+    laterFeeIssue = "What applies at renewal is unconfirmed.";
+  }
 
   return {
     rate,
@@ -141,9 +150,9 @@ export function cardValueTerms(card: CardData, slug: string): CardValueTerms {
     cap,
     firstFee,
     laterFee,
-    assumesYearOneWaiver,
-    hasConditionalRenewalWaiver: !waiverPending && (waiver?.ongoing_threshold_aed ?? 0) > 0,
-    annualWaiver: waiverPending ? "" : annualFeeWaiverDisplay(rawWaiver),
+    assumesYearOneWaiver: !standardOnly && assumesYearOneWaiver,
+    hasConditionalRenewalWaiver: !standardOnly && !waiverPending && (waiver?.ongoing_threshold_aed ?? 0) > 0,
+    annualWaiver: standardOnly || waiverPending ? "" : annualFeeWaiverDisplay(rawWaiver),
     rewardIssue,
     firstFeeIssue,
     laterFeeIssue,

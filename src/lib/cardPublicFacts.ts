@@ -1,4 +1,6 @@
-type PublicFactsCard = {
+import { publicCardIssuerSourceFields, type CardIssuerReferenceFields } from "./cardIssuerReferences";
+
+type PublicFactsCard = CardIssuerReferenceFields & {
   _provenance?: Record<string, string> | null;
   welcomeBonus?: unknown;
   welcomeBonusValue?: number;
@@ -22,7 +24,7 @@ export function cardFieldHeld(card: Pick<PublicFactsCard, "_provenance">, prefix
 }
 
 export function publicCardFacts<T extends PublicFactsCard>(card: T): T {
-  const out = { ...card };
+  const out = { ...publicCardIssuerSourceFields(card) };
   if (cardFieldHeld(card, "welcomeBonus")) {
     // A string is deliberately unpriced by welcomeBonusRank and cannot become
     // an AtAGlance numeric tile. This is unknown, not "no welcome offer".

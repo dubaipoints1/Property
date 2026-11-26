@@ -1,6 +1,7 @@
 ---
 import type { CardData } from "~/lib/cardsData";
-import { formatAED } from "~/lib/cardsDataFormat";
+import { publicCardIssuerTermUrl } from "~/lib/cardIssuerReferences";
+import { annualFeeLabel, formatAED } from "~/lib/cardsDataFormat";
 import {
   calculateCardValue,
   cardValueTerms,
@@ -11,6 +12,9 @@ import {
 interface Props { card: CardData; slug: string; }
 const { card, slug } = Astro.props;
 const terms = cardValueTerms(card, slug);
+const issuerTermsUrl = publicCardIssuerTermUrl(card);
+const standardOnly = card.standardFeeConditions === "standard-only";
+const standardFeeLabel = standardOnly ? annualFeeLabel(card, { separateVatLabel: true }).amount : null;
 const { first, later, rewards, rewardIssue, capBinds } = calculateCardValue(terms, DEFAULT_CARD_VALUE_MONTHLY_SPEND);
 const listedFee = (fee: number | null) => fee == null ? "Confirm with issuer" : formatAED(fee);
 ---
@@ -38,7 +42,9 @@ const listedFee = (fee: number | null) => fee == null ? "Confirm with issuer" : 
     <dl class="dp-card-value-breakdown">
       <div><dt>Annual spend rewards</dt><dd data-card-value-rewards>{formatCardValue(rewards)}</dd></div>
       <div><dt>First-year fee modelled</dt><dd>{listedFee(terms.firstFee)}</dd></div>
-      <div><dt>Standard renewal fee</dt><dd>{listedFee(terms.laterFee)}</dd></div>
+      {standardFeeLabel !== null
+        ? <div><dt>Listed standard annual fee before any waiver</dt><dd>{standardFeeLabel}{standardFeeLabel !== "Pending" && card.annualFee.amount > 0 && (card.vatPolicy === "exclusive" ? " + VAT" : " incl. VAT")}</dd></div>
+        : <div><dt>Standard renewal fee</dt><dd>{listedFee(terms.laterFee)}</dd></div>}
       {terms.minimum != null && (
         <div><dt>Monthly qualifying spend</dt><dd>{formatAED(terms.minimum)}</dd></div>
       )}
@@ -52,7 +58,8 @@ const listedFee = (fee: number | null) => fee == null ? "Confirm with issuer" : 
     {terms.annualWaiver && <p><strong>Waiver terms:</strong> {terms.annualWaiver}</p>}
     {terms.pointsBaseline && <p>Points use our <a href="/valuations/methodology/">published AED comparison baseline</a>, not a cash payout.</p>}
     {terms.hasWelcomeOffer && <p>The listed welcome offer is separate. Check its application route, spend conditions and timing in the card review.</p>}
-    <p><a href={card.kfsUrl ?? card.sources[0]}>Check issuer terms ↗</a></p>
+    {issuerTermsUrl ? <p><a href={issuerTermsUrl}>Check issuer terms ↗</a></p>
+      : card.publicIssuerReferences?.mode === "text-only" && <p>The card review names the issuer documents checked.</p>}
   </details>
 </div>
 

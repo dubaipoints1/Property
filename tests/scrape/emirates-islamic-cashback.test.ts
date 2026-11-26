@@ -10,6 +10,10 @@ import { hasUsableSalaryMinimum } from "../../src/lib/cardEligibility.ts";
 import { annualFeeLabel } from "../../src/lib/cardsDataFormat.ts";
 import { cardValueTerms } from "../../src/lib/cardValue.ts";
 import { finderEvidence } from "../../src/lib/finderEvidence.ts";
+import { calculatorCardPayload } from "../../src/lib/calculatorCardPayload.ts";
+import { publicCardIssuerSourceFields, publicCardIssuerTermUrl } from "../../src/lib/cardIssuerReferences.ts";
+import { feeIndexAnnualFeeLabel, toRow } from "../../src/lib/feeIndex.ts";
+import { cardsSourced } from "../../src/lib/trustFacts.ts";
 
 const sources = fixture.sources;
 type Witness = (typeof sources)[number];
@@ -81,18 +85,45 @@ test("canonical listing does not turn the annual fee into an eligibility, value 
   assert.ok(card && raw && replay);
   assert.ok(getActiveCards().some(c => c.slug === slug));
   assert.deepEqual([card.name, card.network, card.annualFee.amount, card.vatPolicy], [replay.name, replay.network, replay.annualFee, replay.vatPolicy]);
-  assert.deepEqual([card.sources, card.applyUrl, card.kfsUrl], [replay.sources, replay.productUrl, replay.kfsUrl]);
+  assert.deepEqual([raw.sources, raw.applyUrl, raw.kfsUrl], [replay.sources, replay.productUrl, replay.kfsUrl]);
   assert.deepEqual(raw._fieldEvidence, replay.evidence);
   assert.deepEqual(manual.cards.find(x => x.slug === slug)?.sourceFixtureIds, replay.sourceFixtureIds);
   assert.equal(card.lastVerified.toISOString().slice(0, 10), replay.capturedDate);
   assert.equal(hasUsableSalaryMinimum(card), false);
-  assert.match(annualFeeLabel(card).qual ?? "", /first-year offer pending/);
+  assert.equal(annualFeeLabel(card).qual, "first-year and renewal terms unconfirmed");
   const value = cardValueTerms(card, slug), finder = finderEvidence(card);
-  assert.deepEqual([value.firstFee, value.laterFee, value.rate, value.hasWelcomeOffer], [null, replay.annualFee, null, false]);
-  assert.deepEqual([finder.salaryPending, finder.comparableAnnualFee, finder.rankRates], [true, null, {}]);
+  assert.deepEqual([value.firstFee, value.laterFee, value.rate, value.hasWelcomeOffer], [null, null, null, false]);
+  assert.match(value.laterFeeIssue, /renewal is unconfirmed/);
+  assert.deepEqual([finder.salaryPending, finder.comparableAnnualFee, finder.rankRates, finder.sourceUrl], [true, null, {}, undefined]);
+  const fee = toRow({ ...card, slug });
+  assert.equal(fee.annualFee, null, "standard fee alone does not qualify for applicable-price ranking");
+  assert.equal(fee.firstYearAnnualFeeStatus, "pending");
+  assert.match(feeIndexAnnualFeeLabel(fee), /AED\s+367\.50 standard fee; first-year and renewal terms unconfirmed/);
   assert.equal(card.fxFee, null);
   assert.ok(Object.values(card.earnRates).every(v => v == null));
   for (const field of ["joiningFee", "annualFeeWaiver", "welcomeBonus", "loyaltyProgram", "interestRate"]) {
     assert.equal(Object.hasOwn(raw, field), false, field);
   }
+});
+
+test("text-only publication is applied before rendering and serialisation, not to the private register", () => {
+  const publicCard = getCardData(slug), raw = l2[slug];
+  const sibling = getCardData("emirates-islamic-cashback-plus");
+  assert.ok(publicCard && sibling && raw);
+  const rawWithAudit = { ...publicCard, sources: raw.sources, applyUrl: raw.applyUrl, kfsUrl: raw.kfsUrl,
+    _fieldEvidence: raw._fieldEvidence, _scraped_freetext: { offers: raw.applyUrl } };
+  const privateBefore = structuredClone(rawWithAudit);
+  assert.deepEqual([publicCard.sources, publicCard.applyUrl, publicCard.kfsUrl, publicCard._fieldEvidence], [[], undefined, undefined, undefined]);
+  assert.deepEqual(publicCard.publicIssuerReferences?.documents.map(x => x.title), [
+    "Key Fact Statement (KFS) – Credit Cards", "Cards — Schedule of Charges",
+  ]);
+  assert.equal(publicCardIssuerTermUrl(rawWithAudit), undefined);
+  assert.deepEqual(rawWithAudit, privateBefore);
+  assert.doesNotMatch(JSON.stringify(publicCardIssuerSourceFields(rawWithAudit)), /emiratesislamic\.ae|apply-now|sourceUrl/i);
+  const [serialised, ordinary] = calculatorCardPayload([rawWithAudit, sibling]);
+  assert.doesNotMatch(JSON.stringify(serialised), /emiratesislamic\.ae|apply-now|sourceUrl/i);
+  const { _fieldEvidence: _evidence, _scraped_freetext: _draft, ...unchanged } = sibling;
+  assert.deepEqual(ordinary, unchanged);
+  assert.match(publicCardIssuerTermUrl(sibling) ?? "", /emiratesislamic\.ae/);
+  assert.equal(cardsSourced(), `${getActiveCards().length} of ${getActiveCards().length}`);
 });

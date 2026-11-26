@@ -15,7 +15,7 @@ import {
   lastUpdated={new Date("2026-11-07")}
   deck="Every figure traces to a source, every field records how it was obtained, and every correction stays in public. The standards behind that are below."
   facts={[
-    { label: "Carrying a source URL", value: cardsSourced() },
+    { label: "With issuer source notes", value: cardsSourced() },
     { label: "Provenance-tagged fields", value: provenanceFields() },
     { label: "Corrections published", value: String(correctionsPublished()) },
     { label: "Paid placements", value: "None" },
@@ -50,7 +50,7 @@ import {
 
   <section>
     <h2>Sources</h2>
-    <p>Every card review cites at least one source URL — typically the bank's product page and the relevant Schedule of Charges PDF. Where we cite an external publication for a figure (a regulator notice, a news report, a comparison page), the source is linked inline.</p>
+    <p>Every card profile has an issuer source on record. We usually link to the bank’s product page or fee schedule. Where we do not publish bank links, the profile names the issuer documents we checked. When we cite an external publication for a figure, such as a regulator’s notice or a news report, we link to it inline.</p>
   </section>
 
   <section>

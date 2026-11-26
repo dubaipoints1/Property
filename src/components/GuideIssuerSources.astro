@@ -14,8 +14,10 @@ const cards = Astro.props.slugs.flatMap((slug) => {
     <ul>
       {cards.map((card) => (
         <li>
-          <strong>{card.name}</strong>: <a href={card.sources[0]}>issuer source</a>
-          {card.kfsUrl && card.kfsUrl !== card.sources[0] && <> · <a href={card.kfsUrl}>key facts statement</a></>}
+          <strong>{card.name}</strong>: {card.publicIssuerReferences?.mode === "text-only"
+            ? card.publicIssuerReferences.documents.map(doc => doc.title).join("; ")
+            : <><a href={card.sources[0]}>issuer source</a>
+              {card.kfsUrl && card.kfsUrl !== card.sources[0] && <> · <a href={card.kfsUrl}>key facts statement</a></>}</>}
           {" · Card record checked "}<time datetime={card.lastVerified.toISOString().slice(0, 10)}>{card.lastVerified.toLocaleDateString("en-GB", { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" })}</time>
         </li>
       ))}

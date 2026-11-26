@@ -33,13 +33,13 @@ export function banksCovered(): number {
 }
 
 /**
- * How many cards carry at least one source URL, against the total — the
- * Charter's "every card has ≥1 source URL" guarantee, stated as a fraction
- * so it reads as evidence rather than as a claim.
+ * Profiles with a reader-facing issuer source note: either a public
+ * source link or named documents. The canonical source URL is required
+ * separately, including for text-only profiles.
  */
 export function cardsSourced(): string {
   const cards = getActiveCards();
-  const sourced = cards.filter((c) => (c.sources?.length ?? 0) > 0).length;
+  const sourced = cards.filter(c => c.sources.length > 0 || (c.publicIssuerReferences?.documents.length ?? 0) > 0).length;
   return `${sourced} of ${cards.length}`;
 }
 
