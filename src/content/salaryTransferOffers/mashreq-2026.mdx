@@ -1,6 +1,6 @@
 ---
 bank: mashreq
-name: "Mashreq — Salary Transfer Joining Bonus + Early Bird (NEO / Current)"
+name: "Mashreq NEO — Joining bonus and early-bird cashback"
 validFrom: 2026-08-01
 validUntil: 2026-12-31
 tenureMonths: 12
@@ -18,7 +18,7 @@ salaryBands:
         amount: 100
       - label: Early-bird cashback
         amount: 100
-        requires: First salary credited within 90 days of account opening
+        requires: First salary credited within 90 days of opening your first account
   - minSalary: 10000
     maxSalary: 19999
     rewardAmount: 600
@@ -29,7 +29,7 @@ salaryBands:
         amount: 350
       - label: Early-bird cashback
         amount: 250
-        requires: First salary credited within 90 days of account opening
+        requires: First salary credited within 90 days of opening your first account
   - minSalary: 20000
     maxSalary: 49999
     rewardAmount: 1800
@@ -40,7 +40,7 @@ salaryBands:
         amount: 1000
       - label: Early-bird cashback
         amount: 800
-        requires: First salary credited within 90 days of account opening
+        requires: First salary credited within 90 days of opening your first account
   - minSalary: 50000
     maxSalary: null
     rewardAmount: 4000
@@ -51,53 +51,31 @@ salaryBands:
         amount: 2500
       - label: Early-bird cashback
         amount: 1500
-        requires: First salary credited within 90 days of account opening
+        requires: First salary credited within 90 days of opening your first account
 requirements:
-  - "Open a Mashreq or Mashreq NEO Current/Savings account and transfer a net salary of at least AED 5,000/month."
-  - "Terms shown apply to accounts whose FIRST salary lands on or after 1 August 2026 (Mashreq's current published table). Earlier joiners are on the previous joining-bonus structure."
-  - "The early-bird component requires the first salary within 90 days of account opening — a late HR switch forfeits that half of the headline."
-  - "Salary must be credited by a UAE-registered employer through recognised salary-transfer channels — remittance, direct transfer, cash or cheque credits do not qualify. A mislabelled transfer narration can void the bonus."
-  - "Bonus is banded on the FIRST salary credited; later pay rises do not re-band it."
+  - "Hold a Mashreq NEO current or savings account and transfer a salary of at least AED 5,000 a month. Mashreq Gold or Private Banking customers and Mashreq employees do not qualify."
+  - "This is for your first-ever Mashreq salary transfer, from 1 August 2026 onwards. The bonus is once per customer, including if a former account was closed."
+  - "For the extra early-bird cashback, the first salary must arrive within 90 days of opening your first account. The headline includes this conditional extra."
+  - "Salary must come from a UAE-registered employer through a Mashreq-approved channel and be identified as salary. Remittances, manual transfers, cash and cheques do not qualify."
+  - "The first salary sets your band. A pay rise will not lift it; a lower salary can reduce future instalments."
 clawbackTerms: |
-  The dated offer page describes 12 equal monthly instalments. The bonus
-  PDF linked from the same page still describes a different table and a
-  six-month schedule. Check which terms govern your account before relying
-  on the amount or timing. Under the dated page, any month the
-  salary is missed or falls below AED 5,000 forfeits that month's
-  instalment. If no salary is transferred for 2 consecutive months within
-  the 12-month period from the first transfer, ALL previously paid bonus
-  is clawed back by debiting the account.
-sourceUrl: https://www.mashreq.com/en/uae/neo/accounts/current-accounts/salary-transfer/
-lastVerified: 2026-10-13
+  Mashreq pays the bonus in 12 equal monthly instalments, starting within
+  90 days of your first salary. A month without salary or below AED 5,000
+  loses that instalment. Missing salary for two consecutive months during
+  the 12-month bonus period triggers recovery of all bonus paid.
+sourceUrl: https://www.mashreq.com/-/jssmedia/pdfs/neo/accounts-deposits/TnCs/2026/neo-salary-bonus-tnc-en-ar.ashx
+lastVerified: 2026-11-27
 archived: false
 ---
 
-## Real-world notes
+## Which terms apply?
 
-- Re-verified 13 October 2026: the NEO salary-transfer page still shows
-  the AED 100 / 350 / 1,000 / 2,500 joining bonus and the AED 100 / 250 /
-  800 / 1,500 early-bird cashback for first salaries from 1 August 2026.
-  Mashreq Gold's separate salary bonus is not a second live offer: its
-  page says that campaign concluded on 1 March 2025.
-- Re-verified 22 August 2026 against Mashreq's live NEO salary-transfer
-  page and its linked
-  [salary-transfer bonus T&C](https://www.mashreq.com/-/jssmedia/pdfs/neo/accounts-deposits/TnCs/salary-transfer-bonus-tnc-en-ar.ashx).
-  **The offer changed on 1 August 2026**: the base joining bonus re-banded
-  to AED 100 / 350 / 1,000 / 2,500 and a new **early-bird** cashback
-  (AED 100 / 250 / 800 / 1,500) was added for salaries arriving within 90
-  days of account opening — taking the achievable headline to
-  **AED 4,000** at 50,000+.
-- The two components together are what Mashreq's "up to AED 4,000" banner
-  refers to; the table's top joining bonus excludes the early-bird reward.
-- Branded "cashback" by Mashreq, but it is a **fixed AED bonus per salary
-  band** paid in monthly instalments — not an ongoing percentage cashback.
-- Payout discipline is the long game here: instalments run across 12
-  months and a 2-month salary gap inside the first year reverses
-  **everything already paid**. This remains the longest-tailed clawback on
-  the tracker.
-- On 18 November 2026 the dated offer page and the bonus PDF it linked
-  still gave different schedules and joining amounts. The tracker shows
-  the bank's dated offer-page figures; they are not ranked in the calculator
-  until the applicable bank terms can be confirmed.
-- No published hard end date; `validUntil` is a conservative year-end
-  marker, not a bank deadline.
+Mashreq’s [official terms index](https://www.mashreq.com/uae/neo/accounts/terms-and-conditions/)
+separates the pre-August offer from the terms for first salaries from
+1 August 2026. The 12-instalment schedule above applies only to the
+latter group. Do not use it to work out what an earlier switch should pay.
+
+The tracker shows the advertised total and the calculator estimates the
+joining bonus only. Check the early-bird timing separately before
+counting on the extra. Mashreq does not publish a fixed end date in these
+terms; confirm that the offer is still open before arranging payroll.

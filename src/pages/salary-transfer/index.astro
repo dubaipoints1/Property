@@ -11,7 +11,7 @@ import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
 import { getLiveOffers, getLapsedUnarchivedOffers, getUpcomingUnarchivedOffers } from "~/lib/offerAdapter";
-import { classifyCoverage, coverageGuardError, SALARY_OFFER_REVIEW_PENDING_BANKS } from "~/lib/salaryTransferCoverage";
+import { classifyCoverage, coverageGuardError, SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH, SALARY_OFFER_REVIEW_PENDING_BANKS } from "~/lib/salaryTransferCoverage";
 import { TRACKER_SALARY_BANDS as bands } from "~/lib/salaryTransferTrackerBands";
 import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
 import { getSalaryTransferTimeline, getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
@@ -39,17 +39,8 @@ const allBanks = await getCollection("banks");
 const trackedBanks = new Set(offers.map((o) => o.bankSlug));
 const sourceHeldOffers = offers.filter((o) => salaryOfferSourceNote(o));
 const coveredCount = allBanks.length;
-const checkedWithoutLiveOffer = [
-  "adcb",
-  "adib",
-  "al-hilal",
-  "cbd",
-  "citi",
-  "liv",
-  "rakbank",
-  "wio",
-];
-const advertisedWithoutCurrentTerms: string[] = [];
+const checkedWithoutLiveOffer = SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH;
+const advertisedWithoutCurrentTerms = ["al-masraf"];
 const bankName = new Map(allBanks.map((bank) => [bank.id, bank.data.name]));
 // A lapsed, not-yet-archived offer is its own bucket (2026-09-06 P0: the
 // RAKBANK cash reward expired on 31 August and the old all-or-nothing
@@ -116,8 +107,8 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
       {/* Phones get the short labels so the three stats fit one line
           (19 Oct 2026 UX review); the long ones are display:none there,
           so assistive tech reads exactly what is shown. */}
-      <span><span class="lbl st-long">Banks with offers listed:</span><span class="lbl st-short">Banks</span> <strong>{trackedBanks.size} of {coveredCount}</strong></span>
-      <span><span class="lbl st-long">Offers listed:</span><span class="lbl st-short">Offers</span> <strong>{offers.length}</strong></span>
+      <span><span class="lbl st-long">Banks in this snapshot:</span><span class="lbl st-short">Banks</span> <strong>{trackedBanks.size} of {coveredCount}</strong></span>
+      <span><span class="lbl st-long">Offers in this snapshot:</span><span class="lbl st-short">Offers</span> <strong>{offers.length}</strong></span>
       {newestVerification && (
         <span><span class="lbl st-long">Latest offer check:</span><span class="lbl st-short">Latest</span> <strong><span class="st-long">{fmtFull(newestVerification)}</span><span class="st-short">{fmtShort(newestVerification)}</span></strong></span>
       )}
@@ -130,23 +121,21 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   <div class="st-coverage">
     <details class="dp-coverage-note" id="coverage-note">
       <summary>
-        <strong class="st-long">Coverage.</strong> <span class="st-long">{trackedBanks.size} of the {coveredCount} banks profiled on DubaiPoints have an offer listed. See how we classify the others.</span><span class="st-short">Why the other {coveredCount - trackedBanks.size} profiled banks are not listed</span>
+        <strong class="st-long">Coverage.</strong> <span class="st-long">{trackedBanks.size} of the {coveredCount} banks profiled on DubaiPoints have an offer in this snapshot. See how we classify the others.</span><span class="st-short">Why some banks are not listed</span>
       </summary>
       <p>
         At the time of our last checks, we did not confirm a qualifying banded cash offer from{" "}
         {linkList(checkedWithoutLiveOffer).map((b) => (
           <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
         ))}
-        {" "}— ADCB's
-        BEYOND campaign (8 September – 31 December 2026) pays TouchPoints and is
-        open only to employees of companies ADCB has shortlisted, so it doesn't
-        qualify for the cash table (checked 15 October), and ADIB's salary programme
-        remains a prize draw rather than a banded reward (re-checked 22 August).
-        Liv and Wio run rate-based salary benefits — savings interest tied to the
-        salary transfer, not banded cash. Al Hilal's up-to-AED-15,000 campaign
-        ended 4 August 2026 (checked 22 August).
+        {" "}— ADCB’s BEYOND salary offer pays TouchPoints. ADIB and Ajman Bank
+        advertise salary-linked draws, not guaranteed bonuses. ADIB also
+        advertises profit on qualifying savings. Liv and Wio have rate-based
+        benefits, and the NBF and United Arab Bank balance offers are not
+        standalone payroll cashback. NBF’s separate welcome reward requires
+        a referral. We did not confirm a successor to Al Hilal’s expired campaign.
         {coverage.advertisedWithoutCurrentTerms.length > 0 && (
-          <>{" "}We have not verified current terms for advertised offers from {linkList(coverage.advertisedWithoutCurrentTerms).map((b) => (
+          <>{" "}We could not verify a comparable cash amount and full payout terms for advertised offers from {linkList(coverage.advertisedWithoutCurrentTerms).map((b) => (
             <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
           ))}, so those offers are not included.</>
         )}
@@ -164,6 +153,10 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
           <>{" "}{bankName.get(o.bankSlug) ?? o.bankSlug}&rsquo;s {o.name} {getSalaryTransferTimeline(o)?.endDate === "published" ? "ended" : "is no longer listed following our review date of"} {fmtFull(new Date(o.validUntil))}.</>
         ))}
         {" "}Absence from the table is not evidence that no offer exists.
+      </p>
+      <p>
+        We do not rank <a href="https://www.rakbank.ae/globalassets/rakbank/all-pdfs/002-campaign/islamic-salary-transfer-tc-nov-2026.pdf">RAKislamic’s November offer</a> because the bank’s English and Arabic salary tables disagree.
+        The <a href="https://www.bankfab.com/-/media/fab-uds/islamic-banking/promotions/2026/20-percent-salary-transfer-cashback/fab-islamic-terms-and-conditions-20-percent-salary-transfer-campaign-ar.pdf?view=1">separate FAB Islamic offer</a> is also excluded: its published terms do not fully specify the qualifying routes.
       </p>
       {sourceHeldOffers.length > 0 && (
         <p>

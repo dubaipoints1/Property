@@ -18,7 +18,7 @@ export interface SalaryBand {
   rewardAmount: number;
   rewardType: RewardType;
   voucherRetailer?: string;
-  monthsToPayout: number;
+  monthsToPayout: number | null;
   components?: { label: string; amount: number; requires?: string }[];
 }
 
@@ -151,7 +151,9 @@ export function scoreOffer(
   }
 
   const rule = getSalaryOfferRules(offer);
-  if (!input.willStay12Months && rule?.earlyExitNote) {
+  if (!input.willStay12Months && rule?.shortStayConfirmation) {
+    requireConfirmation(rule.shortStayConfirmation);
+  } else if (!input.willStay12Months && rule?.earlyExitNote) {
     reasons.push(rule.earlyExitNote);
   } else if (!input.willStay12Months && offer.tenureMonths >= 6) {
     if (status !== "disqualified") status = "warning";
