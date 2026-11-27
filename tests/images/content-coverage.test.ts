@@ -22,6 +22,18 @@ import { HOTEL_PROGRAMME_IDS, programmeImage } from "../../src/lib/programmes";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
+  "news-dib-emirates-islamic-agreement-cardholders-2026":
+    "Issuer announcement and exchange filing are the evidence; no card or issuer-mark image represents customer terms.",
+  "news-sharjah-eid-al-etihad-museums-fort-maritime-kalba-2026":
+    "Published festival and venue dates are the evidence; no venue image has been cleared or visit claimed.",
+  "news-emirates-eid-al-etihad-onboard-dubai-lounges-december-2026":
+    "Airline menu announcement, not a flown review; no photograph implies lounge or return-flight entitlement.",
+  "news-legoland-dubai-hotel-uae-national-day-theme-park-tickets-2026":
+    "Exact hotel offer terms; no cleared property photography, booked inventory or package experience claimed.",
+  "guide-uae-airline-credit-etihad-money-flydubai-voucher":
+    "Official voucher instructions; no private account, cardholder or booking is depicted.",
+  "news-accor-black-friday-overseas-hotels-no-uae-2026":
+    "Regional offer terms; no picture implies a property is participating or a room is available.",
   "card-mashreq-alislami-cashback": "Text-led: the exact issuer face was used for network evidence only; no reuse permission or replacement art.",
   "card-cbd-al-islami-super-saver": "Text-led issuer fee profile. No cleared Islamic Super Saver image; never substitute the conventional card.",
   "card-mashreq-islamic-platinum-elite": "Text-led: exact issuer Visa face verified for network identity only, not cleared for reuse.",
