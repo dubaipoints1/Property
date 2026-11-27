@@ -19,7 +19,10 @@
  */
 
 // Covering an issuer's cards is not evidence about its salary-transfer offers.
-export const SALARY_OFFER_REVIEW_PENDING_BANKS: readonly string[] = ["ajman-bank", "al-masraf", "cbi", "nbf", "nbk", "nbq", "united-arab-bank"];
+export const SALARY_OFFER_REVIEW_PENDING_BANKS: readonly string[] = ["nbq"];
+export const SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH = [
+  "adcb", "adib", "ajman-bank", "al-hilal", "cbd", "cbi", "citi", "liv", "nbf", "nbk", "united-arab-bank", "wio",
+];
 
 export interface CoverageInput {
   /** Every bank the publication covers (the denominator). */

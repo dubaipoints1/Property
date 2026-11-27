@@ -269,7 +269,7 @@ const SalaryBand = z.object({
   rewardAmount: z.number().nonnegative(),
   rewardType: REWARD_TYPE,
   voucherRetailer: z.string().optional(),
-  monthsToPayout: z.number().int().nonnegative(),
+  monthsToPayout: z.number().int().nonnegative().nullable(),
   components: z
     .array(
       z.object({

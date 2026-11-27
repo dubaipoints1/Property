@@ -8,7 +8,7 @@ import {
   type RewardType,
 } from "../../lib/salaryTransfer";
 import { daysToSalaryOfferEnd } from "../../lib/salaryTransferWindow";
-import { compareSalaryOffersByReward, getSalaryOfferRules, salaryOfferSourceNote } from "../../lib/salaryTransferRules";
+import { compareSalaryOffersByReward, getSalaryOfferRules, salaryOfferComparisonNote, salaryOfferLowerBandQualification, salaryOfferSourceNote } from "../../lib/salaryTransferRules";
 import {
   accountOnlyTrackerTiers,
   type TrackerSalaryBand,
@@ -20,6 +20,7 @@ import type { TrackerCardPath } from "../../lib/salaryTransferTrackerImages";
 import type { SalaryTransferTimeline as Timeline } from "../../lib/salaryTransferTimeline";
 import { isStale } from "../../lib/verification";
 import SalaryTransferTimeline from "../SalaryTransferTimeline";
+import { useSalaryTransferWindow } from "./useSalaryTransferWindow";
 import "./salaryTransferTracker.css";
 
 // Salary-Transfer Tracker island. Markup + styling ported from the Claude
@@ -58,13 +59,17 @@ const validClass = (n: number) => (n <= 14 ? "urgent" : n <= 45 ? "soon" : "far"
 const validText = (n: number) =>
   n < 0 ? "Ended" : n === 0 ? "Ends today" : n === 1 ? "Ends tomorrow" : `Ends in ${n} days`;
 
-function CampaignValidity({ offer, timeline }: { offer: SalaryTransferOffer; timeline?: Timeline }) {
+function CampaignValidity({ offer, timeline, now }: { offer: SalaryTransferOffer; timeline?: Timeline; now: Date | null }) {
   if (timeline?.endDate !== "published") {
     return <span class="dpst-chip-valid far">{timeline ? "No fixed end published" : "Check bank deadline"}</span>;
   }
-  const days = daysToSalaryOfferEnd(offer.validUntil);
+  const end = fmtDate(offer.validUntil);
+  if (!now) {
+    return <span class="dpst-chip-valid far">Bank deadline: <time dateTime={offer.validUntil.slice(0, 10)}>{end}</time></span>;
+  }
+  const days = daysToSalaryOfferEnd(offer.validUntil, now);
   return (
-    <span class={`dpst-chip-valid ${validClass(days)}`}>
+    <span class={`dpst-chip-valid ${validClass(days)}`} title={`Bank deadline: ${end}`}>
       <span class="dot" aria-hidden="true" />
       {validText(days)}
     </span>
@@ -114,7 +119,7 @@ function SalaryForReward({ offer, reward }: { offer: SalaryTransferOffer; reward
   return (
     <span class="dpst-salary">
       <span>{example ? `Example: AED ${fmt(reward.minSalary)}` : rewardRange(reward)}</span>
-      {min < reward.minSalary && <small>Offer starts at AED {fmt(min)}</small>}
+      {min < reward.minSalary && <small>{salaryOfferLowerBandQualification(offer) ?? `Offer starts at AED ${fmt(min)}`}</small>}
     </span>
   );
 }
@@ -157,6 +162,7 @@ function BankIdentity({ offer, journey }: { offer: SalaryTransferOffer; journey:
 
 export default function SalaryTransferTracker({ offers, scope, cardPaths, timelines }: Props) {
   const trackerRoot = useRef<HTMLElement>(null);
+  const { currentOffers, dubaiNow } = useSalaryTransferWindow(offers, timelines);
   useEffect(() => {
     if (trackerRoot.current) return installTrackerResponsiveFocus(trackerRoot.current);
   }, []);
@@ -201,9 +207,9 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
 
   const rows = useMemo(() => {
     const expiry = (offer: SalaryTransferOffer) => timelines[offer.id]?.endDate === "published"
-      ? daysToSalaryOfferEnd(offer.validUntil)
+      ? daysToSalaryOfferEnd(offer.validUntil, dubaiNow ?? undefined)
       : Infinity;
-    return offers
+    return currentOffers
       .flatMap((offer) => {
         const path = cardPaths[offer.id];
         if ((noCard && offer.creditCardRequired && !path?.financeAlternative) ||
@@ -228,7 +234,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
             ? "Qualifying finance required without a card"
             : undefined;
         const example = getSalaryOfferRules(offer)?.trackerExamples;
-        return [{ offer, reward, rewardNote: salaryOfferSourceNote(offer)
+        return [{ offer, reward, rewardNote: salaryOfferSourceNote(offer) ?? salaryOfferComparisonNote(offer, reward)
           ?? (example ? "Bank example · total over 12 qualifying months" : rewardNote) }];
       })
       .sort((a, b) => {
@@ -237,7 +243,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
         const bExpiry = expiry(b.offer);
         return aExpiry === bExpiry ? 0 : aExpiry - bExpiry;
       });
-  }, [offers, activeBand, cash, noCard, sharia, sort, cardPaths, timelines]);
+  }, [currentOffers, activeBand, cash, noCard, sharia, sort, cardPaths, timelines, dubaiNow]);
 
   const toggleOpen = (id: string) =>
     setOpen((prev) => {
@@ -252,7 +258,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
     setSharia(false);
   };
 
-  const banksTracked = new Set(offers.map((o) => o.bankSlug)).size;
+  const banksTracked = new Set(currentOffers.map((o) => o.bankSlug)).size;
 
   // Per-offer detail (fine print + verification). Real fields only.
   const Detail = ({ o }: { o: SalaryTransferOffer }) => {
@@ -345,6 +351,9 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
 
   return (
     <section ref={trackerRoot} class="dpst dpst-responsive" aria-label="UAE salary-transfer offer tracker">
+      <noscript>
+        <p>Saved offer list. With JavaScript off, offers stay on this page after their deadlines. Check the bank’s current terms before switching.</p>
+      </noscript>
       {/* CONTROLS */}
       <div class="dpst-controls">
         {!scope && <>
@@ -547,7 +556,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                         </td>
                         <td class="dpst-band-cell"><SalaryForReward offer={o} reward={reward} /></td>
                         <td>
-                          <CampaignValidity offer={o} timeline={timelines[o.id]} />
+                          <CampaignValidity offer={o} timeline={timelines[o.id]} now={dubaiNow} />
                         </td>
                         <td>
                           <button
@@ -604,7 +613,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                       <span class="ic" aria-hidden="true" />
                       {badgeLabel(reward.rewardType)}
                     </span>
-                    <CampaignValidity offer={o} timeline={timelines[o.id]} />
+                    <CampaignValidity offer={o} timeline={timelines[o.id]} now={dubaiNow} />
                   </div>
                   <p class="dpst-card-salary">
                     <span>Salary for reward</span>

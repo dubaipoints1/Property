@@ -10,10 +10,12 @@ import {
   rankOffers,
 } from "../../lib/salaryTransfer";
 import { Tween, useFlip } from "./motion";
+import { useSalaryTransferWindow, type SalaryOfferEndDates } from "./useSalaryTransferWindow";
 import "./salaryTransferCalculator.css";
 
 interface Props {
   offers: SalaryTransferOffer[];
+  timelines: SalaryOfferEndDates;
 }
 
 const PRODUCT_OPTIONS: { value: AdditionalProduct; label: string }[] = [
@@ -39,7 +41,8 @@ const STATUS_CLASS: Record<string, string> = {
   disqualified: "is-disqualified",
 };
 
-export default function SalaryTransferCalculator({ offers }: Props) {
+export default function SalaryTransferCalculator({ offers, timelines }: Props) {
+  const { currentOffers } = useSalaryTransferWindow(offers, timelines);
   const [monthlySalary, setMonthlySalary] = useState(20000);
   const [willStay12Months, setWillStay12Months] = useState(true);
   const [willingProducts, setWillingProducts] = useState<AdditionalProduct[]>([]);
@@ -75,8 +78,8 @@ export default function SalaryTransferCalculator({ offers }: Props) {
     cashOnly,
   };
 
-  const results = useMemo(() => rankOffers(offers, input), [
-    offers,
+  const results = useMemo(() => rankOffers(currentOffers, input), [
+    currentOffers,
     monthlySalary,
     willStay12Months,
     willingProducts,
@@ -95,6 +98,9 @@ export default function SalaryTransferCalculator({ offers }: Props) {
 
   return (
     <div class="dpsc">
+      <noscript>
+        <p class="dpsc-hint">Saved calculator example. With JavaScript off, changing inputs or passing an offer deadline will not update these results. Check the bank’s current terms before relying on them.</p>
+      </noscript>
       {journey?.band && <p class="dpsc-hint">From your tracker: {TRACKER_SALARY_BANDS.find(b => b.slug === journey.band)?.label}. Enter your exact monthly salary; the tracker band is not an exact salary.</p>}
       <form class="dpsc-form" onSubmit={(e) => e.preventDefault()}>
         <div>

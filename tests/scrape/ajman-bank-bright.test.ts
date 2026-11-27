@@ -7,7 +7,7 @@ import registry from "../../scripts/scrape/manual-primary.registry.json";
 import { brightTiers, parseAjmanBankBright } from "../../scripts/scrape/_ajman-bank-bright.ts";
 import { getActiveCards, getCardData, getCardsByBank } from "../../src/lib/cardsData.ts";
 import { hasUsableSalaryMinimum } from "../../src/lib/cardEligibility.ts";
-import { SALARY_OFFER_REVIEW_PENDING_BANKS } from "../../src/lib/salaryTransferCoverage.ts";
+import { SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH, SALARY_OFFER_REVIEW_PENDING_BANKS } from "../../src/lib/salaryTransferCoverage.ts";
 
 type Input = Parameters<typeof parseAjmanBankBright>[0];
 const sources = fixture.sources as Input;
@@ -38,7 +38,8 @@ test("BRight exact primary annual fees replay without opening or ranking the tie
   }
   assert.deepEqual(getCardsByBank("ajman-bank"), []);
   assert.ok(!getActiveCards().some(c => c.bank === "ajman-bank"));
-  assert.ok(SALARY_OFFER_REVIEW_PENDING_BANKS.includes("ajman-bank"));
+  assert.ok(SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH.includes("ajman-bank"));
+  assert.ok(!SALARY_OFFER_REVIEW_PENDING_BANKS.includes("ajman-bank"));
   assert.equal(getCardData("dib-prime-classic"), undefined);
 });
 

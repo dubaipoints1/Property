@@ -46,13 +46,33 @@ const campaigns: Readonly<Record<string, SalaryTransferTimeline & { termsHash: s
     ],
   },
   "mashreq-2026": {
-    termsHash: "ee5b49c264e27c8f19794f36e0b22abb0db0059fdca5afb18b31e124abec0475",
+    termsHash: "a8d5affeef97cad451ea8c102a16faec7c2b9044dd700a99b404946a3e5fb543",
     endDate: "not-published",
     steps: [
-      "Open an eligible Mashreq or Mashreq NEO account. This schedule applies if the first salary is credited on or after 1 August 2026; the bank does not publish a fixed end date on this offer page.",
-      "Arrange qualifying employer payroll. The first salary sets your band. For the extra early-bird reward, that salary must reach Mashreq within 90 days of opening.",
-      "The dated offer page says 12 equal monthly instalments, but its linked PDF says six. Confirm the applicable schedule with Mashreq before relying on it.",
-      "A month without a qualifying salary loses that instalment. Mashreq says it reverses all bonus already paid if salary stops for two consecutive months in the first year.",
+      "Use an eligible Mashreq NEO current or savings account. This schedule applies to first-ever Mashreq salary transfers from 1 August 2026. The bank does not publish a fixed end date in the terms.",
+      "Arrange qualifying employer payroll. The first salary sets your band. For the extra early-bird reward, the salary must arrive within 90 days of opening your first account.",
+      "The post-August terms give 12 equal monthly instalments, starting within 90 days of the first qualifying salary.",
+      "A missing or below-minimum salary forfeits that month’s instalment. Two consecutive missing salaries during the bonus period trigger recovery of all bonus already paid.",
+    ],
+  },
+  "rakbank-nov-2026": {
+    termsHash: "4a685553032dd02fbd545ab873f87551205c8611367c6adb2ee55f372d3e8949",
+    endDate: "published",
+    steps: [
+      "For an eligible account opened before November, your first qualifying salary must arrive in November. For an eligible account opened in November, the first salary can arrive within 60 days of opening.",
+      "Receive three consecutive qualifying salaries. Only RAKempower Payroll or RAKmore customers can qualify below AED 10,000, and the lowest of your three salaries sets the band.",
+      "The bank pays within 90 days of the later of the campaign ending or the third consecutive qualifying salary.",
+      "Keep the first eligible account in good standing. The bank may recover the reward if it finds you did not qualify. The dispute deadline is separate from the payout clock.",
+    ],
+  },
+  "hsbc-premier-existing-2026": {
+    termsHash: "2d6bdb283af727ebe7a7beba7a0bae926a4351980a351170f6bdf8532afbd80d",
+    endDate: "published",
+    steps: [
+      "Check that you already hold a Premier account opened before August 2024 and do not already transfer your salary into it.",
+      "Receive at least AED 40,000 a month directly from your UAE employer for three consecutive calendar months. The first credit must arrive by the campaign deadline.",
+      "HSBC pays within 90 calendar days after you meet all conditions, which includes receipt of the third salary.",
+      "Closing the account or stopping payroll within 180 days of your first qualifying salary may forfeit the reward or trigger a reversal.",
     ],
   },
   "dib-xtra-2026": {

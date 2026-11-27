@@ -3,8 +3,11 @@ import SalaryTransferCalculatorLayout from "~/layouts/SalaryTransferCalculatorLa
 import SalaryTransferCalculator from "~/components/islands/SalaryTransferCalculator.tsx";
 import SalaryJourney from "~/components/SalaryJourney.astro";
 import { getLiveOffers } from "~/lib/offerAdapter";
+import { getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
 
 const offers = await getLiveOffers();
+const timelines = Object.fromEntries(Object.entries(getSalaryTransferTimelines(offers))
+  .map(([id, { endDate }]) => [id, { endDate }]));
 ---
 
 <SalaryTransferCalculatorLayout
@@ -13,6 +16,6 @@ const offers = await getLiveOffers();
 >
   <div slot="calculator">
     <SalaryJourney />
-    <SalaryTransferCalculator offers={offers} client:load />
+    <SalaryTransferCalculator offers={offers} timelines={timelines} client:load />
   </div>
 </SalaryTransferCalculatorLayout>

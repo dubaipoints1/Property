@@ -13,7 +13,7 @@ import { getLiveOffers, getOffersForBank } from "~/lib/offerAdapter";
 import { formatAED } from "~/lib/salaryTransfer";
 import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
 import { getSalaryTransferTimeline, getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
-import { getSalaryOfferRules, salaryOfferSourceNote } from "~/lib/salaryTransferRules";
+import { getSalaryOfferRules, salaryOfferComparisonNote, salaryOfferSourceNote } from "~/lib/salaryTransferRules";
 import { SALARY_OFFER_REVIEW_PENDING_BANKS } from "~/lib/salaryTransferCoverage";
 import {
   salaryBandsOverlap,
@@ -100,12 +100,14 @@ const siteUrl = siteUrlFrom(Astro.site);
 {
   props.kind === "bank" && (
     <BaseLayout
-      title={salaryReviewPending
+      title={bankOffers.length === 0
         ? `${props.bankName} salary transfer coverage | DubaiPoints`
         : `${props.bankName} salary transfer offer${bankStamp ? ` (${bankStamp})` : ""} | DubaiPoints`}
       description={salaryReviewPending
         ? `Current DubaiPoints coverage status for ${props.bankName} salary-transfer offers. We have not completed a current offer review.`
-        : `Deep-dive on ${props.bankName}'s current salary transfer offer: bands, clawback, payout timing, and expat-relevant gotchas.`}
+        : bankOffers.length === 0
+          ? `DubaiPoints coverage for ${props.bankName} salary transfers. No current qualifying offer is listed; compare other offers or check the bank's offer history.`
+          : `Published salary-transfer terms for ${props.bankName}: salary bands, payout timing, eligibility and possible clawback.`}
       fullWidth
       schema={breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path: "/salary-transfer/" }, { name: props.bankName, path: Astro.url.pathname }])}
     >
@@ -125,9 +127,11 @@ const siteUrl = siteUrlFrom(Astro.site);
         </header>
 
         {bankOffers.length === 0 && (
-          <p class="dp-tracker-empty">{salaryReviewPending
+          <p class="dp-tracker-empty">{props.bankId === "al-masraf"
+            ? <>Al Masraf advertises a <a href="https://www.almasraf.ae/payroll-campaign">Salary Plus joining bonus</a>, but we could not verify a comparable cash amount and full payout terms.</>
+            : salaryReviewPending
             ? "We have not completed a current salary-transfer offer review for this bank."
-            : `No live offer tracked for ${props.bankName}.`}</p>
+            : `No current qualifying offer listed for ${props.bankName}.`}</p>
         )}
 
         {bankOffers.map((o) => {
@@ -135,6 +139,7 @@ const siteUrl = siteUrlFrom(Astro.site);
           const NoteContent = noteEntry?.Content;
           const sourceNote = salaryOfferSourceNote(o);
           const examples = getSalaryOfferRules(o)?.trackerExamples;
+          const timeline = getSalaryTransferTimeline(o);
           return (
             <section class="dp-offer-card">
               <header class="dp-offer-head">
@@ -144,7 +149,8 @@ const siteUrl = siteUrlFrom(Astro.site);
                 </span>
               </header>
 
-              <SalaryTransferTimeline offer={o} timeline={getSalaryTransferTimeline(o)} showHistory={false} />
+              <SalaryTransferTimeline offer={o} timeline={timeline} showHistory={false} />
+              {timeline?.endDate === "published" && <p>These terms are a saved record. Check the published campaign dates above before planning a new switch.</p>}
 
               <div class="dp-st-offer-table" role="region" aria-label={examples ? "Illustrative salary and rewards" : "Salary and reward tiers"} tabindex="0">
               <table class="dp-data-table">
@@ -161,7 +167,7 @@ const siteUrl = siteUrlFrom(Astro.site);
                       <td>
                         {examples ? formatAED(b.minSalary) : `${formatAED(b.minSalary)} – ${b.maxSalary === null ? "no limit" : formatAED(b.maxSalary)}`}
                       </td>
-                      <td class="num">{formatAED(b.rewardAmount)}</td>
+                      <td class="num">{formatAED(b.rewardAmount)}{salaryOfferComparisonNote(o, b) && <div><small>{salaryOfferComparisonNote(o, b)}</small></div>}</td>
                       <td>{b.rewardType.replace("_", " ")}</td>
                     </tr>
                   ))}

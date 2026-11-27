@@ -8,7 +8,7 @@ import { firstYearAnnualFeeStatus } from "../../src/lib/feeIndex";
 import { cardValueTerms } from "../../src/lib/cardValue";
 import { finderEvidence } from "../../src/lib/finderEvidence";
 import { hasUsableSalaryMinimum } from "../../src/lib/cardEligibility";
-import { classifyCoverage, coverageGuardError, SALARY_OFFER_REVIEW_PENDING_BANKS } from "../../src/lib/salaryTransferCoverage";
+import { classifyCoverage, coverageGuardError, SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH, SALARY_OFFER_REVIEW_PENDING_BANKS } from "../../src/lib/salaryTransferCoverage";
 import { bankHasTextOnlyMark } from "../../src/lib/logos";
 import l2 from "../../src/data/cards.json";
 import registry from "../../scripts/scrape/manual-primary.registry.json";
@@ -109,17 +109,18 @@ test("the four active rows match pinned outputs and neither qualify nor estimate
   }
 });
 
-test("the bank remains unreviewed for salary transfer and uses site text without a logo", () => {
+test("balance-led offers do not count as banded cash and the bank uses site text without a logo", () => {
   const bank = "united-arab-bank";
   const coverage = classifyCoverage({
     coveredBanks: [bank], liveOfferBanks: [], lapsedOfferBanks: [],
-    checkedWithoutLiveOffer: [], advertisedWithoutCurrentTerms: [],
+    checkedWithoutLiveOffer: SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH.filter(slug => slug === bank),
+    advertisedWithoutCurrentTerms: [],
     reviewPendingBanks: SALARY_OFFER_REVIEW_PENDING_BANKS.filter(slug => slug === bank),
   });
   assert.equal(coverageGuardError(coverage, 1), null);
-  assert.deepEqual(coverage.reviewPending, [bank]);
+  assert.deepEqual(coverage.reviewPending, []);
   assert.deepEqual(coverage.tracked, []);
-  assert.deepEqual(coverage.checkedWithoutLiveOffer, []);
+  assert.deepEqual(coverage.checkedWithoutLiveOffer, [bank]);
   assert.equal(bankHasTextOnlyMark(bank), true);
   assert.equal(bankHasTextOnlyMark("adcb"), false);
 });
