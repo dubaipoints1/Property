@@ -30,6 +30,8 @@
   font-size: 11px;
 }
 .dpst-responsive .dpst-issuer-mark.is-plated .dpst-issuer-fallback { color: #fff; }
+.dpst-responsive .is-viewport-mark:not(.is-loaded) img { display: none; }
+.dpst-responsive .is-viewport-mark:not(.is-loaded) .dpst-issuer-fallback { display: inline-flex; }
 .dpst-responsive .dpst-bank-copy { min-inline-size: 0; overflow-wrap: anywhere; }
 .dpst-responsive .dpst-salary { display: grid; gap: 3px; }
 .dpst-responsive .dpst-salary small,

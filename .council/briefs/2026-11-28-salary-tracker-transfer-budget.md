@@ -1,0 +1,7 @@
+# Salary Tracker initial-transfer budget
+
+**Directed by Mostafa, 28 November 2026:** “get the Salary Tracker under 200 KiB and keep mobile at 95+. Keep the offers, eligibility and calculator unchanged. Test it and get Council sign-off before making it live.”
+
+**Scope (T3, existing tool delivery only):** `/salary-transfer/`. Do not change any offer record, conditions, rankings, salary windows, source links, calculator implementation, fonts, tracking, or licensed mark. Only the index requests decorative bank marks as they enter the viewport; full issuer names and badge geometry remain, including when JavaScript is off. Consolidate index CSS without changing its compiled order or bytes; leave the original external files and every other route's delivery in place.
+
+**Acceptance:** Compare with live PR #617, measured at 337.1 KiB and mobile 97. On the exact Cloudflare preview and production, run three cold mobile Lighthouse navigations under the same configuration; each must score at least 95 and transfer strictly fewer than 204,800 bytes on the initial-load proxy. Record exact bytes and complete navigation totals to check that the result is not a timing artefact. Verify offer/eligibility/calculator parity, intact keyboard and filter journeys, light/dark, responsive layouts, no-JavaScript terms links, scroll-triggered original marks and error fallback. Obtain independent Council sign-off on the exact tested commit before a normal protected merge, then verify production separately.
