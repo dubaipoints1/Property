@@ -261,6 +261,10 @@ export function transformCardsStyles(html, readCss) {
   return transformStylesWithNormalFontHints(html, readCss, "cards", "Cards");
 }
 
+export function transformSalaryTrackerStyles(html, readCss) {
+  return transformStylesWithNormalFontHints(html, readCss, "salary-tracker", "Salary Tracker");
+}
+
 export function transformDibPrimeStyles(html, readCss) {
   return transformStylesWithNormalFontHints(html, readCss, "dib-prime", "DIB Prime");
 }

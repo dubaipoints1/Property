@@ -1,6 +1,7 @@
 import { Fragment } from "preact";
 import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { installTrackerResponsiveFocus } from "../../scripts/trackerResponsiveFocus.mjs";
+import { observeTrackerIssuerMark } from "../../scripts/trackerIssuerArtwork.mjs";
 import { salaryJourneyHref, salaryJourneyParams, salaryJourneyState, type SalaryJourneyState } from "../../lib/readerJourneyState";
 import {
   offerTitle,
@@ -45,6 +46,7 @@ interface Props {
   scope?: TrackerSalaryBand;
   cardPaths: Record<string, TrackerCardPath>;
   timelines: Record<string, Timeline>;
+  deferIssuerMarks?: boolean;
 }
 
 type SortKey = "value" | "expiry";
@@ -150,16 +152,33 @@ function bankOfferHref(offer: SalaryTransferOffer, journey: SalaryJourneyState) 
   return salaryJourneyHref(`/salary-transfer/${offer.bankSlug}/${anchor}`, { ...journey, offer: offer.id });
 }
 
-function BankIdentity({ offer, journey }: { offer: SalaryTransferOffer; journey: SalaryJourneyState }) {
+function DeferredIssuerMark({ mark, label }: { mark: ReturnType<typeof bankMark>; label: string }) {
+  const target = useRef<HTMLSpanElement>(null);
+  const [visible, setVisible] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    if (target.current) return observeTrackerIssuerMark(target.current, () => setVisible(true));
+  }, []);
+  return (
+    <span ref={target} class={`dpst-issuer-mark${mark.plated ? " is-plated" : ""} is-viewport-mark${loaded ? " is-loaded" : ""}`} aria-hidden="true">
+      {visible && <img src={mark.src} alt="" width="48" height="28" decoding="async"
+        onLoad={() => setLoaded(true)} data-logo-fallback />}
+      <span class="dpst-issuer-fallback">{label}</span>
+    </span>
+  );
+}
+
+function BankIdentity({ offer, journey, deferMark }: { offer: SalaryTransferOffer; journey: SalaryJourneyState; deferMark: boolean }) {
   // Salary offers identify banks and may have multiple product paths. A
   // logo never suggests that a particular credit card is part of an offer.
   const mark = bankMark(offer.bankSlug);
   return (
     <div class="dpst-bank">
+      {deferMark ? <DeferredIssuerMark mark={mark} label={logoTag(offer.bankName)} /> :
       <span class={`dpst-issuer-mark${mark.plated ? " is-plated" : ""}`} aria-hidden="true">
         <img src={mark.src} alt="" width="48" height="28" loading="lazy" decoding="async" data-logo-fallback />
         <span class="dpst-issuer-fallback">{logoTag(offer.bankName)}</span>
-      </span>
+      </span>}
       <span class="dpst-bank-copy">
         <a
           href={bankOfferHref(offer, journey)}
@@ -174,7 +193,7 @@ function BankIdentity({ offer, journey }: { offer: SalaryTransferOffer; journey:
   );
 }
 
-export default function SalaryTransferTracker({ offers, scope, cardPaths, timelines }: Props) {
+export default function SalaryTransferTracker({ offers, scope, cardPaths, timelines, deferIssuerMarks = false }: Props) {
   const trackerRoot = useRef<HTMLElement>(null);
   const { currentOffers, dubaiNow } = useSalaryTransferWindow(offers, timelines);
   useEffect(() => {
@@ -563,7 +582,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                         onClick={() => toggleOpen(o.id)}
                       >
                         <td class="col-bank">
-                          <BankIdentity offer={o} journey={journey} />
+                          <BankIdentity offer={o} journey={journey} deferMark={deferIssuerMarks} />
                           {o.comparisonNote && <p class="dpst-reference-condition">{o.comparisonNote}</p>}
                         </td>
                         <td>
@@ -621,7 +640,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                   class={`dpst-card${isOpen ? " is-open" : ""}`}
                 >
                   <div class="dpst-card-head">
-                    <BankIdentity offer={o} journey={journey} />
+                    <BankIdentity offer={o} journey={journey} deferMark={deferIssuerMarks} />
                     <div class="dpst-card-val">
                       <TrackerReward offer={o} reward={reward} note={rewardNote} />
                     </div>

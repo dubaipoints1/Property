@@ -115,7 +115,7 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   </div>
 
   <!-- Preact island handles filter UI + sortable table -->
-  <SalaryTransferTracker offers={offers} cardPaths={getTrackerCardPaths(offers)} timelines={getSalaryTransferTimelines(offers)} client:load />
+  <SalaryTransferTracker offers={offers} cardPaths={getTrackerCardPaths(offers)} timelines={getSalaryTransferTimelines(offers)} deferIssuerMarks client:load />
 
   <div class="st-coverage">
     <details class="dp-coverage-note" id="coverage-note">
