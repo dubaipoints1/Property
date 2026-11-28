@@ -127,11 +127,17 @@ const siteUrl = siteUrlFrom(Astro.site);
         </header>
 
         {bankOffers.length === 0 && (
-          <p class="dp-tracker-empty">{props.bankId === "al-masraf"
+          <p class="dp-tracker-empty">{props.bankId === "adcb"
+            ? <>ADCB’s <a href="https://www.adcb.com/en/personal/adcb-for-you/emirati-youth-programme/default.aspx">Injaz welcome reward</a> is pending verification of the full terms. Its separate BEYOND offer pays TouchPoints, not cash.</>
+            : props.bankId === "al-masraf"
             ? <>Al Masraf advertises a <a href="https://www.almasraf.ae/payroll-campaign">Salary Plus joining bonus</a>, but we could not verify a comparable cash amount and full payout terms.</>
             : salaryReviewPending
             ? "We have not completed a current salary-transfer offer review for this bank."
             : `No current qualifying offer listed for ${props.bankName}.`}</p>
+        )}
+
+        {props.bankId === "rakbank" && (
+          <p><a href="https://www.rakbank.ae/globalassets/rakbank/all-pdfs/002-campaign/islamic-salary-transfer-tc-nov-2026.pdf">RAKislamic’s November offer</a> is not listed while the English and Arabic salary tables disagree.</p>
         )}
 
         {bankOffers.map((o) => {
@@ -141,7 +147,7 @@ const siteUrl = siteUrlFrom(Astro.site);
           const examples = getSalaryOfferRules(o)?.trackerExamples;
           const timeline = getSalaryTransferTimeline(o);
           return (
-            <section class="dp-offer-card">
+            <section class="dp-offer-card" id={o.comparisonNote ? o.id : undefined}>
               <header class="dp-offer-head">
                 <h2>{o.name}</h2>
                 <span class="dp-offer-verified">
@@ -149,6 +155,7 @@ const siteUrl = siteUrlFrom(Astro.site);
                 </span>
               </header>
 
+              {o.comparisonNote && <p><strong>Not ranked.</strong> {o.comparisonNote} This route is not included in the calculator’s estimates.</p>}
               <SalaryTransferTimeline offer={o} timeline={timeline} showHistory={false} />
               {timeline?.endDate === "published" && <p>These terms are a saved record. Check the published campaign dates above before planning a new switch.</p>}
 
@@ -157,20 +164,23 @@ const siteUrl = siteUrlFrom(Astro.site);
                 <thead>
                   <tr>
                     <th>{examples ? "Example salary" : "Salary band"}</th>
-                    <th>{examples ? "Illustrative total over 12 qualifying months" : sourceNote ? "Offer-page reward" : "Reward"}</th>
+                    <th>{examples ? "Illustrative total over 12 qualifying months" : o.comparisonNote ? "Bank’s listed reward" : sourceNote ? "Offer-page reward" : "Reward"}</th>
                     <th>Type</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {o.salaryBands.map((b) => (
-                    <tr>
-                      <td>
-                        {examples ? formatAED(b.minSalary) : `${formatAED(b.minSalary)} – ${b.maxSalary === null ? "no limit" : formatAED(b.maxSalary)}`}
-                      </td>
-                      <td class="num">{formatAED(b.rewardAmount)}{salaryOfferComparisonNote(o, b) && <div><small>{salaryOfferComparisonNote(o, b)}</small></div>}</td>
-                      <td>{b.rewardType.replace("_", " ")}</td>
-                    </tr>
-                  ))}
+                  {o.salaryBands.map((b) => {
+                    const rewardNote = o.comparisonNote ? undefined : salaryOfferComparisonNote(o, b);
+                    return (
+                      <tr>
+                        <td>
+                          {examples ? formatAED(b.minSalary) : `${formatAED(b.minSalary)} – ${b.maxSalary === null ? "no limit" : formatAED(b.maxSalary)}`}
+                        </td>
+                        <td class="num">{formatAED(b.rewardAmount)}{rewardNote && <div><small>{rewardNote}</small></div>}</td>
+                        <td>{b.rewardType.replace("_", " ")}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
               </div>
@@ -244,6 +254,7 @@ const siteUrl = siteUrlFrom(Astro.site);
     padding: 24px;
     margin-bottom: 24px;
   }
+  .dp-offer-card[id] { scroll-margin-block-start: calc(var(--dp-sticky-header-height) + 12px); }
   .dp-offer-head {
     display: flex; flex-wrap: wrap;
     align-items: baseline; justify-content: space-between;

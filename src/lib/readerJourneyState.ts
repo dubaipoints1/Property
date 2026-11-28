@@ -148,7 +148,7 @@ export function hasSalaryJourney(params: URLSearchParams): boolean {
   return salaryJourneyParams(salaryJourneyState(params)).size > 0 || params.has("st_salary");
 }
 export function salaryJourneyHref(href: string, state: SalaryJourneyState): string {
-  if (!/^\/salary-transfer\/(?:[a-z0-9-]+\/)?(?:#[a-z0-9-]+)?$/.test(href)) return href;
+  if (!/^\/salary-transfer\/(?:[a-z0-9-]+\/)?(?:\?[^#]*)?(?:#[a-z0-9-]+)?$/.test(href)) return href;
   const target = new URL(href, "https://dubaipoints.ae");
   target.search = salaryJourneyParams(state).toString();
   return target.pathname + target.search + target.hash;

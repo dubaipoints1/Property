@@ -15,6 +15,36 @@ export interface SalaryTransferTimeline {
 // campaign dates and the source-backed terms; a date-only verification
 // refresh doesn't require republishing unchanged text.
 const campaigns: Readonly<Record<string, SalaryTransferTimeline & { termsHash: string }>> = {
+  "adib-arrive-2026": {
+    termsHash: "5dfd931d307ca0620e090cfee2c697b7a58bcab3ce643e40aa3aa32e96db7fbc",
+    endDate: "not-published",
+    steps: [
+      "ADIB Arrive is for eligible new-to-bank non-UAE nationals who recently relocated. Your Emirates ID and/or residence visa must have been issued within 180 days before onboarding. The terms give no fixed campaign end.",
+      "Establish qualifying employer payroll within 90 calendar days of onboarding and receive three consecutive qualifying salaries. The salary reward does not require a deposit or holding your salary balance.",
+      "ADIB states payment within 90 calendar days of the third qualifying salary, subject to its eligibility assessment and tier determination.",
+      "Keep the account active and in good standing. The bank may withhold or reverse the reward if eligibility is not met or the account is closed before payment.",
+    ],
+  },
+  "mashreq-al-islami-neo-2026": {
+    termsHash: "f9782fc98a81ca583de95116438827b8501fca37ed2a992c81c37d9f786174f6",
+    endDate: "not-published",
+    steps: [
+      "Use your first eligible Mashreq Al Islami NEO account. The bank lists the current salary route for first credits from August 2026; there is no fixed campaign end in the terms.",
+      "Receive qualifying employer payroll within 90 days of first opening. Your first salary sets the band. This is an alternative to conventional NEO, not a second reward.",
+      "Both components are paid in 12 equal monthly instalments, starting within 90 days of the first qualifying salary.",
+      "A missing or below-minimum credit forfeits that month’s payment. Two consecutive missing salaries during the bonus period trigger recovery of bonus paid.",
+    ],
+  },
+  "fab-islamic-amana-2026": {
+    termsHash: "a2fea1459244e6b316a71e224543b0374f9df9f37be9a0ae560f880054a32508",
+    endDate: "published",
+    steps: [
+      "Receive the first qualifying salary in an Amana Islamic Account and obtain a new FAB Islamic credit card during the campaign. Check the bank’s previous-payroll condition.",
+      "Spend at least 20% of each month’s credited salary on the new qualifying Islamic card. We do not list a savings-only route.",
+      "FAB pays within 45 calendar days after the qualifying salary month ends, for up to 12 qualifying months. The table gives bank examples, not personal quotes.",
+      "Missed months are not paid retrospectively. Closing the account before fulfilment forfeits unpaid cashback.",
+    ],
+  },
   "emirates-islamic-2026-oct-2027-mar": {
     termsHash: "ca48acf5b654d9c4fb14ac5f67e68adef3e72842914019ff662e52e0d2c916d7",
     endDate: "published",

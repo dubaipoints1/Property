@@ -259,7 +259,7 @@ export default function SalaryTransferCalculator({ offers, timelines }: Props) {
                   ))}
                 </ul>
               )}
-              <p><a data-salary-offer={r.offer.id} href={salaryJourneyHref(`/salary-transfer/${r.offer.bankSlug}/`, { ...context, offer: r.offer.id })}>Read offer conditions →</a></p>
+              <p><a data-salary-offer={r.offer.id} href={salaryJourneyHref(`/salary-transfer/${r.offer.bankSlug}/${r.offer.comparisonNote ? `#${r.offer.id}` : ""}`, { ...context, offer: r.offer.id })}>Read offer conditions →</a></p>
             </article>
           ))}
         </div>

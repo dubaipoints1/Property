@@ -11,7 +11,7 @@ import { breadcrumbGraph, siteUrlFrom } from "~/lib/schema";
 import BaseLayout from "~/layouts/BaseLayout.astro";
 import SalaryTransferTracker from "~/components/islands/SalaryTransferTracker.tsx";
 import { getLiveOffers, getLapsedUnarchivedOffers, getUpcomingUnarchivedOffers } from "~/lib/offerAdapter";
-import { classifyCoverage, coverageGuardError, SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH, SALARY_OFFER_REVIEW_PENDING_BANKS } from "~/lib/salaryTransferCoverage";
+import { classifyCoverage, coverageGuardError, SALARY_OFFER_ADVERTISED_WITHOUT_CURRENT_TERMS, SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH, SALARY_OFFER_REVIEW_PENDING_BANKS } from "~/lib/salaryTransferCoverage";
 import { TRACKER_SALARY_BANDS as bands } from "~/lib/salaryTransferTrackerBands";
 import { getTrackerCardPaths } from "~/lib/salaryTransferTrackerImages";
 import { getSalaryTransferTimeline, getSalaryTransferTimelines } from "~/lib/salaryTransferTimeline";
@@ -40,7 +40,6 @@ const trackedBanks = new Set(offers.map((o) => o.bankSlug));
 const sourceHeldOffers = offers.filter((o) => salaryOfferSourceNote(o));
 const coveredCount = allBanks.length;
 const checkedWithoutLiveOffer = SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH;
-const advertisedWithoutCurrentTerms = ["al-masraf"];
 const bankName = new Map(allBanks.map((bank) => [bank.id, bank.data.name]));
 // A lapsed, not-yet-archived offer is its own bucket (2026-09-06 P0: the
 // RAKBANK cash reward expired on 31 August and the old all-or-nothing
@@ -53,7 +52,7 @@ const coverage = classifyCoverage({
   lapsedOfferBanks: lapsedOffers.map((o) => o.bankSlug),
   upcomingOfferBanks: upcomingOffers.map((o) => o.bankSlug),
   checkedWithoutLiveOffer,
-  advertisedWithoutCurrentTerms,
+  advertisedWithoutCurrentTerms: SALARY_OFFER_ADVERTISED_WITHOUT_CURRENT_TERMS,
   reviewPendingBanks: SALARY_OFFER_REVIEW_PENDING_BANKS,
 });
 const guardError = coverageGuardError(coverage, coveredCount);
@@ -101,7 +100,7 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   <div class="dp-pagehead">
     <div class="crumb">DubaiPoints / Salary-transfer tracker</div>
     <h1>The salary-transfer tracker.</h1>
-    <p>Compare listed UAE salary-transfer offers by salary band. Check each offer’s date, bank terms and any source warning before switching.</p>
+    <p>Find listed UAE salary-transfer offers by salary band. Some routes are shown for reference and aren’t ranked. Check the bank terms before switching.</p>
 
     <div class="dp-tools-stats">
       {/* Phones get the short labels so the three stats fit one line
@@ -128,16 +127,14 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
         {linkList(checkedWithoutLiveOffer).map((b) => (
           <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
         ))}
-        {" "}— ADCB’s BEYOND salary offer pays TouchPoints. ADIB and Ajman Bank
-        advertise salary-linked draws, not guaranteed bonuses. ADIB also
-        advertises profit on qualifying savings. Liv and Wio have rate-based
+        {" "}— Ajman Bank advertises a salary-linked draw, not a guaranteed bonus. Liv and Wio have rate-based
         benefits, and the NBF and United Arab Bank balance offers are not
         standalone payroll cashback. NBF’s separate welcome reward requires
         a referral. We did not confirm a successor to Al Hilal’s expired campaign.
         {coverage.advertisedWithoutCurrentTerms.length > 0 && (
-          <>{" "}We could not verify a comparable cash amount and full payout terms for advertised offers from {linkList(coverage.advertisedWithoutCurrentTerms).map((b) => (
+          <>{" "}We could not verify enough to list advertised offers from {linkList(coverage.advertisedWithoutCurrentTerms).map((b) => (
             <>{b.sep}<a href={`/salary-transfer/${b.slug}/`}>{b.name}</a></>
-          ))}, so those offers are not included.</>
+          ))}.</>
         )}
         {coverage.reviewPending.length > 0 && (
           <>{" "}We have not completed a current salary-transfer offer review for {linkList(coverage.reviewPending).map((b) => (
@@ -155,8 +152,11 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
         {" "}Absence from the table is not evidence that no offer exists.
       </p>
       <p>
-        We do not rank <a href="https://www.rakbank.ae/globalassets/rakbank/all-pdfs/002-campaign/islamic-salary-transfer-tc-nov-2026.pdf">RAKislamic’s November offer</a> because the bank’s English and Arabic salary tables disagree.
-        The <a href="https://www.bankfab.com/-/media/fab-uds/islamic-banking/promotions/2026/20-percent-salary-transfer-cashback/fab-islamic-terms-and-conditions-20-percent-salary-transfer-campaign-ar.pdf?view=1">separate FAB Islamic offer</a> is also excluded: its published terms do not fully specify the qualifying routes.
+        <a href="/salary-transfer/adcb/">ADCB’s Injaz welcome reward</a> is pending verification of the full terms. Its separate BEYOND offer pays TouchPoints, not cash. Al Masraf’s Salary Plus joining bonus is also pending verification.
+        <a href="https://www.rakbank.ae/globalassets/rakbank/all-pdfs/002-campaign/islamic-salary-transfer-tc-nov-2026.pdf">RAKislamic’s November offer</a> is pending because the bank’s English and Arabic salary tables disagree.
+        {offers.some((o) => o.id === "fab-islamic-amana-2026") && (
+          <>{" "}The <a href="/salary-transfer/fab/#fab-islamic-amana-2026">FAB Islamic Amana spend route</a> is listed for reference. Its terms specify qualifying card spend; we do not list a savings route.</>
+        )}
       </p>
       {sourceHeldOffers.length > 0 && (
         <p>
@@ -195,7 +195,7 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
   <section class="dp-tools-methodology" id="methodology">
     <div class="col">
       <div class="lbl">How we verify</div>
-      <p>Each published offer is checked against a bank product page or campaign terms. Verification dates are stamped per offer, and unsupported entries stay out of the current tracker.</p>
+      <p>Each listed offer is checked against a bank product page or campaign terms. We date each check, label routes that aren't ranked and leave out offers whose terms we can't verify.</p>
     </div>
     <div class="col">
       <div class="lbl">How we value vouchers</div>

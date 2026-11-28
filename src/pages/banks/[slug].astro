@@ -94,17 +94,17 @@ const cardTiles = allCards.map((c) => {
           <div class="dp-bank-salary-card">
             <p class="dp-bank-salary-name">{o.name}</p>
             <p class="dp-bank-salary-meta">
-              {salaryOfferSourceNote(o) ?? <>
+              {salaryOfferSourceNote(o) ?? (o.comparisonNote ? <>Eligibility to check · {o.comparisonNote}</> : <>
                 Up to{" "}
                 <strong>{formatAED(highestBand.rewardAmount)}</strong>{" "}
                 {comparisonNote && <>· {comparisonNote}{" "}</>}
                 · {commitmentNote} · {getSalaryTransferTimeline(o)?.endDate === "published" ? (
                   <>ends <time datetime={o.validUntil.slice(0, 10)}>{new Date(o.validUntil).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })}</time></>
                 ) : "check deadline with the bank"}
-              </>}
+              </>)}
             </p>
             <p class="dp-bank-salary-cta">
-              <a href={`/salary-transfer/${bank.id}/`}>Full offer details →</a>
+              <a href={`/salary-transfer/${bank.id}/${o.comparisonNote ? `#${o.id}` : ""}`}>Full offer details →</a>
             </p>
           </div>
           );

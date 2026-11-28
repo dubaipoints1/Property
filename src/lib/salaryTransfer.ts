@@ -33,6 +33,7 @@ export interface SalaryTransferOffer {
   sharia: boolean;
   creditCardRequired: boolean;
   additionalProductsRequired: AdditionalProduct[];
+  comparisonNote?: string;
   salaryBands: SalaryBand[];
   requirements: string[];
   clawbackTerms: string;
@@ -151,6 +152,9 @@ export function scoreOffer(
   }
 
   const rule = getSalaryOfferRules(offer);
+  // Verified cohort/card routes remain visible, but this calculator cannot
+  // establish their prerequisites from a salary or a product preference.
+  if (offer.comparisonNote) requireConfirmation(offer.comparisonNote);
   if (!input.willStay12Months && rule?.shortStayConfirmation) {
     requireConfirmation(rule.shortStayConfirmation);
   } else if (!input.willStay12Months && rule?.earlyExitNote) {
@@ -183,7 +187,7 @@ export function scoreOffer(
       requireConfirmation("Confirm the required card, application and spending conditions with the bank.");
     }
   }
-  if (rule?.needsConfirmation) requireConfirmation(rule.needsConfirmation);
+  if (!offer.comparisonNote && rule?.needsConfirmation) requireConfirmation(rule.needsConfirmation);
   if (rule?.confirmHighestTier && band.maxSalary === null) requireConfirmation(rule.confirmHighestTier);
   if (band.rewardType === "points") requireConfirmation("Points currency is not identified; no AED value is estimated.");
 

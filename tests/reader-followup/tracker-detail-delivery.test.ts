@@ -18,6 +18,6 @@ test("closed controlled containers and accessible disclosure IDs remain stable",
   }
   assert.equal((source.match(/aria-expanded=\{isOpen\}/g) ?? []).length, 2);
   assert.match(source, /if \(state\.offer && offers\.some\(offer => offer\.id === state\.offer\)\) setOpen/);
-  assert.match(source, /salaryJourneyHref\(`\/salary-transfer\/\$\{offer\.bankSlug\}\/`/,
+  assert.ok(source.includes('return salaryJourneyHref(`/salary-transfer/${offer.bankSlug}/${anchor}`,'),
     "individual offer-detail links must remain present in server-rendered rows");
 });

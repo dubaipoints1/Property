@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { installTrackerResponsiveFocus } from "../../scripts/trackerResponsiveFocus.mjs";
 import { salaryJourneyHref, salaryJourneyParams, salaryJourneyState, type SalaryJourneyState } from "../../lib/readerJourneyState";
 import {
+  offerTitle,
   type SalaryBand,
   type SalaryTransferOffer,
   type RewardType,
@@ -11,6 +12,7 @@ import { daysToSalaryOfferEnd } from "../../lib/salaryTransferWindow";
 import { compareSalaryOffersByReward, getSalaryOfferRules, salaryOfferComparisonNote, salaryOfferLowerBandQualification, salaryOfferSourceNote } from "../../lib/salaryTransferRules";
 import {
   accountOnlyTrackerTiers,
+  salaryBandsOverlap,
   type TrackerSalaryBand,
   selectTrackerReward,
   TRACKER_SALARY_BANDS as BANDS,
@@ -136,6 +138,18 @@ function RewardValue({ reward, note }: { reward: SalaryBand; note?: string }) {
   );
 }
 
+function TrackerReward({ offer, reward, note }: { offer: SalaryTransferOffer; reward: SalaryBand; note?: string }) {
+  if (offer.comparisonNote) {
+    return <small class="dpst-reward-note"><strong>Not ranked</strong><br />See conditions</small>;
+  }
+  return <RewardValue reward={reward} note={note} />;
+}
+
+function bankOfferHref(offer: SalaryTransferOffer, journey: SalaryJourneyState) {
+  const anchor = offer.comparisonNote ? `#${offer.id}` : "";
+  return salaryJourneyHref(`/salary-transfer/${offer.bankSlug}/${anchor}`, { ...journey, offer: offer.id });
+}
+
 function BankIdentity({ offer, journey }: { offer: SalaryTransferOffer; journey: SalaryJourneyState }) {
   // Salary offers identify banks and may have multiple product paths. A
   // logo never suggests that a particular credit card is part of an offer.
@@ -148,13 +162,13 @@ function BankIdentity({ offer, journey }: { offer: SalaryTransferOffer; journey:
       </span>
       <span class="dpst-bank-copy">
         <a
-          href={salaryJourneyHref(`/salary-transfer/${offer.bankSlug}/`, { ...journey, offer: offer.id })}
+          href={bankOfferHref(offer, journey)}
           class="dpst-bank-name"
           onClick={(event) => event.stopPropagation()}
         >
           {offer.bankName}
         </a>
-        <span class="dpst-bank-tier">{offer.name}</span>
+        <span class="dpst-bank-tier">{offer.comparisonNote ? offerTitle(offer.bankName, offer.name) : offer.name}</span>
       </span>
     </div>
   );
@@ -215,11 +229,12 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
         if ((noCard && offer.creditCardRequired && !path?.financeAlternative) ||
           (sharia && !offer.sharia)) return [];
         const accountLabel = path?.accountRewardComponent;
-        const reward = selectTrackerReward(
-          noCard && accountLabel ? accountOnlyTrackerTiers(offer.salaryBands, accountLabel) : offer.salaryBands,
-          activeBand,
-          cash,
-        );
+        const tiers = noCard && accountLabel ? accountOnlyTrackerTiers(offer.salaryBands, accountLabel) : offer.salaryBands;
+        // Reference routes may match filters, but must never select or exhibit
+        // their largest advertised amount as a comparison result.
+        const reward = offer.comparisonNote
+          ? tiers.find((tier) => (!cash || tier.rewardType === "cash") && (!activeBand || salaryBandsOverlap(tier, activeBand)))
+          : selectTrackerReward(tiers, activeBand, cash);
         if (!reward) return [];
         const accountAmount = accountLabel
           ? accountOnlyTrackerTiers([reward], accountLabel)[0]?.rewardAmount
@@ -234,10 +249,13 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
             ? "Qualifying finance required without a card"
             : undefined;
         const example = getSalaryOfferRules(offer)?.trackerExamples;
-        return [{ offer, reward, rewardNote: salaryOfferSourceNote(offer) ?? salaryOfferComparisonNote(offer, reward)
+        return [{ offer, reward, rewardNote: offer.comparisonNote ? undefined : salaryOfferSourceNote(offer) ?? salaryOfferComparisonNote(offer, reward)
           ?? (example ? "Bank example · total over 12 qualifying months" : rewardNote) }];
       })
       .sort((a, b) => {
+        if (a.offer.comparisonNote || b.offer.comparisonNote) {
+          return Number(Boolean(a.offer.comparisonNote)) - Number(Boolean(b.offer.comparisonNote));
+        }
         if (sort === "value") return compareSalaryOffersByReward(a, b);
         const aExpiry = expiry(a.offer);
         const bExpiry = expiry(b.offer);
@@ -280,6 +298,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
       </div>
       <div class="dpst-fineblock">
         <div class="dpst-finehead">Eligibility</div>
+        {o.comparisonNote && <p class="dpst-finenote">{o.comparisonNote} <a href={bankOfferHref(o, journey)}>Read offer details →</a></p>}
         <div class="dpst-fineitem">
           {path?.financeAlternative ? (
             <><span class="k">Bundle requirement</span><span class="v warn">Eligible card or finance</span></>
@@ -460,6 +479,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
       </div>
       <p class="dpst-salary-note">
         Rewards shown are the highest within the selected range. Check the salary beside each reward; lower salaries may qualify for a different amount.
+        {rows.some(({ offer }) => offer.comparisonNote) && " Offers marked ‘Not ranked’ are listed for reference, not included in reward comparisons or estimates."}
       </p>
       <p class="dpst-salary-note">
         <a href={salaryJourneyHref("/salary-transfer/calculator/", journey)}>Calculate with these filters →</a>{" "}
@@ -544,6 +564,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                       >
                         <td class="col-bank">
                           <BankIdentity offer={o} journey={journey} />
+                          {o.comparisonNote && <p class="dpst-reference-condition">{o.comparisonNote}</p>}
                         </td>
                         <td>
                           <span class={`dpst-badge ${badgeClass(reward.rewardType)}`}>
@@ -552,9 +573,9 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                           </span>
                         </td>
                         <td>
-                          <RewardValue reward={reward} note={rewardNote} />
+                          <TrackerReward offer={o} reward={reward} note={rewardNote} />
                         </td>
-                        <td class="dpst-band-cell"><SalaryForReward offer={o} reward={reward} /></td>
+                        <td class="dpst-band-cell">{o.comparisonNote ? "See bank terms" : <SalaryForReward offer={o} reward={reward} />}</td>
                         <td>
                           <CampaignValidity offer={o} timeline={timelines[o.id]} now={dubaiNow} />
                         </td>
@@ -562,7 +583,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                           <button
                             type="button"
                             class="dpst-expand"
-                            aria-label={`Payday to payout and fine print for ${o.bankName}`}
+                            aria-label={`Payday to payout and fine print for ${o.comparisonNote ? o.name : o.bankName}`}
                             aria-expanded={isOpen}
                             aria-controls={`dpst-desktop-${o.id}`}
                             onClick={(event) => {
@@ -602,7 +623,7 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                   <div class="dpst-card-head">
                     <BankIdentity offer={o} journey={journey} />
                     <div class="dpst-card-val">
-                      <RewardValue reward={reward} note={rewardNote} />
+                      <TrackerReward offer={o} reward={reward} note={rewardNote} />
                     </div>
                   </div>
                   {/* One chip line instead of three label rows (19 Oct
@@ -617,12 +638,13 @@ export default function SalaryTransferTracker({ offers, scope, cardPaths, timeli
                   </div>
                   <p class="dpst-card-salary">
                     <span>Salary for reward</span>
-                    <SalaryForReward offer={o} reward={reward} />
+                    {o.comparisonNote ? <span>See bank terms</span> : <SalaryForReward offer={o} reward={reward} />}
                   </p>
+                  {o.comparisonNote && <p class="dpst-reference-condition">{o.comparisonNote}</p>}
                   <button
                     type="button"
                     class="dpst-card-acc"
-                    aria-label={`Fine print & timeline for ${o.bankName}`}
+                    aria-label={`Fine print & timeline for ${o.comparisonNote ? o.name : o.bankName}`}
                     aria-expanded={isOpen}
                     aria-controls={`dpst-mobile-${o.id}`}
                     onClick={() => toggleOpen(o.id)}
