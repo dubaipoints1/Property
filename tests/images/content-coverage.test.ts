@@ -22,6 +22,22 @@ import { HOTEL_PROGRAMME_IDS, programmeImage } from "../../src/lib/programmes";
 const root = fileURLToPath(new URL("../..", import.meta.url));
 
 const ALLOWED_MISSING: Record<string, string> = {
+  "news-dubai-3-day-super-sale-eid-extension-november-2026":
+    "Text-led organiser dates and store checks; no venue photograph implies participation or verified stock.",
+  "news-fairmont-dubai-black-friday-full-prepayment-2026":
+    "Text-led prepayment terms; no cleared property image or checked room inventory.",
+  "news-etihad-guest-maldivian-award-flights-november-2026":
+    "Text-led partner redemption announcement; no route-specific aircraft image or confirmed award inventory.",
+  "news-al-ain-thuraya-festival-exhibition-museum-oasis-passes-2026":
+    "Text-led organiser and ticket terms; no cleared event or venue image.",
+  "news-adib-share-coffee-machine-digital-offer-november-2026":
+    "Text-led amended issuer terms; no cleared reward or card image.",
+  "news-hilton-lxr-mangroves-abu-dhabi-cash-or-points":
+    "Text-led Hilton directory and booking explanation; no cleared property image or checked award inventory.",
+  "guide-saadiyat-museums-pass-bundle-versus-single-ticket":
+    "Text-led official ticket and venue information; no photograph suggests admission to a particular venue.",
+  "guide-uae-tourist-vat-refund-before-bag-drop":
+    "Text-led FTA and operator procedure; no private travel document or refund record is depicted.",
   "news-dib-emirates-islamic-agreement-cardholders-2026":
     "Issuer announcement and exchange filing are the evidence; no card or issuer-mark image represents customer terms.",
   "news-sharjah-eid-al-etihad-museums-fort-maritime-kalba-2026":
