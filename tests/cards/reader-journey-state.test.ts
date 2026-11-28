@@ -57,6 +57,14 @@ test("salary handoff stays within the local salary routes and preserves a safe f
   for (const href of ["//evil.test/", "https://evil.test/", "/cards/", "/salary-transfer/../../else/"]) assert.equal(salaryJourneyHref(href, state), href);
 });
 
+test("salary handoff replaces the old query without dropping the exact offer anchor", () => {
+  const state = salaryJourneyState(new URLSearchParams("st_offer=adib-arrive-2026&st_salary=50000"));
+  const href = "/salary-transfer/adib/?st_salary=20000&unrelated=not-allowed#adib-arrive-2026";
+  const updated = "/salary-transfer/adib/?st_offer=adib-arrive-2026&st_salary=50000#adib-arrive-2026";
+  assert.equal(salaryJourneyHref(href, state), updated);
+  assert.equal(salaryJourneyHref(updated, state), updated);
+});
+
 test("all-band filter and invalid salary attempts are journeys, unknown names alone are not", () => {
   assert.equal(hasSalaryJourney(new URLSearchParams("st_cash=true")), true);
   assert.equal(hasSalaryJourney(new URLSearchParams("st_salary=invalid")), true);
