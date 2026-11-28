@@ -28,6 +28,9 @@ function readCampaign(id: string) {
 }
 
 const cases = [
+  ["adib-arrive-2026", "not-published", /within 90 calendar days of the third/, /active and in good standing/],
+  ["mashreq-al-islami-neo-2026", "not-published", /12 equal monthly instalments, starting within 90 days/, /Two consecutive missing salaries/],
+  ["fab-islamic-amana-2026", "published", /within 45 calendar days after the qualifying salary month/, /forfeits unpaid cashback/],
   ["emirates-islamic-2026-oct-2027-mar", "published", /within 60 days of meeting/, /12 months after the payout month/],
   ["fab-20-percent-2026", "published", /within 45 calendar days after each qualifying month/, /forfeits the unpaid cashback/],
   ["hsbc-new-to-bank-2026-sep-dec", "published", /within 90 calendar days after/, /within 180 days of first funding/],

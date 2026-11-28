@@ -1,6 +1,12 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { classifyCoverage, coverageGuardError } from "../../src/lib/salaryTransferCoverage.ts";
+import {
+  classifyCoverage,
+  coverageGuardError,
+  SALARY_OFFER_ADVERTISED_WITHOUT_CURRENT_TERMS,
+  SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH,
+  SALARY_OFFER_REVIEW_PENDING_BANKS,
+} from "../../src/lib/salaryTransferCoverage.ts";
 
 const covered = ["adcb", "adib", "dib", "fab", "rakbank", "standard-chartered"];
 
@@ -96,4 +102,23 @@ test("output is sorted and de-duplicated regardless of input order", () => {
   });
   assert.deepEqual(c.tracked, ["a", "m"]);
   assert.deepEqual(c.lapsed, ["z"]);
+});
+
+test("limited campaign coverage is tracked separately from outstanding bank terms or reviews", () => {
+  const coveredBanks = [
+    "adcb", "adib", "al-masraf", "fab", "mashreq",
+    ...SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH, "nbq",
+  ];
+  const c = classifyCoverage({
+    coveredBanks,
+    liveOfferBanks: ["adib", "fab", "fab", "mashreq", "mashreq"],
+    lapsedOfferBanks: [],
+    checkedWithoutLiveOffer: SALARY_OFFER_CHECKED_WITHOUT_BANDED_CASH,
+    advertisedWithoutCurrentTerms: SALARY_OFFER_ADVERTISED_WITHOUT_CURRENT_TERMS,
+    reviewPendingBanks: SALARY_OFFER_REVIEW_PENDING_BANKS,
+  });
+  assert.deepEqual(c.tracked, ["adib", "fab", "mashreq"]);
+  assert.deepEqual(c.advertisedWithoutCurrentTerms, ["adcb", "al-masraf"]);
+  assert.deepEqual(c.reviewPending, ["nbq"]);
+  assert.equal(coverageGuardError(c, coveredBanks.length), null);
 });

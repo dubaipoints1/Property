@@ -1,6 +1,6 @@
 import type { SalaryBand, SalaryTransferOffer } from "./salaryTransfer";
 
-type Campaign = Pick<SalaryTransferOffer, "id" | "bankSlug" | "sourceUrl">;
+type Campaign = Pick<SalaryTransferOffer, "id" | "bankSlug" | "sourceUrl" | "comparisonNote">;
 
 const rules = {
   "emirates-islamic-2026-oct-2027-mar": {
@@ -19,6 +19,25 @@ const rules = {
     needsConfirmation: "Requires qualifying savings or new-card spend each month. This calculator does not verify either route.",
     trackerExamples: true,
     earlyExitNote: "A missed qualifying month is not paid later. Closing before payment forfeits unpaid cashback.",
+  },
+  "adib-arrive-2026": {
+    bank: "adib",
+    source: "https://www.adib.ae/-/media/project/adib/adibsite/docs/personal/new-to-country/adib-arrive-terms-and-conditions.pdf",
+    needsConfirmation: "Confirm your new-to-ADIB and recent-arrival status, approved Arrive enrolment and qualifying payroll with ADIB.",
+    commitmentNote: "Three qualifying salaries",
+  },
+  "mashreq-al-islami-neo-2026": {
+    bank: "mashreq",
+    source: "https://www.mashreqalislami.com/-/jssmedia/pdfs/mai/neo/kfs-tnc/Early-Bird-TNCS.ashx",
+    needsConfirmation: "Confirm the first-account and 90-day payroll conditions with Mashreq. The published Islamic route is not an extra reward on top of conventional NEO.",
+    commitmentNote: "Twelve monthly instalments",
+  },
+  "fab-islamic-amana-2026": {
+    bank: "fab",
+    source: "https://www.bankfab.com/-/media/fab-uds/islamic-banking/promotions/2026/20-percent-salary-transfer-cashback/fab-islamic-terms-and-conditions-20-percent-salary-transfer-campaign-en.pdf?view=1",
+    needsConfirmation: "You need a new qualifying FAB Islamic credit card and sufficient eligible spend every month. This tool cannot confirm either.",
+    trackerExamples: true,
+    commitmentNote: "Up to twelve qualifying months",
   },
   "hsbc-new-to-bank-2026-sep-dec": {
     bank: "hsbc",
@@ -91,6 +110,7 @@ function baseComparisonReward(offer: Campaign, reward: ComparisonBand): number {
 }
 
 export function salaryOfferComparisonNote(offer: Campaign, reward: ComparisonBand): string | undefined {
+  if (offer.comparisonNote) return offer.comparisonNote;
   const cohort = getSalaryOfferRules(offer)?.restrictedCohort;
   if (cohort) return cohort;
   const base = baseComparisonReward(offer, reward);
@@ -112,6 +132,7 @@ export function compareSalaryOffersByReward(
 ): number {
   const priority = ({ offer, reward }: typeof a) => {
     if (salaryOfferSourceNote(offer)) return 3;
+    if (offer.comparisonNote) return 2;
     const rule = getSalaryOfferRules(offer);
     if (rule?.trackerExamples) return 2;
     if (rule?.restrictedCohort || baseComparisonReward(offer, reward) === 0) return 1;

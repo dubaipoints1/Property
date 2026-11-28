@@ -20,6 +20,7 @@ export async function entryToOffer(entry: OfferEntry): Promise<SalaryTransferOff
     sharia: entry.data.sharia,
     creditCardRequired: entry.data.creditCardRequired,
     additionalProductsRequired: entry.data.additionalProductsRequired,
+    comparisonNote: entry.data.comparisonNote,
     salaryBands: entry.data.salaryBands.map((b) => ({
       minSalary: b.minSalary,
       maxSalary: b.maxSalary,

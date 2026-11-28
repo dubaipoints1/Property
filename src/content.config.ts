@@ -290,6 +290,8 @@ const SalaryTransferOfferShape = z.object({
   sharia: z.boolean(),
   creditCardRequired: z.boolean(),
   additionalProductsRequired: z.array(ADDITIONAL_PRODUCT).default([]),
+  // A verified but specialised route whose headline is not a personal estimate.
+  comparisonNote: z.string().trim().min(1).optional(),
   salaryBands: z.array(SalaryBand).min(1),
   requirements: z.array(z.string()).default([]),
   clawbackTerms: z.string(),

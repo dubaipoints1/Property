@@ -13,6 +13,7 @@ interface TimelineEntry {
   validUntil: Date;
   publishedEnd?: boolean;
   headline: string;
+  reference?: { note: string; href: string };
   bands: { range: string; reward: string }[];
   archived: boolean;
 }
@@ -67,18 +68,23 @@ const schema = breadcrumbGraph(siteUrl, [{ name: "Salary-transfer tracker", path
               <h2>{e.headline}</h2>
               <span class="when">
                 {e.publishedEnd === false
-                  ? `From ${fmt(e.validFrom)} · Confirm end date with the bank`
+                  ? e.reference ? "No fixed end published" : `From ${fmt(e.validFrom)} · Confirm end date with the bank`
                   : `${fmt(e.validFrom)} – ${fmt(e.validUntil)}`}
                 {!e.archived && <span class="live-tag"> · live</span>}
               </span>
             </header>
-            <ul class="bands">
+            {e.reference ? (
+              <div class="bands">
+                <p><strong>Not ranked.</strong> {e.reference.note}</p>
+                <p><a href={e.reference.href}>See eligibility and bank terms →</a></p>
+              </div>
+            ) : <ul class="bands">
               {e.bands.map((b) => (
                 <li>
                   <span class="range">{b.range}:</span> {b.reward}
                 </li>
               ))}
-            </ul>
+            </ul>}
           </div>
         </li>
       ))}
