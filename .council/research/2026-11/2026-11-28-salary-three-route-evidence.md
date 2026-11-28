@@ -85,7 +85,7 @@ outreach, financial recommendation or assumed release approval.
   containers for sample amounts; they do not belong in estimates or
   rankings. Monthly payment is within 45 calendar days from month-end;
   no retrospective payments for missed months, no fulfilment after
-  closure. The signed source supersedes marketing (§6); no combining with
+  closure. The published terms take precedence over marketing (§6); no combining with
   another promotion unless allowed, with explicit prize-draw exception.
 
 ## Offline reproducibility
