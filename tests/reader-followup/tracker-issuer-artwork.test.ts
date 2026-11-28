@@ -14,7 +14,11 @@ test("scoped artwork only activates an actually visible mounted mark, once, usin
   let observers = 0;
   const targets = new Set<Mark>();
   class FakeObserver {
-    constructor(callback: typeof emit) { emit = callback; observers++; }
+    constructor(callback: typeof emit, options: { threshold: number }) {
+      assert.equal(options.threshold, 0.01);
+      emit = callback;
+      observers++;
+    }
     observe(target: Mark) { targets.add(target); }
     unobserve(target: Mark) { targets.delete(target); }
   }
